@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   advancedSections,
+  chatSections,
+  resolveTimeZone,
   fieldValue,
   listLines,
   workspaceSections,
@@ -123,5 +125,21 @@ describe('workspace and advanced rows', () => {
   })
   it('saves a list trimmed, blanks left out', () => {
     expect(listLines(' git *\n\n  ls -la \n')).toEqual(['git *', 'ls -la'])
+  })
+})
+
+describe('chat rows', () => {
+  it('offers the built-in personalities and the profile’s own', () => {
+    const field = chatSections({ agent: { personalities: { mentor: 'Be wise', helpful: 'x' } } })[0].fields[0]
+    const values = field.control.kind === 'options' ? field.control.options.map(o => o.value) : []
+    expect(values[0]).toBe('')
+    expect(values.filter(v => v === 'helpful')).toHaveLength(1)
+    expect(values.at(-1)).toBe('mentor')
+  })
+  it('resolves time zones as Hermes takes them', () => {
+    expect(resolveTimeZone('')).toBe('')
+    expect(resolveTimeZone('america/new york')).toBe('America/New_York')
+    expect(resolveTimeZone('utc')).toBe('UTC')
+    expect(resolveTimeZone('Mars/Olympus')).toBeNull()
   })
 })

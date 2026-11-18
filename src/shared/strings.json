@@ -1034,6 +1034,36 @@
     "zh-Hans": "归档",
     "zh-Hant": "封存"
   },
+  "Archive after (days)": {
+    "de": "Archivieren nach (Tagen)",
+    "es": "Archivar después de (días)",
+    "fr": "Archiver après (jours)",
+    "id": "Arsipkan setelah (hari)",
+    "it": "Archivia dopo (giorni)",
+    "ja": "アーカイブまでの日数",
+    "ko": "보관까지 기간(일)",
+    "pl": "Archiwizuj po (dniach)",
+    "pt-BR": "Arquivar após (dias)",
+    "ru": "Архивировать через (дней)",
+    "tr": "Şu süreden sonra arşivle (gün)",
+    "zh-Hans": "归档前天数",
+    "zh-Hant": "封存前天數"
+  },
+  "Archive chats nobody has touched for a while. Pinned chats stay, and nothing is deleted.": {
+    "de": "Chats archivieren, die eine Weile niemand angefasst hat. Angeheftete Chats bleiben, und nichts wird gelöscht.",
+    "es": "Archiva los chats que nadie ha tocado en un tiempo. Los chats fijados se quedan y no se elimina nada.",
+    "fr": "Archive les discussions auxquelles personne n'a touché depuis un moment. Les discussions épinglées restent, et rien n'est supprimé.",
+    "id": "Arsipkan chat yang sudah lama tidak disentuh. Chat yang disematkan tetap ada, dan tidak ada yang dihapus.",
+    "it": "Archivia le chat che nessuno tocca da un po'. Le chat fissate restano e non viene eliminato nulla.",
+    "ja": "しばらく誰も触れていないチャットをアーカイブします。ピン留めしたチャットは残り、何も削除されません。",
+    "ko": "한동안 아무도 건드리지 않은 채팅을 보관합니다. 고정된 채팅은 그대로이며 아무것도 삭제되지 않습니다.",
+    "pl": "Archiwizuj czaty, których nikt od dawna nie ruszał. Przypięte czaty zostają, a nic nie jest usuwane.",
+    "pt-BR": "Arquiva conversas que ninguém tocou há algum tempo. Conversas fixadas ficam, e nada é apagado.",
+    "ru": "Архивировать чаты, к которым давно никто не обращался. Закреплённые чаты остаются, ничего не удаляется.",
+    "tr": "Bir süredir kimsenin dokunmadığı sohbetleri arşivler. Sabitlenmiş sohbetler kalır ve hiçbir şey silinmez.",
+    "zh-Hans": "归档一段时间无人处理的聊天。置顶的聊天会保留，且不会删除任何内容。",
+    "zh-Hant": "封存一段時間無人處理的聊天。釘選的聊天會保留，且不會刪除任何內容。"
+  },
   "Archived": {
     "de": "Archiviert",
     "es": "Archivado",
@@ -1348,6 +1378,21 @@
     "tr": "Otomatik",
     "zh-Hans": "自动",
     "zh-Hant": "自動"
+  },
+  "Auto-archive stale chats": {
+    "de": "Inaktive Chats automatisch archivieren",
+    "es": "Archivar automáticamente chats inactivos",
+    "fr": "Archiver automatiquement les discussions inactives",
+    "id": "Arsipkan otomatis chat yang tidak aktif",
+    "it": "Archivia automaticamente le chat inattive",
+    "ja": "放置されたチャットを自動アーカイブ",
+    "ko": "오래된 채팅 자동 보관",
+    "pl": "Automatycznie archiwizuj nieaktywne czaty",
+    "pt-BR": "Arquivar automaticamente conversas paradas",
+    "ru": "Автоархивация неактивных чатов",
+    "tr": "Eski sohbetleri otomatik arşivle",
+    "zh-Hans": "自动归档闲置聊天",
+    "zh-Hant": "自動封存閒置聊天"
   },
   "Automatic": {
     "de": "Automatisch",
@@ -2114,6 +2159,21 @@
     "zh-Hans": "类别",
     "zh-Hant": "類別"
   },
+  "Catgirl": {
+    "de": "Katzenmädchen",
+    "es": "Chica gato",
+    "fr": "Fille-chat",
+    "id": "Gadis Kucing",
+    "it": "Ragazza gatto",
+    "ja": "ネコ娘",
+    "ko": "캣걸",
+    "pl": "Kocia dziewczyna",
+    "pt-BR": "Garota-gato",
+    "ru": "Кошкодевочка",
+    "tr": "Kedi Kız",
+    "zh-Hans": "猫娘",
+    "zh-Hant": "貓娘"
+  },
   "Change": {
     "de": "Ändern",
     "es": "Cambiar",
@@ -2863,6 +2923,21 @@
     "tr": "Sıkıştırma zaman aşımı",
     "zh-Hans": "压缩超时",
     "zh-Hant": "壓縮逾時"
+  },
+  "Concise": {
+    "de": "Knapp",
+    "es": "Conciso",
+    "fr": "Concise",
+    "id": "Ringkas",
+    "it": "Conciso",
+    "ja": "簡潔",
+    "ko": "간결",
+    "pl": "Zwięźle",
+    "pt-BR": "Conciso",
+    "ru": "Кратко",
+    "tr": "Kısa",
+    "zh-Hans": "简洁",
+    "zh-Hant": "簡潔"
   },
   "Concurrent delegate agents": {
     "de": "Gleichzeitige delegierte Agenten",
@@ -4034,6 +4109,21 @@
     "zh-Hans": "正在创建…",
     "zh-Hant": "正在建立…"
   },
+  "Creative": {
+    "de": "Kreativ",
+    "es": "Creativo",
+    "fr": "Créative",
+    "id": "Kreatif",
+    "it": "Creativo",
+    "ja": "クリエイティブ",
+    "ko": "창의적",
+    "pl": "Kreatywna",
+    "pt-BR": "Criativo",
+    "ru": "Творческий",
+    "tr": "Yaratıcı",
+    "zh-Hans": "创意",
+    "zh-Hant": "創意"
+  },
   "Critical": {
     "de": "Kritisch",
     "es": "Crítica",
@@ -4184,6 +4274,21 @@
     "zh-Hans": "天",
     "zh-Hant": "天"
   },
+  "Days without activity before a chat is archived.": {
+    "de": "Tage ohne Aktivität, bevor ein Chat archiviert wird.",
+    "es": "Días sin actividad antes de archivar un chat.",
+    "fr": "Jours sans activité avant l'archivage d'une discussion.",
+    "id": "Jumlah hari tanpa aktivitas sebelum chat diarsipkan.",
+    "it": "Giorni senza attività prima che una chat venga archiviata.",
+    "ja": "チャットがアーカイブされるまでの無操作日数です。",
+    "ko": "활동이 없는 채팅을 보관하기까지의 일수입니다.",
+    "pl": "Liczba dni bez aktywności, po których czat jest archiwizowany.",
+    "pt-BR": "Dias sem atividade antes de uma conversa ser arquivada.",
+    "ru": "Сколько дней без активности до архивации чата.",
+    "tr": "Bir sohbet arşivlenmeden önce etkinlik olmayan gün sayısı.",
+    "zh-Hans": "聊天无活动多少天后归档。",
+    "zh-Hant": "聊天無活動多少天後封存。"
+  },
   "Daytona image": {
     "de": "Daytona-Image",
     "es": "Imagen de Daytona",
@@ -4288,6 +4393,21 @@
     "tr": "Varsayılan yürütme sınırı.",
     "zh-Hans": "默认执行边界。",
     "zh-Hant": "預設的執行範圍。"
+  },
+  "Default response style for new conversations.": {
+    "de": "Standard-Antwortstil für neue Unterhaltungen.",
+    "es": "Estilo de respuesta predeterminado para conversaciones nuevas.",
+    "fr": "Style de réponse par défaut pour les nouvelles conversations.",
+    "id": "Gaya respons default untuk percakapan baru.",
+    "it": "Stile di risposta predefinito per le nuove conversazioni.",
+    "ja": "新しいチャットのデフォルトの応答スタイルです。",
+    "ko": "새 대화의 기본 응답 스타일.",
+    "pl": "Domyślny styl odpowiedzi w nowych rozmowach.",
+    "pt-BR": "Estilo de resposta padrão para novas conversas.",
+    "ru": "Стиль ответов по умолчанию для новых чатов.",
+    "tr": "Yeni konuşmalar için varsayılan yanıt tarzı.",
+    "zh-Hans": "新对话的默认回复风格。",
+    "zh-Hant": "新對話的預設回覆風格。"
   },
   "Default working directory": {
     "de": "Standard-Arbeitsverzeichnis",
@@ -6584,6 +6704,36 @@
     "zh-Hans": "辅助模型",
     "zh-Hant": "輔助模型"
   },
+  "Helpful": {
+    "de": "Hilfsbereit",
+    "es": "Servicial",
+    "fr": "Serviable",
+    "id": "Membantu",
+    "it": "Disponibile",
+    "ja": "親切",
+    "ko": "친절",
+    "pl": "Pomocna",
+    "pt-BR": "Prestativo",
+    "ru": "Отзывчивый",
+    "tr": "Yardımsever",
+    "zh-Hans": "乐于助人",
+    "zh-Hant": "樂於助人"
+  },
+  "Hermes": {
+    "de": "Hermes",
+    "es": "Hermes",
+    "fr": "Hermes",
+    "id": "Hermes",
+    "it": "Hermes",
+    "ja": "Hermes",
+    "ko": "Hermes",
+    "pl": "Hermes",
+    "pt-BR": "Hermes",
+    "ru": "Hermes",
+    "tr": "Hermes",
+    "zh-Hans": "Hermes",
+    "zh-Hant": "Hermes"
+  },
   "Hermes can't read this folder.": {
     "de": "Hermes kann diesen Ordner nicht lesen.",
     "es": "Hermes no puede leer esta carpeta.",
@@ -7274,6 +7424,21 @@
     "zh-Hans": "小时",
     "zh-Hant": "小時"
   },
+  "How Hermes supplies images to a model.": {
+    "de": "Wie Hermes einem Modell Bilder übergibt.",
+    "es": "Cómo proporciona Hermes las imágenes a un modelo.",
+    "fr": "La façon dont Hermes fournit les images à un modèle.",
+    "id": "Cara Hermes memberikan gambar ke model.",
+    "it": "Come Hermes fornisce le immagini a un modello.",
+    "ja": "Hermesがモデルに画像を渡す方法です。",
+    "ko": "Hermes가 모델에 이미지를 전달하는 방법.",
+    "pl": "Jak Hermes przekazuje obrazy do modelu.",
+    "pt-BR": "Como o Hermes fornece imagens a um modelo.",
+    "ru": "Как Hermes передаёт изображения модели.",
+    "tr": "Hermes'in görüntüleri bir modele nasıl sağlayacağı.",
+    "zh-Hans": "Hermes 向模型提供图片的方式。",
+    "zh-Hant": "Hermes 向模型提供影像的方式。"
+  },
   "How Pulse tells you": {
     "de": "Wie Pulse dich informiert",
     "es": "Cómo te avisa Pulse",
@@ -7349,6 +7514,21 @@
     "zh-Hans": "Hub",
     "zh-Hant": "Hub"
   },
+  "Hype": {
+    "de": "Euphorisch",
+    "es": "Eufórico",
+    "fr": "Survolté",
+    "id": "Heboh",
+    "it": "Entusiasta",
+    "ja": "ハイテンション",
+    "ko": "하이텐션",
+    "pl": "Entuzjastyczna",
+    "pt-BR": "Empolgado",
+    "ru": "Восторженный",
+    "tr": "Coşku",
+    "zh-Hans": "热血",
+    "zh-Hant": "熱血"
+  },
   "I already knew": {
     "de": "Wusste ich schon",
     "es": "Ya lo sabía",
@@ -7393,6 +7573,21 @@
     "tr": "Varsayılan model başarısız olursa Hermes bunları sırayla dener.",
     "zh-Hans": "如果默认模型失败，Hermes 会按顺序尝试这些模型。",
     "zh-Hant": "如果預設模型失敗，Hermes 會依序嘗試這些模型。"
+  },
+  "Image attachments": {
+    "de": "Bildanhänge",
+    "es": "Imágenes adjuntas",
+    "fr": "Images jointes",
+    "id": "Lampiran gambar",
+    "it": "Allegati immagine",
+    "ja": "画像の添付ファイル",
+    "ko": "이미지 첨부",
+    "pl": "Załączniki graficzne",
+    "pt-BR": "Anexos de imagem",
+    "ru": "Вложенные изображения",
+    "tr": "Görüntü ekleri",
+    "zh-Hans": "图片附件",
+    "zh-Hant": "影像附件"
   },
   "Image reading": {
     "de": "Bilder lesen",
@@ -7918,6 +8113,21 @@
     "tr": "Kanban görevi {task}",
     "zh-Hans": "看板任务 {task}",
     "zh-Hant": "Kanban 任務 {task}"
+  },
+  "Kawaii": {
+    "de": "Kawaii",
+    "es": "Kawaii",
+    "fr": "Kawaii",
+    "id": "Kawaii",
+    "it": "Kawaii",
+    "ja": "カワイイ",
+    "ko": "카와이",
+    "pl": "Kawaii",
+    "pt-BR": "Kawaii",
+    "ru": "Кавайный",
+    "tr": "Kawaii",
+    "zh-Hans": "卡哇伊",
+    "zh-Hant": "卡哇伊"
   },
   "Keep Photo": {
     "de": "Foto behalten",
@@ -9554,6 +9764,21 @@
     "zh-Hans": "为新聊天命名。",
     "zh-Hant": "為新聊天命名。"
   },
+  "Native images": {
+    "de": "Native Bilder",
+    "es": "Imágenes nativas",
+    "fr": "Images natives",
+    "id": "Gambar native",
+    "it": "Immagini native",
+    "ja": "ネイティブ画像",
+    "ko": "네이티브 이미지",
+    "pl": "Obrazy natywne",
+    "pt-BR": "Imagens nativas",
+    "ru": "Нативные изображения",
+    "tr": "Yerel görüntüler",
+    "zh-Hans": "原生图片",
+    "zh-Hant": "原生影像"
+  },
   "Needs You": {
     "de": "Braucht dich",
     "es": "Te necesita",
@@ -10453,6 +10678,21 @@
     "tr": "Henüz iş yok",
     "zh-Hans": "还没有工作",
     "zh-Hant": "還沒有工作"
+  },
+  "Noir": {
+    "de": "Noir",
+    "es": "Noir",
+    "fr": "Noir",
+    "id": "Noir",
+    "it": "Noir",
+    "ja": "ノワール",
+    "ko": "누아르",
+    "pl": "Noir",
+    "pt-BR": "Noir",
+    "ru": "Нуар",
+    "tr": "Noir",
+    "zh-Hans": "黑色电影",
+    "zh-Hant": "黑色電影"
   },
   "None": {
     "de": "Keine",
@@ -11759,6 +11999,21 @@
     "zh-Hans": "性格",
     "zh-Hant": "個性"
   },
+  "Philosopher": {
+    "de": "Philosoph",
+    "es": "Filósofo",
+    "fr": "Philosophe",
+    "id": "Filsuf",
+    "it": "Filosofo",
+    "ja": "哲学者",
+    "ko": "철학자",
+    "pl": "Filozof",
+    "pt-BR": "Filósofo",
+    "ru": "Философ",
+    "tr": "Filozof",
+    "zh-Hans": "哲学家",
+    "zh-Hant": "哲學家"
+  },
   "Pick a job to see its details and run history.": {
     "de": "Wähle einen Job, um seine Details und den Verlauf seiner Läufe zu sehen.",
     "es": "Elige una tarea para ver sus detalles y su historial de ejecuciones.",
@@ -11908,6 +12163,21 @@
     "tr": "Sabitlenmiş",
     "zh-Hans": "已置顶",
     "zh-Hant": "已釘選"
+  },
+  "Pirate": {
+    "de": "Pirat",
+    "es": "Pirata",
+    "fr": "Pirate",
+    "id": "Bajak Laut",
+    "it": "Pirata",
+    "ja": "海賊",
+    "ko": "해적",
+    "pl": "Pirat",
+    "pt-BR": "Pirata",
+    "ru": "Пират",
+    "tr": "Korsan",
+    "zh-Hans": "海盗",
+    "zh-Hant": "海盜"
   },
   "Plan": {
     "de": "Vorhaben",
@@ -13679,6 +13949,21 @@
     "zh-Hans": "已解决",
     "zh-Hant": "已解決"
   },
+  "Response behavior, visibility, and timezone": {
+    "de": "Antwortverhalten, Sichtbarkeit und Zeitzone",
+    "es": "Comportamiento de las respuestas, visibilidad y zona horaria",
+    "fr": "Comportement des réponses, visibilité et fuseau horaire",
+    "id": "Perilaku respons, visibilitas, dan zona waktu",
+    "it": "Comportamento delle risposte, visibilità e fuso orario",
+    "ja": "応答の動作、表示、タイムゾーン",
+    "ko": "응답 동작, 표시, 시간대",
+    "pl": "Zachowanie odpowiedzi, widoczność i strefa czasowa",
+    "pt-BR": "Comportamento das respostas, visibilidade e fuso horário",
+    "ru": "Поведение ответов, видимость и часовой пояс",
+    "tr": "Yanıt davranışı, görünürlük ve saat dilimi",
+    "zh-Hans": "回复行为、可见性与时区",
+    "zh-Hant": "回覆行為、可見度與時區"
+  },
   "Restart Gateway": {
     "de": "Gateway neu starten",
     "es": "Reiniciar pasarela",
@@ -14924,6 +15209,21 @@
     "zh-Hans": "已发送。智能体会在下一步读取。",
     "zh-Hant": "已傳送。代理程式會在下一步讀取。"
   },
+  "Server's local time": {
+    "de": "Ortszeit des Servers",
+    "es": "Hora local del servidor",
+    "fr": "Heure locale du serveur",
+    "id": "Waktu lokal server",
+    "it": "Ora locale del server",
+    "ja": "サーバーの現地時刻",
+    "ko": "서버 현지 시간",
+    "pl": "Czas lokalny serwera",
+    "pt-BR": "Horário local do servidor",
+    "ru": "Местное время сервера",
+    "tr": "Sunucunun yerel saati",
+    "zh-Hans": "服务器本地时间",
+    "zh-Hant": "伺服器本地時間"
+  },
   "Server-side path for new workspaces.": {
     "de": "Serverseitiger Pfad für neue Arbeitsbereiche.",
     "es": "Ruta en el servidor para los espacios de trabajo nuevos.",
@@ -15028,6 +15328,21 @@
     "tr": "Ayarlar kaydedildi, henüz anahtar yok",
     "zh-Hans": "设置已保存，尚无密钥",
     "zh-Hant": "設定已儲存，尚無金鑰"
+  },
+  "Shakespeare": {
+    "de": "Shakespeare",
+    "es": "Shakespeare",
+    "fr": "Shakespeare",
+    "id": "Shakespeare",
+    "it": "Shakespeare",
+    "ja": "シェイクスピア",
+    "ko": "셰익스피어",
+    "pl": "Szekspir",
+    "pt-BR": "Shakespeare",
+    "ru": "Шекспир",
+    "tr": "Shakespeare",
+    "zh-Hans": "莎士比亚",
+    "zh-Hant": "莎士比亞"
   },
   "Share Keys and Accounts": {
     "de": "Schlüssel und Konten teilen",
@@ -16349,6 +16664,21 @@
     "zh-Hans": "总结较早的消息，让聊天重新腾出空间。聊天及其记忆都会保留。",
     "zh-Hant": "摘要較早的訊息，讓聊天重新騰出空間。聊天及其記憶都會保留。"
   },
+  "Surfer": {
+    "de": "Surfer",
+    "es": "Surfero",
+    "fr": "Surfeur",
+    "id": "Peselancar",
+    "it": "Surfista",
+    "ja": "サーファー",
+    "ko": "서퍼",
+    "pl": "Surfer",
+    "pt-BR": "Surfista",
+    "ru": "Сёрфер",
+    "tr": "Sörfçü",
+    "zh-Hans": "冲浪手",
+    "zh-Hant": "衝浪手"
+  },
   "Switch": {
     "de": "Wechseln",
     "es": "Cambiar",
@@ -16454,6 +16784,36 @@
     "zh-Hans": "任务",
     "zh-Hant": "任務"
   },
+  "Teacher": {
+    "de": "Lehrer",
+    "es": "Profesor",
+    "fr": "Enseignant",
+    "id": "Guru",
+    "it": "Insegnante",
+    "ja": "先生",
+    "ko": "선생님",
+    "pl": "Nauczyciel",
+    "pt-BR": "Professor",
+    "ru": "Учитель",
+    "tr": "Öğretmen",
+    "zh-Hans": "教师",
+    "zh-Hant": "老師"
+  },
+  "Technical": {
+    "de": "Technisch",
+    "es": "Técnico",
+    "fr": "Technique",
+    "id": "Teknis",
+    "it": "Tecnico",
+    "ja": "テクニカル",
+    "ko": "기술적",
+    "pl": "Techniczna",
+    "pt-BR": "Técnico",
+    "ru": "Технический",
+    "tr": "Teknik",
+    "zh-Hans": "技术流",
+    "zh-Hant": "技術"
+  },
   "Tell the chat when a delegate's background command finishes or matches what it watches for.": {
     "de": "Den Chat benachrichtigen, wenn ein Hintergrundbefehl eines Delegierten fertig ist oder auf das Beobachtete trifft.",
     "es": "Avisar al chat cuando un comando en segundo plano de un delegado termina o coincide con lo que vigila.",
@@ -16529,6 +16889,21 @@
     "zh-Hans": "正在测试…",
     "zh-Hant": "正在測試…"
   },
+  "Text only": {
+    "de": "Nur Text",
+    "es": "Solo texto",
+    "fr": "Texte uniquement",
+    "id": "Hanya teks",
+    "it": "Solo testo",
+    "ja": "テキストのみ",
+    "ko": "텍스트만",
+    "pl": "Tylko tekst",
+    "pt-BR": "Somente texto",
+    "ru": "Только текст",
+    "tr": "Yalnızca metin",
+    "zh-Hans": "仅文字",
+    "zh-Hant": "僅文字"
+  },
   "That doesn’t look like a web address.": {
     "de": "Das sieht nicht nach einer Webadresse aus.",
     "es": "Eso no parece una dirección web.",
@@ -16558,6 +16933,21 @@
     "tr": "Bu klasör sunucuda yok.",
     "zh-Hans": "服务器上没有该文件夹。",
     "zh-Hant": "伺服器上沒有該資料夾。"
+  },
+  "That isn't a time zone name. Use one like America/Toronto or Europe/Paris, or leave it blank for the server's local time.": {
+    "de": "Das ist kein Zeitzonenname. Verwende einen wie America/Toronto oder Europe/Paris oder lass das Feld leer für die Ortszeit des Servers.",
+    "es": "Ese no es un nombre de zona horaria. Usa uno como America/Toronto o Europe/Paris, o déjalo en blanco para usar la hora local del servidor.",
+    "fr": "Ce n'est pas un nom de fuseau horaire. Utilisez-en un comme America/Toronto ou Europe/Paris, ou laissez le champ vide pour l'heure locale du serveur.",
+    "id": "Itu bukan nama zona waktu. Gunakan nama seperti America/Toronto atau Europe/Paris, atau kosongkan untuk memakai waktu lokal server.",
+    "it": "Questo non è il nome di un fuso orario. Usane uno come America/Toronto o Europe/Paris, oppure lascia vuoto per l'ora locale del server.",
+    "ja": "タイムゾーン名ではありません。America/Toronto や Europe/Paris のような名前を使うか、空欄にしてサーバーの現地時刻を使ってください。",
+    "ko": "시간대 이름이 아닙니다. America/Toronto나 Europe/Paris 같은 이름을 사용하거나, 비워 두면 서버 현지 시간을 사용합니다.",
+    "pl": "To nie jest nazwa strefy czasowej. Użyj nazwy takiej jak America/Toronto lub Europe/Paris albo zostaw puste pole, aby użyć czasu lokalnego serwera.",
+    "pt-BR": "Esse não é um nome de fuso horário. Use um como America/Toronto ou Europe/Paris, ou deixe em branco para usar o horário local do servidor.",
+    "ru": "Это не название часового пояса. Укажите название вроде America/Toronto или Europe/Paris или оставьте поле пустым, чтобы использовать местное время сервера.",
+    "tr": "Bu bir saat dilimi adı değil. America/Toronto veya Europe/Paris gibi bir ad kullanın ya da sunucunun yerel saati için boş bırakın.",
+    "zh-Hans": "这不是时区名称。请使用 America/Toronto 或 Europe/Paris 这样的名称，或留空以使用服务器本地时间。",
+    "zh-Hant": "這不是時區名稱。請使用 America/Toronto 或 Europe/Paris 這類名稱，或留空以使用伺服器本地時間。"
   },
   "That name can’t be used.": {
     "de": "Dieser Name kann nicht verwendet werden.",
@@ -17969,6 +18359,21 @@
     "zh-Hans": "时区",
     "zh-Hant": "時區"
   },
+  "Timezone": {
+    "de": "Zeitzone",
+    "es": "Zona horaria",
+    "fr": "Fuseau horaire",
+    "id": "Zona waktu",
+    "it": "Fuso orario",
+    "ja": "タイムゾーン",
+    "ko": "시간대",
+    "pl": "Strefa czasowa",
+    "pt-BR": "Fuso horário",
+    "ru": "Часовой пояс",
+    "tr": "Saat dilimi",
+    "zh-Hans": "时区",
+    "zh-Hant": "時區"
+  },
   "Title": {
     "de": "Titel",
     "es": "Título",
@@ -19049,6 +19454,21 @@
     "zh-Hans": "使用我的真实浏览器配置文件",
     "zh-Hant": "使用我的真實瀏覽器設定檔"
   },
+  "Use the server's local time": {
+    "de": "Ortszeit des Servers verwenden",
+    "es": "Usar la hora local del servidor",
+    "fr": "Utiliser l'heure locale du serveur",
+    "id": "Gunakan waktu lokal server",
+    "it": "Usa l'ora locale del server",
+    "ja": "サーバーの現地時刻を使用",
+    "ko": "서버 현지 시간 사용",
+    "pl": "Użyj czasu lokalnego serwera",
+    "pt-BR": "Usar o horário local do servidor",
+    "ru": "Использовать местное время сервера",
+    "tr": "Sunucunun yerel saatini kullan",
+    "zh-Hans": "使用服务器本地时间",
+    "zh-Hant": "使用伺服器本地時間"
+  },
   "Use the shared key": {
     "de": "Gemeinsamen Schlüssel nutzen",
     "es": "Usar la clave compartida",
@@ -19093,6 +19513,21 @@
     "tr": "Kullanılan",
     "zh-Hans": "已用",
     "zh-Hant": "已使用"
+  },
+  "Used for dates, reminders, and scheduled work.": {
+    "de": "Wird für Datumsangaben, Erinnerungen und geplante Arbeit verwendet.",
+    "es": "Se usa para fechas, recordatorios y trabajos programados.",
+    "fr": "Utilisé pour les dates, les rappels et le travail planifié.",
+    "id": "Digunakan untuk tanggal, pengingat, dan pekerjaan terjadwal.",
+    "it": "Si usa per date, promemoria e lavoro pianificato.",
+    "ja": "日付、リマインダー、スケジュールされた作業に使用されます。",
+    "ko": "날짜, 미리 알림, 예약 작업에 사용돼요.",
+    "pl": "Używana dla dat, przypomnień i zaplanowanej pracy.",
+    "pt-BR": "Usado para datas, lembretes e trabalhos agendados.",
+    "ru": "Используется для дат, напоминаний и запланированной работы.",
+    "tr": "Tarihler, anımsatıcılar ve zamanlanmış işler için kullanılır.",
+    "zh-Hans": "用于日期、提醒和定时任务。",
+    "zh-Hant": "用於日期、提醒和排程工作。"
   },
   "Useful": {
     "de": "Hilfreich",

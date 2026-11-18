@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import {
+  resolveTimeZone,
   fieldValue,
   listLines,
   readConfig,
@@ -22,7 +23,7 @@ const withProfile = (path: string, profile: string) => (profile && profile !== '
 interface Props {
   title: string
   subtitle: string
-  sections: () => Section[]
+  sections: (config: Record<string, unknown>) => Section[]
   bots: { name: string; title: string }[]
   profile: string
   onBack: () => void
@@ -109,7 +110,7 @@ export function ConfigPage({ title, subtitle, sections, bots, profile: initialPr
           <p className="meta">{t('Loading…')}</p>
         )
       ) : (
-        sections().map(section => {
+        sections(config).map(section => {
           const fields = shownFields(section, schema)
           if (!fields.length) return null
           return (
@@ -140,11 +141,19 @@ export function FieldRow({ field, value, busy, onSave }: { field: Field; value: 
     const next = draft.trim()
     if (next !== String(value)) onSave(next)
   }
+  const [zoneError, setZoneError] = useState(false)
+  const commitZone = (typed: string) => {
+    const zone = resolveTimeZone(typed)
+    setZoneError(zone === null)
+    if (zone === null) return
+    setDraft(zone)
+    if (zone !== String(value)) onSave(zone)
+  }
   const commitList = () => {
     const lines = listLines(draft)
     if (lines.join('\n') !== String(value)) onSave(lines)
   }
-  const wide = control.kind === 'text' || control.kind === 'list'
+  const wide = control.kind === 'text' || control.kind === 'list' || control.kind === 'timezone'
   return (
     <div className={`mem-row${wide ? ' wide' : ''}`}>
       <div className="mem-text">
@@ -182,6 +191,32 @@ export function FieldRow({ field, value, busy, onSave }: { field: Field; value: 
             if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
           }}
         />
+      ) : control.kind === 'timezone' ? (
+        <div className="mem-zone">
+          <input
+            className="pset-note mem-text-input"
+            value={draft}
+            disabled={busy}
+            spellCheck={false}
+            placeholder={t("Server's local time")}
+            aria-label={field.label}
+            onChange={e => setDraft(e.target.value)}
+            onBlur={() => commitZone(draft)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+            }}
+          />
+          {String(value) ? (
+            <button className="link" disabled={busy} onClick={() => commitZone('')}>
+              {t("Use the server's local time")}
+            </button>
+          ) : null}
+          {zoneError ? (
+            <p className="error-text">
+              {t("That isn't a time zone name. Use one like America/Toronto or Europe/Paris, or leave it blank for the server's local time.")}
+            </p>
+          ) : null}
+        </div>
       ) : control.kind === 'list' ? (
         <textarea
           className="pset-note mem-text-input"

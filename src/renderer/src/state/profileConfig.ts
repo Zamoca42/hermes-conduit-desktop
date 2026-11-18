@@ -19,6 +19,8 @@ export type Control =
   | { kind: 'text'; defaultValue: string }
   /** A list of strings, one per line. */
   | { kind: 'list' }
+  /** An IANA time zone name; blank is the server's local time. */
+  | { kind: 'timezone' }
 
 export interface Field {
   key: string
@@ -42,6 +44,86 @@ export const listLines = (text: string) =>
     .filter(Boolean)
 
 const opts = (pairs: [string, string][]) => pairs.map(([value, label]) => ({ value, label }))
+
+let zones: Map<string, string> | null = null
+/** A typed time zone as Hermes takes it: blank is the server's local time (''), a known name in any case or with spaces for underscores its spelling, else null. */
+export function resolveTimeZone(raw: string): string | null {
+  const typed = raw.trim()
+  if (!typed) return ''
+  if (!zones) {
+    const listed = (Intl as unknown as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.('timeZone') ?? []
+    zones = new Map([...listed, 'UTC'].map(id => [id.toLowerCase(), id]))
+  }
+  const key = typed.toLowerCase()
+  return zones.get(key) ?? zones.get(key.replace(/ /g, '_')) ?? null
+}
+
+const personalityChoices = (): [string, string][] => [
+  ['', t('Default')],
+  ['helpful', t('Helpful')],
+  ['concise', t('Concise')],
+  ['technical', t('Technical')],
+  ['creative', t('Creative')],
+  ['teacher', t('Teacher')],
+  ['kawaii', t('Kawaii')],
+  ['catgirl', t('Catgirl')],
+  ['pirate', t('Pirate')],
+  ['shakespeare', t('Shakespeare')],
+  ['surfer', t('Surfer')],
+  ['noir', t('Noir')],
+  ['uwu', 'uwu'],
+  ['philosopher', t('Philosopher')],
+  ['hype', t('Hype')]
+]
+
+/** Settings > Chat's Hermes rows, after the phone's; the personalities include the profile's own (`agent.personalities`). */
+export function chatSections(config: Row): Section[] {
+  const own = Object.keys(object(object(config.agent)?.personalities) ?? {}).sort()
+  const builtIn = personalityChoices()
+  const personalities = [...builtIn.map(([value, label]) => ({ value, label })), ...own.filter(n => !builtIn.some(([v]) => v === n)).map(n => ({ value: n, label: n }))]
+  return [
+    {
+      title: t('Hermes'),
+      fields: [
+        {
+          key: 'display.personality',
+          label: t('Personality'),
+          help: t('Default response style for new conversations.'),
+          control: { kind: 'options', options: personalities, defaultValue: '' }
+        },
+        { key: 'timezone', label: t('Timezone'), help: t('Used for dates, reminders, and scheduled work.'), control: { kind: 'timezone' } },
+        {
+          key: 'agent.image_input_mode',
+          label: t('Image attachments'),
+          help: t('How Hermes supplies images to a model.'),
+          control: {
+            kind: 'options',
+            options: opts([
+              ['auto', t('Automatic')],
+              ['native', t('Native images')],
+              ['text', t('Text only')]
+            ]),
+            defaultValue: 'auto'
+          }
+        },
+        {
+          key: 'sessions.auto_archive',
+          label: t('Auto-archive stale chats'),
+          help: t('Archive chats nobody has touched for a while. Pinned chats stay, and nothing is deleted.'),
+          control: { kind: 'toggle', defaultValue: false },
+          requiresSchema: true
+        },
+        {
+          key: 'sessions.auto_archive_days',
+          label: t('Archive after (days)'),
+          help: t('Days without activity before a chat is archived.'),
+          control: { kind: 'number', defaultValue: 3 },
+          requiresSchema: true
+        }
+      ]
+    }
+  ]
+}
 
 /** Settings > Workspace & safety's rows, after the phone's. */
 export function workspaceSections(): Section[] {
@@ -499,7 +581,9 @@ export function fieldValue(config: unknown, field: Field): boolean | number | st
       return field.control.defaultValue
     case 'list':
       return Array.isArray(raw) ? raw.filter(v => typeof v === 'string' || typeof v === 'number').join('\n') : typeof raw === 'string' ? raw : ''
+    case 'timezone':
     case 'text':
+      if (field.control.kind === 'timezone') return typeof raw === 'string' ? raw : ''
       return typeof raw === 'string' ? raw : typeof raw === 'number' ? String(raw) : field.control.defaultValue
     default: {
       const value = typeof raw === 'string' && raw ? raw : field.control.defaultValue

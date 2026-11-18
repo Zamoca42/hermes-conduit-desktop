@@ -45,7 +45,7 @@ import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
 import { NewBot } from './components/NewBot'
 import { ConfigPage } from './components/ConfigPage'
-import { advancedSections, workspaceSections } from './state/profileConfig'
+import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
@@ -896,7 +896,7 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
@@ -907,6 +907,12 @@ function Settings({
     return (
       <main className="settings">
         <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'chat')
+    return (
+      <main className="settings">
+        <ConfigPage title={t('Chat')} subtitle={t('Response behavior, visibility, and timezone')} sections={chatSections} bots={bots} profile={profile} onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'workspace' || page === 'advanced')
@@ -988,6 +994,12 @@ function Settings({
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
             {t('Chat model and helper models')}
+          </button>
+        </dd>
+        <dt>{t('Chat')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('chat')}>
+            {t('Response behavior, visibility, and timezone')}
           </button>
         </dd>
         <dt>{t('Workspace & safety')}</dt>
