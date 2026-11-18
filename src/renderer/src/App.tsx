@@ -68,6 +68,7 @@ import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
 import { GptLiveCall } from './components/GptLiveCall'
 import { GrokLiveCall } from './components/GrokLiveCall'
+import { LocalLiveCall } from './components/LocalLiveCall'
 import { GeminiLiveCall } from './components/GeminiLiveCall'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { voiceMode, type VoiceMode } from './state/gptLive'
@@ -148,7 +149,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [section, setSection] = useState<Section>(reopenedSection)
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
   const list = useChatList(connected)
-  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo } = useChat(
+  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection } = useChat(
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
@@ -824,6 +825,21 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <GrokLiveCall
                   profile={selected.profile}
                   chatId={selected.id}
+                  items={transcript.items}
+                  onSay={words => void onSend(words)}
+                  running={transcript.running}
+                  turnsDone={turnsDone}
+                  lastReply={lastReply}
+                  onEnd={() => setCalling(false)}
+                  onClassic={() => setCallMode('classic')}
+                  requests={openRequests}
+                />
+              ) : calling && callMode === 'local' ? (
+                <LocalLiveCall
+                  profile={selected.profile}
+                  chatId={selected.id}
+                  liveId={chat.liveId}
+                  onCorrected={noteCorrection}
                   items={transcript.items}
                   onSay={words => void onSend(words)}
                   running={transcript.running}

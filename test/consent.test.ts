@@ -13,6 +13,7 @@ describe('provider consent', () => {
 
   it('asks once per provider, under the phone keys, and takes it back', () => {
     expect(consented('classic')).toBe(true)
+    expect(consented('local')).toBe(true)
     expect(consented('gemini')).toBe(false)
     setConsented('gemini', true)
     expect(consented('gemini')).toBe(true)

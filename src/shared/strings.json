@@ -239,6 +239,21 @@
     "zh-Hans": "一条群聊消息最多可附加 {count} 个文件。",
     "zh-Hant": "一則群組聊天訊息最多可附加 {count} 個檔案。"
   },
+  "A hands-free call through a speech server you run, such as Hugging Face speech-to-speech. Everything you say goes to Hermes as a turn in the call's chat, and Hermes' reply is spoken as it is written.": {
+    "de": "Ein Freisprechanruf über einen Sprachserver, den du betreibst, etwa Hugging Face speech-to-speech. Alles, was du sagst, geht als Zug im Chat des Anrufs an Hermes, und Hermes’ Antwort wird so gesprochen, wie sie geschrieben wird.",
+    "es": "Una llamada manos libres a través de un servidor de voz que tú ejecutas, como Hugging Face speech-to-speech. Todo lo que dices va a Hermes como un turno en el chat de la llamada, y la respuesta de Hermes se pronuncia tal como se escribe.",
+    "fr": "Un appel mains libres via un serveur vocal que vous hébergez, comme Hugging Face speech-to-speech. Tout ce que vous dites va à Hermes comme un tour dans la discussion de l’appel, et la réponse de Hermes est dite au fil de son écriture.",
+    "id": "Panggilan bebas genggam melalui server suara yang Anda jalankan, seperti Hugging Face speech-to-speech. Semua yang Anda ucapkan dikirim ke Hermes sebagai giliran di chat panggilan, dan balasan Hermes diucapkan saat ditulis.",
+    "it": "Una chiamata a mani libere tramite un server vocale che gestisci tu, come Hugging Face speech-to-speech. Tutto ciò che dici va a Hermes come un turno nella chat della chiamata, e la risposta di Hermes viene pronunciata mentre viene scritta.",
+    "ja": "Hugging Face speech-to-speech など、ご自身で動かす音声サーバー経由のハンズフリー通話です。話した内容はすべて通話のチャットのターンとして Hermes に送られ、Hermes の返答は書かれるそばから読み上げられます。",
+    "ko": "Hugging Face speech-to-speech처럼 직접 운영하는 음성 서버를 통한 핸즈프리 통화입니다. 말하는 모든 내용이 통화 채팅의 턴으로 Hermes에 전달되고, Hermes의 답장은 작성되는 대로 읽어 줍니다.",
+    "pl": "Rozmowa bez użycia rąk przez serwer mowy, który uruchamiasz, np. Hugging Face speech-to-speech. Wszystko, co mówisz, trafia do Hermesa jako tura w czacie rozmowy, a odpowiedź Hermesa jest czytana w miarę pisania.",
+    "pt-BR": "Uma chamada viva-voz por um servidor de fala que você roda, como o Hugging Face speech-to-speech. Tudo o que você diz vai para o Hermes como um turno no chat da chamada, e a resposta do Hermes é falada enquanto é escrita.",
+    "ru": "Звонок без рук через ваш собственный речевой сервер, например Hugging Face speech-to-speech. Всё, что вы говорите, уходит Hermes как ход в чате звонка, а ответ Hermes произносится по мере написания.",
+    "tr": "Hugging Face speech-to-speech gibi kendi çalıştırdığınız bir konuşma sunucusu üzerinden eller serbest arama. Söylediğiniz her şey aramanın sohbetinde bir tur olarak Hermes’e gider ve Hermes’in yanıtı yazıldıkça okunur.",
+    "zh-Hans": "通过你自己运行的语音服务器（例如 Hugging Face speech-to-speech）进行免提通话。你说的每句话都会作为通话聊天中的一轮发给 Hermes，Hermes 的回复会边写边读出来。",
+    "zh-Hant": "透過你自己執行的語音伺服器（例如 Hugging Face speech-to-speech）進行免持通話。你說的每句話都會作為通話聊天中的一輪傳給 Hermes，Hermes 的回覆會邊寫邊唸出來。"
+  },
   "A heads-up on what's open or coming due: three reminders a day.": {
     "de": "Ein Hinweis auf Offenes oder bald Fälliges: drei Erinnerungen am Tag.",
     "es": "Un aviso de lo pendiente o próximo a vencer: tres recordatorios al día.",
@@ -1138,6 +1153,21 @@
     "tr": "Yanıtla",
     "zh-Hans": "回答",
     "zh-Hant": "回答"
+  },
+  "Answer in your own words.": {
+    "de": "Antworte in deinen eigenen Worten.",
+    "es": "Responde con tus propias palabras.",
+    "fr": "Réponds avec tes propres mots.",
+    "id": "Jawab dengan kata-katamu sendiri.",
+    "it": "Rispondi con parole tue.",
+    "ja": "ご自身の言葉で答えてください。",
+    "ko": "직접 말로 답해 주세요.",
+    "pl": "Odpowiedz własnymi słowami.",
+    "pt-BR": "Responda com suas próprias palavras.",
+    "ru": "Ответьте своими словами.",
+    "tr": "Kendi sözlerinle yanıtla.",
+    "zh-Hans": "请用你自己的话回答。",
+    "zh-Hant": "請用你自己的話回答。"
   },
   "Answer the question, then unblock": {
     "de": "Beantworte die Frage und gib die Aufgabe dann frei",
@@ -4244,6 +4274,36 @@
     "zh-Hans": "拷贝相对路径",
     "zh-Hant": "拷貝相對路徑"
   },
+  "Copy setup for your agent": {
+    "de": "Einrichtung für deinen Agenten kopieren",
+    "es": "Copiar configuración para tu agente",
+    "fr": "Copier la configuration pour votre agent",
+    "id": "Salin penyiapan untuk agen Anda",
+    "it": "Copia la configurazione per il tuo agente",
+    "ja": "エージェント用のセットアップをコピー",
+    "ko": "에이전트용 설정 복사",
+    "pl": "Kopiuj konfigurację dla agenta",
+    "pt-BR": "Copiar configuração para seu agente",
+    "ru": "Скопировать настройку для агента",
+    "tr": "Kurulumu aracınız için kopyala",
+    "zh-Hans": "复制给你的智能体的设置",
+    "zh-Hant": "複製給你的代理程式的設定"
+  },
+  "Copy {title}": {
+    "de": "{title} kopieren",
+    "es": "Copiar {title}",
+    "fr": "Copier {title}",
+    "id": "Salin {title}",
+    "it": "Copia {title}",
+    "ja": "{title}をコピー",
+    "ko": "{title} 복사",
+    "pl": "Kopiuj: {title}",
+    "pt-BR": "Copiar {title}",
+    "ru": "Скопировать: {title}",
+    "tr": "{title} öğesini kopyala",
+    "zh-Hans": "拷贝{title}",
+    "zh-Hant": "拷貝{title}"
+  },
   "Cost": {
     "de": "Kosten",
     "es": "Coste",
@@ -4453,6 +4513,21 @@
     "tr": "{name} yüklenemedi: {reason}",
     "zh-Hans": "无法加载 {name}：{reason}",
     "zh-Hant": "無法載入 {name}：{reason}"
+  },
+  "Could not open the Local Live connection.": {
+    "de": "Die Local-Live-Verbindung konnte nicht geöffnet werden.",
+    "es": "No se pudo abrir la conexión de Local Live.",
+    "fr": "Impossible d’ouvrir la connexion Local Live.",
+    "id": "Tidak dapat membuka koneksi Local Live.",
+    "it": "Impossibile aprire la connessione Local Live.",
+    "ja": "Local Live の接続を開けませんでした。",
+    "ko": "Local Live 연결을 열 수 없습니다.",
+    "pl": "Nie udało się otworzyć połączenia Local Live.",
+    "pt-BR": "Não foi possível abrir a conexão do Local Live.",
+    "ru": "Не удалось открыть подключение Local Live.",
+    "tr": "Local Live bağlantısı açılamadı.",
+    "zh-Hans": "无法打开 Local Live 连接。",
+    "zh-Hant": "無法開啟 Local Live 連線。"
   },
   "Could not pause scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht pausiert werden: {reason}",
@@ -7604,6 +7679,21 @@
     "zh-Hans": "修复",
     "zh-Hant": "修正"
   },
+  "Flags for speech-to-speech": {
+    "de": "Flags für speech-to-speech",
+    "es": "Opciones para speech-to-speech",
+    "fr": "Options pour speech-to-speech",
+    "id": "Flag untuk speech-to-speech",
+    "it": "Opzioni per speech-to-speech",
+    "ja": "speech-to-speech のフラグ",
+    "ko": "speech-to-speech 플래그",
+    "pl": "Flagi dla speech-to-speech",
+    "pt-BR": "Opções para speech-to-speech",
+    "ru": "Флаги для speech-to-speech",
+    "tr": "speech-to-speech bayrakları",
+    "zh-Hans": "speech-to-speech 的参数",
+    "zh-Hant": "speech-to-speech 的參數"
+  },
   "Follow-up": {
     "de": "Nachfassen",
     "es": "Seguimiento",
@@ -8729,6 +8819,36 @@
     "zh-Hans": "Hermes",
     "zh-Hant": "Hermes"
   },
+  "Hermes answers on this server, so there's nothing to set up on it. The Conduit plugin runs each turn and has the server read the reply aloud.": {
+    "de": "Auf diesem Server antwortet Hermes, dort ist also nichts einzurichten. Das Conduit-Plugin führt jede Runde aus und lässt den Server die Antwort vorlesen.",
+    "es": "En este servidor responde Hermes, así que no hay nada que configurar en él. El plugin de Conduit lleva cada turno y hace que el servidor lea la respuesta en voz alta.",
+    "fr": "Hermes répond sur ce serveur, il n'y a donc rien à y configurer. Le plugin Conduit gère chaque tour et fait lire la réponse à voix haute par le serveur.",
+    "id": "Hermes yang menjawab di server ini, jadi tidak ada yang perlu diatur di sana. Plugin Conduit menjalankan setiap giliran dan meminta server membacakan balasannya.",
+    "it": "Su questo server risponde Hermes, quindi non c'è nulla da configurare lì. Il plugin Conduit gestisce ogni turno e fa leggere la risposta ad alta voce al server.",
+    "ja": "このサーバーではHermesが応答するため、サーバー側の設定は不要です。Conduitプラグインが各ターンを進め、サーバーに返答を読み上げさせます。",
+    "ko": "이 서버에서는 Hermes가 응답하므로 서버에서 설정할 것이 없습니다. Conduit 플러그인이 각 턴을 진행하고 서버가 답변을 읽어 주게 합니다.",
+    "pl": "Na tym serwerze odpowiada Hermes, więc nie trzeba na nim niczego ustawiać. Wtyczka Conduit prowadzi każdą turę i każe serwerowi przeczytać odpowiedź na głos.",
+    "pt-BR": "O Hermes responde neste servidor, então não há nada para configurar nele. O plugin do Conduit conduz cada turno e faz o servidor ler a resposta em voz alta.",
+    "ru": "На этом сервере отвечает Hermes, поэтому настраивать на нём нечего. Плагин Conduit ведёт каждый ход и даёт серверу прочитать ответ вслух.",
+    "tr": "Bu sunucuda Hermes yanıtlar, bu yüzden sunucuda ayarlanacak bir şey yok. Conduit eklentisi her turu yürütür ve yanıtı sunucuya sesli okutur.",
+    "zh-Hans": "此服务器上由 Hermes 回答，因此无需在服务器上进行任何设置。Conduit 插件负责每一轮对话，并让服务器朗读回复。",
+    "zh-Hant": "此伺服器上由 Hermes 回答，因此無需在伺服器上進行任何設定。Conduit 外掛負責每一輪對話，並讓伺服器朗讀回覆。"
+  },
+  "Hermes asks: {question}": {
+    "de": "Hermes fragt: {question}",
+    "es": "Hermes pregunta: {question}",
+    "fr": "Hermes demande : {question}",
+    "id": "Hermes bertanya: {question}",
+    "it": "Hermes chiede: {question}",
+    "ja": "Hermesからの確認：{question}",
+    "ko": "Hermes의 요청: {question}",
+    "pl": "Hermes pyta: {question}",
+    "pt-BR": "Hermes pergunta: {question}",
+    "ru": "Hermes спрашивает: {question}",
+    "tr": "Hermes soruyor: {question}",
+    "zh-Hans": "Hermes 请求确认：{question}",
+    "zh-Hant": "Hermes 請求確認：{question}"
+  },
   "Hermes can't read this folder.": {
     "de": "Hermes kann diesen Ordner nicht lesen.",
     "es": "Hermes no puede leer esta carpeta.",
@@ -8803,6 +8923,21 @@
     "tr": "Hermes bu beceriyi tarayamadı, bu yüzden buradan yüklenemiyor.",
     "zh-Hans": "Hermes 无法扫描此技能，因此无法从这里安装。",
     "zh-Hant": "Hermes 無法掃描此技能，因此無法從這裡安裝。"
+  },
+  "Hermes couldn't take that just now.": {
+    "de": "Hermes konnte das gerade nicht annehmen.",
+    "es": "Hermes no pudo atender eso ahora mismo.",
+    "fr": "Hermes n’a pas pu prendre cela pour l’instant.",
+    "id": "Hermes tidak bisa menerimanya saat ini.",
+    "it": "Hermes non è riuscito a prenderlo in carico adesso.",
+    "ja": "Hermes は今それを受け付けられませんでした。",
+    "ko": "Hermes가 지금은 그 요청을 받을 수 없었습니다.",
+    "pl": "Hermes nie mógł teraz tego przyjąć.",
+    "pt-BR": "O Hermes não conseguiu receber isso agora.",
+    "ru": "Hermes сейчас не смог это принять.",
+    "tr": "Hermes bunu şu anda alamadı.",
+    "zh-Hans": "Hermes 现在无法接收这个请求。",
+    "zh-Hant": "Hermes 現在無法接收這個請求。"
   },
   "Hermes couldn't transcribe that: {error}": {
     "de": "Hermes konnte das nicht transkribieren: {error}",
@@ -9044,6 +9179,21 @@
     "zh-Hans": "Hermes 正在扫描此技能…",
     "zh-Hant": "Hermes 正在掃描此技能…"
   },
+  "Hermes is still busy in this chat. Try again in a moment.": {
+    "de": "Hermes ist in diesem Chat noch beschäftigt. Versuch es gleich noch einmal.",
+    "es": "Hermes sigue ocupado en este chat. Inténtalo de nuevo en un momento.",
+    "fr": "Hermes est encore occupé dans cette discussion. Réessayez dans un instant.",
+    "id": "Hermes masih sibuk di obrolan ini. Coba lagi sebentar lagi.",
+    "it": "Hermes è ancora occupato in questa chat. Riprova tra un momento.",
+    "ja": "Hermes はこのチャットでまだ作業中です。少ししてからもう一度お試しください。",
+    "ko": "Hermes가 이 채팅에서 아직 작업 중입니다. 잠시 후 다시 시도하세요.",
+    "pl": "Hermes jest nadal zajęty w tym czacie. Spróbuj ponownie za chwilę.",
+    "pt-BR": "O Hermes ainda está ocupado nesta conversa. Tente de novo em um instante.",
+    "ru": "Hermes ещё занят в этом чате. Попробуйте чуть позже.",
+    "tr": "Hermes bu sohbette hâlâ meşgul. Birazdan tekrar deneyin.",
+    "zh-Hans": "Hermes 仍在这个聊天中忙碌，请稍后再试。",
+    "zh-Hant": "Hermes 仍在這個聊天中忙碌，請稍後再試。"
+  },
   "Hermes is still working on it. Check again in a moment.": {
     "de": "Hermes arbeitet noch daran. Sieh gleich noch einmal nach.",
     "es": "Hermes sigue trabajando en ello. Vuelve a comprobarlo en un momento.",
@@ -9103,6 +9253,36 @@
     "tr": "{title} tamamlandı olarak işaretlenmeden önce Hermes'in ne yapıldığına dair bir nota ihtiyacı var. Görevi açın, notu yazın ve Tamamlandı olarak işaretle'yi seçin.",
     "zh-Hans": "要将 {title} 标记为完成，Hermes 需要一条说明完成了什么的备注。打开任务，写下备注，然后选择“标记为完成”。",
     "zh-Hant": "要將 {title} 標記為完成，Hermes 需要一則說明完成了什麼的備註。開啟任務，寫下備註，然後選擇「標記為完成」。"
+  },
+  "Hermes needs your OK to go on: {what}. Say yes to allow it once, or no.": {
+    "de": "Hermes braucht dein OK, um weiterzumachen: {what}. Sag Ja, um es einmal zu erlauben, oder Nein.",
+    "es": "Hermes necesita tu visto bueno para seguir: {what}. Di sí para permitirlo una vez, o no.",
+    "fr": "Hermes a besoin de votre accord pour continuer : {what}. Dites oui pour l’autoriser une fois, ou non.",
+    "id": "Hermes perlu persetujuan Anda untuk lanjut: {what}. Katakan ya untuk mengizinkannya sekali, atau tidak.",
+    "it": "Hermes ha bisogno del tuo OK per continuare: {what}. Di' sì per consentirlo una volta, oppure no.",
+    "ja": "Hermesが続けるにはあなたの許可が必要です：{what}。1回だけ許可するなら「はい」、しないなら「いいえ」と言ってください。",
+    "ko": "Hermes가 계속하려면 승인이 필요해요: {what}. 한 번 허용하려면 '네', 아니면 '아니요'라고 말하세요.",
+    "pl": "Hermes potrzebuje Twojej zgody, by kontynuować: {what}. Powiedz „tak”, aby zezwolić jednorazowo, albo „nie”.",
+    "pt-BR": "O Hermes precisa do seu OK para continuar: {what}. Diga sim para permitir uma vez, ou não.",
+    "ru": "Hermes нужно ваше разрешение, чтобы продолжить: {what}. Скажите «да», чтобы разрешить один раз, или «нет».",
+    "tr": "Hermes devam etmek için onayınızı bekliyor: {what}. Bir kez izin vermek için evet, vermemek için hayır deyin.",
+    "zh-Hans": "Hermes 需要你同意才能继续：{what}。说“是”允许这一次，或说“不”。",
+    "zh-Hant": "Hermes 需要你同意才能繼續：{what}。說「是」允許這一次，或說「不」。"
+  },
+  "Hermes needs your answer in the chat before it can go on.": {
+    "de": "Hermes braucht deine Antwort im Chat, bevor es weitergeht.",
+    "es": "Hermes necesita tu respuesta en el chat para continuar.",
+    "fr": "Hermes a besoin de votre réponse dans la discussion pour continuer.",
+    "id": "Hermes perlu jawaban Anda di obrolan sebelum bisa melanjutkan.",
+    "it": "Hermes ha bisogno della tua risposta nella chat prima di continuare.",
+    "ja": "続けるには、チャットで Hermes に回答してください。",
+    "ko": "계속하려면 채팅에서 Hermes에 답해 주세요.",
+    "pl": "Hermes potrzebuje twojej odpowiedzi w czacie, zanim będzie mógł kontynuować.",
+    "pt-BR": "O Hermes precisa da sua resposta na conversa para continuar.",
+    "ru": "Чтобы продолжить, Hermes нужен ваш ответ в чате.",
+    "tr": "Hermes'in devam edebilmesi için sohbette yanıtınıza ihtiyacı var.",
+    "zh-Hans": "Hermes 需要你在聊天中回答后才能继续。",
+    "zh-Hant": "Hermes 需要你在聊天中回答後才能繼續。"
   },
   "Hermes picks up a password manager installed on its computer. It asks you to unlock one the first time it needs a login from it; only the manager's session stays in Hermes' memory, never your master password.": {
     "de": "Hermes erkennt einen auf seinem Computer installierten Passwortmanager. Es bittet dich ums Entsperren, wenn es zum ersten Mal ein Login daraus braucht; nur die Sitzung des Managers bleibt in Hermes' Speicher, nie dein Master-Passwort.",
@@ -10454,6 +10634,21 @@
     "zh-Hans": "因你教给 Pulse 的内容而略过",
     "zh-Hant": "因你教給 Pulse 的內容而略過"
   },
+  "Key": {
+    "de": "Schlüssel",
+    "es": "Clave",
+    "fr": "Clé",
+    "id": "Kunci",
+    "it": "Chiave",
+    "ja": "キー",
+    "ko": "키",
+    "pl": "Klucz",
+    "pt-BR": "Chave",
+    "ru": "Ключ",
+    "tr": "Anahtar",
+    "zh-Hans": "密钥",
+    "zh-Hant": "金鑰"
+  },
   "Key order": {
     "de": "Schlüsselreihenfolge",
     "es": "Orden de las claves",
@@ -11069,6 +11264,21 @@
     "zh-Hans": "正在载入…",
     "zh-Hant": "正在載入⋯"
   },
+  "Local Live": {
+    "de": "Local Live",
+    "es": "Local Live",
+    "fr": "Local Live",
+    "id": "Local Live",
+    "it": "Local Live",
+    "ja": "Local Live",
+    "ko": "Local Live",
+    "pl": "Local Live",
+    "pt-BR": "Local Live",
+    "ru": "Local Live",
+    "tr": "Local Live",
+    "zh-Hans": "Local Live",
+    "zh-Hant": "Local Live"
+  },
   "Local browser for private URLs": {
     "de": "Lokaler Browser für private URLs",
     "es": "Navegador local para URL privadas",
@@ -11504,6 +11714,21 @@
     "zh-Hans": "生成新二维码",
     "zh-Hant": "產生新條碼"
   },
+  "Make a new key": {
+    "de": "Neuen Schlüssel erstellen",
+    "es": "Crear una clave nueva",
+    "fr": "Créer une nouvelle clé",
+    "id": "Buat kunci baru",
+    "it": "Crea una nuova chiave",
+    "ja": "新しいキーを作成",
+    "ko": "새 키 만들기",
+    "pl": "Utwórz nowy klucz",
+    "pt-BR": "Criar nova chave",
+    "ru": "Создать новый ключ",
+    "tr": "Yeni anahtar oluştur",
+    "zh-Hans": "创建新密钥",
+    "zh-Hant": "建立新密鑰"
+  },
   "Making a code…": {
     "de": "Code wird erstellt…",
     "es": "Creando un código…",
@@ -11518,6 +11743,21 @@
     "tr": "Kod oluşturuluyor…",
     "zh-Hans": "正在生成二维码…",
     "zh-Hant": "正在產生條碼…"
+  },
+  "Making a new key…": {
+    "de": "Neuer Schlüssel wird erstellt…",
+    "es": "Creando una clave nueva…",
+    "fr": "Création d'une nouvelle clé…",
+    "id": "Membuat kunci baru…",
+    "it": "Creazione di una nuova chiave…",
+    "ja": "新しいキーを作成中…",
+    "ko": "새 키 만드는 중…",
+    "pl": "Tworzenie nowego klucza…",
+    "pt-BR": "Criando nova chave…",
+    "ru": "Создаём новый ключ…",
+    "tr": "Yeni anahtar oluşturuluyor…",
+    "zh-Hans": "正在创建新密钥…",
+    "zh-Hant": "正在建立新密鑰…"
   },
   "Manual": {
     "de": "Manuell",
@@ -11953,6 +12193,21 @@
     "tr": "Model",
     "zh-Hans": "模型",
     "zh-Hant": "模型"
+  },
+  "Model address": {
+    "de": "Modelladresse",
+    "es": "Dirección del modelo",
+    "fr": "Adresse du modèle",
+    "id": "Alamat model",
+    "it": "Indirizzo del modello",
+    "ja": "モデルのアドレス",
+    "ko": "모델 주소",
+    "pl": "Adres modelu",
+    "pt-BR": "Endereço do modelo",
+    "ru": "Адрес модели",
+    "tr": "Model adresi",
+    "zh-Hans": "模型地址",
+    "zh-Hant": "模型位址"
   },
   "Model changed": {
     "de": "Modell geändert",
@@ -14114,6 +14369,21 @@
     "zh-Hans": "已在 Pulse 屏幕上",
     "zh-Hant": "已在 Pulse 畫面上"
   },
+  "On the speech server, set its language model to this address and key, with the model name {name}. It then reads Hermes' replies aloud instead of writing its own.": {
+    "de": "Stelle auf dem Sprachserver sein Sprachmodell auf diese Adresse und diesen Schlüssel ein, mit dem Modellnamen {name}. Dann liest er die Antworten von Hermes vor, statt eigene zu schreiben.",
+    "es": "En el servidor de voz, configura su modelo de lenguaje con esta dirección y clave, y el nombre de modelo {name}. Así leerá en voz alta las respuestas de Hermes en lugar de escribir las suyas.",
+    "fr": "Sur le serveur vocal, réglez son modèle de langage sur cette adresse et cette clé, avec le nom de modèle {name}. Il lira alors les réponses de Hermes au lieu d'écrire les siennes.",
+    "id": "Di server suara, atur model bahasanya ke alamat dan kunci ini, dengan nama model {name}. Server itu lalu membacakan balasan Hermes, bukan menulis balasannya sendiri.",
+    "it": "Sul server vocale, imposta il modello linguistico su questo indirizzo e questa chiave, con il nome modello {name}. Così leggerà ad alta voce le risposte di Hermes invece di scriverne di proprie.",
+    "ja": "音声サーバーで、言語モデルをこのアドレスとキー、モデル名 {name} に設定してください。音声サーバーは自分で返答を書かず、Hermes の返答を読み上げます。",
+    "ko": "음성 서버에서 언어 모델을 이 주소와 키, 모델 이름 {name}(으)로 설정하세요. 그러면 직접 답을 쓰지 않고 Hermes의 답장을 읽어 줍니다.",
+    "pl": "Na serwerze mowy ustaw jego model językowy na ten adres i klucz, z nazwą modelu {name}. Wtedy będzie czytać odpowiedzi Hermesa zamiast pisać własne.",
+    "pt-BR": "No servidor de voz, configure o modelo de linguagem com este endereço e chave, e o nome de modelo {name}. Assim ele lê em voz alta as respostas do Hermes em vez de escrever as próprias.",
+    "ru": "На голосовом сервере укажите для языковой модели этот адрес и ключ, а имя модели — {name}. Тогда он будет зачитывать ответы Hermes, а не писать свои.",
+    "tr": "Ses sunucusunda dil modelini bu adres ve anahtara, model adını {name} olarak ayarlayın. Böylece kendi yanıtını yazmak yerine Hermes'in yanıtlarını sesli okur.",
+    "zh-Hans": "在语音服务器上，将其语言模型设为此地址和密钥，模型名称为 {name}。这样它会朗读 Hermes 的回复，而不是自己写回复。",
+    "zh-Hant": "在語音伺服器上，將其語言模型設為此位址和密鑰，模型名稱為 {name}。這樣它會朗讀 Hermes 的回覆，而不是自己寫回覆。"
+  },
   "Once": {
     "de": "Einmal",
     "es": "Una vez",
@@ -14143,6 +14413,21 @@
     "tr": "Bir kez, {date}",
     "zh-Hans": "仅一次，{date}",
     "zh-Hant": "僅一次，{date}"
+  },
+  "One block with the address, key and flags, written for whoever sets up the server, such as your Hermes agent.": {
+    "de": "Ein Block mit Adresse, Schlüssel und Flags, geschrieben für den, der den Server einrichtet, etwa deinen Hermes-Agenten.",
+    "es": "Un solo bloque con la dirección, la clave y las opciones, escrito para quien configure el servidor, como tu agente de Hermes.",
+    "fr": "Un seul bloc avec l'adresse, la clé et les options, rédigé pour la personne qui configure le serveur, comme votre agent Hermes.",
+    "id": "Satu blok berisi alamat, kunci, dan flag, ditulis untuk siapa pun yang menyiapkan server, seperti agen Hermes Anda.",
+    "it": "Un unico blocco con indirizzo, chiave e opzioni, scritto per chi configura il server, come il tuo agente Hermes.",
+    "ja": "アドレス、キー、フラグをまとめた1つのブロックです。Hermes エージェントなど、サーバーを設定する人向けに書かれています。",
+    "ko": "주소, 키, 플래그를 한 블록에 담았어요. Hermes 에이전트처럼 서버를 설정하는 쪽을 위해 쓰였어요.",
+    "pl": "Jeden blok z adresem, kluczem i flagami, napisany dla tego, kto konfiguruje serwer, na przykład twojego agenta Hermes.",
+    "pt-BR": "Um único bloco com o endereço, a chave e as opções, escrito para quem configura o servidor, como seu agente do Hermes.",
+    "ru": "Один блок с адресом, ключом и флагами, написанный для того, кто настраивает сервер, например для вашего агента Hermes.",
+    "tr": "Adres, anahtar ve bayrakları içeren tek bir blok; sunucuyu kuran kişi için, örneğin Hermes aracınız için yazıldı.",
+    "zh-Hans": "一段包含地址、密钥和参数的完整说明，写给负责设置服务器的人，比如你的 Hermes 智能体。",
+    "zh-Hant": "一段包含位址、密鑰和參數的完整說明，寫給負責設定伺服器的人，例如你的 Hermes 代理程式。"
   },
   "Only Coordinates": {
     "de": "Nur koordinieren",
@@ -14353,6 +14638,21 @@
     "tr": "İsteğe bağlı. Ad ve açıklamadan oluşturulan kısa bir kimlikle başlamak için boş bırakın.",
     "zh-Hans": "可选。留空则根据名称和描述生成一段简短的身份设定。",
     "zh-Hant": "選用。留空即可從依名稱和描述產生的簡短身分設定開始。"
+  },
+  "Or say skip to leave it blank.": {
+    "de": "Oder sag „überspringen“, um sie leer zu lassen.",
+    "es": "O di «saltar» para dejarla en blanco.",
+    "fr": "Ou dites « passer » pour la laisser vide.",
+    "id": "Atau ucapkan “lewati” untuk mengosongkannya.",
+    "it": "Oppure di' “salta” per lasciarla vuota.",
+    "ja": "空欄のままにするなら「スキップ」と言ってください。",
+    "ko": "비워 두려면 '건너뛰기'라고 말하세요.",
+    "pl": "Albo powiedz „pomiń”, aby zostawić je puste.",
+    "pt-BR": "Ou diga “pular” para deixá-la em branco.",
+    "ru": "Или скажите «пропустить», чтобы оставить его пустым.",
+    "tr": "Ya da boş bırakmak için “atla” deyin.",
+    "zh-Hans": "或者说“跳过”，留空这一项。",
+    "zh-Hant": "或者說「跳過」，留空這一項。"
   },
   "Or type your own answer": {
     "de": "Oder gib eine eigene Antwort ein",
@@ -17564,6 +17864,21 @@
     "zh-Hans": "运行记录",
     "zh-Hant": "執行記錄"
   },
+  "Run it with two pipelines so it can listen and speak at once.": {
+    "de": "Starte ihn mit zwei Pipelines, damit er gleichzeitig zuhören und sprechen kann.",
+    "es": "Ejecútalo con dos pipelines para que pueda escuchar y hablar a la vez.",
+    "fr": "Lancez-le avec deux pipelines pour qu'il puisse écouter et parler en même temps.",
+    "id": "Jalankan dengan dua pipeline agar bisa mendengar dan berbicara bersamaan.",
+    "it": "Avvialo con due pipeline perché possa ascoltare e parlare insieme.",
+    "ja": "聞き取りと読み上げを同時にできるよう、パイプライン 2 つで起動してください。",
+    "ko": "듣기와 말하기를 동시에 할 수 있도록 파이프라인 두 개로 실행하세요.",
+    "pl": "Uruchom go z dwoma potokami, aby mógł jednocześnie słuchać i mówić.",
+    "pt-BR": "Execute-o com dois pipelines para que ele possa ouvir e falar ao mesmo tempo.",
+    "ru": "Запустите его с двумя конвейерами, чтобы он мог слушать и говорить одновременно.",
+    "tr": "Aynı anda dinleyip konuşabilmesi için iki işlem hattıyla çalıştırın.",
+    "zh-Hans": "请用两个流水线运行它，以便同时听和说。",
+    "zh-Hant": "請用兩個管線執行它，以便同時聽和說。"
+  },
   "Run now": {
     "de": "Jetzt ausführen",
     "es": "Ejecutar ahora",
@@ -18103,6 +18418,36 @@
     "tr": "Becerikli",
     "zh-Hans": "精明",
     "zh-Hant": "精明"
+  },
+  "Say the number of your choice, or answer in your own words.": {
+    "de": "Sag die Nummer deiner Wahl oder antworte in deinen eigenen Worten.",
+    "es": "Di el número de tu opción o responde con tus propias palabras.",
+    "fr": "Dis le numéro de ton choix, ou réponds avec tes propres mots.",
+    "id": "Sebutkan nomor pilihanmu, atau jawab dengan kata-katamu sendiri.",
+    "it": "Di' il numero della tua scelta, oppure rispondi con parole tue.",
+    "ja": "選んだ番号を言うか、ご自身の言葉で答えてください。",
+    "ko": "선택한 번호를 말하거나 직접 말로 답해 주세요.",
+    "pl": "Powiedz numer swojego wyboru albo odpowiedz własnymi słowami.",
+    "pt-BR": "Diga o número da sua escolha ou responda com suas próprias palavras.",
+    "ru": "Назовите номер варианта или ответьте своими словами.",
+    "tr": "Seçtiğin numarayı söyle ya da kendi sözlerinle yanıtla.",
+    "zh-Hans": "说出你选择的编号，或用你自己的话回答。",
+    "zh-Hant": "說出你選擇的編號，或用你自己的話回答。"
+  },
+  "Say the numbers of your choices, you may pick several, or answer in your own words.": {
+    "de": "Sag die Nummern deiner Wahl, du kannst mehrere wählen, oder antworte in deinen eigenen Worten.",
+    "es": "Di los números de tus opciones, puedes elegir varias, o responde con tus propias palabras.",
+    "fr": "Dis les numéros de tes choix, tu peux en choisir plusieurs, ou réponds avec tes propres mots.",
+    "id": "Sebutkan nomor pilihanmu, boleh lebih dari satu, atau jawab dengan kata-katamu sendiri.",
+    "it": "Di' i numeri delle tue scelte, puoi sceglierne più di una, oppure rispondi con parole tue.",
+    "ja": "選んだ番号を言ってください（複数選べます）。ご自身の言葉で答えても構いません。",
+    "ko": "선택한 번호를 말해 주세요. 여러 개를 골라도 되고, 직접 말로 답해도 됩니다.",
+    "pl": "Powiedz numery swoich wyborów, możesz wybrać kilka, albo odpowiedz własnymi słowami.",
+    "pt-BR": "Diga os números das suas escolhas, você pode escolher várias, ou responda com suas próprias palavras.",
+    "ru": "Назовите номера вариантов, можно несколько, или ответьте своими словами.",
+    "tr": "Seçtiğin numaraları söyle, birden fazla seçebilirsin, ya da kendi sözlerinle yanıtla.",
+    "zh-Hans": "说出你选择的编号，可以选多个，或用你自己的话回答。",
+    "zh-Hant": "說出你選擇的編號，可以選多個，或用你自己的話回答。"
   },
   "Schedule": {
     "de": "Zeitplan",
@@ -21539,6 +21884,21 @@
     "zh-Hans": "报告没有提到它",
     "zh-Hant": "報告沒有提到它"
   },
+  "The rest is on your screen.": {
+    "de": "Der Rest ist auf deinem Bildschirm.",
+    "es": "El resto está en tu pantalla.",
+    "fr": "Le reste est sur votre écran.",
+    "id": "Selebihnya ada di layar Anda.",
+    "it": "Il resto è sul tuo schermo.",
+    "ja": "続きは画面に表示しています。",
+    "ko": "나머지는 화면에 있어요.",
+    "pl": "Reszta jest na ekranie.",
+    "pt-BR": "O resto está na sua tela.",
+    "ru": "Остальное у вас на экране.",
+    "tr": "Gerisi ekranınızda.",
+    "zh-Hans": "其余内容在你的屏幕上。",
+    "zh-Hant": "其餘內容在你的螢幕上。"
+  },
   "The search didn't finish": {
     "de": "Die Suche wurde nicht abgeschlossen",
     "es": "La búsqueda no terminó",
@@ -22558,6 +22918,21 @@
     "tr": "Bu, {title} görevini panodan kalıcı olarak kaldırır.",
     "zh-Hans": "这会将 {title} 从看板中永久删除。",
     "zh-Hant": "這會將 {title} 從看板中永久刪除。"
+  },
+  "This server's own model answers Live calls, and the Conduit plugin runs every other call's turns on it, so there's nothing to set up on it.": {
+    "de": "Bei Live-Anrufen antwortet das eigene Modell dieses Servers, und bei allen anderen Anrufen führt das Conduit-Plugin die Runden darauf aus, dort ist also nichts einzurichten.",
+    "es": "En las llamadas Live responde el modelo propio de este servidor, y el plugin de Conduit lleva los turnos de todas las demás llamadas en él, así que no hay nada que configurar en él.",
+    "fr": "Le modèle de ce serveur répond aux appels Live, et le plugin Conduit gère les tours de tous les autres appels sur ce serveur, il n'y a donc rien à y configurer.",
+    "id": "Model milik server ini yang menjawab panggilan Live, dan plugin Conduit menjalankan giliran semua panggilan lain di server ini, jadi tidak ada yang perlu diatur di sana.",
+    "it": "Alle chiamate Live risponde il modello di questo server, e il plugin Conduit gestisce i turni di tutte le altre chiamate su di esso, quindi non c'è nulla da configurare lì.",
+    "ja": "Live通話にはこのサーバー自身のモデルが応答し、それ以外の通話ではConduitプラグインがこのサーバー上で各ターンを進めるため、サーバー側の設定は不要です。",
+    "ko": "Live 통화에는 이 서버의 자체 모델이 응답하고, 그 밖의 통화는 Conduit 플러그인이 이 서버에서 각 턴을 진행하므로 서버에서 설정할 것이 없습니다.",
+    "pl": "W połączeniach Live odpowiada własny model tego serwera, a tury wszystkich pozostałych połączeń prowadzi na nim wtyczka Conduit, więc nie trzeba na nim niczego ustawiać.",
+    "pt-BR": "O modelo deste servidor responde às chamadas Live, e o plugin do Conduit conduz os turnos de todas as outras chamadas nele, então não há nada para configurar nele.",
+    "ru": "На звонки Live отвечает собственная модель этого сервера, а ходы всех остальных звонков на нём ведёт плагин Conduit, поэтому настраивать на нём нечего.",
+    "tr": "Live aramalarını bu sunucunun kendi modeli yanıtlar, diğer tüm aramaların turlarını ise bu sunucuda Conduit eklentisi yürütür; bu yüzden sunucuda ayarlanacak bir şey yok.",
+    "zh-Hans": "Live 通话由此服务器自己的模型回答，其他通话的每一轮对话由 Conduit 插件在此服务器上负责，因此无需在服务器上进行任何设置。",
+    "zh-Hant": "Live 通話由此伺服器自己的模型回答，其他通話的每一輪對話由 Conduit 外掛在此伺服器上負責，因此無需在伺服器上進行任何設定。"
   },
   "This voice message is larger than your attachment size limit.": {
     "de": "Diese Sprachnachricht ist größer als dein Limit für Anhänge.",
@@ -23683,6 +24058,21 @@
     "tr": "Pulse’u kullanmak için bu ana bilgisayardaki Conduit eklentisini güncelleyin.",
     "zh-Hans": "请更新此主机上的 Conduit 插件以使用 Pulse。",
     "zh-Hant": "請更新此主機上的 Conduit 外掛以使用 Pulse。"
+  },
+  "Update the Conduit plugin on your Hermes host to use Local Live.": {
+    "de": "Aktualisiere das Conduit-Plugin auf deinem Hermes-Host, um Local Live zu nutzen.",
+    "es": "Actualiza el plugin de Conduit en tu servidor Hermes para usar Local Live.",
+    "fr": "Mettez à jour le plugin Conduit sur votre hôte Hermes pour utiliser Local Live.",
+    "id": "Perbarui plugin Conduit di host Hermes Anda untuk memakai Local Live.",
+    "it": "Aggiorna il plugin Conduit sul tuo host Hermes per usare Local Live.",
+    "ja": "Local Live を使うには、Hermes ホストの Conduit プラグインを更新してください。",
+    "ko": "Local Live를 사용하려면 Hermes 호스트의 Conduit 플러그인을 업데이트하세요.",
+    "pl": "Zaktualizuj wtyczkę Conduit na hoście Hermes, aby używać Local Live.",
+    "pt-BR": "Atualize o plugin do Conduit no seu host Hermes para usar o Local Live.",
+    "ru": "Обновите плагин Conduit на хосте Hermes, чтобы пользоваться Local Live.",
+    "tr": "Local Live'ı kullanmak için Hermes sunucunuzdaki Conduit eklentisini güncelleyin.",
+    "zh-Hans": "请更新 Hermes 主机上的 Conduit 插件以使用 Local Live。",
+    "zh-Hant": "請更新 Hermes 主機上的 Conduit 外掛程式以使用 Local Live。"
   },
   "Update the Conduit plugin?": {
     "de": "Conduit-Plugin aktualisieren?",
@@ -25604,6 +25994,21 @@
     "zh-Hans": "你已全部看完",
     "zh-Hant": "你已全部看完"
   },
+  "Your Hermes host didn't send a key.": {
+    "de": "Dein Hermes-Host hat keinen Schlüssel gesendet.",
+    "es": "Tu host de Hermes no envió ninguna clave.",
+    "fr": "Votre hôte Hermes n'a envoyé aucune clé.",
+    "id": "Host Hermes-mu tidak mengirim kunci.",
+    "it": "Il tuo host Hermes non ha inviato alcuna chiave.",
+    "ja": "Hermes ホストからキーが送られてきませんでした。",
+    "ko": "Hermes 호스트가 키를 보내지 않았습니다.",
+    "pl": "Host Hermes nie przesłał klucza.",
+    "pt-BR": "Seu host Hermes não enviou uma chave.",
+    "ru": "Хост Hermes не прислал ключ.",
+    "tr": "Hermes ana bilgisayarınız anahtar göndermedi.",
+    "zh-Hans": "你的 Hermes 主机没有发送密钥。",
+    "zh-Hant": "你的 Hermes 主機沒有傳送密鑰。"
+  },
   "Your Hermes server used the voice {applied} instead of {requested}.": {
     "de": "Dein Hermes-Server hat die Stimme {applied} statt {requested} verwendet.",
     "es": "Tu servidor Hermes usó la voz {applied} en lugar de {requested}.",
@@ -25723,6 +26128,111 @@
     "tr": "Raporların, sabah özetin ve Hermes'in kontrol etmeye söz verdiği şeylerle ilgili haberler burada.",
     "zh-Hans": "你的报告、晨间简报，以及 Hermes 答应查看之事的进展都会出现在这里。",
     "zh-Hant": "你的報告、晨間簡報，以及 Hermes 答應查看之事的進展都會出現在這裡。"
+  },
+  "Your speech server answered a call by itself, so Hermes never got a turn. Turn on Hermes answers under Your speech server.": {
+    "de": "Dein Sprachserver hat in einem Anruf selbst geantwortet, Hermes kam also nie an die Reihe. Schalte unter „Dein Sprachserver“ die Option „Hermes antwortet“ ein.",
+    "es": "Tu servidor de voz respondió por su cuenta en una llamada, así que Hermes nunca tuvo turno. Activa «Hermes responde» en Tu servidor de voz.",
+    "fr": "Votre serveur vocal a répondu de lui-même pendant un appel, Hermes n'a donc jamais eu la parole. Activez « Hermes répond » dans Votre serveur vocal.",
+    "id": "Server suaramu menjawab sendiri dalam sebuah panggilan, jadi Hermes tidak pernah mendapat giliran. Nyalakan “Hermes yang menjawab” di Server suaramu.",
+    "it": "Il tuo server vocale ha risposto da solo durante una chiamata, quindi Hermes non ha mai avuto il turno. Attiva «Risponde Hermes» in Il tuo server vocale.",
+    "ja": "音声サーバーが通話中に自分で応答したため、Hermesの番が来ませんでした。「あなたの音声サーバー」で「Hermesが応答」をオンにしてください。",
+    "ko": "음성 서버가 통화에서 스스로 응답해 Hermes에게 차례가 오지 않았습니다. ‘내 음성 서버’에서 ‘Hermes가 응답’을 켜세요.",
+    "pl": "Twój serwer mowy sam odpowiedział w rozmowie, więc Hermes nie doszedł do głosu. Włącz „Odpowiada Hermes” w sekcji Twój serwer mowy.",
+    "pt-BR": "Seu servidor de voz respondeu sozinho em uma chamada, então o Hermes nunca teve a vez. Ative “Hermes responde” em Seu servidor de voz.",
+    "ru": "Голосовой сервер сам ответил во время звонка, поэтому до Hermes очередь не дошла. Включите «Отвечает Hermes» в разделе «Ваш голосовой сервер».",
+    "tr": "Konuşma sunucun bir aramada kendi başına yanıt verdi, bu yüzden sıra Hermes'e hiç gelmedi. Konuşma sunucun bölümünde “Hermes yanıtlar” seçeneğini aç.",
+    "zh-Hans": "你的语音服务器在一次通话中自行作答，Hermes 没有得到发言机会。请在“你的语音服务器”下开启“由 Hermes 回答”。",
+    "zh-Hant": "你的語音伺服器在一次通話中自行作答，Hermes 沒有得到發言機會。請在「你的語音伺服器」下開啟「由 Hermes 回答」。"
+  },
+  "Your speech server answered without asking Hermes. Check that its model address and key match Settings > Voice > Local Live, then restart it.": {
+    "de": "Dein Sprachserver hat geantwortet, ohne Hermes zu fragen. Prüfe, ob Modelladresse und Schlüssel mit „Einstellungen“ > „Sprachmodus“ > „Local Live“ übereinstimmen, und starte ihn dann neu.",
+    "es": "Tu servidor de voz respondió sin preguntar a Hermes. Comprueba que su dirección de modelo y su clave coincidan con Ajustes > Voz > Local Live y luego reinícialo.",
+    "fr": "Votre serveur vocal a répondu sans demander à Hermes. Vérifiez que son adresse de modèle et sa clé correspondent à Réglages > Voix > Local Live, puis redémarrez-le.",
+    "id": "Server suara Anda menjawab tanpa bertanya ke Hermes. Pastikan alamat model dan kuncinya sama dengan Pengaturan > Suara > Local Live, lalu mulai ulang server.",
+    "it": "Il tuo server vocale ha risposto senza chiedere a Hermes. Verifica che indirizzo del modello e chiave corrispondano a Impostazioni > Voce > Local Live, poi riavvialo.",
+    "ja": "音声サーバーが Hermes に問い合わせずに応答しました。モデルアドレスとキーが「設定」>「音声」>「Local Live」と一致しているか確認してから、サーバーを再起動してください。",
+    "ko": "음성 서버가 Hermes에 묻지 않고 답했어요. 모델 주소와 키가 ‘설정’ > ‘음성’ > ‘Local Live’와 같은지 확인한 뒤 서버를 다시 시작하세요.",
+    "pl": "Twój serwer mowy odpowiedział bez pytania Hermesa. Sprawdź, czy adres modelu i klucz zgadzają się z sekcją Ustawienia > Głos > Local Live, a potem uruchom go ponownie.",
+    "pt-BR": "Seu servidor de voz respondeu sem perguntar ao Hermes. Confira se o endereço do modelo e a chave correspondem a Ajustes > Voz > Local Live e reinicie-o.",
+    "ru": "Ваш речевой сервер ответил, не спросив Hermes. Проверьте, что адрес модели и ключ совпадают с «Настройки › Голос › Local Live», затем перезапустите его.",
+    "tr": "Konuşma sunucunuz Hermes'e sormadan yanıt verdi. Model adresi ile anahtarın Ayarlar > Ses > Local Live ile eşleştiğini denetleyin, sonra sunucuyu yeniden başlatın.",
+    "zh-Hans": "你的语音服务器没有询问 Hermes 就作答了。请确认它的模型地址和密钥与「设置」>「语音」>「Local Live」一致，然后重启它。",
+    "zh-Hant": "你的語音伺服器沒有詢問 Hermes 就作答了。請確認它的模型位址和密鑰與「設定」>「語音」>「Local Live」一致，然後重新啟動它。"
+  },
+  "Your speech server didn't ask Hermes for a reply. Check that it's running and that its model address and key match Settings > Voice > Local Live.": {
+    "de": "Dein Sprachserver hat Hermes nicht nach einer Antwort gefragt. Prüfe, ob er läuft und ob Modelladresse und Schlüssel mit „Einstellungen“ > „Sprachmodus“ > „Local Live“ übereinstimmen.",
+    "es": "Tu servidor de voz no pidió una respuesta a Hermes. Comprueba que esté en marcha y que su dirección de modelo y su clave coincidan con Ajustes > Voz > Local Live.",
+    "fr": "Votre serveur vocal n'a pas demandé de réponse à Hermes. Vérifiez qu'il fonctionne et que son adresse de modèle et sa clé correspondent à Réglages > Voix > Local Live.",
+    "id": "Server suara Anda tidak meminta jawaban dari Hermes. Pastikan server berjalan dan alamat model serta kuncinya sama dengan Pengaturan > Suara > Local Live.",
+    "it": "Il tuo server vocale non ha chiesto una risposta a Hermes. Verifica che sia in esecuzione e che indirizzo del modello e chiave corrispondano a Impostazioni > Voce > Local Live.",
+    "ja": "音声サーバーが Hermes に返答を求めませんでした。サーバーが動作していること、モデルアドレスとキーが「設定」>「音声」>「Local Live」と一致していることを確認してください。",
+    "ko": "음성 서버가 Hermes에 답변을 요청하지 않았어요. 서버가 실행 중인지, 모델 주소와 키가 ‘설정’ > ‘음성’ > ‘Local Live’와 같은지 확인하세요.",
+    "pl": "Twój serwer mowy nie poprosił Hermesa o odpowiedź. Sprawdź, czy działa oraz czy adres modelu i klucz zgadzają się z sekcją Ustawienia > Głos > Local Live.",
+    "pt-BR": "Seu servidor de voz não pediu uma resposta ao Hermes. Confira se ele está em execução e se o endereço do modelo e a chave correspondem a Ajustes > Voz > Local Live.",
+    "ru": "Ваш речевой сервер не запросил ответ у Hermes. Проверьте, что он запущен, а адрес модели и ключ совпадают с «Настройки › Голос › Local Live».",
+    "tr": "Konuşma sunucunuz Hermes'ten yanıt istemedi. Çalıştığını ve model adresi ile anahtarın Ayarlar > Ses > Local Live ile eşleştiğini denetleyin.",
+    "zh-Hans": "你的语音服务器没有向 Hermes 请求回复。请确认它正在运行，且模型地址和密钥与「设置」>「语音」>「Local Live」一致。",
+    "zh-Hant": "你的語音伺服器沒有向 Hermes 請求回覆。請確認它正在執行，且模型位址和密鑰與「設定」>「語音」>「Local Live」一致。"
+  },
+  "Your speech server hasn't asked for words yet. Set the address and key on it, then restart it.": {
+    "de": "Dein Sprachserver hat noch nicht nach Text gefragt. Trage Adresse und Schlüssel dort ein und starte ihn neu.",
+    "es": "Tu servidor de voz aún no ha pedido texto. Configura en él la dirección y la clave, y reinícialo.",
+    "fr": "Votre serveur vocal n'a pas encore demandé de texte. Renseignez-y l'adresse et la clé, puis redémarrez-le.",
+    "id": "Server suaramu belum meminta teks. Atur alamat dan kuncinya di sana, lalu mulai ulang.",
+    "it": "Il tuo server vocale non ha ancora chiesto testo. Imposta lì indirizzo e chiave, poi riavvialo.",
+    "ja": "音声サーバーからまだテキストの要求がありません。サーバーにアドレスとキーを設定して再起動してください。",
+    "ko": "음성 서버가 아직 텍스트를 요청하지 않았습니다. 서버에 주소와 키를 설정한 뒤 다시 시작하세요.",
+    "pl": "Serwer mowy jeszcze nie prosił o tekst. Ustaw na nim adres i klucz, a potem uruchom go ponownie.",
+    "pt-BR": "Seu servidor de voz ainda não pediu texto. Configure nele o endereço e a chave e reinicie-o.",
+    "ru": "Голосовой сервер ещё не запрашивал текст. Укажите на нём адрес и ключ, затем перезапустите его.",
+    "tr": "Ses sunucunuz henüz metin istemedi. Adresi ve anahtarı sunucuda ayarlayıp yeniden başlatın.",
+    "zh-Hans": "你的语音服务器尚未请求文字。请在服务器上设置地址和密钥，然后重启。",
+    "zh-Hant": "你的語音伺服器尚未請求文字。請在伺服器上設定位址和密鑰，然後重新啟動。"
+  },
+  "Your speech server last asked for words {when}. It's pointed here.": {
+    "de": "Dein Sprachserver hat zuletzt {when} nach Text gefragt. Er ist hierher verbunden.",
+    "es": "Tu servidor de voz pidió texto por última vez {when}. Está conectado aquí.",
+    "fr": "Votre serveur vocal a demandé du texte pour la dernière fois {when}. Il est bien relié ici.",
+    "id": "Server suaramu terakhir meminta teks {when}. Server itu sudah terhubung ke sini.",
+    "it": "Il tuo server vocale ha chiesto testo l'ultima volta {when}. È collegato qui.",
+    "ja": "音声サーバーが最後にテキストを要求したのは{when}です。ここに接続されています。",
+    "ko": "음성 서버가 마지막으로 텍스트를 요청한 시간: {when}. 여기에 연결되어 있습니다.",
+    "pl": "Serwer mowy ostatnio prosił o tekst {when}. Jest połączony tutaj.",
+    "pt-BR": "Seu servidor de voz pediu texto pela última vez {when}. Ele está conectado aqui.",
+    "ru": "Голосовой сервер последний раз запрашивал текст {when}. Он подключён сюда.",
+    "tr": "Ses sunucunuz en son {when} metin istedi. Buraya bağlı.",
+    "zh-Hans": "你的语音服务器上次请求文字是在{when}。它已连接到这里。",
+    "zh-Hant": "你的語音伺服器上次請求文字是在{when}。它已連線到這裡。"
+  },
+  "Your speech server refused the call.": {
+    "de": "Dein Sprachserver hat den Anruf abgelehnt.",
+    "es": "Tu servidor de voz rechazó la llamada.",
+    "fr": "Votre serveur vocal a refusé l’appel.",
+    "id": "Server suara Anda menolak panggilan.",
+    "it": "Il tuo server vocale ha rifiutato la chiamata.",
+    "ja": "音声サーバーが通話を拒否しました。",
+    "ko": "음성 서버가 통화를 거부했습니다.",
+    "pl": "Twój serwer mowy odrzucił połączenie.",
+    "pt-BR": "Seu servidor de voz recusou a chamada.",
+    "ru": "Ваш речевой сервер отклонил звонок.",
+    "tr": "Konuşma sunucunuz aramayı reddetti.",
+    "zh-Hans": "你的语音服务器拒绝了通话。",
+    "zh-Hant": "你的語音伺服器拒絕了通話。"
+  },
+  "Your speech server refused the call: {reason}": {
+    "de": "Dein Sprachserver hat den Anruf abgelehnt: {reason}",
+    "es": "Tu servidor de voz rechazó la llamada: {reason}",
+    "fr": "Votre serveur vocal a refusé l’appel : {reason}",
+    "id": "Server suara Anda menolak panggilan: {reason}",
+    "it": "Il tuo server vocale ha rifiutato la chiamata: {reason}",
+    "ja": "音声サーバーが通話を拒否しました：{reason}",
+    "ko": "음성 서버가 통화를 거부했습니다: {reason}",
+    "pl": "Twój serwer mowy odrzucił połączenie: {reason}",
+    "pt-BR": "Seu servidor de voz recusou a chamada: {reason}",
+    "ru": "Ваш речевой сервер отклонил звонок: {reason}",
+    "tr": "Konuşma sunucunuz aramayı reddetti: {reason}",
+    "zh-Hans": "你的语音服务器拒绝了通话：{reason}",
+    "zh-Hant": "你的語音伺服器拒絕了通話：{reason}"
   },
   "Your voice goes to {company}": {
     "de": "Deine Stimme geht an {company}",

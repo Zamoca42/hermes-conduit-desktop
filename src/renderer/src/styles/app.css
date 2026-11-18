@@ -6874,3 +6874,35 @@ button.cap-row-text {
   white-space: normal;
   overflow: visible;
 }
+
+/* Settings > Voice > Local Live: the address and key the speech server uses. */
+.local-live-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.local-live-setup > button {
+  align-self: flex-start;
+}
+.local-live-copy {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  align-items: center;
+}
+.local-live-copy .meta {
+  grid-column: 1 / -1;
+}
+.local-live-copy code {
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  user-select: all;
+}
+
+/* Six voice modes: the row wraps rather than squeezing a name onto two lines. */
+.voice-mode-settings .segmented {
+  flex-wrap: wrap;
+}
+.voice-mode-settings .segmented button {
+  white-space: nowrap;
+}
