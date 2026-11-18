@@ -23,8 +23,14 @@ import {
   restTitle,
   stamp,
   tint,
+  wasUpdated,
+  proposalCanUndo,
+  proposalInFlight,
+  proposalStateText,
   type PulseCard
 } from '../state/pulse'
+import { askAction, drawsBody, extraActions, lookStyle, type LookAction } from '../state/pulseLook'
+import { PulseBriefParts, PulseDateColumn, PulseLookBody } from './PulseLook'
 import type { PulseState } from '../state/usePulse'
 import { Icon } from './icons'
 import { Markdown } from './Markdown'
@@ -99,10 +105,12 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
     }
   }
 
-  const doIt = (card: PulseCard) => {
+  const doIt = (card: PulseCard, ask?: LookAction) => {
     const profile = card.profile || feed?.profile || 'default'
-    if (hasChat(card)) onOpenChat({ id: card.chatId, profile, title: card.chatTitle || undefined }, actionMessage(card))
-    else onOpenChat({ id: null, profile: feed?.profile ?? profile }, actionMessage(card))
+    // A pick's Ask leaves its own words in the composer (0.150.0).
+    const words = ask?.value ?? actionMessage(card)
+    if (hasChat(card)) onOpenChat({ id: card.chatId, profile, title: card.chatTitle || undefined }, words)
+    else onOpenChat({ id: null, profile: feed?.profile ?? profile }, words)
     void pulse.acted(card.id).catch(() => undefined)
   }
 
@@ -112,14 +120,33 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
     const reason = backReason(card, Date.now(), language) ?? card.why
     const looked = lookedText(card, language)
     const explains = !!(reason || looked)
-    return (
-      <article key={card.id} className={`pulse-card${cleared ? ' cleared' : ''}`}>
+    const look = card.kind === 'proposal' ? null : card.look
+    const style = look ? lookStyle(look.body) : null
+    const place = look && drawsBody(look) ? style!.place : 'none'
+    const shape = look ? <PulseLookBody body={look.body} framed /> : null
+    const brief = look?.body.shape === 'brief' && (look.body.summary || look.body.today.length || look.body.open.length || look.body.held) ? look.body : null
+    const ask = !cleared ? askAction(look) : undefined
+    // Apple's Maps, Calendar and Reminders links open only on a Mac.
+    const extras = extraActions(look).filter(
+      a => a.does !== 'open' || window.conduit.platform === 'darwin' || !/^(maps:|calshow:|x-apple-reminderkit:)/i.test(a.value)
+    )
+    const article = (
+      <article
+        key={card.id}
+        className={`pulse-card${cleared ? ' cleared' : ''}${look ? ' framed' : ''}${look?.body.shape === 'status' ? ' washed' : ''}`}
+        style={style ? ({ '--look': style.tint } as React.CSSProperties) : undefined}
+      >
+        {place === 'band' ? <div className="look-band">{shape}</div> : null}
         <div className="pulse-topic">
           <span className="pulse-dot" style={{ background: tint(card) }} />
           <span className="pulse-heading" style={{ color: tint(card) }}>
             {heading(card)}
           </span>
-          {card.createdAt ? <span className="meta">· {stamp(card.createdAt, Date.now(), language)}</span> : null}
+          {wasUpdated(card) ? (
+            <span className="meta">· {t('Updated {time}', { time: stamp(card.updatedAt!, Date.now(), language) })}</span>
+          ) : card.createdAt ? (
+            <span className="meta">· {stamp(card.createdAt, Date.now(), language)}</span>
+          ) : null}
           {isHeld(card) ? <span className="meta">{t('For the morning brief')}</span> : null}
           <span className="spacer" />
           {explains ? (
@@ -139,10 +166,24 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
             </button>
           ) : null}
         </div>
-        <div className={`pulse-news${card.doneAt ? ' done' : ''}`}>
-          {card.kind === 'followup' ? <p>{card.news || card.title}</p> : <Markdown text={card.news || card.title} />}
-        </div>
-        {card.quote && !cleared ? <p className="pulse-quote">“{card.quote}”</p> : null}
+        {place === 'lead' ? shape : null}
+        {brief ? (
+          <PulseBriefParts summary={brief.summary} today={brief.today} open={brief.open} held={brief.held} />
+        ) : (
+          <div className={`pulse-news${card.doneAt ? ' done' : ''}${look?.line ? ' headline' : ''}${place === 'lead' ? ' quiet' : ''}`}>
+            {card.kind === 'proposal' ? (
+              // What Add puts on the phone, in the plugin's words from the change itself.
+              <p>{card.proposal?.line || card.title}</p>
+            ) : card.kind === 'followup' ? (
+              <p>{look?.line || card.news || card.title}</p>
+            ) : (
+              <Markdown text={look?.line || card.news || card.title} />
+            )}
+          </div>
+        )}
+        {look?.detail ? <div className="pulse-detail">{card.kind === 'followup' ? <p>{look.detail}</p> : <Markdown text={look.detail} />}</div> : null}
+        {place === 'under' || place === 'side' ? shape : null}
+        {card.quote && !cleared && look?.body.shape !== 'promise' ? <p className="pulse-quote">“{card.quote}”</p> : null}
         {hasChat(card) ? (
           <button
             className="pulse-source"
@@ -169,7 +210,9 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
             {looked ? <p>{looked}</p> : null}
           </div>
         ) : null}
-        {cleared ? (
+        {card.kind === 'proposal' ? (
+          proposalRow(card)
+        ) : cleared ? (
           <div className="pulse-actions">
             <span className={`pulse-cleared${isResting(card) ? '' : ' done'}`}>
               <Icon name={isResting(card) ? 'clock' : 'check'} />
@@ -188,7 +231,11 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
           </div>
         ) : (
           <div className="pulse-actions">
-            {canAct(card) ? (
+            {ask ? (
+              <button className="primary" disabled={isBusy} onClick={() => doIt(card, ask)}>
+                {ask.label}
+              </button>
+            ) : canAct(card) ? (
               <button className="primary" disabled={isBusy} onClick={() => doIt(card)}>
                 {t('Do it')}
               </button>
@@ -198,6 +245,11 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
                 {t('Done')}
               </button>
             ) : null}
+            {extras.map(extra => (
+              <button key={extra.does} className="secondary" onClick={() => runExtra(extra)}>
+                {extra.label}
+              </button>
+            ))}
             <button className="secondary" disabled={isBusy} onClick={e => setMenu({ kind: 'later', card, x: e.clientX, y: e.clientY })}>
               {t('Not now')}
             </button>
@@ -231,6 +283,66 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
         {card.rating === 'down' && card.reason && !cleared ? <span className="meta pulse-reason">{reasonTitle(card.reason)}</span> : null}
       </article>
     )
+    if (place !== 'side' || look?.body.shape !== 'date') return article
+    // A date stands as its day down the card's edge.
+    return (
+      <div key={card.id} className={`pulse-card-row${cleared ? ' cleared' : ''}`} style={{ '--look': style!.tint } as React.CSSProperties}>
+        <PulseDateColumn day={look.body.day} />
+        {article}
+      </div>
+    )
+  }
+
+  // A suggestion's Add and Not now while it waits, then where it stands, with Undo once added.
+  const proposalRow = (card: PulseCard) => {
+    const proposal = card.proposal
+    if (!proposal) return null
+    const isBusy = busy.has(card.id)
+    if (proposal.state === 'waiting')
+      return (
+        <div className="pulse-actions">
+          <button className="primary" disabled={isBusy} onClick={() => void act(card, () => pulse.proposal(proposal.id, 'add'))}>
+            {t('Add')}
+          </button>
+          <button
+            className="secondary"
+            disabled={isBusy}
+            title={t("Pulse won't add it")}
+            onClick={() => void act(card, () => pulse.proposal(proposal.id, 'dismiss'))}
+          >
+            {t('Not now')}
+          </button>
+        </div>
+      )
+    const undo = () => {
+      const question = proposal.kind === 'add_event' ? t('Remove it from your calendar?') : t('Remove it from your reminders?')
+      if (window.confirm(`${question}\n\n${proposal.line || card.title}`)) void act(card, () => pulse.proposal(proposal.id, 'undo'))
+    }
+    return (
+      <div className="pulse-proposal-state">
+        <div className="pulse-actions">
+          <span className={`pulse-cleared${proposalCanUndo(proposal) ? ' done' : ''}`}>
+            {proposalInFlight(proposal) ? <span className="running" /> : <Icon name={proposalCanUndo(proposal) ? 'check' : 'clock'} />}
+            {proposalStateText(proposal)}
+          </span>
+          <span className="spacer" />
+          {proposalCanUndo(proposal) ? (
+            <button className="link-button" disabled={isBusy} onClick={undo}>
+              {t('Undo')}
+            </button>
+          ) : null}
+        </div>
+        {proposal.note && (proposal.state === 'failed' || proposal.state === 'changed') ? <p className="meta">{proposal.note}</p> : null}
+      </div>
+    )
+  }
+
+  // A pick's own buttons: a link opens, a message to send someone is copied for you to paste.
+  const runExtra = (extra: LookAction) => {
+    if (extra.does === 'open') window.open(extra.value, '_blank', 'noopener')
+    else {
+      void navigator.clipboard.writeText(extra.value).then(() => setNote(t('Copied')))
+    }
   }
 
   let body: React.ReactNode

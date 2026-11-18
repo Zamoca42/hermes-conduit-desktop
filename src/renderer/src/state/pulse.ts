@@ -5,6 +5,7 @@
  * thumbs up or down (with why), Done, Not now, Do it. Pulse is one per
  * host, so nothing here names a profile.
  */
+import { parseLook, type PulseLook } from './pulseLook'
 import { t } from '../../../shared/i18n'
 
 export const PULSE = '/api/plugins/conduit_push/pulse'
@@ -43,6 +44,72 @@ export interface PulseCard {
   backActedAt?: number
   /** What its turn looked at first: "calendar", "phone", "contacts", "maps", "web", "location". */
   looked: string[]
+  /** The pick it was made from (plugin 0.150.0, asked with looks=1). */
+  look: PulseLook | null
+  /** Rewritten since, because the thing it follows changed. */
+  updatedAt?: number
+  /** A suggestion's (kind "proposal", 0.98.0): what Add asks the phone to add. */
+  proposal: PulseProposal | null
+}
+
+export type ProposalState = 'waiting' | 'adding' | 'added' | 'changed' | 'failed' | 'not_added' | 'expired' | 'removing' | 'removed'
+const PROPOSAL_STATES: ProposalState[] = ['waiting', 'adding', 'added', 'changed', 'failed', 'not_added', 'expired', 'removing', 'removed']
+
+/**
+ * A suggestion Pulse made instead of changing the phone (plugin 0.98.0,
+ * `pulse_proposals`), after the phone's PulseProposal: an event or reminder
+ * its turn would have added. Add asks the phone for it, which asks there
+ * first when another device tapped Add.
+ */
+export interface PulseProposal {
+  id: number
+  /** "add_event" or "add_reminder". */
+  kind: string
+  /** What it adds and where, in the plugin's words ("Add to Personal: Dinner at Nopa, Sat 25 Oct, 19:00 to 21:00"). */
+  line: string
+  state: ProposalState
+  /** The phone's reason, when it couldn't add it or changed it. */
+  note: string
+}
+
+export function parseProposal(raw: unknown): PulseProposal | null {
+  if (!raw || typeof raw !== 'object') return null
+  const row = raw as Record<string, unknown>
+  const id = int(row.id)
+  const state = row.state as ProposalState
+  if (id === undefined || !PROPOSAL_STATES.includes(state)) return null
+  return { id, kind: str(row.kind), line: str(row.line), state, note: str(row.note) }
+}
+
+/** Still to settle: waiting for Add, or on its way to the phone. */
+export const proposalIsOpen = (p: PulseProposal) => p.state === 'waiting' || p.state === 'adding'
+/** Undo takes it off the phone again. */
+export const proposalCanUndo = (p: PulseProposal) => p.state === 'added' || p.state === 'changed'
+export const proposalInFlight = (p: PulseProposal) => p.state === 'adding' || p.state === 'removing'
+
+/** Where it stands, as its card says it once Add was tapped (or it settled without it). */
+export function proposalStateText(p: PulseProposal): string {
+  const event = p.kind === 'add_event'
+  switch (p.state) {
+    case 'waiting':
+      return ''
+    case 'adding':
+      return t('Adding…')
+    case 'added':
+      return event ? t('Added to your calendar') : t('Added to your reminders')
+    case 'changed':
+      return t('Added, then changed on your phone')
+    case 'failed':
+      return t("Couldn't add it")
+    case 'not_added':
+      return t('Not added')
+    case 'expired':
+      return t('Expired')
+    case 'removing':
+      return t('Removing…')
+    case 'removed':
+      return event ? t('Removed from your calendar') : t('Removed from your reminders')
+  }
 }
 
 export type QuietReason = 'until' | 'day'
@@ -93,7 +160,10 @@ export function parseCard(raw: unknown): PulseCard | null {
     ratedAt: when(row.rated_at),
     back: str(row.back),
     backActedAt: when(row.back_acted_at),
-    looked: Array.isArray(row.looked) ? row.looked.filter((s): s is string => typeof s === 'string') : []
+    looked: Array.isArray(row.looked) ? row.looked.filter((s): s is string => typeof s === 'string') : [],
+    look: parseLook(row.look),
+    updatedAt: when(row.updated_at),
+    proposal: parseProposal(row.proposal)
   }
 }
 
@@ -115,7 +185,8 @@ const isNoticed = (card: PulseCard) => card.kind === 'noticed'
 const isFound = (card: PulseCard) => isNoticed(card) && card.itemId === undefined
 
 /** Done or swiped away: under Done and cleared. */
-export const isCleared = (card: PulseCard) => card.doneAt !== undefined || card.dismissedAt !== undefined
+export const isCleared = (card: PulseCard) =>
+  card.doneAt !== undefined || card.dismissedAt !== undefined || (card.kind === 'proposal' && !(card.proposal && proposalIsOpen(card.proposal)))
 
 /** Put away by Not now or Wrong time, and not done meanwhile. */
 export const isResting = (card: PulseCard) => card.dismissedAt !== undefined && card.doneAt === undefined
@@ -150,6 +221,8 @@ export function heading(card: PulseCard): string {
       return t('Reports')
     case 'brief':
       return t('Morning brief')
+    case 'proposal':
+      return t('Suggestion')
     default:
       return t('Pulse')
   }
@@ -223,8 +296,13 @@ export function actionMessage(card: PulseCard): string {
   const reminder = card.news || card.title
   if (card.kanbanTask !== undefined) {
     return card.kanbanTask
-      ? t("Pulse reminded me: {reminder}\n\nIt came up in the work on Kanban task {task}. Check the task on the board, and if it's stuck, get it going again.", { reminder, task: card.kanbanTask })
-      : t("Pulse reminded me: {reminder}\n\nIt came up in the work on a Kanban task. Find the task on the board, and if it's stuck, get it going again.", { reminder })
+      ? t(
+          "Pulse reminded me: {reminder}\n\nIt came up in the work on Kanban task {task}. Check the task on the board, and if it's stuck, get it going again.",
+          { reminder, task: card.kanbanTask }
+        )
+      : t("Pulse reminded me: {reminder}\n\nIt came up in the work on a Kanban task. Find the task on the board, and if it's stuck, get it going again.", {
+          reminder
+        })
   }
   switch (card.kind === 'followup' ? 'promise' : card.topic) {
     case 'promise':
@@ -377,3 +455,6 @@ export function refusalText(error: unknown): string {
   if (/not_found/.test(text)) return t('Pulse no longer has that one.')
   return text
 }
+
+/** Rewritten at least a second after it came (0.150.0). */
+export const wasUpdated = (card: PulseCard) => card.updatedAt !== undefined && card.createdAt !== undefined && card.updatedAt - card.createdAt >= 1000
