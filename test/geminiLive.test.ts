@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { mintedSocket } from '../src/shared/ipc'
 import {
   quotaExhausted,
+  resolvedSearch,
   availability,
   audioMessage,
   decode,
@@ -102,5 +103,17 @@ describe('quotaExhausted', () => {
     expect(quotaExhausted('Resource has been exhausted (e.g. check quota).')).toBe(true)
     expect(quotaExhausted('Check the model, workspace and quota.')).toBe(false)
     expect(quotaExhausted('')).toBe(false)
+  })
+})
+
+describe('resolvedSearch', () => {
+  it("follows the phone's search modes", () => {
+    expect(resolvedSearch('automatic', true, 'gemini')).toBe('hermes')
+    expect(resolvedSearch('automatic', false, 'gemini')).toBe('google')
+    expect(resolvedSearch('automatic', false, 'qwen')).toBe('none')
+    expect(resolvedSearch('google', true, 'gemini')).toBe('google')
+    expect(resolvedSearch('google', true, 'qwen')).toBe('hermes')
+    expect(resolvedSearch('hermes', false, 'gemini')).toBe('hermes')
+    expect(resolvedSearch('off', true, 'gemini')).toBe('none')
   })
 })

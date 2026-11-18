@@ -8684,6 +8684,21 @@
     "zh-Hans": "目标 · 第 {used}/{max} 轮",
     "zh-Hant": "目標 · 第 {used}/{max} 輪"
   },
+  "Google Search": {
+    "de": "Google Suche",
+    "es": "Búsqueda de Google",
+    "fr": "Recherche Google",
+    "id": "Google Penelusuran",
+    "it": "Ricerca Google",
+    "ja": "Google検索",
+    "ko": "Google 검색",
+    "pl": "Wyszukiwarka Google",
+    "pt-BR": "Pesquisa Google",
+    "ru": "Google Поиск",
+    "tr": "Google Arama",
+    "zh-Hans": "Google 搜索",
+    "zh-Hant": "Google 搜尋"
+  },
   "Gravelly": {
     "de": "Rau",
     "es": "Ronca",
@@ -9794,6 +9809,21 @@
     "zh-Hans": "Hermes 想运行一条命令。",
     "zh-Hant": "Hermes 想執行一條指令。"
   },
+  "Hermes web search": {
+    "de": "Hermes-Websuche",
+    "es": "Búsqueda web de Hermes",
+    "fr": "Recherche web Hermes",
+    "id": "Pencarian web Hermes",
+    "it": "Ricerca web di Hermes",
+    "ja": "HermesのWeb検索",
+    "ko": "Hermes 웹 검색",
+    "pl": "Wyszukiwarka Hermesa",
+    "pt-BR": "Busca na web do Hermes",
+    "ru": "Веб-поиск Hermes",
+    "tr": "Hermes web araması",
+    "zh-Hans": "Hermes 网页搜索",
+    "zh-Hant": "Hermes 網路搜尋"
+  },
   "Hermes won't install this skill": {
     "de": "Hermes installiert diesen Skill nicht",
     "es": "Hermes no instalará esta habilidad",
@@ -10003,6 +10033,21 @@
     "tr": "Saat",
     "zh-Hans": "小时",
     "zh-Hant": "小時"
+  },
+  "How Gemini answers quick questions like weather or news. Hermes web search uses the search your Hermes server is set up with (SearXNG, Firecrawl…). Google Search has its own quota on your Gemini key. Automatic uses Hermes when it has a search set up, otherwise Google. Applies to the next conversation.": {
+    "de": "Wie Gemini kurze Fragen etwa zu Wetter oder Nachrichten beantwortet. „Hermes-Websuche“ nutzt die Suche, mit der dein Hermes-Server eingerichtet ist (SearXNG, Firecrawl …). „Google Suche“ hat ein eigenes Kontingent auf deinem Gemini-Schlüssel. „Automatisch“ nutzt Hermes, wenn dort eine Suche eingerichtet ist, sonst Google. Gilt ab der nächsten Unterhaltung.",
+    "es": "Cómo responde Gemini a preguntas rápidas como el clima o las noticias. Búsqueda web de Hermes usa el buscador configurado en tu servidor Hermes (SearXNG, Firecrawl…). Búsqueda de Google tiene su propia cuota en tu clave de Gemini. Automático usa Hermes cuando tiene un buscador configurado y, si no, Google. Se aplica a la próxima conversación.",
+    "fr": "Comment Gemini répond aux questions rapides comme la météo ou l'actualité. La recherche web Hermes utilise la recherche configurée sur votre serveur Hermes (SearXNG, Firecrawl…). La recherche Google a son propre quota sur votre clé Gemini. Automatique utilise Hermes s'il dispose d'une recherche configurée, sinon Google. S'applique à la prochaine conversation.",
+    "id": "Cara Gemini menjawab pertanyaan singkat seperti cuaca atau berita. Pencarian web Hermes menggunakan pencarian yang disiapkan di server Hermes Anda (SearXNG, Firecrawl…). Google Penelusuran memiliki kuota tersendiri pada kunci Gemini Anda. Otomatis menggunakan Hermes jika ada pencarian yang disiapkan, jika tidak, Google. Berlaku mulai percakapan berikutnya.",
+    "it": "Come Gemini risponde a domande veloci come meteo o notizie. Ricerca web di Hermes usa la ricerca configurata sul tuo server Hermes (SearXNG, Firecrawl…). Ricerca Google ha una propria quota sulla tua chiave Gemini. Automatico usa Hermes quando ha una ricerca configurata, altrimenti Google. Vale dalla prossima conversazione.",
+    "ja": "Geminiが天気やニュースなどの簡単な質問に答える方法です。「HermesのWeb検索」は、Hermesサーバに設定されている検索（SearXNG、Firecrawl…）を使用します。「Google検索」には、Geminiキーで個別の利用枠があります。「自動」は、Hermesに検索が設定されていればHermesを、そうでなければGoogleを使用します。次回の会話から適用されます。",
+    "ko": "Gemini가 날씨나 뉴스 같은 간단한 질문에 답하는 방법이에요. ‘Hermes 웹 검색’은 Hermes 서버에 설정된 검색(SearXNG, Firecrawl…)을 사용해요. ‘Google 검색’은 Gemini 키에 별도 할당량이 있어요. ‘자동’은 Hermes에 검색이 설정되어 있으면 Hermes를, 아니면 Google을 사용해요. 다음 대화부터 적용돼요.",
+    "pl": "Jak Gemini odpowiada na szybkie pytania, np. o pogodę czy wiadomości. „Wyszukiwarka Hermesa” korzysta z wyszukiwarki skonfigurowanej na Twoim serwerze Hermes (SearXNG, Firecrawl…). „Wyszukiwarka Google” ma własny limit na Twoim kluczu Gemini. „Automatycznie” używa Hermesa, gdy ma on skonfigurowaną wyszukiwarkę, a w przeciwnym razie Google. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "Como o Gemini responde a perguntas rápidas, como clima ou notícias. Busca na web do Hermes usa a busca configurada no seu servidor Hermes (SearXNG, Firecrawl…). A Pesquisa Google tem cota própria na sua chave do Gemini. Automático usa o Hermes quando ele tem uma busca configurada; caso contrário, o Google. Vale a partir da próxima conversa.",
+    "ru": "Как Gemini отвечает на быстрые вопросы, например о погоде или новостях. «Веб-поиск Hermes» использует поиск, настроенный на вашем сервере Hermes (SearXNG, Firecrawl…). У «Google Поиска» своя квота для вашего ключа Gemini. «Автоматически» использует Hermes, если в нём настроен поиск, а иначе — Google. Действует со следующего разговора.",
+    "tr": "Gemini'nin hava durumu veya haberler gibi hızlı soruları nasıl yanıtlayacağı. Hermes web araması, Hermes sunucunuzda ayarlı aramayı kullanır (SearXNG, Firecrawl…). Google Arama'nın Gemini anahtarınızda kendi kotası vardır. Otomatik, Hermes'te bir arama ayarlıysa Hermes'i, değilse Google'ı kullanır. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "Gemini 如何回答天气、新闻等快速问题。Hermes 网页搜索使用你的 Hermes 服务器配置的搜索（SearXNG、Firecrawl…）。Google 搜索在你的 Gemini 密钥上有单独的配额。“自动”会在 Hermes 配置了搜索时使用 Hermes，否则使用 Google。从下一次对话开始生效。",
+    "zh-Hant": "Gemini 如何回答天氣、新聞等簡單問題。「Hermes 網路搜尋」會使用 Hermes 伺服器設定的搜尋服務（SearXNG、Firecrawl…）。「Google 搜尋」在你的 Gemini 金鑰上有獨立的配額。「自動」會在 Hermes 設定了搜尋時使用 Hermes，否則使用 Google。下次對話起生效。"
   },
   "How Hermes supplies images to a model.": {
     "de": "Wie Hermes einem Modell Bilder übergibt.",
@@ -25588,6 +25633,21 @@
     "tr": "İzleniyor",
     "zh-Hans": "关注中",
     "zh-Hant": "關注中"
+  },
+  "Web lookups": {
+    "de": "Web-Abfragen",
+    "es": "Búsquedas web",
+    "fr": "Recherches web",
+    "id": "Pencarian web",
+    "it": "Ricerche web",
+    "ja": "Web検索",
+    "ko": "웹 검색",
+    "pl": "Wyszukiwanie w sieci",
+    "pt-BR": "Buscas na web",
+    "ru": "Поиск в интернете",
+    "tr": "Web aramaları",
+    "zh-Hans": "网页查询",
+    "zh-Hant": "網路查詢"
   },
   "Weekdays": {
     "de": "Werktags",

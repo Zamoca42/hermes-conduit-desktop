@@ -35,6 +35,8 @@ import {
   geminiVoice,
   instructions,
   quotaExhausted,
+  resolvedSearch,
+  searchMode,
   setupMessage,
   textTurn,
   toolResponse,
@@ -498,7 +500,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         ])
         if (ended.current) return
         recall = memory.recall
-        search = searches ? 'hermes' : qwen ? 'none' : 'google'
+        search = resolvedSearch(searchMode(provider), searches, provider)
         toldWith = { language: language(), persona, memory: memory.text, recall, chat: chatContext(turns) }
         told = instructions({ ...toldWith, search })
         if (!(await open())) return
