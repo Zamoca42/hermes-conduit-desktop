@@ -1,15 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
 import { agentFromEvent, isActive, merged, parseRoster, withRoster, type DelegateAgent } from './agents'
+import { isRunningProcess, killFailure, parseProcesses, type BackgroundProcess } from './processes'
 
 /**
  * The delegate agents of the open chat: built from its `subagent.*` events,
  * and from `subagent.list` as it opens, reconnects, ends a turn, and every
  * 15 s while one is still running, so a missed end frame can't leave a card
- * running. Another chat starts with none.
+ * running. Another chat starts with none. The background processes the
+ * chat started (`process.list`) are read at the same times.
  */
 export function useAgents(liveId: string | null, connected: boolean, running: boolean) {
   const [agents, setAgents] = useState<DelegateAgent[]>([])
+  const [processes, setProcesses] = useState<BackgroundProcess[]>([])
   const current = useRef(liveId)
   current.current = liveId
 
@@ -22,10 +25,17 @@ export function useAgents(liveId: string | null, connected: boolean, running: bo
     } catch {
       // A Hermes without the roster leaves the cards as they are.
     }
+    try {
+      const listed = parseProcesses(await gateway.rpc('process.list', { session_id: sid }))
+      if (listed && current.current === sid) setProcesses(listed)
+    } catch {
+      // A Hermes without process.list shows none.
+    }
   }, [])
 
   useEffect(() => {
     setAgents([])
+    setProcesses([])
     if (liveId && connected) void readRoster()
   }, [liveId, connected, readRoster])
 
@@ -53,7 +63,7 @@ export function useAgents(liveId: string | null, connected: boolean, running: bo
     wasRunning.current = running
   }, [running, readRoster])
 
-  const anyActive = agents.some(isActive)
+  const anyActive = agents.some(isActive) || processes.some(isRunningProcess)
   useEffect(() => {
     if (!anyActive || !connected) return
     const timer = setInterval(() => void readRoster(), 15_000)
@@ -86,5 +96,17 @@ export function useAgents(liveId: string | null, connected: boolean, running: bo
     return { text: answer.text, truncated: answer.truncated === true }
   }, [])
 
-  return { agents, steer, stop, tail, refresh: readRoster }
+  /** Ends one background process. Null when it went, else why it couldn't. */
+  const kill = useCallback(
+    async (id: string): Promise<string | null> => {
+      const sid = current.current
+      if (!sid) return null
+      const failure = killFailure(await gateway.rpc('process.kill', { session_id: sid, process_id: id }))
+      await readRoster()
+      return failure
+    },
+    [readRoster]
+  )
+
+  return { agents, processes, steer, stop, tail, kill, refresh: readRoster }
 }

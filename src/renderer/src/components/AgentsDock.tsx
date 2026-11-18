@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
 import { elapsed, isActive, statusTitle, type DelegateAgent } from '../state/agents'
+import { isRunningProcess, type BackgroundProcess } from '../state/processes'
 import { Icon } from './icons'
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   steer: (id: string, text: string) => Promise<boolean>
   stop: (id: string) => Promise<void>
   tail: (id: string) => Promise<{ text: string; truncated: boolean } | null>
+  processes: BackgroundProcess[]
+  kill: (id: string) => Promise<string | null>
 }
 
 function AgentCard({ agent, now, steer, stop, tail }: { agent: DelegateAgent; now: number } & Pick<Props, 'steer' | 'stop' | 'tail'>) {
@@ -95,18 +98,63 @@ function AgentCard({ agent, now, steer, stop, tail }: { agent: DelegateAgent; no
   )
 }
 
+function ProcessCard({ process, kill }: { process: BackgroundProcess; kill: Props['kill'] }) {
+  const [busy, setBusy] = useState(false)
+  const [note, setNote] = useState<string | null>(null)
+  const running = isRunningProcess(process)
+  const subtitle = [
+    process.uptimeS !== undefined ? elapsed(process.uptimeS) : null,
+    process.pid !== undefined ? `PID ${process.pid}` : null,
+    running ? null : t('Exited'),
+    process.cwd || null
+  ]
+    .filter(Boolean)
+    .join(' · ')
+  return (
+    <li className={`agent-card process-card${running ? ' status-running' : ' status-completed'}`}>
+      <div className="agent-head">
+        <code className="process-command">{process.command || process.id}</code>
+        <span className="spacer" />
+        {running ? (
+          <button
+            className="link danger"
+            disabled={busy}
+            onClick={() => {
+              if (!window.confirm(`${t('Stop this process?')}\n\n${t('Hermes ends it on your host. Anything it was serving or watching stops with it.')}`))
+                return
+              setBusy(true)
+              setNote(null)
+              kill(process.id)
+                .then(failure => setNote(failure))
+                .catch(e => setNote(e instanceof Error ? e.message : String(e)))
+                .finally(() => setBusy(false))
+            }}
+          >
+            {t('Stop process')}
+          </button>
+        ) : null}
+      </div>
+      {subtitle ? <div className="meta process-subtitle">{subtitle}</div> : null}
+      {process.output ? <pre className="agent-output">{process.output}</pre> : null}
+      {note ? <div className="meta">{note}</div> : null}
+    </li>
+  )
+}
+
 /**
  * The delegate agents a chat started, after the phone's waiting line and
  * sheet: "Waiting for 2 background agents" above the composer once the
  * chat's own turn has ended, opening into a card per agent with Steer,
  * Stop and its live output. Ended agents stay until the chat changes or
- * the × hides them.
+ * the × hides them. The chat's background processes (servers, watchers,
+ * long builds) list under them, each with Stop, as the phone's sheet does.
  */
-export function AgentsDock({ agents, running, chatKey, steer, stop, tail }: Props) {
+export function AgentsDock({ agents, running, chatKey, steer, stop, tail, processes, kill }: Props) {
   const [open, setOpen] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [now, setNow] = useState(Date.now())
   const active = agents.filter(isActive).length
+  const serving = processes.filter(isRunningProcess).length
 
   useEffect(() => {
     setOpen(false)
@@ -114,20 +162,24 @@ export function AgentsDock({ agents, running, chatKey, steer, stop, tail }: Prop
   }, [chatKey])
   // A new agent shows the line again.
   useEffect(() => {
-    if (active) setHidden(false)
-  }, [active])
+    if (active || serving) setHidden(false)
+  }, [active, serving])
   useEffect(() => {
     if (!active) return
     const timer = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(timer)
   }, [active])
 
-  if (!agents.length || hidden) return null
+  if ((!agents.length && !processes.length) || hidden) return null
   const label = active
     ? running
       ? t('{count} background agents running', { count: String(active) })
       : t('Waiting for {count} background agents', { count: String(active) })
-    : t('Background agents finished')
+    : serving
+      ? `${t('Background processes')} · ${serving}`
+      : agents.length
+        ? t('Background agents finished')
+        : t('Background processes')
 
   return (
     <div className={`plan-dock agents-dock${open ? ' open' : ''}`}>
@@ -136,6 +188,10 @@ export function AgentsDock({ agents, running, chatKey, steer, stop, tail }: Prop
           <li className="meta agent-caption">{t('Started by Hermes for this chat. They keep running until they finish or you stop them.')}</li>
           {agents.map(agent => (
             <AgentCard key={agent.id} agent={agent} now={now} steer={steer} stop={stop} tail={tail} />
+          ))}
+          {processes.length ? <li className="agent-section">{t('Background processes')}</li> : null}
+          {processes.map(process => (
+            <ProcessCard key={process.id} process={process} kill={kill} />
           ))}
         </ul>
       ) : null}
@@ -146,7 +202,7 @@ export function AgentsDock({ agents, running, chatKey, steer, stop, tail }: Prop
           <span className="spacer" />
           <Icon name="chevron" />
         </button>
-        {!active ? (
+        {!active && !serving ? (
           <button className="staged-remove" aria-label={t('Hide')} title={t('Hide')} onClick={() => setHidden(true)}>
             <Icon name="close" />
           </button>

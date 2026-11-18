@@ -5689,3 +5689,24 @@ button.cap-row-text {
 .shortcuts-sheet .spacer {
   flex: 1;
 }
+
+.agent-section {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  padding: 8px 2px 0;
+}
+
+.process-command {
+  font-size: 13px;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.process-subtitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

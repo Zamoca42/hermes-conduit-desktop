@@ -686,6 +686,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 steer={delegates.steer}
                 stop={delegates.stop}
                 tail={delegates.tail}
+                processes={delegates.processes}
+                kill={delegates.kill}
               />
               <PlanDock plan={shownPlan} running={transcript.running} chatKey={selected.id ?? 'new'} />
               <Composer

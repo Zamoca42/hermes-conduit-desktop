@@ -1169,6 +1169,21 @@
     "zh-Hans": "后台代理已完成",
     "zh-Hant": "背景代理已完成"
   },
+  "Background processes": {
+    "de": "Hintergrundprozesse",
+    "es": "Procesos en segundo plano",
+    "fr": "Processus en arrière-plan",
+    "id": "Proses latar belakang",
+    "it": "Processi in background",
+    "ja": "バックグラウンドプロセス",
+    "ko": "백그라운드 프로세스",
+    "pl": "Procesy w tle",
+    "pt-BR": "Processos em segundo plano",
+    "ru": "Фоновые процессы",
+    "tr": "Arka plan işlemleri",
+    "zh-Hans": "后台进程",
+    "zh-Hant": "背景程序"
+  },
   "Background processes stopped: {count}": {
     "de": "Gestoppte Hintergrundprozesse: {count}",
     "es": "Procesos en segundo plano detenidos: {count}",
@@ -4334,6 +4349,21 @@
     "zh-Hans": "每隔…",
     "zh-Hant": "每隔…"
   },
+  "Exited": {
+    "de": "Beendet",
+    "es": "Finalizado",
+    "fr": "Terminé",
+    "id": "Keluar",
+    "it": "Terminato",
+    "ja": "終了済み",
+    "ko": "종료됨",
+    "pl": "Zakończony",
+    "pt-BR": "Encerrado",
+    "ru": "Завершён",
+    "tr": "Çıktı",
+    "zh-Hans": "已退出",
+    "zh-Hant": "已結束"
+  },
   "Extra High": {
     "de": "Sehr hoch",
     "es": "Muy alto",
@@ -5218,6 +5248,21 @@
     "tr": "Hermes hangi odayı oluşturduğunu söylemedi.",
     "zh-Hans": "Hermes 没说创建了哪个房间。",
     "zh-Hant": "Hermes 沒說建立了哪個聊天室。"
+  },
+  "Hermes ends it on your host. Anything it was serving or watching stops with it.": {
+    "de": "Hermes beendet ihn auf deinem Host. Was er bereitgestellt oder beobachtet hat, stoppt mit ihm.",
+    "es": "Hermes lo termina en tu host. Lo que estuviera sirviendo o vigilando se detiene con él.",
+    "fr": "Hermes l’arrête sur votre hôte. Tout ce qu’il servait ou surveillait s’arrête avec lui.",
+    "id": "Hermes menghentikannya di host Anda. Apa pun yang dilayani atau dipantaunya ikut berhenti.",
+    "it": "Hermes lo termina sul tuo host. Tutto ciò che serviva o osservava si ferma con lui.",
+    "ja": "Hermesがホスト上で終了します。提供や監視をしていたものも一緒に止まります。",
+    "ko": "Hermes가 호스트에서 종료합니다. 제공하거나 감시하던 것도 함께 멈춥니다.",
+    "pl": "Hermes zakończy go na Twoim hoście. Wszystko, co obsługiwał lub obserwował, zatrzyma się razem z nim.",
+    "pt-BR": "O Hermes o encerra no seu host. Tudo o que ele servia ou observava para junto.",
+    "ru": "Hermes завершит его на вашем хосте. Всё, что он обслуживал или отслеживал, остановится вместе с ним.",
+    "tr": "Hermes onu ana makinenizde sonlandırır. Sunduğu veya izlediği her şey onunla birlikte durur.",
+    "zh-Hans": "Hermes 会在你的主机上结束它。它提供或监视的内容也会一起停止。",
+    "zh-Hant": "Hermes 會在你的主機上結束它。它提供或監看的內容也會一起停止。"
   },
   "Hermes has a question.": {
     "de": "Hermes hat eine Frage.",
@@ -12719,6 +12764,21 @@
     "zh-Hans": "停止智能体",
     "zh-Hant": "停止代理程式"
   },
+  "Stop process": {
+    "de": "Prozess beenden",
+    "es": "Detener proceso",
+    "fr": "Arrêter le processus",
+    "id": "Hentikan proses",
+    "it": "Ferma processo",
+    "ja": "プロセスを停止",
+    "ko": "프로세스 중지",
+    "pl": "Zatrzymaj proces",
+    "pt-BR": "Parar processo",
+    "ru": "Остановить процесс",
+    "tr": "İşlemi durdur",
+    "zh-Hans": "停止进程",
+    "zh-Hant": "停止程序"
+  },
   "Stop reading response": {
     "de": "Vorlesen der Antwort beenden",
     "es": "Detener lectura de la respuesta",
@@ -12763,6 +12823,21 @@
     "tr": "Bu döngü durdurulsun mu?",
     "zh-Hans": "停止此循环？",
     "zh-Hant": "停止此循環？"
+  },
+  "Stop this process?": {
+    "de": "Diesen Prozess beenden?",
+    "es": "¿Detener este proceso?",
+    "fr": "Arrêter ce processus ?",
+    "id": "Hentikan proses ini?",
+    "it": "Fermare questo processo?",
+    "ja": "このプロセスを停止しますか？",
+    "ko": "이 프로세스를 중지할까요?",
+    "pl": "Zatrzymać ten proces?",
+    "pt-BR": "Parar este processo?",
+    "ru": "Остановить этот процесс?",
+    "tr": "Bu işlem durdurulsun mu?",
+    "zh-Hans": "停止此进程？",
+    "zh-Hant": "停止此程序？"
   },
   "Stopped": {
     "de": "Gestoppt",
