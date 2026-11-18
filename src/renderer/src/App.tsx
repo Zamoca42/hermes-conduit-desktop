@@ -34,6 +34,7 @@ import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
+import { HostActions } from './components/HostActions'
 import { BotEditor } from './components/BotEditor'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
@@ -838,6 +839,7 @@ function Settings({
           {status.method ? methods[status.method] : '—'}
           {status.username ? ` (${status.username})` : ''}
         </dd>
+        {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
         <dt>{t('Models')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
