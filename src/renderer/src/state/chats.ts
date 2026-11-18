@@ -3,6 +3,7 @@
  * profile, newest activity first), with the gateway's `session.list` as the
  * fallback an older dashboard needs, grouped the way the phone groups them.
  */
+import { locale, t } from '../../../shared/i18n'
 import { cleanTitle, previewText } from './text'
 
 export interface ChatRow {
@@ -97,7 +98,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
     }
     rows.push({
       id,
-      title: title || preview || 'Untitled chat',
+      title: title || preview || t('Untitled chat'),
       preview: title && preview && preview !== title ? preview : undefined,
       activeAt,
       profile: typeof obj.profile === 'string' ? obj.profile : undefined,
@@ -134,9 +135,16 @@ export function sectionRows(rows: ChatRow[], now = Date.now()): ChatSection[] {
             : 'Older'
     buckets[bucket]!.push(row)
   }
+  const titles: Record<string, string> = {
+    Pinned: t('Pinned'),
+    Today: t('Today'),
+    Yesterday: t('Yesterday'),
+    'Previous 7 days': t('Previous 7 days'),
+    Older: t('Older')
+  }
   return Object.entries(buckets)
     .filter(([, list]) => list.length > 0)
-    .map(([title, list]) => ({ title, rows: list }))
+    .map(([bucket, list]) => ({ title: titles[bucket]!, rows: list }))
 }
 
 /** 8:07 AM today, a weekday this week, else a short date. */
@@ -144,7 +152,7 @@ export function timeLabel(ms: number | undefined, now = Date.now()): string {
   if (!ms) return ''
   const today = startOfDay(now)
   const date = new Date(ms)
-  if (ms >= today) return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
-  if (ms >= today - 6 * 86_400_000) return date.toLocaleDateString(undefined, { weekday: 'short' })
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  if (ms >= today) return date.toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' })
+  if (ms >= today - 6 * 86_400_000) return date.toLocaleDateString(locale(), { weekday: 'short' })
+  return date.toLocaleDateString(locale(), { month: 'short', day: 'numeric' })
 }

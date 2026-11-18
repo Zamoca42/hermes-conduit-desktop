@@ -6,6 +6,7 @@ import { useRoom } from "../state/useGroups";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { Reply, clock } from "./Transcript";
+import { t } from "@shared/i18n";
 
 interface Props {
   room: Room;
@@ -60,17 +61,16 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
         }}
       >
         <div className="transcript-inner">
-          {loading ? <div className="notice">Loading…</div> : null}
+          {loading ? <div className="notice">{t('Loading…')}</div> : null}
           {error ? <div className="notice error">{error}</div> : null}
           {status.disbanded ? (
-            <div className="notice">This group chat was disbanded.</div>
+            <div className="notice">{t('This group chat was disbanded.')}</div>
           ) : null}
           {!loading && !error && items.length === 0 && pending.length === 0 ? (
             <div className="welcome">
               <h2>{room.name}</h2>
               <span>
-                Everyone here reads what you send. Mention a bot with @ to ask
-                just them.
+                {t('Everyone here reads what you send. Mention a bot with @ to ask just them.')}
               </span>
             </div>
           ) : null}
@@ -134,16 +134,16 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
               <div className="bubble">{p.text}</div>
               {p.failed ? (
                 <span className="time">
-                  Not sent: {p.failed}{" "}
+                  {t('Not sent: {reason}', { reason: p.failed })}{" "}
                   <button
                     className="link"
                     onClick={() => void send(p.text, p.eventId)}
                   >
-                    Try again
+                    {t('Try again')}
                   </button>
                 </span>
               ) : (
-                <span className="time">Sending…</span>
+                <span className="time">{t('Sending…')}</span>
               )}
             </div>
           ))}
@@ -151,14 +151,16 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
             <div className="status-line">
               <span className="running" />
               {busyNames.length
-                ? `${busyNames.join(", ")} ${busyNames.length === 1 ? "is" : "are"} answering…`
-                : "Working…"}
+                ? busyNames.length === 1
+                  ? t('{name} is answering…', { name: busyNames[0]! })
+                  : t('{names} are answering…', { names: busyNames.join(', ') })
+                : t('Working…')}
             </div>
           ) : null}
         </div>
       </div>
       <Composer
-        placeholder={`Message ${room.name}…`}
+        placeholder={t('Message {name}…', { name: room.name })}
         running={canStop && status.working}
         disabled={!connected || status.disbanded}
         onSend={(text) => void send(text)}

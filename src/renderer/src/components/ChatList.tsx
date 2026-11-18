@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { sectionRows, timeLabel, type ChatRow } from '../state/chats'
 import type { Bot } from '../state/bots'
 import { BotAvatar } from './BotsHome'
+import { t } from '@shared/i18n'
 import { Icon } from './icons'
 
 interface Props {
@@ -47,30 +48,30 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
   }, [present, selectedId])
 
   return (
-    <section className="chatlist" aria-label="Chats">
+    <section className="chatlist" aria-label={t('Chats')}>
       <div className="chatlist-head">
-        <h1>Chats</h1>
-        <button className="round" aria-label="New chat" title={window.conduit.platform === 'darwin' ? 'New chat (⌘N)' : 'New chat (Ctrl+N)'} onClick={onNewChat}>
+        <h1>{t('Chats')}</h1>
+        <button className="round" aria-label={t('New chat')} title={window.conduit.platform === 'darwin' ? t('New chat (⌘N)') : t('New chat (Ctrl+N)')} onClick={onNewChat}>
           <Icon name="plus" />
         </button>
       </div>
       <label className="chatlist-search">
         <Icon name="search" />
-        <span className="sr-only">Search chats</span>
-        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search chats" />
+        <span className="sr-only">{t('Search chats')}</span>
+        <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t('Search chats')} />
       </label>
       {showStrip ? (
         <div
           className="profile-strip"
           role="tablist"
-          aria-label="Bots"
+          aria-label={t('Bots')}
           // A mouse wheel scrolls the strip sideways.
           onWheel={e => {
             if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY
           }}
         >
           <button role="tab" className="profile-chip all" aria-selected={profile === null} onClick={() => onProfile!(null)}>
-            All
+            {t('All')}
           </button>
           {bots!.map(bot => (
             // Only the chosen bot shows its name, so the strip fits the list's width; the rest are faces.
@@ -90,9 +91,9 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
         </div>
       ) : null}
       <div className="chatlist-scroll" ref={scroller}>
-        {rows === null && !error ? <div className="empty">Loading chats…</div> : null}
-        {error ? <div className="empty">Couldn’t load your chats: {error}</div> : null}
-        {rows && sections.length === 0 && !query.trim() ? <div className="empty">No chats yet. Start one with the + button.</div> : null}
+        {rows === null && !error ? <div className="empty">{t('Loading chats…')}</div> : null}
+        {error ? <div className="empty">{t('Couldn’t load your chats: {error}', { error })}</div> : null}
+        {rows && sections.length === 0 && !query.trim() ? <div className="empty">{t('No chats yet. Start one with the + button.')}</div> : null}
         {sections.map(section => (
           <div key={section.title} role="group" aria-label={section.title}>
             <div className="sect">{section.title}</div>
@@ -110,7 +111,7 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
                     <span className="meta row-time">{timeLabel(row.activeAt)}</span>
                   </span>
                   {running ? (
-                    <span className="running">Running{runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}</span>
+                    <span className="running">{t('Running')}{runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}</span>
                   ) : row.preview || botName(row) ? (
                     <span className="meta">
                       {botName(row) ? `${botName(row)} · ` : ''}

@@ -14,6 +14,7 @@ import {
   type RoomEvent
 } from './groups'
 import type { Bot } from './bots'
+import { t } from '../../../shared/i18n'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const uuid = () => crypto.randomUUID()
@@ -55,10 +56,10 @@ export function useRooms(connected: boolean) {
   const create = useCallback(
     async (roomId: string, name: string, bots: Bot[]): Promise<Room> => {
       const members = roomMembers(bots)
-      if (!members) throw new Error('Two of these bots would have the same @handle. Rename one, then try again.')
+      if (!members) throw new Error(t('Two of these bots would have the same @handle. Rename one, then try again.'))
       const result = await window.conduit.rpc<{ room?: unknown }>('groups.create', { room_id: roomId, name, members })
       const room = roomFromWire(result?.room)
-      if (!room) throw new Error('Hermes didn’t say what room it made.')
+      if (!room) throw new Error(t('Hermes didn’t say what room it made.'))
       setRooms(current => [room, ...(current ?? []).filter(r => r.roomId !== room.roomId)])
       void load()
       return room

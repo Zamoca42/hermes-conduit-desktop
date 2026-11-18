@@ -3,6 +3,7 @@
  * holds a password, cookie or token: it asks the main process, which owns the
  * connection to Hermes, to sign in and to make gateway calls for it.
  */
+import type { Language } from './i18n'
 
 /** How a dashboard lets us in, from its public `/api/status`. */
 export type SignInMethod = 'password' | 'token' | 'open'
@@ -100,8 +101,15 @@ export type RpcOutcome<T = unknown> = { ok: true; result: T } | { ok: false; err
 
 export type Platform = 'win32' | 'darwin' | 'linux'
 
+/** "system" follows the computer's language. */
+export type LanguageChoice = 'system' | Language
+
 export interface ConduitApi {
   platform: Platform
+  /** What the user picked in Settings, and the language that gives. */
+  language: { choice: LanguageChoice; resolved: Language }
+  /** Saves a new choice; every window reloads in it. */
+  setLanguage(choice: LanguageChoice): void
   probe(url: string): Promise<HostProbe>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
   signOut(): Promise<void>
@@ -192,5 +200,7 @@ export const IPC = {
   event: 'conduit:event',
   windowMinimize: 'conduit:window-minimize',
   windowToggleMaximize: 'conduit:window-toggle-maximize',
-  windowClose: 'conduit:window-close'
+  windowClose: 'conduit:window-close',
+  language: 'conduit:language',
+  setLanguage: 'conduit:set-language'
 } as const

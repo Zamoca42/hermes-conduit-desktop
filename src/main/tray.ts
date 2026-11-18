@@ -6,6 +6,7 @@
 import { Menu, Tray, app, nativeImage, type BrowserWindow } from 'electron'
 import { join } from 'node:path'
 import type { MenuAction } from '../shared/ipc'
+import { t } from '../shared/i18n'
 
 export interface TrayDeps {
   window: () => BrowserWindow | null
@@ -23,7 +24,7 @@ export function trayIconPath(file: string): string {
 /** The tooltip, and the menu's first line: how many things wait on the user. */
 export function trayLabel(waiting: number): string {
   if (waiting <= 0) return 'Conduit'
-  return `Conduit · ${waiting} ${waiting === 1 ? 'thing needs' : 'things need'} you`
+  return waiting === 1 ? t('Conduit · 1 thing needs you') : t('Conduit · {count} things need you', { count: waiting })
 }
 
 export class ConduitTray {
@@ -52,6 +53,11 @@ export class ConduitTray {
     app.setBadgeCount(count)
   }
 
+  /** Builds the menu again, in a new language. */
+  refresh(): void {
+    this.render()
+  }
+
   destroy(): void {
     this.tray?.destroy()
     this.tray = null
@@ -65,17 +71,17 @@ export class ConduitTray {
       Menu.buildFromTemplate([
         { label, enabled: false },
         { type: 'separator' },
-        { label: 'Open Conduit', click: () => this.deps.showWindow() },
+        { label: t('Open Conduit'), click: () => this.deps.showWindow() },
         {
-          label: 'New Chat',
+          label: t('New Chat'),
           click: () => {
             this.deps.showWindow()
             this.deps.command('new-chat')
           }
         },
-        { label: 'Quick Ask', accelerator: 'Alt+Space', click: () => this.deps.quickAsk() },
+        { label: t('Quick Ask'), accelerator: 'Alt+Space', click: () => this.deps.quickAsk() },
         {
-          label: 'Needs You',
+          label: t('Needs You'),
           enabled: this.waiting > 0,
           click: () => {
             this.deps.showWindow()
@@ -83,7 +89,7 @@ export class ConduitTray {
           }
         },
         { type: 'separator' },
-        { label: 'Quit Conduit', click: () => this.deps.quit() }
+        { label: t('Quit Conduit'), click: () => this.deps.quit() }
       ])
     )
   }

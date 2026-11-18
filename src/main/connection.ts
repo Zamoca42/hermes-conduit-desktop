@@ -30,6 +30,7 @@ import {
   readOpenSessionToken,
   webSocketUrl
 } from './auth'
+import { t } from '../shared/i18n'
 
 /** What we keep between launches. Secrets are encrypted by the store. */
 export interface SavedConnection {
@@ -148,19 +149,19 @@ export class Connection {
     try {
       if (request.method === 'password') {
         const username = request.username?.trim() ?? ''
-        if (!username || !request.password) return { ok: false, error: 'Enter your user name and password.' }
+        if (!username || !request.password) return { ok: false, error: t('Enter your user name and password.') }
         saved.username = username
         saved.password = request.password
         saved.cookies = await passwordLogin(url, username, request.password, this.deps.fetch)
       } else if (request.method === 'token') {
         const token = request.token?.trim() ?? ''
-        if (!token) return { ok: false, error: 'Paste the dashboard’s session token.' }
+        if (!token) return { ok: false, error: t('Paste the dashboard’s session token.') }
         saved.token = token
       }
     } catch (error) {
       return { ok: false, error: (error as Error).message }
     }
-    if (generation !== this.generation) return { ok: false, error: 'Cancelled.' }
+    if (generation !== this.generation) return { ok: false, error: t('Cancelled.') }
     this.saved = saved
     this.setStatus({ ...this.identity(), phase: 'connecting' })
     const error = await this.dial(generation)
@@ -231,7 +232,7 @@ export class Connection {
   }
 
   async rpc<T>(method: string, params: Record<string, unknown> = {}): Promise<T> {
-    if (!this.client || this.status.phase !== 'open') throw new Error('Not connected to Hermes.')
+    if (!this.client || this.status.phase !== 'open') throw new Error(t('Not connected to Hermes.'))
     return this.client.request<T>(method, params)
   }
 
@@ -241,7 +242,7 @@ export class Connection {
    */
   async http<T>(method: string, path: string, body?: unknown): Promise<T> {
     const saved = this.saved
-    if (!saved) throw new Error('Not signed in.')
+    if (!saved) throw new Error(t('Not signed in.'))
     if (!path.startsWith('/api/')) throw new Error('Only dashboard API paths can be called.')
     const send = async (): Promise<Response> => {
       const headers: Record<string, string> = { Accept: 'application/json', [CONDUIT_CLIENT_HEADER]: 'conduit' }
@@ -298,7 +299,7 @@ export class Connection {
   /** Opens one socket. Returns an error message when it couldn't, after scheduling a retry. */
   private async dial(generation: number): Promise<string | null> {
     const saved = this.saved
-    if (!saved) return 'Not signed in.'
+    if (!saved) return t('Not signed in.')
     let wsUrl: string
     try {
       wsUrl = await this.socketUrl(saved)
@@ -365,7 +366,7 @@ export class Connection {
       } else if ((state === 'closed' || state === 'error') && this.status.phase === 'open') {
         if (isStableOpen(this.openedAt)) this.attempt = 0
         this.openedAt = null
-        this.scheduleRetry(generation, 'The connection to Hermes dropped.')
+        this.scheduleRetry(generation, t('The connection to Hermes dropped.'))
       }
     })
     try {
@@ -383,7 +384,7 @@ export class Connection {
     if (error instanceof AuthError && error.signedOut && this.saved?.method !== 'password') {
       // A token that stopped working won't start again: ask to sign in.
       this.teardown()
-      this.setStatus({ ...this.identity(), phase: 'failed', error: 'Hermes signed this computer out. Sign in again.' })
+      this.setStatus({ ...this.identity(), phase: 'failed', error: t('Hermes signed this computer out. Sign in again.') })
       return message
     }
     this.scheduleRetry(generation, message)

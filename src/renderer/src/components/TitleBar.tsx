@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { HostSummary } from '@shared/ipc'
 import { Icon } from './icons'
+import { t } from '@shared/i18n'
 
 export function hostName(url: string): string {
   try {
@@ -48,7 +49,7 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
               className="brand-sub host-button"
               aria-haspopup="menu"
               aria-expanded={open}
-              title="Switch Hermes"
+              title={t('Switch Hermes')}
               onClick={e => {
                 e.stopPropagation()
                 setOpen(o => !o)
@@ -82,13 +83,13 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
       </div>
       {platform !== 'darwin' ? (
         <div className="caption-buttons">
-          <button className="cap" aria-label="Minimize" onClick={() => win.minimize()}>
+          <button className="cap" aria-label={t('Minimize')} onClick={() => win.minimize()}>
             <Icon name="minimize" />
           </button>
-          <button className="cap" aria-label="Maximize" onClick={() => win.toggleMaximize()}>
+          <button className="cap" aria-label={t('Maximize')} onClick={() => win.toggleMaximize()}>
             <Icon name="maximize" />
           </button>
-          <button className="cap close" aria-label="Close" onClick={() => win.close()}>
+          <button className="cap close" aria-label={t('Close')} onClick={() => win.close()}>
             <Icon name="close" />
           </button>
         </div>

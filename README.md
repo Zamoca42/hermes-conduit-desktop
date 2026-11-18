@@ -7,10 +7,11 @@ talks to the same Hermes dashboard and the same
 [Conduit plugin](https://github.com/kaishi00/hermes-conduit-notifier) the
 phone does.
 
-**Status: early prototype.** Sign in, the chat list, a live transcript and
-the composer work. Next: Needs you (approvals and questions), Bots home and
-group chats, the tray and quick ask, notifications, and pairing with the
-phone by QR code.
+**Status: early prototype.** Sign in (or pair with the phone by QR code),
+chats, Needs you (approvals and questions), Bots home and group chats,
+several Hermes hosts, the tray and quick ask, and notifications work. It
+speaks the iPhone app's thirteen languages, following the computer's or the
+one picked in Settings.
 
 ## Run it
 
@@ -54,6 +55,10 @@ Windows will be signed by the Microsoft Store, the Mac notarized).
 - `src/preload`: the small API the window gets (`window.conduit`).
 - `src/renderer`: the window, in React. `state/` turns Hermes' events into
   the transcript and the chat list; `components/` draws them.
+- `src/shared/i18n.ts` and `strings.json`: every word on screen, in each
+  language. The English text is the key. `scripts/import-ios-strings.mjs`
+  copies the iPhone app's translations in wherever both apps say the same
+  thing, and `test/strings.test.ts` fails on a key missing a language.
 - `src/vendor/hermes-shared`: Hermes' own gateway client and wire types,
   copied unchanged under its MIT license (see `UPSTREAM.md` there).
 

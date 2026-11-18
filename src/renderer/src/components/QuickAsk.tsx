@@ -4,6 +4,7 @@ import { useChat } from '../state/useChat'
 import { useRequests } from '../state/useNeedsYou'
 import { Composer } from './Composer'
 import { Transcript } from './Transcript'
+import { t } from '@shared/i18n'
 
 /**
  * The quick ask window: one field to ask Hermes something from anywhere,
@@ -24,7 +25,7 @@ export function QuickAsk() {
   if (status.phase === 'signed-out' || !status.url) {
     return (
       <div className="quick">
-        <div className="quick-empty">Sign in to Hermes in the Conduit window first.</div>
+        <div className="quick-empty">{t('Sign in to Hermes in the Conduit window first.')}</div>
       </div>
     )
   }
@@ -61,18 +62,18 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
   return (
     <div className={`quick${started ? ' started' : ''}`}>
       <div className="quick-head">
-        <span className="quick-title">{chat.title || 'Ask Hermes'}</span>
+        <span className="quick-title">{chat.title || t('Ask Hermes')}</span>
         {started ? (
           <>
-            <button className="link" onClick={onNew} title="New question (Ctrl+N)">
-              New
+            <button className="link" onClick={onNew} title={t('New question (Ctrl+N)')}>
+              {t('New')}
             </button>
             {chat.storedId ? (
               <button
                 className="link"
                 onClick={() => window.conduit.openChat({ storedId: chat.storedId!, title: chat.title })}
               >
-                Open in Conduit
+                {t('Open in Conduit')}
               </button>
             ) : null}
           </>
@@ -80,7 +81,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
       </div>
       {started ? <Transcript state={transcript} loading={loading} error={error} requests={openRequests} /> : null}
       <Composer
-        placeholder="Ask Hermes anything…"
+        placeholder={t('Ask Hermes anything…')}
         running={transcript.running}
         disabled={!connected}
         model={chat.model}

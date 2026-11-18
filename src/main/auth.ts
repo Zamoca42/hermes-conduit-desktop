@@ -13,6 +13,7 @@
  * for a dashboard.
  */
 import type { HostProbe, SignInMethod } from '../shared/ipc'
+import { t } from '../shared/i18n'
 
 export type Fetch = typeof fetch
 
@@ -49,7 +50,7 @@ export class AuthError extends Error {
  */
 export function normalizeBaseUrl(input: string): string {
   let text = input.trim()
-  if (!text) throw new AuthError('Enter your dashboard address.')
+  if (!text) throw new AuthError(t('Enter your dashboard address.'))
   if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(text)) {
     const host = text.split(/[/:]/)[0]?.toLowerCase() ?? ''
     text = `${isLocalHost(host) ? 'http' : 'https'}://${text}`
@@ -58,10 +59,10 @@ export function normalizeBaseUrl(input: string): string {
   try {
     url = new URL(text)
   } catch {
-    throw new AuthError('That doesn’t look like a web address.')
+    throw new AuthError(t('That doesn’t look like a web address.'))
   }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-    throw new AuthError('Use an http or https address.')
+    throw new AuthError(t('Use an http or https address.'))
   }
   url.hash = ''
   url.search = ''
@@ -98,7 +99,7 @@ async function timedFetch(fetchImpl: Fetch, url: string, init: RequestInit = {})
     return await fetchImpl(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
   } catch (error) {
     const reason = error instanceof Error ? (error.cause instanceof Error ? error.cause.message : error.message) : ''
-    throw new AuthError(`Couldn’t reach ${new URL(url).host}${reason ? ` (${reason})` : ''}.`)
+    throw new AuthError(reason ? t('Couldn’t reach {host} ({reason}).', { host: new URL(url).host, reason }) : t('Couldn’t reach {host}.', { host: new URL(url).host }))
   }
 }
 
@@ -126,11 +127,11 @@ export async function probeHost(input: string, fetchImpl: Fetch): Promise<HostPr
       headers: { Accept: 'application/json' }
     })
     if (!response.ok) {
-      return { ok: false, error: `This isn’t answering like a Hermes dashboard (${await errorDetail(response)}).` }
+      return { ok: false, error: t('This isn’t answering like a Hermes dashboard ({detail}).', { detail: await errorDetail(response) }) }
     }
     const body = (await response.json().catch(() => null)) as Record<string, unknown> | null
     if (!body || typeof body !== 'object') {
-      return { ok: false, error: 'This isn’t answering like a Hermes dashboard.' }
+      return { ok: false, error: t('This isn’t answering like a Hermes dashboard.') }
     }
     return { ok: true, url, methods: signInMethods(body), version: typeof body.version === 'string' ? body.version : undefined }
   } catch (error) {
@@ -154,11 +155,11 @@ export function signInMethods(status: Record<string, unknown>): SignInMethod[] {
 /** The session token an ungated dashboard prints into its page. */
 export async function readOpenSessionToken(baseUrl: string, fetchImpl: Fetch): Promise<string> {
   const response = await timedFetch(fetchImpl, endpoint(baseUrl, '/'), { headers: { Accept: 'text/html' } })
-  if (!response.ok) throw new AuthError(`The dashboard page didn’t load (${await errorDetail(response)}).`, response.status)
+  if (!response.ok) throw new AuthError(t('The dashboard page didn’t load ({detail}).', { detail: await errorDetail(response) }), response.status)
   const html = await response.text()
   const match = /__HERMES_SESSION_TOKEN__\s*=\s*["']([^"']+)["']/.exec(html)
   if (!match?.[1]) {
-    throw new AuthError('This dashboard asks for a sign-in. Try again with your user name and password.')
+    throw new AuthError(t('This dashboard asks for a sign-in. Try again with your user name and password.'))
   }
   return match[1]
 }
@@ -222,7 +223,7 @@ async function fetchKeepingCookies(
       request = { method: 'GET', headers: request.headers }
     }
   }
-  throw new AuthError('The dashboard redirected too many times.')
+  throw new AuthError(t('The dashboard redirected too many times.'))
 }
 
 export async function passwordLogin(
@@ -244,12 +245,12 @@ export async function passwordLogin(
   if (!response.ok) {
     const detail = await errorDetail(response)
     throw new AuthError(
-      response.status === 401 ? 'That user name and password didn’t work.' : `Sign-in failed (${detail}).`,
+      response.status === 401 ? t('That user name and password didn’t work.') : t('Sign-in failed ({detail}).', { detail }),
       response.status
     )
   }
   if (Object.keys(jar).length === 0) {
-    throw new AuthError('Signed in, but the dashboard sent no session cookie. Check its address and any proxy in front of it.')
+    throw new AuthError(t('Signed in, but the dashboard sent no session cookie. Check its address and any proxy in front of it.'))
   }
   return jar
 }
@@ -267,11 +268,11 @@ export async function mintTicket(
     jar
   )
   if (!response.ok) {
-    throw new AuthError(`Couldn’t open a connection (${await errorDetail(response)}).`, response.status)
+    throw new AuthError(t('Couldn’t open a connection ({detail}).', { detail: await errorDetail(response) }), response.status)
   }
   const body = (await response.json().catch(() => null)) as { ticket?: unknown } | null
   if (typeof body?.ticket !== 'string' || !body.ticket.trim()) {
-    throw new AuthError('The dashboard sent no connection ticket.')
+    throw new AuthError(t('The dashboard sent no connection ticket.'))
   }
   return { ticket: body.ticket, jar: next }
 }

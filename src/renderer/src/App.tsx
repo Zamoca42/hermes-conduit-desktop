@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { ConnectionStatus } from '@shared/ipc'
+import type { ConnectionStatus, LanguageChoice } from '@shared/ipc'
 import { BotsHome } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
@@ -20,6 +20,7 @@ import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
 import { useRequests, useWaiting } from './state/useNeedsYou'
 import { isWatching, notificationsEnabled, requestNotification, setNotificationsEnabled, turnNotification, type ChatRef, type NotificationSpec } from './state/notifications'
 import { cleanTitle } from './state/text'
+import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
   const [status, setStatus] = useState<ConnectionStatus | null>(null)
@@ -59,11 +60,24 @@ export function App() {
 
 type Section = 'bots' | 'room' | 'chats' | 'needs' | 'settings'
 
+const REOPEN_SECTION = 'conduit.reopen-section'
+
+/** Settings after a language change reloads the window, else Chats. */
+function reopenedSection(): Section {
+  try {
+    const saved = sessionStorage.getItem(REOPEN_SECTION)
+    sessionStorage.removeItem(REOPEN_SECTION)
+    return saved === 'settings' ? 'settings' : 'chats'
+  } catch {
+    return 'chats'
+  }
+}
+
 function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
   // Before any picture is read for this host.
   useState(forgetAvatars)
   const connected = status.phase === 'open'
-  const [section, setSection] = useState<Section>('chats')
+  const [section, setSection] = useState<Section>(reopenedSection)
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
   const list = useChatList(connected)
   const { transcript, chat, loading, error, send, stop } = useChat(
@@ -130,7 +144,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   )
 
   // A Bot Chat goes by its bot's name: Hermes titles every one "Bot Chat".
-  const title = selected.botChat && selected.title ? selected.title : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : 'New chat')
+  const title = selected.botChat && selected.title ? selected.title : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
   const roster = useBots(connected)
@@ -269,17 +283,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         <div className="banner" role="status">
           <span className="dot warn" />
           {status.phase === 'connecting'
-            ? 'Connecting to Hermes…'
-            : `${status.error ?? 'Not connected.'}${status.retryInSeconds ? ` Trying again in ${status.retryInSeconds}s.` : ''}`}
-          {status.phase === 'reconnecting' ? <button onClick={() => void window.conduit.reconnect()}>Try now</button> : null}
+            ? t('Connecting to Hermes…')
+            : `${status.error ?? t('Not connected.')}${status.retryInSeconds ? ` ${t('Trying again in {seconds}s.', { seconds: status.retryInSeconds })}` : ''}`}
+          {status.phase === 'reconnecting' ? <button onClick={() => void window.conduit.reconnect()}>{t('Try now')}</button> : null}
         </div>
       ) : null}
       <div className="body">
-        <nav className="rail" aria-label="Sections">
+        <nav className="rail" aria-label={t('Sections')}>
           <button
             className="railbtn"
-            aria-label="Bots"
-            title="Bots"
+            aria-label={t('Bots')}
+            title={t('Bots')}
             aria-current={section === 'bots' || section === 'room' ? 'page' : undefined}
             onClick={() => setSection('bots')}
           >
@@ -287,7 +301,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           </button>
           <button
             className="railbtn"
-            aria-label="Chats"
+            aria-label={t('Chats')}
+            title={t('Chats')}
             aria-current={section === 'chats' ? 'page' : undefined}
             onClick={() => setSection('chats')}
           >
@@ -295,8 +310,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           </button>
           <button
             className="railbtn"
-            aria-label={needsCount ? `Needs you, ${needsCount}` : 'Needs you'}
-            title="Needs you"
+            aria-label={needsCount ? t('Needs you, {count}', { count: needsCount }) : t('Needs you')}
+            title={t('Needs you')}
             aria-current={section === 'needs' ? 'page' : undefined}
             onClick={() => setSection('needs')}
           >
@@ -306,7 +321,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <span className="spacer" />
           <button
             className="railbtn"
-            aria-label="Settings"
+            aria-label={t('Settings')}
+            title={t('Settings')}
             aria-current={section === 'settings' ? 'page' : undefined}
             onClick={() => setSection('settings')}
           >
@@ -315,8 +331,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <span
             className={`dot${connected ? '' : ' warn'}`}
             role="img"
-            aria-label={connected ? 'Connected' : 'Not connected'}
-            title={connected ? `Connected to ${status.hostLabel}` : 'Not connected'}
+            aria-label={connected ? t('Connected') : t('Not connected')}
+            title={connected ? t('Connected to {host}', { host: status.hostLabel ?? '' }) : t('Not connected')}
           />
         </nav>
         {section === 'chats' ? (
@@ -337,7 +353,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
               <Transcript state={transcript} loading={loading} error={error} requests={openRequests} />
               <Composer
-                placeholder={`Message ${roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'}…`}
+                placeholder={t('Message {name}…', { name: roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes' })}
                 running={transcript.running}
                 disabled={!connected}
                 model={chat.model}
@@ -384,10 +400,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
 
 function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
-  const methods = { password: 'User name and password', token: 'Session token', open: 'No sign-in' }
+  const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
   return (
     <main className="settings">
-      <h1>Settings</h1>
+      <h1>{t('Settings')}</h1>
       <dl>
         <dt>Hermes</dt>
         <dd>
@@ -398,37 +414,37 @@ function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: 
                 {host.username ? <span className="meta">{host.username}</span> : null}
                 <span className="spacer" />
                 {host.url === status.url ? (
-                  <span className="meta">Open</span>
+                  <span className="meta">{t('In use')}</span>
                 ) : (
                   <button className="link" onClick={() => void window.conduit.switchHost(host.url)}>
-                    Switch
+                    {t('Switch')}
                   </button>
                 )}
                 {host.url !== status.url ? (
                   <button
                     className="link danger"
                     onClick={() => {
-                      if (window.confirm(`Sign out of ${hostName(host.url)} on this computer?`)) void window.conduit.removeHost(host.url)
+                      if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) void window.conduit.removeHost(host.url)
                     }}
                   >
-                    Sign out
+                    {t('Sign out')}
                   </button>
                 ) : null}
               </li>
             ))}
           </ul>
           <button className="link add-host" onClick={onAddHost}>
-            Add another Hermes…
+            {t('Add another Hermes…')}
           </button>
         </dd>
-        <dt>Dashboard</dt>
+        <dt>{t('Dashboard')}</dt>
         <dd>{status.url}</dd>
-        <dt>Signed in with</dt>
+        <dt>{t('Signed in with')}</dt>
         <dd>
           {status.method ? methods[status.method] : '—'}
           {status.username ? ` (${status.username})` : ''}
         </dd>
-        <dt>Notifications</dt>
+        <dt>{t('Notifications')}</dt>
         <dd>
           <label className="toggle">
             <input
@@ -439,17 +455,41 @@ function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: 
                 setNotifications(e.target.checked)
               }}
             />
-            When a reply finishes or something needs you in a chat you’re not looking at
+            {t('When a reply finishes or something needs you in a chat you’re not looking at')}
           </label>
         </dd>
-        <dt>Connection</dt>
+        <dt>{t('Language')}</dt>
         <dd>
-          {status.phase === 'open' ? 'Connected' : status.phase}
-          {status.phase === 'open' && status.sessionAuthority ? ' · session authority' : ''}
+          <select
+            className="language-select"
+            value={window.conduit.language.choice}
+            onChange={e => {
+              // The window reloads in the new language; come back to Settings.
+              try {
+                sessionStorage.setItem(REOPEN_SECTION, 'settings')
+              } catch {
+                // Opens on Chats instead.
+              }
+              window.conduit.setLanguage(e.target.value as LanguageChoice)
+            }}
+            aria-label={t('Language')}
+          >
+            <option value="system">{t('Same as this computer')}</option>
+            {LANGUAGES.map(language => (
+              <option key={language} value={language} lang={language}>
+                {LANGUAGE_NAMES[language]}
+              </option>
+            ))}
+          </select>
+        </dd>
+        <dt>{t('Connection')}</dt>
+        <dd>
+          {status.phase === 'open' ? t('Connected') : status.phase === 'connecting' ? t('Connecting…') : t('Not connected')}
+          {status.phase === 'open' && status.sessionAuthority ? ` · ${t('session authority')}` : ''}
         </dd>
       </dl>
       <button className="secondary" onClick={() => void window.conduit.signOut()}>
-        {(status.hosts?.length ?? 0) > 1 ? `Sign out of ${status.hostLabel}` : 'Sign out'}
+        {(status.hosts?.length ?? 0) > 1 ? t('Sign out of {host}', { host: status.hostLabel ?? '' }) : t('Sign out')}
       </button>
     </main>
   )

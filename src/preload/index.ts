@@ -16,6 +16,8 @@ class RpcError extends Error {
 
 const api: ConduitApi = {
   platform: process.platform as Platform,
+  language: ipcRenderer.sendSync(IPC.language) as ConduitApi['language'],
+  setLanguage: choice => ipcRenderer.send(IPC.setLanguage, choice),
   probe: url => ipcRenderer.invoke(IPC.probe, url),
   signIn: request => ipcRenderer.invoke(IPC.signIn, request),
   signOut: () => ipcRenderer.invoke(IPC.signOut),

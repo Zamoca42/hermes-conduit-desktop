@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { Icon } from './icons'
+import { t } from '@shared/i18n'
 
 /** The last folder of a path, the way the phone's chip shows it. */
 function folderName(path: string): string {
@@ -55,7 +56,7 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
     <div className="composer-wrap">
       <div className="composer">
         <label className="sr-only" htmlFor="composer-input">
-          Message
+          {t('Message')}
         </label>
         <textarea
           id="composer-input"
@@ -67,19 +68,19 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
           onKeyDown={onKeyDown}
         />
         <div className="composer-row">
-          {model ? <span className="chip" title="Model">{model}</span> : null}
+          {model ? <span className="chip" title={t('Model')}>{model}</span> : null}
           {cwd ? (
-            <span className="chip" title={`Working folder: ${cwd}`}>
+            <span className="chip" title={t('Working folder: {folder}', { folder: cwd })}>
               {folderName(cwd)}
             </span>
           ) : null}
-          <span className="hint">{running ? 'Esc stops' : 'Enter sends · Shift Enter new line'}</span>
+          <span className="hint">{running ? t('Esc stops') : t('Enter sends · Shift Enter new line')}</span>
           {running && !canSend ? (
-            <button className="send stop" aria-label="Stop" title="Stop (Esc)" onClick={onStop}>
+            <button className="send stop" aria-label={t('Stop')} title={t('Stop (Esc)')} onClick={onStop}>
               <Icon name="stop" />
             </button>
           ) : (
-            <button className="send" aria-label="Send" disabled={!canSend} onClick={send}>
+            <button className="send" aria-label={t('Send')} disabled={!canSend} onClick={send}>
               <Icon name="send" style={{ strokeWidth: 2.2 }} />
             </button>
           )}

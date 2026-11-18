@@ -4,6 +4,7 @@
  * Pure functions, so the tests can play a turn's events through them.
  */
 import { cleanUserText, type Attachment } from './text'
+import { t } from '../../../shared/i18n'
 
 export interface UserItem {
   kind: 'user'
@@ -241,10 +242,10 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
       items = items.map(item => (item.kind === 'tool' && item.status === 'running' ? { ...item, status: 'done' as const } : item))
       const status = str(payload.status)
       if (status === 'error') {
-        const error = str(payload.error) ?? str(payload.failure_reason) ?? 'The turn failed.'
+        const error = str(payload.error) ?? str(payload.failure_reason) ?? t('The turn failed.')
         items = [...items, { kind: 'notice', key: nextKey('n'), text: error, tone: 'error' }]
       } else if (status === 'interrupted') {
-        items = [...items, { kind: 'notice', key: nextKey('n'), text: 'Stopped', tone: 'info' }]
+        items = [...items, { kind: 'notice', key: nextKey('n'), text: t('Stopped'), tone: 'info' }]
       }
       return { items, running: false, status: undefined }
     }

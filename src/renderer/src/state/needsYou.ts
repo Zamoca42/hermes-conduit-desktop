@@ -10,6 +10,7 @@
  */
 import type { PendingRequest } from '../../../shared/ipc'
 import { cleanTitle } from './text'
+import { t } from '../../../shared/i18n'
 
 export const WAITING_PATH = '/api/plugins/conduit_push/waiting'
 
@@ -63,19 +64,19 @@ export interface ApprovalChoice {
   tone: 'primary' | 'plain' | 'danger'
 }
 
-const CHOICE_LABELS: Record<string, [string, ApprovalChoice['tone']]> = {
-  once: ['Allow once', 'primary'],
-  session: ['Allow for this chat', 'plain'],
-  always: ['Always allow', 'plain'],
-  deny: ['Deny', 'danger']
-}
+const CHOICE_LABELS = (): Record<string, [string, ApprovalChoice['tone']]> => ({
+  once: [t('Allow once'), 'primary'],
+  session: [t('Allow for this chat'), 'plain'],
+  always: [t('Always allow'), 'plain'],
+  deny: [t('Deny'), 'danger']
+})
 
 /** The buttons an approval offers, in the order Hermes lists them. */
 export function approvalChoices(params: Record<string, unknown>): ApprovalChoice[] {
   const listed = Array.isArray(params.choices) ? params.choices.filter((c): c is string => typeof c === 'string') : []
   const choices = listed.length ? listed : ['once', 'deny']
   return choices.map(choice => {
-    const known = CHOICE_LABELS[choice]
+    const known = CHOICE_LABELS()[choice]
     return { choice, label: known?.[0] ?? choice.charAt(0).toUpperCase() + choice.slice(1), tone: known?.[1] ?? 'plain' }
   })
 }
@@ -87,7 +88,7 @@ export interface ApprovalView {
 }
 
 export function approvalView(params: Record<string, unknown>): ApprovalView {
-  const description = typeof params.description === 'string' && params.description.trim() ? params.description.trim() : 'Hermes wants to run a command.'
+  const description = typeof params.description === 'string' && params.description.trim() ? params.description.trim() : t('Hermes wants to run a command.')
   const command = typeof params.command === 'string' && params.command.trim() ? params.command : undefined
   return { description, command, choices: approvalChoices(params) }
 }
@@ -132,8 +133,8 @@ export function lockedAnswers(params: Record<string, unknown>): Record<string, s
 export function requestSummary(request: PendingRequest): string {
   if (request.method === 'approval') return approvalView(request.params).description
   const questions = clarifyQuestions(request.params)
-  const first = questions[0]?.question ?? 'Hermes has a question.'
-  return questions.length > 1 ? `${first} (+${questions.length - 1} more)` : first
+  const first = questions[0]?.question ?? t('Hermes has a question.')
+  return questions.length > 1 ? t('{question} (+{count} more)', { question: first, count: questions.length - 1 }) : first
 }
 
 /** The waiting rows no live request already shows, so a wait is listed once. */

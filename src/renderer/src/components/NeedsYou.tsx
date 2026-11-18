@@ -3,6 +3,7 @@ import { timeLabel } from '../state/chats'
 import type { WaitingRow } from '../state/needsYou'
 import { Icon } from './icons'
 import { RequestCard } from './RequestCard'
+import { t } from '@shared/i18n'
 
 interface Props {
   /** Requests this window holds: answered right here. */
@@ -21,15 +22,15 @@ export function NeedsYou({ requests, waiting, listAvailable, titleFor, onOpen, o
   return (
     <main className="needs">
       <div className="needs-inner">
-        <h1>Needs you</h1>
-        <p className="needs-sub">Approvals and questions Hermes is waiting on, in every chat.</p>
+        <h1>{t('Needs you')}</h1>
+        <p className="needs-sub">{t('Approvals and questions Hermes is waiting on, in every chat.')}</p>
         {empty ? (
           <div className="needs-empty">
             <Icon name="check" />
-            <span>Nothing is waiting on you.</span>
+            <span>{t('Nothing is waiting on you.')}</span>
             {!listAvailable ? (
               <span className="meta">
-                Chats you haven’t opened here show up once the Conduit plugin on your host is up to date.
+                {t('Chats you haven’t opened here show up once the Conduit plugin on your host is up to date.')}
               </span>
             ) : null}
           </div>
@@ -39,7 +40,7 @@ export function NeedsYou({ requests, waiting, listAvailable, titleFor, onOpen, o
             <RequestCard request={request} chatTitle={titleFor(request.sessionId)} />
             {request.sessionId === openLiveId ? (
               <button className="link" onClick={() => onOpenLive(request.sessionId)}>
-                Go to the chat
+                {t('Go to the chat')}
               </button>
             ) : null}
           </div>
@@ -55,8 +56,11 @@ export function NeedsYou({ requests, waiting, listAvailable, titleFor, onOpen, o
                 <span className="meta row-time">{timeLabel(row.at)}</span>
               </span>
               <span className="meta">
-                {row.kind === 'approval' ? 'Needs your OK: ' : row.questions > 1 ? `${row.questions} questions: ` : 'Question: '}
-                {row.summary}
+                {row.kind === 'approval'
+                  ? t('Needs your OK: {summary}', { summary: row.summary })
+                  : row.questions > 1
+                    ? t('{count} questions: {summary}', { count: row.questions, summary: row.summary })
+                    : t('Question: {summary}', { summary: row.summary })}
               </span>
             </span>
           </button>
