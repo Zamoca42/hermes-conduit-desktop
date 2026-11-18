@@ -137,7 +137,9 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     async (text: string, attachments: StagedAttachment[] = []): Promise<string | null> => {
       const trimmed = text.trim()
       if (!trimmed && !attachments.length) return null
-      const shown: Attachment[] = attachments.map(a => ({ kind: a.kind === 'image' ? 'image' : 'file', value: a.name }))
+      const shown: Attachment[] = attachments.map(a =>
+        a.kind === 'image' ? { kind: 'image', value: a.name, preview: `data:${a.mime};base64,${a.base64}` } : { kind: 'file', value: a.name }
+      )
       dispatch({ type: 'pending', text: trimmed, attachments: shown })
       let sid = liveId.current
       let held: string[] = []

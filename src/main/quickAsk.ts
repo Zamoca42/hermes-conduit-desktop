@@ -16,9 +16,16 @@ const WIDTH = 680
 const FIELD_HEIGHT = 128
 const HEIGHT = 460
 
+/** The window height for a reply (true), the field (false), or the field and its staged files (px). */
+export function quickAskHeight(expanded: boolean | number): number {
+  if (typeof expanded === 'boolean') return expanded ? HEIGHT : FIELD_HEIGHT
+  if (!Number.isFinite(expanded)) return FIELD_HEIGHT
+  return Math.min(HEIGHT, Math.max(FIELD_HEIGHT, Math.ceil(expanded)))
+}
+
 export class QuickAsk {
   private window: BrowserWindow | null = null
-  private expanded = false
+  private height = FIELD_HEIGHT
   registered = false
 
   register(): void {
@@ -46,12 +53,16 @@ export class QuickAsk {
     window.webContents.send(IPC.quickAskShown)
   }
 
-  setExpanded(expanded: boolean): void {
+  /**
+   * The full height for a reply, the field's alone, or (a number) what the
+   * field needs with its staged files, so no empty space sits above them.
+   */
+  setExpanded(expanded: boolean | number): void {
     const window = this.window
-    if (!window || window.isDestroyed() || expanded === this.expanded) return
-    this.expanded = expanded
+    const height = quickAskHeight(expanded)
+    if (!window || window.isDestroyed() || height === this.height) return
+    this.height = height
     const bounds = window.getBounds()
-    const height = expanded ? HEIGHT : FIELD_HEIGHT
     // Grow upward from where the field sits, so the field doesn't jump.
     window.setBounds({ ...bounds, y: bounds.y + bounds.height - height, height })
   }
@@ -69,7 +80,7 @@ export class QuickAsk {
   private place(window: BrowserWindow): void {
     const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
     const area = display.workArea
-    const height = this.expanded ? HEIGHT : FIELD_HEIGHT
+    const height = this.height
     window.setBounds({
       x: Math.round(area.x + (area.width - WIDTH) / 2),
       y: Math.round(area.y + area.height / 4 + HEIGHT - height),

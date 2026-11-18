@@ -7,6 +7,7 @@ import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { Reply, clock } from "./Transcript";
 import { Icon } from "./icons";
+import { PictureImage, PictureProfile } from "./Picture";
 import { displayName, roomUploadProblem } from "../state/attachments";
 import { keptPictures, readRoomPicture } from "../state/roomPictures";
 import { t } from "@shared/i18n";
@@ -52,7 +53,7 @@ function RoomPicture({ roomId, eventId, file }: { roomId: string; eventId?: stri
       </span>
     );
   }
-  return <img className="room-picture" src={src} alt={file.name} title={file.name} />;
+  return <PictureImage src={src} name={file.name} className="room-picture" />;
 }
 
 /** A room message's files: pictures as themselves, the rest by name. */
@@ -171,7 +172,11 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
                         <span className="time">{clock(item.at)}</span>
                       </div>
                       <div className="assistant">
-                        <Reply text={item.text} />
+                        <PictureProfile.Provider
+                          value={room.members.find((m) => m.memberId === item.memberId)?.profile}
+                        >
+                          <Reply text={item.text} />
+                        </PictureProfile.Provider>
                       </div>
                     </div>
                   </div>

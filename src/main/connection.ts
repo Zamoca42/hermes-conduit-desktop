@@ -284,7 +284,7 @@ export class Connection {
     }
     if (!response.ok) {
       const detail = (parsed as { detail?: unknown } | null)?.detail
-      throw new Error(typeof detail === 'string' ? detail : `HTTP ${response.status}`)
+      throw Object.assign(new Error(typeof detail === 'string' ? detail : `HTTP ${response.status}`), { code: response.status })
     }
     return parsed as T
   }

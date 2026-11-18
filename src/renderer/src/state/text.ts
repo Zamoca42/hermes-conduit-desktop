@@ -23,6 +23,8 @@ const LEADING_REFERENCE = /^@(file|url|folder|image):(?:`([^`\r\n]+)`|"([^"\r\n]
 export interface Attachment {
   kind: 'file' | 'url' | 'folder' | 'image'
   value: string
+  /** A picture's bytes already here, as a data URL (one being sent from this window). */
+  preview?: string
 }
 
 export function removeVoiceJobPrefix(text: string): string {
@@ -68,10 +70,42 @@ export function splitLeadingReferences(text: string): { attachments: Attachment[
   return { attachments, text: lines.slice(index).join('\n').trim() }
 }
 
+/**
+ * Where a message's pictures stand in its stored text: Hermes Desktop's and
+ * Conduit's `@image:` token, the gateway's note for a picture from a chat
+ * platform, and what Hermes saved for one before v0.21 (the phone's
+ * HermesClient.splitUserImageReferences). The last group is the path.
+ */
+const IMAGE_REFERENCES = [
+  /(?<![\w/])@image:(?:`([^`\r\n]+)`|"([^"\r\n]+)"|'([^'\r\n]+)'|(\S+))/g,
+  /\[Image attached at: ([^\n\]]+)\]/g,
+  /\[The user attached an image:\r?\n[\s\S]*?\]\r?\n\[You can examine it with vision_analyze using image_url: ([^\]\r\n]+)\]/g,
+  /\[The user attached an image but analysis failed\.\]\r?\n\[You can examine it with vision_analyze using image_url: ([^\]\r\n]+)\]/g,
+  /\[The user sent an image~ Here's what I can see:\r?\n[\s\S]*?\]\r?\n\[If you need a closer look, use vision_analyze with image_url: (\S+) ~\]/g,
+  /\[The user sent an image but [^[\]]*? with vision_analyze using image_url: ([^\]\r\n]+)\]/g
+]
+
+/** A message's pictures, taken out of its words wherever they stand. */
+export function splitImageReferences(text: string): { images: Attachment[]; text: string } {
+  const images: Attachment[] = []
+  let rest = text
+  for (const pattern of IMAGE_REFERENCES) {
+    rest = rest.replace(pattern, (...match: unknown[]) => {
+      const groups = match.slice(1, -2).filter((g): g is string => typeof g === 'string')
+      const path = groups[groups.length - 1]?.trim()
+      if (path) images.push({ kind: 'image', value: path })
+      return ''
+    })
+  }
+  if (!images.length) return { images, text }
+  return { images, text: rest.replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim() }
+}
+
 /** A person's message as the transcript shows it: their words, with its attachments apart. */
 export function cleanUserText(raw: string): { text: string; attachments: Attachment[] } {
   const { attachments, text } = stripStored(raw)
-  return { text: plainReferences(text).trim(), attachments }
+  const pictures = splitImageReferences(text)
+  return { text: plainReferences(pictures.text).trim(), attachments: [...attachments, ...pictures.images] }
 }
 
 /** What Hermes stored around the words, taken off; references inside the words are left as written. */
@@ -93,8 +127,9 @@ const FOLDED_REFERENCE = /^@(file|url|folder|image):(?:`([^`\r\n]*)(?:`|$)|"([^"
 /** One line for the chat list: the words, else the first attachment's name. */
 export function previewText(raw: string): string {
   const cleaned = stripStored(raw)
-  const attachments = [...cleaned.attachments]
-  let text = cleaned.text
+  const pictures = splitImageReferences(cleaned.text)
+  const attachments = [...cleaned.attachments, ...pictures.images]
+  let text = pictures.text
   for (let match = FOLDED_REFERENCE.exec(text); match; match = FOLDED_REFERENCE.exec(text)) {
     attachments.push({ kind: match[1] as Attachment['kind'], value: match[2] ?? match[3] ?? match[4] ?? match[5] ?? '' })
     text = text.slice(match[0].length)

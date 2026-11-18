@@ -7,6 +7,7 @@ import type { TranscriptItem, TranscriptState } from '../state/transcript'
 import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
+import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
 import { locale, t } from '@shared/i18n'
 
 const MEDIA_ICONS: Record<ReturnType<typeof mediaKind>, IconName> = { image: 'image', audio: 'audio', video: 'video', file: 'file' }
@@ -28,6 +29,15 @@ function FileCard({ path, label, link }: { path: string; label?: string; link?: 
   )
 }
 
+function FileChip({ attachment: a }: { attachment: Attachment }) {
+  return (
+    <span className="chip" title={a.value}>
+      <Icon name={a.kind === 'image' ? 'image' : 'file'} />
+      <span>{displayName(baseName(a.value))}</span>
+    </span>
+  )
+}
+
 function AttachmentChips({ attachments }: { attachments: Attachment[] }) {
   return (
     <div className="attachments">
@@ -37,11 +47,12 @@ function AttachmentChips({ attachments }: { attachments: Attachment[] }) {
             <Icon name="link" />
             <span>{a.value.replace(/^https?:\/\//, '')}</span>
           </a>
+        ) : a.kind === 'image' && a.preview ? (
+          <PictureImage key={i} src={a.preview} name={baseName(a.value)} />
+        ) : a.kind === 'image' ? (
+          <GatewayPicture key={i} path={a.value} name={baseName(a.value)} fallback={<FileChip attachment={a} />} />
         ) : (
-          <span key={i} className="chip" title={a.value}>
-            <Icon name={a.kind === 'image' ? 'image' : 'file'} />
-            <span>{displayName(baseName(a.value))}</span>
-          </span>
+          <FileChip key={i} attachment={a} />
         )
       )}
     </div>
@@ -54,7 +65,19 @@ export const Reply = memo(function Reply({ text }: { text: string }) {
   return (
     <>
       {blocks.map((block, i) =>
-        block.kind === 'markdown' ? <Markdown key={i} text={block.text} /> : <FileCard key={i} path={block.path} label={block.alt} />
+        block.kind === 'markdown' ? (
+          <Markdown key={i} text={block.text} />
+        ) : mediaKind(block.path) === 'image' ? (
+          <GatewayPicture
+            key={i}
+            path={block.path}
+            name={block.alt || baseName(block.path)}
+            className="reply-picture"
+            fallback={<FileCard path={block.path} label={block.alt} />}
+          />
+        ) : (
+          <FileCard key={i} path={block.path} label={block.alt} />
+        )
       )}
     </>
   )
@@ -139,13 +162,16 @@ export function Transcript({
   state,
   loading,
   error,
-  requests = []
+  requests = [],
+  profile
 }: {
   state: TranscriptState
   loading: boolean
   error: string | null
   /** The approvals and questions this chat waits on, drawn after its last item. */
   requests?: PendingRequest[]
+  /** The chat's profile, whose files its pictures are read from. */
+  profile?: string
 }) {
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
@@ -167,6 +193,7 @@ export function Transcript({
   }, [state, requests])
 
   return (
+    <PictureProfile.Provider value={profile}>
     <div className="transcript" ref={scroller} aria-live="polite">
       <div className="transcript-inner">
         {loading ? <div className="notice">{t('Loading…')}</div> : null}
@@ -191,5 +218,6 @@ export function Transcript({
         ) : null}
       </div>
     </div>
+    </PictureProfile.Provider>
   )
 }

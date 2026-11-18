@@ -137,7 +137,9 @@ function registerIpc(): void {
     mainWindow?.webContents.send(IPC.openChat, chat)
   })
   ipcMain.on(IPC.hideQuickAsk, () => quickAsk.hide())
-  ipcMain.on(IPC.quickAskExpanded, (_event, expanded: boolean) => quickAsk.setExpanded(expanded === true))
+  ipcMain.on(IPC.quickAskExpanded, (_event, expanded: unknown) =>
+    quickAsk.setExpanded(typeof expanded === 'number' ? expanded : expanded === true)
+  )
   ipcMain.handle(IPC.quickAskShortcut, () => ({ accelerator: QUICK_ASK_ACCELERATOR, registered: quickAsk.registered }))
   ipcMain.handle(IPC.answerRequest, (_event, id: string, result: Record<string, unknown>) => connection.answerRequest(id, result))
   ipcMain.handle(IPC.dismissRequest, (_event, id: string) => connection.dropRequest(id))

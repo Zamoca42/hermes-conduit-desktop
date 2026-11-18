@@ -2351,11 +2351,72 @@ html[data-window='quick'] body {
   color: var(--text);
 }
 
-.room-picture {
-  max-width: 280px;
-  max-height: 220px;
+
+/* Pictures in messages, and the viewer that opens them larger. */
+.picture-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  display: block;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.picture-button img {
+  display: block;
+  max-width: 100%;
   border-radius: 14px;
   border: 1px solid var(--line);
   object-fit: cover;
-  display: block;
+}
+
+.sent-picture img,
+.room-picture img {
+  max-width: 280px;
+  max-height: 220px;
+}
+
+.reply-picture {
+  margin: 8px 0;
+}
+
+.reply-picture img {
+  max-width: min(420px, 100%);
+  max-height: 360px;
+}
+
+.picture-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  cursor: zoom-out;
+}
+
+.picture-viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.picture-viewer-close {
+  position: absolute;
+  top: 44px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
 }
