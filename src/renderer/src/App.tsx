@@ -77,18 +77,6 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [chatProfile, setChatProfile] = useState<string | null>(null)
   const chatProfileRef = useRef(chatProfile)
   chatProfileRef.current = chatProfile
-  // Picking a bot on the strip opens its newest chat (or a new one), so the open chat matches the list.
-  const chooseProfile = useCallback(
-    (next: string | null) => {
-      setChatProfile(next)
-      if (!next) return
-      const same = (name: string | undefined) => (name ?? 'default').toLowerCase() === next.toLowerCase()
-      if (same(selected.profile)) return
-      const newest = (list.rows ?? []).filter(row => same(row.profile)).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))[0]
-      setSelected(newest ? { id: newest.id, profile: newest.profile, title: newest.title } : { id: null, profile: next })
-    },
-    [selected.profile, list.rows]
-  )
   const newChat = useCallback(() => {
     setSection('chats')
     setSelected({ id: null, profile: chatProfileRef.current ?? undefined })
@@ -150,6 +138,21 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: !!bot.botChatId })
     setSection('chats')
   }, [])
+  // Picking a bot on the strip opens its newest chat (its Bot Chat, which the list leaves out, when
+  // that's newer), or a new chat when it has none, so the open chat matches the list.
+  const chooseProfile = useCallback(
+    (next: string | null) => {
+      setChatProfile(next)
+      if (!next) return
+      const same = (name: string | undefined) => (name ?? 'default').toLowerCase() === next.toLowerCase()
+      if (same(selected.profile)) return
+      const newest = (list.rows ?? []).filter(row => same(row.profile)).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))[0]
+      const bot = roster.bots?.find(b => same(b.name))
+      if (bot?.botChatId && (bot.lastActive ?? 0) >= (newest?.activeAt ?? 0)) return openBot(bot)
+      setSelected(newest ? { id: newest.id, profile: newest.profile, title: newest.title } : { id: null, profile: next })
+    },
+    [selected.profile, list.rows, roster.bots, openBot]
+  )
   const pendingAsk = useRef<{ text: string; storedId: string | null; profile: string; resumed?: boolean } | null>(null)
   const askBot = useCallback(
     (bot: Bot, text: string) => {
