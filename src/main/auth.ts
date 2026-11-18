@@ -88,8 +88,8 @@ export function endpoint(baseUrl: string, path: string): string {
   return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`
 }
 
-export function webSocketUrl(baseUrl: string, query: Record<string, string>): string {
-  const url = new URL(endpoint(baseUrl, '/api/ws'))
+export function webSocketUrl(baseUrl: string, query: Record<string, string>, path = '/api/ws'): string {
+  const url = new URL(endpoint(baseUrl, path))
   url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
   for (const [name, value] of Object.entries(query)) url.searchParams.set(name, value)
   return url.toString()

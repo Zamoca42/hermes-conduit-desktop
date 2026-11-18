@@ -67,6 +67,8 @@ import { useWork, useWorkSessions } from './state/useWork'
 import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
 import { GptLiveCall } from './components/GptLiveCall'
+import { GrokLiveCall } from './components/GrokLiveCall'
+import { GeminiLiveCall } from './components/GeminiLiveCall'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { voiceMode, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
@@ -760,6 +762,31 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               {calling && callMode === 'gpt' ? (
                 <GptLiveCall
                   profile={selected.profile}
+                  chatId={selected.id}
+                  items={transcript.items}
+                  onSay={words => void onSend(words)}
+                  running={transcript.running}
+                  turnsDone={turnsDone}
+                  lastReply={lastReply}
+                  onEnd={() => setCalling(false)}
+                  onClassic={() => setCallMode('classic')}
+                />
+              ) : calling && callMode === 'gemini' ? (
+                <GeminiLiveCall
+                  profile={selected.profile}
+                  chatId={selected.id}
+                  items={transcript.items}
+                  onSay={words => void onSend(words)}
+                  running={transcript.running}
+                  turnsDone={turnsDone}
+                  lastReply={lastReply}
+                  onEnd={() => setCalling(false)}
+                  onClassic={() => setCallMode('classic')}
+                />
+              ) : calling && callMode === 'grok' ? (
+                <GrokLiveCall
+                  profile={selected.profile}
+                  chatId={selected.id}
                   items={transcript.items}
                   onSay={words => void onSend(words)}
                   running={transcript.running}
