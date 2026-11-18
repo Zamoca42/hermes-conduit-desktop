@@ -2089,7 +2089,7 @@ html[data-window='quick'] body {
 /* The chat list's bots */
 .profile-strip {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   padding: 0 12px 8px;
   overflow-x: auto;
   scrollbar-width: none;
@@ -2117,6 +2117,10 @@ html[data-window='quick'] body {
 
 .profile-chip.all {
   padding: 0 12px;
+}
+
+.profile-chip.face-only {
+  padding: 0 3px;
 }
 
 .profile-chip:hover {
