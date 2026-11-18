@@ -175,7 +175,7 @@ export class Connection {
     if (error) {
       this.saved = null
       this.teardown()
-      this.setStatus({ phase: 'signed-out' })
+      this.setStatus({ phase: 'signed-out', hosts: this.hosts() })
       return { ok: false, error }
     }
     this.deps.store.save(saved)
@@ -193,7 +193,7 @@ export class Connection {
     this.deps.store.clear()
     const next = this.deps.store.load()
     if (next) this.open(next)
-    else this.setStatus({ phase: 'signed-out' })
+    else this.setStatus({ phase: 'signed-out', hosts: this.hosts() })
   }
 
   /** Every saved host, without secrets. */

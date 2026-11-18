@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { language } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { STATUS_PATH, pluginStatus, serves } from './plugin'
@@ -19,6 +19,7 @@ import {
   savedSummary,
   sideQuestionAnswer,
   summariesEnabled,
+  summaryScope,
   summaryMaxSteps,
   words
 } from './stepSummaries'
@@ -39,6 +40,9 @@ function sideQuestionsServed(): Promise<boolean> {
   return served.answer
 }
 
+/** The open host's address, which scopes its summaries. */
+export const SummaryHost = createContext('')
+
 export interface StepSummaries {
   /** The summary shown under a run, by its key. */
   summary(steps: StepItem[]): string | null
@@ -50,7 +54,7 @@ export interface StepSummaries {
 
 /** A chat's step summaries: the saved ones, an automatic one for each finished turn when switched on, and Explain. */
 export function useStepSummaries(state: TranscriptState, sessionId: string | undefined, profile: string | undefined): StepSummaries {
-  const scope = profile || 'default'
+  const scope = summaryScope(useContext(SummaryHost), profile)
   const [, setVersion] = useState(0)
   const asking = useRef(new Set<string>())
   const asked = useRef(new Set<string>())

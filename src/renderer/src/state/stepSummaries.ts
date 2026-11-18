@@ -5,7 +5,8 @@
  * question through the plugin's `POST /side-question` (plugin 0.137.4+), which
  * answers this device only from a copy of the chat that can't call tools or
  * change it. Summaries stay on this computer, by profile and the run's first
- * tool call.
+ * tool call. Signing out of a host forgets its summaries, as the phone's
+ * do with their dashboard.
  */
 import type { ToolItem } from './transcript'
 import type { StepItem } from './runs'
@@ -200,6 +201,25 @@ function entries(): Entry[] {
 
 export function savedSummary(scope: string, toolId: string): string | null {
   return entries().find(e => e[0] === scope && e[1] === toolId)?.[2] ?? null
+}
+
+/** A summary's scope: the host and the profile, so a host's go when it's signed out. */
+export const summaryScope = (host: string, profile: string | undefined) => `${host}\t${profile || 'default'}`
+
+/** Forgets the summaries of every host not in `hosts` (signed out or removed), and those kept before they were by host. */
+export function forgetSummaries(hosts: string[]): void {
+  const all = entries()
+  const kept = all.filter(e => {
+    const tab = e[0].indexOf('\t')
+    return tab > 0 && hosts.includes(e[0].slice(0, tab))
+  })
+  if (kept.length === all.length) return
+  try {
+    if (kept.length) localStorage.setItem(SAVED_KEY, JSON.stringify(kept))
+    else localStorage.removeItem(SAVED_KEY)
+  } catch {
+    // Tried again on the next change of hosts.
+  }
 }
 
 /** Adds one, oldest first in storage so the limit drops the oldest. */
