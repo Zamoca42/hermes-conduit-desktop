@@ -34,15 +34,55 @@ interface Props {
   marks?: ChatMarks
   onStar?: (row: ChatRow) => void
   onToggleRead?: (row: ChatRow) => void
+  /** Opens Projects, the phone's Chats › Projects. */
+  onProjects?: () => void
+  /** Move to Project: the projects a chat can move into (its profile's, each with its folder), read when asked. */
+  moveTargets?: (row: ChatRow) => Promise<MoveTarget[]>
+  onMove?: (row: ChatRow, target: MoveTarget) => void
+}
+
+export interface MoveTarget {
+  id: string
+  title: string
+  path: string
 }
 
 const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
 
-export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat, bots, profile = null, onProfile, onPin, onRename, onDelete, marks, onStar, onToggleRead }: Props) {
+export function ChatList({
+  rows,
+  error,
+  selectedId,
+  runningIds,
+  runningStatus,
+  onSelect,
+  onNewChat,
+  bots,
+  profile = null,
+  onProfile,
+  onPin,
+  onRename,
+  onDelete,
+  marks,
+  onStar,
+  onToggleRead,
+  onProjects,
+  moveTargets,
+  onMove
+}: Props) {
   const [query, setQuery] = useState('')
   const [menu, setMenu] = useState<{ row: ChatRow; x: number; y: number } | null>(null)
   const [renaming, setRenaming] = useState<{ id: string; title: string } | null>(null)
   const hasActions = !!(onPin || onRename || onDelete || onStar)
+  // Move to Project's targets: null while they're read.
+  const [moving, setMoving] = useState<MoveTarget[] | null | false>(false)
+  const canMove = !!onMove && !!moveTargets
+  useEffect(() => setMoving(false), [menu])
+  async function startMove(row: ChatRow) {
+    setMoving(null)
+    const targets = await moveTargets!(row).catch(() => [])
+    setMoving(current => (current === null ? targets : current))
+  }
   const [filter, setFilter] = useState<ChatFilter>('all')
 
   useEffect(() => {
@@ -94,7 +134,17 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
     <section className="chatlist" aria-label={t('Chats')}>
       <div className="chatlist-head">
         <h1>{t('Chats')}</h1>
-        <button className="round" aria-label={t('New chat')} title={window.conduit.platform === 'darwin' ? t('New chat (⌘N)') : t('New chat (Ctrl+N)')} onClick={onNewChat}>
+        {onProjects ? (
+          <button className="round" aria-label={t('Projects')} title={t('Projects')} onClick={onProjects}>
+            <Icon name="folder" />
+          </button>
+        ) : null}
+        <button
+          className="round"
+          aria-label={t('New chat')}
+          title={window.conduit.platform === 'darwin' ? t('New chat (⌘N)') : t('New chat (Ctrl+N)')}
+          onClick={onNewChat}
+        >
           <Icon name="plus" />
         </button>
       </div>
@@ -170,7 +220,10 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
                         <span className="meta row-time">{timeLabel(row.activeAt)}</span>
                       </span>
                       {running ? (
-                        <span className="running">{t('Running')}{runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}</span>
+                        <span className="running">
+                          {t('Running')}
+                          {runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}
+                        </span>
                       ) : row.preview || botName(row) ? (
                         <span className="meta">
                           {botName(row) ? `${botName(row)} · ` : ''}
@@ -201,32 +254,74 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
         ))}
       </div>
       {menu ? (
-        <div className="host-menu row-menu" role="menu" style={{ left: Math.min(menu.x, window.innerWidth - 200), top: Math.min(menu.y, window.innerHeight - 140) }}>
-          {onPin ? (
-            <button role="menuitem" onClick={() => onPin(menu.row)}>
-              {menu.row.pinned ? t('Unpin') : t('Pin')}
-            </button>
-          ) : null}
-          {onStar && marks ? (
-            <button role="menuitem" onClick={() => onStar(menu.row)}>
-              {isStarred(marks, menu.row) ? t('Unstar') : t('Star')}
-            </button>
-          ) : null}
-          {onToggleRead && marks && menu.row.id !== selectedId ? (
-            <button role="menuitem" onClick={() => onToggleRead(menu.row)}>
-              {isUnread(marks, menu.row) ? t('Mark as read') : t('Mark as unread')}
-            </button>
-          ) : null}
-          {onRename ? (
-            <button role="menuitem" onClick={() => setRenaming({ id: menu.row.id, title: menu.row.title })}>
-              {t('Rename')}
-            </button>
-          ) : null}
-          {onDelete ? (
-            <button role="menuitem" className="danger" onClick={() => onDelete(menu.row)}>
-              {t('Delete')}
-            </button>
-          ) : null}
+        <div
+          className="host-menu row-menu"
+          role="menu"
+          style={{
+            left: Math.min(menu.x, window.innerWidth - 220),
+            top: Math.max(8, Math.min(menu.y, window.innerHeight - (moving ? 52 + 34 * Math.max(1, moving.length) : 220)))
+          }}
+        >
+          {moving !== false ? (
+            <>
+              <button
+                role="menuitem"
+                onClick={e => {
+                  e.stopPropagation()
+                  setMoving(false)
+                }}
+              >
+                ‹ {t('Move to Project')}
+              </button>
+              {moving === null ? <div className="menu-note">{t('Loading projects…')}</div> : null}
+              {moving && !moving.length ? <div className="menu-note">{t('No Projects')}</div> : null}
+              {moving?.map(target => (
+                <button key={target.id} role="menuitem" title={target.path} onClick={() => onMove?.(menu.row, target)}>
+                  {target.title}
+                </button>
+              ))}
+            </>
+          ) : (
+            <>
+              {onPin ? (
+                <button role="menuitem" onClick={() => onPin(menu.row)}>
+                  {menu.row.pinned ? t('Unpin') : t('Pin')}
+                </button>
+              ) : null}
+              {onStar && marks ? (
+                <button role="menuitem" onClick={() => onStar(menu.row)}>
+                  {isStarred(marks, menu.row) ? t('Unstar') : t('Star')}
+                </button>
+              ) : null}
+              {onToggleRead && marks && menu.row.id !== selectedId ? (
+                <button role="menuitem" onClick={() => onToggleRead(menu.row)}>
+                  {isUnread(marks, menu.row) ? t('Mark as read') : t('Mark as unread')}
+                </button>
+              ) : null}
+              {onRename ? (
+                <button role="menuitem" onClick={() => setRenaming({ id: menu.row.id, title: menu.row.title })}>
+                  {t('Rename')}
+                </button>
+              ) : null}
+              {canMove ? (
+                <button
+                  role="menuitem"
+                  aria-haspopup="menu"
+                  onClick={e => {
+                    e.stopPropagation()
+                    void startMove(menu.row)
+                  }}
+                >
+                  {t('Move to Project')} ›
+                </button>
+              ) : null}
+              {onDelete ? (
+                <button role="menuitem" className="danger" onClick={() => onDelete(menu.row)}>
+                  {t('Delete')}
+                </button>
+              ) : null}
+            </>
+          )}
         </div>
       ) : null}
     </section>

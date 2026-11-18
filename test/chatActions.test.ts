@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { identityFields, mutateSession, sessionPath, warrantsRetry, withQuery } from '../src/renderer/src/state/chatActions'
+import { identityFields, moveChat, mutateSession, sessionPath, warrantsRetry, withQuery } from '../src/renderer/src/state/chatActions'
 import { httpErrorText } from '../src/main/connection'
 
 describe('a chat row’s Pin, Rename and Delete', () => {
@@ -50,5 +50,32 @@ describe('a chat row’s Pin, Rename and Delete', () => {
     expect(httpErrorText('session not found', 404)).toBe('session not found')
     expect(httpErrorText({ code: 'revision_conflict', message: 'moved on' }, 409)).toBe('revision_conflict: moved on')
     expect(httpErrorText(null, 500)).toBe('HTTP 500')
+  })
+})
+
+describe('Move to Project', () => {
+  it('moves the folder with session.workspace.move off the authority', async () => {
+    const calls: unknown[] = []
+    const rpc = async <T,>(method: string, params?: Record<string, unknown>) => (calls.push([method, params]), {} as T)
+    const http = async <T,>() => ({}) as T
+    await moveChat(rpc, http, 's1', 'coder', '/srv/site', false)
+    expect(calls).toEqual([['session.workspace.move', { session_key: 's1', cwd: '/srv/site', profile: 'coder' }]])
+  })
+
+  it('sends a workspace mutation with the snapshot revision on the authority, and retries a conflict once', async () => {
+    const sent: Record<string, unknown>[] = []
+    let revision = 3
+    const rpc = async <T,>(method: string, params?: Record<string, unknown>) => {
+      sent.push({ method, ...params })
+      if (sent.length === 1) {
+        revision = 4
+        throw new Error('revision_conflict')
+      }
+      return {} as T
+    }
+    const http = async <T,>() => ({ runtime_revision: revision, runtime_generation: 2 }) as T
+    await moveChat(rpc, http, 's1', undefined, '/srv/site', true)
+    expect(sent).toHaveLength(2)
+    expect(sent[1]).toMatchObject({ method: 'session.mutate', session_id: 's1', operation: 'workspace', payload: { cwd: '/srv/site' }, expected_revision: 4, expected_generation: 2 })
   })
 })

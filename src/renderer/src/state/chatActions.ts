@@ -68,3 +68,45 @@ export async function mutateSession(http: Http, id: string, profile: string | un
     await attempt()
   }
 }
+
+type Rpc = <T = unknown>(method: string, params?: Record<string, unknown>) => Promise<T>
+
+/**
+ * Move to Project, as the phone's moveSessionWorkspace: a chat belongs to the
+ * project its folder is in, so moving the folder moves the chat. The session
+ * authority has no `session.workspace.move`; there it's a `workspace`
+ * mutation carrying the row's revision and generation.
+ */
+export async function moveChat(rpc: Rpc, http: Http, id: string, profile: string | undefined, cwd: string, authority: boolean): Promise<void> {
+  if (!authority) {
+    const params: Record<string, unknown> = { session_key: id, cwd }
+    if (profile && profile !== 'default') params.profile = profile
+    await rpc('session.workspace.move', params)
+    return
+  }
+  const attempt = async () => {
+    let snapshot: unknown = null
+    try {
+      snapshot = await http('GET', sessionPath(id, profile, '/mutation-snapshot'))
+    } catch {
+      // No snapshot: revision 0, which a moved-on chat refuses and the retry reads again.
+    }
+    const identity = identityFields(snapshot, crypto.randomUUID().toLowerCase())
+    const params: Record<string, unknown> = {
+      session_id: id,
+      request_id: identity?.request_id ?? crypto.randomUUID().toLowerCase(),
+      operation: 'workspace',
+      payload: { cwd },
+      expected_revision: identity?.expected_revision ?? 0,
+      expected_generation: identity?.expected_generation ?? 0
+    }
+    if (profile && profile !== 'default') params.profile = profile
+    await rpc('session.mutate', params)
+  }
+  try {
+    await attempt()
+  } catch (e) {
+    if (!/revision_conflict|stale_generation/i.test(e instanceof Error ? e.message : String(e))) throw e
+    await attempt()
+  }
+}

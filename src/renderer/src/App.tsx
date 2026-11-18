@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
-import { ChatList } from './components/ChatList'
+import { ProjectsPane } from './components/ProjectsPane'
+import { ChatList, type MoveTarget } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
 import { ContextPanel } from './components/ContextPanel'
@@ -75,7 +76,8 @@ import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
-import { mutateSession } from './state/chatActions'
+import { moveChat, mutateSession } from './state/chatActions'
+import { parseProjects } from './state/projects'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { GO_TO, SCALES, applyScale, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
@@ -148,14 +150,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   useState(forgetAvatars)
   const connected = status.phase === 'open'
   const [section, setSection] = useState<Section>(reopenedSection)
-  const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
+  // `folder`: a new chat started in a project works there.
+  const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean; folder?: string }>({ id: null })
+  const [projectsOpen, setProjectsOpen] = useState(false)
   const list = useChatList(connected)
   const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection } = useChat(
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
     connected,
-    selected.botChat === true
+    selected.botChat === true,
+    selected.id ? undefined : selected.folder
   )
 
   // The chat list's profile: a new chat starts in it.
@@ -406,6 +411,24 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       list.refresh()
     },
     [list, selected.id, chat.storedId, newChat]
+  )
+  // Move to Project: the chat's profile's projects with a folder, as the phone offers them.
+  const moveTargets = useCallback(async (row: ChatRow): Promise<MoveTarget[]> => {
+    const profile = row.profile && row.profile !== 'default' ? row.profile : undefined
+    const response = await gateway.rpc('projects.tree', profile ? { preview_limit: 0, profile } : { preview_limit: 0 })
+    return parseProjects(response).flatMap(p => (!p.isHome && p.path ? [{ id: p.id, title: p.title, path: p.path }] : []))
+  }, [])
+  const moveToProject = useCallback(
+    async (row: ChatRow, target: MoveTarget) => {
+      try {
+        await moveChat(gateway.rpc, gateway.http, row.id, row.profile, target.path, status.sessionAuthority === true)
+      } catch (e) {
+        window.alert(
+          t('Couldn’t move “{title}” to {project}: {reason}', { title: row.title, project: target.title, reason: e instanceof Error ? e.message : String(e) })
+        )
+      }
+    },
+    [status.sessionAuthority]
   )
   // Stars and read state: on this computer, per host. Hermes' own unread flag is cleared too.
   const markHost = status.url ?? ''
@@ -716,27 +739,41 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         </nav>
         {section === 'chats' ? (
           <>
-            <ChatList
-              rows={listedRows}
-              error={list.error}
-              selectedId={chat.storedId ?? selected.id}
-              runningIds={runningIds}
-              runningStatus={transcript.status}
-              onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
-              onNewChat={newChat}
-              bots={roster.bots}
-              profile={chatProfile}
-              onProfile={chooseProfile}
-              onPin={row => void chatAction(row, { pinned: !row.pinned })}
-              onRename={(row, title) => void chatAction(row, { title })}
-              marks={marks}
-              onStar={row => updateMarks(current => toggleStar(current, row))}
-              onToggleRead={toggleRead}
-              onDelete={row => {
-                if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`))
-                  void chatAction(row, null)
-              }}
-            />
+            {projectsOpen ? (
+              <ProjectsPane
+                profile={chatProfile}
+                connected={connected}
+                selectedId={chat.storedId ?? selected.id}
+                onSelect={item => setSelected({ id: item.id, profile: item.profile ?? chatProfile ?? undefined, title: item.title })}
+                onNewChat={folder => setSelected({ id: null, profile: chatProfile ?? undefined, folder })}
+                onClose={() => setProjectsOpen(false)}
+              />
+            ) : (
+              <ChatList
+                rows={listedRows}
+                error={list.error}
+                selectedId={chat.storedId ?? selected.id}
+                runningIds={runningIds}
+                runningStatus={transcript.status}
+                onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
+                onNewChat={newChat}
+                bots={roster.bots}
+                profile={chatProfile}
+                onProfile={chooseProfile}
+                onPin={row => void chatAction(row, { pinned: !row.pinned })}
+                onRename={(row, title) => void chatAction(row, { title })}
+                marks={marks}
+                onStar={row => updateMarks(current => toggleStar(current, row))}
+                onToggleRead={toggleRead}
+                onDelete={row => {
+                  if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`))
+                    void chatAction(row, null)
+                }}
+                onProjects={() => setProjectsOpen(true)}
+                moveTargets={moveTargets}
+                onMove={(row, target) => void moveToProject(row, target)}
+              />
+            )}
             <main className="chat" ref={chatPane}>
               <div className="chat-head">
                 <div className="chat-titles">
