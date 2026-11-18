@@ -7301,3 +7301,8 @@ button.cap-row-text {
   height: 34px;
   padding: 0 14px;
 }
+.row-menu .menu-note {
+  padding: 8px 12px;
+  color: var(--text-3);
+  font-size: 13px;
+}

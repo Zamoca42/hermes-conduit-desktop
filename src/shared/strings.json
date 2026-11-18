@@ -5234,6 +5234,21 @@
     "zh-Hans": "无法移动 {title}：{reason}",
     "zh-Hant": "無法移動 {title}：{reason}"
   },
+  "Couldn’t move “{title}” to {project}: {reason}": {
+    "de": "„{title}“ konnte nicht nach {project} verschoben werden: {reason}",
+    "es": "No se pudo mover «{title}» a {project}: {reason}",
+    "fr": "Impossible de déplacer « {title} » vers {project} : {reason}",
+    "id": "Tidak dapat memindahkan “{title}” ke {project}: {reason}",
+    "it": "Impossibile spostare “{title}” in {project}: {reason}",
+    "ja": "「{title}」を {project} に移動できませんでした: {reason}",
+    "ko": "“{title}”을(를) {project}(으)로 옮기지 못했습니다: {reason}",
+    "pl": "Nie udało się przenieść „{title}” do {project}: {reason}",
+    "pt-BR": "Não foi possível mover “{title}” para {project}: {reason}",
+    "ru": "Не удалось переместить «{title}» в {project}: {reason}",
+    "tr": "“{title}”, {project} projesine taşınamadı: {reason}",
+    "zh-Hans": "无法将“{title}”移到 {project}：{reason}",
+    "zh-Hant": "無法將「{title}」移到 {project}：{reason}"
+  },
   "Couldn’t open a connection ({detail}).": {
     "de": "Verbindung konnte nicht geöffnet werden ({detail}).",
     "es": "No se pudo abrir una conexión ({detail}).",
@@ -13004,6 +13019,21 @@
     "zh-Hans": "下移",
     "zh-Hant": "下移"
   },
+  "Move to Project": {
+    "de": "In Projekt verschieben",
+    "es": "Mover a proyecto",
+    "fr": "Déplacer vers un projet",
+    "id": "Pindahkan ke Proyek",
+    "it": "Sposta nel progetto",
+    "ja": "プロジェクトに移動",
+    "ko": "프로젝트로 이동",
+    "pl": "Przenieś do projektu",
+    "pt-BR": "Mover para Projeto",
+    "ru": "Переместить в проект",
+    "tr": "Projeye Taşı",
+    "zh-Hans": "移至项目",
+    "zh-Hant": "移到專案"
+  },
   "Move up": {
     "de": "Nach oben",
     "es": "Subir",
@@ -13708,6 +13738,21 @@
     "tr": "Henüz Yapıt Yok",
     "zh-Hans": "还没有产物",
     "zh-Hant": "尚無產物"
+  },
+  "No Projects": {
+    "de": "Keine Projekte",
+    "es": "No hay proyectos",
+    "fr": "Aucun projet",
+    "id": "Tidak Ada Proyek",
+    "it": "Nessun progetto",
+    "ja": "プロジェクトがありません",
+    "ko": "프로젝트 없음",
+    "pl": "Brak projektów",
+    "pt-BR": "Nenhum Projeto",
+    "ru": "Нет проектов",
+    "tr": "Proje Yok",
+    "zh-Hans": "没有项目",
+    "zh-Hant": "沒有專案"
   },
   "No Results": {
     "de": "Keine Ergebnisse",
