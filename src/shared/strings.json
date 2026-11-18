@@ -1499,6 +1499,21 @@
     "zh-Hans": "适中",
     "zh-Hant": "適中"
   },
+  "Base URL override": {
+    "de": "Eigene Basis-URL",
+    "es": "URL base personalizada",
+    "fr": "URL de base personnalisée",
+    "id": "Ganti URL dasar",
+    "it": "URL di base personalizzato",
+    "ja": "ベースURLの上書き",
+    "ko": "기본 URL 재정의",
+    "pl": "Własny bazowy URL",
+    "pt-BR": "URL base personalizada",
+    "ru": "Свой базовый URL",
+    "tr": "Temel URL geçersiz kılma",
+    "zh-Hans": "覆盖基础 URL",
+    "zh-Hant": "覆寫基礎 URL"
+  },
   "Before Pulse writes to you, it can check your calendar, reminders, contacts and alarms, look up places in Maps, and search the web when it follows up on a promise. It never changes anything on your phone.": {
     "de": "Bevor Pulse dir schreibt, kann es deinen Kalender, deine Erinnerungen, Kontakte und Wecker prüfen, Orte in Karten nachschlagen und im Web suchen, wenn es einem Versprechen nachgeht. Auf deinem iPhone ändert es nie etwas.",
     "es": "Antes de escribirte, Pulse puede consultar tu calendario, recordatorios, contactos y alarmas, buscar lugares en Mapas y buscar en la web cuando hace seguimiento de una promesa. Nunca cambia nada en tu teléfono.",
@@ -1979,6 +1994,21 @@
     "zh-Hans": "类别",
     "zh-Hant": "類別"
   },
+  "Change": {
+    "de": "Ändern",
+    "es": "Cambiar",
+    "fr": "Modifier",
+    "id": "Ubah",
+    "it": "Modifica",
+    "ja": "変更",
+    "ko": "변경",
+    "pl": "Zmień",
+    "pt-BR": "Alterar",
+    "ru": "Изменить",
+    "tr": "Değiştir",
+    "zh-Hans": "更改",
+    "zh-Hant": "變更"
+  },
   "Changes apply to new sessions.": {
     "de": "Änderungen gelten für neue Sitzungen.",
     "es": "Los cambios se aplican a las sesiones nuevas.",
@@ -2248,6 +2278,21 @@
     "tr": "Klasik ses",
     "zh-Hans": "经典语音",
     "zh-Hant": "經典語音"
+  },
+  "Clear": {
+    "de": "Klar",
+    "es": "Clara",
+    "fr": "Claire",
+    "id": "Jernih",
+    "it": "Chiara",
+    "ja": "クリアな",
+    "ko": "또렷함",
+    "pl": "Wyraźny",
+    "pt-BR": "Clara",
+    "ru": "Чёткий",
+    "tr": "Net",
+    "zh-Hans": "清晰",
+    "zh-Hant": "清晰"
   },
   "Clear Goal": {
     "de": "Ziel löschen",
@@ -3224,6 +3269,21 @@
     "zh-Hans": "无法加载定时任务运行记录：{reason}",
     "zh-Hant": "無法載入排程工作的執行記錄：{reason}"
   },
+  "Could not load the key order.": {
+    "de": "Schlüsselreihenfolge konnte nicht geladen werden.",
+    "es": "No se pudo cargar el orden de las claves.",
+    "fr": "Impossible de charger l’ordre des clés.",
+    "id": "Tidak dapat memuat urutan kunci.",
+    "it": "Impossibile caricare l’ordine delle chiavi.",
+    "ja": "キーの順序を読み込めませんでした。",
+    "ko": "키 순서를 불러올 수 없습니다.",
+    "pl": "Nie udało się wczytać kolejności kluczy.",
+    "pt-BR": "Não foi possível carregar a ordem das chaves.",
+    "ru": "Не удалось загрузить порядок ключей.",
+    "tr": "Anahtar sırası yüklenemedi.",
+    "zh-Hans": "无法加载密钥顺序。",
+    "zh-Hant": "無法載入金鑰順序。"
+  },
   "Could not load this bot's personality.": {
     "de": "Die Persönlichkeit dieses Bots konnte nicht geladen werden.",
     "es": "No se pudo cargar la personalidad de este bot.",
@@ -3343,6 +3403,21 @@
     "tr": "Uç nokta kaydedilemedi: {error}",
     "zh-Hans": "无法保存端点：{error}",
     "zh-Hant": "無法儲存端點：{error}"
+  },
+  "Could not save the key order.": {
+    "de": "Schlüsselreihenfolge konnte nicht gespeichert werden.",
+    "es": "No se pudo guardar el orden de las claves.",
+    "fr": "Impossible d’enregistrer l’ordre des clés.",
+    "id": "Tidak dapat menyimpan urutan kunci.",
+    "it": "Impossibile salvare l’ordine delle chiavi.",
+    "ja": "キーの順序を保存できませんでした。",
+    "ko": "키 순서를 저장할 수 없습니다.",
+    "pl": "Nie udało się zapisać kolejności kluczy.",
+    "pt-BR": "Não foi possível salvar a ordem das chaves.",
+    "ru": "Не удалось сохранить порядок ключей.",
+    "tr": "Anahtar sırası kaydedilemedi.",
+    "zh-Hans": "无法保存密钥顺序。",
+    "zh-Hant": "無法儲存金鑰順序。"
   },
   "Couldn't check for updates": {
     "de": "Updates konnten nicht geprüft werden",
@@ -5534,6 +5609,21 @@
     "zh-Hans": "已完成",
     "zh-Hant": "已完成"
   },
+  "First key until it runs out": {
+    "de": "Erster Schlüssel, bis er ausgeschöpft ist",
+    "es": "La primera clave hasta que se agote",
+    "fr": "La première clé jusqu’à épuisement",
+    "id": "Kunci pertama sampai habis",
+    "it": "La prima chiave finché non si esaurisce",
+    "ja": "使い切るまで最初のキー",
+    "ko": "소진될 때까지 첫 번째 키",
+    "pl": "Pierwszy klucz, aż się wyczerpie",
+    "pt-BR": "A primeira chave até se esgotar",
+    "ru": "Первый ключ, пока не исчерпан",
+    "tr": "Bitene kadar ilk anahtar",
+    "zh-Hans": "先用第一个密钥直到用尽",
+    "zh-Hant": "先用第一把金鑰直到用盡"
+  },
   "Follow-up": {
     "de": "Nachfassen",
     "es": "Seguimiento",
@@ -7409,6 +7499,21 @@
     "zh-Hans": "因你教给 Pulse 的内容而略过",
     "zh-Hant": "因你教給 Pulse 的內容而略過"
   },
+  "Key order": {
+    "de": "Schlüsselreihenfolge",
+    "es": "Orden de las claves",
+    "fr": "Ordre des clés",
+    "id": "Urutan kunci",
+    "it": "Ordine delle chiavi",
+    "ja": "キーの順序",
+    "ko": "키 순서",
+    "pl": "Kolejność kluczy",
+    "pt-BR": "Ordem das chaves",
+    "ru": "Порядок ключей",
+    "tr": "Anahtar sırası",
+    "zh-Hans": "密钥顺序",
+    "zh-Hant": "金鑰順序"
+  },
   "Key saved": {
     "de": "Schlüssel gespeichert",
     "es": "Clave guardada",
@@ -7558,6 +7663,21 @@
     "tr": "Değerlendirmelerinizden öğrenilenler",
     "zh-Hans": "从你的评分中学到的",
     "zh-Hant": "從你的評分中學到的"
+  },
+  "Least used first": {
+    "de": "Am wenigsten genutzt zuerst",
+    "es": "Menos usados primero",
+    "fr": "Les moins utilisés d'abord",
+    "id": "Paling jarang dipakai dulu",
+    "it": "Meno usati prima",
+    "ja": "使用回数の少ない順",
+    "ko": "적게 사용한 순",
+    "pl": "Najrzadziej używane najpierw",
+    "pt-BR": "Menos usados primeiro",
+    "ru": "Сначала редко используемые",
+    "tr": "Önce en az kullanılanlar",
+    "zh-Hans": "最少使用优先",
+    "zh-Hant": "最少使用優先"
   },
   "Leave Alone": {
     "de": "In Ruhe lassen",
@@ -9914,6 +10034,21 @@
     "zh-Hans": "未设置",
     "zh-Hant": "未設定"
   },
+  "Not set, uses the provider's own": {
+    "de": "Nicht gesetzt, nutzt die des Anbieters",
+    "es": "Sin definir, usa la del proveedor",
+    "fr": "Non définie, utilise celle du fournisseur",
+    "id": "Belum diatur, memakai milik penyedia",
+    "it": "Non impostato, usa quello del provider",
+    "ja": "未設定（プロバイダ既定を使用）",
+    "ko": "설정 안 됨, 제공자 기본값 사용",
+    "pl": "Nie ustawiono, używa adresu dostawcy",
+    "pt-BR": "Não definida, usa a do provedor",
+    "ru": "Не задан, используется адрес провайдера",
+    "tr": "Ayarlanmadı, sağlayıcınınki kullanılır",
+    "zh-Hans": "未设置，使用提供方自己的",
+    "zh-Hant": "未設定，使用供應商自己的"
+  },
   "Not signed in yet.": {
     "de": "Noch nicht angemeldet.",
     "es": "Aún no has iniciado sesión.",
@@ -11954,6 +12089,21 @@
     "zh-Hans": "已运行代码",
     "zh-Hant": "已執行程式碼"
   },
+  "Random": {
+    "de": "Zufällig",
+    "es": "Aleatorio",
+    "fr": "Aléatoire",
+    "id": "Acak",
+    "it": "Casuale",
+    "ja": "ランダム",
+    "ko": "무작위",
+    "pl": "Losowo",
+    "pt-BR": "Aleatório",
+    "ru": "Случайно",
+    "tr": "Rastgele",
+    "zh-Hans": "随机",
+    "zh-Hant": "隨機"
+  },
   "Rate limited": {
     "de": "Ratenbegrenzt",
     "es": "Límite de frecuencia alcanzado",
@@ -13979,6 +14129,36 @@
     "zh-Hans": "会话令牌",
     "zh-Hant": "工作階段權杖"
   },
+  "Set": {
+    "de": "Stellen",
+    "es": "Poner",
+    "fr": "Régler",
+    "id": "Pasang",
+    "it": "Imposta",
+    "ja": "設定",
+    "ko": "설정",
+    "pl": "Ustaw",
+    "pt-BR": "Definir",
+    "ru": "Поставить",
+    "tr": "Kur",
+    "zh-Hans": "设置",
+    "zh-Hant": "設定"
+  },
+  "Set for this profile": {
+    "de": "Für dieses Profil gesetzt",
+    "es": "Definida para este perfil",
+    "fr": "Définie pour ce profil",
+    "id": "Diatur untuk profil ini",
+    "it": "Impostato per questo profilo",
+    "ja": "このプロファイルで設定済み",
+    "ko": "이 프로필에 설정됨",
+    "pl": "Ustawiony dla tego profilu",
+    "pt-BR": "Definida para este perfil",
+    "ru": "Задан для этого профиля",
+    "tr": "Bu profil için ayarlandı",
+    "zh-Hans": "已为此配置设置",
+    "zh-Hant": "已為此設定檔設定"
+  },
   "Settings": {
     "de": "Einstellungen",
     "es": "Ajustes",
@@ -15329,6 +15509,21 @@
     "zh-Hans": "这条回复结束后切换到 {model}。",
     "zh-Hant": "這則回覆結束後切換到 {model}。"
   },
+  "Take turns": {
+    "de": "Abwechselnd",
+    "es": "Por turnos",
+    "fr": "À tour de rôle",
+    "id": "Bergantian",
+    "it": "A turno",
+    "ja": "順番に使う",
+    "ko": "번갈아 사용",
+    "pl": "Na zmianę",
+    "pt-BR": "Revezar",
+    "ru": "По очереди",
+    "tr": "Sırayla",
+    "zh-Hans": "轮流使用",
+    "zh-Hant": "輪流使用"
+  },
   "Take {name} out": {
     "de": "{name} herausnehmen",
     "es": "Quitar a {name}",
@@ -16589,6 +16784,36 @@
     "zh-Hans": "此平台还没有主频道。请在 Hermes 中设置，否则运行结果只会保存。",
     "zh-Hant": "此平台還沒有主頻道。請在 Hermes 中設定，否則執行結果只會儲存。"
   },
+  "This profile has {count} keys and sign-ins for {name}. Hermes moves to another when one hits its limit.": {
+    "de": "Dieses Profil hat {count} Schlüssel und Anmeldungen für {name}. Hermes wechselt, wenn eines sein Limit erreicht.",
+    "es": "Este perfil tiene {count} claves e inicios de sesión para {name}. Hermes pasa a otro cuando uno llega a su límite.",
+    "fr": "Ce profil a {count} clés et connexions pour {name}. Hermes passe à une autre quand l’une atteint sa limite.",
+    "id": "Profil ini punya {count} kunci dan login untuk {name}. Hermes beralih ke yang lain saat satu mencapai batasnya.",
+    "it": "Questo profilo ha {count} chiavi e accessi per {name}. Hermes passa a un altro quando uno raggiunge il limite.",
+    "ja": "このプロファイルには {count} 件の {name} のキーとサインインがあります。上限に達したものがあると、Hermesは別のものに切り替えます。",
+    "ko": "이 프로필에는 {count}개의 {name} 키와 로그인이 있습니다. 하나가 한도에 도달하면 Hermes가 다른 것으로 바꿉니다.",
+    "pl": "Ten profil ma {count} kluczy i logowań do {name}. Hermes przechodzi na inne, gdy któreś osiągnie limit.",
+    "pt-BR": "Este perfil tem {count} chaves e logins para {name}. O Hermes passa para outro quando um atinge o limite.",
+    "ru": "У этого профиля {count} ключей и входов для {name}. Когда один достигает лимита, Hermes переходит к другому.",
+    "tr": "Bu profilde {count} adet {name} anahtarı ve girişi var. Biri sınırına ulaştığında Hermes başka birine geçer.",
+    "zh-Hans": "此配置有 {count} 个 {name} 密钥和登录。某个达到上限时，Hermes 会换用另一个。",
+    "zh-Hant": "此設定檔有 {count} 個 {name} 金鑰和登入。某個達到上限時，Hermes 會換用另一個。"
+  },
+  "This profile has {count} keys for {name}. Hermes moves to another when one hits its limit.": {
+    "de": "Dieses Profil hat {count} Schlüssel für {name}. Hermes wechselt, wenn einer sein Limit erreicht.",
+    "es": "Este perfil tiene {count} claves para {name}. Hermes pasa a otra cuando una llega a su límite.",
+    "fr": "Ce profil a {count} clés pour {name}. Hermes passe à une autre quand l’une atteint sa limite.",
+    "id": "Profil ini punya {count} kunci untuk {name}. Hermes beralih ke kunci lain saat satu kunci mencapai batasnya.",
+    "it": "Questo profilo ha {count} chiavi per {name}. Hermes passa a un’altra quando una raggiunge il limite.",
+    "ja": "このプロファイルには {count} 個の {name} キーがあります。上限に達したキーがあると、Hermesは別のキーに切り替えます。",
+    "ko": "이 프로필에는 {count}개의 {name} 키가 있습니다. 키 하나가 한도에 도달하면 Hermes가 다른 키로 바꿉니다.",
+    "pl": "Ten profil ma {count} kluczy do {name}. Hermes przechodzi na inny, gdy któryś osiągnie limit.",
+    "pt-BR": "Este perfil tem {count} chaves para {name}. O Hermes passa para outra quando uma atinge o limite.",
+    "ru": "У этого профиля {count} ключей для {name}. Когда один достигает лимита, Hermes переходит к другому.",
+    "tr": "Bu profilde {count} adet {name} anahtarı var. Biri sınırına ulaştığında Hermes başka birine geçer.",
+    "zh-Hans": "此配置有 {count} 个 {name} 密钥。某个密钥达到上限时，Hermes 会换用另一个。",
+    "zh-Hant": "此設定檔有 {count} 把 {name} 金鑰。某把金鑰達到上限時，Hermes 會換用另一把。"
+  },
   "This profile only": {
     "de": "Nur dieses Profil",
     "es": "Solo este perfil",
@@ -16663,6 +16888,21 @@
     "tr": "Bu profilin kendi anahtarı",
     "zh-Hans": "此配置自己的密钥",
     "zh-Hant": "此設定檔自己的金鑰"
+  },
+  "This provider needs no key here. Hermes reaches it with these settings for this profile.": {
+    "de": "Dieser Anbieter braucht hier keinen Schlüssel. Hermes erreicht ihn für dieses Profil mit diesen Einstellungen.",
+    "es": "Este proveedor no necesita clave aquí. Hermes lo alcanza con estos ajustes para este perfil.",
+    "fr": "Ce fournisseur n’a pas besoin de clé ici. Hermes le joint avec ces réglages pour ce profil.",
+    "id": "Penyedia ini tidak memerlukan kunci di sini. Hermes menjangkaunya dengan pengaturan ini untuk profil ini.",
+    "it": "Questo provider non richiede una chiave qui. Hermes lo raggiunge con queste impostazioni per questo profilo.",
+    "ja": "このプロバイダにはここでキーは不要です。Hermesはこのプロファイルでこれらの設定を使って接続します。",
+    "ko": "이 제공자는 여기서 키가 필요 없습니다. Hermes는 이 프로필에서 이 설정으로 연결합니다.",
+    "pl": "Ten dostawca nie potrzebuje tu klucza. Hermes łączy się z nim w tym profilu przy użyciu tych ustawień.",
+    "pt-BR": "Este provedor não precisa de chave aqui. O Hermes o acessa com estes ajustes para este perfil.",
+    "ru": "Этому провайдеру здесь не нужен ключ. Hermes подключается к нему с этими настройками для этого профиля.",
+    "tr": "Bu sağlayıcının burada anahtara ihtiyacı yok. Hermes bu profil için ona bu ayarlarla ulaşır.",
+    "zh-Hans": "此提供方在这里不需要密钥。Hermes 会用这些设置为此配置连接它。",
+    "zh-Hant": "此供應商在這裡不需要金鑰。Hermes 會用這些設定為此設定檔連線。"
   },
   "This provider runs the default model. Pick another default to remove it.": {
     "de": "Dieser Anbieter betreibt das Standardmodell. Wähle ein anderes Standardmodell, um ihn zu entfernen.",
@@ -17803,6 +18043,21 @@
     "tr": "Kullanım",
     "zh-Hans": "用于",
     "zh-Hant": "用於"
+  },
+  "Use keys": {
+    "de": "Schlüssel verwenden",
+    "es": "Usar claves",
+    "fr": "Utiliser les clés",
+    "id": "Gunakan kunci",
+    "it": "Usa le chiavi",
+    "ja": "キーの使い方",
+    "ko": "키 사용 방식",
+    "pl": "Używaj kluczy",
+    "pt-BR": "Usar chaves",
+    "ru": "Использовать ключи",
+    "tr": "Anahtar kullanımı",
+    "zh-Hans": "密钥使用方式",
+    "zh-Hant": "金鑰使用方式"
   },
   "Use the shared key": {
     "de": "Gemeinsamen Schlüssel nutzen",

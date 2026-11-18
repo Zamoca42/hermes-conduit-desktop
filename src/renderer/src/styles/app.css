@@ -5950,3 +5950,13 @@ button.cap-row-text {
   color: var(--text-2);
   font-variant-numeric: tabular-nums;
 }
+.provider-setting + .provider-setting {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+.provider-setting-edit {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+}

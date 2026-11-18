@@ -5,17 +5,24 @@ import {
   ProviderService,
   blocksSave,
   catalogNames,
+  KEY_ORDERS,
   endpointID,
+  isBaseURL,
   isConnected,
+  keyOrderFrom,
+  keyOrderKey,
   keyState,
   providerStatus,
   removableRows,
   removableVars,
+  showsKeyOrder,
   statusTitle,
   takenEndpointIDs,
+  type KeyOrder,
   type ProviderEntry,
   type SignIn
 } from '../state/providers'
+import { readConfig, updateConfig, valueAt, withValue, type Http } from '../state/profileConfig'
 import { Icon } from './icons'
 
 const request = (method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number) => gateway.http(method, path, body, timeoutMs)
@@ -250,6 +257,8 @@ function ProviderPage({
       {runsDefault ? <p className="meta">{t('This provider runs the default model. Pick another default to remove it.')}</p> : null}
       {entry.account ? <AccountSection entry={entry} service={service} busy={busy} run={run} /> : null}
       {entry.key ? <KeySection entry={entry} service={service} profileName={profileName} busy={busy} runsDefault={runsDefault} run={run} /> : null}
+      {showsKeyOrder(entry) ? <KeyOrderSection entry={entry} profile={service.profile} /> : null}
+      {entry.settings.length ? <SettingsSection entry={entry} service={service} busy={busy} run={run} /> : null}
       {entry.endpoint ? (
         <>
           <dl className="provider-facts">
@@ -284,6 +293,174 @@ function ProviderPage({
 }
 
 type Run = (work: () => Promise<string | null | void>) => Promise<void>
+
+const configHttp: Http = (method, path, body) => gateway.http(method, path, body)
+
+const keyOrderTitle = (order: KeyOrder) =>
+  order === 'fill_first'
+    ? t('First key until it runs out')
+    : order === 'round_robin'
+      ? t('Take turns')
+      : order === 'random'
+        ? t('Random')
+        : t('Least used first')
+
+/** How Hermes picks among the profile's keys for the provider once it has more than one (`credential_pool_strategies.<id>`). */
+function KeyOrderSection({ entry, profile }: { entry: ProviderEntry; profile: string }) {
+  const key = keyOrderKey(entry.id)!
+  const keys = entry.key?.keysInUse ?? 0
+  const [order, setOrder] = useState<KeyOrder | null>(null)
+  const [failed, setFailed] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const read = useCallback(async () => {
+    setFailed(false)
+    try {
+      setOrder(keyOrderFrom(valueAt(await readConfig(configHttp, profile), key)))
+    } catch {
+      setFailed(true)
+    }
+  }, [profile, key])
+  useEffect(() => {
+    void read()
+  }, [read])
+  const choose = async (next: KeyOrder) => {
+    if (!order || next === order) return
+    const before = order
+    setOrder(next)
+    setSaving(true)
+    setError(null)
+    try {
+      await updateConfig(configHttp, profile, config => withValue(config, key, next))
+    } catch {
+      setOrder(before)
+      setError(t('Could not save the key order.'))
+    } finally {
+      setSaving(false)
+    }
+  }
+  return (
+    <div className="provider-block">
+      <h3>{t('Key order')}</h3>
+      <p className="meta">
+        {(entry.key?.signInsInUse ?? 0) > 0
+          ? t('This profile has {count} keys and sign-ins for {name}. Hermes moves to another when one hits its limit.', {
+              count: String(keys),
+              name: entry.name
+            })
+          : t('This profile has {count} keys for {name}. Hermes moves to another when one hits its limit.', { count: String(keys), name: entry.name })}
+      </p>
+      {order ? (
+        <div className="pset-row">
+          <span>{t('Use keys')}</span>
+          <select
+            className="language-select"
+            value={order}
+            disabled={saving}
+            aria-label={t('Key order')}
+            onChange={e => void choose(e.target.value as KeyOrder)}
+          >
+            {KEY_ORDERS.map(o => (
+              <option key={o} value={o}>
+                {keyOrderTitle(o)}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : failed ? (
+        <div className="pset-row">
+          <span className="meta">{t('Could not load the key order.')}</span>
+          <button className="secondary" onClick={() => void read()}>
+            {t('Try Again')}
+          </button>
+        </div>
+      ) : (
+        <p className="meta">{t('Loading…')}</p>
+      )}
+      {error ? <p className="error-text">{error}</p> : null}
+    </div>
+  )
+}
+
+/** The provider's settings that aren't keys (a base URL override, a region), set in this profile's `.env`. */
+function SettingsSection({ entry, service, busy, run }: { entry: ProviderEntry; service: ProviderService; busy: boolean; run: Run }) {
+  const [editing, setEditing] = useState<string | null>(null)
+  const [draft, setDraft] = useState('')
+  const title = (variable: string) => (isBaseURL(variable) ? t('Base URL override') : variable)
+  const done = () => {
+    setEditing(null)
+    setDraft('')
+  }
+  return (
+    <div className="provider-block">
+      <h3>{t('Settings')}</h3>
+      {!entry.key && !entry.account ? (
+        <p className="meta">{t('This provider needs no key here. Hermes reaches it with these settings for this profile.')}</p>
+      ) : null}
+      {entry.settings.map(setting => (
+        <div key={setting.variable} className="provider-setting">
+          <div className="pset-row">
+            <div className="mem-text">
+              <span>{title(setting.variable)}</span>
+              <span className="meta">
+                {setting.saved ? t('Set for this profile') : isBaseURL(setting.variable) ? t("Not set, uses the provider's own") : t('Not set')}
+              </span>
+              {setting.description && !isBaseURL(setting.variable) ? <span className="meta">{setting.description}</span> : null}
+            </div>
+            {editing !== setting.variable ? (
+              <button
+                className="secondary"
+                disabled={busy}
+                aria-label={`${setting.saved ? t('Change') : t('Set')}, ${title(setting.variable)}`}
+                onClick={() => {
+                  setDraft('')
+                  setEditing(setting.variable)
+                }}
+              >
+                {setting.saved ? t('Change') : t('Set')}
+              </button>
+            ) : null}
+          </div>
+          {editing === setting.variable ? (
+            <div className="provider-setting-edit">
+              <input
+                className="pset-note"
+                value={draft}
+                autoFocus
+                spellCheck={false}
+                placeholder={isBaseURL(setting.variable) ? 'https://' : setting.variable}
+                aria-label={title(setting.variable)}
+                disabled={busy}
+                onChange={e => setDraft(e.target.value)}
+              />
+              <div className="pset-actions">
+                {setting.saved ? (
+                  <button
+                    className="secondary danger"
+                    disabled={busy}
+                    onClick={() => void run(async () => (await service.removeVariables([setting.variable]), done()))}
+                  >
+                    {t('Clear')}
+                  </button>
+                ) : null}
+                <button className="secondary" disabled={busy} onClick={done}>
+                  {t('Cancel')}
+                </button>
+                <button
+                  className="primary"
+                  disabled={busy || !draft.trim()}
+                  onClick={() => void run(async () => (await service.saveSetting(setting.variable, draft.trim()), done()))}
+                >
+                  {t('Save')}
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  )
+}
 
 function AccountSection({ entry, service, busy, run }: { entry: ProviderEntry; service: ProviderService; busy: boolean; run: Run }) {
   const account = entry.account!
