@@ -6,7 +6,7 @@ import type { TranscriptItem, TranscriptState } from '../state/transcript'
 import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
-import { t } from '@shared/i18n'
+import { locale, t } from '@shared/i18n'
 
 const MEDIA_ICONS: Record<ReturnType<typeof mediaKind>, IconName> = { image: 'image', audio: 'audio', video: 'video', file: 'file' }
 
@@ -60,7 +60,7 @@ export const Reply = memo(function Reply({ text }: { text: string }) {
 })
 
 export function clock(ms?: number): string {
-  return ms ? new Date(ms).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : ''
+  return ms ? new Date(ms).toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' }) : ''
 }
 
 /** "terminal" → "Ran a command", the way the phone names its tool steps. */

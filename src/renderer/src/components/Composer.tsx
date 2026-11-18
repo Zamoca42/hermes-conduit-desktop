@@ -56,7 +56,7 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
     <div className="composer-wrap">
       <div className="composer">
         <label className="sr-only" htmlFor="composer-input">
-          Message
+          {t('Message')}
         </label>
         <textarea
           id="composer-input"

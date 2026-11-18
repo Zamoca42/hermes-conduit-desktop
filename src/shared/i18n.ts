@@ -56,6 +56,14 @@ export function language(): Language {
   return current
 }
 
+/**
+ * The locale for dates and times: the chosen language's, or (in English)
+ * the computer's own, so English keeps its 24-hour clock or day-month order.
+ */
+export function locale(): string | undefined {
+  return current === 'en' ? undefined : current
+}
+
 /** `key` in the current language, with each {name} filled from `vars`. */
 export function t(key: string, vars?: Record<string, string | number>): string {
   const text = current === 'en' ? key : (strings[key]?.[current] ?? key)

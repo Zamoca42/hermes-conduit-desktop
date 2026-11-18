@@ -1169,6 +1169,21 @@
     "zh-Hans": "最大化",
     "zh-Hant": "最大化"
   },
+  "Message": {
+    "de": "Nachricht",
+    "es": "Mensaje",
+    "fr": "Message",
+    "id": "Pesan",
+    "it": "Messaggio",
+    "ja": "メッセージ",
+    "ko": "메시지",
+    "pl": "Wiadomość",
+    "pt-BR": "Mensagem",
+    "ru": "Сообщение",
+    "tr": "Mesaj",
+    "zh-Hans": "消息",
+    "zh-Hant": "訊息"
+  },
   "Message {name}…": {
     "de": "Nachricht an {name}…",
     "es": "Mensaje para {name}…",
