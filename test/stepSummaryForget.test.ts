@@ -33,3 +33,25 @@ describe('step summaries by host', () => {
     expect(store.size).toBe(0)
   })
 })
+
+describe('telling a step summary question', () => {
+  it('knows the last-run and explain questions in any language and length, and nothing else', async () => {
+    const { question, explainQuestion, isQuestion } = await import('../src/renderer/src/state/stepSummaries')
+    expect(isQuestion(question('German', 27))).toBe(true)
+    const steps = [
+      { kind: 'tool', key: 't', toolId: 'call_aaaaaaaaaaaa', name: 'terminal', args: 'ls, tell the user, looking back', result: 'ok', status: 'done' }
+    ]
+    expect(isQuestion(explainQuestion('English', 36, steps as never))).toBe(true)
+    expect(isQuestion(question('German', 27) + ' and more')).toBe(false)
+    expect(isQuestion('What did you just do?')).toBe(false)
+    expect(isQuestion(null)).toBe(false)
+    expect(
+      isQuestion(
+        'Describe in one short sentence (at most 15 words) what you did in the tool calls just before your last reply. ' +
+          "It labels those steps, folded, in the user's chat app. " +
+          'Write it in French, in the past tense, like "Searched three sites and compared their prices". ' +
+          'Reply with the sentence only.'
+      )
+    ).toBe(true)
+  })
+})

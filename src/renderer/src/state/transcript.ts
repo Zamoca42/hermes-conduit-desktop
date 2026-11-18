@@ -7,6 +7,7 @@ import { cleanUserText, type Attachment } from './text'
 import { isPlanTool, parsePlan, type Plan } from './plan'
 import { t } from '../../../shared/i18n'
 import { sideAgentNote } from './slash'
+import { isQuestion } from './stepSummaries'
 import { SHOW_TOOL, boardFrom, type Board } from './boards'
 import { TIMELINE_KINDS, delegationReport, timelineNotice, type DelegationEntry } from './timeline'
 
@@ -413,7 +414,8 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     case 'btw.complete':
     case 'background.complete': {
       const text = str(payload.text)
-      if (!text) return state
+      // A step summary's question, from here or the phone: its answer labels a run, never a note.
+      if (!text || (event.type === 'btw.complete' && isQuestion(str(payload.question)))) return state
       const note = sideAgentNote(event.type === 'btw.complete' ? 'btw' : 'background', str(payload.task_id) ?? '', text, str(payload.question))
       return addOutput(state, { text: note, format: 'markdown' })
     }

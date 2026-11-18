@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { question } from '../src/renderer/src/state/stepSummaries'
 import {
   helpText,
   looksLikeSlashCommand,
@@ -75,6 +76,8 @@ describe('a side agent’s answer', () => {
     expect(sideAgentNote('background', 't2', 'Done.')).toBe('[bg t2]\nDone.')
     const state = applyEvent(emptyTranscript, { type: 'btw.complete', payload: { task_id: 't1', text: 'Yes.', question: 'q' } })
     expect(state.items.at(-1)).toMatchObject({ kind: 'output', text: '[btw "q"]\nYes.', format: 'markdown' })
+    const summary = applyEvent(emptyTranscript, { type: 'btw.complete', payload: { task_id: 't3', text: 'I first…', question: question('English', 18) } })
+    expect(summary.items).toHaveLength(0)
     expect(addOutput(emptyTranscript, { command: '/version', text: 'v1', format: 'plain' }).items[0]).toMatchObject({ kind: 'output', command: '/version' })
   })
 })
