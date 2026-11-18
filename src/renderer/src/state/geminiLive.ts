@@ -5,6 +5,7 @@
  * socket with it (BidiGenerateContent), so the token never reaches the window.
  * Pure encode and decode here, so every message shape is testable.
  */
+import { t } from '../../../shared/i18n'
 import { RECALL_SPEC, TOOL_SPECS, liveInstructions, pcmBase64 } from './liveCall'
 
 export const STATUS_PATH = '/api/plugins/conduit_push/gemini-live/status'
@@ -179,37 +180,37 @@ export const closeReason = (code: number, reason: string): string | null => (cod
 // MARK: Voices
 
 /** Google's prebuilt voices for native-audio models, in Google's order, with the phone's styles. */
-export const VOICES: [string, string][] = [
-  ['Zephyr', 'Bright'],
-  ['Puck', 'Upbeat'],
-  ['Charon', 'Informative'],
-  ['Kore', 'Firm'],
-  ['Fenrir', 'Excitable'],
-  ['Leda', 'Youthful'],
-  ['Orus', 'Firm'],
-  ['Aoede', 'Breezy'],
-  ['Callirrhoe', 'Easy-going'],
-  ['Autonoe', 'Bright'],
-  ['Enceladus', 'Breathy'],
-  ['Iapetus', 'Clear'],
-  ['Umbriel', 'Easy-going'],
-  ['Algieba', 'Smooth'],
-  ['Despina', 'Smooth'],
-  ['Erinome', 'Clear'],
-  ['Algenib', 'Gravelly'],
-  ['Rasalgethi', 'Informative'],
-  ['Laomedeia', 'Upbeat'],
-  ['Achernar', 'Soft'],
-  ['Alnilam', 'Firm'],
-  ['Schedar', 'Even'],
-  ['Gacrux', 'Mature'],
-  ['Pulcherrima', 'Forward'],
-  ['Achird', 'Friendly'],
-  ['Zubenelgenubi', 'Casual'],
-  ['Vindemiatrix', 'Gentle'],
-  ['Sadachbia', 'Lively'],
-  ['Sadaltager', 'Knowledgeable'],
-  ['Sulafat', 'Warm']
+export const VOICES: [string, () => string][] = [
+  ['Zephyr', () => t('Bright')],
+  ['Puck', () => t('Upbeat')],
+  ['Charon', () => t('Informative')],
+  ['Kore', () => t('Firm')],
+  ['Fenrir', () => t('Excitable')],
+  ['Leda', () => t('Youthful')],
+  ['Orus', () => t('Firm')],
+  ['Aoede', () => t('Breezy')],
+  ['Callirrhoe', () => t('Easy-going')],
+  ['Autonoe', () => t('Bright')],
+  ['Enceladus', () => t('Breathy')],
+  ['Iapetus', () => t('Clear')],
+  ['Umbriel', () => t('Easy-going')],
+  ['Algieba', () => t('Smooth')],
+  ['Despina', () => t('Smooth')],
+  ['Erinome', () => t('Clear')],
+  ['Algenib', () => t('Gravelly')],
+  ['Rasalgethi', () => t('Informative')],
+  ['Laomedeia', () => t('Upbeat')],
+  ['Achernar', () => t('Soft')],
+  ['Alnilam', () => t('Firm')],
+  ['Schedar', () => t('Even')],
+  ['Gacrux', () => t('Mature')],
+  ['Pulcherrima', () => t('Forward')],
+  ['Achird', () => t('Friendly')],
+  ['Zubenelgenubi', () => t('Casual')],
+  ['Vindemiatrix', () => t('Gentle')],
+  ['Sadachbia', () => t('Lively')],
+  ['Sadaltager', () => t('Knowledgeable')],
+  ['Sulafat', () => t('Warm')]
 ]
 
 const VOICE_KEY = 'conduit.geminiLiveVoice'

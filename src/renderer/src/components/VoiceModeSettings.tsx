@@ -182,7 +182,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
               <option value="">{t('Gemini default')}</option>
               {GEMINI_VOICES.map(([name, style]) => (
                 <option key={name} value={name}>
-                  {`${name} · ${t(style)}`}
+                  {`${name} · ${style()}`}
                 </option>
               ))}
               {geminiPick && !GEMINI_VOICES.some(([name]) => name === geminiPick) ? <option value={geminiPick}>{geminiPick}</option> : null}
