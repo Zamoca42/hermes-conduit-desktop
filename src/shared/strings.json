@@ -224,6 +224,21 @@
     "zh-Hans": "添加评论",
     "zh-Hant": "新增留言"
   },
+  "Add to message": {
+    "de": "Zur Nachricht hinzufügen",
+    "es": "Añadir al mensaje",
+    "fr": "Ajouter au message",
+    "id": "Tambahkan ke pesan",
+    "it": "Aggiungi al messaggio",
+    "ja": "メッセージに追加",
+    "ko": "메시지에 추가",
+    "pl": "Dodaj do wiadomości",
+    "pt-BR": "Adicionar à mensagem",
+    "ru": "Добавить в сообщение",
+    "tr": "Mesaja ekle",
+    "zh-Hans": "添加到消息",
+    "zh-Hant": "加入訊息"
+  },
   "All": {
     "de": "Alle",
     "es": "Todos",
@@ -568,6 +583,21 @@
     "tr": "Ek eklenemedi: {reason}",
     "zh-Hans": "附件发送失败：{reason}",
     "zh-Hant": "附加失敗：{reason}"
+  },
+  "Back": {
+    "de": "Zurück",
+    "es": "Atrás",
+    "fr": "Retour",
+    "id": "Kembali",
+    "it": "Indietro",
+    "ja": "戻る",
+    "ko": "뒤로",
+    "pl": "Wstecz",
+    "pt-BR": "Voltar",
+    "ru": "Назад",
+    "tr": "Geri",
+    "zh-Hans": "返回",
+    "zh-Hant": "返回"
   },
   "Back later today": {
     "de": "Zurück später heute",
@@ -1274,6 +1304,36 @@
     "zh-Hans": "拷贝",
     "zh-Hant": "拷貝"
   },
+  "Copy Path": {
+    "de": "Pfad kopieren",
+    "es": "Copiar ruta",
+    "fr": "Copier le chemin",
+    "id": "Salin Jalur",
+    "it": "Copia percorso",
+    "ja": "パスをコピー",
+    "ko": "경로 복사",
+    "pl": "Kopiuj ścieżkę",
+    "pt-BR": "Copiar caminho",
+    "ru": "Скопировать путь",
+    "tr": "Yolu Kopyala",
+    "zh-Hans": "拷贝路径",
+    "zh-Hant": "拷貝路徑"
+  },
+  "Copy Relative Path": {
+    "de": "Relativen Pfad kopieren",
+    "es": "Copiar ruta relativa",
+    "fr": "Copier le chemin relatif",
+    "id": "Salin Jalur Relatif",
+    "it": "Copia percorso relativo",
+    "ja": "相対パスをコピー",
+    "ko": "상대 경로 복사",
+    "pl": "Kopiuj ścieżkę względną",
+    "pt-BR": "Copiar caminho relativo",
+    "ru": "Скопировать относительный путь",
+    "tr": "Göreli Yolu Kopyala",
+    "zh-Hans": "拷贝相对路径",
+    "zh-Hant": "拷貝相對路徑"
+  },
   "Cost": {
     "de": "Kosten",
     "es": "Coste",
@@ -1408,6 +1468,21 @@
     "tr": "Bu sohbetin kullanımı yüklenemedi.",
     "zh-Hans": "无法加载此聊天的用量。",
     "zh-Hant": "無法載入此聊天的用量。"
+  },
+  "Couldn't open this file": {
+    "de": "Diese Datei konnte nicht geöffnet werden",
+    "es": "No se pudo abrir este archivo",
+    "fr": "Impossible d'ouvrir ce fichier",
+    "id": "Tidak dapat membuka file ini",
+    "it": "Impossibile aprire questo file",
+    "ja": "このファイルを開けませんでした",
+    "ko": "이 파일을 열 수 없음",
+    "pl": "Nie można otworzyć tego pliku",
+    "pt-BR": "Não foi possível abrir este arquivo",
+    "ru": "Не удалось открыть этот файл",
+    "tr": "Bu dosya açılamadı",
+    "zh-Hans": "无法打开此文件",
+    "zh-Hant": "無法打開此檔案"
   },
   "Couldn't read Pulse": {
     "de": "Pulse konnte nicht gelesen werden",
@@ -1844,6 +1919,21 @@
     "zh-Hans": "删除任务？",
     "zh-Hant": "刪除任務？"
   },
+  "Delete “{name}”? This can’t be undone.": {
+    "de": "„{name}“ löschen? Das kann nicht rückgängig gemacht werden.",
+    "es": "¿Eliminar «{name}»? No se puede deshacer.",
+    "fr": "Supprimer « {name} » ? Cette action est irréversible.",
+    "id": "Hapus “{name}”? Tindakan ini tidak dapat dibatalkan.",
+    "it": "Eliminare «{name}»? L’operazione non può essere annullata.",
+    "ja": "「{name}」を削除しますか？元に戻せません。",
+    "ko": "“{name}”을(를) 삭제할까요? 되돌릴 수 없습니다.",
+    "pl": "Usunąć „{name}”? Tej operacji nie można cofnąć.",
+    "pt-BR": "Apagar “{name}”? Isso não pode ser desfeito.",
+    "ru": "Удалить «{name}»? Это действие нельзя отменить.",
+    "tr": "“{name}” silinsin mi? Bu işlem geri alınamaz.",
+    "zh-Hans": "删除“{name}”？此操作无法撤销。",
+    "zh-Hant": "刪除「{name}」？此操作無法復原。"
+  },
   "Deliver to": {
     "de": "Senden an",
     "es": "Entregar en",
@@ -1903,6 +1993,21 @@
     "tr": "Açıklama",
     "zh-Hans": "描述",
     "zh-Hant": "描述"
+  },
+  "Discard unsaved changes?": {
+    "de": "Nicht gespeicherte Änderungen verwerfen?",
+    "es": "¿Descartar los cambios sin guardar?",
+    "fr": "Ignorer les modifications non enregistrées ?",
+    "id": "Buang perubahan yang belum disimpan?",
+    "it": "Scartare le modifiche non salvate?",
+    "ja": "保存されていない変更を破棄しますか？",
+    "ko": "저장되지 않은 변경 사항을 버릴까요?",
+    "pl": "Odrzucić niezapisane zmiany?",
+    "pt-BR": "Descartar alterações não salvas?",
+    "ru": "Отменить несохранённые изменения?",
+    "tr": "Kaydedilmemiş değişiklikler silinsin mi?",
+    "zh-Hans": "放弃未保存的更改？",
+    "zh-Hant": "要捨棄未儲存的變更嗎？"
   },
   "Do it": {
     "de": "Erledigen",
@@ -2023,6 +2128,21 @@
     "tr": "Eklemek için bırakın",
     "zh-Hans": "拖放以添加附件",
     "zh-Hant": "拖放以加入附件"
+  },
+  "Duplicate": {
+    "de": "Duplizieren",
+    "es": "Duplicar",
+    "fr": "Dupliquer",
+    "id": "Duplikat",
+    "it": "Duplica",
+    "ja": "複製",
+    "ko": "복제",
+    "pl": "Duplikuj",
+    "pt-BR": "Duplicar",
+    "ru": "Дублировать",
+    "tr": "Çoğalt",
+    "zh-Hans": "复制",
+    "zh-Hant": "複製"
   },
   "Each run is also saved as its own conversation.": {
     "de": "Jeder Lauf wird außerdem als eigene Unterhaltung gespeichert.",
@@ -2173,6 +2293,21 @@
     "tr": "Bir dosya düzenleniyor",
     "zh-Hans": "正在编辑文件",
     "zh-Hant": "正在編輯檔案"
+  },
+  "Empty Folder": {
+    "de": "Leerer Ordner",
+    "es": "Carpeta vacía",
+    "fr": "Dossier vide",
+    "id": "Folder Kosong",
+    "it": "Cartella vuota",
+    "ja": "空のフォルダ",
+    "ko": "빈 폴더",
+    "pl": "Pusty folder",
+    "pt-BR": "Pasta vazia",
+    "ru": "Пустая папка",
+    "tr": "Boş Klasör",
+    "zh-Hans": "空文件夹",
+    "zh-Hant": "空白檔案夾"
   },
   "End quiet time": {
     "de": "Ruhe beenden",
@@ -2519,6 +2654,21 @@
     "zh-Hans": "文件",
     "zh-Hant": "檔案"
   },
+  "Files": {
+    "de": "Dateien",
+    "es": "Archivos",
+    "fr": "Fichiers",
+    "id": "File",
+    "it": "File",
+    "ja": "ファイル",
+    "ko": "파일",
+    "pl": "Pliki",
+    "pt-BR": "Arquivos",
+    "ru": "Файлы",
+    "tr": "Dosyalar",
+    "zh-Hans": "文件",
+    "zh-Hant": "檔案"
+  },
   "Filter": {
     "de": "Filter",
     "es": "Filtro",
@@ -2713,6 +2863,21 @@
     "tr": "Üstbilgi değerleri satır sonu içeremez.",
     "zh-Hans": "请求头的值不能包含换行。",
     "zh-Hant": "標頭的值不能包含換行。"
+  },
+  "Hermes can't read this folder.": {
+    "de": "Hermes kann diesen Ordner nicht lesen.",
+    "es": "Hermes no puede leer esta carpeta.",
+    "fr": "Hermes ne peut pas lire ce dossier.",
+    "id": "Hermes tidak dapat membaca folder ini.",
+    "it": "Hermes non può leggere questa cartella.",
+    "ja": "Hermes はこのフォルダを読み取れません。",
+    "ko": "Hermes가 이 폴더를 읽을 수 없습니다.",
+    "pl": "Hermes nie może odczytać tego folderu.",
+    "pt-BR": "O Hermes não consegue ler esta pasta.",
+    "ru": "Hermes не может прочитать эту папку.",
+    "tr": "Hermes bu klasörü okuyamıyor.",
+    "zh-Hans": "Hermes 无法读取此文件夹。",
+    "zh-Hant": "Hermes 無法讀取此資料夾。"
   },
   "Hermes did not accept the model switch.": {
     "de": "Hermes hat den Modellwechsel nicht angenommen.",
@@ -3614,6 +3779,36 @@
     "zh-Hans": "新聊天",
     "zh-Hant": "新聊天"
   },
+  "New File": {
+    "de": "Neue Datei",
+    "es": "Nuevo archivo",
+    "fr": "Nouveau fichier",
+    "id": "File Baru",
+    "it": "Nuovo file",
+    "ja": "新規ファイル",
+    "ko": "새 파일",
+    "pl": "Nowy plik",
+    "pt-BR": "Novo arquivo",
+    "ru": "Новый файл",
+    "tr": "Yeni Dosya",
+    "zh-Hans": "新建文件",
+    "zh-Hant": "新增檔案"
+  },
+  "New Folder": {
+    "de": "Neuer Ordner",
+    "es": "Nueva carpeta",
+    "fr": "Nouveau dossier",
+    "id": "Folder Baru",
+    "it": "Nuova cartella",
+    "ja": "新規フォルダ",
+    "ko": "새 폴더",
+    "pl": "Nowy folder",
+    "pt-BR": "Nova pasta",
+    "ru": "Новая папка",
+    "tr": "Yeni Klasör",
+    "zh-Hans": "新建文件夹",
+    "zh-Hant": "新增檔案夾"
+  },
   "New chat": {
     "de": "Neuer Chat",
     "es": "Chat nuevo",
@@ -3658,6 +3853,36 @@
     "tr": "Yeni sohbet (⌘N)",
     "zh-Hans": "新聊天（⌘N）",
     "zh-Hant": "新聊天（⌘N）"
+  },
+  "New file name": {
+    "de": "Name der neuen Datei",
+    "es": "Nombre del archivo nuevo",
+    "fr": "Nom du nouveau fichier",
+    "id": "Nama file baru",
+    "it": "Nome del nuovo file",
+    "ja": "新しいファイルの名前",
+    "ko": "새 파일 이름",
+    "pl": "Nazwa nowego pliku",
+    "pt-BR": "Nome do novo arquivo",
+    "ru": "Имя нового файла",
+    "tr": "Yeni dosya adı",
+    "zh-Hans": "新文件名称",
+    "zh-Hant": "新檔案名稱"
+  },
+  "New folder name": {
+    "de": "Name des neuen Ordners",
+    "es": "Nombre de la carpeta nueva",
+    "fr": "Nom du nouveau dossier",
+    "id": "Nama folder baru",
+    "it": "Nome della nuova cartella",
+    "ja": "新しいフォルダの名前",
+    "ko": "새 폴더 이름",
+    "pl": "Nazwa nowego folderu",
+    "pt-BR": "Nome da nova pasta",
+    "ru": "Имя новой папки",
+    "tr": "Yeni klasör adı",
+    "zh-Hans": "新文件夹名称",
+    "zh-Hant": "新資料夾名稱"
   },
   "New job": {
     "de": "Neuer Job",
@@ -3793,6 +4018,21 @@
     "tr": "Gelecek hafta",
     "zh-Hans": "下周",
     "zh-Hant": "下週"
+  },
+  "No Results": {
+    "de": "Keine Ergebnisse",
+    "es": "Sin resultados",
+    "fr": "Aucun résultat",
+    "id": "Tidak Ada Hasil",
+    "it": "Nessun risultato",
+    "ja": "結果なし",
+    "ko": "결과 없음",
+    "pl": "Brak wyników",
+    "pt-BR": "Nenhum resultado",
+    "ru": "Нет результатов",
+    "tr": "Sonuç Yok",
+    "zh-Hans": "无结果",
+    "zh-Hant": "無結果"
   },
   "No chats yet": {
     "de": "Noch keine Chats",
@@ -4303,6 +4543,21 @@
     "tr": "Bir kez, {date}",
     "zh-Hans": "仅一次，{date}",
     "zh-Hant": "僅一次，{date}"
+  },
+  "Only the start of this file is shown.": {
+    "de": "Nur der Anfang dieser Datei wird angezeigt.",
+    "es": "Solo se muestra el principio de este archivo.",
+    "fr": "Seul le début de ce fichier est affiché.",
+    "id": "Hanya bagian awal file ini yang ditampilkan.",
+    "it": "Viene mostrato solo l’inizio di questo file.",
+    "ja": "このファイルの先頭部分のみ表示しています。",
+    "ko": "이 파일의 앞부분만 표시됩니다.",
+    "pl": "Wyświetlany jest tylko początek tego pliku.",
+    "pt-BR": "Só o início deste arquivo é mostrado.",
+    "ru": "Показано только начало этого файла.",
+    "tr": "Bu dosyanın yalnızca başı gösteriliyor.",
+    "zh-Hans": "仅显示此文件的开头部分。",
+    "zh-Hant": "僅顯示此檔案的開頭部分。"
   },
   "Open Conduit": {
     "de": "Conduit öffnen",
@@ -5219,6 +5474,21 @@
     "zh-Hans": "思考强度",
     "zh-Hant": "推理"
   },
+  "Refresh": {
+    "de": "Aktualisieren",
+    "es": "Actualizar",
+    "fr": "Actualiser",
+    "id": "Muat ulang",
+    "it": "Aggiorna",
+    "ja": "更新",
+    "ko": "새로 고침",
+    "pl": "Odśwież",
+    "pt-BR": "Atualizar",
+    "ru": "Обновить",
+    "tr": "Yenile",
+    "zh-Hans": "刷新",
+    "zh-Hant": "重新整理"
+  },
   "Reminder": {
     "de": "Erinnerung",
     "es": "Recordatorio",
@@ -5323,6 +5593,21 @@
     "tr": "Tekrar",
     "zh-Hans": "重复",
     "zh-Hant": "重複"
+  },
+  "Replace it with your changes?": {
+    "de": "Mit deinen Änderungen ersetzen?",
+    "es": "¿Reemplazarlo con tus cambios?",
+    "fr": "Le remplacer par vos modifications ?",
+    "id": "Ganti dengan perubahan Anda?",
+    "it": "Sostituirlo con le tue modifiche?",
+    "ja": "変更内容で置き換えますか？",
+    "ko": "변경한 내용으로 바꿀까요?",
+    "pl": "Zastąpić go Twoimi zmianami?",
+    "pt-BR": "Substituir pelas suas alterações?",
+    "ru": "Заменить его вашими изменениями?",
+    "tr": "Değişikliklerinizle değiştirilsin mi?",
+    "zh-Hans": "用你的更改替换它？",
+    "zh-Hant": "以你的變更取代它？"
   },
   "Replied.": {
     "de": "Beantwortet.",
@@ -5654,6 +5939,21 @@
     "zh-Hans": "仅保存",
     "zh-Hant": "僅儲存"
   },
+  "Saving…": {
+    "de": "Wird gespeichert …",
+    "es": "Guardando…",
+    "fr": "Enregistrement…",
+    "id": "Menyimpan…",
+    "it": "Salvataggio…",
+    "ja": "保存中…",
+    "ko": "저장 중…",
+    "pl": "Zapisywanie…",
+    "pt-BR": "Salvando…",
+    "ru": "Сохранение…",
+    "tr": "Kaydediliyor…",
+    "zh-Hans": "保存中…",
+    "zh-Hant": "正在儲存…"
+  },
   "Schedule": {
     "de": "Zeitplan",
     "es": "Programación",
@@ -5713,6 +6013,21 @@
     "tr": "Sohbetlerde ara",
     "zh-Hans": "搜索聊天",
     "zh-Hant": "搜尋聊天"
+  },
+  "Search files": {
+    "de": "Dateien durchsuchen",
+    "es": "Buscar archivos",
+    "fr": "Rechercher des fichiers",
+    "id": "Cari file",
+    "it": "Cerca file",
+    "ja": "ファイルを検索",
+    "ko": "파일 검색",
+    "pl": "Szukaj plików",
+    "pt-BR": "Buscar arquivos",
+    "ru": "Поиск файлов",
+    "tr": "Dosyalarda ara",
+    "zh-Hans": "搜索文件",
+    "zh-Hant": "搜尋檔案"
   },
   "Search providers or models": {
     "de": "Anbieter oder Modelle suchen",
@@ -5803,6 +6118,21 @@
     "tr": "Web'de arıyor",
     "zh-Hans": "正在搜索网页",
     "zh-Hant": "正在搜尋網頁"
+  },
+  "Searching…": {
+    "de": "Suche läuft…",
+    "es": "Buscando…",
+    "fr": "Recherche…",
+    "id": "Mencari…",
+    "it": "Ricerca in corso…",
+    "ja": "検索中…",
+    "ko": "검색 중…",
+    "pl": "Wyszukiwanie…",
+    "pt-BR": "Buscando…",
+    "ru": "Поиск…",
+    "tr": "Aranıyor…",
+    "zh-Hans": "正在搜索…",
+    "zh-Hant": "正在搜尋…"
   },
   "Sections": {
     "de": "Bereiche",
@@ -6524,6 +6854,36 @@
     "zh-Hans": "这看起来不像网址。",
     "zh-Hant": "這看起來不像網址。"
   },
+  "That folder isn't on the server.": {
+    "de": "Dieser Ordner ist nicht auf dem Server.",
+    "es": "Esa carpeta no está en el servidor.",
+    "fr": "Ce dossier n’est pas sur le serveur.",
+    "id": "Folder itu tidak ada di server.",
+    "it": "Quella cartella non è sul server.",
+    "ja": "そのフォルダはサーバ上にありません。",
+    "ko": "해당 폴더가 서버에 없습니다.",
+    "pl": "Tego folderu nie ma na serwerze.",
+    "pt-BR": "Essa pasta não está no servidor.",
+    "ru": "Этой папки нет на сервере.",
+    "tr": "Bu klasör sunucuda yok.",
+    "zh-Hans": "服务器上没有该文件夹。",
+    "zh-Hant": "伺服器上沒有該資料夾。"
+  },
+  "That name can’t be used.": {
+    "de": "Dieser Name kann nicht verwendet werden.",
+    "es": "Ese nombre no se puede usar.",
+    "fr": "Ce nom ne peut pas être utilisé.",
+    "id": "Nama itu tidak dapat digunakan.",
+    "it": "Quel nome non può essere usato.",
+    "ja": "その名前は使用できません。",
+    "ko": "해당 이름은 사용할 수 없습니다.",
+    "pl": "Tej nazwy nie można użyć.",
+    "pt-BR": "Esse nome não pode ser usado.",
+    "ru": "Это имя нельзя использовать.",
+    "tr": "Bu ad kullanılamaz.",
+    "zh-Hans": "无法使用该名称。",
+    "zh-Hant": "無法使用該名稱。"
+  },
   "That user name and password didn’t work.": {
     "de": "Benutzername und Passwort haben nicht funktioniert.",
     "es": "Ese nombre de usuario y contraseña no funcionaron.",
@@ -6538,6 +6898,21 @@
     "tr": "Bu kullanıcı adı ve parola işe yaramadı.",
     "zh-Hans": "用户名或密码不正确。",
     "zh-Hant": "使用者名稱或密碼不正確。"
+  },
+  "That's not a folder.": {
+    "de": "Das ist kein Ordner.",
+    "es": "Eso no es una carpeta.",
+    "fr": "Ce n’est pas un dossier.",
+    "id": "Itu bukan folder.",
+    "it": "Non è una cartella.",
+    "ja": "それはフォルダではありません。",
+    "ko": "폴더가 아닙니다.",
+    "pl": "To nie jest folder.",
+    "pt-BR": "Isso não é uma pasta.",
+    "ru": "Это не папка.",
+    "tr": "Bu bir klasör değil.",
+    "zh-Hans": "这不是文件夹。",
+    "zh-Hant": "這不是資料夾。"
   },
   "The board comes with Hermes’ Kanban plugin. Turn it on in the Hermes dashboard to see tasks here.": {
     "de": "Das Board gehört zum Kanban-Plugin von Hermes. Aktiviere es im Hermes-Dashboard, um Aufgaben hier zu sehen.",
@@ -6778,6 +7153,21 @@
     "tr": "Bu pano Cloudflare Access’in arkasında. Hizmet belirtecini Proxy girişi altında ekleyin.",
     "zh-Hans": "此控制台位于 Cloudflare Access 后面。请在“代理登录”中添加其服务令牌。",
     "zh-Hant": "此控制台位於 Cloudflare Access 後面。請在「代理伺服器登入」中加入其服務權杖。"
+  },
+  "This file isn't text, so it can't be shown here.": {
+    "de": "Diese Datei ist kein Text und kann hier nicht angezeigt werden.",
+    "es": "Este archivo no es texto, así que no se puede mostrar aquí.",
+    "fr": "Ce fichier n’est pas du texte et ne peut pas être affiché ici.",
+    "id": "File ini bukan teks, jadi tidak dapat ditampilkan di sini.",
+    "it": "Questo file non è testo, quindi non può essere mostrato qui.",
+    "ja": "このファイルはテキストではないため、ここには表示できません。",
+    "ko": "이 파일은 텍스트가 아니어서 여기에 표시할 수 없습니다.",
+    "pl": "Ten plik nie jest tekstem, więc nie można go tu wyświetlić.",
+    "pt-BR": "Este arquivo não é texto, então não pode ser mostrado aqui.",
+    "ru": "Этот файл не текстовый, поэтому его нельзя показать здесь.",
+    "tr": "Bu dosya metin değil, bu yüzden burada gösterilemiyor.",
+    "zh-Hans": "此文件不是文本，无法在此显示。",
+    "zh-Hant": "此檔案不是文字，無法在此顯示。"
   },
   "This group chat was disbanded.": {
     "de": "Dieser Gruppenchat wurde aufgelöst.",
@@ -7333,6 +7723,21 @@
     "tr": "Başlıksız sohbet",
     "zh-Hans": "无标题聊天",
     "zh-Hant": "無標題聊天"
+  },
+  "Update the Conduit plugin on this host to search and change files here.": {
+    "de": "Aktualisiere das Conduit-Plugin auf diesem Host, um hier Dateien zu durchsuchen und zu ändern.",
+    "es": "Actualiza el plugin de Conduit en este host para buscar y cambiar archivos aquí.",
+    "fr": "Mettez à jour le plugin Conduit sur cet hôte pour rechercher et modifier des fichiers ici.",
+    "id": "Perbarui plugin Conduit di host ini untuk mencari dan mengubah file di sini.",
+    "it": "Aggiorna il plugin Conduit su questo host per cercare e modificare file qui.",
+    "ja": "ここでファイルを検索・変更するには、このホストの Conduit プラグインをアップデートしてください。",
+    "ko": "여기에서 파일을 검색하고 변경하려면 이 호스트의 Conduit 플러그인을 업데이트하세요.",
+    "pl": "Zaktualizuj wtyczkę Conduit na tym hoście, aby wyszukiwać i zmieniać tu pliki.",
+    "pt-BR": "Atualize o plugin do Conduit neste host para buscar e alterar arquivos aqui.",
+    "ru": "Обновите плагин Conduit на этом хосте, чтобы искать и изменять файлы здесь.",
+    "tr": "Burada dosya aramak ve değiştirmek için bu ana bilgisayardaki Conduit eklentisini güncelleyin.",
+    "zh-Hans": "请更新此主机上的 Conduit 插件，以便在此搜索和更改文件。",
+    "zh-Hant": "請更新此主機上的 Conduit 外掛，以便在此搜尋和變更檔案。"
   },
   "Update the Conduit plugin on this host to see this chat's tokens and cost.": {
     "de": "Aktualisiere das Conduit-Plugin auf diesem Host, um die Tokens und Kosten dieses Chats zu sehen.",
@@ -8158,6 +8563,21 @@
     "tr": "{bot} yanıt veremedi: {reason}",
     "zh-Hans": "{bot} 无法回答：{reason}",
     "zh-Hant": "{bot} 無法回答：{reason}"
+  },
+  "{count} bytes": {
+    "de": "{count} Byte",
+    "es": "{count} bytes",
+    "fr": "{count} octets",
+    "id": "{count} byte",
+    "it": "{count} byte",
+    "ja": "{count} バイト",
+    "ko": "{count}바이트",
+    "pl": "{count} B",
+    "pt-BR": "{count} bytes",
+    "ru": "{count} Б",
+    "tr": "{count} bayt",
+    "zh-Hans": "{count} 字节",
+    "zh-Hant": "{count} 位元組"
   },
   "{count} d": {
     "de": "{count} T.",

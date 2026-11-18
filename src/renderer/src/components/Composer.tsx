@@ -92,7 +92,20 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
       setText(quote.draft)
       setReplyTo(quote.reply ?? null)
     } else if ('reply' in quote) setReplyTo(quote.reply)
-    else setText(current => insertQuote(quote.text, current))
+    else if ('insert' in quote) {
+      const el = area.current
+      const at = el ? el.selectionStart : text.length
+      const end = el ? el.selectionEnd : text.length
+      setText(current => {
+        const before = current.slice(0, at)
+        const pad = before && !/\s$/.test(before) ? ' ' : ''
+        const words = `${pad}${quote.insert} `
+        requestAnimationFrame(() => el?.setSelectionRange(at + words.length, at + words.length))
+        return `${before}${words}${current.slice(end)}`
+      })
+      el?.focus()
+      return
+    } else setText(current => insertQuote(quote.text, current))
     const el = area.current
     if (!el) return
     el.focus()

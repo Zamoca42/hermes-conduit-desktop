@@ -9,6 +9,8 @@ import { ContextPanel } from './components/ContextPanel'
 import { RoomView } from './components/RoomView'
 import { Tasks } from './components/Tasks'
 import { PulsePage } from './components/PulsePage'
+import { FilesPanel } from './components/FilesPanel'
+import { pathForDraft } from './state/workspace'
 import { usePulse } from './state/usePulse'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
@@ -153,6 +155,29 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     if (section !== 'chats') setQuote(null)
   }, [section])
   const pulse = usePulse(connected, section === 'pulse')
+  // The Folder beside the chat: open until closed, for whichever chat has a folder.
+  const [filesOpen, setFilesOpen] = useState(() => {
+    try {
+      return localStorage.getItem('conduit.filesOpen') === '1'
+    } catch {
+      return false
+    }
+  })
+  const showFiles = useCallback((open: boolean) => {
+    setFilesOpen(open)
+    try {
+      localStorage.setItem('conduit.filesOpen', open ? '1' : '0')
+    } catch {
+      // Kept for this window only.
+    }
+  }, [])
+  // Each reply's end reads the open folders again: the agent may have changed files.
+  const [turnsDone, setTurnsDone] = useState(0)
+  const wasRunning = useRef(false)
+  useEffect(() => {
+    if (wasRunning.current && !transcript.running) setTurnsDone(n => n + 1)
+    wasRunning.current = transcript.running
+  }, [transcript.running])
   const pulseChat = pulse.feed?.homeChatId || null
   // Pulse's own chat stays behind its screen, as on the phone.
   const listedRows = useMemo(() => (pulseChat && list.rows ? list.rows.filter(row => row.id !== pulseChat) : list.rows), [list.rows, pulseChat])
@@ -463,7 +488,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               }}
             />
             <main className="chat" ref={chatPane}>
-              <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
+              <div className="chat-head">
+                {title ? <div className="chat-title">{title}</div> : null}
+                {chat.cwd && !filesOpen ? (
+                  <button className="chat-head-button" aria-label={t('Files')} title={t('Files')} onClick={() => showFiles(true)}>
+                    <Icon name="folder" />
+                  </button>
+                ) : null}
+              </div>
               <Transcript
                 state={transcript}
                 loading={loading}
@@ -520,6 +552,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 dropZone={chatPane}
               />
             </main>
+            {filesOpen && chat.cwd ? (
+              <FilesPanel
+                root={chat.cwd}
+                profile={selected.profile}
+                refreshKey={turnsDone}
+                onInsertPath={path => setQuote(quoteRequest({ insert: pathForDraft(path) }))}
+                onClose={() => showFiles(false)}
+              />
+            ) : null}
           </>
         ) : section === 'bots' ? (
           <BotsHome

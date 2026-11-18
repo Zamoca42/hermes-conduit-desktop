@@ -117,7 +117,7 @@ export function prefillRequest(text: string, author: string): QuoteRequest {
 
 let quoteIds = 0
 /** A fresh quote request. */
-export function quoteRequest(content: { text: string } | { reply: { author: string; text: string } } | { draft: string }): QuoteRequest {
+export function quoteRequest(content: { text: string } | { reply: { author: string; text: string } } | { draft: string } | { insert: string }): QuoteRequest {
   return { id: ++quoteIds, ...content } as QuoteRequest
 }
 

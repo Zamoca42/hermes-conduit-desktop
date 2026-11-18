@@ -151,3 +151,5 @@ export type QuoteRequest =
   | { id: number; text: string }
   | { id: number; reply: ReplyReference }
   | { id: number; draft: string; reply?: ReplyReference }
+  /** Words put in at the caret, as typed: a file's path. */
+  | { id: number; insert: string }
