@@ -39,6 +39,7 @@ import {
 import { savesCalls, setSavesCalls } from '../state/voiceSave'
 import { isLive } from '../state/consent'
 import { ProviderConsentRow } from './ProviderConsent'
+import { LocalLiveSettings } from './LocalLiveSettings'
 import {
   DEFAULT_VOICE as QWEN_DEFAULT_VOICE,
   STATUS_PATH as QWEN_STATUS_PATH,
@@ -187,6 +188,9 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
         </button>
         <button aria-pressed={mode === 'grok'} onClick={() => choose('grok')}>
           {t('Grok Live')}
+        </button>
+        <button aria-pressed={mode === 'local'} onClick={() => choose('local')}>
+          {t('Local Live')}
         </button>
       </div>
       {mode === 'gemini' ? (
@@ -506,6 +510,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           </p>
         </>
       ) : null}
+      {mode === 'local' ? <LocalLiveSettings profile={profile} /> : null}
       {isLive(mode) ? <ProviderConsentRow mode={mode} /> : null}
       {mode !== 'classic' ? (
         <>

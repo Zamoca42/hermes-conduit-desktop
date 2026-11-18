@@ -68,6 +68,7 @@ import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
 import { GptLiveCall } from './components/GptLiveCall'
 import { GrokLiveCall } from './components/GrokLiveCall'
+import { LocalLiveCall } from './components/LocalLiveCall'
 import { GeminiLiveCall } from './components/GeminiLiveCall'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { voiceMode, type VoiceMode } from './state/gptLive'
@@ -822,6 +823,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 />
               ) : calling && callMode === 'grok' ? (
                 <GrokLiveCall
+                  profile={selected.profile}
+                  chatId={selected.id}
+                  items={transcript.items}
+                  onSay={words => void onSend(words)}
+                  running={transcript.running}
+                  turnsDone={turnsDone}
+                  lastReply={lastReply}
+                  onEnd={() => setCalling(false)}
+                  onClassic={() => setCallMode('classic')}
+                  requests={openRequests}
+                />
+              ) : calling && callMode === 'local' ? (
+                <LocalLiveCall
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}

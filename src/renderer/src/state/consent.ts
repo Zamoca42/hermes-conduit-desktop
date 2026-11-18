@@ -8,7 +8,8 @@
 import { t } from '../../../shared/i18n'
 import type { VoiceMode } from './gptLive'
 
-export type LiveMode = Exclude<VoiceMode, 'classic'>
+/** Local Live goes to the user's own speech server, through their Hermes host: nothing to ask. */
+export type LiveMode = Exclude<VoiceMode, 'classic' | 'local'>
 
 const PROVIDERS: Record<LiveMode, { id: string; company: string; name: () => string }> = {
   gemini: { id: 'gemini-live', company: 'Google', name: () => t('Gemini Live') },
@@ -17,7 +18,7 @@ const PROVIDERS: Record<LiveMode, { id: string; company: string; name: () => str
   grok: { id: 'grok-live', company: 'xAI', name: () => t('Grok Live') }
 }
 
-export const isLive = (mode: VoiceMode): mode is LiveMode => mode !== 'classic'
+export const isLive = (mode: VoiceMode): mode is LiveMode => mode !== 'classic' && mode !== 'local'
 /** The company that receives the call (a name: never translated). */
 export const company = (mode: LiveMode) => PROVIDERS[mode].company
 export const modeName = (mode: LiveMode) => PROVIDERS[mode].name()
