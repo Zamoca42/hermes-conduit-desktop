@@ -38,6 +38,12 @@ export function memorySections(): Section[] {
       title: t('Memory'),
       fields: [
         {
+          key: 'memory.provider',
+          label: t('Memory provider'),
+          help: t('Provider used for long-term memory.'),
+          control: { kind: 'options', options: [], defaultValue: '' }
+        },
+        {
           key: 'memory.memory_enabled',
           label: t('Long-term memory'),
           help: t('Allow Hermes to retain relevant working memory.'),
@@ -68,6 +74,13 @@ export function memorySections(): Section[] {
     {
       title: t('Context'),
       fields: [
+        {
+          key: 'context.engine',
+          label: t('Context engine'),
+          help: t('Installed context-management engine.'),
+          // Hermes' built-in engine is "compressor"; a plugin engine goes by its own name.
+          control: { kind: 'options', options: [], defaultValue: 'compressor' }
+        },
         {
           key: 'compression.enabled',
           label: t('Context compression'),
@@ -220,6 +233,33 @@ export function schemaKeys(answer: unknown): Set<string> | null {
   return fields ? new Set(Object.keys(fields)) : null
 }
 
+/** The keys whose choices come from what this Hermes has installed (its plugin hub), not a fixed list. */
+export const PLUGIN_CHOICE_KEYS = ['memory.provider', 'context.engine'] as const
+
+/** Memory providers that are ready and the context engines installed, from `/api/dashboard/plugins/hub`, as the phone lists them. */
+export function pluginChoices(hub: unknown): Record<string, string[]> {
+  const providers = object(object(hub)?.providers) ?? {}
+  const names = (list: unknown, ready: boolean) =>
+    (Array.isArray(list) ? list : [])
+      .map(object)
+      .filter((o): o is Row => !!o && (!ready || o.status === 'ready'))
+      .map(o => o.name)
+      .filter((n): n is string => typeof n === 'string' && !!n)
+  return {
+    'memory.provider': names(providers.memory_options, true).sort(),
+    'context.engine': ['compressor', ...names(providers.context_options, false).filter(n => n !== 'compressor').sort()]
+  }
+}
+
+/** A plugin-choice field with its choices: the built-in memory first, and the value set now kept even when it's not listed. */
+export function withChoices(field: Field, choices: Record<string, string[]>, current: string): Field {
+  if (field.control.kind !== 'options' || !(field.key in choices)) return field
+  const values = [...(field.key === 'memory.provider' ? [''] : []), ...choices[field.key]]
+  if (!values.includes(current)) values.push(current)
+  const label = (v: string) => (v ? v : t('Default'))
+  return { ...field, control: { ...field.control, options: values.map(value => ({ value, label: label(value) })) } }
+}
+
 export const shownFields = (section: Section, schema: Set<string> | null) =>
   section.fields.filter(field => !field.requiresSchema || !schema || schema.has(field.key))
 
@@ -278,6 +318,19 @@ export function updateConfig(http: Http, profile: string, change: (config: Row) 
   queue = run.catch(() => undefined)
   return run
 }
+
+/** Runs a write that changes the config another way (Hermes' own route), in turn with every config save. */
+export function inTurn<T>(write: () => Promise<T>): Promise<T> {
+  const run = queue.then(write)
+  queue = run.catch(() => undefined)
+  return run
+}
+
+/** The main profile's memory provider and context engine go through Hermes' own route, which sets them up; other profiles write their config. */
+export const pluginRouteBody = (profile: string, key: string, value: unknown): Record<string, unknown> | null =>
+  (profile || 'default') === 'default' && (key === 'memory.provider' || key === 'context.engine')
+    ? { [key === 'memory.provider' ? 'memory_provider' : 'context_engine']: String(value ?? '') }
+    : null
 
 export async function readConfig(http: Http, profile: string): Promise<Row> {
   return object(await http('GET', configPath(profile))) ?? {}

@@ -2879,6 +2879,21 @@
     "zh-Hans": "上下文压缩",
     "zh-Hant": "上下文壓縮"
   },
+  "Context engine": {
+    "de": "Kontext-Engine",
+    "es": "Motor de contexto",
+    "fr": "Moteur de contexte",
+    "id": "Mesin konteks",
+    "it": "Motore del contesto",
+    "ja": "コンテキストエンジン",
+    "ko": "컨텍스트 엔진",
+    "pl": "Silnik kontekstu",
+    "pt-BR": "Mecanismo de contexto",
+    "ru": "Движок контекста",
+    "tr": "Bağlam motoru",
+    "zh-Hans": "上下文引擎",
+    "zh-Hant": "上下文引擎"
+  },
   "Context: {percent}% full": {
     "de": "Kontext: {percent} % voll",
     "es": "Contexto: {percent} % lleno",
@@ -7124,6 +7139,21 @@
     "zh-Hans": "已安装",
     "zh-Hant": "已安裝"
   },
+  "Installed context-management engine.": {
+    "de": "Installierte Engine für das Kontextmanagement.",
+    "es": "Motor de gestión de contexto instalado.",
+    "fr": "Moteur de gestion du contexte installé.",
+    "id": "Mesin pengelolaan konteks yang terinstal.",
+    "it": "Motore di gestione del contesto installato.",
+    "ja": "インストールされているコンテキスト管理エンジンです。",
+    "ko": "설치된 컨텍스트 관리 엔진.",
+    "pl": "Zainstalowany silnik zarządzania kontekstem.",
+    "pt-BR": "Mecanismo de gerenciamento de contexto instalado.",
+    "ru": "Установленный движок управления контекстом.",
+    "tr": "Yüklü bağlam yönetimi motoru.",
+    "zh-Hans": "已安装的上下文管理引擎。",
+    "zh-Hant": "已安裝的上下文管理引擎。"
+  },
   "Installing…": {
     "de": "Wird installiert…",
     "es": "Instalando…",
@@ -8308,6 +8338,21 @@
     "tr": "Bellek bütçesi",
     "zh-Hans": "记忆容量",
     "zh-Hant": "記憶容量"
+  },
+  "Memory provider": {
+    "de": "Gedächtnisanbieter",
+    "es": "Proveedor de memoria",
+    "fr": "Fournisseur de mémoire",
+    "id": "Penyedia memori",
+    "it": "Provider di memoria",
+    "ja": "メモリプロバイダ",
+    "ko": "메모리 제공자",
+    "pl": "Dostawca pamięci",
+    "pt-BR": "Provedor de memória",
+    "ru": "Провайдер памяти",
+    "tr": "Bellek sağlayıcısı",
+    "zh-Hans": "记忆提供方",
+    "zh-Hant": "記憶供應商"
   },
   "Memory tokens a day": {
     "de": "Memory-Tokens pro Tag",
@@ -11248,6 +11293,21 @@
     "tr": "Sağlayıcı kotası",
     "zh-Hans": "提供方配额",
     "zh-Hant": "供應商配額"
+  },
+  "Provider used for long-term memory.": {
+    "de": "Anbieter für das Langzeitgedächtnis.",
+    "es": "Proveedor usado para la memoria a largo plazo.",
+    "fr": "Fournisseur utilisé pour la mémoire à long terme.",
+    "id": "Penyedia yang digunakan untuk memori jangka panjang.",
+    "it": "Provider usato per la memoria a lungo termine.",
+    "ja": "長期メモリに使用するプロバイダです。",
+    "ko": "장기 메모리에 사용하는 제공자.",
+    "pl": "Dostawca używany do pamięci długoterminowej.",
+    "pt-BR": "Provedor usado para a memória de longo prazo.",
+    "ru": "Провайдер для долгосрочной памяти.",
+    "tr": "Uzun süreli bellek için kullanılan sağlayıcı.",
+    "zh-Hans": "用于长期记忆的提供方。",
+    "zh-Hant": "用於長期記憶的供應商。"
   },
   "Providers": {
     "de": "Anbieter",

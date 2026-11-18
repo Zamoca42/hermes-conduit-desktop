@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fieldValue, memorySections, schemaKeys, shownFields, updateConfig, valueAt, withValue, type Http } from '../src/renderer/src/state/profileConfig'
+import { fieldValue, memorySections, pluginChoices, pluginRouteBody, schemaKeys, shownFields, updateConfig, valueAt, withChoices, withValue, type Http } from '../src/renderer/src/state/profileConfig'
 
 const delegation = () => memorySections().find(s => s.fields.some(f => f.key.startsWith('delegation.')))!
 
@@ -65,5 +65,31 @@ describe('updateConfig', () => {
     await expect(updateConfig(failing, 'default', c => c)).rejects.toThrow('down')
     const ok: Http = async method => (method === 'GET' ? { a: 1 } : {})
     await expect(updateConfig(ok, 'default', c => c)).resolves.toEqual({ a: 1 })
+  })
+})
+
+describe('plugin choices', () => {
+  const hub = {
+    providers: {
+      memory_options: [
+        { name: 'retaindb', status: 'needs_config' },
+        { name: 'honcho', status: 'ready' }
+      ],
+      context_options: [{ name: 'lcm' }]
+    }
+  }
+  it('lists ready memory providers and every context engine', () => {
+    expect(pluginChoices(hub)).toEqual({ 'memory.provider': ['honcho'], 'context.engine': ['compressor', 'lcm'] })
+    expect(pluginChoices(null)['context.engine']).toEqual(['compressor'])
+  })
+  it('offers the built-in memory and keeps an unlisted current value', () => {
+    const field = memorySections()[0].fields.find(f => f.key === 'memory.provider')!
+    const shown = withChoices(field, pluginChoices(hub), 'byterover')
+    expect(shown.control.kind === 'options' && shown.control.options.map(o => o.value)).toEqual(['', 'honcho', 'byterover'])
+  })
+  it('sends the main profile through Hermes’ own route', () => {
+    expect(pluginRouteBody('default', 'memory.provider', 'honcho')).toEqual({ memory_provider: 'honcho' })
+    expect(pluginRouteBody('nova', 'context.engine', 'lcm')).toBeNull()
+    expect(pluginRouteBody('', 'memory.memory_enabled', true)).toBeNull()
   })
 })

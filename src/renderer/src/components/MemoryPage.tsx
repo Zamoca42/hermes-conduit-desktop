@@ -4,12 +4,16 @@ import { gateway } from '../gateway'
 import { groupModels, reasoningTitle, REASONING_LEVELS, type ModelProviderRow } from '../state/models'
 import {
   fieldValue,
+  inTurn,
   memorySections,
+  pluginChoices,
+  pluginRouteBody,
   readConfig,
   schemaKeys,
   shownFields,
   updateConfig,
   valueAt,
+  withChoices,
   withValue,
   type Field,
   type Http
@@ -37,6 +41,7 @@ export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
   const [profile, setProfile] = useState(initialProfile)
   const [config, setConfig] = useState<Record<string, unknown> | null>(null)
   const [schema, setSchema] = useState<Set<string> | null>(null)
+  const [choices, setChoices] = useState<Record<string, string[]>>({})
   const [error, setError] = useState<string | null>(null)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [saving, setSaving] = useState<string | null>(null)
@@ -46,13 +51,15 @@ export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
     const mine = ++generation.current
     setError(null)
     try {
-      const [read, keys] = await Promise.all([
+      const [read, keys, hub] = await Promise.all([
         readConfig(http, profile),
-        gateway.http('GET', withProfile('/api/config/schema', profile)).then(schemaKeys, () => null)
+        gateway.http('GET', withProfile('/api/config/schema', profile)).then(schemaKeys, () => null),
+        gateway.http('GET', withProfile('/api/dashboard/plugins/hub', profile)).then(pluginChoices, () => pluginChoices(null))
       ])
       if (generation.current !== mine) return
       setConfig(read)
       setSchema(keys)
+      setChoices(hub)
     } catch (e) {
       if (generation.current === mine) setError(message(e))
     }
@@ -68,6 +75,12 @@ export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
     setSaveError(null)
     const mine = generation.current
     try {
+      const route = pluginRouteBody(profile, key, values[key])
+      if (route) {
+        await inTurn(() => gateway.http('PUT', '/api/dashboard/plugin-providers', route))
+        if (generation.current === mine) setConfig(current => (current ? withValue(current, key, values[key]) : current))
+        return
+      }
       const saved = await updateConfig(http, profile, current => Object.entries(values).reduce((next, [k, v]) => withValue(next, k, v), current))
       if (generation.current === mine) setConfig(saved)
     } catch (e) {
@@ -115,15 +128,18 @@ export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
             return (
               <section key={section.title} className="pset-section">
                 <h2>{section.title}</h2>
-                {fields.map(field => (
-                  <FieldRow
-                    key={`${profile}:${field.key}`}
-                    field={field}
-                    value={fieldValue(config, field)}
-                    busy={saving !== null}
-                    onSave={v => void save(field.key, { [field.key]: v })}
-                  />
-                ))}
+                {fields.map(plain => {
+                  const field = withChoices(plain, choices, String(fieldValue(config, plain)))
+                  return (
+                    <FieldRow
+                      key={`${profile}:${field.key}`}
+                      field={field}
+                      value={fieldValue(config, field)}
+                      busy={saving !== null}
+                      onSave={v => void save(field.key, { [field.key]: v })}
+                    />
+                  )
+                })}
               </section>
             )
           })}
