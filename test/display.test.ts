@@ -60,3 +60,32 @@ describe('tool details from the REST transcript', () => {
     expect(attachBoards(next, toolAnswers(page), toolArgs(page))).toBe(next)
   })
 })
+
+describe('self-improvement reviews', () => {
+  it('reads a review row as the phone does', async () => {
+    const { reviewFromText, fromHistory, applyEvent } = await import('../src/renderer/src/state/transcript')
+    expect(reviewFromText('💾 Self-improvement review: Memory ➕ likes tea · Memory ✏️ lives in Paris')).toEqual({
+      summary: 'Memory updated',
+      details: ['Memory ➕ likes tea', 'Memory ✏️ lives in Paris']
+    })
+    expect(reviewFromText('💾 Self-improvement review: Memory ➕ a · Skill ➕ b')?.summary).toBe('Memory and skills updated')
+    expect(reviewFromText('💾 Self-improvement review: nothing new')).toEqual({ summary: 'nothing new', details: [] })
+    expect(reviewFromText('hello')).toBeNull()
+    expect(reviewFromText('💾 Saved two facts', true)).toEqual({ summary: 'Saved two facts', details: [] })
+    const items = fromHistory([
+      { role: 'system', content: '💾 Self-improvement review: Skill ➕ deploy' },
+      { role: 'system', content: 'other' }
+    ])
+    expect(items).toMatchObject([{ kind: 'review', summary: 'Skill updated', details: ['Skill ➕ deploy'] }])
+    const live = applyEvent({ items: [], running: false }, { type: 'review.summary', payload: { text: 'Saved one fact', details: ['Memory ➕ x'] } })
+    expect(live.items[0]).toMatchObject({ kind: 'review', summary: 'Saved one fact', details: ['Memory ➕ x'] })
+  })
+  it('follows Self-improvement updates', async () => {
+    const { showsReviews } = await import('../src/renderer/src/state/display')
+    expect(showsReviews(undefined)).toBe(true)
+    expect(showsReviews('default')).toBe(true)
+    expect(showsReviews(' Off ')).toBe(false)
+    expect(showsReviews(false)).toBe(false)
+    expect(chatDisplay({ display: { memory_notifications: 'off' } }).showReviews).toBe(false)
+  })
+})

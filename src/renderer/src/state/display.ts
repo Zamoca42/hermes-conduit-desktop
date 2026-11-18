@@ -18,12 +18,14 @@ export interface ChatDisplay {
   toolCards: boolean
   /** `display.expand_tools`: finished tool cards open with their details. */
   expandTools: boolean
+  /** `display.memory_notifications` other than off: self-improvement reviews show in chats. */
+  showReviews: boolean
 }
 
 type Row = Record<string, unknown>
 const object = (v: unknown): Row | null => (v && typeof v === 'object' && !Array.isArray(v) ? (v as Row) : null)
 
-export const DEFAULT_DISPLAY: ChatDisplay = { thinking: 'show', toolCards: true, expandTools: false }
+export const DEFAULT_DISPLAY: ChatDisplay = { thinking: 'show', toolCards: true, expandTools: false, showReviews: true }
 
 export function thinkingMode(config: unknown): ThinkingMode {
   const display = object(object(config)?.display) ?? {}
@@ -31,9 +33,20 @@ export function thinkingMode(config: unknown): ThinkingMode {
   return (display.conduit_thinking_on_request ?? true) === true ? 'on_request' : 'off'
 }
 
+/** As the phone reads it: a bool as it is, any text but "off" shows. */
+export function showsReviews(value: unknown): boolean {
+  if (typeof value === 'boolean') return value
+  return typeof value === 'string' ? value.trim().toLowerCase() !== 'off' : true
+}
+
 export function chatDisplay(config: unknown): ChatDisplay {
   const display = object(object(config)?.display) ?? {}
-  return { thinking: thinkingMode(config), toolCards: display.tool_progress !== 'off', expandTools: display.expand_tools === true }
+  return {
+    thinking: thinkingMode(config),
+    toolCards: display.tool_progress !== 'off',
+    expandTools: display.expand_tools === true,
+    showReviews: showsReviews(display.memory_notifications)
+  }
 }
 
 /** The config with the Thinking choice written; Show leaves Conduit's own key as it is. */

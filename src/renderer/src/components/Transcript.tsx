@@ -368,6 +368,22 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
         </details>
       )
     }
+    case 'review':
+      return (
+        <details className="review-card" data-key={item.key}>
+          <summary>
+            <span className="review-label">{t('SELF-IMPROVEMENT REVIEW')}</span>
+            <span className="review-summary">{item.summary}</span>
+          </summary>
+          {item.details.length ? (
+            <ul>
+              {item.details.map(detail => (
+                <li key={detail}>{detail}</li>
+              ))}
+            </ul>
+          ) : null}
+        </details>
+      )
     case 'notice':
       return <div className={`notice${item.tone === 'error' ? ' error' : ''}`}>{item.text}</div>
     case 'output':
@@ -420,8 +436,11 @@ export function Transcript({
     ? { label: thinkingShown ? t('Hide thinking') : t('Show thinking'), onSelect: () => setThinkingShown(shown => !shown) }
     : undefined
   const shown = useMemo(
-    () => state.items.filter(item => (item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : true)),
-    [state.items, showsThinking, display.toolCards]
+    () =>
+      state.items.filter(item =>
+        item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : item.kind === 'review' ? display.showReviews : true
+      ),
+    [state.items, showsThinking, display.toolCards, display.showReviews]
   )
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)

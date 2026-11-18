@@ -93,7 +93,50 @@ export interface OutputItem {
   format: 'plain' | 'markdown'
 }
 
-export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem
+/** A self-improvement review Hermes ran after a turn: what it saved to memory or skills. */
+export interface ReviewItem {
+  kind: 'review'
+  key: string
+  summary: string
+  details: string[]
+  at?: number
+}
+
+export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem
+
+const REVIEW_PREFIX = '💾 self-improvement review:'
+
+/**
+ * A review from its text, as the phone reads it (MessageNormalizer.reviewActivity):
+ * `💾 Self-improvement review: Memory ➕ … · Skill ✏️ …`, each change a detail.
+ * `unprefixed` takes a bare summary, as the live `review.summary` event sends.
+ */
+export function reviewFromText(raw: string, unprefixed = false): { summary: string; details: string[] } | null {
+  const text = raw.trim()
+  let body: string
+  if (text.toLowerCase().startsWith(REVIEW_PREFIX)) body = text.slice(REVIEW_PREFIX.length).trim()
+  else if (unprefixed) body = text.replace(/^[^\p{L}\p{N}]+/u, '').trim()
+  else return null
+  if (!body) return null
+  const details = body
+    .split(' · ')
+    .map(part => part.trim())
+    .filter(part => ['➕', '✏️', '➖'].some(mark => part.includes(mark)))
+  if (!details.length) return { summary: body, details: [] }
+  const labels = new Set(
+    details.flatMap(detail => {
+      const lower = detail.toLowerCase()
+      return lower.startsWith('user profile') ? [t('User profile')] : lower.startsWith('memory') ? [t('Memory')] : lower.startsWith('skill') ? [t('Skill')] : []
+    })
+  )
+  const summary =
+    labels.size === 1
+      ? t('{label} updated', { label: [...labels][0]! })
+      : labels.size > 1
+        ? t('Memory and skills updated')
+        : t('Self-improvement updates saved')
+  return { summary, details }
+}
 
 export interface TranscriptState {
   items: TranscriptItem[]
@@ -166,6 +209,11 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
         }
         const text = rowText(row).trim()
         if (text) items.push({ kind: 'assistant', key, text, at, streaming: false })
+        break
+      }
+      case 'system': {
+        const review = row.display_kind ? null : reviewFromText(rowText(row))
+        if (review) items.push({ kind: 'review', key, ...review, at })
         break
       }
       case 'tool':
@@ -305,6 +353,13 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
       const item = userItem(nextKey('u'), str(payload.text) ?? '', Date.now())
       if (!item) return state
       return { ...state, items: [...seal(state.items), item] }
+    }
+    case 'review.summary': {
+      const review = reviewFromText(str(payload.text) ?? str(payload.content) ?? '', true)
+      if (!review) return state
+      const details = Array.isArray(payload.details) ? payload.details.filter((d): d is string => typeof d === 'string' && !!d.trim()) : []
+      const all = [...new Set([...review.details, ...details])]
+      return { ...state, items: [...seal(state.items), { kind: 'review', key: nextKey('rv'), summary: review.summary, details: all, at: Date.now() }] }
     }
     case 'btw.complete':
     case 'background.complete': {

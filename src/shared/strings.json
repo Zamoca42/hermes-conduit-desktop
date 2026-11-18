@@ -9629,6 +9629,21 @@
     "zh-Hans": "记忆与委派",
     "zh-Hant": "記憶與委派"
   },
+  "Memory and skills updated": {
+    "de": "Gedächtnis und Skills aktualisiert",
+    "es": "Memoria y habilidades actualizadas",
+    "fr": "Mémoire et compétences mises à jour",
+    "id": "Memori dan skill diperbarui",
+    "it": "Memoria e skill aggiornate",
+    "ja": "メモリとスキルを更新しました",
+    "ko": "메모리 및 스킬 업데이트됨",
+    "pl": "Zaktualizowano pamięć i umiejętności",
+    "pt-BR": "Memória e habilidades atualizadas",
+    "ru": "Память и навыки обновлены",
+    "tr": "Bellek ve beceriler güncellendi",
+    "zh-Hans": "记忆和技能已更新",
+    "zh-Hant": "記憶與技能已更新"
+  },
   "Memory budget": {
     "de": "Gedächtnisbudget",
     "es": "Presupuesto de memoria",
@@ -15089,6 +15104,21 @@
     "zh-Hans": "运行",
     "zh-Hant": "執行"
   },
+  "SELF-IMPROVEMENT REVIEW": {
+    "de": "PRÜFUNG ZUR SELBSTVERBESSERUNG",
+    "es": "REVISIÓN DE AUTOMEJORA",
+    "fr": "BILAN D'AUTO-AMÉLIORATION",
+    "id": "TINJAUAN PERBAIKAN DIRI",
+    "it": "REVISIONE DI AUTOMIGLIORAMENTO",
+    "ja": "自己改善レビュー",
+    "ko": "자기 개선 검토",
+    "pl": "PRZEGLĄD SAMODOSKONALENIA",
+    "pt-BR": "REVISÃO DE AUTOAPRIMORAMENTO",
+    "ru": "ОБЗОР САМОУЛУЧШЕНИЙ",
+    "tr": "KENDİNİ GELİŞTİRME İNCELEMESİ",
+    "zh-Hans": "自我改进审核",
+    "zh-Hant": "自我改進檢閱"
+  },
   "SSH backend: keep exported variables between commands. The working directory always carries over.": {
     "de": "SSH-Backend: exportierte Variablen zwischen Befehlen behalten. Das Arbeitsverzeichnis bleibt immer erhalten.",
     "es": "Backend SSH: conserva las variables exportadas entre comandos. El directorio de trabajo siempre se mantiene.",
@@ -15823,6 +15853,21 @@
     "tr": "Kendini geliştirme güncellemeleri",
     "zh-Hans": "自我改进更新",
     "zh-Hant": "自我改進更新"
+  },
+  "Self-improvement updates saved": {
+    "de": "Updates zur Selbstverbesserung gespeichert",
+    "es": "Actualizaciones de automejora guardadas",
+    "fr": "Mises à jour d'auto-amélioration enregistrées",
+    "id": "Pembaruan perbaikan diri disimpan",
+    "it": "Aggiornamenti di automiglioramento salvati",
+    "ja": "自己改善の更新を保存しました",
+    "ko": "자기 개선 업데이트 저장됨",
+    "pl": "Zapisano aktualizacje samodoskonalenia",
+    "pt-BR": "Atualizações de autoaprimoramento salvas",
+    "ru": "Обновления самоулучшения сохранены",
+    "tr": "Kendini geliştirme güncellemeleri kaydedildi",
+    "zh-Hans": "自我改进更新已保存",
+    "zh-Hant": "自我改進更新已儲存"
   },
   "Send": {
     "de": "Senden",
@@ -16588,6 +16633,21 @@
     "tr": "Bir oda en fazla altı bot alır.",
     "zh-Hans": "一个房间最多容纳六个。",
     "zh-Hant": "一個聊天室最多容納六個。"
+  },
+  "Skill": {
+    "de": "Skill",
+    "es": "Habilidad",
+    "fr": "Compétence",
+    "id": "Skill",
+    "it": "Skill",
+    "ja": "スキル",
+    "ko": "스킬",
+    "pl": "Umiejętność",
+    "pt-BR": "Habilidade",
+    "ru": "Навык",
+    "tr": "Beceri",
+    "zh-Hans": "技能",
+    "zh-Hant": "技能"
   },
   "Skill Hub": {
     "de": "Skill-Hub",
@@ -20729,6 +20789,21 @@
     "zh-Hans": "用户名和密码",
     "zh-Hant": "使用者名稱和密碼"
   },
+  "User profile": {
+    "de": "Nutzerprofil",
+    "es": "Perfil de usuario",
+    "fr": "Profil utilisateur",
+    "id": "Profil pengguna",
+    "it": "Profilo utente",
+    "ja": "ユーザプロフィール",
+    "ko": "사용자 프로필",
+    "pl": "Profil użytkownika",
+    "pt-BR": "Perfil do usuário",
+    "ru": "Профиль пользователя",
+    "tr": "Kullanıcı profili",
+    "zh-Hans": "用户画像",
+    "zh-Hant": "使用者個人資料"
+  },
   "User profile memory": {
     "de": "Gedächtnis zum Nutzerprofil",
     "es": "Memoria del perfil de usuario",
@@ -22798,6 +22873,21 @@
     "tr": "{kind}: {level}",
     "zh-Hans": "{kind}：{level}",
     "zh-Hant": "{kind}：{level}"
+  },
+  "{label} updated": {
+    "de": "{label} aktualisiert",
+    "es": "Actualización: {label}",
+    "fr": "{label} : mise à jour",
+    "id": "{label} diperbarui",
+    "it": "Aggiornamento: {label}",
+    "ja": "{label}を更新しました",
+    "ko": "{label} 업데이트됨",
+    "pl": "Zaktualizowano: {label}",
+    "pt-BR": "Atualização: {label}",
+    "ru": "{label}: обновлено",
+    "tr": "{label} güncellendi",
+    "zh-Hans": "{label} 已更新",
+    "zh-Hant": "{label} 已更新"
   },
   "{model} limited": {
     "de": "{model} begrenzt",

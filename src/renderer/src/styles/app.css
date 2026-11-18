@@ -6123,3 +6123,30 @@ button.cap-row-text {
 .transcript .card-details[open] > summary.card {
   border-radius: var(--radius-card) var(--radius-card) 0 0;
 }
+.review-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.review-card > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.review-card > summary::-webkit-details-marker {
+  display: none;
+}
+.review-label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-2);
+}
+.review-card ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: var(--text-2);
+}
