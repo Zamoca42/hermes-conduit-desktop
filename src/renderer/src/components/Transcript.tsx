@@ -10,6 +10,7 @@ import { Markdown } from './Markdown'
 import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
 import { locale, t } from '@shared/i18n'
 import { blockquote, copyableReply, excerpt, parseReplyEnvelope, sameQuotedText, type QuoteRequest } from '../state/quote'
+import { BoardView } from './BoardView'
 
 export interface MessageMenuItem {
   label: string
@@ -231,9 +232,11 @@ interface ItemProps {
   onRetry?: () => void
   /** ⋯'s Edit and resend on this message of yours. */
   onEdit?: () => void
+  /** A board's follow-up, sent as the user's message: on the last turn's last board. */
+  onFollowUp?: (text: string) => void
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -284,6 +287,7 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit }: ItemProps) {
       )
     case 'tool': {
       const done = item.status === 'done'
+      if (item.board) return <BoardView board={item.board} onFollowUp={onFollowUp} />
       return (
         <div className="card">
           <span className={`card-icon${done ? '' : ' running'}`}>
@@ -354,8 +358,17 @@ export function Transcript({
   const actions = useMemo(() => {
     const retryKey = new Set<string>()
     const editTurns = new Map<string, number>()
-    if (!onCommand || state.running) return { retryKey, editTurns }
+    let followUpKey: string | undefined
+    if (!onCommand || state.running) return { retryKey, editTurns, followUpKey }
     const items = state.items
+    // Nothing sent since the last turn's last board: a follow-up asks the next question.
+    for (let i = items.length - 1; i >= 0 && items[i]!.kind !== 'user'; i--) {
+      const row = items[i]!
+      if (row.kind === 'tool' && row.board) {
+        if (row.board.next.length) followUpKey = row.key
+        break
+      }
+    }
     const lastUser = items.map(i => i.kind).lastIndexOf('user')
     const lastReply = items.map(i => i.kind).lastIndexOf('assistant')
     if (lastReply > lastUser && lastUser >= 0) retryKey.add(items[lastReply]!.key)
@@ -366,7 +379,7 @@ export function Transcript({
       turns++
       if (!item.attachments?.length) editTurns.set(item.key, turns)
     }
-    return { retryKey, editTurns }
+    return { retryKey, editTurns, followUpKey }
   }, [state, onCommand])
 
   const retry = () => {
@@ -420,6 +433,7 @@ export function Transcript({
             jump={jump}
             onRetry={actions.retryKey.has(item.key) ? retry : undefined}
             onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
+            onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
           />
         ))}
         {requests.map(request => (

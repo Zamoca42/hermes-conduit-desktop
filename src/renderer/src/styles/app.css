@@ -4083,3 +4083,245 @@ code.file-link {
 code.file-link:hover {
   color: var(--accent);
 }
+
+/* Boards: the cards conduit_show showed */
+.shown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+}
+
+.shown-tabs {
+  flex-wrap: wrap;
+}
+
+.shown-card {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shown-card h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.shown-card.assistant > :first-child {
+  margin-top: 0;
+}
+
+.shown-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.shown-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shown-stat strong {
+  font-size: 22px;
+}
+
+.shown-stat strong.good,
+.shown-change.up {
+  color: var(--success);
+}
+
+.shown-stat strong.bad,
+.shown-change.down {
+  color: var(--danger);
+}
+
+.shown-change {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.shown-table {
+  overflow-x: auto;
+}
+
+.shown-table table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+
+.shown-table th,
+.shown-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.shown-table th button {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.shown-steps {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shown-list,
+.shown-checklist,
+.shown-milestones,
+.shown-day ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shown-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shown-value {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.shown-checklist label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.shown-checklist input:checked + span {
+  text-decoration: line-through;
+  color: var(--text-3);
+}
+
+.shown-group {
+  margin: 4px 0 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.shown-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shown-progress-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.shown-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--field);
+  overflow: hidden;
+}
+
+.shown-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.shown-callout {
+  padding: 2px 12px;
+  border-left: 3px solid var(--accent);
+}
+
+.shown-callout.warning {
+  border-left-color: var(--warning);
+}
+
+.shown-callout.tip {
+  border-left-color: var(--success);
+}
+
+.shown-status {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shown-status.done strong {
+  color: var(--success);
+}
+
+.shown-status.problem strong {
+  color: var(--danger);
+}
+
+.shown-milestones li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.shown-milestones li.done {
+  color: var(--text);
+}
+
+.shown-milestones svg {
+  width: 14px;
+  height: 14px;
+}
+
+.shown-day-head {
+  margin-bottom: 6px;
+}
+
+.shown-day li {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.shown-time {
+  flex: none;
+  width: 64px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.shown-next {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shown-next .chip {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.shown-next .chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}

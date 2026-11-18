@@ -8758,5 +8758,35 @@
     "tr": "{question} (+{count} tane daha)",
     "zh-Hans": "{question}（另有 {count} 个）",
     "zh-Hant": "{question}（另有 {count} 個）"
+  },
+  "Card {number}": {
+    "de": "Karte {number}",
+    "es": "Tarjeta {number}",
+    "fr": "Carte {number}",
+    "id": "Kartu {number}",
+    "it": "Scheda {number}",
+    "ja": "カード {number}",
+    "ko": "카드 {number}",
+    "pl": "Karta {number}",
+    "pt-BR": "Cartão {number}",
+    "ru": "Карточка {number}",
+    "tr": "Kart {number}",
+    "zh-Hans": "卡片 {number}",
+    "zh-Hant": "卡片 {number}"
+  },
+  "{count} s": {
+    "de": "{count} s",
+    "es": "{count} s",
+    "fr": "{count} s",
+    "id": "{count} dtk",
+    "it": "{count} s",
+    "ja": "{count}秒",
+    "ko": "{count}초",
+    "pl": "{count} s",
+    "pt-BR": "{count} s",
+    "ru": "{count} с",
+    "tr": "{count} sn",
+    "zh-Hans": "{count} 秒",
+    "zh-Hant": "{count} 秒"
   }
 }
