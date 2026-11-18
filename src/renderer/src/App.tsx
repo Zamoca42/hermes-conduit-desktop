@@ -5,6 +5,7 @@ import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
 import { RoomView } from './components/RoomView'
+import { Tasks } from './components/Tasks'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
@@ -25,6 +26,7 @@ import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { useCommands } from './state/useCommands'
+import { mutateSession } from './state/chatActions'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -63,7 +65,7 @@ export function App() {
   )
 }
 
-type Section = 'bots' | 'room' | 'chats' | 'needs' | 'settings'
+type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'needs' | 'settings'
 
 const REOPEN_SECTION = 'conduit.reopen-section'
 
@@ -144,6 +146,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
   useEffect(() => setModelOpen(false), [selected.id])
+  /** A row's Pin, Rename or Delete: shown at once, put back with the reason when Hermes refuses it. */
+  const chatAction = useCallback(
+    async (row: ChatRow, patch: { pinned?: boolean; title?: string } | null) => {
+      list.patchRow(row.id, patch)
+      if (patch === null && (selected.id === row.id || chat.storedId === row.id)) newChat()
+      try {
+        await mutateSession(window.conduit.http, row.id, row.profile, patch)
+      } catch (e) {
+        window.alert(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: e instanceof Error ? e.message : String(e) }))
+      }
+      list.refresh()
+    },
+    [list, selected.id, chat.storedId, newChat]
+  )
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
     async (text: string, attachments: StagedAttachment[] = []) => {
@@ -331,6 +347,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           </button>
           <button
             className="railbtn"
+            aria-label={t('Tasks')}
+            title={t('Tasks')}
+            aria-current={section === 'tasks' ? 'page' : undefined}
+            onClick={() => setSection('tasks')}
+          >
+            <Icon name="tasks" />
+          </button>
+          <button
+            className="railbtn"
             aria-label={needsCount ? t('Needs you, {count}', { count: needsCount }) : t('Needs you')}
             title={t('Needs you')}
             aria-current={section === 'needs' ? 'page' : undefined}
@@ -369,6 +394,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               bots={roster.bots}
               profile={chatProfile}
               onProfile={chooseProfile}
+              onPin={row => void chatAction(row, { pinned: !row.pinned })}
+              onRename={(row, title) => void chatAction(row, { title })}
+              onDelete={row => {
+                if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`)) void chatAction(row, null)
+              }}
             />
             <main className="chat" ref={chatPane}>
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
@@ -421,6 +451,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onAsk={askBot}
             onOpenRoom={showRoom}
             onCreateRoom={groupRooms.create}
+          />
+        ) : section === 'tasks' ? (
+          <Tasks
+            bots={roster.bots}
+            connected={connected}
+            profile={chatProfile}
+            // Only the list's profile: picking one here doesn't open its chats.
+            onProfile={setChatProfile}
+            onOpenRun={(run, job) => {
+              if (!run.id) return
+              setSelected({ id: run.id, profile: run.profile ?? job.profile, title: run.title })
+              setSection('chats')
+            }}
           />
         ) : section === 'room' && openRoom ? (
           <RoomView key={openRoom.roomId} room={openRoom} bots={roster.bots ?? []} connected={connected} canStop={groupRooms.capabilities?.canStop === true} canAttach={groupRooms.capabilities?.attachments === true} />

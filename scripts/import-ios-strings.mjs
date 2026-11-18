@@ -28,18 +28,50 @@ const theirs = {}
 for (const file of catalogs(join(ios, 'Conduit'))) {
   for (const [key, entry] of Object.entries(JSON.parse(readFileSync(file, 'utf8')).strings ?? {})) {
     for (const language of LANGUAGES) {
-      const value = entry.localizations?.[language]?.stringUnit?.value
+      const localization = entry.localizations?.[language]
+      // A plural takes its "other" form, the one that reads with a number.
+      const value = localization?.stringUnit?.value ?? localization?.variations?.plural?.other?.stringUnit?.value
       if (value && !(theirs[key] ??= {})[language]) theirs[key][language] = value
     }
   }
 }
 
+// The iPhone app's %@ and %lld are the desktop's {name}: a key matches with its
+// placeholders in the same places, and each one's translation takes the names.
+const IOS_PLACEHOLDER = /%(?:(\d+)\$)?(?:@|lld|ld|d)/g
+const shapes = {}
+for (const key of Object.keys(theirs)) {
+  if (IOS_PLACEHOLDER.test(key)) shapes[key.replace(IOS_PLACEHOLDER, '\u0000')] ??= key
+  IOS_PLACEHOLDER.lastIndex = 0
+}
+function placeheld(key) {
+  const names = [...key.matchAll(/\{(\w+)\}/g)].map(match => match[1])
+  if (!names.length) return null
+  const source = shapes[key.replace(/\{\w+\}/g, '\u0000')]
+  if (!source) return null
+  const translated = {}
+  for (const [language, value] of Object.entries(theirs[source])) {
+    let index = 0
+    let ok = true
+    const text = value.replace(IOS_PLACEHOLDER, (_, position) => {
+      const name = names[position ? Number(position) - 1 : index++]
+      if (!name) ok = false
+      return `{${name}}`
+    })
+    if (ok) translated[language] = text
+  }
+  return translated
+}
+
 const path = new URL('../src/shared/strings.json', import.meta.url)
 const strings = JSON.parse(readFileSync(path, 'utf8'))
 let copied = 0
+const fills = {}
 for (const key of Object.keys(strings)) {
   for (const language of LANGUAGES) {
-    const value = theirs[key]?.[language]
+    // A match by placeholders only fills a gap: the same words can mean something else there.
+    const exact = theirs[key]?.[language]
+    const value = exact ?? (strings[key][language] ? undefined : (fills[key] ??= placeheld(key) ?? {})[language])
     if (value && strings[key][language] !== value) {
       strings[key][language] = value
       copied++

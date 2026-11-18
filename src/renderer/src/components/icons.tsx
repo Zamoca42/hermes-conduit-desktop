@@ -44,6 +44,7 @@ const paths = {
   video: <path d="M4 7h11v10H4zM15 10.5l5-3v9l-5-3" />,
   link: <path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  pin: <path d="M9 4h6l-1 6 3 3H7l3-3zM12 13v7" />,
   more: (
     <>
       <circle cx="6" cy="12" r="1.2" />
@@ -58,6 +59,12 @@ const paths = {
     </>
   ),
   spinner: <path d="M12 4a8 8 0 108 8" />,
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v4l2.5 2.5" />
+    </>
+  ),
   attach: <path d="M12 5v14M5 12h14" />,
   mic: (
     <>
@@ -69,9 +76,9 @@ const paths = {
 
 export type IconName = keyof typeof paths
 
-export function Icon({ name, style }: { name: IconName; style?: React.CSSProperties }) {
+export function Icon({ name, style, className }: { name: IconName; style?: React.CSSProperties; className?: string }) {
   return (
-    <svg className="ico" viewBox="0 0 24 24" aria-hidden="true" style={style}>
+    <svg className={className ? `ico ${className}` : 'ico'} viewBox="0 0 24 24" aria-hidden="true" style={style}>
       {paths[name]}
     </svg>
   )

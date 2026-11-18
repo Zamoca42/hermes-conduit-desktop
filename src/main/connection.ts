@@ -283,8 +283,7 @@ export class Connection {
       parsed = text
     }
     if (!response.ok) {
-      const detail = (parsed as { detail?: unknown } | null)?.detail
-      throw Object.assign(new Error(typeof detail === 'string' ? detail : `HTTP ${response.status}`), { code: response.status })
+      throw Object.assign(new Error(httpErrorText((parsed as { detail?: unknown } | null)?.detail, response.status)), { code: response.status })
     }
     return parsed as T
   }
@@ -473,6 +472,17 @@ export class Connection {
  * upload about 1 s for every 64 KB it carries if that is longer (about
  * 0.5 Mbit/s), as on the phone.
  */
+/** A refusal's words: Hermes' `detail`, which can be a string or `{ code, message }`. */
+export function httpErrorText(detail: unknown, status: number): string {
+  if (typeof detail === 'string' && detail) return detail
+  if (detail && typeof detail === 'object') {
+    const row = detail as { code?: unknown; error?: unknown; message?: unknown }
+    const words = [row.code ?? row.error, row.message].filter((part): part is string => typeof part === 'string' && !!part)
+    if (words.length) return words.join(': ')
+  }
+  return `HTTP ${status}`
+}
+
 export function uploadTimeoutMs(params: Record<string, unknown>): number {
   let characters = 0
   for (const key of ['content_base64', 'data_url', 'data', 'data_base64']) {
