@@ -30,6 +30,8 @@ interface Props {
   profile?: string
   /** Changes when a reply ends: the agent may have changed files. */
   refreshKey: number
+  /** A file a reply named, opened on each new id. */
+  reveal?: { path: string; id: number } | null
   /** Puts a path in the chat's draft. */
   onInsertPath: (path: string) => void
   onClose: () => void
@@ -57,7 +59,7 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
  * row's menu makes. Without the plugin's routes it browses and reads through
  * Hermes' own, and offers no search or changes.
  */
-export function FilesPanel({ root, profile, refreshKey, onInsertPath, onClose }: Props) {
+export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, onClose }: Props) {
   const [plugin, setPlugin] = useState<boolean | null>(null)
   const [listings, setListings] = useState<Record<string, Listed>>({})
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set([root]))
@@ -195,6 +197,14 @@ export function FilesPanel({ root, profile, refreshKey, onInsertPath, onClose }:
       setOpen(current => (current?.entry.path === entry.path ? { ...current, error: message(e) } : current))
     }
   }
+
+  // A file a reply named: opened over the tree, wherever it is on the host.
+  const revealed = useRef<number | null>(null)
+  useEffect(() => {
+    if (!reveal || reveal.id === revealed.current) return
+    revealed.current = reveal.id
+    void openFile({ name: baseName(reveal.path), path: reveal.path.replace(/[\\/]+$/, ''), isDirectory: false })
+  })
 
   const change = async (action: Parameters<typeof changePath>[0], body: Record<string, unknown>, folders: string[]) => {
     setNote(null)

@@ -162,3 +162,35 @@ export function validName(name: string): boolean {
 
 /** A path as it goes into a message: in inline code, so a space doesn't split it. */
 export const pathForDraft = (path: string) => (/\s/.test(path) ? `\`${path}\`` : path)
+
+const FILE_TYPE = /\.[A-Za-z][A-Za-z0-9]{0,9}$/
+const WEB_HOST = /^[a-z0-9-]+(\.[a-z0-9-]+)+\//i
+
+/**
+ * Whether inline code names a file on the host, as the phone decides: a
+ * rooted path, a name with a file type, or a folder with a trailing slash or
+ * three parts. Two bare parts (owner/repo, an image, a model) stay code, and
+ * nothing starting with a web host is a file.
+ */
+export function looksLikePath(code: string): boolean {
+  const text = code.trim()
+  if (!text || text.length > 400 || /\s{2,}|[\n<>|"*?]/.test(text) || /^[a-z][a-z0-9+.-]*:\/\//i.test(text)) return false
+  if (/^(\/|~\/|[A-Za-z]:[\\/])/.test(text)) return text.length > 1
+  if (WEB_HOST.test(text) || /\s/.test(text)) return false
+  const parts = text.replace(/[\\/]+$/, '').split(/[\\/]/).filter(Boolean)
+  if (!parts.length) return false
+  if (/[\\/]$/.test(text)) return true
+  if (parts.length === 2 && !/^\.{1,2}$/.test(parts[0]!)) return FILE_TYPE.test(parts[1]!) && !/^\d/.test(parts[1]!.split('.').pop()!) && parts[0] !== '@'
+  if (parts.length >= 3) return true
+  // One part: a file name with a type, not a version or a number.
+  return FILE_TYPE.test(text) && !/^\d+(\.\d+)+$/.test(text) && !/^v?\d/.test(text)
+}
+
+/** A path from a reply as the host has it: a relative one is in the chat's folder. */
+export function absolutePath(path: string, folder: string): string {
+  const text = path.trim()
+  if (/^(\/|[A-Za-z]:[\\/]|~\/)/.test(text)) return text
+  const base = folder.replace(/[\\/]+$/, '')
+  const separator = /^[A-Za-z]:\\/.test(base) ? '\\' : '/'
+  return `${base}${separator}${text.replace(/^\.\//, '')}`
+}

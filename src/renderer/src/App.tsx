@@ -10,7 +10,8 @@ import { RoomView } from './components/RoomView'
 import { Tasks } from './components/Tasks'
 import { PulsePage } from './components/PulsePage'
 import { FilesPanel } from './components/FilesPanel'
-import { pathForDraft } from './state/workspace'
+import { absolutePath, pathForDraft } from './state/workspace'
+import { FileLinks } from './components/Markdown'
 import { usePulse } from './state/usePulse'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
@@ -171,6 +172,16 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       // Kept for this window only.
     }
   }, [])
+  // A file path in a reply opens in the Folder.
+  const [reveal, setReveal] = useState<{ path: string; id: number } | null>(null)
+  const cwd = chat.cwd
+  const openPath = useMemo(
+    () => (cwd ? (path: string) => {
+      setReveal(current => ({ path: absolutePath(path, cwd), id: (current?.id ?? 0) + 1 }))
+      showFiles(true)
+    } : null),
+    [cwd, showFiles]
+  )
   // Each reply's end reads the open folders again: the agent may have changed files.
   const [turnsDone, setTurnsDone] = useState(0)
   const wasRunning = useRef(false)
@@ -496,6 +507,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   </button>
                 ) : null}
               </div>
+              <FileLinks.Provider value={openPath}>
               <Transcript
                 state={transcript}
                 loading={loading}
@@ -506,6 +518,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onQuote={setQuote}
                 onCommand={text => void onSend(text)}
               />
+              </FileLinks.Provider>
               {contextOpen && chat.liveId ? (
                 <ContextPanel chat={chat} profile={selected.profile} running={transcript.running} onClose={closeContext} onCompress={() => void onSend('/compress')} />
               ) : null}
@@ -557,6 +570,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 root={chat.cwd}
                 profile={selected.profile}
                 refreshKey={turnsDone}
+                reveal={reveal}
                 onInsertPath={path => setQuote(quoteRequest({ insert: pathForDraft(path) }))}
                 onClose={() => showFiles(false)}
               />

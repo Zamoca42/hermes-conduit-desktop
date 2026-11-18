@@ -41,3 +41,14 @@ describe('the Folder', () => {
     expect(pathForDraft('/w/a.ts')).toBe('/w/a.ts')
   })
 })
+
+describe('file paths in replies', () => {
+  it('links what names a file, and leaves other code alone', async () => {
+    const { looksLikePath, absolutePath } = await import('../src/renderer/src/state/workspace')
+    for (const path of ['/etc/hosts', '~/notes.md', 'C:\\w\\a.ts', 'README.md', 'src/app.ts', 'docs/', 'a/b/c', './build.sh']) expect([path, looksLikePath(path)]).toEqual([path, true])
+    for (const code of ['owner/repo', 'npm install', 'github.com/a/b', 'https://x.dev/a.md', '1.2.3', 'v2.0', 'x', 'node:18/slim', 'a  b', 'ubuntu/22.04']) expect([code, looksLikePath(code)]).toEqual([code, false])
+    expect(absolutePath('src/app.ts', '/w/')).toBe('/w/src/app.ts')
+    expect(absolutePath('./a.ts', 'C:\\w')).toBe('C:\\w\\a.ts')
+    expect(absolutePath('/etc/hosts', '/w')).toBe('/etc/hosts')
+  })
+})

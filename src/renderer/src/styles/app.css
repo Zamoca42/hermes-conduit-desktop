@@ -4071,3 +4071,15 @@ html[data-window='quick'] body {
   max-width: 100%;
   border-radius: 8px;
 }
+
+/* A file a reply names, opened in the Folder */
+code.file-link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-line);
+  text-underline-offset: 2px;
+}
+
+code.file-link:hover {
+  color: var(--accent);
+}
