@@ -3,6 +3,7 @@ import type { ConnectionStatus } from '@shared/ipc'
 import { BotsHome } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
+import { RoomView } from './components/RoomView'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
@@ -11,6 +12,8 @@ import { Transcript } from './components/Transcript'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
 import { useBots } from './state/useBots'
+import type { Room } from './state/groups'
+import { useRooms } from './state/useGroups'
 import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
 import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
@@ -37,7 +40,7 @@ export function App() {
   )
 }
 
-type Section = 'bots' | 'chats' | 'needs' | 'settings'
+type Section = 'bots' | 'room' | 'chats' | 'needs' | 'settings'
 
 function Shell({ status }: { status: ConnectionStatus }) {
   const connected = status.phase === 'open'
@@ -138,6 +141,12 @@ function Shell({ status }: { status: ConnectionStatus }) {
     pendingAsk.current = null
     void onSend(ask.text)
   }, [selected, loading, error, chat.liveId, chat.storedId, onSend])
+  const groupRooms = useRooms(connected)
+  const [openRoom, setOpenRoom] = useState<Room | null>(null)
+  const showRoom = useCallback((room: Room) => {
+    setOpenRoom(room)
+    setSection('room')
+  }, [])
   const runningProfiles = useMemo(() => {
     const names = new Set<string>()
     if (transcript.running && selected.profile) names.add(selected.profile)
@@ -233,7 +242,7 @@ function Shell({ status }: { status: ConnectionStatus }) {
             className="railbtn"
             aria-label="Bots"
             title="Bots"
-            aria-current={section === 'bots' ? 'page' : undefined}
+            aria-current={section === 'bots' || section === 'room' ? 'page' : undefined}
             onClick={() => setSection('bots')}
           >
             <Icon name="bots" />
@@ -299,7 +308,19 @@ function Shell({ status }: { status: ConnectionStatus }) {
             </main>
           </>
         ) : section === 'bots' ? (
-          <BotsHome bots={roster.bots} error={roster.error} runningProfiles={runningProfiles} onOpen={openBot} onAsk={askBot} />
+          <BotsHome
+            bots={roster.bots}
+            error={roster.error}
+            runningProfiles={runningProfiles}
+            rooms={groupRooms.rooms}
+            canStartRooms={groupRooms.capabilities?.supported === true && connected}
+            onOpen={openBot}
+            onAsk={askBot}
+            onOpenRoom={showRoom}
+            onCreateRoom={groupRooms.create}
+          />
+        ) : section === 'room' && openRoom ? (
+          <RoomView key={openRoom.roomId} room={openRoom} bots={roster.bots ?? []} connected={connected} canStop={groupRooms.capabilities?.canStop === true} />
         ) : section === 'needs' ? (
           <NeedsYou
             requests={requests}
