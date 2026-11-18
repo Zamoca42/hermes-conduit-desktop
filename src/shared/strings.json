@@ -359,6 +359,21 @@
     "zh-Hans": "API 密钥（可选）",
     "zh-Hant": "API 金鑰（選填）"
   },
+  "API key · billed per minute": {
+    "de": "API-Schlüssel · Abrechnung pro Minute",
+    "es": "Clave de API · cobro por minuto",
+    "fr": "Clé API · facturée à la minute",
+    "id": "Kunci API · ditagih per menit",
+    "it": "Chiave API · addebito al minuto",
+    "ja": "APIキー・分単位で課金",
+    "ko": "API 키 · 분당 과금",
+    "pl": "Klucz API · rozliczenie za minutę",
+    "pt-BR": "Chave de API · cobrança por minuto",
+    "ru": "API-ключ · поминутная оплата",
+    "tr": "API anahtarı · dakika başına ücretlendirilir",
+    "zh-Hans": "API 密钥 · 按分钟计费",
+    "zh-Hant": "API 金鑰 · 按分鐘計費"
+  },
   "API retries": {
     "de": "API-Wiederholungen",
     "es": "Reintentos de API",
@@ -974,6 +989,21 @@
     "zh-Hans": "琥珀色",
     "zh-Hant": "琥珀色"
   },
+  "An API-key call says goodbye and ends when it reaches this limit.": {
+    "de": "Ein Anruf über den API-Schlüssel verabschiedet sich und endet, wenn er dieses Limit erreicht.",
+    "es": "Una llamada con la clave de API se despide y termina cuando llega a este límite.",
+    "fr": "Un appel sur la clé API dit au revoir et se termine quand il atteint cette limite.",
+    "id": "Panggilan dengan kunci API mengucapkan salam penutup lalu berakhir saat mencapai batas ini.",
+    "it": "Una chiamata sulla chiave API saluta e termina quando raggiunge questo limite.",
+    "ja": "APIキーでの通話は、この制限に達するとあいさつをして終了します。",
+    "ko": "API 키 통화는 이 제한에 도달하면 인사하고 종료돼요.",
+    "pl": "Połączenie na kluczu API żegna się i kończy, gdy osiągnie ten limit.",
+    "pt-BR": "Uma chamada na chave de API se despede e termina quando atinge este limite.",
+    "ru": "Звонок с API-ключом прощается и завершается, когда достигает этого лимита.",
+    "tr": "API anahtarıyla yapılan bir arama bu sınıra ulaştığında vedalaşır ve sona erer.",
+    "zh-Hans": "使用 API 密钥的通话达到此上限时会道别并结束。",
+    "zh-Hant": "使用 API 金鑰的通話達到此上限時會道別並結束。"
+  },
   "An update is available": {
     "de": "Ein Update ist verfügbar",
     "es": "Hay una actualización disponible",
@@ -988,6 +1018,21 @@
     "tr": "Bir güncelleme var",
     "zh-Hans": "有可用更新",
     "zh-Hant": "有可用更新"
+  },
+  "Animated": {
+    "de": "Lebendig",
+    "es": "Animada",
+    "fr": "Animée",
+    "id": "Ekspresif",
+    "it": "Animata",
+    "ja": "表情豊かな",
+    "ko": "표현력 풍부함",
+    "pl": "Ożywiony",
+    "pt-BR": "Expressiva",
+    "ru": "Оживлённый",
+    "tr": "Hareketli",
+    "zh-Hans": "活泼",
+    "zh-Hant": "生動"
   },
   "Another bot": {
     "de": "Ein anderer Bot",
@@ -1994,6 +2039,36 @@
     "zh-Hans": "工作流之间",
     "zh-Hant": "工作流程之間"
   },
+  "Bill GPT-Live to the API key?": {
+    "de": "GPT-Live über den API-Schlüssel abrechnen?",
+    "es": "¿Cobrar GPT-Live a la clave de API?",
+    "fr": "Facturer GPT-Live sur la clé API ?",
+    "id": "Tagihkan GPT-Live ke kunci API?",
+    "it": "Addebitare GPT-Live sulla chiave API?",
+    "ja": "GPT-LiveをAPIキーに課金しますか？",
+    "ko": "GPT-Live를 API 키로 과금할까요?",
+    "pl": "Rozliczać GPT-Live z klucza API?",
+    "pt-BR": "Cobrar o GPT-Live na chave de API?",
+    "ru": "Оплачивать GPT-Live с API-ключа?",
+    "tr": "GPT-Live API anahtarından ücretlendirilsin mi?",
+    "zh-Hans": "要向 API 密钥计费 GPT-Live 吗？",
+    "zh-Hant": "要向 API 金鑰計費 GPT-Live 嗎？"
+  },
+  "Billing": {
+    "de": "Abrechnung",
+    "es": "Facturación",
+    "fr": "Facturation",
+    "id": "Penagihan",
+    "it": "Addebito",
+    "ja": "課金",
+    "ko": "과금",
+    "pl": "Rozliczenie",
+    "pt-BR": "Cobrança",
+    "ru": "Оплата",
+    "tr": "Ücretlendirme",
+    "zh-Hans": "计费",
+    "zh-Hant": "計費"
+  },
   "Billing postal code (optional)": {
     "de": "Rechnungs-PLZ (optional)",
     "es": "Código postal de facturación (opcional)",
@@ -2008,6 +2083,36 @@
     "tr": "Fatura posta kodu (isteğe bağlı)",
     "zh-Hans": "账单邮编（可选）",
     "zh-Hant": "帳單郵遞區號（選填）"
+  },
+  "Bills the ChatGPT subscription your Hermes server is signed in to. A call never moves to the API key on its own.": {
+    "de": "Rechnet über das ChatGPT-Abo ab, mit dem dein Hermes-Server angemeldet ist. Ein Anruf wechselt nie von selbst zum API-Schlüssel.",
+    "es": "Se cobra a la suscripción de ChatGPT con la que tu servidor Hermes inició sesión. Una llamada nunca pasa sola a la clave de API.",
+    "fr": "Facturé sur l'abonnement ChatGPT auquel votre serveur Hermes est connecté. Un appel ne passe jamais de lui-même sur la clé API.",
+    "id": "Ditagihkan ke langganan ChatGPT yang dipakai server Hermes Anda untuk masuk. Panggilan tidak pernah pindah ke kunci API dengan sendirinya.",
+    "it": "Addebitato sull'abbonamento ChatGPT con cui il tuo server Hermes ha effettuato l'accesso. Una chiamata non passa mai da sola alla chiave API.",
+    "ja": "HermesサーバがサインインしているChatGPTサブスクリプションに課金されます。通話が勝手にAPIキーに切り替わることはありません。",
+    "ko": "Hermes 서버가 로그인한 ChatGPT 구독으로 과금돼요. 통화가 저절로 API 키로 넘어가는 일은 없어요.",
+    "pl": "Rozliczane w ramach subskrypcji ChatGPT, na którą zalogowany jest Twój serwer Hermes. Połączenie nigdy samo nie przechodzi na klucz API.",
+    "pt-BR": "Cobra a assinatura do ChatGPT em que seu servidor Hermes está conectado. Uma chamada nunca passa sozinha para a chave de API.",
+    "ru": "Оплачивается подпиской ChatGPT, под которой вошёл ваш сервер Hermes. Звонок никогда сам не переходит на API-ключ.",
+    "tr": "Hermes sunucunuzun oturum açtığı ChatGPT aboneliğinden ücretlendirilir. Bir arama hiçbir zaman kendiliğinden API anahtarına geçmez.",
+    "zh-Hans": "向 Hermes 服务器登录的 ChatGPT 订阅计费。通话绝不会自行改用 API 密钥。",
+    "zh-Hant": "向你的 Hermes 伺服器登入的 ChatGPT 訂閱計費。通話絕不會自行改用 API 金鑰。"
+  },
+  "Bills your Hermes server's OpenAI API key per minute of call time, separately from any ChatGPT plan. The call screen shows which one a call is on.": {
+    "de": "Rechnet über den OpenAI-API-Schlüssel deines Hermes-Servers pro Gesprächsminute ab, getrennt von jedem ChatGPT-Abo. Der Anrufbildschirm zeigt, worüber ein Anruf läuft.",
+    "es": "Se cobra a la clave de API de OpenAI de tu servidor Hermes por minuto de llamada, aparte de cualquier plan de ChatGPT. La pantalla de llamada muestra cuál usa cada llamada.",
+    "fr": "Facturé sur la clé API OpenAI de votre serveur Hermes à la minute d'appel, en dehors de tout forfait ChatGPT. L'écran d'appel indique lequel un appel utilise.",
+    "id": "Ditagihkan ke kunci API OpenAI server Hermes Anda per menit panggilan, terpisah dari paket ChatGPT mana pun. Layar panggilan menunjukkan mana yang dipakai panggilan.",
+    "it": "Addebitato sulla chiave API OpenAI del tuo server Hermes per ogni minuto di chiamata, separatamente da qualsiasi piano ChatGPT. La schermata della chiamata mostra quale usa ogni chiamata.",
+    "ja": "HermesサーバのOpenAI APIキーに通話時間1分ごとに課金されます。ChatGPTプランとは別です。どちらで通話しているかは通話画面に表示されます。",
+    "ko": "Hermes 서버의 OpenAI API 키로 통화 시간 1분마다 과금돼요. ChatGPT 요금제와는 별도예요. 통화 화면에 어느 쪽으로 통화 중인지 표시돼요.",
+    "pl": "Rozliczane z klucza API OpenAI Twojego serwera Hermes za każdą minutę połączenia, osobno od planu ChatGPT. Ekran połączenia pokazuje, z czego korzysta połączenie.",
+    "pt-BR": "Cobra a chave de API da OpenAI do seu servidor Hermes por minuto de chamada, à parte de qualquer plano do ChatGPT. A tela da chamada mostra qual a chamada está usando.",
+    "ru": "Оплачивается с OpenAI API-ключа вашего сервера Hermes за каждую минуту звонка, отдельно от любого тарифа ChatGPT. На экране звонка видно, чем оплачивается звонок.",
+    "tr": "Hermes sunucunuzun OpenAI API anahtarından arama süresinin her dakikası için, ChatGPT planlarından ayrı olarak ücretlendirilir. Arama ekranı, aramanın hangisini kullandığını gösterir.",
+    "zh-Hans": "按通话分钟向 Hermes 服务器的 OpenAI API 密钥计费，与任何 ChatGPT 套餐分开。通话界面会显示通话使用的是哪一种。",
+    "zh-Hant": "按通話分鐘向你的 Hermes 伺服器的 OpenAI API 金鑰計費，與任何 ChatGPT 方案分開。通話畫面會顯示通話使用的是哪一種。"
   },
   "Blocked": {
     "de": "Blockiert",
@@ -2143,6 +2248,21 @@
     "tr": "Dağılım",
     "zh-Hans": "用量分布",
     "zh-Hant": "明細"
+  },
+  "Bright": {
+    "de": "Hell",
+    "es": "Brillante",
+    "fr": "Lumineuse",
+    "id": "Cerah",
+    "it": "Brillante",
+    "ja": "明るい",
+    "ko": "밝음",
+    "pl": "Jasny",
+    "pt-BR": "Radiante",
+    "ru": "Яркий",
+    "tr": "Parlak",
+    "zh-Hans": "明亮",
+    "zh-Hant": "明亮"
   },
   "Bring it up": {
     "de": "Trotzdem zeigen",
@@ -2368,6 +2488,21 @@
     "tr": "Hermes'ten aramalar",
     "zh-Hans": "Hermes 来电",
     "zh-Hant": "Hermes 來電"
+  },
+  "Calm": {
+    "de": "Ruhig",
+    "es": "Calmada",
+    "fr": "Calme",
+    "id": "Tenang",
+    "it": "Calma",
+    "ja": "穏やかな",
+    "ko": "차분함",
+    "pl": "Spokojny",
+    "pt-BR": "Calma",
+    "ru": "Спокойный",
+    "tr": "Sakin",
+    "zh-Hans": "平静",
+    "zh-Hant": "平靜"
   },
   "Cancel": {
     "de": "Abbrechen",
@@ -2624,6 +2759,21 @@
     "zh-Hans": "聊天标题",
     "zh-Hant": "聊天標題"
   },
+  "ChatGPT plan": {
+    "de": "ChatGPT-Abo",
+    "es": "Plan de ChatGPT",
+    "fr": "Forfait ChatGPT",
+    "id": "Paket ChatGPT",
+    "it": "Piano ChatGPT",
+    "ja": "ChatGPTプラン",
+    "ko": "ChatGPT 요금제",
+    "pl": "Plan ChatGPT",
+    "pt-BR": "Plano do ChatGPT",
+    "ru": "Тариф ChatGPT",
+    "tr": "ChatGPT planı",
+    "zh-Hans": "ChatGPT 套餐",
+    "zh-Hant": "ChatGPT 方案"
+  },
   "Chats": {
     "de": "Chats",
     "es": "Chats",
@@ -2789,6 +2939,21 @@
     "zh-Hans": "检查点上限",
     "zh-Hant": "檢查點上限"
   },
+  "Cheerful": {
+    "de": "Fröhlich",
+    "es": "Alegre",
+    "fr": "Joyeuse",
+    "id": "Ceria",
+    "it": "Allegra",
+    "ja": "朗らかな",
+    "ko": "쾌활함",
+    "pl": "Radosny",
+    "pt-BR": "Alegre",
+    "ru": "Жизнерадостный",
+    "tr": "Neşeli",
+    "zh-Hans": "愉快",
+    "zh-Hant": "開朗"
+  },
   "Choose Photo": {
     "de": "Foto auswählen",
     "es": "Elegir foto",
@@ -2878,6 +3043,21 @@
     "tr": "Şehir",
     "zh-Hans": "城市",
     "zh-Hant": "城市"
+  },
+  "Classic": {
+    "de": "Klassisch",
+    "es": "Clásico",
+    "fr": "Classique",
+    "id": "Klasik",
+    "it": "Classica",
+    "ja": "クラシック",
+    "ko": "클래식",
+    "pl": "Klasyczny",
+    "pt-BR": "Clássico",
+    "ru": "Классический",
+    "tr": "Klasik",
+    "zh-Hans": "经典",
+    "zh-Hant": "經典"
   },
   "Classic voice": {
     "de": "Klassisch",
@@ -3269,6 +3449,21 @@
     "zh-Hans": "已完成",
     "zh-Hant": "已完成"
   },
+  "Composed": {
+    "de": "Gefasst",
+    "es": "Serena",
+    "fr": "Posée",
+    "id": "Kalem",
+    "it": "Pacata",
+    "ja": "落ち着いた",
+    "ko": "침착함",
+    "pl": "Opanowany",
+    "pt-BR": "Serena",
+    "ru": "Собранный",
+    "tr": "Ölçülü",
+    "zh-Hans": "沉稳",
+    "zh-Hant": "沉穩"
+  },
   "Compress Now": {
     "de": "Jetzt komprimieren",
     "es": "Comprimir ahora",
@@ -3523,6 +3718,21 @@
     "tr": "Conduit · {count} şey seni bekliyor",
     "zh-Hans": "Conduit · {count} 项需要你处理",
     "zh-Hant": "Conduit · {count} 項需要你處理"
+  },
+  "Confident": {
+    "de": "Selbstsicher",
+    "es": "Segura",
+    "fr": "Assurée",
+    "id": "Percaya diri",
+    "it": "Sicura",
+    "ja": "自信のある",
+    "ko": "자신감 있음",
+    "pl": "Pewny siebie",
+    "pt-BR": "Confiante",
+    "ru": "Уверенный",
+    "tr": "Kendinden emin",
+    "zh-Hans": "自信",
+    "zh-Hant": "自信"
   },
   "Confirm connector reloads": {
     "de": "Neuladen von Konnektoren bestätigen",
@@ -5849,6 +6059,21 @@
     "zh-Hans": "更早",
     "zh-Hant": "更早"
   },
+  "Easy-going": {
+    "de": "Entspannt",
+    "es": "Tranquila",
+    "fr": "Décontractée",
+    "id": "Luwes",
+    "it": "Alla mano",
+    "ja": "おおらかな",
+    "ko": "느긋함",
+    "pl": "Wyluzowany",
+    "pt-BR": "Tranquila",
+    "ru": "Непринуждённый",
+    "tr": "Rahat",
+    "zh-Hans": "随和",
+    "zh-Hant": "隨和"
+  },
   "Edit": {
     "de": "Bearbeiten",
     "es": "Editar",
@@ -7334,6 +7559,156 @@
     "zh-Hans": "GPT-Live",
     "zh-Hant": "GPT-Live"
   },
+  "GPT-Live calls will use your Hermes server's OpenAI API key, which OpenAI bills per minute of call time, separately from any ChatGPT plan. Your Hermes server has to allow it too (voice.gpt_live.conduit_api_billing in the profile's config).": {
+    "de": "GPT-Live-Anrufe nutzen dann den OpenAI-API-Schlüssel deines Hermes-Servers, den OpenAI pro Gesprächsminute abrechnet, getrennt von jedem ChatGPT-Abo. Dein Hermes-Server muss es ebenfalls erlauben (voice.gpt_live.conduit_api_billing in der Konfiguration des Profils).",
+    "es": "Las llamadas de GPT-Live usarán la clave de API de OpenAI de tu servidor Hermes, que OpenAI cobra por minuto de llamada, aparte de cualquier plan de ChatGPT. Tu servidor Hermes también tiene que permitirlo (voice.gpt_live.conduit_api_billing en la configuración del perfil).",
+    "fr": "Les appels GPT-Live utiliseront la clé API OpenAI de votre serveur Hermes, qu'OpenAI facture à la minute d'appel, en dehors de tout forfait ChatGPT. Votre serveur Hermes doit aussi l'autoriser (voice.gpt_live.conduit_api_billing dans la configuration du profil).",
+    "id": "Panggilan GPT-Live akan memakai kunci API OpenAI server Hermes Anda, yang ditagih OpenAI per menit panggilan, terpisah dari paket ChatGPT mana pun. Server Hermes Anda juga harus mengizinkannya (voice.gpt_live.conduit_api_billing di konfigurasi profil).",
+    "it": "Le chiamate GPT-Live useranno la chiave API OpenAI del tuo server Hermes, che OpenAI addebita per ogni minuto di chiamata, separatamente da qualsiasi piano ChatGPT. Anche il tuo server Hermes deve consentirlo (voice.gpt_live.conduit_api_billing nella configurazione del profilo).",
+    "ja": "GPT-Liveの通話にHermesサーバのOpenAI APIキーを使います。OpenAIは通話時間1分ごとに課金し、ChatGPTプランとは別に請求されます。Hermesサーバ側でも許可が必要です（プロファイルの設定のvoice.gpt_live.conduit_api_billing）。",
+    "ko": "GPT-Live 통화에 Hermes 서버의 OpenAI API 키를 사용해요. OpenAI는 통화 시간 1분마다 과금하며 ChatGPT 요금제와는 별도로 청구돼요. Hermes 서버에서도 허용해야 해요(프로필 설정의 voice.gpt_live.conduit_api_billing).",
+    "pl": "Połączenia GPT-Live będą korzystać z klucza API OpenAI Twojego serwera Hermes, który OpenAI rozlicza za każdą minutę połączenia, osobno od planu ChatGPT. Twój serwer Hermes też musi na to pozwolić (voice.gpt_live.conduit_api_billing w konfiguracji profilu).",
+    "pt-BR": "As chamadas do GPT-Live vão usar a chave de API da OpenAI do seu servidor Hermes, que a OpenAI cobra por minuto de chamada, à parte de qualquer plano do ChatGPT. Seu servidor Hermes também precisa permitir isso (voice.gpt_live.conduit_api_billing na configuração do perfil).",
+    "ru": "Звонки GPT-Live будут использовать OpenAI API-ключ вашего сервера Hermes, который OpenAI оплачивает поминутно, отдельно от любого тарифа ChatGPT. Сервер Hermes тоже должен это разрешить (voice.gpt_live.conduit_api_billing в конфигурации профиля).",
+    "tr": "GPT-Live aramaları Hermes sunucunuzun OpenAI API anahtarını kullanacak; OpenAI bunu arama süresinin her dakikası için, ChatGPT planlarından ayrı olarak ücretlendirir. Hermes sunucunuzun da buna izin vermesi gerekir (profil yapılandırmasında voice.gpt_live.conduit_api_billing).",
+    "zh-Hans": "GPT-Live 通话将使用 Hermes 服务器的 OpenAI API 密钥，OpenAI 按通话分钟计费，与任何 ChatGPT 套餐分开。Hermes 服务器也必须允许（配置文件设置中的 voice.gpt_live.conduit_api_billing）。",
+    "zh-Hant": "GPT-Live 通話將使用你的 Hermes 伺服器的 OpenAI API 金鑰，OpenAI 按通話分鐘計費，與任何 ChatGPT 方案分開。你的 Hermes 伺服器也必須允許（設定檔設定中的 voice.gpt_live.conduit_api_billing）。"
+  },
+  "GPT-Live didn't start the conversation. If your ChatGPT plan doesn't offer the voice {voice}, pick another in GPT-Live's settings.": {
+    "de": "GPT-Live hat das Gespräch nicht gestartet. Falls dein ChatGPT-Tarif die Stimme {voice} nicht anbietet, wähle in den GPT-Live-Einstellungen eine andere.",
+    "es": "GPT-Live no inició la conversación. Si tu plan de ChatGPT no ofrece la voz {voice}, elige otra en los ajustes de GPT-Live.",
+    "fr": "GPT-Live n'a pas démarré la conversation. Si votre forfait ChatGPT ne propose pas la voix {voice}, choisissez-en une autre dans les réglages de GPT-Live.",
+    "id": "GPT-Live tidak memulai percakapan. Jika paket ChatGPT Anda tidak menyediakan suara {voice}, pilih suara lain di pengaturan GPT-Live.",
+    "it": "GPT-Live non ha avviato la conversazione. Se il tuo piano ChatGPT non offre la voce {voice}, scegline un'altra nelle impostazioni di GPT-Live.",
+    "ja": "GPT-Liveが会話を開始しませんでした。ChatGPTプランに音声「{voice}」がない場合は、GPT-Liveの設定で別の音声を選んでください。",
+    "ko": "GPT-Live가 대화를 시작하지 않았어요. ChatGPT 요금제에서 {voice} 음성을 제공하지 않으면 GPT-Live 설정에서 다른 음성을 선택하세요.",
+    "pl": "GPT-Live nie rozpoczął rozmowy. Jeśli Twój plan ChatGPT nie oferuje głosu {voice}, wybierz inny w ustawieniach GPT-Live.",
+    "pt-BR": "O GPT-Live não iniciou a conversa. Se o seu plano do ChatGPT não oferecer a voz {voice}, escolha outra nos ajustes do GPT-Live.",
+    "ru": "GPT-Live не начал разговор. Если ваш план ChatGPT не предлагает голос {voice}, выберите другой в настройках GPT-Live.",
+    "tr": "GPT-Live konuşmayı başlatmadı. ChatGPT planınız {voice} sesini sunmuyorsa GPT-Live ayarlarından başka bir ses seçin.",
+    "zh-Hans": "GPT-Live 没有开始对话。如果你的 ChatGPT 方案不提供语音 {voice}，请在 GPT-Live 设置中换一个。",
+    "zh-Hant": "GPT-Live 沒有開始對話。如果你的 ChatGPT 方案不提供語音 {voice}，請在 GPT-Live 設定中換一個。"
+  },
+  "GPT-Live didn't start the conversation. Try again.": {
+    "de": "GPT-Live hat die Unterhaltung nicht gestartet. Versuche es erneut.",
+    "es": "GPT-Live no inició la conversación. Vuelve a intentarlo.",
+    "fr": "GPT-Live n'a pas démarré la conversation. Réessayez.",
+    "id": "GPT-Live tidak memulai percakapan. Coba lagi.",
+    "it": "GPT-Live non ha avviato la conversazione. Riprova.",
+    "ja": "GPT-Liveが会話を開始しませんでした。もう一度お試しください。",
+    "ko": "GPT-Live가 대화를 시작하지 않았어요. 다시 시도하세요.",
+    "pl": "GPT-Live nie rozpoczął rozmowy. Spróbuj ponownie.",
+    "pt-BR": "O GPT-Live não iniciou a conversa. Tente novamente.",
+    "ru": "GPT-Live не начал разговор. Повторите попытку.",
+    "tr": "GPT-Live konuşmayı başlatmadı. Yeniden deneyin.",
+    "zh-Hans": "GPT-Live 没有开始对话。请重试。",
+    "zh-Hant": "GPT-Live 沒有開始對話。請再試一次。"
+  },
+  "GPT-Live ended the conversation.": {
+    "de": "GPT-Live hat die Unterhaltung beendet.",
+    "es": "GPT-Live finalizó la conversación.",
+    "fr": "GPT-Live a mis fin à la conversation.",
+    "id": "GPT-Live mengakhiri percakapan.",
+    "it": "GPT-Live ha terminato la conversazione.",
+    "ja": "GPT-Liveが会話を終了しました。",
+    "ko": "GPT-Live가 대화를 종료했어요.",
+    "pl": "GPT-Live zakończył rozmowę.",
+    "pt-BR": "O GPT-Live encerrou a conversa.",
+    "ru": "GPT-Live завершил разговор.",
+    "tr": "GPT-Live konuşmayı sonlandırdı.",
+    "zh-Hans": "GPT-Live 结束了对话。",
+    "zh-Hant": "GPT-Live 結束了對話。"
+  },
+  "GPT-Live gets what your Hermes agent remembers about you. That memory is sent to OpenAI with the conversation. Applies to the next conversation.": {
+    "de": "GPT-Live erhält, was dein Hermes-Agent über dich weiß. Dieses Gedächtnis wird mit der Unterhaltung an OpenAI gesendet. Gilt ab der nächsten Unterhaltung.",
+    "es": "GPT-Live recibe lo que tu agente Hermes recuerda de ti. Esa memoria se envía a OpenAI con la conversación. Se aplica a la próxima conversación.",
+    "fr": "GPT-Live reçoit ce que votre agent Hermes sait de vous. Cette mémoire est envoyée à OpenAI avec la conversation. S'applique à la prochaine conversation.",
+    "id": "GPT-Live menerima apa yang diingat agen Hermes Anda tentang Anda. Memori tersebut dikirim ke OpenAI bersama percakapan. Berlaku mulai percakapan berikutnya.",
+    "it": "GPT-Live riceve ciò che il tuo agente Hermes ricorda di te. Questa memoria viene inviata a OpenAI con la conversazione. Vale dalla prossima conversazione.",
+    "ja": "GPT-Liveは、Hermesエージェントが記憶しているあなたの情報を受け取ります。そのメモリは会話とともにOpenAIに送信されます。次回の会話から適用されます。",
+    "ko": "GPT-Live는 Hermes 에이전트가 사용자에 대해 기억하는 내용을 받아요. 이 메모리는 대화와 함께 OpenAI로 전송돼요. 다음 대화부터 적용돼요.",
+    "pl": "GPT-Live otrzymuje to, co Twój agent Hermes pamięta o Tobie. Ta pamięć jest wysyłana do OpenAI razem z rozmową. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "O GPT-Live recebe o que seu agente Hermes lembra sobre você. Essa memória é enviada à OpenAI com a conversa. Vale a partir da próxima conversa.",
+    "ru": "GPT-Live получает то, что ваш агент Hermes помнит о вас. Эта память отправляется в OpenAI вместе с разговором. Действует со следующего разговора.",
+    "tr": "GPT-Live, Hermes ajanınızın sizinle ilgili hatırladıklarını alır. Bu bellek konuşmayla birlikte OpenAI'a gönderilir. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "GPT-Live 会获得你的 Hermes 智能体记住的关于你的内容。这些记忆会随对话发送给 OpenAI。从下一次对话开始生效。",
+    "zh-Hant": "GPT-Live 會取得 Hermes 代理程式記得的關於你的內容。這些記憶會隨對話傳送給 OpenAI。下次對話起生效。"
+  },
+  "GPT-Live is not available on this Hermes server.": {
+    "de": "GPT-Live ist auf diesem Hermes-Server nicht verfügbar.",
+    "es": "GPT-Live no está disponible en este servidor Hermes.",
+    "fr": "GPT-Live n'est pas disponible sur ce serveur Hermes.",
+    "id": "GPT-Live tidak tersedia di server Hermes ini.",
+    "it": "GPT-Live non è disponibile su questo server Hermes.",
+    "ja": "このHermesサーバではGPT-Liveを利用できません。",
+    "ko": "이 Hermes 서버에서는 GPT-Live를 사용할 수 없어요.",
+    "pl": "GPT-Live nie jest dostępny na tym serwerze Hermes.",
+    "pt-BR": "O GPT-Live não está disponível neste servidor Hermes.",
+    "ru": "GPT-Live недоступен на этом сервере Hermes.",
+    "tr": "GPT-Live bu Hermes sunucusunda kullanılamıyor.",
+    "zh-Hans": "此 Hermes 服务器上无法使用 GPT-Live。",
+    "zh-Hant": "無法在此 Hermes 伺服器上使用 GPT-Live。"
+  },
+  "GPT-Live is not available on this Hermes server: {reason}": {
+    "de": "GPT-Live ist auf diesem Hermes-Server nicht verfügbar: {reason}",
+    "es": "GPT-Live no está disponible en este servidor Hermes: {reason}",
+    "fr": "GPT-Live n'est pas disponible sur ce serveur Hermes : {reason}",
+    "id": "GPT-Live tidak tersedia di server Hermes ini: {reason}",
+    "it": "GPT-Live non è disponibile su questo server Hermes: {reason}",
+    "ja": "このHermesサーバではGPT-Liveを利用できません：{reason}",
+    "ko": "이 Hermes 서버에서는 GPT-Live를 사용할 수 없어요: {reason}",
+    "pl": "GPT-Live nie jest dostępny na tym serwerze Hermes: {reason}",
+    "pt-BR": "O GPT-Live não está disponível neste servidor Hermes: {reason}",
+    "ru": "GPT-Live недоступен на этом сервере Hermes: {reason}",
+    "tr": "GPT-Live bu Hermes sunucusunda kullanılamıyor: {reason}",
+    "zh-Hans": "此 Hermes 服务器上无法使用 GPT-Live：{reason}",
+    "zh-Hant": "無法在此 Hermes 伺服器上使用 GPT-Live：{reason}"
+  },
+  "GPT-Live on an API key needs the Hermes notifier plugin 0.22 or newer.": {
+    "de": "GPT-Live mit einem API-Schlüssel braucht das Hermes-Notifier-Plug-in 0.22 oder neuer.",
+    "es": "GPT-Live con una clave de API necesita el plugin de notificaciones de Hermes 0.22 o posterior.",
+    "fr": "GPT-Live avec une clé API nécessite le plugin de notification Hermes 0.22 ou ultérieur.",
+    "id": "GPT-Live dengan kunci API memerlukan plugin notifier Hermes 0.22 atau yang lebih baru.",
+    "it": "GPT-Live con una chiave API richiede il plugin di notifica di Hermes 0.22 o successivo.",
+    "ja": "APIキーでGPT-Liveを使うには、Hermes通知プラグイン0.22以降が必要です。",
+    "ko": "API 키로 GPT-Live를 쓰려면 Hermes 알림 플러그인 0.22 이상이 필요해요.",
+    "pl": "GPT-Live z kluczem API wymaga wtyczki powiadomień Hermes w wersji 0.22 lub nowszej.",
+    "pt-BR": "O GPT-Live com chave de API precisa do plugin notificador do Hermes 0.22 ou mais recente.",
+    "ru": "Для GPT-Live с API-ключом нужен плагин уведомлений Hermes версии 0.22 или новее.",
+    "tr": "API anahtarıyla GPT-Live için Hermes bildirim eklentisinin 0.22 veya daha yeni bir sürümü gerekir.",
+    "zh-Hans": "通过 API 密钥使用 GPT-Live 需要 Hermes 通知插件 0.22 或更高版本。",
+    "zh-Hant": "透過 API 金鑰使用 GPT-Live 需要 Hermes 通知外掛程式 0.22 或更新版本。"
+  },
+  "GPT-Live refused the conversation: {message}": {
+    "de": "GPT-Live hat die Unterhaltung abgelehnt: {message}",
+    "es": "GPT-Live rechazó la conversación: {message}",
+    "fr": "GPT-Live a refusé la conversation : {message}",
+    "id": "GPT-Live menolak percakapan: {message}",
+    "it": "GPT-Live ha rifiutato la conversazione: {message}",
+    "ja": "GPT-Liveが会話を拒否しました：{message}",
+    "ko": "GPT-Live가 대화를 거부했어요: {message}",
+    "pl": "GPT-Live odrzucił rozmowę: {message}",
+    "pt-BR": "O GPT-Live recusou a conversa: {message}",
+    "ru": "GPT-Live отклонил разговор: {message}",
+    "tr": "GPT-Live konuşmayı reddetti: {message}",
+    "zh-Hans": "GPT-Live 拒绝了对话：{message}",
+    "zh-Hant": "GPT-Live 拒絕了對話：{message}"
+  },
+  "GPT-Live talks with the personality in this profile's SOUL.md. SOUL.md is sent to OpenAI with the conversation. Applies to the next conversation.": {
+    "de": "GPT-Live spricht mit der Persönlichkeit aus der SOUL.md dieses Profils. SOUL.md wird mit der Unterhaltung an OpenAI gesendet. Gilt ab der nächsten Unterhaltung.",
+    "es": "GPT-Live habla con la personalidad del SOUL.md de este perfil. SOUL.md se envía a OpenAI con la conversación. Se aplica a la próxima conversación.",
+    "fr": "GPT-Live parle avec la personnalité du SOUL.md de ce profil. SOUL.md est envoyé à OpenAI avec la conversation. S'applique à la prochaine conversation.",
+    "id": "GPT-Live berbicara dengan kepribadian di SOUL.md profil ini. SOUL.md dikirim ke OpenAI bersama percakapan. Berlaku mulai percakapan berikutnya.",
+    "it": "GPT-Live parla con la personalità del SOUL.md di questo profilo. SOUL.md viene inviato a OpenAI con la conversazione. Vale dalla prossima conversazione.",
+    "ja": "GPT-Liveは、このプロファイルのSOUL.mdに記述された人格で話します。SOUL.mdは会話とともにOpenAIに送信されます。次回の会話から適用されます。",
+    "ko": "GPT-Live는 이 프로필의 SOUL.md에 있는 성격으로 말해요. SOUL.md는 대화와 함께 OpenAI로 전송돼요. 다음 대화부터 적용돼요.",
+    "pl": "GPT-Live mówi z osobowością z pliku SOUL.md tego profilu. SOUL.md jest wysyłany do OpenAI razem z rozmową. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "O GPT-Live fala com a personalidade do SOUL.md deste perfil. O SOUL.md é enviado à OpenAI com a conversa. Vale a partir da próxima conversa.",
+    "ru": "GPT-Live говорит с личностью из SOUL.md этого профиля. SOUL.md отправляется в OpenAI вместе с разговором. Действует со следующего разговора.",
+    "tr": "GPT-Live, bu profilin SOUL.md dosyasındaki kişilikle konuşur. SOUL.md konuşmayla birlikte OpenAI'a gönderilir. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "GPT-Live 会以此配置文件 SOUL.md 中的个性说话。SOUL.md 会随对话发送给 OpenAI。从下一次对话开始生效。",
+    "zh-Hant": "GPT-Live 會以此設定檔 SOUL.md 中的個性說話。SOUL.md 會隨對話傳送給 OpenAI。下次對話起生效。"
+  },
   "Gateway": {
     "de": "Gateway",
     "es": "Pasarela",
@@ -7874,6 +8249,36 @@
     "zh-Hans": "Hermes 未接受模型切换。",
     "zh-Hant": "Hermes 未接受模型切換。"
   },
+  "Hermes did not start GPT-Live on the API key, so Conduit did not connect.": {
+    "de": "Hermes hat GPT-Live nicht über den API-Schlüssel gestartet, daher hat Conduit keine Verbindung hergestellt.",
+    "es": "Hermes no inició GPT-Live con la clave de API, así que Conduit no se conectó.",
+    "fr": "Hermes n'a pas démarré GPT-Live avec la clé API : Conduit ne s'est donc pas connecté.",
+    "id": "Hermes tidak memulai GPT-Live dengan kunci API, jadi Conduit tidak terhubung.",
+    "it": "Hermes non ha avviato GPT-Live con la chiave API, quindi Conduit non si è connesso.",
+    "ja": "HermesがAPIキーでGPT-Liveを開始しなかったため、Conduitは接続しませんでした。",
+    "ko": "Hermes가 API 키로 GPT-Live를 시작하지 않아서 Conduit이 연결하지 않았어요.",
+    "pl": "Hermes nie uruchomił GPT-Live z kluczem API, więc Conduit nie nawiązał połączenia.",
+    "pt-BR": "O Hermes não iniciou o GPT-Live com a chave de API, então o Conduit não se conectou.",
+    "ru": "Hermes не запустил GPT-Live с API-ключом, поэтому Conduit не подключился.",
+    "tr": "Hermes, GPT-Live'ı API anahtarıyla başlatmadı; bu nedenle Conduit bağlanmadı.",
+    "zh-Hans": "Hermes 没有使用 API 密钥启动 GPT-Live，因此 Conduit 没有连接。",
+    "zh-Hant": "Hermes 沒有透過 API 金鑰啟動 GPT-Live，因此 Conduit 沒有連線。"
+  },
+  "Hermes did not start GPT-Live on the ChatGPT subscription, so Conduit did not connect.": {
+    "de": "Hermes hat GPT-Live nicht über das ChatGPT-Abo gestartet, daher hat Conduit keine Verbindung hergestellt.",
+    "es": "Hermes no inició GPT-Live con la suscripción de ChatGPT, así que Conduit no se conectó.",
+    "fr": "Hermes n'a pas démarré GPT-Live sur l'abonnement ChatGPT : Conduit ne s'est donc pas connecté.",
+    "id": "Hermes tidak memulai GPT-Live dengan langganan ChatGPT, jadi Conduit tidak terhubung.",
+    "it": "Hermes non ha avviato GPT-Live con l'abbonamento ChatGPT, quindi Conduit non si è connesso.",
+    "ja": "HermesがChatGPTサブスクリプションでGPT-Liveを開始しなかったため、Conduitは接続しませんでした。",
+    "ko": "Hermes가 ChatGPT 구독으로 GPT-Live를 시작하지 않아서 Conduit이 연결하지 않았어요.",
+    "pl": "Hermes nie uruchomił GPT-Live w ramach subskrypcji ChatGPT, więc Conduit nie nawiązał połączenia.",
+    "pt-BR": "O Hermes não iniciou o GPT-Live na assinatura do ChatGPT, então o Conduit não se conectou.",
+    "ru": "Hermes не запустил GPT-Live с подпиской ChatGPT, поэтому Conduit не подключился.",
+    "tr": "Hermes, GPT-Live'ı ChatGPT aboneliğiyle başlatmadı; bu nedenle Conduit bağlanmadı.",
+    "zh-Hans": "Hermes 没有使用 ChatGPT 订阅启动 GPT-Live，因此 Conduit 没有连接。",
+    "zh-Hant": "Hermes 沒有透過 ChatGPT 訂閱啟動 GPT-Live，因此 Conduit 沒有連線。"
+  },
   "Hermes didn't hear any words.": {
     "de": "Hermes hat keine Worte gehört.",
     "es": "Hermes no oyó ninguna palabra.",
@@ -8173,6 +8578,21 @@
     "tr": "Hermes ağ geçidi sürecini yeniden başlatır. Mesajlaşma kanalları, çalışan oturumlar ve bu ağ geçidini paylaşan tüm profiller, ağ geçidi geri geldiğinde yeniden bağlanır.",
     "zh-Hans": "Hermes 将重启其网关进程。网关恢复后，消息渠道、正在进行的会话以及共用此网关的所有配置都会重新连接。",
     "zh-Hant": "Hermes 會重新啟動其閘道程序。閘道恢復後，訊息頻道、進行中的工作階段，以及共用此閘道的所有設定檔都會重新連線。"
+  },
+  "Hermes returned an invalid GPT-Live answer.": {
+    "de": "Hermes hat eine ungültige GPT-Live-Antwort zurückgegeben.",
+    "es": "Hermes devolvió una respuesta de GPT-Live no válida.",
+    "fr": "Hermes a renvoyé une réponse GPT-Live non valide.",
+    "id": "Hermes mengembalikan jawaban GPT-Live yang tidak valid.",
+    "it": "Hermes ha restituito una risposta GPT-Live non valida.",
+    "ja": "Hermesから無効なGPT-Live応答が返されました。",
+    "ko": "Hermes가 잘못된 GPT-Live 응답을 반환했어요.",
+    "pl": "Hermes zwrócił nieprawidłową odpowiedź GPT-Live.",
+    "pt-BR": "O Hermes retornou uma resposta do GPT-Live inválida.",
+    "ru": "Hermes вернул некорректный ответ GPT-Live.",
+    "tr": "Hermes geçersiz bir GPT-Live yanıtı döndürdü.",
+    "zh-Hans": "Hermes 返回了无效的 GPT-Live 应答。",
+    "zh-Hant": "Hermes 傳回了無效的 GPT-Live 應答。"
   },
   "Hermes returned invalid fallback audio.": {
     "de": "Hermes hat ungültiges Ersatz-Audio zurückgegeben.",
@@ -9029,6 +9449,21 @@
     "zh-Hans": "安装",
     "zh-Hant": "安裝"
   },
+  "Install or update the Hermes notifier plugin on your Hermes server.": {
+    "de": "Installiere oder aktualisiere das Hermes-Notifier-Plug-in auf deinem Hermes-Server.",
+    "es": "Instala o actualiza el plugin de notificaciones de Hermes en tu servidor Hermes.",
+    "fr": "Installez ou mettez à jour le plugin de notification Hermes sur votre serveur Hermes.",
+    "id": "Instal atau perbarui plugin notifier Hermes di server Hermes Anda.",
+    "it": "Installa o aggiorna il plugin di notifica di Hermes sul tuo server Hermes.",
+    "ja": "HermesサーバにHermes通知プラグインをインストールまたはアップデートしてください。",
+    "ko": "Hermes 서버에 Hermes 알림 플러그인을 설치하거나 업데이트하세요.",
+    "pl": "Zainstaluj lub zaktualizuj wtyczkę powiadomień Hermes na swoim serwerze Hermes.",
+    "pt-BR": "Instale ou atualize o plugin notificador do Hermes no seu servidor Hermes.",
+    "ru": "Установите или обновите плагин уведомлений Hermes на вашем сервере Hermes.",
+    "tr": "Hermes sunucunuza Hermes bildirim eklentisini yükleyin veya güncelleyin.",
+    "zh-Hans": "请在 Hermes 服务器上安装或更新 Hermes 通知插件。",
+    "zh-Hant": "請在你的 Hermes 伺服器上安裝或更新 Hermes 通知外掛程式。"
+  },
   "Install the notifier": {
     "de": "Notifier installieren",
     "es": "Instalar el notificador",
@@ -9478,6 +9913,21 @@
     "tr": "Tür",
     "zh-Hans": "类型",
     "zh-Hant": "類型"
+  },
+  "Korean": {
+    "de": "Koreanisch",
+    "es": "Coreana",
+    "fr": "Coréenne",
+    "id": "Korea",
+    "it": "Coreana",
+    "ja": "韓国語",
+    "ko": "한국어",
+    "pl": "Koreański",
+    "pt-BR": "Coreana",
+    "ru": "Корейский",
+    "tr": "Korece",
+    "zh-Hans": "韩语",
+    "zh-Hant": "韓語"
   },
   "Label, like GitHub work account": {
     "de": "Name, etwa GitHub-Arbeitskonto",
@@ -11938,6 +12388,21 @@
     "tr": "Henüz anahtar yok",
     "zh-Hans": "还没有密钥",
     "zh-Hant": "尚無金鑰"
+  },
+  "No limit": {
+    "de": "Kein Limit",
+    "es": "Sin límite",
+    "fr": "Sans limite",
+    "id": "Tanpa batas",
+    "it": "Nessun limite",
+    "ja": "制限なし",
+    "ko": "제한 없음",
+    "pl": "Bez limitu",
+    "pt-BR": "Sem limite",
+    "ru": "Без ограничения",
+    "tr": "Sınır yok",
+    "zh-Hans": "不限",
+    "zh-Hant": "不限"
   },
   "No matching connectors": {
     "de": "Keine passenden Konnektoren",
@@ -16829,6 +17294,21 @@
     "zh-Hans": "保存中…",
     "zh-Hant": "正在儲存…"
   },
+  "Savvy": {
+    "de": "Gewitzt",
+    "es": "Sagaz",
+    "fr": "Avisée",
+    "id": "Cerdas",
+    "it": "Sagace",
+    "ja": "聡明な",
+    "ko": "노련함",
+    "pl": "Bystry",
+    "pt-BR": "Perspicaz",
+    "ru": "Смышлёный",
+    "tr": "Becerikli",
+    "zh-Hans": "精明",
+    "zh-Hant": "精明"
+  },
   "Schedule": {
     "de": "Zeitplan",
     "es": "Programación",
@@ -17398,6 +17878,21 @@
     "tr": "Serif",
     "zh-Hans": "衬线",
     "zh-Hant": "襯線"
+  },
+  "Server default": {
+    "de": "Serverstandard",
+    "es": "Predeterminado del servidor",
+    "fr": "Par défaut du serveur",
+    "id": "Default server",
+    "it": "Predefinito del server",
+    "ja": "サーバのデフォルト",
+    "ko": "서버 기본값",
+    "pl": "Według serwera",
+    "pt-BR": "Padrão do servidor",
+    "ru": "Как на сервере",
+    "tr": "Sunucu varsayılanı",
+    "zh-Hans": "服务器默认",
+    "zh-Hant": "伺服器預設"
   },
   "Server's local time": {
     "de": "Ortszeit des Servers",
@@ -19589,6 +20084,21 @@
     "zh-Hans": "Conduit 插件已是最新版本",
     "zh-Hant": "Conduit 外掛程式已是最新版本"
   },
+  "The Conduit plugin on your Hermes server didn't confirm the voice you chose.": {
+    "de": "Das Conduit-Plug-in auf deinem Hermes-Server hat die gewählte Stimme nicht bestätigt.",
+    "es": "El plugin de Conduit de tu servidor Hermes no confirmó la voz que elegiste.",
+    "fr": "Le plugin Conduit de votre serveur Hermes n'a pas confirmé la voix choisie.",
+    "id": "Plugin Conduit di server Hermes Anda tidak mengonfirmasi suara yang Anda pilih.",
+    "it": "Il plugin Conduit sul tuo server Hermes non ha confermato la voce scelta.",
+    "ja": "HermesサーバのConduitプラグインで、選択した声が確認されませんでした。",
+    "ko": "Hermes 서버의 Conduit 플러그인이 선택한 목소리를 확인하지 않았어요.",
+    "pl": "Wtyczka Conduit na Twoim serwerze Hermes nie potwierdziła wybranego głosu.",
+    "pt-BR": "O plugin do Conduit no seu servidor Hermes não confirmou a voz que você escolheu.",
+    "ru": "Плагин Conduit на вашем сервере Hermes не подтвердил выбранный голос.",
+    "tr": "Hermes sunucunuzdaki Conduit eklentisi seçtiğiniz sesi onaylamadı.",
+    "zh-Hans": "你的 Hermes 服务器上的 Conduit 插件没有确认你选择的声音。",
+    "zh-Hant": "Hermes 伺服器上的 Conduit 外掛程式沒有確認你選擇的聲音。"
+  },
   "The Folder is closed: Hermes couldn't say which folder it keeps files in. Check the files settings on the host.": {
     "de": "Der Ordner ist geschlossen: Hermes konnte nicht sagen, in welchem Ordner es Dateien ablegt. Prüfe die Dateieinstellungen auf dem Host.",
     "es": "La Carpeta está cerrada: Hermes no pudo decir en qué carpeta guarda los archivos. Revisa los ajustes de archivos en el host.",
@@ -19603,6 +20113,21 @@
     "tr": "Klasör kapalı: Hermes dosyaları hangi klasörde tuttuğunu söyleyemedi. Sunucudaki dosya ayarlarını kontrol edin.",
     "zh-Hans": "文件夹已关闭：Hermes 说不出它把文件放在哪个文件夹。请检查主机上的文件设置。",
     "zh-Hant": "檔案夾已關閉：Hermes 說不出它把檔案放在哪個檔案夾。請檢查主機上的檔案設定。"
+  },
+  "The GPT-Live connection was lost.": {
+    "de": "Die Verbindung zu GPT-Live wurde unterbrochen.",
+    "es": "Se perdió la conexión con GPT-Live.",
+    "fr": "La connexion GPT-Live a été perdue.",
+    "id": "Koneksi GPT-Live terputus.",
+    "it": "La connessione a GPT-Live si è interrotta.",
+    "ja": "GPT-Liveとの接続が切断されました。",
+    "ko": "GPT-Live 연결이 끊어졌어요.",
+    "pl": "Utracono połączenie z GPT-Live.",
+    "pt-BR": "A conexão com o GPT-Live foi perdida.",
+    "ru": "Соединение с GPT-Live потеряно.",
+    "tr": "GPT-Live bağlantısı koptu.",
+    "zh-Hans": "GPT-Live 连接已断开。",
+    "zh-Hant": "GPT-Live 連線已中斷。"
   },
   "The board comes with Hermes’ Kanban plugin. Turn it on in the Hermes dashboard to see tasks here.": {
     "de": "Das Board gehört zum Kanban-Plugin von Hermes. Aktiviere es im Hermes-Dashboard, um Aufgaben hier zu sehen.",
@@ -20294,6 +20819,36 @@
     "zh-Hans": "更新可能仍在进行。请过几分钟再检查更新。",
     "zh-Hant": "更新可能仍在進行。請過幾分鐘再檢查更新。"
   },
+  "The voice GPT-Live speaks with on the API key. Server default uses voice.gpt_live.voice in the profile's config. Applies to the next conversation.": {
+    "de": "Die Stimme, mit der GPT-Live über den API-Schlüssel spricht. Serverstandard verwendet voice.gpt_live.voice in der Konfiguration des Profils. Gilt ab dem nächsten Gespräch.",
+    "es": "La voz con la que habla GPT-Live con la clave de API. Predeterminado del servidor usa voice.gpt_live.voice en la configuración del perfil. Se aplica desde la próxima conversación.",
+    "fr": "La voix de GPT-Live sur la clé API. Par défaut du serveur utilise voice.gpt_live.voice dans la configuration du profil. S'applique à la prochaine conversation.",
+    "id": "Suara yang dipakai GPT-Live pada kunci API. Default server memakai voice.gpt_live.voice di konfigurasi profil. Berlaku mulai percakapan berikutnya.",
+    "it": "La voce con cui parla GPT-Live sulla chiave API. Predefinito del server usa voice.gpt_live.voice nella configurazione del profilo. Vale dalla prossima conversazione.",
+    "ja": "APIキーでGPT-Liveが話す声です。「サーバのデフォルト」はプロファイルの設定のvoice.gpt_live.voiceを使います。次の会話から適用されます。",
+    "ko": "API 키로 통화할 때 GPT-Live가 말하는 목소리예요. 서버 기본값은 프로필 설정의 voice.gpt_live.voice를 사용해요. 다음 대화부터 적용돼요.",
+    "pl": "Głos, którym GPT-Live mówi na kluczu API. Według serwera używa voice.gpt_live.voice z konfiguracji profilu. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "A voz com que o GPT-Live fala na chave de API. Padrão do servidor usa voice.gpt_live.voice na configuração do perfil. Vale a partir da próxima conversa.",
+    "ru": "Голос, которым GPT-Live говорит с API-ключом. «Как на сервере» использует voice.gpt_live.voice из конфигурации профиля. Применяется со следующего разговора.",
+    "tr": "GPT-Live'ın API anahtarında konuştuğu ses. Sunucu varsayılanı, profil yapılandırmasındaki voice.gpt_live.voice ayarını kullanır. Sonraki konuşmadan itibaren geçerlidir.",
+    "zh-Hans": "GPT-Live 使用 API 密钥时说话的声音。“服务器默认”使用配置文件设置中的 voice.gpt_live.voice。从下一次对话开始生效。",
+    "zh-Hant": "GPT-Live 使用 API 金鑰時說話的聲音。「伺服器預設」使用設定檔設定中的 voice.gpt_live.voice。從下一次對話開始套用。"
+  },
+  "The voice GPT-Live speaks with. Server default uses the voice set on your Hermes server (voice.gpt_live in the profile's config). The model is set there too. Applies to the next conversation.": {
+    "de": "Die Stimme, mit der GPT-Live spricht. „Serverstandard“ nutzt die auf deinem Hermes-Server festgelegte Stimme (voice.gpt_live in der Konfiguration des Profils). Dort wird auch das Modell festgelegt. Gilt ab der nächsten Unterhaltung.",
+    "es": "La voz con la que habla GPT-Live. Predeterminado del servidor usa la voz configurada en tu servidor Hermes (voice.gpt_live en la configuración del perfil). El modelo también se configura allí. Se aplica a la próxima conversación.",
+    "fr": "La voix avec laquelle parle GPT-Live. Par défaut du serveur utilise la voix définie sur votre serveur Hermes (voice.gpt_live dans la configuration du profil). Le modèle y est aussi défini. S'applique à la prochaine conversation.",
+    "id": "Suara yang digunakan GPT-Live untuk berbicara. Default server menggunakan suara yang diatur di server Hermes Anda (voice.gpt_live di konfigurasi profil). Modelnya juga diatur di sana. Berlaku mulai percakapan berikutnya.",
+    "it": "La voce con cui parla GPT-Live. Predefinito del server usa la voce impostata sul tuo server Hermes (voice.gpt_live nella configurazione del profilo). Anche il modello si imposta lì. Vale dalla prossima conversazione.",
+    "ja": "GPT-Liveが話すときの声です。「サーバのデフォルト」では、Hermesサーバで設定された声（プロファイルの設定のvoice.gpt_live）を使用します。モデルもそこで設定します。次回の会話から適用されます。",
+    "ko": "GPT-Live가 말할 때 사용하는 목소리예요. ‘서버 기본값’은 Hermes 서버에 설정된 목소리(프로필 구성의 voice.gpt_live)를 사용해요. 모델도 거기서 설정해요. 다음 대화부터 적용돼요.",
+    "pl": "Głos, którym mówi GPT-Live. „Według serwera” używa głosu ustawionego na Twoim serwerze Hermes (voice.gpt_live w konfiguracji profilu). Tam ustawiany jest też model. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "A voz com que o GPT-Live fala. Padrão do servidor usa a voz definida no seu servidor Hermes (voice.gpt_live na configuração do perfil). O modelo também é definido lá. Vale a partir da próxima conversa.",
+    "ru": "Голос, которым говорит GPT-Live. «Как на сервере» использует голос, заданный на вашем сервере Hermes (voice.gpt_live в конфигурации профиля). Там же задаётся модель. Действует со следующего разговора.",
+    "tr": "GPT-Live'ın konuştuğu ses. Sunucu varsayılanı, Hermes sunucunuzda ayarlanan sesi kullanır (profil yapılandırmasındaki voice.gpt_live). Model de orada ayarlanır. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "GPT-Live 说话时使用的声音。“服务器默认”使用你的 Hermes 服务器上设置的声音（配置文件中的 voice.gpt_live）。模型也在那里设置。从下一次对话开始生效。",
+    "zh-Hant": "GPT-Live 說話時使用的聲音。「伺服器預設」會使用 Hermes 伺服器上設定的聲音（設定檔組態中的 voice.gpt_live）。模型也在那裡設定。下次對話起生效。"
+  },
   "The {plugin} plugin provides this server. Change it from Plugins.": {
     "de": "Das Plugin {plugin} stellt diesen Server bereit. Ändere ihn unter Plugins.",
     "es": "El plugin {plugin} proporciona este servidor. Cámbialo desde Plugins.",
@@ -20623,6 +21178,21 @@
     "tr": "Bu ajan zaten bitirdi.",
     "zh-Hans": "此智能体已经完成。",
     "zh-Hant": "此代理程式已經完成。"
+  },
+  "This call reached its time limit on the API key.": {
+    "de": "Dieser Anruf hat sein Zeitlimit für den API-Schlüssel erreicht.",
+    "es": "Esta llamada alcanzó su límite de tiempo con la clave de API.",
+    "fr": "Cet appel a atteint sa limite de durée sur la clé API.",
+    "id": "Panggilan ini telah mencapai batas waktunya pada kunci API.",
+    "it": "Questa chiamata ha raggiunto il limite di tempo sulla chiave API.",
+    "ja": "この通話はAPIキーでの制限時間に達しました。",
+    "ko": "이 통화가 API 키 사용 시간 제한에 도달했어요.",
+    "pl": "To połączenie osiągnęło limit czasu na kluczu API.",
+    "pt-BR": "Esta chamada atingiu o limite de tempo na chave de API.",
+    "ru": "Этот звонок достиг лимита времени для API-ключа.",
+    "tr": "Bu arama API anahtarındaki süre sınırına ulaştı.",
+    "zh-Hans": "本次通话已达到 API 密钥的时长上限。",
+    "zh-Hant": "這通通話已達到 API 金鑰的時間上限。"
   },
   "This card can’t show all of it. Approve it in its chat, or deny it here.": {
     "de": "Diese Karte kann nicht alles zeigen. Genehmige es im Chat oder lehne es hier ab.",
@@ -21133,6 +21703,21 @@
     "tr": "Saat",
     "zh-Hans": "时间",
     "zh-Hant": "時間"
+  },
+  "Time limit per call": {
+    "de": "Zeitlimit pro Anruf",
+    "es": "Límite de tiempo por llamada",
+    "fr": "Durée maximale par appel",
+    "id": "Batas waktu per panggilan",
+    "it": "Limite di tempo per chiamata",
+    "ja": "1回の通話の制限時間",
+    "ko": "통화당 시간 제한",
+    "pl": "Limit czasu połączenia",
+    "pt-BR": "Limite de tempo por chamada",
+    "ru": "Лимит времени на звонок",
+    "tr": "Arama başına süre sınırı",
+    "zh-Hans": "每次通话时长上限",
+    "zh-Hant": "每通通話時間上限"
   },
   "Time zone": {
     "de": "Zeitzone",
@@ -21974,6 +22559,21 @@
     "zh-Hans": "此仪表板的主机上已是最新版本",
     "zh-Hant": "此儀表板的主機上已是最新版本"
   },
+  "Upbeat": {
+    "de": "Beschwingt",
+    "es": "Entusiasta",
+    "fr": "Enjouée",
+    "id": "Bersemangat",
+    "it": "Briosa",
+    "ja": "快活な",
+    "ko": "경쾌함",
+    "pl": "Pogodny",
+    "pt-BR": "Animada",
+    "ru": "Бодрый",
+    "tr": "Coşkulu",
+    "zh-Hans": "欢快",
+    "zh-Hant": "歡快"
+  },
   "Update Hermes": {
     "de": "Hermes aktualisieren",
     "es": "Actualizar Hermes",
@@ -22363,6 +22963,36 @@
     "tr": "Hermes varsayılanını kullan",
     "zh-Hans": "使用 Hermes 默认值",
     "zh-Hant": "使用 Hermes 預設值"
+  },
+  "Use Hermes memory": {
+    "de": "Hermes-Gedächtnis nutzen",
+    "es": "Usar la memoria de Hermes",
+    "fr": "Utiliser la mémoire Hermes",
+    "id": "Gunakan memori Hermes",
+    "it": "Usa la memoria di Hermes",
+    "ja": "Hermesのメモリを使用",
+    "ko": "Hermes 메모리 사용",
+    "pl": "Używaj pamięci Hermesa",
+    "pt-BR": "Usar memória do Hermes",
+    "ru": "Использовать память Hermes",
+    "tr": "Hermes belleğini kullan",
+    "zh-Hans": "使用 Hermes 记忆",
+    "zh-Hant": "使用 Hermes 記憶"
+  },
+  "Use Hermes personality": {
+    "de": "Hermes-Persönlichkeit nutzen",
+    "es": "Usar la personalidad de Hermes",
+    "fr": "Utiliser la personnalité Hermes",
+    "id": "Gunakan kepribadian Hermes",
+    "it": "Usa la personalità di Hermes",
+    "ja": "Hermesのパーソナリティを使用",
+    "ko": "Hermes 성격 사용",
+    "pl": "Używaj osobowości Hermesa",
+    "pt-BR": "Usar personalidade do Hermes",
+    "ru": "Использовать личность Hermes",
+    "tr": "Hermes kişiliğini kullan",
+    "zh-Hans": "使用 Hermes 性格",
+    "zh-Hant": "使用 Hermes 個性"
   },
   "Use This Model?": {
     "de": "Dieses Modell verwenden?",
@@ -22828,6 +23458,21 @@
     "tr": "Sesli mesajlar yanıt bittiğinde gönderilir.",
     "zh-Hans": "回复结束后会发送语音消息。",
     "zh-Hant": "回覆結束後會傳送語音訊息。"
+  },
+  "Voice mode": {
+    "de": "Sprachmodus",
+    "es": "Modo de voz",
+    "fr": "Mode vocal",
+    "id": "Mode suara",
+    "it": "Modalità vocale",
+    "ja": "音声モード",
+    "ko": "음성 모드",
+    "pl": "Tryb głosowy",
+    "pt-BR": "Modo de voz",
+    "ru": "Голосовой режим",
+    "tr": "Ses modu",
+    "zh-Hans": "语音模式",
+    "zh-Hant": "語音模式"
   },
   "Voice replies": {
     "de": "Sprachantworten",
@@ -23998,6 +24643,21 @@
     "tr": "Her şeye yetiştin",
     "zh-Hans": "你已全部看完",
     "zh-Hant": "你已全部看完"
+  },
+  "Your Hermes server used the voice {applied} instead of {requested}.": {
+    "de": "Dein Hermes-Server hat die Stimme {applied} statt {requested} verwendet.",
+    "es": "Tu servidor Hermes usó la voz {applied} en lugar de {requested}.",
+    "fr": "Votre serveur Hermes a utilisé la voix {applied} au lieu de {requested}.",
+    "id": "Server Hermes Anda menggunakan suara {applied}, bukan {requested}.",
+    "it": "Il tuo server Hermes ha usato la voce {applied} invece di {requested}.",
+    "ja": "Hermesサーバは「{requested}」ではなく「{applied}」の声を使用しました。",
+    "ko": "Hermes 서버가 {requested} 대신 {applied} 목소리를 사용했어요.",
+    "pl": "Twój serwer Hermes użył głosu {applied} zamiast {requested}.",
+    "pt-BR": "Seu servidor Hermes usou a voz {applied} em vez de {requested}.",
+    "ru": "Ваш сервер Hermes использовал голос {applied} вместо {requested}.",
+    "tr": "Hermes sunucunuz {requested} yerine {applied} sesini kullandı.",
+    "zh-Hans": "你的 Hermes 服务器使用了声音 {applied}，而不是 {requested}。",
+    "zh-Hant": "你的 Hermes 伺服器使用了聲音 {applied}，而不是 {requested}。"
   },
   "Your answer": {
     "de": "Deine Antwort",
