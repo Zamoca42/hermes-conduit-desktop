@@ -47,7 +47,7 @@ function AttachmentChips({ attachments }: { attachments: Attachment[] }) {
 }
 
 /** A reply's Markdown, with each `MEDIA:` file as a card where the tag stood. */
-const Reply = memo(function Reply({ text }: { text: string }) {
+export const Reply = memo(function Reply({ text }: { text: string }) {
   const blocks = useMemo(() => splitReply(text), [text])
   return (
     <>
@@ -58,7 +58,7 @@ const Reply = memo(function Reply({ text }: { text: string }) {
   )
 })
 
-function clock(ms?: number): string {
+export function clock(ms?: number): string {
   return ms ? new Date(ms).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : ''
 }
 
