@@ -55,7 +55,6 @@ export function botsFromProfiles(body: unknown): Bot[] {
     const canonical = row.canonical_session && typeof row.canonical_session === 'object' ? (row.canonical_session as Record<string, unknown>) : null
     const last = row.last_session && typeof row.last_session === 'object' ? (row.last_session as Record<string, unknown>) : null
     const source = canonical ?? last
-    const preview = str(source?.preview)
     const isDefault = row.is_default === true || name.toLowerCase() === 'default'
     const storedFace = typeof meta.face === 'number' && Number.isInteger(meta.face) && meta.face >= 0 ? meta.face : undefined
     const created = typeof meta.created === 'number' ? meta.created : undefined
@@ -72,7 +71,7 @@ export function botsFromProfiles(body: unknown): Bot[] {
       hasAvatar: row.has_avatar === true,
       face: 0,
       botChatId: str(canonical?.resolved_id) ?? str(canonical?.id),
-      lastLine: preview ? plainLine(previewText(preview), 240) || undefined : undefined,
+      lastLine: lastLineOf(str(canonical?.preview)) ?? lastLineOf(str(last?.preview)),
       lastActive: toMillis(source?.last_active) ?? toMillis(last?.last_active)
     })
   }
@@ -82,14 +81,17 @@ export function botsFromProfiles(body: unknown): Bot[] {
   return displayOrder(bots.filter(b => !b.hidden))
 }
 
-/** Pinned first, then the most recently active, as the phone orders them. */
+/** Pinned first, otherwise in Hermes' own order (pinned, then recent activity), as the phone shows them until the person sets one. */
 export function displayOrder(bots: Bot[]): Bot[] {
-  return [...bots].sort((a, b) => {
-    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1
-    const activity = (b.lastActive ?? 0) - (a.lastActive ?? 0)
-    if (activity) return activity
-    return a.name.localeCompare(b.name)
-  })
+  return [...bots.filter(b => b.pinned), ...bots.filter(b => !b.pinned)]
+}
+
+/** A chat's preview as a bot's last line, or undefined when it's only a system or scheduled-job note. */
+export function lastLineOf(preview: string | undefined): string | undefined {
+  if (!preview) return undefined
+  const text = preview.trim()
+  if (/^\[(?:System\b|Cron job\b|Scheduled\b)/i.test(text)) return undefined
+  return plainLine(previewText(text), 240) || undefined
 }
 
 /** Bots home's layout for how many bots there are (the phone's C, A and grid). */

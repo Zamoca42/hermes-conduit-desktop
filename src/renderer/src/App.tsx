@@ -42,7 +42,7 @@ type Section = 'bots' | 'chats' | 'needs' | 'settings'
 function Shell({ status }: { status: ConnectionStatus }) {
   const connected = status.phase === 'open'
   const [section, setSection] = useState<Section>('chats')
-  const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string }>({ id: null })
+  const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
   const list = useChatList(connected)
   const { transcript, chat, loading, error, send, stop } = useChat(
     selected.id,
@@ -103,12 +103,13 @@ function Shell({ status }: { status: ConnectionStatus }) {
     [send, list]
   )
 
-  const title = cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : 'New chat')
+  // A Bot Chat goes by its bot's name: Hermes titles every one "Bot Chat".
+  const title = selected.botChat && selected.title ? selected.title : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : 'New chat')
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
   const roster = useBots(connected)
   const openBot = useCallback((bot: Bot) => {
-    setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title })
+    setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: !!bot.botChatId })
     setSection('chats')
   }, [])
   const pendingAsk = useRef<{ text: string; storedId: string | null; profile: string; resumed?: boolean } | null>(null)

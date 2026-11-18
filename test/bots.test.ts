@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { avatarUrl, botColor, botsFromProfiles, homeLayout, keptColor } from '../src/renderer/src/state/bots'
+import { avatarUrl, botColor, botsFromProfiles, homeLayout, keptColor, lastLineOf } from '../src/renderer/src/state/bots'
 import { assignFaces, faceColor, starterFace } from '../src/renderer/src/state/starterFaces'
 
 const profile = (over: Record<string, unknown>) => ({ name: 'p', ...over })
@@ -33,7 +33,7 @@ describe('botsFromProfiles', () => {
     expect(bot!.lastLine).toContain('Hello')
   })
 
-  it('leaves out hidden bots and orders pinned, then recent', () => {
+  it('leaves out hidden bots and puts pinned ones first, otherwise in Hermes\' order', () => {
     const bots = botsFromProfiles({
       profiles: [
         profile({ name: 'old', last_session: { last_active: 100 } }),
@@ -44,7 +44,7 @@ describe('botsFromProfiles', () => {
         null
       ]
     })
-    expect(bots.map(b => b.name)).toEqual(['pin', 'new', 'old'])
+    expect(bots.map(b => b.name)).toEqual(['pin', 'old', 'new'])
     expect(bots.find(b => b.name === 'old')!.botChatId).toBeUndefined()
   })
 
@@ -55,6 +55,16 @@ describe('botsFromProfiles', () => {
     expect(bot!.title).toBe('Hermes')
     expect(bot!.lastLine).toBe('It printed hello a b')
     expect(botsFromProfiles({ profiles: [profile({ name: 'work' })] })[0]!.title).toBe('work')
+  })
+
+  it('skips a system or scheduled-job note for the last line, falling back to the newest chat', () => {
+    expect(lastLineOf('[System: The active model for this chat has changed to x')).toBeUndefined()
+    expect(lastLineOf('[Cron job "Audit" report] all good')).toBeUndefined()
+    expect(lastLineOf('Model is qwen3.8-flash-iq3_xs, _really_')).toBe('Model is qwen3.8-flash-iq3_xs, really')
+    const [bot] = botsFromProfiles({
+      profiles: [profile({ canonical_session: { preview: '[System: changed model' }, last_session: { preview: 'Inbox is clear' } })]
+    })
+    expect(bot!.lastLine).toBe('Inbox is clear')
   })
 
   it('answers nothing for an odd body', () => {
