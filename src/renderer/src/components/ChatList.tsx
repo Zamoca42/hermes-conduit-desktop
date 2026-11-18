@@ -89,36 +89,7 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
         <span className="sr-only">{t('Search chats')}</span>
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t('Search chats')} />
       </label>
-      {showStrip ? (
-        <div
-          className="profile-strip"
-          role="tablist"
-          aria-label={t('Bots')}
-          // A mouse wheel scrolls the strip sideways.
-          onWheel={e => {
-            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY
-          }}
-        >
-          <button role="tab" className="profile-chip all" aria-selected={profile === null} onClick={() => onProfile!(null)}>
-            {t('All')}
-          </button>
-          {bots!.map(bot => (
-            // Only the chosen bot shows its name, so the strip fits the list's width; the rest are faces.
-            <button
-              key={bot.name}
-              role="tab"
-              className={`profile-chip${profile === bot.name ? '' : ' face-only'}`}
-              aria-selected={profile === bot.name}
-              aria-label={bot.title}
-              title={bot.title}
-              onClick={() => onProfile!(profile === bot.name ? null : bot.name)}
-            >
-              <BotAvatar bot={bot} size={22} />
-              {profile === bot.name ? <span>{bot.title}</span> : null}
-            </button>
-          ))}
-        </div>
-      ) : null}
+      {showStrip ? <ProfileStrip bots={bots!} profile={profile} onProfile={onProfile!} /> : null}
       <div className="chatlist-scroll" ref={scroller}>
         {rows === null && !error ? <div className="empty">{t('Loading chats…')}</div> : null}
         {error ? <div className="empty">{t('Couldn’t load your chats: {error}', { error })}</div> : null}
@@ -214,5 +185,39 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
         </div>
       ) : null}
     </section>
+  )
+}
+
+/** All, then each bot's face, the chosen one with its name: the list's profile. */
+export function ProfileStrip({ bots, profile, onProfile }: { bots: Bot[]; profile: string | null; onProfile: (profile: string | null) => void }) {
+  return (
+    <div
+      className="profile-strip"
+      role="tablist"
+      aria-label={t('Bots')}
+      // A mouse wheel scrolls the strip sideways.
+      onWheel={e => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY
+      }}
+    >
+      <button role="tab" className="profile-chip all" aria-selected={profile === null} onClick={() => onProfile(null)}>
+        {t('All')}
+      </button>
+      {bots.map(bot => (
+        // Only the chosen bot shows its name, so the strip fits the list's width; the rest are faces.
+        <button
+          key={bot.name}
+          role="tab"
+          className={`profile-chip${profile === bot.name ? '' : ' face-only'}`}
+          aria-selected={profile === bot.name}
+          aria-label={bot.title}
+          title={bot.title}
+          onClick={() => onProfile(profile === bot.name ? null : bot.name)}
+        >
+          <BotAvatar bot={bot} size={22} />
+          {profile === bot.name ? <span>{bot.title}</span> : null}
+        </button>
+      ))}
+    </div>
   )
 }

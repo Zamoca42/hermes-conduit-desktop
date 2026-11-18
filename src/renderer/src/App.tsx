@@ -5,6 +5,7 @@ import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
 import { RoomView } from './components/RoomView'
+import { ScheduledJobs } from './components/ScheduledJobs'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
@@ -64,7 +65,7 @@ export function App() {
   )
 }
 
-type Section = 'bots' | 'room' | 'chats' | 'needs' | 'settings'
+type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'needs' | 'settings'
 
 const REOPEN_SECTION = 'conduit.reopen-section'
 
@@ -346,6 +347,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           </button>
           <button
             className="railbtn"
+            aria-label={t('Tasks')}
+            title={t('Tasks')}
+            aria-current={section === 'tasks' ? 'page' : undefined}
+            onClick={() => setSection('tasks')}
+          >
+            <Icon name="tasks" />
+          </button>
+          <button
+            className="railbtn"
             aria-label={needsCount ? t('Needs you, {count}', { count: needsCount }) : t('Needs you')}
             title={t('Needs you')}
             aria-current={section === 'needs' ? 'page' : undefined}
@@ -441,6 +451,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onAsk={askBot}
             onOpenRoom={showRoom}
             onCreateRoom={groupRooms.create}
+          />
+        ) : section === 'tasks' ? (
+          <ScheduledJobs
+            bots={roster.bots}
+            connected={connected}
+            profile={chatProfile}
+            // Only the list's profile: picking one here doesn't open its chats.
+            onProfile={setChatProfile}
+            onOpenRun={(run, job) => {
+              if (!run.id) return
+              setSelected({ id: run.id, profile: run.profile ?? job.profile, title: run.title })
+              setSection('chats')
+            }}
           />
         ) : section === 'room' && openRoom ? (
           <RoomView key={openRoom.roomId} room={openRoom} bots={roster.bots ?? []} connected={connected} canStop={groupRooms.capabilities?.canStop === true} canAttach={groupRooms.capabilities?.attachments === true} />

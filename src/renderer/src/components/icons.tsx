@@ -59,6 +59,12 @@ const paths = {
     </>
   ),
   spinner: <path d="M12 4a8 8 0 108 8" />,
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v4l2.5 2.5" />
+    </>
+  ),
   attach: <path d="M12 5v14M5 12h14" />,
   mic: (
     <>
