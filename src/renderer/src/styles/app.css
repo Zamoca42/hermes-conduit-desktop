@@ -875,8 +875,37 @@ a:hover {
   outline: none;
 }
 
-.field input:focus {
+.field input:focus,
+.field textarea:focus {
   border-color: var(--accent);
+}
+
+.field textarea {
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  padding: 8px 12px;
+  font: 400 13px/18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--text);
+  outline: none;
+  resize: vertical;
+}
+
+.proxy-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.proxy-fields legend {
+  padding: 0;
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .primary {

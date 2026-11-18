@@ -25,6 +25,8 @@ export interface SignInRequest {
   username?: string
   password?: string
   token?: string
+  /** Headers for a proxy in front of the dashboard, sent over HTTPS only. */
+  headers?: Record<string, string>
 }
 
 export type ConnectionPhase = 'signed-out' | 'connecting' | 'open' | 'reconnecting' | 'failed'
@@ -110,7 +112,8 @@ export interface ConduitApi {
   language: { choice: LanguageChoice; resolved: Language }
   /** Saves a new choice; every window reloads in it. */
   setLanguage(choice: LanguageChoice): void
-  probe(url: string): Promise<HostProbe>
+  /** `headers` are for a proxy in front of the dashboard (Cloudflare Access and the like). */
+  probe(url: string, headers?: Record<string, string>): Promise<HostProbe>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
   signOut(): Promise<void>
   /** Opens another signed-in host in place of this one. */

@@ -28,7 +28,7 @@ export interface PairingDeps {
 }
 
 interface Received {
-  hosts: (PairHost & { password?: string; token?: string })[]
+  hosts: (PairHost & { password?: string; token?: string; headers?: Record<string, string> })[]
 }
 
 /** The phone's sealed payload, or null when it isn't one. */
@@ -52,6 +52,11 @@ export function readPayload(text: string): Received | null {
     if (typeof h.password === 'string') host.password = h.password
     if (typeof h.token === 'string') host.token = h.token
     if (typeof h.name === 'string') host.name = h.name
+    // A proxy's headers (Cloudflare Access, Pangolin…); the sign-in checks each one.
+    if (h.headers && typeof h.headers === 'object' && !Array.isArray(h.headers)) {
+      const headers = Object.entries(h.headers as Record<string, unknown>).filter((e): e is [string, string] => typeof e[1] === 'string')
+      if (headers.length) host.headers = Object.fromEntries(headers)
+    }
     if (method === 'password' && (!host.username || !host.password)) continue
     if (method === 'token' && !host.token) continue
     hosts.push(host)
@@ -121,7 +126,7 @@ export class Pairing {
     const failed: string[] = []
     let first: string | null = null
     for (const host of received.hosts) {
-      const result = await this.deps.signIn({ url: host.url, method: host.method, username: host.username, password: host.password, token: host.token })
+      const result = await this.deps.signIn({ url: host.url, method: host.method, username: host.username, password: host.password, token: host.token, headers: host.headers })
       if (result.ok) first ??= host.url
       else failed.push(`${host.name ?? host.url}: ${result.error}`)
     }
