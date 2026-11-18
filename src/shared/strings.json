@@ -1454,6 +1454,36 @@
     "zh-Hans": "已归档",
     "zh-Hant": "已封存"
   },
+  "Artifacts": {
+    "de": "Artefakte",
+    "es": "Artefactos",
+    "fr": "Artefacts",
+    "id": "Artefak",
+    "it": "Artefatti",
+    "ja": "アーティファクト",
+    "ko": "아티팩트",
+    "pl": "Artefakty",
+    "pt-BR": "Artefatos",
+    "ru": "Артефакты",
+    "tr": "Yapıtlar",
+    "zh-Hans": "产物",
+    "zh-Hant": "產物"
+  },
+  "Artifacts couldn't load": {
+    "de": "Artefakte konnten nicht geladen werden",
+    "es": "No se pudieron cargar los artefactos",
+    "fr": "Impossible de charger les artefacts",
+    "id": "Artefak tidak dapat dimuat",
+    "it": "Impossibile caricare gli artefatti",
+    "ja": "アーティファクトを読み込めませんでした",
+    "ko": "아티팩트를 불러올 수 없음",
+    "pl": "Nie udało się wczytać artefaktów",
+    "pt-BR": "Não foi possível carregar os artefatos",
+    "ru": "Не удалось загрузить артефакты",
+    "tr": "Yapıtlar yüklenemedi",
+    "zh-Hans": "无法载入产物",
+    "zh-Hant": "無法載入產物"
+  },
   "Ask Hermes": {
     "de": "Hermes fragen",
     "es": "Preguntar a Hermes",
@@ -1753,6 +1783,21 @@
     "tr": "Ek eklenemedi: {reason}",
     "zh-Hans": "附件发送失败：{reason}",
     "zh-Hant": "附加失敗：{reason}"
+  },
+  "Audio": {
+    "de": "Audio",
+    "es": "Audio",
+    "fr": "Audio",
+    "id": "Audio",
+    "it": "Audio",
+    "ja": "オーディオ",
+    "ko": "오디오",
+    "pl": "Audio",
+    "pt-BR": "Áudio",
+    "ru": "Аудио",
+    "tr": "Ses",
+    "zh-Hans": "音频",
+    "zh-Hant": "音訊"
   },
   "Authenticator key (optional)": {
     "de": "Authenticator-Schlüssel (optional)",
@@ -4274,6 +4319,21 @@
     "zh-Hans": "拷贝分支",
     "zh-Hant": "拷貝分支"
   },
+  "Copy Link": {
+    "de": "Link kopieren",
+    "es": "Copiar enlace",
+    "fr": "Copier le lien",
+    "id": "Salin Tautan",
+    "it": "Copia link",
+    "ja": "リンクをコピー",
+    "ko": "링크 복사",
+    "pl": "Kopiuj link",
+    "pt-BR": "Copiar link",
+    "ru": "Скопировать ссылку",
+    "tr": "Bağlantıyı Kopyala",
+    "zh-Hans": "拷贝链接",
+    "zh-Hant": "拷貝連結"
+  },
   "Copy Path": {
     "de": "Pfad kopieren",
     "es": "Copiar ruta",
@@ -4679,6 +4739,36 @@
     "zh-Hans": "无法保存密钥顺序。",
     "zh-Hant": "無法儲存金鑰順序。"
   },
+  "Couldn't Remove from Saved": {
+    "de": "Entfernen aus „Gespeichert“ fehlgeschlagen",
+    "es": "No se pudo quitar de Guardado",
+    "fr": "Impossible de retirer d’Enregistré",
+    "id": "Tidak Dapat Menghapus dari Disimpan",
+    "it": "Impossibile rimuovere da Salvato",
+    "ja": "保存済みから削除できませんでした",
+    "ko": "저장됨에서 제거할 수 없음",
+    "pl": "Nie udało się usunąć z sekcji „Zapisano”",
+    "pt-BR": "Não foi possível remover de Salvo",
+    "ru": "Не удалось убрать из раздела «Сохранено»",
+    "tr": "Kaydedildi'den kaldırılamadı",
+    "zh-Hans": "无法从“已保存”中移除",
+    "zh-Hant": "無法從「已儲存」中移除"
+  },
+  "Couldn't Save": {
+    "de": "Speichern fehlgeschlagen",
+    "es": "No se pudo guardar",
+    "fr": "Enregistrement impossible",
+    "id": "Tidak Dapat Menyimpan",
+    "it": "Impossibile salvare",
+    "ja": "保存できませんでした",
+    "ko": "저장할 수 없음",
+    "pl": "Nie udało się zapisać",
+    "pt-BR": "Não foi possível salvar",
+    "ru": "Не удалось сохранить",
+    "tr": "Kaydedilemedi",
+    "zh-Hans": "无法保存",
+    "zh-Hant": "無法儲存"
+  },
   "Couldn't add it": {
     "de": "Konnte nicht hinzugefügt werden",
     "es": "No se pudo añadir",
@@ -4844,6 +4934,21 @@
     "zh-Hans": "无法打开此文件",
     "zh-Hant": "無法打開此檔案"
   },
+  "Couldn't open this file.": {
+    "de": "Diese Datei konnte nicht geöffnet werden.",
+    "es": "No se pudo abrir este archivo.",
+    "fr": "Impossible d’ouvrir ce fichier.",
+    "id": "Tidak dapat membuka file ini.",
+    "it": "Impossibile aprire questo file.",
+    "ja": "このファイルを開けませんでした。",
+    "ko": "이 파일을 열 수 없습니다.",
+    "pl": "Nie udało się otworzyć tego pliku.",
+    "pt-BR": "Não foi possível abrir este arquivo.",
+    "ru": "Не удалось открыть этот файл.",
+    "tr": "Bu dosya açılamadı.",
+    "zh-Hans": "无法打开此文件。",
+    "zh-Hant": "無法打開此檔案。"
+  },
   "Couldn't reach the skill hub": {
     "de": "Skill-Hub nicht erreichbar",
     "es": "No se pudo acceder al centro de habilidades",
@@ -4948,6 +5053,21 @@
     "tr": "Ağ geçidi yeniden başlatılamadı",
     "zh-Hans": "无法重启网关",
     "zh-Hant": "無法重新啟動閘道"
+  },
+  "Couldn't save the file. Try again.": {
+    "de": "Die Datei ließ sich nicht sichern. Versuch es noch einmal.",
+    "es": "No se pudo guardar el archivo. Inténtalo de nuevo.",
+    "fr": "Impossible d’enregistrer le fichier. Réessayez.",
+    "id": "Tidak dapat menyimpan file. Coba lagi.",
+    "it": "Impossibile salvare il file. Riprova.",
+    "ja": "ファイルを保存できませんでした。もう一度お試しください。",
+    "ko": "파일을 저장할 수 없습니다. 다시 시도하세요.",
+    "pl": "Nie udało się zapisać pliku. Spróbuj ponownie.",
+    "pt-BR": "Não foi possível salvar o arquivo. Tente novamente.",
+    "ru": "Не удалось сохранить файл. Попробуйте ещё раз.",
+    "tr": "Dosya kaydedilemedi. Tekrar deneyin.",
+    "zh-Hans": "无法存储文件。请再试一次。",
+    "zh-Hant": "無法儲存檔案。請再試一次。"
   },
   "Couldn't update Hermes": {
     "de": "Hermes konnte nicht aktualisiert werden",
@@ -6164,6 +6284,21 @@
     "zh-Hans": "Docker 镜像",
     "zh-Hant": "Docker 映像檔"
   },
+  "Document": {
+    "de": "Dokument",
+    "es": "Documento",
+    "fr": "Document",
+    "id": "Dokumen",
+    "it": "Documento",
+    "ja": "書類",
+    "ko": "문서",
+    "pl": "Dokument",
+    "pt-BR": "Documento",
+    "ru": "Документ",
+    "tr": "Belge",
+    "zh-Hans": "文档",
+    "zh-Hant": "文件"
+  },
   "Don't bring it back": {
     "de": "Nicht wieder anzeigen",
     "es": "No volver a mostrarla",
@@ -6238,6 +6373,21 @@
     "tr": "Sorma",
     "zh-Hans": "不询问",
     "zh-Hant": "不詢問"
+  },
+  "Download": {
+    "de": "Herunterladen",
+    "es": "Descargar",
+    "fr": "Télécharger",
+    "id": "Unduh",
+    "it": "Scarica",
+    "ja": "ダウンロード",
+    "ko": "다운로드",
+    "pl": "Pobierz",
+    "pt-BR": "Baixar",
+    "ru": "Скачать",
+    "tr": "İndir",
+    "zh-Hans": "下载",
+    "zh-Hant": "下載"
   },
   "Downloading the plugin…": {
     "de": "Plugin wird geladen …",
@@ -7573,6 +7723,36 @@
     "tr": "Dosyalar ve çıktı",
     "zh-Hans": "文件与输出",
     "zh-Hant": "檔案與輸出"
+  },
+  "Files Hermes sends or writes, pages it draws, files you attach and links show up here.": {
+    "de": "Dateien, die Hermes sendet oder schreibt, Seiten, die es zeichnet, Dateien, die du anhängst, und Links erscheinen hier.",
+    "es": "Aquí aparecen los archivos que Hermes envía o escribe, las páginas que dibuja, los archivos que adjuntas y los enlaces.",
+    "fr": "Les fichiers qu’Hermes envoie ou écrit, les pages qu’il dessine, les fichiers que vous joignez et les liens apparaissent ici.",
+    "id": "File yang dikirim atau ditulis Hermes, halaman yang digambarnya, file yang Anda lampirkan, dan tautan muncul di sini.",
+    "it": "Qui compaiono i file che Hermes invia o scrive, le pagine che disegna, i file che alleghi e i link.",
+    "ja": "Hermes が送信または作成したファイル、描いたページ、添付したファイル、リンクがここに表示されます。",
+    "ko": "Hermes가 보내거나 작성한 파일, 그린 페이지, 첨부한 파일과 링크가 여기에 표시됩니다.",
+    "pl": "Tutaj pojawiają się pliki, które Hermes wysyła lub zapisuje, strony, które rysuje, załączone przez ciebie pliki i linki.",
+    "pt-BR": "Arquivos que o Hermes envia ou grava, páginas que ele desenha, arquivos que você anexa e links aparecem aqui.",
+    "ru": "Здесь появляются файлы, которые Hermes отправляет или записывает, страницы, которые он рисует, файлы, которые вы прикрепляете, и ссылки.",
+    "tr": "Hermes'in gönderdiği veya yazdığı dosyalar, çizdiği sayfalar, eklediğiniz dosyalar ve bağlantılar burada görünür.",
+    "zh-Hans": "Hermes 发送或写入的文件、它绘制的页面、你附加的文件和链接会显示在这里。",
+    "zh-Hant": "Hermes 傳送或寫入的檔案、它繪製的頁面、你附加的檔案和連結會顯示在這裡。"
+  },
+  "Files, pages and links from this chat show up here once Hermes has saved it.": {
+    "de": "Dateien, Seiten und Links aus diesem Chat erscheinen hier, sobald Hermes ihn gespeichert hat.",
+    "es": "Los archivos, páginas y enlaces de este chat aparecen aquí cuando Hermes lo haya guardado.",
+    "fr": "Les fichiers, pages et liens de cette conversation apparaissent ici une fois qu’Hermes l’a enregistrée.",
+    "id": "File, halaman, dan tautan dari obrolan ini muncul di sini setelah Hermes menyimpannya.",
+    "it": "File, pagine e link di questa chat compaiono qui dopo che Hermes l’ha salvata.",
+    "ja": "このチャットのファイル、ページ、リンクは Hermes が保存するとここに表示されます。",
+    "ko": "이 채팅의 파일, 페이지, 링크는 Hermes가 채팅을 저장하면 여기에 표시됩니다.",
+    "pl": "Pliki, strony i linki z tego czatu pojawią się tutaj, gdy Hermes go zapisze.",
+    "pt-BR": "Arquivos, páginas e links desta conversa aparecem aqui depois que o Hermes a salvar.",
+    "ru": "Файлы, страницы и ссылки из этого чата появятся здесь, когда Hermes его сохранит.",
+    "tr": "Bu sohbetteki dosyalar, sayfalar ve bağlantılar Hermes sohbeti kaydettiğinde burada görünür.",
+    "zh-Hans": "Hermes 保存此聊天后，其中的文件、页面和链接会显示在这里。",
+    "zh-Hant": "Hermes 儲存此聊天後，其中的檔案、頁面和連結會顯示在這裡。"
   },
   "Fills in a new Kanban task's details.": {
     "de": "Ergänzt die Details einer neuen Kanban-Aufgabe.",
@@ -9434,6 +9614,21 @@
     "zh-Hans": "除非你另选模型，Hermes 会用聊天模型执行这些任务。对大多数任务来说，小而快的模型能省时省钱。",
     "zh-Hant": "除非你另選模型，Hermes 會用聊天模型執行這些工作。對大多數工作來說，小而快的模型能省時省錢。"
   },
+  "Hermes sent artifacts Conduit can’t read.": {
+    "de": "Hermes hat Artefakte gesendet, die Conduit nicht lesen kann.",
+    "es": "Hermes envió artefactos que Conduit no puede leer.",
+    "fr": "Hermes a envoyé des artefacts que Conduit ne peut pas lire.",
+    "id": "Hermes mengirim artefak yang tidak dapat dibaca Conduit.",
+    "it": "Hermes ha inviato artefatti che Conduit non riesce a leggere.",
+    "ja": "Hermes から Conduit が読めないアーティファクトが届きました。",
+    "ko": "Hermes가 Conduit에서 읽을 수 없는 아티팩트를 보냈습니다.",
+    "pl": "Hermes wysłał artefakty, których Conduit nie może odczytać.",
+    "pt-BR": "O Hermes enviou artefatos que o Conduit não consegue ler.",
+    "ru": "Hermes прислал артефакты, которые Conduit не может прочитать.",
+    "tr": "Hermes, Conduit'in okuyamadığı yapıtlar gönderdi.",
+    "zh-Hans": "Hermes 发送了 Conduit 无法读取的产物。",
+    "zh-Hant": "Hermes 傳送了 Conduit 無法讀取的產物。"
+  },
   "Hermes signed this computer out. Sign in again.": {
     "de": "Hermes hat diesen Computer abgemeldet. Melde dich erneut an.",
     "es": "Hermes cerró la sesión en este ordenador. Vuelve a iniciar sesión.",
@@ -9959,6 +10154,21 @@
     "zh-Hans": "如果默认模型失败，Hermes 会按顺序尝试这些模型。",
     "zh-Hant": "如果預設模型失敗，Hermes 會依序嘗試這些模型。"
   },
+  "Image": {
+    "de": "Bild",
+    "es": "Imagen",
+    "fr": "Image",
+    "id": "Gambar",
+    "it": "Immagine",
+    "ja": "画像",
+    "ko": "이미지",
+    "pl": "Obraz",
+    "pt-BR": "Imagem",
+    "ru": "Изображение",
+    "tr": "Görüntü",
+    "zh-Hans": "图片",
+    "zh-Hant": "影像"
+  },
   "Image attachments": {
     "de": "Bildanhänge",
     "es": "Imágenes adjuntas",
@@ -10049,6 +10259,21 @@
     "zh-Hans": "终端后端为 Singularity 时使用的镜像。",
     "zh-Hant": "終端機後端為 Singularity 時使用的映像檔。"
   },
+  "Images": {
+    "de": "Bilder",
+    "es": "Imágenes",
+    "fr": "Images",
+    "id": "Gambar",
+    "it": "Immagini",
+    "ja": "画像",
+    "ko": "이미지",
+    "pl": "Obrazy",
+    "pt-BR": "Imagens",
+    "ru": "Изображения",
+    "tr": "Görseller",
+    "zh-Hans": "图像",
+    "zh-Hant": "影像"
+  },
   "In Conduit on your iPhone, open Settings, then Connection, then Pair a Computer, and scan this code.": {
     "de": "Öffne in Conduit auf deinem iPhone Einstellungen, dann Verbindung, dann „Computer koppeln“, und scanne diesen Code.",
     "es": "En Conduit de tu iPhone, abre Ajustes, luego Conexión y después «Vincular un ordenador», y escanea este código.",
@@ -10078,6 +10303,21 @@
     "tr": "Pulse'ta, bildirim yok",
     "zh-Hans": "在 Pulse 中，不通知",
     "zh-Hant": "在 Pulse 中，不通知"
+  },
+  "In This Chat": {
+    "de": "In diesem Chat",
+    "es": "En este chat",
+    "fr": "Dans cette conversation",
+    "id": "Di Obrolan Ini",
+    "it": "In questa chat",
+    "ja": "このチャット内",
+    "ko": "이 채팅에서",
+    "pl": "W tym czacie",
+    "pt-BR": "Nesta conversa",
+    "ru": "В этом чате",
+    "tr": "Bu Sohbette",
+    "zh-Hans": "在此聊天中",
+    "zh-Hant": "在此聊天中"
   },
   "In the morning brief": {
     "de": "Im Morgenbriefing",
@@ -10664,6 +10904,21 @@
     "zh-Hans": "工具卡片保持展开",
     "zh-Hant": "保持展開工具卡片"
   },
+  "Kept copy": {
+    "de": "Kopie aufbewahrt",
+    "es": "Copia guardada",
+    "fr": "Copie conservée",
+    "id": "Salinan disimpan",
+    "it": "Copia conservata",
+    "ja": "コピーを保管済み",
+    "ko": "사본 보관됨",
+    "pl": "Zachowana kopia",
+    "pt-BR": "Cópia guardada",
+    "ru": "Копия сохранена",
+    "tr": "Kopya saklandı",
+    "zh-Hans": "已保留副本",
+    "zh-Hant": "已保留副本"
+  },
   "Kept out by what you taught Pulse": {
     "de": "Durch das ausgelassen, was du Pulse beigebracht hast",
     "es": "Excluido por lo que le enseñaste a Pulse",
@@ -11173,6 +11428,36 @@
     "tr": "Satır uzunluğu sınırı",
     "zh-Hans": "单行长度上限",
     "zh-Hant": "單行長度上限"
+  },
+  "Link": {
+    "de": "Link",
+    "es": "Enlace",
+    "fr": "Lien",
+    "id": "Tautan",
+    "it": "Link",
+    "ja": "リンク",
+    "ko": "링크",
+    "pl": "Link",
+    "pt-BR": "Link",
+    "ru": "Ссылка",
+    "tr": "Bağlantı",
+    "zh-Hans": "链接",
+    "zh-Hant": "連結"
+  },
+  "Links": {
+    "de": "Links",
+    "es": "Enlaces",
+    "fr": "Liens",
+    "id": "Tautan",
+    "it": "Link",
+    "ja": "リンク",
+    "ko": "링크",
+    "pl": "Linki",
+    "pt-BR": "Links",
+    "ru": "Ссылки",
+    "tr": "Bağlantılar",
+    "zh-Hans": "链接",
+    "zh-Hant": "連結"
   },
   "Listen": {
     "de": "Zuhören",
@@ -13229,6 +13514,21 @@
     "zh-Hans": "夜间开始",
     "zh-Hant": "夜間開始"
   },
+  "No Artifacts Yet": {
+    "de": "Noch keine Artefakte",
+    "es": "Aún no hay artefactos",
+    "fr": "Aucun artefact pour l’instant",
+    "id": "Belum Ada Artefak",
+    "it": "Ancora nessun artefatto",
+    "ja": "アーティファクトはまだありません",
+    "ko": "아직 아티팩트 없음",
+    "pl": "Brak artefaktów",
+    "pt-BR": "Nenhum artefato ainda",
+    "ru": "Артефактов пока нет",
+    "tr": "Henüz Yapıt Yok",
+    "zh-Hans": "还没有产物",
+    "zh-Hant": "尚無產物"
+  },
   "No Results": {
     "de": "Keine Ergebnisse",
     "es": "Sin resultados",
@@ -13378,6 +13678,21 @@
     "tr": "Sınır yok",
     "zh-Hans": "不限",
     "zh-Hant": "不限"
+  },
+  "No longer on the host": {
+    "de": "Nicht mehr auf dem Host",
+    "es": "Ya no está en el host",
+    "fr": "N’est plus sur l’hôte",
+    "id": "Tidak lagi ada di host",
+    "it": "Non più sull’host",
+    "ja": "ホストにもうありません",
+    "ko": "더 이상 호스트에 없음",
+    "pl": "Już nie ma na hoście",
+    "pt-BR": "Não está mais no host",
+    "ru": "Больше нет на хосте",
+    "tr": "Artık ana makinede değil",
+    "zh-Hans": "已不在主机上",
+    "zh-Hant": "已不在主機上"
   },
   "No matching connectors": {
     "de": "Keine passenden Konnektoren",
@@ -14069,6 +14384,21 @@
     "zh-Hans": "给 Pulse 的备注",
     "zh-Hant": "給 Pulse 的備註"
   },
+  "Nothing Saved Yet": {
+    "de": "Noch nichts gespeichert",
+    "es": "Aún no hay nada guardado",
+    "fr": "Rien d’enregistré pour l’instant",
+    "id": "Belum Ada yang Disimpan",
+    "it": "Ancora niente di salvato",
+    "ja": "保存したものはまだありません",
+    "ko": "아직 저장한 항목이 없음",
+    "pl": "Nic jeszcze nie zapisano",
+    "pt-BR": "Nada salvo ainda",
+    "ru": "Пока ничего не сохранено",
+    "tr": "Henüz Kaydedilen Yok",
+    "zh-Hans": "尚未保存任何内容",
+    "zh-Hant": "尚未儲存任何內容"
+  },
   "Nothing has run in this chat yet.": {
     "de": "In diesem Chat ist noch nichts gelaufen.",
     "es": "Todavía no se ha ejecutado nada en este chat.",
@@ -14083,6 +14413,21 @@
     "tr": "Bu sohbette henüz hiçbir şey çalışmadı.",
     "zh-Hans": "此聊天尚未运行任何内容。",
     "zh-Hant": "此聊天尚未執行任何內容。"
+  },
+  "Nothing here matches.": {
+    "de": "Hier passt nichts.",
+    "es": "Nada coincide.",
+    "fr": "Rien ne correspond.",
+    "id": "Tidak ada yang cocok.",
+    "it": "Nessuna corrispondenza.",
+    "ja": "一致するものはありません。",
+    "ko": "일치하는 항목이 없습니다.",
+    "pl": "Nic nie pasuje.",
+    "pt-BR": "Nada corresponde.",
+    "ru": "Ничего не найдено.",
+    "tr": "Eşleşen bir şey yok.",
+    "zh-Hans": "没有匹配的内容。",
+    "zh-Hant": "沒有相符的內容。"
   },
   "Nothing is running.": {
     "de": "Nichts läuft gerade.",
@@ -14833,6 +15178,36 @@
     "tr": "Ajan bir şey yazdığında çıktı burada görünür.",
     "zh-Hans": "智能体写出内容后，输出会显示在这里。",
     "zh-Hant": "代理程式寫出內容後，輸出會顯示在這裡。"
+  },
+  "Page": {
+    "de": "Seite",
+    "es": "Página",
+    "fr": "Page",
+    "id": "Halaman",
+    "it": "Pagina",
+    "ja": "ページ",
+    "ko": "페이지",
+    "pl": "Strona",
+    "pt-BR": "Página",
+    "ru": "Страница",
+    "tr": "Sayfa",
+    "zh-Hans": "页面",
+    "zh-Hant": "頁面"
+  },
+  "Pages": {
+    "de": "Seiten",
+    "es": "Páginas",
+    "fr": "Pages",
+    "id": "Halaman",
+    "it": "Pagine",
+    "ja": "ページ",
+    "ko": "페이지",
+    "pl": "Strony",
+    "pt-BR": "Páginas",
+    "ru": "Страницы",
+    "tr": "Sayfalar",
+    "zh-Hans": "页面",
+    "zh-Hant": "頁面"
   },
   "Pair with your iPhone": {
     "de": "Mit deinem iPhone koppeln",
@@ -16949,6 +17324,21 @@
     "zh-Hans": "移除所有条件？",
     "zh-Hant": "移除所有條件？"
   },
+  "Remove from Saved": {
+    "de": "Aus „Gespeichert“ entfernen",
+    "es": "Quitar de Guardado",
+    "fr": "Retirer d’Enregistré",
+    "id": "Hapus dari Disimpan",
+    "it": "Rimuovi da Salvato",
+    "ja": "保存済みから削除",
+    "ko": "저장됨에서 제거",
+    "pl": "Usuń z sekcji „Zapisano”",
+    "pt-BR": "Remover de Salvo",
+    "ru": "Убрать из раздела «Сохранено»",
+    "tr": "Kaydedildi'den Kaldır",
+    "zh-Hans": "从“已保存”中移除",
+    "zh-Hant": "從「已儲存」中移除"
+  },
   "Remove it from your calendar?": {
     "de": "Aus deinem Kalender entfernen?",
     "es": "¿Quitarlo de tu calendario?",
@@ -18254,6 +18644,21 @@
     "zh-Hans": "保存",
     "zh-Hant": "儲存"
   },
+  "Save an artifact with its star to keep it here. Hermes keeps a copy of each file, so it still opens after its chat is gone.": {
+    "de": "Speichere ein Artefakt mit seinem Stern, um es hier zu behalten. Hermes behält eine Kopie jeder Datei, damit sie sich auch nach dem Ende ihres Chats öffnen lässt.",
+    "es": "Guarda un artefacto con su estrella para tenerlo aquí. Hermes guarda una copia de cada archivo, así que se abre aunque su chat ya no exista.",
+    "fr": "Enregistrez un artefact avec son étoile pour le garder ici. Hermes conserve une copie de chaque fichier, qui s’ouvre donc même après la disparition de sa discussion.",
+    "id": "Simpan artefak dengan bintangnya agar tetap di sini. Hermes menyimpan salinan setiap file, jadi file tetap terbuka setelah obrolannya hilang.",
+    "it": "Salva un artefatto con la sua stella per tenerlo qui. Hermes conserva una copia di ogni file, così si apre anche quando la sua chat non c’è più.",
+    "ja": "アーティファクトを星で保存するとここに残ります。Hermes は各ファイルのコピーを保持するので、チャットがなくなっても開けます。",
+    "ko": "아티팩트를 별표로 저장하면 여기에 남습니다. Hermes가 각 파일의 사본을 보관하므로 채팅이 사라져도 열 수 있습니다.",
+    "pl": "Zapisz artefakt gwiazdką, aby go tu zatrzymać. Hermes przechowuje kopię każdego pliku, więc otworzy się nawet po usunięciu czatu.",
+    "pt-BR": "Salve um artefato com a estrela para mantê-lo aqui. O Hermes guarda uma cópia de cada arquivo, então ele abre mesmo depois que a conversa some.",
+    "ru": "Сохраните артефакт звёздочкой, чтобы он остался здесь. Hermes хранит копию каждого файла, поэтому он откроется и после удаления чата.",
+    "tr": "Burada tutmak için bir yapıtı yıldızıyla kaydedin. Hermes her dosyanın bir kopyasını saklar, böylece sohbeti gittikten sonra da açılır.",
+    "zh-Hans": "用星标保存产物即可留在这里。Hermes 会保留每个文件的副本，即使聊天已删除也能打开。",
+    "zh-Hant": "用星號儲存產物即可留在這裡。Hermes 會保留每個檔案的副本，即使聊天已刪除也能打開。"
+  },
   "Save calls to Sessions": {
     "de": "Anrufe in „Sitzungen“ sichern",
     "es": "Guardar llamadas en Sesiones",
@@ -18658,6 +19063,21 @@
     "tr": "Dosyalarda ara",
     "zh-Hans": "搜索文件",
     "zh-Hant": "搜尋檔案"
+  },
+  "Search names and chats": {
+    "de": "Namen und Chats durchsuchen",
+    "es": "Buscar nombres y chats",
+    "fr": "Rechercher des noms et des conversations",
+    "id": "Cari nama dan obrolan",
+    "it": "Cerca nomi e chat",
+    "ja": "名前とチャットを検索",
+    "ko": "이름 및 채팅 검색",
+    "pl": "Szukaj nazw i czatów",
+    "pt-BR": "Buscar nomes e conversas",
+    "ru": "Искать по названиям и чатам",
+    "tr": "Adlarda ve sohbetlerde ara",
+    "zh-Hans": "搜索名称和聊天",
+    "zh-Hant": "搜尋名稱和聊天"
   },
   "Search providers": {
     "de": "Anbieter suchen",
@@ -19364,6 +19784,21 @@
     "zh-Hans": "显示",
     "zh-Hant": "顯示"
   },
+  "Show More": {
+    "de": "Mehr zeigen",
+    "es": "Mostrar más",
+    "fr": "Afficher plus",
+    "id": "Tampilkan Lainnya",
+    "it": "Mostra altro",
+    "ja": "さらに表示",
+    "ko": "더 보기",
+    "pl": "Pokaż więcej",
+    "pt-BR": "Mostrar mais",
+    "ru": "Показать ещё",
+    "tr": "Daha fazla göster",
+    "zh-Hans": "显示更多",
+    "zh-Hant": "顯示更多"
+  },
   "Show all": {
     "de": "Alle anzeigen",
     "es": "Mostrar todo",
@@ -19423,6 +19858,36 @@
     "tr": "Geçerli oturum durumunu göster",
     "zh-Hans": "显示当前会话状态",
     "zh-Hant": "顯示目前工作階段的狀態"
+  },
+  "Show in Chat": {
+    "de": "Im Chat zeigen",
+    "es": "Mostrar en el chat",
+    "fr": "Afficher dans la conversation",
+    "id": "Tampilkan di Obrolan",
+    "it": "Mostra nella chat",
+    "ja": "チャットで表示",
+    "ko": "채팅에서 보기",
+    "pl": "Pokaż w czacie",
+    "pt-BR": "Mostrar na conversa",
+    "ru": "Показать в чате",
+    "tr": "Sohbette Göster",
+    "zh-Hans": "在聊天中显示",
+    "zh-Hant": "在聊天中顯示"
+  },
+  "Show in Folder": {
+    "de": "Im Ordner zeigen",
+    "es": "Mostrar en la carpeta",
+    "fr": "Afficher dans le dossier",
+    "id": "Tampilkan di Folder",
+    "it": "Mostra nella cartella",
+    "ja": "フォルダで表示",
+    "ko": "폴더에서 보기",
+    "pl": "Pokaż w folderze",
+    "pt-BR": "Mostrar na pasta",
+    "ru": "Показать в папке",
+    "tr": "Klasörde göster",
+    "zh-Hans": "在文件夹中显示",
+    "zh-Hant": "在資料夾中顯示"
   },
   "Show in every chat": {
     "de": "In jedem Chat zeigen",
@@ -22664,6 +23129,21 @@
     "zh-Hans": "这不会改变工作流可以做的事：它们的审批仍按“安全”中的设置。",
     "zh-Hant": "這不會改變工作流程可以做的事：它們的核准仍依「安全」中的設定。"
   },
+  "This file is no longer on your Hermes host.": {
+    "de": "Diese Datei ist nicht mehr auf deinem Hermes-Host.",
+    "es": "Este archivo ya no está en tu host de Hermes.",
+    "fr": "Ce fichier n’est plus sur votre hôte Hermes.",
+    "id": "File ini tidak lagi ada di host Hermes Anda.",
+    "it": "Questo file non è più sul tuo host Hermes.",
+    "ja": "このファイルは Hermes ホストにもうありません。",
+    "ko": "이 파일은 더 이상 Hermes 호스트에 없습니다.",
+    "pl": "Tego pliku nie ma już na twoim hoście Hermes.",
+    "pt-BR": "Este arquivo não está mais no seu host do Hermes.",
+    "ru": "Этого файла больше нет на вашем хосте Hermes.",
+    "tr": "Bu dosya artık Hermes ana makinenizde değil.",
+    "zh-Hans": "此文件已不在你的 Hermes 主机上。",
+    "zh-Hant": "此檔案已不在你的 Hermes 主機上。"
+  },
   "This file isn't text, so it can't be shown here.": {
     "de": "Diese Datei ist kein Text und kann hier nicht angezeigt werden.",
     "es": "Este archivo no es texto, así que no se puede mostrar aquí.",
@@ -24149,6 +24629,21 @@
     "zh-Hans": "请更新此主机上的 Conduit 插件以使用 Pulse。",
     "zh-Hant": "請更新此主機上的 Conduit 外掛以使用 Pulse。"
   },
+  "Update the Conduit plugin on your Hermes host to see artifacts here. Settings › Conduit plugin can update it.": {
+    "de": "Aktualisiere das Conduit-Plugin auf deinem Hermes-Host, um hier Artefakte zu sehen. Einstellungen › Conduit-Plugin kann es aktualisieren.",
+    "es": "Actualiza el plugin de Conduit en tu host de Hermes para ver artefactos aquí. Ajustes › Plugin de Conduit puede actualizarlo.",
+    "fr": "Mettez à jour le plugin Conduit sur votre hôte Hermes pour voir les artefacts ici. Réglages › Plugin Conduit peut le mettre à jour.",
+    "id": "Perbarui plugin Conduit di host Hermes Anda untuk melihat artefak di sini. Pengaturan › Plugin Conduit dapat memperbaruinya.",
+    "it": "Aggiorna il plugin Conduit sul tuo host Hermes per vedere qui gli artefatti. Impostazioni › Plugin Conduit può aggiornarlo.",
+    "ja": "ここにアーティファクトを表示するには、Hermes ホストの Conduit プラグインをアップデートしてください。設定 › Conduit プラグインからアップデートできます。",
+    "ko": "여기에서 아티팩트를 보려면 Hermes 호스트의 Conduit 플러그인을 업데이트하세요. 설정 › Conduit 플러그인에서 업데이트할 수 있습니다.",
+    "pl": "Zaktualizuj wtyczkę Conduit na hoście Hermes, aby zobaczyć tu artefakty. Możesz to zrobić w Ustawienia › Wtyczka Conduit.",
+    "pt-BR": "Atualize o plugin do Conduit no seu host do Hermes para ver artefatos aqui. Ajustes › Plugin do Conduit pode atualizá-lo.",
+    "ru": "Обновите плагин Conduit на хосте Hermes, чтобы видеть здесь артефакты. Обновить его можно в разделе Настройки › Плагин Conduit.",
+    "tr": "Yapıtları burada görmek için Hermes ana makinenizdeki Conduit eklentisini güncelleyin. Ayarlar › Conduit eklentisi bunu güncelleyebilir.",
+    "zh-Hans": "在你的 Hermes 主机上更新 Conduit 插件即可在这里查看产物。可在“设置 › Conduit 插件”中更新。",
+    "zh-Hant": "在你的 Hermes 主機上更新 Conduit 外掛即可在這裡查看產物。可在「設定 › Conduit 外掛」中更新。"
+  },
   "Update the Conduit plugin on your Hermes host to use Local Live.": {
     "de": "Aktualisiere das Conduit-Plugin auf deinem Hermes-Host, um Local Live zu nutzen.",
     "es": "Actualiza el plugin de Conduit en tu servidor Hermes para usar Local Live.",
@@ -24793,6 +25288,21 @@
     "tr": "Sürüm, güncellemeler ve burada ne yaptığı",
     "zh-Hans": "版本、更新以及它在这里的功能",
     "zh-Hant": "版本、更新以及它在這裡的功能"
+  },
+  "Video": {
+    "de": "Video",
+    "es": "Video",
+    "fr": "Vidéo",
+    "id": "Video",
+    "it": "Video",
+    "ja": "ビデオ",
+    "ko": "비디오",
+    "pl": "Wideo",
+    "pt-BR": "Vídeo",
+    "ru": "Видео",
+    "tr": "Video",
+    "zh-Hans": "视频",
+    "zh-Hant": "影片"
   },
   "View": {
     "de": "Darstellung",
@@ -26053,6 +26563,21 @@
     "tr": "Zaten bildiğinizi söylediniz",
     "zh-Hans": "你说已经知道了",
     "zh-Hant": "你說已經知道了"
+  },
+  "You sent": {
+    "de": "Von dir gesendet",
+    "es": "Enviado por ti",
+    "fr": "Envoyé par vous",
+    "id": "Anda kirim",
+    "it": "Inviato da te",
+    "ja": "自分が送信",
+    "ko": "내가 보냄",
+    "pl": "Wysłane przez ciebie",
+    "pt-BR": "Enviado por você",
+    "ru": "Отправлено вами",
+    "tr": "Siz gönderdiniz",
+    "zh-Hans": "你发送的",
+    "zh-Hant": "你傳送的"
   },
   "You tapped Do it {when} but didn't send it.": {
     "de": "Du hast {when} auf „Erledigen“ getippt, aber nichts gesendet.",

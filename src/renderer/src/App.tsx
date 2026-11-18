@@ -45,6 +45,7 @@ import { looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
+import { ArtifactsPanel } from './components/ArtifactsPanel'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
 import { MemoryPage } from './components/MemoryPage'
 import { PlanDock } from './components/PlanDock'
@@ -364,6 +365,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const controlPulse = turnsDone + outputs
   const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
   const showWork = workOpen && (!!openBotChat || !!workItem)
+  // The chat's artifacts beside it, after the phone's In This Chat sheet.
+  const [artifactsOpen, setArtifactsOpen] = useState(false)
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
   const [contextOpen, setContextOpen] = useState(false)
@@ -717,7 +720,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                       aria-expanded={workOpen}
                       title={t('Shows this bot’s work')}
                       onClick={() => {
-                        if (!workOpen) showFiles(false)
+                        if (!workOpen) {
+                          showFiles(false)
+                          setArtifactsOpen(false)
+                        }
                         setWorkOpen(!workOpen)
                       }}
                     >
@@ -759,12 +765,27 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   >
                     <Icon name={calling ? 'phoneDown' : 'phone'} />
                   </button>
-                  {chat.cwd && !filesOpen ? (
+                  {selected.id ? (
+                    <button
+                      className={`chat-head-button${artifactsOpen ? ' active' : ''}`}
+                      aria-label={t('In This Chat')}
+                      aria-pressed={artifactsOpen}
+                      title={t('In This Chat')}
+                      onClick={() => {
+                        if (!artifactsOpen) setWorkOpen(false)
+                        setArtifactsOpen(!artifactsOpen)
+                      }}
+                    >
+                      <Icon name="paperclip" />
+                    </button>
+                  ) : null}
+                  {chat.cwd && (!filesOpen || artifactsOpen) ? (
                     <button
                       className="chat-head-button"
                       aria-label={t('Files')}
                       title={t('Files')}
                       onClick={() => {
+                        setArtifactsOpen(false)
                         setWorkOpen(false)
                         showFiles(true)
                       }}
@@ -926,7 +947,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 voice={calling ? undefined : { profile: selected.profile }}
               />
             </main>
-            {showWork ? (
+            {artifactsOpen && selected.id ? (
+              <ArtifactsPanel
+                profile={selected.profile}
+                sessionIds={[selected.id]}
+                refreshKey={turnsDone}
+                folder={chat.cwd}
+                onShowInFolder={path => {
+                  setArtifactsOpen(false)
+                  openPath?.(path)
+                }}
+                onClose={() => setArtifactsOpen(false)}
+              />
+            ) : showWork ? (
               <WorkPanel
                 profile={selected.profile}
                 botName={workBot?.title ?? 'Hermes'}

@@ -418,6 +418,25 @@ a:hover {
   padding: 0 16px;
 }
 
+/* With buttons on the right, the title stays centered while there's room and gives way to them when there isn't. */
+.chat-head:has(> .chat-head-actions) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, max-content) minmax(max-content, 1fr);
+  gap: 8px;
+}
+
+.chat-head:has(> .chat-head-actions) > .chat-titles {
+  grid-column: 2;
+  max-width: 100%;
+  justify-self: center;
+}
+
+.chat-head:has(> .chat-head-actions) > .chat-head-actions {
+  grid-column: 3;
+  justify-self: end;
+  position: static;
+}
+
 .chat-title {
   max-width: 60%;
   height: 32px;
@@ -6938,4 +6957,173 @@ button.cap-row-text {
 .local-live-buttons {
   display: flex;
   gap: 8px;
+}
+
+/* Artifacts beside a chat, after the phone's In This Chat sheet. */
+.chat-head-button.active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.artifacts-panel {
+  width: 360px;
+}
+
+.artifact-chips {
+  padding: 0 10px 8px;
+  flex-wrap: wrap;
+}
+
+.artifact-list {
+  padding: 0 6px 12px;
+}
+
+.artifact-day h4 {
+  margin: 10px 6px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.artifact-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 10px;
+}
+
+.artifact-row:hover {
+  background: var(--surface);
+}
+
+.artifact-row.gone .artifact-name {
+  color: var(--text-3);
+  text-decoration: line-through;
+}
+
+.artifact-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.artifact-thumb {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--text-3);
+}
+
+.artifact-thumb svg {
+  width: 18px;
+  height: 18px;
+}
+
+.artifact-thumb .picture-button,
+.artifact-thumb .artifact-picture {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  pointer-events: none;
+}
+
+.artifact-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.artifact-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.artifact-name,
+.artifact-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artifact-name {
+  font-size: 13px;
+}
+
+.artifact-meta {
+  font-size: 11px;
+}
+
+.artifact-note {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.artifact-actions {
+  display: flex;
+  gap: 2px;
+  padding-right: 4px;
+  opacity: 0;
+}
+
+.artifact-row:hover .artifact-actions,
+.artifact-row:focus-within .artifact-actions {
+  opacity: 1;
+}
+
+.artifact-actions .on {
+  color: var(--accent);
+}
+
+.artifact-empty {
+  padding: 24px 12px;
+  text-align: center;
+}
+
+.artifact-more {
+  display: block;
+  margin: 10px auto;
+}
+
+.artifact-page {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.artifact-text {
+  white-space: pre-wrap;
+  padding: 10px;
+}
+
+.artifact-viewer-note {
+  padding: 12px;
+}
+
+.artifacts-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
