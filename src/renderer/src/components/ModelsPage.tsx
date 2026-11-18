@@ -4,6 +4,7 @@ import { gateway } from '../gateway'
 import { hasOwnModel, helperSummary, parseModelSettings, type ModelSettings } from '../state/helperModels'
 import { groupModels, type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
+import { ProvidersSection } from './ProvidersSection'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -22,6 +23,7 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
   const [profile, setProfile] = useState(initialProfile)
   const [settings, setSettings] = useState<ModelSettings | null>(null)
   const [providers, setProviders] = useState<ModelProviderRow[]>([])
+  const [catalog, setCatalog] = useState<string[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [saving, setSaving] = useState<string | null>(null)
@@ -40,6 +42,9 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
     if (profile !== 'default') params.profile = profile
     const options = await gateway.rpc<{ providers?: ModelProviderRow[] }>('model.options', params).catch(() => null)
     if (generation.current === mine) setProviders(options?.providers ?? [])
+    // Every provider Hermes knows, connected or not: a new endpoint's name stays clear of them.
+    const all = await gateway.rpc<{ providers?: ModelProviderRow[] }>('model.options', profile !== 'default' ? { profile } : {}).catch(() => null)
+    if (generation.current === mine) setCatalog(all?.providers ? all.providers.flatMap(p => [p.slug, p.name]) : null)
   }, [profile])
 
   useEffect(() => {
@@ -48,6 +53,9 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
   }, [load])
 
   const groups = useMemo(() => groupModels(providers, ''), [providers])
+  // The bot list is a new array on every render above: the profiles stay the same one while their names do.
+  const profileKey = bots.map(bot => bot.name).join('\n')
+  const profiles = useMemo(() => (profileKey ? profileKey.split('\n') : []), [profileKey])
 
   const assign = async (key: string, body: Record<string, unknown>) => {
     setSaving(key)
@@ -168,6 +176,14 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
               </div>
             ))}
           </section>
+          <ProvidersSection
+            profile={profile}
+            profileName={bots.find(bot => bot.name === profile)?.title ?? profile}
+            profiles={profiles}
+            defaultProvider={settings.main.provider}
+            catalog={catalog}
+            onChanged={() => void load()}
+          />
         </>
       )}
     </div>
