@@ -479,6 +479,21 @@
     "zh-Hans": "请在 Hermes 服务器上添加 Gemini API 密钥。",
     "zh-Hant": "請在你的 Hermes 伺服器上加入 Gemini API 金鑰。"
   },
+  "Add a Qwen API key": {
+    "de": "Qwen-API-Schlüssel hinzufügen",
+    "es": "Añade una clave de API de Qwen",
+    "fr": "Ajouter une clé API Qwen",
+    "id": "Tambahkan kunci API Qwen",
+    "it": "Aggiungi una chiave API Qwen",
+    "ja": "Qwen APIキーを追加",
+    "ko": "Qwen API 키 추가",
+    "pl": "Dodaj klucz API Qwen",
+    "pt-BR": "Adicionar uma chave de API do Qwen",
+    "ru": "Добавьте ключ API Qwen",
+    "tr": "Qwen API anahtarı ekleyin",
+    "zh-Hans": "添加 Qwen API 密钥",
+    "zh-Hant": "加入 Qwen API 金鑰"
+  },
   "Add a comment, or a note on what was done": {
     "de": "Kommentar oder Notiz zum Erledigten hinzufügen",
     "es": "Añade un comentario o una nota sobre lo que se hizo",
@@ -869,6 +884,21 @@
     "zh-Hans": "全部使用聊天模型",
     "zh-Hant": "全部使用聊天模型"
   },
+  "Allow": {
+    "de": "Erlauben",
+    "es": "Permitir",
+    "fr": "Autoriser",
+    "id": "Izinkan",
+    "it": "Consenti",
+    "ja": "許可",
+    "ko": "허용",
+    "pl": "Zezwól",
+    "pt-BR": "Permitir",
+    "ru": "Разрешить",
+    "tr": "İzin Ver",
+    "zh-Hans": "允许",
+    "zh-Hant": "允許"
+  },
   "Allow Hermes to maintain user preferences.": {
     "de": "Erlaubt Hermes, Nutzervorlieben zu pflegen.",
     "es": "Permitir que Hermes mantenga las preferencias del usuario.",
@@ -943,6 +973,21 @@
     "tr": "Özel URL'lere izin ver",
     "zh-Hans": "允许私有 URL",
     "zh-Hant": "允許私人 URL"
+  },
+  "Allowed": {
+    "de": "Erlaubt",
+    "es": "Permitido",
+    "fr": "Autorisé",
+    "id": "Diizinkan",
+    "it": "Consentito",
+    "ja": "許可済み",
+    "ko": "허용됨",
+    "pl": "Zezwolono",
+    "pt-BR": "Permitido",
+    "ru": "Разрешено",
+    "tr": "İzin verildi",
+    "zh-Hans": "已允许",
+    "zh-Hant": "已允許"
   },
   "Already done": {
     "de": "Schon erledigt",
@@ -1513,6 +1558,21 @@
     "tr": "Hermes'ten güncellemesi isteniyor…",
     "zh-Hans": "正在请求 Hermes 更新…",
     "zh-Hant": "正在請求 Hermes 更新…"
+  },
+  "Asks before the first call": {
+    "de": "Fragt vor dem ersten Anruf",
+    "es": "Pregunta antes de la primera llamada",
+    "fr": "Demande avant le premier appel",
+    "id": "Bertanya sebelum panggilan pertama",
+    "it": "Chiede prima della prima chiamata",
+    "ja": "最初の通話の前に確認します",
+    "ko": "첫 통화 전에 물어봐요",
+    "pl": "Pyta przed pierwszą rozmową",
+    "pt-BR": "Pergunta antes da primeira chamada",
+    "ru": "Спросит перед первым звонком",
+    "tr": "İlk aramadan önce sorar",
+    "zh-Hans": "首次通话前会询问",
+    "zh-Hant": "首次通話前會詢問"
   },
   "Assigned to": {
     "de": "Zugewiesen an",
@@ -3689,6 +3749,21 @@
     "zh-Hans": "并发委派代理数",
     "zh-Hant": "同時執行的委派代理程式數量"
   },
+  "Conduit asks once for each provider. You can take it back in Settings > Voice.": {
+    "de": "Conduit fragt einmal pro Anbieter. Du kannst es unter „Einstellungen“ > „Sprachmodus“ zurücknehmen.",
+    "es": "Conduit pregunta una vez por cada proveedor. Puedes retirarlo en Ajustes > Voz.",
+    "fr": "Conduit demande une fois par fournisseur. Vous pouvez retirer votre accord dans Réglages > Voix.",
+    "id": "Conduit bertanya sekali untuk setiap penyedia. Anda dapat menariknya kembali di Pengaturan > Suara.",
+    "it": "Conduit chiede una volta per ogni provider. Puoi revocarlo in Impostazioni > Voce.",
+    "ja": "Conduitはプロバイダごとに一度だけ確認します。「設定」>「音声」でいつでも取り消せます。",
+    "ko": "Conduit은 제공자마다 한 번만 물어봐요. ‘설정’ > ‘음성’에서 철회할 수 있어요.",
+    "pl": "Conduit pyta raz dla każdego dostawcy. Zgodę możesz wycofać w sekcji Ustawienia > Głos.",
+    "pt-BR": "O Conduit pergunta uma vez para cada provedor. Você pode retirar a permissão em Ajustes > Voz.",
+    "ru": "Conduit спрашивает один раз для каждого провайдера. Отозвать согласие можно в разделе «Настройки › Голос».",
+    "tr": "Conduit her sağlayıcı için bir kez sorar. İzni Ayarlar > Ses bölümünden geri alabilirsiniz.",
+    "zh-Hans": "Conduit 对每个服务商只询问一次。你可以在「设置」>「语音」中撤回。",
+    "zh-Hant": "Conduit 對每個供應商只詢問一次。你可以在「設定」>「語音」中撤回。"
+  },
   "Conduit can't use the microphone. Allow it for Conduit in your computer's privacy settings, then try again.": {
     "de": "Conduit kann das Mikrofon nicht verwenden. Erlaube es für Conduit in den Datenschutzeinstellungen deines Computers und versuche es dann erneut.",
     "es": "Conduit no puede usar el micrófono. Permítelo para Conduit en los ajustes de privacidad de tu ordenador e inténtalo de nuevo.",
@@ -4588,6 +4663,36 @@
     "tr": "Grok Live'a bağlanılamadı: {reason}",
     "zh-Hans": "无法连接到 Grok Live：{reason}",
     "zh-Hant": "無法連線到 Grok Live：{reason}"
+  },
+  "Couldn't connect to Qwen Live.": {
+    "de": "Keine Verbindung zu Qwen Live möglich.",
+    "es": "No se pudo conectar con Qwen Live.",
+    "fr": "Impossible de se connecter à Qwen Live.",
+    "id": "Tidak dapat terhubung ke Qwen Live.",
+    "it": "Impossibile connettersi a Qwen Live.",
+    "ja": "Qwen Liveに接続できませんでした。",
+    "ko": "Qwen Live에 연결할 수 없어요.",
+    "pl": "Nie udało się połączyć z Qwen Live.",
+    "pt-BR": "Não foi possível conectar ao Qwen Live.",
+    "ru": "Не удалось подключиться к Qwen Live.",
+    "tr": "Qwen Live'a bağlanılamadı.",
+    "zh-Hans": "无法连接到 Qwen Live。",
+    "zh-Hant": "無法連線到 Qwen Live。"
+  },
+  "Couldn't connect to Qwen Live: {reason}": {
+    "de": "Keine Verbindung zu Qwen Live möglich: {reason}",
+    "es": "No se pudo conectar con Qwen Live: {reason}",
+    "fr": "Impossible de se connecter à Qwen Live : {reason}",
+    "id": "Tidak dapat terhubung ke Qwen Live: {reason}",
+    "it": "Impossibile connettersi a Qwen Live: {reason}",
+    "ja": "Qwen Liveに接続できませんでした：{reason}",
+    "ko": "Qwen Live에 연결할 수 없어요: {reason}",
+    "pl": "Nie udało się połączyć z Qwen Live: {reason}",
+    "pt-BR": "Não foi possível conectar ao Qwen Live: {reason}",
+    "ru": "Не удалось подключиться к Qwen Live: {reason}",
+    "tr": "Qwen Live'a bağlanılamadı: {reason}",
+    "zh-Hans": "无法连接到 Qwen Live：{reason}",
+    "zh-Hant": "無法連線到 Qwen Live：{reason}"
   },
   "Couldn't load this chat's usage.": {
     "de": "Die Nutzung dieses Chats konnte nicht geladen werden.",
@@ -6118,6 +6223,21 @@
     "tr": "Yanıt sırasında",
     "zh-Hans": "回复期间",
     "zh-Hant": "回覆期間"
+  },
+  "During a {mode} call, Conduit sends your microphone audio, the transcript, and the context and tool results Hermes adds to {company}. Their terms and privacy policy apply.": {
+    "de": "Während eines {mode}-Anrufs sendet Conduit dein Mikrofon-Audio, das Transkript sowie den Kontext und die Tool-Ergebnisse, die Hermes hinzufügt, an {company}. Es gelten deren Nutzungsbedingungen und Datenschutzrichtlinie.",
+    "es": "Durante una llamada de {mode}, Conduit envía a {company} el audio de tu micrófono, la transcripción y el contexto y los resultados de herramientas que añade Hermes. Se aplican sus condiciones y su política de privacidad.",
+    "fr": "Pendant un appel {mode}, Conduit envoie à {company} l’audio de votre micro, la transcription, ainsi que le contexte et les résultats d’outils ajoutés par Hermes. Leurs conditions et leur politique de confidentialité s’appliquent.",
+    "id": "Selama panggilan {mode}, Conduit mengirim audio mikrofon Anda, transkrip, serta konteks dan hasil alat yang ditambahkan Hermes ke {company}. Ketentuan dan kebijakan privasi mereka berlaku.",
+    "it": "Durante una chiamata {mode}, Conduit invia a {company} l’audio del microfono, la trascrizione e il contesto e i risultati degli strumenti aggiunti da Hermes. Si applicano i loro termini e la loro informativa sulla privacy.",
+    "ja": "{mode}の通話中、Conduitはマイクの音声、文字起こし、Hermesが追加するコンテキストとツールの結果を{company}に送信します。同社の利用規約とプライバシーポリシーが適用されます。",
+    "ko": "{mode} 통화 중에 Conduit은 마이크 오디오, 대화 기록, 그리고 Hermes가 추가하는 맥락과 도구 결과를 {company}에 보내요. 해당 회사의 약관과 개인정보 처리방침이 적용돼요.",
+    "pl": "Podczas rozmowy {mode} Conduit wysyła do {company} dźwięk z mikrofonu, transkrypcję oraz kontekst i wyniki narzędzi dodane przez Hermesa. Obowiązują ich warunki i polityka prywatności.",
+    "pt-BR": "Durante uma chamada do {mode}, o Conduit envia para a {company} o áudio do seu microfone, a transcrição e o contexto e os resultados de ferramentas que o Hermes adiciona. Os termos e a política de privacidade deles se aplicam.",
+    "ru": "Во время звонка {mode} Conduit отправляет в {company} звук с микрофона, расшифровку, а также контекст и результаты инструментов, которые добавляет Hermes. Действуют их условия и политика конфиденциальности.",
+    "tr": "{mode} araması sırasında Conduit mikrofon sesinizi, dökümü ve Hermes’in eklediği bağlamı ve araç sonuçlarını {company} şirketine gönderir. Onların koşulları ve gizlilik politikası geçerlidir.",
+    "zh-Hans": "在 {mode} 通话期间，Conduit 会将你的麦克风音频、转写文字，以及 Hermes 添加的上下文和工具结果发送给 {company}。其服务条款和隐私政策适用。",
+    "zh-Hant": "在 {mode} 通話期間，Conduit 會將你的麥克風音訊、逐字稿，以及 Hermes 加入的情境和工具結果傳送給 {company}。其服務條款和隱私權政策適用。"
   },
   "Each call's transcript is saved to your Hermes server's history and shows under Voice in Sessions, where you can read it or resume the call. Needs an up-to-date Hermes notifier plugin. Shared by every live voice mode. Applies to the next conversation.": {
     "de": "Das Transkript jedes Anrufs wird im Verlauf deines Hermes-Servers gespeichert und erscheint in „Sitzungen“ unter „Sprachmodus“, wo du es lesen oder den Anruf fortsetzen kannst. Erfordert ein aktuelles Hermes-Notifier-Plug-in. Gilt gemeinsam für alle Live-Sprachmodi. Gilt ab der nächsten Unterhaltung.",
@@ -10109,6 +10229,21 @@
     "zh-Hans": "已中断",
     "zh-Hant": "已中斷"
   },
+  "Invalid Qwen Live credential.": {
+    "de": "Ungültige Qwen Live-Zugangsdaten.",
+    "es": "Credencial de Qwen Live no válida.",
+    "fr": "Identifiant Qwen Live non valide.",
+    "id": "Kredensial Qwen Live tidak valid.",
+    "it": "Credenziali Qwen Live non valide.",
+    "ja": "Qwen Live の認証情報が無効です。",
+    "ko": "Qwen Live 인증 정보가 올바르지 않습니다.",
+    "pl": "Nieprawidłowe dane uwierzytelniające Qwen Live.",
+    "pt-BR": "Credencial do Qwen Live inválida.",
+    "ru": "Недействительные учётные данные Qwen Live.",
+    "tr": "Geçersiz Qwen Live kimlik bilgisi.",
+    "zh-Hans": "Qwen Live 凭证无效。",
+    "zh-Hant": "Qwen Live 憑證無效。"
+  },
   "It may still be finishing running tasks. Run hermes gateway status on the host to check.": {
     "de": "Vielleicht schließt es noch laufende Aufgaben ab. Führe hermes gateway status auf dem Host aus, um nachzusehen.",
     "es": "Puede que aún esté terminando tareas en curso. Ejecuta hermes gateway status en el host para comprobarlo.",
@@ -13274,6 +13409,21 @@
     "zh-Hans": "普通",
     "zh-Hant": "一般"
   },
+  "Not Now": {
+    "de": "Nicht jetzt",
+    "es": "Ahora no",
+    "fr": "Plus tard",
+    "id": "Nanti Saja",
+    "it": "Non ora",
+    "ja": "後で",
+    "ko": "나중에",
+    "pl": "Nie teraz",
+    "pt-BR": "Agora Não",
+    "ru": "Не сейчас",
+    "tr": "Şimdi Değil",
+    "zh-Hans": "以后再说",
+    "zh-Hant": "稍後再說"
+  },
   "Not a schedule yet.": {
     "de": "Noch kein Zeitplan.",
     "es": "Todavía no es una programación.",
@@ -15854,6 +16004,111 @@
     "zh-Hans": "Qwen Live",
     "zh-Hant": "Qwen Live"
   },
+  "Qwen Live is not available on this Hermes server.": {
+    "de": "Qwen Live ist auf diesem Hermes-Server nicht verfügbar.",
+    "es": "Qwen Live no está disponible en este servidor Hermes.",
+    "fr": "Qwen Live n'est pas disponible sur ce serveur Hermes.",
+    "id": "Qwen Live tidak tersedia di server Hermes ini.",
+    "it": "Qwen Live non è disponibile su questo server Hermes.",
+    "ja": "このHermesサーバではQwen Liveを利用できません。",
+    "ko": "이 Hermes 서버에서는 Qwen Live를 사용할 수 없어요.",
+    "pl": "Qwen Live nie jest dostępny na tym serwerze Hermes.",
+    "pt-BR": "O Qwen Live não está disponível neste servidor Hermes.",
+    "ru": "Qwen Live недоступен на этом сервере Hermes.",
+    "tr": "Qwen Live bu Hermes sunucusunda kullanılamıyor.",
+    "zh-Hans": "此 Hermes 服务器不支持 Qwen Live。",
+    "zh-Hant": "無法在此 Hermes 伺服器上使用 Qwen Live。"
+  },
+  "Qwen Live is not available on this Hermes server: {reason}": {
+    "de": "Qwen Live ist auf diesem Hermes-Server nicht verfügbar: {reason}",
+    "es": "Qwen Live no está disponible en este servidor Hermes: {reason}",
+    "fr": "Qwen Live n'est pas disponible sur ce serveur Hermes : {reason}",
+    "id": "Qwen Live tidak tersedia di server Hermes ini: {reason}",
+    "it": "Qwen Live non è disponibile su questo server Hermes: {reason}",
+    "ja": "このHermesサーバではQwen Liveを利用できません：{reason}",
+    "ko": "이 Hermes 서버에서는 Qwen Live를 사용할 수 없어요: {reason}",
+    "pl": "Qwen Live nie jest dostępny na tym serwerze Hermes: {reason}",
+    "pt-BR": "O Qwen Live não está disponível neste servidor Hermes: {reason}",
+    "ru": "Qwen Live недоступен на этом сервере Hermes: {reason}",
+    "tr": "Qwen Live bu Hermes sunucusunda kullanılamıyor: {reason}",
+    "zh-Hans": "此 Hermes 服务器不支持 Qwen Live：{reason}",
+    "zh-Hant": "無法在此 Hermes 伺服器上使用 Qwen Live：{reason}"
+  },
+  "Qwen Live refused the connection: {reason}": {
+    "de": "Qwen Live hat die Verbindung abgelehnt: {reason}",
+    "es": "Qwen Live rechazó la conexión: {reason}",
+    "fr": "Qwen Live a refusé la connexion : {reason}",
+    "id": "Qwen Live menolak koneksi: {reason}",
+    "it": "Qwen Live ha rifiutato la connessione: {reason}",
+    "ja": "Qwen Liveが接続を拒否しました：{reason}",
+    "ko": "Qwen Live가 연결을 거부했어요: {reason}",
+    "pl": "Qwen Live odrzucił połączenie: {reason}",
+    "pt-BR": "O Qwen Live recusou a conexão: {reason}",
+    "ru": "Qwen Live отклонил подключение: {reason}",
+    "tr": "Qwen Live bağlantıyı reddetti: {reason}",
+    "zh-Hans": "Qwen Live 拒绝了连接：{reason}",
+    "zh-Hant": "Qwen Live 拒絕了連線：{reason}"
+  },
+  "Qwen Live request failed. Check the model, workspace and quota.": {
+    "de": "Qwen Live-Anfrage fehlgeschlagen. Modell, Arbeitsbereich und Kontingent prüfen.",
+    "es": "La solicitud de Qwen Live falló. Comprueba el modelo, el espacio de trabajo y la cuota.",
+    "fr": "Échec de la requête Qwen Live. Vérifiez le modèle, l’espace de travail et le quota.",
+    "id": "Permintaan Qwen Live gagal. Periksa model, ruang kerja, dan kuota.",
+    "it": "Richiesta Qwen Live non riuscita. Controlla modello, spazio di lavoro e quota.",
+    "ja": "Qwen Live のリクエストに失敗しました。モデル、ワークスペース、クォータを確認してください。",
+    "ko": "Qwen Live 요청이 실패했습니다. 모델, 작업 공간 및 할당량을 확인하세요.",
+    "pl": "Żądanie Qwen Live nie powiodło się. Sprawdź model, obszar roboczy i limit.",
+    "pt-BR": "A solicitação ao Qwen Live falhou. Verifique o modelo, o espaço de trabalho e a cota.",
+    "ru": "Запрос Qwen Live не выполнен. Проверьте модель, рабочее пространство и квоту.",
+    "tr": "Qwen Live isteği başarısız oldu. Modeli, çalışma alanını ve kotayı kontrol edin.",
+    "zh-Hans": "Qwen Live 请求失败。请检查模型、业务空间和配额。",
+    "zh-Hant": "Qwen Live 請求失敗。請檢查模型、業務空間和配額。"
+  },
+  "Qwen gets what your Hermes agent remembers about you, from whichever memory Hermes is set up with, and can search it for more. That memory is sent to Alibaba Cloud with the conversation. Applies to the next conversation.": {
+    "de": "Qwen erhält, was dein Hermes-Agent über dich weiß – aus dem Gedächtnis, mit dem Hermes eingerichtet ist –, und kann darin nach mehr suchen. Dieses Gedächtnis wird mit der Unterhaltung an Alibaba Cloud gesendet. Gilt ab der nächsten Unterhaltung.",
+    "es": "Qwen recibe lo que tu agente Hermes recuerda de ti, de la memoria que tenga configurada Hermes, y puede buscar en ella para saber más. Esa memoria se envía a Alibaba Cloud con la conversación. Se aplica a la próxima conversación.",
+    "fr": "Qwen reçoit ce que votre agent Hermes sait de vous, depuis la mémoire configurée dans Hermes, et peut y chercher davantage. Cette mémoire est envoyée à Alibaba Cloud avec la conversation. S'applique à la prochaine conversation.",
+    "id": "Qwen menerima apa yang diingat agen Hermes Anda tentang Anda, dari memori mana pun yang disiapkan di Hermes, dan dapat mencarinya untuk informasi lebih lanjut. Memori tersebut dikirim ke Alibaba Cloud bersama percakapan. Berlaku mulai percakapan berikutnya.",
+    "it": "Qwen riceve ciò che il tuo agente Hermes ricorda di te, dalla memoria configurata in Hermes, e può cercarvi altro. Quella memoria viene inviata a Alibaba Cloud con la conversazione. Vale dalla prossima conversazione.",
+    "ja": "Hermesエージェントがあなたについて記憶している内容（Hermesに設定されているメモリから取得）がQwenに渡され、Qwenはさらに検索することもできます。このメモリは会話とともにAlibaba Cloudに送信されます。次回の会話から適用されます。",
+    "ko": "Qwen는 Hermes에 설정된 메모리에서 Hermes 에이전트가 사용자에 대해 기억하는 내용을 받고, 필요하면 더 검색할 수도 있어요. 이 메모리는 대화와 함께 Alibaba Cloud로 전송돼요. 다음 대화부터 적용돼요.",
+    "pl": "Qwen otrzymuje to, co Twój agent Hermes pamięta o Tobie — z pamięci skonfigurowanej w Hermesie — i może ją przeszukiwać w poszukiwaniu kolejnych informacji. Ta pamięć jest wysyłana do Alibaba Cloud razem z rozmową. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "O Qwen recebe o que seu agente Hermes lembra sobre você, da memória que o Hermes estiver usando, e pode buscar nela para saber mais. Essa memória é enviada ao Alibaba Cloud com a conversa. Vale a partir da próxima conversa.",
+    "ru": "Qwen получает то, что ваш агент Hermes помнит о вас, из памяти, настроенной в Hermes, и может искать в ней дополнительные сведения. Эта память отправляется в Alibaba Cloud вместе с разговором. Действует со следующего разговора.",
+    "tr": "Qwen, Hermes hangi bellekle ayarlandıysa oradan Hermes ajanınızın sizinle ilgili hatırladıklarını alır ve daha fazlası için bu bellekte arama yapabilir. Bu bellek konuşmayla birlikte Alibaba Cloud'a gönderilir. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "Qwen 会获得 Hermes 智能体记住的关于你的信息（来自 Hermes 所配置的记忆），并可搜索更多内容。这些记忆会随对话发送给 Alibaba Cloud。从下一次对话开始生效。",
+    "zh-Hant": "Qwen 會取得 Hermes 代理程式記得的關於你的內容（來自 Hermes 所設定的記憶系統），也能搜尋更多內容。這些記憶會隨對話傳送給 Alibaba Cloud。下次對話起生效。"
+  },
+  "Qwen talks with the personality in this profile's SOUL.md, without reading out actions or emoji. SOUL.md is sent to Alibaba Cloud with the conversation. Applies to the next conversation.": {
+    "de": "Qwen spricht mit der Persönlichkeit aus der SOUL.md dieses Profils, ohne Aktionen oder Emoji vorzulesen. SOUL.md wird mit der Unterhaltung an Alibaba Cloud gesendet. Gilt ab der nächsten Unterhaltung.",
+    "es": "Qwen habla con la personalidad del SOUL.md de este perfil, sin leer en voz alta acciones ni emojis. SOUL.md se envía a Alibaba Cloud con la conversación. Se aplica a la próxima conversación.",
+    "fr": "Qwen parle avec la personnalité du SOUL.md de ce profil, sans lire à voix haute les actions ni les emoji. SOUL.md est envoyé à Alibaba Cloud avec la conversation. S'applique à la prochaine conversation.",
+    "id": "Qwen berbicara dengan kepribadian di SOUL.md profil ini, tanpa membacakan tindakan atau emoji. SOUL.md dikirim ke Alibaba Cloud bersama percakapan. Berlaku mulai percakapan berikutnya.",
+    "it": "Qwen parla con la personalità del SOUL.md di questo profilo, senza leggere ad alta voce azioni o emoji. SOUL.md viene inviato a Alibaba Cloud con la conversazione. Vale dalla prossima conversazione.",
+    "ja": "Qwenは、このプロファイルのSOUL.mdにあるパーソナリティで話します。動作の描写や絵文字は読み上げません。SOUL.mdは会話とともにAlibaba Cloudに送信されます。次回の会話から適用されます。",
+    "ko": "Qwen는 이 프로필의 SOUL.md에 있는 성격으로 말하며, 행동 묘사나 이모지는 읽지 않아요. SOUL.md는 대화와 함께 Alibaba Cloud로 전송돼요. 다음 대화부터 적용돼요.",
+    "pl": "Qwen mówi z osobowością z pliku SOUL.md tego profilu, bez odczytywania opisów działań ani emoji. SOUL.md jest wysyłany do Alibaba Cloud razem z rozmową. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "O Qwen fala com a personalidade do SOUL.md deste perfil, sem ler em voz alta ações ou emojis. O SOUL.md é enviado ao Alibaba Cloud com a conversa. Vale a partir da próxima conversa.",
+    "ru": "Qwen говорит с личностью из SOUL.md этого профиля, не зачитывая действия и эмодзи. SOUL.md отправляется в Alibaba Cloud вместе с разговором. Действует со следующего разговора.",
+    "tr": "Qwen, eylemleri veya emojileri sesli okumadan bu profilin SOUL.md dosyasındaki kişilikle konuşur. SOUL.md konuşmayla birlikte Alibaba Cloud'a gönderilir. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "Qwen 会以此配置文件 SOUL.md 中的性格说话，但不会读出动作描写或表情符号。SOUL.md 会随对话发送给 Alibaba Cloud。将在下次对话时生效。",
+    "zh-Hant": "Qwen 會以此設定檔 SOUL.md 中的個性說話，但不會唸出動作描述或表情符號。SOUL.md 會隨對話傳送給 Alibaba Cloud。下次對話起生效。"
+  },
+  "Qwen uses Hermes web search. Native search is disabled while function tools are enabled.": {
+    "de": "Qwen nutzt die Websuche von Hermes. Bei aktivierten Funktionstools ist die native Suche deaktiviert.",
+    "es": "Qwen usa la búsqueda web de Hermes. La búsqueda nativa se desactiva al usar herramientas.",
+    "fr": "Qwen utilise la recherche web de Hermes. La recherche native est désactivée avec les outils de fonction.",
+    "id": "Qwen menggunakan pencarian web Hermes. Pencarian bawaan dinonaktifkan saat alat fungsi aktif.",
+    "it": "Qwen usa la ricerca web di Hermes. La ricerca nativa è disabilitata con gli strumenti funzione.",
+    "ja": "Qwen は Hermes のウェブ検索を使用します。関数ツールの有効時は標準の検索を無効にします。",
+    "ko": "Qwen은 Hermes 웹 검색을 사용합니다. 함수 도구가 활성화되면 기본 검색은 비활성화됩니다.",
+    "pl": "Qwen używa wyszukiwania Hermes. Wyszukiwanie natywne jest wyłączone przy aktywnych narzędziach funkcji.",
+    "pt-BR": "O Qwen usa a busca web do Hermes. A busca nativa fica desativada com as ferramentas de função.",
+    "ru": "Qwen использует веб-поиск Hermes. Встроенный поиск отключён при использовании инструментов.",
+    "tr": "Qwen, Hermes web aramasını kullanır. İşlev araçları etkinken yerel arama devre dışıdır.",
+    "zh-Hans": "Qwen 使用 Hermes 网页搜索。启用函数工具时会停用模型原生搜索。",
+    "zh-Hant": "Qwen 使用 Hermes 網頁搜尋。啟用函式工具時會停用模型原生搜尋。"
+  },
   "Ran a command": {
     "de": "Hat einen Befehl ausgeführt",
     "es": "Ejecutó un comando",
@@ -18374,6 +18629,21 @@
     "zh-Hans": "发送语音消息",
     "zh-Hant": "傳送語音訊息"
   },
+  "Send your voice to {company}?": {
+    "de": "Deine Stimme an {company} senden?",
+    "es": "¿Enviar tu voz a {company}?",
+    "fr": "Envoyer votre voix à {company} ?",
+    "id": "Kirim suara Anda ke {company}?",
+    "it": "Inviare la tua voce a {company}?",
+    "ja": "音声を{company}に送信しますか？",
+    "ko": "음성을 {company}에 보낼까요?",
+    "pl": "Wysłać Twój głos do {company}?",
+    "pt-BR": "Enviar sua voz para a {company}?",
+    "ru": "Отправлять ваш голос в {company}?",
+    "tr": "Sesiniz {company} şirketine gönderilsin mi?",
+    "zh-Hans": "将你的语音发送给 {company}？",
+    "zh-Hant": "將你的語音傳送給 {company}？"
+  },
   "Sending…": {
     "de": "Wird gesendet …",
     "es": "Enviando…",
@@ -20339,6 +20609,21 @@
     "zh-Hans": "系统通知",
     "zh-Hant": "系統通知"
   },
+  "Take back": {
+    "de": "Zurücknehmen",
+    "es": "Retirar",
+    "fr": "Retirer",
+    "id": "Tarik kembali",
+    "it": "Revoca",
+    "ja": "取り消す",
+    "ko": "철회",
+    "pl": "Wycofaj",
+    "pt-BR": "Retirar",
+    "ru": "Отозвать",
+    "tr": "Geri al",
+    "zh-Hans": "撤回",
+    "zh-Hant": "撤回"
+  },
   "Take turns": {
     "de": "Abwechselnd",
     "es": "Por turnos",
@@ -21463,6 +21748,21 @@
     "tr": "Gemini'nin konuştuğu ses. Sonraki konuşmada geçerli olur.",
     "zh-Hans": "Gemini 说话时使用的声音。从下一次对话开始生效。",
     "zh-Hant": "Gemini 說話時使用的聲音。下次對話起生效。"
+  },
+  "The voice Qwen speaks with. Applies to the next conversation.": {
+    "de": "Die Stimme, mit der Qwen spricht. Gilt ab der nächsten Unterhaltung.",
+    "es": "La voz con la que habla Qwen. Se aplica a la próxima conversación.",
+    "fr": "La voix avec laquelle parle Qwen. S'applique à la prochaine conversation.",
+    "id": "Suara yang digunakan Qwen untuk berbicara. Berlaku mulai percakapan berikutnya.",
+    "it": "La voce con cui parla Qwen. Vale dalla prossima conversazione.",
+    "ja": "Qwenが話すときの声です。次回の会話から適用されます。",
+    "ko": "Qwen가 말할 때 사용하는 목소리예요. 다음 대화부터 적용돼요.",
+    "pl": "Głos, którym mówi Qwen. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "A voz com que o Qwen fala. Vale a partir da próxima conversa.",
+    "ru": "Голос, которым говорит Qwen. Действует со следующего разговора.",
+    "tr": "Qwen'nin konuştuğu ses. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "Qwen 说话时使用的声音。从下一次对话开始生效。",
+    "zh-Hant": "Qwen 說話時使用的聲音。下次對話起生效。"
   },
   "The voice and model are set on your Hermes server (voice.grok_live in the profile's config).": {
     "de": "Stimme und Modell werden auf deinem Hermes-Server festgelegt (voice.grok_live in der Konfiguration des Profils).",
@@ -25423,6 +25723,21 @@
     "tr": "Raporların, sabah özetin ve Hermes'in kontrol etmeye söz verdiği şeylerle ilgili haberler burada.",
     "zh-Hans": "你的报告、晨间简报，以及 Hermes 答应查看之事的进展都会出现在这里。",
     "zh-Hant": "你的報告、晨間簡報，以及 Hermes 答應查看之事的進展都會出現在這裡。"
+  },
+  "Your voice goes to {company}": {
+    "de": "Deine Stimme geht an {company}",
+    "es": "Tu voz va a {company}",
+    "fr": "Votre voix va à {company}",
+    "id": "Suara Anda dikirim ke {company}",
+    "it": "La tua voce va a {company}",
+    "ja": "音声の送信先：{company}",
+    "ko": "음성이 {company}에 전송됨",
+    "pl": "Twój głos trafia do {company}",
+    "pt-BR": "Sua voz vai para a {company}",
+    "ru": "Ваш голос уходит в {company}",
+    "tr": "Sesiniz {company} şirketine gider",
+    "zh-Hans": "你的语音将发送给 {company}",
+    "zh-Hant": "你的語音將傳送給 {company}"
   },
   "Youthful": {
     "de": "Jugendlich",

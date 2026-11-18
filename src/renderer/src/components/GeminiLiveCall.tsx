@@ -37,8 +37,22 @@ import {
   setupMessage,
   textTurn,
   toolResponse,
+  type Search,
   type ServerEvent
 } from '../state/geminiLive'
+import {
+  DEFAULT_MODEL as QWEN_MODEL,
+  DEFAULT_VOICE as QWEN_VOICE,
+  QwenAdapter,
+  QwenLiveError,
+  TOKEN_PATH as QWEN_TOKEN_PATH,
+  WEB_SEARCH,
+  qwenSendsMemory,
+  qwenSendsPersona,
+  qwenVoice,
+  webSearch,
+  webSearchAvailable
+} from '../state/qwenLive'
 import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import { Icon } from './icons'
 
@@ -59,6 +73,24 @@ interface Props {
   onEnd: () => void
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
+  /** Gemini, or Qwen on the same shell through the phone's adapter. */
+  provider?: 'gemini' | 'qwen'
+}
+
+/** What the call says, by provider: each a literal key, so translations find it. */
+const COPY = {
+  gemini: {
+    name: () => t('Gemini Live'),
+    couldNot: () => t("Couldn't connect to Gemini Live."),
+    couldNotBecause: (reason: string) => t("Couldn't connect to Gemini Live: {reason}", { reason }),
+    refused: (reason: string) => t('Gemini Live refused the connection: {reason}', { reason })
+  },
+  qwen: {
+    name: () => t('Qwen Live'),
+    couldNot: () => t("Couldn't connect to Qwen Live."),
+    couldNotBecause: (reason: string) => t("Couldn't connect to Qwen Live: {reason}", { reason }),
+    refused: (reason: string) => t('Qwen Live refused the connection: {reason}', { reason })
+  }
 }
 
 type Phase = 'starting' | 'listening' | 'speaking' | 'ending' | 'failed'
@@ -85,13 +117,17 @@ const ECHO_TAIL_MS = 300
  * next message. Its ask_thread call stays open (NON_BLOCKING) until Hermes
  * replies, and the reply is told once Gemini is idle.
  */
-export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic }: Props) {
+export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, provider = 'gemini' }: Props) {
+  const qwen = provider === 'qwen'
+  const copy = COPY[provider]
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
   const [lines, setLines] = useState<Line[]>([])
 
   const socket = useRef<string | null>(null)
+  // Qwen's events in and out of the Gemini frames this call speaks.
+  const adapter = useRef<QwenAdapter | null>(null)
   const capture = useRef<AudioContext | null>(null)
   const speaker = useRef<AudioContext | null>(null)
   const mic = useRef<MediaStream | null>(null)
@@ -126,11 +162,13 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const save = () => {
     if (saved.current) return
     saved.current = true
-    void saveCall(profile, callId.current, 'gemini-live', record.current, live.current.chatId)
+    void saveCall(profile, callId.current, qwen ? 'qwen-live' : 'gemini-live', record.current, live.current.chatId)
   }
 
   const send = (message: Record<string, unknown>) => {
-    if (socket.current) window.conduit.liveSend(socket.current, JSON.stringify(message))
+    if (!socket.current) return
+    if (adapter.current) adapter.current.send(message)
+    else window.conduit.liveSend(socket.current, JSON.stringify(message))
   }
 
   const playing = () => (speaker.current ? speaker.current.currentTime < playUntil.current : false)
@@ -257,6 +295,9 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         const reply = live.current.lastReply?.trim()
         return answer(reply ? readReply(reply) : NOTHING_TO_READ)
       }
+      case WEB_SEARCH:
+        void webSearch(profile, event.args.query ?? '').then(result => !ended.current && answer(result))
+        return
       case RECALL_MEMORY: {
         const query = (event.args.query ?? '').trim()
         if (!query) return answer({ status: 'error', error: 'No query was given.' })
@@ -346,11 +387,21 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
     let model = DEFAULT_MODEL
     let voice: string | null = null
     let recall = false
+    let search: Search = qwen ? 'none' : 'google'
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
-      if (event.type === 'open') send(setupMessage(model, told, voice, recall))
+      if (event.type === 'open') send(setupMessage(model, told, voice, recall, search))
       else if (event.type === 'message') {
-        for (const decoded of decode(event.data)) {
+        let frame: string | null = event.data
+        if (adapter.current) {
+          try {
+            frame = adapter.current.receive(event.data)
+          } catch (e) {
+            return fail(e instanceof QwenLiveError ? t('Qwen Live request failed. Check the model, workspace and quota.') : copy.couldNot())
+          }
+          if (frame === null) return
+        }
+        for (const decoded of decode(frame)) {
           handle(decoded)
           if (ended.current) return
         }
@@ -358,8 +409,8 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         socket.current = null
         if (ending.current) return void (!ended.current && finish())
         const reason = closeReason(event.code, event.reason)
-        if (!ready.current) fail(reason ? t("Couldn't connect to Gemini Live: {reason}", { reason }) : t("Couldn't connect to Gemini Live."))
-        else fail(reason ? t('Gemini Live refused the connection: {reason}', { reason }) : t("Couldn't connect to Gemini Live."))
+        if (!ready.current) fail(reason ? copy.couldNotBecause(reason) : copy.couldNot())
+        else fail(reason ? copy.refused(reason) : copy.couldNot())
       }
     })
     const connect = async () => {
@@ -374,30 +425,41 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
           item.kind === 'user' || item.kind === 'assistant' ? [{ role: item.kind, text: item.text }] : []
         )
         // The persona and memory only when switched on; a host without them starts the call without.
-        const [persona, memory] = await Promise.all([
-          geminiSendsPersona() ? gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : '',
-          geminiSendsMemory()
+        const sendsPersona = qwen ? qwenSendsPersona() : geminiSendsPersona()
+        const sendsMemory = qwen ? qwenSendsMemory() : geminiSendsMemory()
+        const [persona, memory, searches] = await Promise.all([
+          sendsPersona ? gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : '',
+          sendsMemory
             ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(
                 r => ({ text: memoryText(r), recall: canRecall(r) }),
                 () => ({ text: '', recall: false })
               )
-            : { text: '', recall: false }
+            : { text: '', recall: false },
+          // Qwen's native search can't run beside function tools: its lookups use the host's web search, when it has one.
+          qwen ? webSearchAvailable(profile) : false
         ])
         if (ended.current) return
         recall = memory.recall
-        told = instructions({ language: language(), persona, memory: memory.text, recall, chat: chatContext(turns) })
-        // A single-use token per connection, minted by the host and kept in the main process.
-        const opened = await window.conduit.liveOpenMinted(withProfile(TOKEN_PATH, profile))
+        if (qwen) search = searches ? 'hermes' : 'none'
+        told = instructions({ language: language(), persona, memory: memory.text, recall, chat: chatContext(turns), search })
+        // A single-use credential per connection, minted by the host and kept in the main process.
+        const opened = await window.conduit.liveOpenMinted(withProfile(qwen ? QWEN_TOKEN_PATH : TOKEN_PATH, profile))
         if (!opened.ok)
           return fail(
             opened.code === 404
               ? t('Install or update the Hermes notifier plugin on your Hermes server.')
-              : t("Couldn't connect to Gemini Live: {reason}", { reason: opened.error })
+              : opened.error === 'Invalid Qwen Live credential.'
+                ? t('Invalid Qwen Live credential.')
+                : copy.couldNotBecause(opened.error)
           )
         if (ended.current) return window.conduit.liveClose(opened.id)
-        model = opened.model ?? DEFAULT_MODEL
+        model = opened.model ?? (qwen ? QWEN_MODEL : DEFAULT_MODEL)
         // The voice picked here, else the host's.
-        voice = geminiVoice() || opened.voice
+        voice = (qwen ? qwenVoice() : geminiVoice()) || opened.voice
+        if (qwen) {
+          const id = opened.id
+          adapter.current = new QwenAdapter(voice || QWEN_VOICE, event => window.conduit.liveSend(id, JSON.stringify(event)))
+        }
         socket.current = opened.id
         // The microphone, as 16 kHz PCM, while the call listens.
         const source = input.createMediaStreamSource(stream)
@@ -413,7 +475,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         source.connect(node)
         node.connect(input.destination)
         startTimer = window.setTimeout(() => {
-          if (!ready.current) fail(t("Couldn't connect to Gemini Live."))
+          if (!ready.current) fail(copy.couldNot())
         }, START_TIMEOUT_MS)
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e)
@@ -486,7 +548,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         <span className="voice-call-orb" />
         <div className="voice-call-words">
           <strong>{status}</strong>
-          {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{t('Gemini Live')}</span>}
+          {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{copy.name()}</span>}
         </div>
       </div>
       {lines.length ? (

@@ -13,7 +13,7 @@ export const SESSIONS_PATH = '/api/plugins/conduit_push/voice/sessions'
 const MAX_TURNS = 500
 const MAX_TURN_CHARACTERS = 16_000
 
-export type LiveEngine = 'gpt-live' | 'grok-live' | 'gemini-live'
+export type LiveEngine = 'gpt-live' | 'grok-live' | 'gemini-live' | 'qwen-live'
 export interface CallTurn {
   role: 'user' | 'assistant'
   text: string

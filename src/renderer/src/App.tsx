@@ -78,6 +78,8 @@ import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type 
 import { GO_TO, SCALES, applyScale, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { CallTranscriptSheet } from './components/CallTranscriptSheet'
+import { ProviderConsentSheet } from './components/ProviderConsent'
+import { consented, isLive } from './state/consent'
 import { loadChatCalls, type ChatCall } from './state/voiceCalls'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
@@ -265,6 +267,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [calling, setCalling] = useState(false)
   // The call's mode, read as it starts: Settings > Voice, or Classic after a GPT-Live call failed.
   const [callMode, setCallMode] = useState<VoiceMode>('classic')
+  // A live mode asks once before sending the call to its company; Allow redraws with the call.
+  const [, setConsentGiven] = useState(0)
+  const asksConsent = calling && isLive(callMode) && !consented(callMode)
   useEffect(() => {
     if (calling) setCallMode(voiceMode())
   }, [calling])
@@ -786,7 +791,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   setYolo={setYolo}
                 />
               ) : null}
-              {calling && callMode === 'gpt' ? (
+              {asksConsent && isLive(callMode) ? (
+                <ProviderConsentSheet mode={callMode} onAllow={() => setConsentGiven(n => n + 1)} onCancel={() => setCalling(false)} />
+              ) : calling && callMode === 'gpt' ? (
                 <GptLiveCall
                   profile={selected.profile}
                   chatId={selected.id}
@@ -798,8 +805,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
                 />
-              ) : calling && callMode === 'gemini' ? (
+              ) : calling && (callMode === 'gemini' || callMode === 'qwen') ? (
                 <GeminiLiveCall
+                  provider={callMode}
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}

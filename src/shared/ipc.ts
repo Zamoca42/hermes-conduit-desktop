@@ -273,13 +273,22 @@ export type LiveSocketEvent =
   | { id: string; type: 'error'; message: string }
 
 /** The token routes whose minted socket the main process opens (Gemini Live's). */
-export const LIVE_TOKEN_PATHS = ['/api/plugins/conduit_push/gemini-live/token']
+export const LIVE_TOKEN_PATHS = ['/api/plugins/conduit_push/gemini-live/token', '/api/plugins/conduit_push/qwen-live/token']
+
+/** Alibaba Cloud's realtime hosts, the only ones a Qwen Live credential is sent to (the phone's QwenLiveSocket.request). */
+const QWEN_HOSTS = ['.cn-beijing.maas.aliyuncs.com', '.ap-southeast-1.maas.aliyuncs.com']
+
+export type MintedSocket =
+  | { ok: true; url: string; headers?: Record<string, string>; model: string | null; voice: string | null }
+  | { ok: false; error: string }
 
 /**
- * A minted token's socket: the host's `websocket_url` (wss only) with the
- * single-use token as `access_token`, after the phone's GeminiLiveToken.
+ * A minted credential's socket, after the phone's GeminiLiveToken: Gemini's
+ * `websocket_url` (wss only) with the single-use token as `access_token`;
+ * Qwen's on Alibaba Cloud's realtime path, with the temporary key (`st-…`)
+ * in the upgrade's Authorization header.
  */
-export function mintedSocket(response: unknown): { ok: true; url: string; model: string | null; voice: string | null } | { ok: false; error: string } {
+export function mintedSocket(response: unknown): MintedSocket {
   const r = (response ?? {}) as Record<string, unknown>
   const text = (v: unknown) => (typeof v === 'string' && v ? v : null)
   if (r.ok !== true) return { ok: false, error: text(r.reason) ?? text(r.error) ?? 'unavailable' }
@@ -291,6 +300,12 @@ export function mintedSocket(response: unknown): { ok: true; url: string; model:
     url = null
   }
   if (!token || !url || url.protocol !== 'wss:') return { ok: false, error: 'malformed' }
+  if (r.provider === 'qwen') {
+    const host = url.hostname.toLowerCase()
+    if (!token.startsWith('st-') || !QWEN_HOSTS.some(suffix => host.endsWith(suffix)) || url.pathname !== '/api-ws/v1/realtime')
+      return { ok: false, error: 'Invalid Qwen Live credential.' }
+    return { ok: true, url: url.toString(), headers: { Authorization: `Bearer ${token}` }, model: text(r.model), voice: text(r.voice) }
+  }
   if (!url.searchParams.has('access_token')) url.searchParams.set('access_token', token)
   return { ok: true, url: url.toString(), model: text(r.model), voice: text(r.voice) }
 }

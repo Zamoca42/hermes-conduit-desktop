@@ -6839,3 +6839,38 @@ button.cap-row-text {
   color: var(--accent-ink);
   border-color: transparent;
 }
+
+/* Before a live mode's first call: may the call go to its company (the phone's consent sheet). */
+.consent-sheet {
+  width: min(420px, 100%);
+}
+.consent-sheet h2 {
+  margin: 4px 0 10px;
+  font-size: 17px;
+}
+.consent-sheet p {
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+.consent-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.consent-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+.consent-row > div {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+}
+.consent-sheet p.meta,
+.consent-row .meta {
+  white-space: normal;
+  overflow: visible;
+}

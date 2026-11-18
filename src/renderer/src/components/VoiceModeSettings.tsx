@@ -37,6 +37,21 @@ import {
   type Availability as GrokAvailability
 } from '../state/grokLive'
 import { savesCalls, setSavesCalls } from '../state/voiceSave'
+import { isLive } from '../state/consent'
+import { ProviderConsentRow } from './ProviderConsent'
+import {
+  DEFAULT_VOICE as QWEN_DEFAULT_VOICE,
+  STATUS_PATH as QWEN_STATUS_PATH,
+  availability as qwenAvailability,
+  qwenSendsMemory,
+  qwenSendsPersona,
+  qwenVoice,
+  setQwenSendsMemory,
+  setQwenSendsPersona,
+  setQwenVoice,
+  validVoice,
+  type Availability as QwenAvailability
+} from '../state/qwenLive'
 import {
   STATUS_PATH as GEMINI_STATUS_PATH,
   VOICES as GEMINI_VOICES,
@@ -75,6 +90,26 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
       .catch((e: unknown) => {
         if (!live) return
         setGeminiStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
+      })
+    return () => {
+      live = false
+    }
+  }, [mode, profile])
+  const [qwenMemory, setQwenMemory] = useState(qwenSendsMemory)
+  const [qwenPersona, setQwenPersona] = useState(qwenSendsPersona)
+  const [qwenPick, setQwenPick] = useState(qwenVoice)
+  const [qwenStatus, setQwenStatus] = useState<QwenAvailability | 'checking' | 'missing' | null>(null)
+
+  useEffect(() => {
+    if (mode !== 'qwen') return setQwenStatus(null)
+    let live = true
+    setQwenStatus('checking')
+    gateway
+      .http('GET', withProfile(QWEN_STATUS_PATH, profile), undefined, 12_000)
+      .then(body => live && setQwenStatus(qwenAvailability(body)))
+      .catch((e: unknown) => {
+        if (!live) return
+        setQwenStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
       })
     return () => {
       live = false
@@ -143,6 +178,9 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
         </button>
         <button aria-pressed={mode === 'gemini'} onClick={() => choose('gemini')}>
           {t('Gemini Live')}
+        </button>
+        <button aria-pressed={mode === 'qwen'} onClick={() => choose('qwen')}>
+          {t('Qwen Live')}
         </button>
         <button aria-pressed={mode === 'gpt'} onClick={() => choose('gpt')}>
           {t('GPT-Live')}
@@ -219,6 +257,76 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           <p className="meta settings-caption">
             {t(
               "Gemini talks with the personality in this profile's SOUL.md, without reading out actions or emoji. SOUL.md is sent to Google with the conversation. Applies to the next conversation."
+            )}
+          </p>
+        </>
+      ) : null}
+      {mode === 'qwen' ? (
+        <>
+          <p
+            className={`meta settings-caption${qwenStatus && qwenStatus !== 'checking' && (qwenStatus === 'missing' || !qwenStatus.ok) ? ' voice-call-problem' : ''}`}
+          >
+            {qwenStatus === 'checking'
+              ? t('Checking…')
+              : qwenStatus === 'missing'
+                ? t('Install or update the Hermes notifier plugin on your Hermes server.')
+                : qwenStatus?.ok
+                  ? t('Available ({model})', { model: qwenStatus.model })
+                  : qwenStatus
+                    ? qwenStatus.reason === 'no_api_key'
+                      ? t('Add a Qwen API key')
+                      : qwenStatus.reason
+                        ? t('Qwen Live is not available on this Hermes server: {reason}', { reason: qwenStatus.reason })
+                        : t('Qwen Live is not available on this Hermes server.')
+                    : null}
+          </p>
+          <label className="voice-mode-pick">
+            <span className="meta">{t('Voice')}</span>
+            <input
+              type="text"
+              value={qwenPick}
+              placeholder={QWEN_DEFAULT_VOICE}
+              spellCheck={false}
+              aria-invalid={!!qwenPick.trim() && !validVoice(qwenPick.trim())}
+              onChange={e => {
+                setQwenPick(e.target.value)
+                const typed = e.target.value.trim()
+                if (!typed || validVoice(typed)) setQwenVoice(typed)
+              }}
+            />
+          </label>
+          <p className="meta settings-caption">{t('The voice Qwen speaks with. Applies to the next conversation.')}</p>
+          <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={qwenMemory}
+              onChange={e => {
+                setQwenMemory(e.target.checked)
+                setQwenSendsMemory(e.target.checked)
+              }}
+            />
+            {t('Use Hermes memory')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              'Qwen gets what your Hermes agent remembers about you, from whichever memory Hermes is set up with, and can search it for more. That memory is sent to Alibaba Cloud with the conversation. Applies to the next conversation.'
+            )}
+          </p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={qwenPersona}
+              onChange={e => {
+                setQwenPersona(e.target.checked)
+                setQwenSendsPersona(e.target.checked)
+              }}
+            />
+            {t('Use Hermes personality')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              "Qwen talks with the personality in this profile's SOUL.md, without reading out actions or emoji. SOUL.md is sent to Alibaba Cloud with the conversation. Applies to the next conversation."
             )}
           </p>
         </>
@@ -398,6 +506,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           </p>
         </>
       ) : null}
+      {isLive(mode) ? <ProviderConsentRow mode={mode} /> : null}
       {mode !== 'classic' ? (
         <>
           <label className="toggle">

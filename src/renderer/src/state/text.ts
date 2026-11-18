@@ -98,14 +98,47 @@ export function splitImageReferences(text: string): { images: Attachment[]; text
     })
   }
   if (!images.length) return { images, text }
-  return { images, text: rest.replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim() }
+  return {
+    images,
+    text: rest
+      .replace(/[ \t]{2,}/g, ' ')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
+  }
 }
 
 /** A person's message as the transcript shows it: their words, with its attachments apart. */
 export function cleanUserText(raw: string): { text: string; attachments: Attachment[] } {
   const { attachments, text } = stripStored(raw)
   const pictures = splitImageReferences(text)
-  return { text: plainReferences(pictures.text).trim(), attachments: [...attachments, ...pictures.images] }
+  return { text: plainReferences(pictures.text).trim(), attachments: [...attachments, ...pictures.images, ...footerPictures(raw)] }
+}
+
+/**
+ * The pictures Hermes noted below its expanded context: 0.23 stores a sent
+ * picture as `[Image attached at: …]` after the `--- Attached Context ---`
+ * footer the words are cut at. Only Hermes' own notes count there, never an
+ * `@image:` inside an attached file's text.
+ */
+function footerPictures(raw: string): Attachment[] {
+  const text = removeVoiceJobPrefix(raw)
+  if (!CONTEXT_REFERENCE.test(text)) return []
+  const match = CONTEXT_FOOTER.exec(text)
+  if (!match) return []
+  const footer = text.slice(match.index)
+  const images: Attachment[] = []
+  for (const pattern of IMAGE_REFERENCES.slice(1)) {
+    for (const found of footer.matchAll(pattern)) {
+      const path = found
+        .slice(1)
+        .filter((g): g is string => typeof g === 'string')
+        .pop()
+        ?.trim()
+      if (path) images.push({ kind: 'image', value: path })
+    }
+  }
+  return images
 }
 
 /** What Hermes stored around the words, taken off; references inside the words are left as written. */
@@ -146,7 +179,10 @@ export function previewText(raw: string): string {
 
 /** A title Hermes made from a voice delegation's first message, without the conversation it carried (cut off anywhere). */
 export function cleanTitle(title: string): string {
-  const stripped = title.replace(/\s*\[Recent voice\b[^\]]*$/i, '').replace(VOICE_CONTEXT, '').replace(VOICE_JOB_PREFIX, '')
+  const stripped = title
+    .replace(/\s*\[Recent voice\b[^\]]*$/i, '')
+    .replace(VOICE_CONTEXT, '')
+    .replace(VOICE_JOB_PREFIX, '')
   return plainReferences(stripped, true).trim()
 }
 

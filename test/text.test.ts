@@ -6,6 +6,18 @@ const VOICE_BRIEF =
   '[Background job started from a Conduit voice conversation. Nobody is watching this chat live, so work on it on your own. When you are done, end your final message with a plain-language summary that can be read aloud: what you found or did, with the key details.]'
 
 describe('cleanUserText', () => {
+  it('keeps a picture Hermes 0.23 noted below the attached context', () => {
+    const raw =
+      '@file:attachments/note.txt\n\nWhat colour is the square?\n\n--- Attached Context ---\n\n📄 @file:attachments/note.txt (16 tokens)\n```\nThe secret word is pineapple. @image:/not/this.png\n```\n\n[Image attached at: /root/.hermes/images/upload_npp8jbz1.png]\n[screenshot]\n[Current Time: Wednesday]'
+    expect(cleanUserText(raw)).toEqual({
+      text: 'What colour is the square?',
+      attachments: [
+        { kind: 'file', value: 'attachments/note.txt' },
+        { kind: 'image', value: '/root/.hermes/images/upload_npp8jbz1.png' }
+      ]
+    })
+  })
+
   it('takes off the voice background-job brief', () => {
     expect(cleanUserText(`${VOICE_BRIEF}\n\nFind me a flight to Tokyo`)).toEqual({ text: 'Find me a flight to Tokyo', attachments: [] })
   })
@@ -54,9 +66,7 @@ describe('previewText', () => {
 describe('user messages in the transcript', () => {
   it('cleans stored rows', () => {
     const items = fromHistory([{ role: 'user', text: `${VOICE_BRIEF}\n\n@file:/tmp/x.pdf\nRead it`, row_id: 1 }])
-    expect(items).toEqual([
-      { kind: 'user', key: 'row-1', text: 'Read it', at: undefined, attachments: [{ kind: 'file', value: '/tmp/x.pdf' }] }
-    ])
+    expect(items).toEqual([{ kind: 'user', key: 'row-1', text: 'Read it', at: undefined, attachments: [{ kind: 'file', value: '/tmp/x.pdf' }] }])
   })
 
   it('cleans a message sent from the phone', () => {
@@ -94,9 +104,7 @@ describe('the second Asuka round', () => {
   })
 
   it('takes a reference cut off inside its quotes as the whole preview', () => {
-    expect(previewText('@url:`https://github.com/kaishi00/hermes-conduit-notifier/pull/86')).toBe(
-      'github.com/kaishi00/hermes-conduit-notifier/pull/86'
-    )
+    expect(previewText('@url:`https://github.com/kaishi00/hermes-conduit-notifier/pull/86')).toBe('github.com/kaishi00/hermes-conduit-notifier/pull/86')
   })
 
   it('cuts the recent voice conversation a delegation appends', () => {
@@ -120,9 +128,7 @@ describe('cleanTitle', () => {
 
 describe('a preview cut just past a long link', () => {
   it('shows the link instead of the letter after it', () => {
-    expect(previewText('@url:`https://github.com/kaishi00/hermes-conduit-notifier/pull/86` g…')).toBe(
-      'github.com/kaishi00/hermes-conduit-notifier/pull/86'
-    )
+    expect(previewText('@url:`https://github.com/kaishi00/hermes-conduit-notifier/pull/86` g…')).toBe('github.com/kaishi00/hermes-conduit-notifier/pull/86')
     expect(previewText('ok')).toBe('ok')
   })
 })
@@ -135,7 +141,10 @@ describe('a message’s pictures', () => {
     })
     expect(cleanUserText('@file:/up/a.pdf\n\nboth @image:`/x/my pic.png` please')).toEqual({
       text: 'both please',
-      attachments: [{ kind: 'file', value: '/up/a.pdf' }, { kind: 'image', value: '/x/my pic.png' }]
+      attachments: [
+        { kind: 'file', value: '/up/a.pdf' },
+        { kind: 'image', value: '/x/my pic.png' }
+      ]
     })
     expect(cleanUserText('[Image attached at: /tmp/a.jpg]\nhi').attachments).toEqual([{ kind: 'image', value: '/tmp/a.jpg' }])
     expect(
