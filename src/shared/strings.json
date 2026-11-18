@@ -4364,6 +4364,21 @@
     "zh-Hans": "无法加载此机器人的个性设定。",
     "zh-Hant": "無法載入此機器人的個性。"
   },
+  "Could not load {name}: {reason}": {
+    "de": "{name} konnte nicht geladen werden: {reason}",
+    "es": "No se pudo cargar {name}: {reason}",
+    "fr": "Impossible de charger {name} : {reason}",
+    "id": "Tidak dapat memuat {name}: {reason}",
+    "it": "Impossibile caricare {name}: {reason}",
+    "ja": "{name}を読み込めませんでした：{reason}",
+    "ko": "{name}을(를) 불러올 수 없어요: {reason}",
+    "pl": "Nie udało się wczytać „{name}”: {reason}",
+    "pt-BR": "Não foi possível carregar {name}: {reason}",
+    "ru": "Не удалось загрузить {name}: {reason}",
+    "tr": "{name} yüklenemedi: {reason}",
+    "zh-Hans": "无法加载 {name}：{reason}",
+    "zh-Hant": "無法載入 {name}：{reason}"
+  },
   "Could not pause scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht pausiert werden: {reason}",
     "es": "No se pudo pausar el trabajo programado: {reason}",
@@ -19679,6 +19694,21 @@
     "zh-Hans": "已在后台开始。回答将显示在这里。",
     "zh-Hant": "已在背景開始。回答將顯示在這裡。"
   },
+  "Started {time}": {
+    "de": "Gestartet {time}",
+    "es": "Inicio: {time}",
+    "fr": "Lancé {time}",
+    "id": "Dimulai {time}",
+    "it": "Inizio: {time}",
+    "ja": "開始：{time}",
+    "ko": "시작: {time}",
+    "pl": "Rozpoczęto: {time}",
+    "pt-BR": "Início: {time}",
+    "ru": "Начат: {time}",
+    "tr": "Başlangıç: {time}",
+    "zh-Hans": "开始于 {time}",
+    "zh-Hant": "開始於 {time}"
+  },
   "Starting": {
     "de": "Wird gestartet",
     "es": "Iniciando",
@@ -20518,6 +20548,21 @@
     "tr": "Yalnızca metin",
     "zh-Hans": "仅文字",
     "zh-Hant": "僅文字"
+  },
+  "That call's transcript is no longer available.": {
+    "de": "Das Transkript dieses Anrufs ist nicht mehr verfügbar.",
+    "es": "La transcripción de esa llamada ya no está disponible.",
+    "fr": "La transcription de cet appel n'est plus disponible.",
+    "id": "Transkrip panggilan itu tidak tersedia lagi.",
+    "it": "La trascrizione di quella chiamata non è più disponibile.",
+    "ja": "その通話の文字起こしは利用できなくなりました。",
+    "ko": "그 통화의 대화 내용은 더 이상 사용할 수 없어요.",
+    "pl": "Transkrypcja tego połączenia nie jest już dostępna.",
+    "pt-BR": "A transcrição dessa chamada não está mais disponível.",
+    "ru": "Расшифровка этого звонка больше недоступна.",
+    "tr": "Bu aramanın transkripti artık kullanılamıyor.",
+    "zh-Hans": "该通话的记录已不可用。",
+    "zh-Hant": "該通話的逐字稿已無法使用。"
   },
   "That doesn’t look like a web address.": {
     "de": "Das sieht nicht nach einer Webadresse aus.",
@@ -25064,6 +25109,21 @@
     "zh-Hans": "昨天",
     "zh-Hant": "昨天"
   },
+  "You": {
+    "de": "Du",
+    "es": "Tú",
+    "fr": "Vous",
+    "id": "Anda",
+    "it": "Tu",
+    "ja": "あなた",
+    "ko": "나",
+    "pl": "Ty",
+    "pt-BR": "Você",
+    "ru": "Вы",
+    "tr": "Siz",
+    "zh-Hans": "你",
+    "zh-Hant": "你"
+  },
   "You asked: {asked} · {place}": {
     "de": "Du hast gefragt: {asked} · {place}",
     "es": "Preguntaste: {asked} · {place}",
@@ -26023,6 +26083,21 @@
     "tr": "{done} / {all}",
     "zh-Hans": "{done} / {all}",
     "zh-Hant": "{done} / {all}"
+  },
+  "{duration} · Open transcript": {
+    "de": "{duration} · Transkript öffnen",
+    "es": "{duration} · Abrir transcripción",
+    "fr": "{duration} · Ouvrir la transcription",
+    "id": "{duration} · Buka transkrip",
+    "it": "{duration} · Apri trascrizione",
+    "ja": "{duration} · 文字起こしを開く",
+    "ko": "{duration} · 대화 내용 열기",
+    "pl": "{duration} · Otwórz transkrypcję",
+    "pt-BR": "{duration} · Abrir transcrição",
+    "ru": "{duration} · Открыть расшифровку",
+    "tr": "{duration} · Transkripti aç",
+    "zh-Hans": "{duration} · 打开文字记录",
+    "zh-Hant": "{duration} · 打開逐字稿"
   },
   "{input} in · {output} out": {
     "de": "{input} Eingabe · {output} Ausgabe",

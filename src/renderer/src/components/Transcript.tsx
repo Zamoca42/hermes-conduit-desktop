@@ -17,6 +17,7 @@ import { readAloud, stopReading, useReadingKey } from '../state/readAloud'
 import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
 import { foldRuns, isStep, span, spanText, type Row } from '../state/runs'
 import { useStepSummaries, type StepSummaries } from '../state/useStepSummaries'
+import { callLength, withCalls, type ChatCall } from '../state/voiceCalls'
 
 export interface MessageMenuItem {
   label: string
@@ -244,6 +245,8 @@ interface ItemProps {
   thinkingToggle?: { label: string; onSelect: () => void }
   /** Settings > Chat > Keep tool cards expanded. */
   expandTools?: boolean
+  /** A saved call's card opens its transcript. */
+  onOpenCall?: (callId: string) => void
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -298,6 +301,24 @@ function DelegationCard({ title, entries, at }: { title: string; entries: Delega
 }
 
 /** A scheduled job's report the bot was only shown, after the phone's CronReportCard: folded to a preview, Show all opens it. */
+/** A voice call saved with this chat, where it started, after the phone's VoiceCallMarkerCard. */
+function CallCard({ startedAt, endedAt, onOpen }: { startedAt: number; endedAt: number; onOpen?: () => void }) {
+  const length = callLength(endedAt - startedAt)
+  return (
+    <button className="call-card" onClick={onOpen} disabled={!onOpen} aria-label={`${t('Voice call')}, ${length}, ${t('Started {time}', { time: clock(startedAt) })}`}>
+      <span className="call-card-icon" aria-hidden="true">
+        <Icon name="phone" />
+      </span>
+      <span className="call-card-text">
+        <strong>{t('Voice call')}</strong>
+        <span className="meta">{t('{duration} · Open transcript', { duration: length })}</span>
+      </span>
+      <span className="call-card-time">{clock(startedAt)}</span>
+      <Icon name="chevron" />
+    </button>
+  )
+}
+
 function CronReportCard({ job, report, at }: { job: string; report: string; at?: number }) {
   const [open, setOpen] = useState(false)
   return (
@@ -345,7 +366,7 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   )
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools, onOpenCall }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -447,6 +468,8 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
     }
     case 'delegation':
       return <DelegationCard title={item.title} entries={item.entries} at={item.at} />
+    case 'call':
+      return <CallCard startedAt={item.startedAt} endedAt={item.endedAt} onOpen={onOpenCall ? () => onOpenCall(item.callId) : undefined} />
     case 'cron':
       return <CronReportCard job={item.job} report={item.report} at={item.at} />
     case 'review':
@@ -588,7 +611,9 @@ export function Transcript({
   onQuote,
   onCommand,
   display = DEFAULT_DISPLAY,
-  sessionId
+  sessionId,
+  calls,
+  onOpenCall
 }: {
   state: TranscriptState
   loading: boolean
@@ -607,6 +632,9 @@ export function Transcript({
   display?: ChatDisplay
   /** The chat's runtime session, which step summaries ask about. */
   sessionId?: string
+  /** Voice calls saved with this chat, each drawn as a card where it started. */
+  calls?: ChatCall[]
+  onOpenCall?: (callId: string) => void
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -616,10 +644,13 @@ export function Transcript({
     : undefined
   const shown = useMemo(
     () =>
-      state.items.filter(item =>
-        item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : item.kind === 'review' ? display.showReviews : true
+      withCalls(
+        state.items.filter(item =>
+          item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : item.kind === 'review' ? display.showReviews : true
+        ),
+        calls ?? []
       ),
-    [state.items, showsThinking, display.toolCards, display.showReviews]
+    [state.items, showsThinking, display.toolCards, display.showReviews, calls]
   )
   const rows = useMemo(() => foldRuns(shown), [shown])
   const summaries = useStepSummaries(state, sessionId, profile)
@@ -708,6 +739,7 @@ export function Transcript({
       onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
       thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
       expandTools={display.expandTools}
+      onOpenCall={onOpenCall}
     />
   )
 
@@ -717,7 +749,7 @@ export function Transcript({
         <div className="transcript-inner">
           {loading ? <div className="notice">{t('Loading…')}</div> : null}
           {error ? <div className="notice error">{error}</div> : null}
-          {!loading && !error && state.items.length === 0 ? (
+          {!loading && !error && shown.length === 0 ? (
             <div className="welcome">
               <h2>{t('What can Hermes do for you?')}</h2>
               <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>

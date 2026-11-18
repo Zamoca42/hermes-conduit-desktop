@@ -122,7 +122,16 @@ export interface DelegationItem {
   at?: number
 }
 
-export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem | CronReportItem | DelegationItem
+/** A voice call saved with the chat, where it started: never from the host's messages, added as the chat is drawn. */
+export interface CallItem {
+  kind: 'call'
+  key: string
+  callId: string
+  startedAt: number
+  endedAt: number
+}
+
+export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem | CronReportItem | DelegationItem | CallItem
 
 const CRON_PREFIX = '[Cron job "'
 const CRON_SUFFIX = '" report: shown in the chat, no reply asked for]'
