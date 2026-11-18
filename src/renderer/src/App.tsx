@@ -33,7 +33,13 @@ import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
+import { ModelsPage } from './components/ModelsPage'
+import { HostActions } from './components/HostActions'
+import { CapabilitiesPage } from './components/CapabilitiesPage'
 import { BotEditor } from './components/BotEditor'
+import { WorkPanel } from './components/WorkPanel'
+import { useWork, useWorkSessions } from './state/useWork'
+import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
@@ -227,7 +233,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }, [transcript.running])
   const pulseChat = pulse.feed?.homeChatId || null
   // Pulse's own chat stays behind its screen, as on the phone.
-  const listedRows = useMemo(() => (pulseChat && list.rows ? list.rows.filter(row => row.id !== pulseChat) : list.rows), [list.rows, pulseChat])
+  // Workstreams' chats stay with their bots, as on the phone.
+  const botNames = useMemo(() => (roster.bots ?? []).map(bot => bot.name), [roster.bots])
+  const { sessions: workSessions, byBot: workByBot } = useWorkSessions(botNames, connected)
+  const listedRows = useMemo(
+    () => (list.rows && (pulseChat || workSessions.size) ? list.rows.filter(row => row.id !== pulseChat && !workSessions.has(row.id)) : list.rows),
+    [list.rows, pulseChat, workSessions]
+  )
+  // The open chat's bot's work: its Bot Chat shows a line under its title, and a workstream's chat goes back to it.
+  const [workOpen, setWorkOpen] = useState(false)
+  const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined
+  const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || !!openBotChat || workSessions.has(selected.id ?? '')))
+  const workItem: WorkItem | undefined = selected.id ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined
+  const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
+  const showWork = workOpen && (!!openBotChat || !!workItem)
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
   const [contextOpen, setContextOpen] = useState(false)
@@ -303,7 +322,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   )
 
   // A Bot Chat goes by its bot's name: Hermes titles every one "Bot Chat".
-  const title = selected.botChat && selected.title ? selected.title : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
+  const title = workItem ? shownTitle(workItem) : selected.botChat && selected.title ? selected.title : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
   const openBot = useCallback((bot: Bot) => {
@@ -318,12 +337,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       if (!next) return
       const same = (name: string | undefined) => (name ?? 'default').toLowerCase() === next.toLowerCase()
       if (same(selected.profile)) return
-      const newest = (list.rows ?? []).filter(row => same(row.profile)).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))[0]
+      const newest = (listedRows ?? []).filter(row => same(row.profile)).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))[0]
       const bot = roster.bots?.find(b => same(b.name))
       if (bot?.botChatId && (bot.lastActive ?? 0) >= (newest?.activeAt ?? 0)) return openBot(bot)
       setSelected(newest ? { id: newest.id, profile: newest.profile, title: newest.title } : { id: null, profile: next })
     },
-    [selected.profile, list.rows, roster.bots, openBot]
+    [selected.profile, listedRows, roster.bots, openBot]
   )
   const pendingAsk = useRef<{ text: string; storedId: string | null; profile: string; resumed?: boolean } | null>(null)
   const askBot = useCallback(
@@ -536,7 +555,32 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             />
             <main className="chat" ref={chatPane}>
               <div className="chat-head">
-                {title ? <div className="chat-title">{title}</div> : null}
+                <div className="chat-titles">
+                  {title ? <div className="chat-title">{title}</div> : null}
+                  {openBotChat && work.snapshot && stripText(work.snapshot) ? (
+                    <button
+                      className={`chat-subtitle work-line${work.snapshot.needsYou ? ' needs' : ''}`}
+                      aria-expanded={workOpen}
+                      title={t('Shows this bot’s work')}
+                      onClick={() => {
+                        if (!workOpen) showFiles(false)
+                        setWorkOpen(!workOpen)
+                      }}
+                    >
+                      {stripText(work.snapshot)}
+                    </button>
+                  ) : workItem && workBot ? (
+                    <button
+                      className="chat-subtitle"
+                      title={t('Back to {bot}', { bot: workBot.title })}
+                      onClick={() => {
+                        if (workBot.botChatId) openBot(workBot)
+                      }}
+                    >
+                      {t('{bot}’s work · {ref} · {status}', { bot: workBot.title, ref: workItem.ref, status: statusText(workItem) })}
+                    </button>
+                  ) : null}
+                </div>
                 <div className="chat-head-actions">
                   <button
                     className={`chat-head-button${calling ? ' on' : ''}`}
@@ -548,7 +592,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     <Icon name={calling ? 'phoneDown' : 'phone'} />
                   </button>
                   {chat.cwd && !filesOpen ? (
-                    <button className="chat-head-button" aria-label={t('Files')} title={t('Files')} onClick={() => showFiles(true)}>
+                    <button
+                      className="chat-head-button"
+                      aria-label={t('Files')}
+                      title={t('Files')}
+                      onClick={() => {
+                        setWorkOpen(false)
+                        showFiles(true)
+                      }}
+                    >
                       <Icon name="folder" />
                     </button>
                   ) : null}
@@ -624,7 +676,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 voice={calling ? undefined : { profile: selected.profile }}
               />
             </main>
-            {filesOpen && chat.cwd ? (
+            {showWork ? (
+              <WorkPanel
+                profile={selected.profile}
+                botName={workBot?.title ?? 'Hermes'}
+                snapshot={work.snapshot}
+                error={work.error}
+                onReload={() => void work.reload()}
+                onOpenChat={item => setSelected({ id: item.sessionId, profile: selected.profile, title: shownTitle(item) })}
+                onClose={() => setWorkOpen(false)}
+              />
+            ) : filesOpen && chat.cwd ? (
               <FilesPanel
                 root={chat.cwd}
                 profile={selected.profile}
@@ -649,6 +711,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onOpenRoom={showRoom}
             onCreateRoom={groupRooms.create}
             onEdit={connected ? setEditingBot : undefined}
+            work={workByBot}
+            onWork={bot => {
+              openBot(bot)
+              if (bot.botChatId) {
+                showFiles(false)
+                setWorkOpen(true)
+              }
+            }}
           />
         ) : section === 'tasks' ? (
           <Tasks
@@ -713,11 +783,23 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
         <UsagePage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'models')
+    return (
+      <main className="settings">
+        <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'capabilities')
+    return (
+      <main className="settings">
+        <CapabilitiesPage bots={bots} profile={profile} onBack={() => setPage('main')} />
       </main>
     )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
@@ -763,6 +845,19 @@ function Settings({
         <dd>
           {status.method ? methods[status.method] : '—'}
           {status.username ? ` (${status.username})` : ''}
+        </dd>
+        {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
+        <dt>{t('Models')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
+            {t('Chat model and helper models')}
+          </button>
+        </dd>
+        <dt>{t('Capabilities')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('capabilities')}>
+            {t('Skills, tools and connectors')}
+          </button>
         </dd>
         <dt>{t('Usage')}</dt>
         <dd>

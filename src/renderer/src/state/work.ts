@@ -1,0 +1,258 @@
+/**
+ * A bot's workstreams, after the phone's Work panel: its Bot Chat hands work
+ * that needs tools to workstreams, hidden sessions of its own on the bot's
+ * profile, followed by ref (W1, W2). The plugin's /workstreams routes list
+ * them and take the user's own actions, which skip the Bot Chat's model.
+ */
+import { t } from '../../../shared/i18n'
+
+export const WORK = '/api/plugins/conduit_push/workstreams'
+
+/** The route for a bot: a secondary bot is named with ?conduit_profile=, since its work is driven in the dashboard's own process. */
+export function workPath(path: string, profile?: string): string {
+  if (!profile || profile === 'default') return path
+  return `${path}${path.includes('?') ? '&' : '?'}conduit_profile=${encodeURIComponent(profile)}`
+}
+
+export type WorkKind = 'workstream' | 'ask_out' | 'ask_in'
+export type StepState = 'done' | 'doing' | 'todo'
+export type WorkAction = 'send' | 'stop' | 'continue' | 'check'
+export type WorkManage = 'pin' | 'unpin' | 'resolve' | 'reopen' | 'leave_alone' | 'coordinate'
+
+export interface WorkStep {
+  text: string
+  state: StepState
+}
+
+export interface WorkApproval {
+  requestId: string
+  command: string
+  description: string
+  /** The card shows all of the command, so Approve approves what it showed. */
+  approvable: boolean
+}
+
+export interface WorkItem {
+  ref: string
+  kind: WorkKind
+  status: string
+  title: string
+  goal: string
+  sessionId: string
+  closed: boolean
+  resolvedBy: string
+  pinned: boolean
+  leftAlone: boolean
+  result: string
+  error: string
+  checklist: WorkStep[]
+  step: string
+  agents: number
+  branch: string
+  bot: string
+  screenAsk: string
+  approval: WorkApproval | null
+  actions: WorkAction[]
+  manage: WorkManage[]
+  updatedAt: number
+}
+
+export interface WorkSnapshot {
+  /** "off" when the bot's workstreams are off. */
+  policy: string
+  items: WorkItem[]
+  working: number
+  needsYou: number
+  ready: number
+  resolvedCount: number
+  /** Every workstream's chat, listed or not, kept out of the chat lists. */
+  sessionIds: string[]
+}
+
+type Row = Record<string, unknown>
+const str = (v: unknown) => (typeof v === 'string' ? v : '')
+const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0)
+const rows = (v: unknown): Row[] => (Array.isArray(v) ? v.filter((r): r is Row => !!r && typeof r === 'object') : [])
+const KINDS: WorkKind[] = ['workstream', 'ask_out', 'ask_in']
+const ACTIONS: WorkAction[] = ['send', 'stop', 'continue', 'check']
+const MANAGE: WorkManage[] = ['pin', 'unpin', 'resolve', 'reopen', 'leave_alone', 'coordinate']
+
+export function parseItem(row: Row): WorkItem | null {
+  const ref = str(row.ref).trim()
+  if (!ref) return null
+  const approval = row.approval && typeof row.approval === 'object' ? (row.approval as Row) : null
+  return {
+    ref,
+    kind: KINDS.includes(row.kind as WorkKind) ? (row.kind as WorkKind) : 'workstream',
+    status: str(row.status),
+    title: str(row.title).trim(),
+    goal: str(row.goal).trim(),
+    sessionId: str(row.session_id),
+    closed: row.closed === true,
+    resolvedBy: str(row.resolved_by),
+    pinned: row.pinned === true,
+    leftAlone: row.left_alone === true,
+    result: str(row.result),
+    error: str(row.error),
+    checklist: rows(row.checklist)
+      .map(step => ({ text: str(step.text).trim(), state: (['done', 'doing'].includes(str(step.state)) ? str(step.state) : 'todo') as StepState }))
+      .filter(step => step.text),
+    step: str(row.step),
+    agents: Math.max(0, Math.round(num(row.agents))),
+    branch: str(row.branch),
+    bot: str(row.bot),
+    screenAsk: str(row.screen_ask),
+    approval:
+      approval && str(approval.request_id)
+        ? {
+            requestId: str(approval.request_id),
+            command: str(approval.command),
+            description: str(approval.description),
+            approvable: approval.approvable === true
+          }
+        : null,
+    actions: (Array.isArray(row.actions) ? row.actions : []).filter((a): a is WorkAction => ACTIONS.includes(a as WorkAction)),
+    manage: (Array.isArray(row.manage) ? row.manage : []).filter((m): m is WorkManage => MANAGE.includes(m as WorkManage)),
+    updatedAt: num(row.updated_at) * 1000
+  }
+}
+
+export function parseWork(raw: unknown): WorkSnapshot {
+  const o = (raw && typeof raw === 'object' ? raw : {}) as Row
+  const counts = (o.counts && typeof o.counts === 'object' ? o.counts : {}) as Row
+  const seen = new Set<string>()
+  const items: WorkItem[] = []
+  for (const row of rows(o.work)) {
+    const item = parseItem(row)
+    if (item && !seen.has(item.ref)) {
+      seen.add(item.ref)
+      items.push(item)
+    }
+  }
+  return {
+    policy: str(o.policy),
+    items,
+    working: num(counts.working),
+    needsYou: num(counts.needs_you),
+    ready: num(counts.ready),
+    resolvedCount: num(o.resolved_count),
+    sessionIds: (Array.isArray(o.workstream_sessions) ? o.workstream_sessions : []).filter((id): id is string => typeof id === 'string' && !!id)
+  }
+}
+
+export const isWorking = (item: WorkItem) => item.status === 'starting' || item.status === 'running'
+
+/** Still the bot's or the user's to finish; a screen ask keeps a done row here until it's answered. */
+export const isActive = (item: WorkItem) =>
+  !item.closed && (['starting', 'running', 'needs_you', 'waiting', 'ready', 'interrupted'].includes(item.status) || !!item.screenAsk)
+
+/** Waiting on the user: an approval or a question in its chat, or a restart that left it for them. */
+export const needsYou = (item: WorkItem) =>
+  item.kind === 'workstream' && !item.closed && (item.status === 'needs_you' || item.status === 'interrupted' || !!item.screenAsk)
+
+export const doneCount = (item: WorkItem) => item.checklist.filter(step => step.state === 'done').length
+
+export function shownTitle(item: WorkItem): string {
+  return item.title || item.goal || item.ref
+}
+
+/** What it's doing now: waiting for agents it started, else its checklist's step in progress, else the tool step it's on. */
+export function doing(item: WorkItem): string | null {
+  if (!isWorking(item) && item.status !== 'needs_you') return null
+  if (isWorking(item) && item.agents > 0) return t('Waiting for {count} background agents', { count: item.agents })
+  return item.checklist.find(step => step.state === 'doing')?.text ?? (item.step || null)
+}
+
+export function statusWord(status: string): string {
+  switch (status) {
+    case 'starting':
+      return t('Starting')
+    case 'running':
+      return t('Working')
+    case 'needs_you':
+      return t('Needs you')
+    case 'ready':
+      return t('Ready')
+    case 'done':
+      return t('Done')
+    case 'failed':
+      return t('Failed')
+    case 'stopped':
+      return t('Stopped')
+    case 'interrupted':
+      return t('Interrupted')
+    case 'waiting':
+      return t('Waiting')
+    default:
+      return status
+  }
+}
+
+export function statusText(item: WorkItem): string {
+  if (item.closed && ['needs_you', 'interrupted', 'starting', 'running', 'waiting'].includes(item.status)) return t('Resolved')
+  if (item.kind === 'workstream' && !item.closed && item.screenAsk) return t('Needs you')
+  const other = item.bot || t('Another bot')
+  if (item.kind === 'ask_out') {
+    if (item.status === 'waiting') return t('Waiting on {bot}', { bot: other })
+    if (item.status === 'done') return t('{bot} answered', { bot: other })
+    return statusWord(item.status)
+  }
+  if (item.kind === 'ask_in') return item.status === 'done' ? t('Answered') : t('{bot} asks', { bot: other })
+  return statusWord(item.status)
+}
+
+/** The words under a Bot Chat's title ("2 working · 1 needs you"), or null with no work to show. */
+export function stripText(snapshot: WorkSnapshot): string | null {
+  const parts: string[] = []
+  if (snapshot.working > 0) parts.push(t('{count} working', { count: snapshot.working }))
+  if (snapshot.needsYou > 0) parts.push(t('{count} needs you', { count: snapshot.needsYou }))
+  if (snapshot.ready > 0) parts.push(t('{count} ready', { count: snapshot.ready }))
+  if (!parts.length && (snapshot.items.length || snapshot.resolvedCount > 0)) return t('Work')
+  return parts.length ? parts.join(' · ') : null
+}
+
+/** The panel's lists: Pinned, Active (what needs you first), Recent. */
+export function sections(items: WorkItem[]): { pinned: WorkItem[]; active: WorkItem[]; recent: WorkItem[] } {
+  const pinned = items.filter(item => item.pinned)
+  const shown = items.filter(item => isActive(item) && !item.pinned)
+  return {
+    pinned,
+    active: [...shown.filter(needsYou), ...shown.filter(item => !needsYou(item))],
+    recent: items.filter(item => !isActive(item) && !item.pinned)
+  }
+}
+
+export function actionTitle(action: WorkAction): string {
+  switch (action) {
+    case 'check':
+      return t('Check first')
+    case 'continue':
+      return t('Continue')
+    case 'stop':
+      return t('Stop')
+    default:
+      return t('Send')
+  }
+}
+
+export function manageTitle(manage: WorkManage, botName: string): string {
+  switch (manage) {
+    case 'pin':
+      return t('Pin')
+    case 'unpin':
+      return t('Unpin')
+    case 'resolve':
+      return t('Resolve')
+    case 'leave_alone':
+      return t('Leave Alone')
+    case 'coordinate':
+      return t('Let {bot} Coordinate It', { bot: botName })
+    default:
+      return t('Reopen')
+  }
+}
+
+/** A refused action's words: the plugin's note, else its code. */
+export function workRefusal(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
