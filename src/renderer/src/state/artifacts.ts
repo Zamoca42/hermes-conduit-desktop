@@ -5,7 +5,7 @@
  * drew, files the user attached and links in replies. Saved ones (pins) are
  * the profile's, shared with every device, and keep a copy of their file.
  */
-import { t } from '@shared/i18n'
+import { t } from '../../../shared/i18n'
 
 export const ARTIFACTS_PATH = '/api/plugins/conduit_push/artifacts'
 export const PINS_PATH = '/api/plugins/conduit_push/artifacts/pins'
