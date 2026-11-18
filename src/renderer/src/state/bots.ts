@@ -27,6 +27,10 @@ export interface Bot {
   /** Its newest chat's last line and time. */
   lastLine?: string
   lastActive?: number
+  /** `ui_meta['hermes-bots']` as Hermes keeps it, carried whole into a write. */
+  meta: Record<string, unknown>
+  /** That key's revision, for the write's compare-and-swap. */
+  metaRevision?: number
 }
 
 function str(value: unknown): string | undefined {
@@ -59,6 +63,8 @@ export function botsFromProfiles(body: unknown): Bot[] {
     const storedFace = typeof meta.face === 'number' && Number.isInteger(meta.face) && meta.face >= 0 ? meta.face : undefined
     const created = typeof meta.created === 'number' ? meta.created : undefined
     candidates.push({ name, isDefault, storedFace, created })
+    const revisions = row.ui_meta_revisions && typeof row.ui_meta_revisions === 'object' ? (row.ui_meta_revisions as Record<string, unknown>) : {}
+    const revision = revisions[BOTS_META_KEY]
     bots.push({
       name,
       title: botTitle(str(meta.title) ?? str(row.display_name), name, isDefault),
@@ -72,7 +78,9 @@ export function botsFromProfiles(body: unknown): Bot[] {
       face: 0,
       botChatId: str(canonical?.resolved_id) ?? str(canonical?.id),
       lastLine: lastLineOf(str(canonical?.preview)) ?? lastLineOf(str(last?.preview)),
-      lastActive: toMillis(source?.last_active) ?? toMillis(last?.last_active)
+      lastActive: toMillis(source?.last_active) ?? toMillis(last?.last_active),
+      meta,
+      metaRevision: typeof revision === 'number' && Number.isInteger(revision) ? revision : undefined
     })
   }
   // Faces go round every bot, hidden ones too, as the phone hands them out.

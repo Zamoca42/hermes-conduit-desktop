@@ -33,6 +33,7 @@ import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
+import { BotEditor } from './components/BotEditor'
 import { VoiceCall } from './components/VoiceCall'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
@@ -188,6 +189,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // Each reply's end reads the open folders again: the agent may have changed files.
   const [turnsDone, setTurnsDone] = useState(0)
   const [calling, setCalling] = useState(false)
+  /** Edit Bot, open over Bots home. */
+  const [editingBot, setEditingBot] = useState<Bot | null>(null)
   // A call is the open chat's: another chat, or another screen, ends it. A
   // new chat getting its id from the call's first message is the same chat.
   const callChat = useRef(selected.id)
@@ -197,6 +200,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     if (was !== null && was !== selected.id) setCalling(false)
   }, [selected.id])
   useEffect(() => setCalling(false), [selected.profile, section])
+  // Edit Bot closes when another section opens.
+  useEffect(() => setEditingBot(null), [section])
   // Read replies aloud: the open chat's reply, as its turn ends, unless a call speaks it.
   const readTurn = useRef(turnsDone)
   useEffect(() => {
@@ -630,6 +635,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               />
             ) : null}
           </>
+        ) : section === 'bots' && editingBot ? (
+          <BotEditor key={editingBot.name} bot={editingBot} onClose={() => setEditingBot(null)} onSaved={() => void roster.refresh()} />
         ) : section === 'bots' ? (
           <BotsHome
             bots={roster.bots}
@@ -641,6 +648,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onAsk={askBot}
             onOpenRoom={showRoom}
             onCreateRoom={groupRooms.create}
+            onEdit={connected ? setEditingBot : undefined}
           />
         ) : section === 'tasks' ? (
           <Tasks

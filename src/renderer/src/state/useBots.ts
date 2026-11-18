@@ -43,9 +43,25 @@ export function forgetAvatars(): void {
   avatarCache.clear()
 }
 
-/** A bot's picture from its profile's asset store, read once per launch. */
+const AVATAR_CHANGED = 'conduit-avatar-changed'
+
+/** A bot's picture changed here: read it again wherever it shows. */
+export function avatarChanged(name: string): void {
+  avatarCache.delete(name)
+  window.dispatchEvent(new CustomEvent(AVATAR_CHANGED, { detail: name }))
+}
+
+/** A bot's picture from its profile's asset store, read once per launch and again when Edit Bot changes it. */
 export function useAvatar(name: string, hasAvatar: boolean): string | null {
   const [url, setUrl] = useState<string | null>(null)
+  const [version, setVersion] = useState(0)
+  useEffect(() => {
+    const changed = (event: Event) => {
+      if ((event as CustomEvent<string>).detail === name) setVersion(v => v + 1)
+    }
+    window.addEventListener(AVATAR_CHANGED, changed)
+    return () => window.removeEventListener(AVATAR_CHANGED, changed)
+  }, [name])
   useEffect(() => {
     if (!hasAvatar) {
       setUrl(null)
@@ -66,6 +82,6 @@ export function useAvatar(name: string, hasAvatar: boolean): string | null {
     return () => {
       live = false
     }
-  }, [name, hasAvatar])
+  }, [name, hasAvatar, version])
   return url
 }

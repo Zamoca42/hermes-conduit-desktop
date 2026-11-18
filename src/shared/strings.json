@@ -1004,6 +1004,21 @@
     "zh-Hans": "阻塞",
     "zh-Hant": "阻擋"
   },
+  "Blue": {
+    "de": "Blau",
+    "es": "Azul",
+    "fr": "Bleu",
+    "id": "Biru",
+    "it": "Blu",
+    "ja": "ブルー",
+    "ko": "파란색",
+    "pl": "Niebieski",
+    "pt-BR": "Azul",
+    "ru": "Синий",
+    "tr": "Mavi",
+    "zh-Hans": "蓝色",
+    "zh-Hant": "藍色"
+  },
   "Board": {
     "de": "Board",
     "es": "Tablero",
@@ -1348,6 +1363,21 @@
     "tr": "iPhone’unuzun aynı dört kelimeyi gösterdiğini kontrol edin.",
     "zh-Hans": "确认你的 iPhone 显示同样的四个单词。",
     "zh-Hant": "確認你的 iPhone 顯示同樣的四個單字。"
+  },
+  "Choose Photo": {
+    "de": "Foto auswählen",
+    "es": "Elegir foto",
+    "fr": "Choisir une photo",
+    "id": "Pilih Foto",
+    "it": "Scegli foto",
+    "ja": "写真を選択",
+    "ko": "사진 선택",
+    "pl": "Wybierz zdjęcie",
+    "pt-BR": "Escolher Foto",
+    "ru": "Выбрать фото",
+    "tr": "Fotoğraf Seç",
+    "zh-Hans": "选择照片",
+    "zh-Hant": "選擇照片"
   },
   "Classic voice": {
     "de": "Klassisch",
@@ -1904,6 +1934,21 @@
     "zh-Hans": "无法加载定时任务运行记录：{reason}",
     "zh-Hant": "無法載入排程工作的執行記錄：{reason}"
   },
+  "Could not load this bot's personality.": {
+    "de": "Die Persönlichkeit dieses Bots konnte nicht geladen werden.",
+    "es": "No se pudo cargar la personalidad de este bot.",
+    "fr": "Impossible de charger la personnalité de ce bot.",
+    "id": "Tidak dapat memuat kepribadian bot ini.",
+    "it": "Impossibile caricare la personalità di questo bot.",
+    "ja": "このボットのパーソナリティを読み込めませんでした。",
+    "ko": "이 봇의 성격을 불러올 수 없어요.",
+    "pl": "Nie udało się wczytać osobowości tego bota.",
+    "pt-BR": "Não foi possível carregar a personalidade deste bot.",
+    "ru": "Не удалось загрузить личность этого бота.",
+    "tr": "Bu botun kişiliği yüklenemedi.",
+    "zh-Hans": "无法加载此机器人的个性设定。",
+    "zh-Hant": "無法載入此機器人的個性。"
+  },
   "Could not pause scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht pausiert werden: {reason}",
     "es": "No se pudo pausar el trabajo programado: {reason}",
@@ -1948,6 +1993,21 @@
     "tr": "Zamanlanmış iş çalıştırılamadı: {reason}",
     "zh-Hans": "无法运行定时任务：{reason}",
     "zh-Hant": "無法執行排程工作：{reason}"
+  },
+  "Could not save the bot: {error}": {
+    "de": "Der Bot konnte nicht gespeichert werden: {error}",
+    "es": "No se pudo guardar el bot: {error}",
+    "fr": "Impossible d'enregistrer le bot : {error}",
+    "id": "Tidak dapat menyimpan bot: {error}",
+    "it": "Impossibile salvare il bot: {error}",
+    "ja": "ボットを保存できませんでした：{error}",
+    "ko": "봇을 저장할 수 없어요: {error}",
+    "pl": "Nie udało się zapisać bota: {error}",
+    "pt-BR": "Não foi possível salvar o bot: {error}",
+    "ru": "Не удалось сохранить бота: {error}",
+    "tr": "Bot kaydedilemedi: {error}",
+    "zh-Hans": "无法保存机器人：{error}",
+    "zh-Hant": "無法儲存機器人：{error}"
   },
   "Couldn't load this chat's usage.": {
     "de": "Die Nutzung dieses Chats konnte nicht geladen werden.",
@@ -2264,6 +2324,21 @@
     "zh-Hans": "自定义",
     "zh-Hant": "自訂"
   },
+  "Cyan": {
+    "de": "Cyan",
+    "es": "Cian",
+    "fr": "Cyan",
+    "id": "Sian",
+    "it": "Ciano",
+    "ja": "シアン",
+    "ko": "청록색",
+    "pl": "Cyjanowy",
+    "pt-BR": "Ciano",
+    "ru": "Бирюзовый",
+    "tr": "Camgöbeği",
+    "zh-Hans": "青色",
+    "zh-Hant": "青色"
+  },
   "Daily at {time}": {
     "de": "Täglich um {time}",
     "es": "Todos los días a las {time}",
@@ -2579,6 +2654,21 @@
     "zh-Hans": "放弃未保存的更改？",
     "zh-Hant": "要捨棄未儲存的變更嗎？"
   },
+  "Display Name": {
+    "de": "Anzeigename",
+    "es": "Nombre visible",
+    "fr": "Nom affiché",
+    "id": "Nama Tampilan",
+    "it": "Nome visualizzato",
+    "ja": "表示名",
+    "ko": "표시 이름",
+    "pl": "Nazwa wyświetlana",
+    "pt-BR": "Nome de Exibição",
+    "ru": "Отображаемое имя",
+    "tr": "Görünen Ad",
+    "zh-Hans": "显示名称",
+    "zh-Hant": "顯示名稱"
+  },
   "Do it": {
     "de": "Erledigen",
     "es": "Hacerlo",
@@ -2818,6 +2908,21 @@
     "tr": "Düzenle",
     "zh-Hans": "编辑",
     "zh-Hant": "編輯"
+  },
+  "Edit Bot": {
+    "de": "Bot bearbeiten",
+    "es": "Editar bot",
+    "fr": "Modifier le bot",
+    "id": "Edit Bot",
+    "it": "Modifica bot",
+    "ja": "ボットを編集",
+    "ko": "봇 편집",
+    "pl": "Edytuj bota",
+    "pt-BR": "Editar Bot",
+    "ru": "Изменить бота",
+    "tr": "Botu Düzenle",
+    "zh-Hans": "编辑机器人",
+    "zh-Hant": "編輯機器人"
   },
   "Edit and resend": {
     "de": "Bearbeiten und neu senden",
@@ -3254,6 +3359,21 @@
     "zh-Hans": "额外请求头仅通过 HTTPS 发送。请先输入 https:// 服务器地址。",
     "zh-Hant": "額外標頭只會透過 HTTPS 傳送。請先輸入 https:// 伺服器位址。"
   },
+  "Face": {
+    "de": "Gesicht",
+    "es": "Cara",
+    "fr": "Visage",
+    "id": "Wajah",
+    "it": "Volto",
+    "ja": "顔",
+    "ko": "얼굴",
+    "pl": "Twarz",
+    "pt-BR": "Rosto",
+    "ru": "Лицо",
+    "tr": "Yüz",
+    "zh-Hans": "脸孔",
+    "zh-Hant": "臉孔"
+  },
   "Facts": {
     "de": "Fakten",
     "es": "Datos",
@@ -3583,6 +3703,21 @@
     "tr": "Sohbete git",
     "zh-Hans": "前往聊天",
     "zh-Hant": "前往聊天"
+  },
+  "Gray": {
+    "de": "Grau",
+    "es": "Gris",
+    "fr": "Gris",
+    "id": "Abu-abu",
+    "it": "Grigio",
+    "ja": "グレー",
+    "ko": "회색",
+    "pl": "Szary",
+    "pt-BR": "Cinza",
+    "ru": "Серый",
+    "tr": "Gri",
+    "zh-Hans": "灰色",
+    "zh-Hant": "灰色"
   },
   "Group chat being started": {
     "de": "Gruppenchat wird gestartet",
@@ -4289,6 +4424,21 @@
     "zh-Hans": "看板任务 {task}",
     "zh-Hant": "Kanban 任務 {task}"
   },
+  "Keep Photo": {
+    "de": "Foto behalten",
+    "es": "Conservar foto",
+    "fr": "Garder la photo",
+    "id": "Pertahankan Foto",
+    "it": "Mantieni foto",
+    "ja": "写真を保持",
+    "ko": "사진 유지",
+    "pl": "Zachowaj zdjęcie",
+    "pt-BR": "Manter Foto",
+    "ru": "Оставить фото",
+    "tr": "Fotoğrafı Koru",
+    "zh-Hans": "保留照片",
+    "zh-Hant": "保留照片"
+  },
   "Kept out by what you taught Pulse": {
     "de": "Durch das ausgelassen, was du Pulse beigebracht hast",
     "es": "Excluido por lo que le enseñaste a Pulse",
@@ -4423,6 +4573,21 @@
     "tr": "Rapora girmeyenler",
     "zh-Hans": "未写进报告",
     "zh-Hant": "未寫進報告"
+  },
+  "Lime": {
+    "de": "Limette",
+    "es": "Lima",
+    "fr": "Vert citron",
+    "id": "Limau",
+    "it": "Lime",
+    "ja": "ライム",
+    "ko": "라임색",
+    "pl": "Limonkowy",
+    "pt-BR": "Lima",
+    "ru": "Лаймовый",
+    "tr": "Limon Yeşili",
+    "zh-Hans": "青柠色",
+    "zh-Hant": "萊姆綠"
   },
   "Limited": {
     "de": "Begrenzt",
@@ -4648,6 +4813,36 @@
     "tr": "Düşük",
     "zh-Hans": "低",
     "zh-Hant": "低"
+  },
+  "MCP Servers": {
+    "de": "MCP-Server",
+    "es": "Servidores MCP",
+    "fr": "Serveurs MCP",
+    "id": "Server MCP",
+    "it": "Server MCP",
+    "ja": "MCP サーバ",
+    "ko": "MCP 서버",
+    "pl": "Serwery MCP",
+    "pt-BR": "Servidores MCP",
+    "ru": "MCP-серверы",
+    "tr": "MCP sunucuları",
+    "zh-Hans": "MCP 服务器",
+    "zh-Hant": "MCP 伺服器"
+  },
+  "Magenta": {
+    "de": "Magenta",
+    "es": "Magenta",
+    "fr": "Magenta",
+    "id": "Magenta",
+    "it": "Magenta",
+    "ja": "マゼンタ",
+    "ko": "자홍색",
+    "pl": "Purpurowy",
+    "pt-BR": "Magenta",
+    "ru": "Пурпурный",
+    "tr": "Macenta",
+    "zh-Hans": "品红色",
+    "zh-Hant": "洋紅色"
   },
   "Make a new code": {
     "de": "Neuen Code erstellen",
@@ -4888,6 +5083,21 @@
     "tr": "Simge durumuna küçült",
     "zh-Hans": "最小化",
     "zh-Hant": "最小化"
+  },
+  "Mint": {
+    "de": "Mint",
+    "es": "Menta",
+    "fr": "Menthe",
+    "id": "Mint",
+    "it": "Menta",
+    "ja": "ミント",
+    "ko": "민트색",
+    "pl": "Miętowy",
+    "pt-BR": "Menta",
+    "ru": "Мятный",
+    "tr": "Nane",
+    "zh-Hans": "薄荷色",
+    "zh-Hant": "薄荷綠"
   },
   "Minutes": {
     "de": "Minuten",
@@ -6314,6 +6524,21 @@
     "zh-Hans": "或输入你自己的回答",
     "zh-Hant": "或輸入你自己的回答"
   },
+  "Orange": {
+    "de": "Orange",
+    "es": "Naranja",
+    "fr": "Orange",
+    "id": "Oranye",
+    "it": "Arancione",
+    "ja": "オレンジ",
+    "ko": "주황색",
+    "pl": "Pomarańczowy",
+    "pt-BR": "Laranja",
+    "ru": "Оранжевый",
+    "tr": "Turuncu",
+    "zh-Hans": "橙色",
+    "zh-Hant": "橙色"
+  },
   "Other": {
     "de": "Andere",
     "es": "Otro",
@@ -6554,6 +6779,21 @@
     "zh-Hans": "个人事务",
     "zh-Hant": "個人事務"
   },
+  "Personality": {
+    "de": "Persönlichkeit",
+    "es": "Personalidad",
+    "fr": "Personnalité",
+    "id": "Kepribadian",
+    "it": "Personalità",
+    "ja": "パーソナリティ",
+    "ko": "성격",
+    "pl": "Osobowość",
+    "pt-BR": "Personalidade",
+    "ru": "Личность",
+    "tr": "Kişilik",
+    "zh-Hans": "性格",
+    "zh-Hant": "個性"
+  },
   "Pick a job to see its details and run history.": {
     "de": "Wähle einen Job, um seine Details und den Verlauf seiner Läufe zu sehen.",
     "es": "Elige una tarea para ver sus detalles y su historial de ejecuciones.",
@@ -6614,6 +6854,21 @@
     "zh-Hans": "选中了，但报告已满",
     "zh-Hant": "選中了，但報告已滿"
   },
+  "Picture": {
+    "de": "Bild",
+    "es": "Imagen",
+    "fr": "Image",
+    "id": "Gambar",
+    "it": "Immagine",
+    "ja": "写真",
+    "ko": "사진",
+    "pl": "Obraz",
+    "pt-BR": "Imagem",
+    "ru": "Изображение",
+    "tr": "Resim",
+    "zh-Hans": "头像",
+    "zh-Hant": "圖片"
+  },
   "Pin": {
     "de": "Anheften",
     "es": "Fijar",
@@ -6628,6 +6883,21 @@
     "tr": "Sabitle",
     "zh-Hans": "置顶",
     "zh-Hant": "釘選"
+  },
+  "Pink": {
+    "de": "Pink",
+    "es": "Rosa",
+    "fr": "Rose",
+    "id": "Merah Muda",
+    "it": "Rosa",
+    "ja": "ピンク",
+    "ko": "분홍색",
+    "pl": "Różowy",
+    "pt-BR": "Rosa",
+    "ru": "Розовый",
+    "tr": "Pembe",
+    "zh-Hans": "粉色",
+    "zh-Hant": "粉紅色"
   },
   "Pinned": {
     "de": "Angeheftet",
@@ -6688,6 +6958,21 @@
     "tr": "Öncelik",
     "zh-Hans": "优先",
     "zh-Hant": "優先順序"
+  },
+  "Profile ID: {name}": {
+    "de": "Profil-ID: {name}",
+    "es": "ID de perfil: {name}",
+    "fr": "ID du profil : {name}",
+    "id": "ID Profil: {name}",
+    "it": "ID profilo: {name}",
+    "ja": "プロファイルID：{name}",
+    "ko": "프로필 ID: {name}",
+    "pl": "ID profilu: {name}",
+    "pt-BR": "ID do perfil: {name}",
+    "ru": "ID профиля: {name}",
+    "tr": "Profil kimliği: {name}",
+    "zh-Hans": "配置 ID：{name}",
+    "zh-Hant": "設定檔 ID：{name}"
   },
   "Profiles": {
     "de": "Profile",
@@ -7154,6 +7439,21 @@
     "zh-Hans": "Pulse，有新卡片",
     "zh-Hant": "Pulse，有新卡片"
   },
+  "Purple": {
+    "de": "Violett",
+    "es": "Morado",
+    "fr": "Violet",
+    "id": "Ungu",
+    "it": "Viola",
+    "ja": "パープル",
+    "ko": "보라색",
+    "pl": "Fioletowy",
+    "pt-BR": "Roxo",
+    "ru": "Фиолетовый",
+    "tr": "Mor",
+    "zh-Hans": "紫色",
+    "zh-Hant": "紫色"
+  },
   "Put back": {
     "de": "Zurücklegen",
     "es": "Devolver",
@@ -7529,6 +7829,21 @@
     "zh-Hans": "录音：听写，或发送语音消息",
     "zh-Hant": "錄音：聽寫，或傳送語音訊息"
   },
+  "Red": {
+    "de": "Rot",
+    "es": "Rojo",
+    "fr": "Rouge",
+    "id": "Merah",
+    "it": "Rosso",
+    "ja": "レッド",
+    "ko": "빨간색",
+    "pl": "Czerwony",
+    "pt-BR": "Vermelho",
+    "ru": "Красный",
+    "tr": "Kırmızı",
+    "zh-Hans": "红色",
+    "zh-Hant": "紅色"
+  },
   "Refresh": {
     "de": "Aktualisieren",
     "es": "Actualizar",
@@ -7573,6 +7888,21 @@
     "tr": "Anımsatıcılar",
     "zh-Hans": "提醒事项",
     "zh-Hant": "提醒事項"
+  },
+  "Remove Photo": {
+    "de": "Foto entfernen",
+    "es": "Quitar foto",
+    "fr": "Supprimer la photo",
+    "id": "Hapus Foto",
+    "it": "Rimuovi foto",
+    "ja": "写真を削除",
+    "ko": "사진 제거",
+    "pl": "Usuń zdjęcie",
+    "pt-BR": "Remover Foto",
+    "ru": "Удалить фото",
+    "tr": "Fotoğrafı Kaldır",
+    "zh-Hans": "移除照片",
+    "zh-Hant": "移除照片"
   },
   "Remove the last user and assistant exchange": {
     "de": "Den letzten Austausch zwischen Nutzer und Assistent entfernen",
@@ -8159,6 +8489,21 @@
     "zh-Hans": "仅保存",
     "zh-Hant": "僅儲存"
   },
+  "Saved as the bot's SOUL.md.": {
+    "de": "Wird als SOUL.md des Bots gespeichert.",
+    "es": "Guardado como SOUL.md del bot.",
+    "fr": "Enregistré comme SOUL.md du bot.",
+    "id": "Disimpan sebagai SOUL.md bot.",
+    "it": "Salvato come SOUL.md del bot.",
+    "ja": "ボットのSOUL.mdとして保存されます。",
+    "ko": "봇의 SOUL.md로 저장돼요.",
+    "pl": "Zapisywane jako plik SOUL.md bota.",
+    "pt-BR": "Salvo como o SOUL.md do bot.",
+    "ru": "Сохраняется как SOUL.md бота.",
+    "tr": "Botun SOUL.md dosyası olarak kaydedilir.",
+    "zh-Hans": "保存为机器人的 SOUL.md。",
+    "zh-Hant": "會儲存為機器人的 SOUL.md。"
+  },
   "Saving…": {
     "de": "Wird gespeichert …",
     "es": "Guardando…",
@@ -8579,6 +8924,21 @@
     "zh-Hans": "适用于会报告配额的提供方，例如订阅登录。Hermes 会在后台检查，如有缺失请刷新。",
     "zh-Hant": "適用於會回報配額的供應商，例如訂閱登入。Hermes 會在背景檢查，如有缺漏請重新整理。"
   },
+  "Shown until the bot has a picture. Its color is the bot's color in Conduit.": {
+    "de": "Wird angezeigt, bis der Bot ein Bild hat. Seine Farbe ist die Farbe des Bots in Conduit.",
+    "es": "Se muestra hasta que el bot tenga una imagen. Su color es el color del bot en Conduit.",
+    "fr": "Affiché tant que le bot n'a pas d'image. Sa couleur est celle du bot dans Conduit.",
+    "id": "Ditampilkan hingga bot memiliki gambar. Warnanya menjadi warna bot di Conduit.",
+    "it": "Mostrato finché il bot non ha un'immagine. Il suo colore è il colore del bot in Conduit.",
+    "ja": "ボットに画像が設定されるまで表示されます。この色がConduitでのボットの色になります。",
+    "ko": "봇에 사진이 생길 때까지 표시돼요. 이 색이 Conduit에서 봇의 색이 돼요.",
+    "pl": "Wyświetlana, dopóki bot nie ma obrazu. Jej kolor jest kolorem bota w Conduit.",
+    "pt-BR": "Aparece até o bot ter uma imagem. A cor dele é a cor do bot no Conduit.",
+    "ru": "Показывается, пока у бота нет изображения. Его цвет становится цветом бота в Conduit.",
+    "tr": "Botun bir resmi olana kadar gösterilir. Rengi, botun Conduit'teki rengidir.",
+    "zh-Hans": "在机器人有头像之前显示。它的颜色就是机器人在 Conduit 中的颜色。",
+    "zh-Hant": "在機器人有圖片之前顯示。它的顏色就是機器人在 Conduit 中的顏色。"
+  },
   "Sign in": {
     "de": "Anmelden",
     "es": "Iniciar sesión",
@@ -8789,6 +9149,36 @@
     "zh-Hans": "一个房间最多容纳六个。",
     "zh-Hant": "一個聊天室最多容納六個。"
   },
+  "Skills": {
+    "de": "Skills",
+    "es": "Habilidades",
+    "fr": "Compétences",
+    "id": "Skill",
+    "it": "Skill",
+    "ja": "スキル",
+    "ko": "스킬",
+    "pl": "Umiejętności",
+    "pt-BR": "Habilidades",
+    "ru": "Навыки",
+    "tr": "Beceriler",
+    "zh-Hans": "技能",
+    "zh-Hant": "技能"
+  },
+  "Skills and tools": {
+    "de": "Skills und Tools",
+    "es": "Habilidades y herramientas",
+    "fr": "Compétences et outils",
+    "id": "Skill dan alat",
+    "it": "Skill e strumenti",
+    "ja": "スキルとツール",
+    "ko": "스킬 및 도구",
+    "pl": "Umiejętności i narzędzia",
+    "pt-BR": "Habilidades e ferramentas",
+    "ru": "Навыки и инструменты",
+    "tr": "Beceriler ve araçlar",
+    "zh-Hans": "技能和工具",
+    "zh-Hant": "技能和工具"
+  },
   "Skip": {
     "de": "Überspringen",
     "es": "Omitir",
@@ -8848,6 +9238,21 @@
     "tr": "Atlandı",
     "zh-Hans": "已跳过",
     "zh-Hant": "已略過"
+  },
+  "Sky Blue": {
+    "de": "Himmelblau",
+    "es": "Azul cielo",
+    "fr": "Bleu ciel",
+    "id": "Biru Langit",
+    "it": "Azzurro",
+    "ja": "スカイブルー",
+    "ko": "하늘색",
+    "pl": "Błękitny",
+    "pt-BR": "Azul-celeste",
+    "ru": "Голубой",
+    "tr": "Gök Mavisi",
+    "zh-Hans": "天蓝色",
+    "zh-Hant": "天藍色"
   },
   "Slash commands": {
     "de": "Slash-Befehle",
@@ -9299,6 +9704,21 @@
     "zh-Hans": "无法使用该名称。",
     "zh-Hant": "無法使用該名稱。"
   },
+  "That picture could not be used.": {
+    "de": "Dieses Bild konnte nicht verwendet werden.",
+    "es": "No se pudo usar esa imagen.",
+    "fr": "Cette image n'a pas pu être utilisée.",
+    "id": "Gambar itu tidak dapat digunakan.",
+    "it": "Impossibile usare quell'immagine.",
+    "ja": "その写真は使用できませんでした。",
+    "ko": "그 사진은 사용할 수 없어요.",
+    "pl": "Nie można użyć tego obrazu.",
+    "pt-BR": "Não foi possível usar essa imagem.",
+    "ru": "Это изображение нельзя использовать.",
+    "tr": "Bu resim kullanılamadı.",
+    "zh-Hans": "无法使用该图片。",
+    "zh-Hant": "無法使用該圖片。"
+  },
   "That user name and password didn’t work.": {
     "de": "Benutzername und Passwort haben nicht funktioniert.",
     "es": "Ese nombre de usuario y contraseña no funcionaron.",
@@ -9449,6 +9869,21 @@
     "zh-Hans": "控制台没有发送连接凭证。",
     "zh-Hant": "控制台沒有傳送連線憑證。"
   },
+  "The description or personality was not saved.": {
+    "de": "Die Beschreibung oder Persönlichkeit wurde nicht gespeichert.",
+    "es": "La descripción o la personalidad no se guardaron.",
+    "fr": "La description ou la personnalité n'a pas été enregistrée.",
+    "id": "Deskripsi atau kepribadian tidak disimpan.",
+    "it": "La descrizione o la personalità non sono state salvate.",
+    "ja": "説明またはパーソナリティが保存されませんでした。",
+    "ko": "설명이나 성격이 저장되지 않았어요.",
+    "pl": "Opis lub osobowość nie zostały zapisane.",
+    "pt-BR": "A descrição ou a personalidade não foi salva.",
+    "ru": "Описание или личность не сохранены.",
+    "tr": "Açıklama veya kişilik kaydedilmedi.",
+    "zh-Hans": "描述或个性设定未保存。",
+    "zh-Hant": "描述或個性未儲存。"
+  },
   "The look ahead passed over it": {
     "de": "Die Vorausschau hat es übergangen",
     "es": "La previsión lo pasó por alto",
@@ -9479,6 +9914,81 @@
     "zh-Hans": "这是 Pulse 对每一类最多的提醒方式。在此范围内，你的评分、“去做”和“完成”会教它该提什么、以多显眼的方式提。",
     "zh-Hant": "這是 Pulse 對每一類最多的提醒方式。在此範圍內，你的評分、「去做」和「完成」會教它該提什麼、以多顯眼的方式提。"
   },
+  "The model was not saved.": {
+    "de": "Das Modell wurde nicht gespeichert.",
+    "es": "No se guardó el modelo.",
+    "fr": "Le modèle n’a pas été enregistré.",
+    "id": "Model tidak disimpan.",
+    "it": "Il modello non è stato salvato.",
+    "ja": "モデルは保存されませんでした。",
+    "ko": "모델이 저장되지 않았습니다.",
+    "pl": "Model nie został zapisany.",
+    "pt-BR": "O modelo não foi salvo.",
+    "ru": "Модель не сохранена.",
+    "tr": "Model kaydedilmedi.",
+    "zh-Hans": "模型未保存。",
+    "zh-Hant": "模型未儲存。"
+  },
+  "The name or color was not saved.": {
+    "de": "Der Name oder die Farbe wurde nicht gespeichert.",
+    "es": "El nombre o el color no se guardaron.",
+    "fr": "Le nom ou la couleur n'a pas été enregistré.",
+    "id": "Nama atau warna tidak disimpan.",
+    "it": "Il nome o il colore non sono stati salvati.",
+    "ja": "名前またはカラーが保存されませんでした。",
+    "ko": "이름이나 색상이 저장되지 않았어요.",
+    "pl": "Nazwa lub kolor nie zostały zapisane.",
+    "pt-BR": "O nome ou a cor não foi salvo.",
+    "ru": "Имя или цвет не сохранены.",
+    "tr": "Ad veya renk kaydedilmedi.",
+    "zh-Hans": "名称或颜色未保存。",
+    "zh-Hant": "名稱或顏色未儲存。"
+  },
+  "The picture was not removed.": {
+    "de": "Das Bild wurde nicht entfernt.",
+    "es": "La imagen no se quitó.",
+    "fr": "L'image n'a pas été supprimée.",
+    "id": "Gambar tidak dihapus.",
+    "it": "L'immagine non è stata rimossa.",
+    "ja": "写真が削除されませんでした。",
+    "ko": "사진이 제거되지 않았어요.",
+    "pl": "Obraz nie został usunięty.",
+    "pt-BR": "A imagem não foi removida.",
+    "ru": "Изображение не удалено.",
+    "tr": "Resim kaldırılmadı.",
+    "zh-Hans": "头像未移除。",
+    "zh-Hant": "圖片未移除。"
+  },
+  "The picture was not saved.": {
+    "de": "Das Bild wurde nicht gespeichert.",
+    "es": "La imagen no se guardó.",
+    "fr": "L'image n'a pas été enregistrée.",
+    "id": "Gambar tidak disimpan.",
+    "it": "L'immagine non è stata salvata.",
+    "ja": "写真が保存されませんでした。",
+    "ko": "사진이 저장되지 않았어요.",
+    "pl": "Obraz nie został zapisany.",
+    "pt-BR": "A imagem não foi salva.",
+    "ru": "Изображение не сохранено.",
+    "tr": "Resim kaydedilmedi.",
+    "zh-Hans": "头像未保存。",
+    "zh-Hant": "圖片未儲存。"
+  },
+  "The picture was saved, but its look was not.": {
+    "de": "Das Bild wurde gespeichert, das Erscheinungsbild aber nicht.",
+    "es": "La imagen se guardó, pero su aspecto no.",
+    "fr": "L'image a été enregistrée, mais pas son apparence.",
+    "id": "Gambar sudah disimpan, tetapi tampilannya tidak.",
+    "it": "L'immagine è stata salvata, ma il suo aspetto no.",
+    "ja": "画像は保存されましたが、見た目の設定は保存されませんでした。",
+    "ko": "사진은 저장됐지만 표시 스타일은 저장되지 않았어요.",
+    "pl": "Obraz został zapisany, ale jego wygląd już nie.",
+    "pt-BR": "A imagem foi salva, mas a aparência não.",
+    "ru": "Изображение сохранено, но его оформление — нет.",
+    "tr": "Resim kaydedildi ancak görünümü kaydedilmedi.",
+    "zh-Hans": "照片已保存，但外观设置未保存。",
+    "zh-Hant": "圖片已儲存，但外觀設定未儲存。"
+  },
   "The reply was posted, but the task could not be unblocked. ({detail})": {
     "de": "Die Antwort wurde gepostet, aber die Aufgabe konnte nicht freigegeben werden. ({detail})",
     "es": "La respuesta se publicó, pero no se pudo desbloquear la tarea. ({detail})",
@@ -9508,6 +10018,21 @@
     "tr": "Rapor bunu atladı",
     "zh-Hans": "报告没有提到它",
     "zh-Hant": "報告沒有提到它"
+  },
+  "The skills, tools or MCP choices were not saved.": {
+    "de": "Die Auswahl für Skills, Tools oder MCP wurde nicht gespeichert.",
+    "es": "No se guardaron las opciones de habilidades, herramientas o MCP.",
+    "fr": "Les choix de compétences, d’outils ou de MCP n’ont pas été enregistrés.",
+    "id": "Pilihan skill, alat, atau MCP tidak disimpan.",
+    "it": "Le scelte di skill, strumenti o MCP non sono state salvate.",
+    "ja": "スキル、ツール、MCP の選択は保存されませんでした。",
+    "ko": "스킬, 도구 또는 MCP 선택이 저장되지 않았습니다.",
+    "pl": "Wybór umiejętności, narzędzi lub MCP nie został zapisany.",
+    "pt-BR": "As escolhas de habilidades, ferramentas ou MCP não foram salvas.",
+    "ru": "Выбор навыков, инструментов или MCP не сохранён.",
+    "tr": "Beceri, araç veya MCP seçimleri kaydedilmedi.",
+    "zh-Hans": "技能、工具或 MCP 选择未保存。",
+    "zh-Hant": "技能、工具或 MCP 選擇未儲存。"
   },
   "The turn failed.": {
     "de": "Der Durchgang ist fehlgeschlagen.",
@@ -10244,6 +10769,21 @@
     "zh-Hans": "出行与旅行",
     "zh-Hant": "出行與旅行"
   },
+  "Try Again": {
+    "de": "Erneut versuchen",
+    "es": "Reintentar",
+    "fr": "Réessayer",
+    "id": "Coba Lagi",
+    "it": "Riprova",
+    "ja": "再試行",
+    "ko": "다시 시도",
+    "pl": "Spróbuj ponownie",
+    "pt-BR": "Tentar Novamente",
+    "ru": "Повторить",
+    "tr": "Yeniden Dene",
+    "zh-Hans": "重试",
+    "zh-Hant": "再試一次"
+  },
   "Try again": {
     "de": "Erneut versuchen",
     "es": "Reintentar",
@@ -10694,6 +11234,21 @@
     "zh-Hans": "用量",
     "zh-Hant": "用量"
   },
+  "Use This Model?": {
+    "de": "Dieses Modell verwenden?",
+    "es": "¿Usar este modelo?",
+    "fr": "Utiliser ce modèle ?",
+    "id": "Gunakan model ini?",
+    "it": "Usare questo modello?",
+    "ja": "このモデルを使いますか？",
+    "ko": "이 모델을 사용할까요?",
+    "pl": "Użyć tego modelu?",
+    "pt-BR": "Usar este modelo?",
+    "ru": "Использовать эту модель?",
+    "tr": "Bu model kullanılsın mı?",
+    "zh-Hans": "使用此模型？",
+    "zh-Hant": "使用此模型？"
+  },
   "Use a different address": {
     "de": "Andere Adresse verwenden",
     "es": "Usar otra dirección",
@@ -11069,6 +11624,21 @@
     "zh-Hans": "一天内不到期的事",
     "zh-Hant": "一天內不到期的事"
   },
+  "What this bot is for": {
+    "de": "Wofür dieser Bot da ist",
+    "es": "Para qué sirve este bot",
+    "fr": "À quoi sert ce bot",
+    "id": "Kegunaan bot ini",
+    "it": "A cosa serve questo bot",
+    "ja": "このボットの用途",
+    "ko": "이 봇의 용도",
+    "pl": "Do czego służy ten bot",
+    "pt-BR": "Para que serve este bot",
+    "ru": "Для чего этот бот",
+    "tr": "Bu botun amacı",
+    "zh-Hans": "这个机器人的用途",
+    "zh-Hant": "這個機器人的用途"
+  },
   "What to always bring up, what to leave out": {
     "de": "Was immer zur Sprache kommen soll, was wegbleiben soll",
     "es": "Qué mencionar siempre, qué dejar fuera",
@@ -11413,6 +11983,21 @@
     "tr": "YOLO modu",
     "zh-Hans": "YOLO 模式",
     "zh-Hant": "YOLO 模式"
+  },
+  "Yellow": {
+    "de": "Gelb",
+    "es": "Amarillo",
+    "fr": "Jaune",
+    "id": "Kuning",
+    "it": "Giallo",
+    "ja": "イエロー",
+    "ko": "노란색",
+    "pl": "Żółty",
+    "pt-BR": "Amarelo",
+    "ru": "Жёлтый",
+    "tr": "Sarı",
+    "zh-Hans": "黄色",
+    "zh-Hant": "黃色"
   },
   "Yesterday": {
     "de": "Gestern",
@@ -12194,6 +12779,21 @@
     "zh-Hans": "{name} 正在运行，稍后会显示在运行记录中。",
     "zh-Hant": "{name} 正在執行，稍後會顯示在執行紀錄中。"
   },
+  "{on} of {all} on": {
+    "de": "{on} von {all} an",
+    "es": "{on} de {all} activados",
+    "fr": "{on} sur {all} activés",
+    "id": "{on} dari {all} aktif",
+    "it": "{on} su {all} attivi",
+    "ja": "{on}/{all} 件オン",
+    "ko": "{on}/{all}개 켜짐",
+    "pl": "Włączone: {on} z {all}",
+    "pt-BR": "{on} de {all} ativados",
+    "ru": "Включено: {on} из {all}",
+    "tr": "{on}/{all} açık",
+    "zh-Hans": "已开启 {on}/{all}",
+    "zh-Hant": "已開啟 {on}/{all}"
+  },
   "{percent} used": {
     "de": "{percent} verbraucht",
     "es": "{percent} usado",
@@ -12253,5 +12853,20 @@
     "tr": "“{kind}” kartları",
     "zh-Hans": "“{kind}”卡片",
     "zh-Hant": "「{kind}」卡片"
+  },
+  "Default": {
+    "de": "Standard",
+    "es": "Predeterminado",
+    "fr": "Par défaut",
+    "id": "Default",
+    "it": "Predefinito",
+    "ja": "デフォルト",
+    "ko": "기본",
+    "pl": "Domyślnie",
+    "pt-BR": "Padrão",
+    "ru": "По умолчанию",
+    "tr": "Varsayılan",
+    "zh-Hans": "默认",
+    "zh-Hant": "預設"
   }
 }

@@ -4910,3 +4910,52 @@ code.file-link:hover {
   color: var(--warning);
   font-size: 13px;
 }
+
+/* Edit Bot */
+.bot-editor-picture {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bot-faces {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+}
+
+.bot-face {
+  width: 44px;
+  height: 44px;
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: none;
+}
+
+.bot-face svg,
+.bot-face > * {
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.bot-face.on {
+  border-color: var(--text);
+}
+
+.bot-soul {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 19px;
+  min-height: 200px;
+}
+
+.bot-caps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0 8px 4px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-size: 13px;
+}
