@@ -1258,7 +1258,7 @@ function Settings({
   if (page === 'capabilities')
     return (
       <main className="settings">
-        <CapabilitiesPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+        <CapabilitiesPage bots={bots} profile={profile} host={status.url} onBack={() => setPage('main')} />
       </main>
     )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
@@ -1341,7 +1341,7 @@ function Settings({
         <dt>{t('Capabilities')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('capabilities')}>
-            {t('Skills, tools and connectors')}
+            {t('Skills, tools, connectors, and plugins')}
           </button>
         </dd>
         <dt>{t('Conduit plugin')}</dt>

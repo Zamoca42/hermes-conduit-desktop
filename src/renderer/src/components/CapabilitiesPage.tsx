@@ -21,11 +21,14 @@ import {
 } from '../state/capabilities'
 import { Markdown } from './Markdown'
 import { SkillHub } from './SkillHub'
+import { PluginsTab } from './PluginsTab'
 import { Icon } from './icons'
 
 interface Props {
   bots: { name: string; title: string }[]
   profile: string
+  /** The host's address, for the restart a plugin change asks for. */
+  host?: string
   onBack: () => void
 }
 
@@ -35,7 +38,7 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 function storedTab(): CapabilityTab {
   try {
     const tab = localStorage.getItem(TAB_KEY)
-    if (tab === 'tools' || tab === 'connectors') return tab
+    if (tab === 'tools' || tab === 'connectors' || tab === 'plugins') return tab
   } catch {
     // Opens on Skills.
   }
@@ -60,7 +63,7 @@ function Switch({ label, checked, disabled, onChange }: { label: string; checked
  * connector that's on is tested as the tab opens, and on Test Connection.
  * Switches reach Hermes one after another, in the order flipped.
  */
-export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Props) {
+export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }: Props) {
   const [profile, setProfile] = useState(initialProfile)
   const [tab, setTabState] = useState<CapabilityTab>(storedTab)
   const [query, setQuery] = useState('')
@@ -403,9 +406,9 @@ export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Prop
       </div>
       <div className="cap-bar">
         <div className="segmented" role="tablist" aria-label={t('Capabilities')}>
-          {(['skills', 'tools', 'connectors'] as CapabilityTab[]).map(id => (
+          {(['skills', 'tools', 'connectors', 'plugins'] as CapabilityTab[]).map(id => (
             <button key={id} role="tab" aria-selected={tab === id} aria-pressed={tab === id} onClick={() => setTab(id)}>
-              {id === 'skills' ? t('Skills') : id === 'tools' ? t('Tools') : t('Connectors')}
+              {id === 'skills' ? t('Skills') : id === 'tools' ? t('Tools') : id === 'connectors' ? t('Connectors') : t('Plugins')}
             </button>
           ))}
         </div>
@@ -414,13 +417,25 @@ export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Prop
           type="search"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          placeholder={tab === 'skills' ? t('Search skills') : tab === 'tools' ? t('Search tools') : t('Search connectors')}
-          aria-label={tab === 'skills' ? t('Search skills') : tab === 'tools' ? t('Search tools') : t('Search connectors')}
+          placeholder={
+            tab === 'skills' ? t('Search skills') : tab === 'tools' ? t('Search tools') : tab === 'connectors' ? t('Search connectors') : t('Search plugins')
+          }
+          aria-label={
+            tab === 'skills' ? t('Search skills') : tab === 'tools' ? t('Search tools') : tab === 'connectors' ? t('Search connectors') : t('Search plugins')
+          }
         />
       </div>
-      {tab !== 'connectors' ? <p className="meta">{t('Changes apply to new sessions.')}</p> : null}
+      {tab === 'skills' || tab === 'tools' ? <p className="meta">{t('Changes apply to new sessions.')}</p> : null}
       {problem ? <p className="error-text">{problem}</p> : null}
-      {tab === 'skills' ? skillsTab() : tab === 'tools' ? toolsTab() : connectorsTab()}
+      {tab === 'skills' ? (
+        skillsTab()
+      ) : tab === 'tools' ? (
+        toolsTab()
+      ) : tab === 'connectors' ? (
+        connectorsTab()
+      ) : (
+        <PluginsTab profile={profile} query={query} host={host} />
+      )}
     </div>
   )
 }

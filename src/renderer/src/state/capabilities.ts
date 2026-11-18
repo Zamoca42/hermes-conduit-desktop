@@ -10,7 +10,7 @@ type Row = Record<string, unknown>
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
 const rows = (v: unknown): Row[] => (Array.isArray(v) ? v.filter((r): r is Row => !!r && typeof r === 'object') : [])
 
-export type CapabilityTab = 'skills' | 'tools' | 'connectors'
+export type CapabilityTab = 'skills' | 'tools' | 'connectors' | 'plugins'
 
 /** The route for a profile: the default profile is the dashboard's own. */
 export function scoped(path: string, profile: string): string {
