@@ -12,6 +12,7 @@ import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
 import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
 import { useRequests, useWaiting } from './state/useNeedsYou'
+import { isWatching, notificationsEnabled, requestNotification, setNotificationsEnabled, turnNotification, type ChatRef, type NotificationSpec } from './state/notifications'
 import { cleanTitle } from './state/text'
 
 export function App() {
@@ -56,6 +57,7 @@ function Shell({ status }: { status: ConnectionStatus }) {
   useEffect(() => {
     const offMenu = window.conduit.onMenu(action => {
       if (action === 'new-chat') newChat()
+      else if (action === 'needs-you') setSection('needs')
     })
     if (window.conduit.platform === 'darwin') return offMenu
     const onKey = (event: KeyboardEvent) => {
@@ -98,14 +100,61 @@ function Shell({ status }: { status: ConnectionStatus }) {
   const needsCount = requests.length + waitingRows.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
 
-  /** Chat titles by live id, for a request's card outside its chat. */
-  const titles = useRef(new Map<string, string>())
-  if (chat.liveId && title) titles.current.set(chat.liveId, title)
+  /** The chats this window opened, by live id: a request's card outside its chat, and a notification's click. */
+  const chats = useRef(new Map<string, ChatRef>())
+  if (chat.liveId) chats.current.set(chat.liveId, { storedId: chat.storedId, profile: selected.profile, title: title || undefined })
   const titleFor = useCallback(
     (sessionId: string) =>
-      titles.current.get(sessionId) ?? waiting.rows.find(row => row.sessionIds.includes(sessionId))?.title,
+      chats.current.get(sessionId)?.title ?? waiting.rows.find(row => row.sessionIds.includes(sessionId))?.title,
     [waiting.rows]
   )
+
+  // The tray's count and the Dock's badge.
+  useEffect(() => window.conduit.setWaiting(needsCount), [needsCount])
+
+  // Notifications for what happens in a chat the user isn't looking at.
+  const watching = useRef({ liveId: chat.liveId, onChats: section === 'chats' })
+  watching.current = { liveId: chat.liveId, onChats: section === 'chats' }
+  const notify = useCallback((spec: NotificationSpec, sessionId: string) => {
+    if (!notificationsEnabled() || typeof Notification === 'undefined') return
+    const n = new Notification(spec.title, { body: spec.body, tag: spec.tag, silent: false })
+    n.onclick = () => {
+      window.conduit.window.show()
+      const ref = chats.current.get(sessionId)
+      if (ref?.storedId) {
+        setSelected({ id: ref.storedId, profile: ref.profile, title: ref.title })
+        setSection('chats')
+      } else {
+        setSection('needs')
+      }
+    }
+  }, [])
+  useEffect(
+    () =>
+      window.conduit.onEvent(event => {
+        const sid = event.session_id
+        if (!sid) return
+        if (event.type === 'session.title') {
+          const t = (event.payload as { title?: unknown } | undefined)?.title
+          const ref = chats.current.get(sid)
+          if (ref && typeof t === 'string') chats.current.set(sid, { ...ref, title: cleanTitle(t) })
+          return
+        }
+        if (event.type !== 'message.complete' || isWatching(sid, watching.current.liveId, watching.current.onChats)) return
+        const spec = turnNotification(sid, event.payload, chats.current.get(sid))
+        if (spec) notify(spec, sid)
+      }),
+    [notify]
+  )
+  const notified = useRef(new Set<string>())
+  useEffect(() => {
+    for (const request of requests) {
+      if (notified.current.has(request.id)) continue
+      notified.current.add(request.id)
+      if (isWatching(request.sessionId, watching.current.liveId, watching.current.onChats)) continue
+      notify(requestNotification(request, chats.current.get(request.sessionId)), request.sessionId)
+    }
+  }, [requests, notify])
 
   const openWaiting = useCallback(
     (row: WaitingRow) => {
@@ -209,6 +258,7 @@ function Shell({ status }: { status: ConnectionStatus }) {
 }
 
 function Settings({ status }: { status: ConnectionStatus }) {
+  const [notifications, setNotifications] = useState(notificationsEnabled)
   const methods = { password: 'User name and password', token: 'Session token', open: 'No sign-in' }
   return (
     <main className="settings">
@@ -220,6 +270,20 @@ function Settings({ status }: { status: ConnectionStatus }) {
         <dd>
           {status.method ? methods[status.method] : '—'}
           {status.username ? ` (${status.username})` : ''}
+        </dd>
+        <dt>Notifications</dt>
+        <dd>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={notifications}
+              onChange={e => {
+                setNotificationsEnabled(e.target.checked)
+                setNotifications(e.target.checked)
+              }}
+            />
+            When a reply finishes or something needs you in a chat you’re not looking at
+          </label>
         </dd>
         <dt>Connection</dt>
         <dd>

@@ -93,17 +93,21 @@ export interface ConduitApi {
   answerRequest(id: string, result: Record<string, unknown>): Promise<boolean>
   /** Drops a request the gateway settled some other way (a batch's last `clarify.lock`). */
   dismissRequest(id: string): Promise<void>
+  /** How many things wait on the user, for the tray and the Dock's badge. */
+  setWaiting(count: number): void
   /** A menu bar command (the Mac's File > New Chat). */
   onMenu(listener: (action: MenuAction) => void): () => void
   window: {
     minimize(): void
     toggleMaximize(): void
     close(): void
+    /** Brings the window back from the tray and focuses it (a notification's click). */
+    show(): void
   }
 }
 
 /** Commands the menu bar sends the window. */
-export type MenuAction = 'new-chat'
+export type MenuAction = 'new-chat' | 'needs-you'
 
 export const IPC = {
   menu: 'conduit:menu',
@@ -111,6 +115,8 @@ export const IPC = {
   requestsChanged: 'conduit:requests-changed',
   answerRequest: 'conduit:answer-request',
   dismissRequest: 'conduit:dismiss-request',
+  setWaiting: 'conduit:set-waiting',
+  windowShow: 'conduit:window-show',
   probe: 'conduit:probe',
   signIn: 'conduit:sign-in',
   signOut: 'conduit:sign-out',

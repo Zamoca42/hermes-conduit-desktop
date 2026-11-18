@@ -11,6 +11,11 @@ files:
   - out/**
   - package.json
 asarUnpack: []
+# The tray's icons, read from the resources folder at run time.
+extraResources:
+  - from: resources
+    to: .
+    filter: ['tray*.png']
 mac:
   category: public.app-category.productivity
   target:
