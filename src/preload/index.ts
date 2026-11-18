@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
-import { IPC, type ConduitApi, type ConnectionStatus, type GatewayEventMessage, type MenuAction, type OpenChatRequest, type PendingRequest, type Platform, type RpcOutcome } from '../shared/ipc'
+import { IPC, type ConduitApi, type ConnectionStatus, type GatewayEventMessage, type MenuAction, type OpenChatRequest, type PairEvent, type PendingRequest, type Platform, type RpcOutcome } from '../shared/ipc'
 
 function listen<T>(channel: string, listener: (value: T) => void): () => void {
   const handler = (_event: IpcRendererEvent, value: T) => listener(value)
@@ -33,6 +33,10 @@ const api: ConduitApi = {
     if (!outcome.ok) throw new RpcError(outcome.error, outcome.code)
     return outcome.result
   },
+  pairStart: () => ipcRenderer.invoke(IPC.pairStart),
+  pairConfirm: () => ipcRenderer.invoke(IPC.pairConfirm),
+  pairCancel: () => ipcRenderer.invoke(IPC.pairCancel),
+  onPair: listener => listen<PairEvent>(IPC.pairEvent, listener),
   onStatus: listener => listen<ConnectionStatus>(IPC.statusChanged, listener),
   onEvent: listener => listen<GatewayEventMessage>(IPC.event, listener),
   requests: () => ipcRenderer.invoke(IPC.requests),
