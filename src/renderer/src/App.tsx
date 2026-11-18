@@ -20,6 +20,7 @@ import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
 import { useRequests, useWaiting } from './state/useNeedsYou'
 import { isWatching, notificationsEnabled, requestNotification, setNotificationsEnabled, turnNotification, type ChatRef, type NotificationSpec } from './state/notifications'
 import { cleanTitle } from './state/text'
+import type { StagedAttachment } from './state/attachments'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -90,6 +91,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // The chat list's profile: a new chat starts in it.
   const [chatProfile, setChatProfile] = useState<string | null>(null)
   const chatProfileRef = useRef(chatProfile)
+  const chatPane = useRef<HTMLElement>(null)
   chatProfileRef.current = chatProfile
   const newChat = useCallback(() => {
     setSection('chats')
@@ -133,8 +135,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }, [transcript.running, chat.storedId])
 
   const onSend = useCallback(
-    async (text: string) => {
-      const created = await send(text)
+    async (text: string, attachments: StagedAttachment[] = []) => {
+      const created = await send(text, attachments)
       if (created) {
         setSelected(s => ({ ...s, id: created }))
         void list.refresh()
@@ -349,7 +351,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               profile={chatProfile}
               onProfile={chooseProfile}
             />
-            <main className="chat">
+            <main className="chat" ref={chatPane}>
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
               <Transcript state={transcript} loading={loading} error={error} requests={openRequests} />
               <Composer
@@ -358,9 +360,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 disabled={!connected}
                 model={chat.model}
                 cwd={chat.cwd}
-                onSend={text => void onSend(text)}
+                onSend={(text, attachments) => void onSend(text, attachments)}
                 onStop={() => void stop()}
                 focusKey={selected.id ?? 'new'}
+                canAttach
+                dropZone={chatPane}
               />
             </main>
           </>

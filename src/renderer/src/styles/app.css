@@ -2213,3 +2213,139 @@ html[data-window='quick'] body {
   font-weight: 700;
   text-align: center;
 }
+
+/* Attachments in the composer ---------------------------------------- */
+
+.composer {
+  position: relative;
+}
+
+.composer.dropping {
+  border-color: var(--accent);
+}
+
+.drop-hint {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--composer);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.drop-hint svg,
+.composer-row .attach svg {
+  width: 18px;
+  height: 18px;
+}
+
+.staged {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.staged-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  max-width: 240px;
+  padding: 0 4px 0 4px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.staged-chip.busy {
+  padding: 0 10px;
+  color: var(--text-3);
+}
+
+.staged-chip img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex: none;
+}
+
+.staged-chip > svg {
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  flex: none;
+}
+
+.staged-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
+
+.staged-name.link {
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+
+.staged-remove {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.staged-remove:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.staged-remove svg {
+  width: 12px;
+  height: 12px;
+}
+
+.composer-notice {
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.composer-row .attach {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.composer-row .attach:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}

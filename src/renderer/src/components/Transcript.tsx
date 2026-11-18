@@ -1,6 +1,7 @@
 import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { mediaKind, splitReply } from '../state/media'
 import { baseName, type Attachment } from '../state/text'
+import { displayName } from '../state/attachments'
 import type { PendingRequest } from '@shared/ipc'
 import type { TranscriptItem, TranscriptState } from '../state/transcript'
 import { RequestCard } from './RequestCard'
@@ -39,7 +40,7 @@ function AttachmentChips({ attachments }: { attachments: Attachment[] }) {
         ) : (
           <span key={i} className="chip" title={a.value}>
             <Icon name={a.kind === 'image' ? 'image' : 'file'} />
-            <span>{baseName(a.value)}</span>
+            <span>{displayName(baseName(a.value))}</span>
           </span>
         )
       )}

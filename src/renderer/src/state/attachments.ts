@@ -1,0 +1,177 @@
+/**
+ * Pictures and files sent with a message, as the phone sends them: each
+ * staged in the composer, then sent up when the message is. A picture goes
+ * with `image.attach_bytes` (as a file when Hermes won't take it as an image);
+ * any other file goes with `file.attach`, and the prompt names it with the
+ * `@file:` reference Hermes hands back. A paste over 3,000 characters goes as
+ * a text file named the way Hermes Desktop names a paste.
+ */
+import { t } from '../../../shared/i18n'
+
+/** The phone's default attachment limit. */
+export const ATTACHMENT_LIMIT_MB = 16
+export const ATTACHMENT_LIMIT_BYTES = ATTACHMENT_LIMIT_MB * 1024 * 1024
+/** Hermes Desktop's threshold for a paste that goes as a file. */
+export const LONG_PASTE_CHARACTERS = 3000
+/** The pictures every model provider reads; others go as files. */
+export const PROVIDER_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
+
+export interface StagedAttachment {
+  id: string
+  name: string
+  /** A picture goes as an image; anything else as a file. */
+  kind: 'image' | 'file'
+  mime: string
+  size: number
+  /** The file's bytes, base64, without a data: prefix. */
+  base64: string
+  /** A long paste's words, for its chip and the chat's title. */
+  pastedText?: string
+}
+
+export function isPicture(mime: string): boolean {
+  return PROVIDER_IMAGE_TYPES.includes(mime.toLowerCase())
+}
+
+/** Desktop's name for a saved paste, `pasted_content_<stamp>_<hex>.txt`. */
+export function pastedTextName(now = new Date(), random = Math.floor(Math.random() * 0x1000000)): string {
+  const pad = (n: number, width = 2) => String(n).padStart(width, '0')
+  const stamp =
+    `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())}_` +
+    `${pad(now.getUTCHours())}-${pad(now.getUTCMinutes())}-${pad(now.getUTCSeconds())}-${pad(now.getUTCMilliseconds(), 3)}`
+  return `pasted_content_${stamp}_${random.toString(16).padStart(6, '0')}.txt`
+}
+
+export function isPastedTextName(name: string): boolean {
+  const last = name.split(/[\\/]/).pop() ?? name
+  return /^.*pasted_content_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}-\d{3}_[0-9a-f]{6}(?:-\d+)?\.txt$/.test(last)
+}
+
+/** What a staged file is called on its chip and in the sent message. */
+export function displayName(name: string): string {
+  return isPastedTextName(name) ? t('Pasted text') : name
+}
+
+/** UTF-8 text as base64, for a paste staged as a file. */
+export function textToBase64(text: string): string {
+  const bytes = new TextEncoder().encode(text)
+  let binary = ''
+  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
+  return btoa(binary)
+}
+
+export function stagePaste(text: string, id: string, now = new Date()): StagedAttachment {
+  const base64 = textToBase64(text)
+  return { id, name: pastedTextName(now), kind: 'file', mime: 'text/plain', size: Math.floor((base64.length * 3) / 4), base64, pastedText: text }
+}
+
+/** The message's first 1,000 characters of its paste, so a chat that opens with one gets a title from its words. */
+export function titlePreview(attachments: StagedAttachment[], limit = 1000): string | undefined {
+  const preview = attachments.find(a => a.pastedText !== undefined)?.pastedText?.slice(0, limit).trim()
+  return preview || undefined
+}
+
+/** The refusal for files over the limit, naming them. */
+export function tooLargeMessage(names: string[]): string {
+  if (names.length === 1) return t('{name} is larger than the {limit} MB attachment limit.', { name: names[0], limit: ATTACHMENT_LIMIT_MB })
+  return t('These files are larger than the {limit} MB attachment limit: {names}.', { limit: ATTACHMENT_LIMIT_MB, names: names.join(', ') })
+}
+
+/** Quotes a reference value holding whitespace, brackets or quotes, as Hermes' `format_reference_value` does. */
+export function formatReferenceValue(value: string): string {
+  if (!/[\s()[\]{}<>"'`]/.test(value)) return value
+  for (const quote of ['`', '"', "'"]) if (!value.includes(quote)) return `${quote}${value}${quote}`
+  return value
+}
+
+/** The `@file:` reference from a `file.attach` reply: its `ref_text`, else one built from the stored path. */
+export function fileReference(result: unknown): string | null {
+  const object = (result ?? {}) as Record<string, unknown>
+  const ref = typeof object.ref_text === 'string' ? object.ref_text.trim() : ''
+  if (ref.startsWith('@file:') && ref.length > '@file:'.length) return ref
+  for (const key of ['ref_path', 'path']) {
+    const path = typeof object[key] === 'string' ? (object[key] as string).trim() : ''
+    if (path) return `@file:${formatReferenceValue(path)}`
+  }
+  return null
+}
+
+/** The words Hermes gets: the files' references, then what was typed. */
+export function promptText(text: string, references: string[]): string {
+  const refs = references.join('\n')
+  if (!refs) return text
+  if (!text.trim()) return refs
+  return `${refs}\n\n${text}`
+}
+
+/** Hermes refused an upload as an image (a type it doesn't list, or past its image cap), not failed to store it. */
+export function isImageAttachRefusal(error: unknown): boolean {
+  const code = (error as { code?: unknown } | null)?.code
+  return code === 4016 || code === 4018
+}
+
+export type Rpc = <T>(method: string, params: Record<string, unknown>) => Promise<T>
+
+export interface UploadOutcome {
+  /** `@file:` lines for the prompt. */
+  references: string[]
+  /** Pictures the session authority staged, which the prompt names in `attachments`. */
+  images: { path: string; mime: string }[]
+  /** Pictures the dashboard holds for the next message, to take back if the send fails. */
+  heldImagePaths: string[]
+}
+
+/**
+ * Sends a message's files up, one after another. If one fails, the pictures
+ * already held for the chat are taken back so none rides on a later message,
+ * and the error is thrown.
+ */
+export async function uploadAttachments(
+  rpc: Rpc,
+  sessionId: string,
+  profile: string | undefined,
+  authority: boolean,
+  attachments: StagedAttachment[]
+): Promise<UploadOutcome> {
+  const outcome: UploadOutcome = { references: [], images: [], heldImagePaths: [] }
+  const base = (): Record<string, unknown> => (profile ? { session_id: sessionId, profile } : { session_id: sessionId })
+  const asFile = async (a: StagedAttachment) => {
+    const result = await rpc<unknown>('file.attach', { ...base(), data_url: `data:${a.mime || 'application/octet-stream'};base64,${a.base64}`, name: a.name, path: '' })
+    const ref = fileReference(result)
+    if (ref) outcome.references.push(ref)
+  }
+  try {
+    for (const a of attachments) {
+      if (a.kind !== 'image') {
+        await asFile(a)
+        continue
+      }
+      try {
+        const result = await rpc<{ path?: string | null; mime?: string | null }>('image.attach_bytes', { ...base(), content_base64: a.base64, filename: a.name })
+        const path = result?.path ?? ''
+        if (!path) continue
+        if (authority) outcome.images.push({ path, mime: result.mime || a.mime })
+        else outcome.heldImagePaths.push(path)
+      } catch (error) {
+        if (!isImageAttachRefusal(error)) throw error
+        await asFile(a)
+      }
+    }
+    return outcome
+  } catch (error) {
+    await releaseHeldImages(rpc, sessionId, profile, outcome.heldImagePaths)
+    throw error
+  }
+}
+
+/** Takes back pictures the dashboard holds for the chat's next message. */
+export async function releaseHeldImages(rpc: Rpc, sessionId: string, profile: string | undefined, paths: string[]): Promise<void> {
+  for (const path of paths) {
+    try {
+      await rpc('image.detach', profile ? { session_id: sessionId, profile, path } : { session_id: sessionId, path })
+    } catch {
+      // Best effort: the send already failed.
+    }
+  }
+}
+

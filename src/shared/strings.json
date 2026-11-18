@@ -254,6 +254,51 @@
     "zh-Hans": "问 {name}…",
     "zh-Hant": "問 {name}…"
   },
+  "Attach": {
+    "de": "Anhängen",
+    "es": "Adjuntar",
+    "fr": "Joindre",
+    "id": "Lampirkan",
+    "it": "Allega",
+    "ja": "添付",
+    "ko": "첨부",
+    "pl": "Załącz",
+    "pt-BR": "Anexar",
+    "ru": "Прикрепить",
+    "tr": "Ekle",
+    "zh-Hans": "附加",
+    "zh-Hant": "附加"
+  },
+  "Attaching…": {
+    "de": "Wird angehängt…",
+    "es": "Adjuntando…",
+    "fr": "Ajout en cours…",
+    "id": "Melampirkan…",
+    "it": "Allegando…",
+    "ja": "添付中…",
+    "ko": "첨부 중…",
+    "pl": "Załączanie…",
+    "pt-BR": "Anexando…",
+    "ru": "Прикрепление…",
+    "tr": "Ekleniyor…",
+    "zh-Hans": "正在附加…",
+    "zh-Hant": "正在附加…"
+  },
+  "Attachment failed: {reason}": {
+    "de": "Anhang fehlgeschlagen: {reason}",
+    "es": "Error al adjuntar: {reason}",
+    "fr": "Échec de la pièce jointe : {reason}",
+    "id": "Lampiran gagal: {reason}",
+    "it": "Allegato non riuscito: {reason}",
+    "ja": "添付に失敗しました：{reason}",
+    "ko": "첨부 실패: {reason}",
+    "pl": "Nie udało się załączyć: {reason}",
+    "pt-BR": "Falha no anexo: {reason}",
+    "ru": "Не удалось прикрепить: {reason}",
+    "tr": "Ek eklenemedi: {reason}",
+    "zh-Hans": "附件发送失败：{reason}",
+    "zh-Hant": "附加失敗：{reason}"
+  },
   "Behind Cloudflare Access or another proxy?": {
     "de": "Hinter Cloudflare Access oder einem anderen Proxy?",
     "es": "¿Detrás de Cloudflare Access u otro proxy?",
@@ -373,6 +418,21 @@
     "tr": "Eklemek için başka botlara tıklayın veya bırakın.",
     "zh-Hans": "点按或拖入更多机器人来添加。",
     "zh-Hant": "按一下或拖入更多機器人來新增。"
+  },
+  "Click to put the text back in the message": {
+    "de": "Klicken, um den Text wieder in die Nachricht einzufügen",
+    "es": "Haz clic para devolver el texto al mensaje",
+    "fr": "Cliquez pour remettre le texte dans le message",
+    "id": "Klik untuk mengembalikan teks ke pesan",
+    "it": "Fai clic per rimettere il testo nel messaggio",
+    "ja": "クリックするとテキストをメッセージに戻します",
+    "ko": "클릭하면 텍스트를 메시지에 다시 넣어요",
+    "pl": "Kliknij, aby wstawić tekst z powrotem do wiadomości",
+    "pt-BR": "Clique para devolver o texto à mensagem",
+    "ru": "Нажмите, чтобы вернуть текст в сообщение",
+    "tr": "Metni mesaja geri koymak için tıklayın",
+    "zh-Hans": "点按可将文本放回消息中",
+    "zh-Hant": "按一下即可將文字放回訊息中"
   },
   "Close": {
     "de": "Schließen",
@@ -584,6 +644,21 @@
     "zh-Hans": "继续",
     "zh-Hant": "繼續"
   },
+  "Couldn't read {names}.": {
+    "de": "{names} konnte nicht gelesen werden.",
+    "es": "No se pudo leer {names}.",
+    "fr": "Impossible de lire {names}.",
+    "id": "Tidak dapat membaca {names}.",
+    "it": "Impossibile leggere {names}.",
+    "ja": "{names}を読み込めませんでした。",
+    "ko": "{names}을(를) 읽을 수 없어요.",
+    "pl": "Nie udało się odczytać: {names}.",
+    "pt-BR": "Não foi possível ler {names}.",
+    "ru": "Не удалось прочитать {names}.",
+    "tr": "{names} okunamadı.",
+    "zh-Hans": "无法读取 {names}。",
+    "zh-Hant": "無法讀取 {names}。"
+  },
   "Couldn’t load your bots: {error}": {
     "de": "Deine Bots konnten nicht geladen werden: {error}",
     "es": "No se pudieron cargar tus bots: {error}",
@@ -778,6 +853,21 @@
     "tr": "Bir bot daha bırakın veya tıklayın.",
     "zh-Hans": "再拖入或点按一个机器人。",
     "zh-Hant": "再拖入或按一下一個機器人。"
+  },
+  "Drop to attach": {
+    "de": "Zum Anhängen ablegen",
+    "es": "Suelta para adjuntar",
+    "fr": "Déposer pour joindre",
+    "id": "Lepaskan untuk melampirkan",
+    "it": "Rilascia per allegare",
+    "ja": "ドロップして添付",
+    "ko": "놓아서 첨부",
+    "pl": "Upuść, aby załączyć",
+    "pt-BR": "Solte para anexar",
+    "ru": "Отпустите, чтобы прикрепить",
+    "tr": "Eklemek için bırakın",
+    "zh-Hans": "拖放以添加附件",
+    "zh-Hant": "拖放以加入附件"
   },
   "Edited a file": {
     "de": "Datei bearbeitet",
@@ -1919,6 +2009,21 @@
     "zh-Hans": "粘贴控制台的会话令牌。",
     "zh-Hant": "貼上控制台的工作階段權杖。"
   },
+  "Pasted text": {
+    "de": "Eingefügter Text",
+    "es": "Texto pegado",
+    "fr": "Texte collé",
+    "id": "Teks yang ditempel",
+    "it": "Testo incollato",
+    "ja": "ペーストしたテキスト",
+    "ko": "붙여넣은 텍스트",
+    "pl": "Wklejony tekst",
+    "pt-BR": "Texto colado",
+    "ru": "Вставленный текст",
+    "tr": "Yapıştırılan metin",
+    "zh-Hans": "粘贴的文本",
+    "zh-Hant": "貼上的文字"
+  },
   "Pinned": {
     "de": "Angeheftet",
     "es": "Fijados",
@@ -2128,6 +2233,21 @@
     "tr": "Bir sayfa okunuyor",
     "zh-Hans": "正在读取网页",
     "zh-Hant": "正在讀取網頁"
+  },
+  "Remove {name}": {
+    "de": "{name} entfernen",
+    "es": "Eliminar {name}",
+    "fr": "Supprimer {name}",
+    "id": "Hapus {name}",
+    "it": "Rimuovi {name}",
+    "ja": "{name}を削除",
+    "ko": "{name} 제거",
+    "pl": "Usuń {name}",
+    "pt-BR": "Remover {name}",
+    "ru": "Удалить {name}",
+    "tr": "{name} öğesini kaldır",
+    "zh-Hans": "移除 {name}",
+    "zh-Hant": "移除 {name}"
   },
   "Renamed to {name}": {
     "de": "Umbenannt in {name}",
@@ -2833,6 +2953,21 @@
     "tr": "Bu tur başarısız oldu.",
     "zh-Hans": "本轮失败了。",
     "zh-Hant": "本輪失敗了。"
+  },
+  "These files are larger than the {limit} MB attachment limit: {names}.": {
+    "de": "Diese Dateien überschreiten das Anhanglimit von {limit} MB: {names}.",
+    "es": "Estos archivos superan el límite de {limit} MB para archivos adjuntos: {names}.",
+    "fr": "Ces fichiers dépassent la limite de {limit} Mo par pièce jointe : {names}.",
+    "id": "File berikut melebihi batas lampiran {limit} MB: {names}.",
+    "it": "Questi file superano il limite di {limit} MB per gli allegati: {names}.",
+    "ja": "次のファイルは添付ファイルの上限（{limit}MB）を超えています：{names}。",
+    "ko": "다음 파일이 첨부 한도인 {limit}MB보다 커요: {names}.",
+    "pl": "Te pliki przekraczają limit załączników {limit} MB: {names}.",
+    "pt-BR": "Estes arquivos excedem o limite de {limit} MB para anexos: {names}.",
+    "ru": "Эти файлы превышают лимит вложений ({limit} МБ): {names}.",
+    "tr": "Şu dosyalar {limit} MB ek sınırından büyük: {names}.",
+    "zh-Hans": "以下文件超过了 {limit} MB 的附件大小上限：{names}。",
+    "zh-Hant": "以下檔案超過 {limit} MB 的附件大小上限：{names}。"
   },
   "They don’t match": {
     "de": "Sie stimmen nicht überein",
@@ -3583,6 +3718,21 @@
     "tr": "{name} yanıtlıyor…",
     "zh-Hans": "{name} 正在回答…",
     "zh-Hant": "{name} 正在回答…"
+  },
+  "{name} is larger than the {limit} MB attachment limit.": {
+    "de": "{name} überschreitet das Anhanglimit von {limit} MB.",
+    "es": "{name} supera el límite de {limit} MB para archivos adjuntos.",
+    "fr": "{name} dépasse la limite de {limit} Mo par pièce jointe.",
+    "id": "{name} melebihi batas lampiran {limit} MB.",
+    "it": "{name} supera il limite di {limit} MB per gli allegati.",
+    "ja": "{name}は添付ファイルの上限（{limit}MB）を超えています。",
+    "ko": "{name} 파일이 첨부 한도인 {limit}MB보다 커요.",
+    "pl": "Plik {name} przekracza limit załączników {limit} MB.",
+    "pt-BR": "{name} excede o limite de {limit} MB para anexos.",
+    "ru": "{name} превышает лимит вложений ({limit} МБ).",
+    "tr": "{name}, {limit} MB ek sınırından büyük.",
+    "zh-Hans": "{name} 超过了 {limit} MB 的附件大小上限。",
+    "zh-Hant": "{name} 超過 {limit} MB 的附件大小上限。"
   },
   "{question} (+{count} more)": {
     "de": "{question} (+{count} weitere)",
