@@ -31,14 +31,18 @@ interface Props {
   onSend: (text: string, attachments: StagedAttachment[]) => void
   onStop: () => void
   focusKey: string
+  /** Which draft this is: its staged files go when it changes. Defaults to `focusKey`. */
+  draftKey?: string
   /** Pictures and files can go with the message: the Attach button, a pasted picture, a long paste, a drop. */
   canAttach?: boolean
   /** Where else a dropped file attaches (the chat around the composer). */
   dropZone?: RefObject<HTMLElement | null>
+  /** Told whether files are staged (or staging), so a small window can make room for them. */
+  onStagedChange?: (staged: boolean) => void
 }
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, canAttach, dropZone }: Props) {
+export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
@@ -55,7 +59,7 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
   useEffect(() => {
     setAttachments([])
     setNotice(null)
-  }, [focusKey])
+  }, [draftKey ?? focusKey])
 
   useEffect(() => {
     const el = area.current
@@ -87,6 +91,11 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
       area.current?.focus()
     }
   }
+
+  const staged = attachments.length > 0 || staging > 0 || !!notice
+  useEffect(() => {
+    onStagedChange?.(staged)
+  }, [staged, onStagedChange])
 
   // Files dropped on the chat around the composer attach too.
   const stageRef = useRef(stage)

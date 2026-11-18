@@ -8,7 +8,7 @@ talks to the same Hermes dashboard and the same
 phone does.
 
 **Status: early prototype.** Sign in (or pair with the phone by QR code),
-chats (with pictures and files: Attach, paste or drop them, and a long
+chats and quick ask (with pictures and files: Attach, paste or drop them, and a long
 paste goes as a text file, as on the phone), Needs you (approvals and
 questions), Bots home and group chats,
 several Hermes hosts, the tray and quick ask, and notifications work. It
