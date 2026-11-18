@@ -501,8 +501,11 @@ export function fieldValue(config: unknown, field: Field): boolean | number | st
       return Array.isArray(raw) ? raw.filter(v => typeof v === 'string' || typeof v === 'number').join('\n') : typeof raw === 'string' ? raw : ''
     case 'text':
       return typeof raw === 'string' ? raw : typeof raw === 'number' ? String(raw) : field.control.defaultValue
-    default:
-      return typeof raw === 'string' && raw ? raw : field.control.defaultValue
+    default: {
+      const value = typeof raw === 'string' && raw ? raw : field.control.defaultValue
+      // No engine goes by "default" or "custom" (an older Conduit saved them): Hermes runs its compressor.
+      return field.key === 'context.engine' && (value === 'default' || value === 'custom') ? 'compressor' : value
+    }
   }
 }
 

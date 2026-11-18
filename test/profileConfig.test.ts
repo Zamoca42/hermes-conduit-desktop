@@ -117,6 +117,9 @@ describe('workspace and advanced rows', () => {
     expect(fieldValue({ terminal: { cwd: '/srv' } }, field('terminal.cwd'))).toBe('/srv')
     expect(fieldValue({}, field('approvals.mode'))).toBe('smart')
     expect(fieldValue({}, field('agent.api_max_retries'))).toBe(3)
+    const engine = memorySections()[1].fields.find(f => f.key === 'context.engine')!
+    expect(fieldValue({ context: { engine: 'default' } }, engine)).toBe('compressor')
+    expect(fieldValue({ context: { engine: 'lcm' } }, engine)).toBe('lcm')
   })
   it('saves a list trimmed, blanks left out', () => {
     expect(listLines(' git *\n\n  ls -la \n')).toEqual(['git *', 'ls -la'])
