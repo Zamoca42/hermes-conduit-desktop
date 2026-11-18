@@ -62,25 +62,42 @@ export function createFileStore(): ConnectionStore {
     return stored
   }
 
-  let initial: { hosts: SavedConnection[]; active: string | null } = { hosts: [], active: null }
-  try {
-    const raw = JSON.parse(readFileSync(path, 'utf8')) as StoredFile | StoredFileV1
-    if (raw.version === 1) {
-      const one = decode(raw)
-      if (one) initial = { hosts: [one], active: one.url }
-    } else if (raw.version === 2 && Array.isArray(raw.hosts)) {
-      initial = { hosts: raw.hosts.map(decode).filter((h): h is SavedConnection => h !== null), active: raw.active }
+  const read = (): { hosts: SavedConnection[]; active: string | null } => {
+    try {
+      const raw = JSON.parse(readFileSync(path, 'utf8')) as StoredFile | StoredFileV1
+      if (raw.version === 1) {
+        const one = decode(raw)
+        return one ? { hosts: [one], active: one.url } : { hosts: [], active: null }
+      }
+      if (raw.version === 2 && Array.isArray(raw.hosts)) {
+        return { hosts: raw.hosts.map(decode).filter((h): h is SavedConnection => h !== null), active: raw.active }
+      }
+    } catch {
+      // Nothing saved yet.
     }
-  } catch {
-    // Nothing saved yet.
+    return { hosts: [], active: null }
   }
 
-  return createHostList((hosts, active) => {
+  const persist = (hosts: SavedConnection[], active: string | null) => {
     if (!hosts.length) {
       rmSync(path, { force: true })
       return
     }
     const file: StoredFile = { version: 2, active, hosts: hosts.map(encode).filter((h): h is StoredHost => h !== null) }
     writeFileSync(path, JSON.stringify(file, null, 2), { mode: 0o600 })
-  }, initial)
+  }
+
+  // Read on first use, not here: this runs before the app is ready, and until
+  // then the keychain can't decrypt (Windows says encryption isn't available),
+  // which would drop every saved host.
+  let list: ConnectionStore | null = null
+  const hosts = (): ConnectionStore => (list ??= createHostList(persist, read()))
+  return {
+    load: () => hosts().load(),
+    save: connection => hosts().save(connection),
+    clear: () => hosts().clear(),
+    list: () => hosts().list!(),
+    activate: url => hosts().activate!(url),
+    remove: url => hosts().remove!(url)
+  }
 }
