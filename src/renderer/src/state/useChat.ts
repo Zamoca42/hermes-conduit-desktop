@@ -6,9 +6,12 @@ import {
   addOutput,
   addPendingUser,
   applyEvent,
+  attachBoards,
   emptyTranscript,
   failPendingUser,
   fromHistory,
+  missingBoards,
+  toolAnswers,
   type HistoryRow,
   type TranscriptState
 } from './transcript'
@@ -19,16 +22,31 @@ import { t } from '../../../shared/i18n'
 
 type Action =
   | { type: 'reset'; state: TranscriptState }
+  | { type: 'boards'; answers: Map<string, string> }
   | { type: 'event'; event: { type: string; payload?: unknown } }
   | { type: 'pending'; text: string; attachments?: Attachment[] }
   | { type: 'failed'; error: string }
   | { type: 'output'; command?: string; text: string; format: 'plain' | 'markdown' }
   | { type: 'notice'; text: string; tone?: 'error' | 'info' }
 
+/** The boards a chat's history showed: session.resume leaves the tool answers out, its REST transcript has them. */
+async function loadBoards(state: TranscriptState, storedId: string, profile: string | undefined, current: () => boolean, dispatch: (action: Action) => void) {
+  if (!missingBoards(state).length) return
+  const path = `/api/sessions/${encodeURIComponent(storedId)}/messages?order=latest&limit=500&inline_images=false${profile && profile !== 'default' ? `&profile=${encodeURIComponent(profile)}` : ''}`
+  try {
+    const answers = toolAnswers(await gateway.http('GET', path))
+    if (current() && answers.size) dispatch({ type: 'boards', answers })
+  } catch {
+    // The rows stay as steps.
+  }
+}
+
 function reducer(state: TranscriptState, action: Action): TranscriptState {
   switch (action.type) {
     case 'reset':
       return action.state
+    case 'boards':
+      return attachBoards(state, action.answers)
     case 'event':
       return applyEvent(state, action.event)
     case 'pending':
@@ -170,6 +188,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           state = applyEvent(state, { type: 'message.delta', payload: { text: result.inflight.assistant } })
         }
         dispatch({ type: 'reset', state })
+        void loadBoards(state, result.stored_session_id ?? storedId, profile, () => ticket === request.current, dispatch)
         // How full the window is, before the first reply ticks it.
         gateway
           .rpc('session.usage', { session_id: result.session_id })
@@ -244,7 +263,9 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       if (ticket !== request.current) return
       liveId.current = result.session_id
       setChat(c => ({ ...c, liveId: result.session_id, title: result.info?.title ?? c.title }))
-      dispatch({ type: 'reset', state: { items: fromHistory(result.messages ?? []), running: result.running === true } })
+      const state = { items: fromHistory(result.messages ?? []), running: result.running === true }
+      dispatch({ type: 'reset', state })
+      void loadBoards(state, result.stored_session_id ?? stored, profile, () => ticket === request.current, dispatch)
     } catch {
       // The chat as drawn stays; the next open reads it.
     }

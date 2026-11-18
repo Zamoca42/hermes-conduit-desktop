@@ -6,6 +6,7 @@
 import { cleanUserText, type Attachment } from './text'
 import { t } from '../../../shared/i18n'
 import { sideAgentNote } from './slash'
+import { SHOW_TOOL, boardFrom, type Board } from './boards'
 
 export interface UserItem {
   kind: 'user'
@@ -43,6 +44,8 @@ export interface ToolItem {
   status: 'running' | 'done'
   durationS?: number
   at?: number
+  /** What a finished conduit_show call showed. */
+  board?: Board
 }
 
 export interface NoticeItem {
@@ -144,7 +147,8 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
           name: row.name ?? 'tool',
           context: row.context ?? undefined,
           status: 'done',
-          at
+          at,
+          board: boardFrom(row.name ?? '', rowText(row), undefined) ?? undefined
         })
         break
       default:
@@ -232,6 +236,7 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
               ...item,
               status: 'done' as const,
               summary: str(payload.summary) ?? item.summary,
+              board: boardFrom(item.name, payload.result, payload.args) ?? item.board,
               durationS: typeof payload.duration_s === 'number' ? payload.duration_s : item.durationS
             }
           : item
@@ -315,4 +320,33 @@ export function failPendingUser(state: TranscriptState, error: string): Transcri
   items.splice(index + 1, 0, { kind: 'notice', key: nextKey('n'), text: `Not sent: ${error}`, tone: 'error' })
   items[index] = { ...(items[index] as UserItem), pending: false }
   return { ...state, items }
+}
+
+/** History rows of conduit_show calls without their board: session.resume leaves tool answers out. */
+export function missingBoards(state: TranscriptState): string[] {
+  return state.items.flatMap(item => (item.kind === 'tool' && !item.board && item.name.toLowerCase() === SHOW_TOOL ? [item.toolId] : []))
+}
+
+/** The boards of conduit_show rows, from their answers by tool call id (the REST transcript has them). */
+export function attachBoards(state: TranscriptState, answers: Map<string, string>): TranscriptState {
+  let changed = false
+  const items = state.items.map(item => {
+    if (item.kind !== 'tool' || item.board) return item
+    const answer = answers.get(item.toolId)
+    const board = answer === undefined ? null : boardFrom(item.name, answer, undefined)
+    if (!board) return item
+    changed = true
+    return { ...item, board }
+  })
+  return changed ? { ...state, items } : state
+}
+
+/** Each tool row's answer in a page of `/api/sessions/{id}/messages`, by tool call id. */
+export function toolAnswers(raw: unknown): Map<string, string> {
+  const answers = new Map<string, string>()
+  const messages = (raw as { messages?: unknown } | null)?.messages
+  for (const row of Array.isArray(messages) ? (messages as HistoryRow[]) : []) {
+    if (row.role === 'tool' && typeof row.tool_call_id === 'string') answers.set(row.tool_call_id, rowText(row))
+  }
+  return answers
 }
