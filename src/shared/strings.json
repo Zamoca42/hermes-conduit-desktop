@@ -404,6 +404,21 @@
     "zh-Hans": "全部",
     "zh-Hant": "全部"
   },
+  "All use the chat model": {
+    "de": "Alle nutzen das Chatmodell",
+    "es": "Todos usan el modelo del chat",
+    "fr": "Tous utilisent le modèle de la conversation",
+    "id": "Semua memakai model obrolan",
+    "it": "Tutti usano il modello della chat",
+    "ja": "すべてチャットのモデルを使用",
+    "ko": "모두 채팅 모델 사용",
+    "pl": "Wszystkie używają modelu czatu",
+    "pt-BR": "Todos usam o modelo do chat",
+    "ru": "Все используют модель чата",
+    "tr": "Hepsi sohbet modelini kullanıyor",
+    "zh-Hans": "全部使用聊天模型",
+    "zh-Hant": "全部使用聊天模型"
+  },
   "Allow for this chat": {
     "de": "Für diesen Chat erlauben",
     "es": "Permitir en este chat",
@@ -1499,6 +1514,51 @@
     "zh-Hans": "聊天检查",
     "zh-Hant": "聊天檢查"
   },
+  "Chat model": {
+    "de": "Chat-Modell",
+    "es": "Modelo del chat",
+    "fr": "Modèle de chat",
+    "id": "Model chat",
+    "it": "Modello della chat",
+    "ja": "チャットモデル",
+    "ko": "채팅 모델",
+    "pl": "Model czatu",
+    "pt-BR": "Modelo do chat",
+    "ru": "Модель чата",
+    "tr": "Sohbet modeli",
+    "zh-Hans": "聊天模型",
+    "zh-Hant": "聊天模型"
+  },
+  "Chat model and helper models": {
+    "de": "Chat-Modell und Hilfsmodelle",
+    "es": "Modelo del chat y modelos auxiliares",
+    "fr": "Modèle de chat et modèles auxiliaires",
+    "id": "Model chat dan model pembantu",
+    "it": "Modello della chat e modelli ausiliari",
+    "ja": "チャットモデルと補助モデル",
+    "ko": "채팅 모델과 보조 모델",
+    "pl": "Model czatu i modele pomocnicze",
+    "pt-BR": "Modelo do chat e modelos auxiliares",
+    "ru": "Модель чата и вспомогательные модели",
+    "tr": "Sohbet modeli ve yardımcı modeller",
+    "zh-Hans": "聊天模型和辅助模型",
+    "zh-Hant": "聊天模型與輔助模型"
+  },
+  "Chat titles": {
+    "de": "Chat-Titel",
+    "es": "Títulos de chats",
+    "fr": "Titres des conversations",
+    "id": "Judul obrolan",
+    "it": "Titoli delle chat",
+    "ja": "チャットのタイトル",
+    "ko": "채팅 제목",
+    "pl": "Tytuły czatów",
+    "pt-BR": "Títulos dos chats",
+    "ru": "Названия чатов",
+    "tr": "Sohbet başlıkları",
+    "zh-Hans": "聊天标题",
+    "zh-Hant": "聊天標題"
+  },
   "Chats": {
     "de": "Chats",
     "es": "Chats",
@@ -1709,6 +1769,21 @@
     "zh-Hans": "Cloudflare Access 拒绝了这台电脑。请检查“代理登录”中的服务令牌。",
     "zh-Hant": "Cloudflare Access 拒絕了這台電腦。請檢查「代理伺服器登入」中的服務權杖。"
   },
+  "Code review": {
+    "de": "Code-Review",
+    "es": "Revisión de código",
+    "fr": "Revue de code",
+    "id": "Tinjauan kode",
+    "it": "Revisione del codice",
+    "ja": "コードレビュー",
+    "ko": "코드 리뷰",
+    "pl": "Przegląd kodu",
+    "pt-BR": "Revisão de código",
+    "ru": "Ревью кода",
+    "tr": "Kod incelemesi",
+    "zh-Hans": "代码审查",
+    "zh-Hant": "程式碼審查"
+  },
   "Command failed: {reason}": {
     "de": "Befehl fehlgeschlagen: {reason}",
     "es": "El comando falló: {reason}",
@@ -1769,6 +1844,21 @@
     "zh-Hans": "承诺事项",
     "zh-Hant": "承諾事項"
   },
+  "Compaction": {
+    "de": "Komprimierung",
+    "es": "Compactación",
+    "fr": "Compactage",
+    "id": "Pemadatan",
+    "it": "Compattazione",
+    "ja": "圧縮",
+    "ko": "압축",
+    "pl": "Kompaktowanie",
+    "pt-BR": "Compactação",
+    "ru": "Сжатие",
+    "tr": "Sıkıştırma",
+    "zh-Hans": "压缩",
+    "zh-Hant": "壓縮"
+  },
   "Compress Now": {
     "de": "Jetzt komprimieren",
     "es": "Comprimir ahora",
@@ -1828,6 +1918,36 @@
     "tr": "Conduit bu üstbilgiyi kendisi yönetir; bu nedenle burada ayarlanamaz.",
     "zh-Hans": "此请求头由 Conduit 自行管理，无法在此设置。",
     "zh-Hant": "此標頭由 Conduit 自行管理，因此無法在這裡設定。"
+  },
+  "Conduit predictions": {
+    "de": "Conduit-Vorschläge",
+    "es": "Predicciones de Conduit",
+    "fr": "Prédictions de Conduit",
+    "id": "Prediksi Conduit",
+    "it": "Previsioni di Conduit",
+    "ja": "Conduitの予測",
+    "ko": "Conduit 예측",
+    "pl": "Podpowiedzi Conduit",
+    "pt-BR": "Previsões do Conduit",
+    "ru": "Подсказки Conduit",
+    "tr": "Conduit tahminleri",
+    "zh-Hans": "Conduit 预测",
+    "zh-Hant": "Conduit 預測"
+  },
+  "Conduit work watch": {
+    "de": "Conduit-Arbeitsbeobachtung",
+    "es": "Vigilancia del trabajo de Conduit",
+    "fr": "Surveillance du travail Conduit",
+    "id": "Pemantau kerja Conduit",
+    "it": "Controllo del lavoro di Conduit",
+    "ja": "Conduitの作業見守り",
+    "ko": "Conduit 작업 감시",
+    "pl": "Obserwator pracy Conduit",
+    "pt-BR": "Acompanhamento do trabalho do Conduit",
+    "ru": "Наблюдение за работой Conduit",
+    "tr": "Conduit iş izleme",
+    "zh-Hans": "Conduit 工作监看",
+    "zh-Hant": "Conduit 工作監看"
   },
   "Conduit · 1 thing needs you": {
     "de": "Conduit · 1 Sache braucht dich",
@@ -2564,6 +2684,21 @@
     "zh-Hans": "无法保存这项更改。请重试。",
     "zh-Hant": "無法儲存這項變更。請再試一次。"
   },
+  "Couldn’t save that change: {error}": {
+    "de": "Diese Änderung konnte nicht gespeichert werden: {error}",
+    "es": "No se pudo guardar el cambio: {error}",
+    "fr": "Impossible d’enregistrer cette modification : {error}",
+    "id": "Tidak dapat menyimpan perubahan itu: {error}",
+    "it": "Impossibile salvare la modifica: {error}",
+    "ja": "その変更を保存できませんでした: {error}",
+    "ko": "변경 사항을 저장하지 못했습니다: {error}",
+    "pl": "Nie udało się zapisać zmiany: {error}",
+    "pt-BR": "Não foi possível salvar a alteração: {error}",
+    "ru": "Не удалось сохранить изменение: {error}",
+    "tr": "Bu değişiklik kaydedilemedi: {error}",
+    "zh-Hans": "无法保存此更改：{error}",
+    "zh-Hant": "無法儲存此變更：{error}"
+  },
   "Create": {
     "de": "Erstellen",
     "es": "Crear",
@@ -2758,6 +2893,21 @@
     "tr": "Son tarihler",
     "zh-Hans": "截止日期",
     "zh-Hant": "截止日期"
+  },
+  "Decides which commands are safe to run without asking you, when smart approvals are on.": {
+    "de": "Entscheidet bei aktivierten intelligenten Freigaben, welche Befehle ohne Nachfrage laufen dürfen.",
+    "es": "Con las aprobaciones inteligentes activadas, decide qué comandos son seguros sin preguntarte.",
+    "fr": "Avec les approbations intelligentes, décide quelles commandes peuvent s’exécuter sans vous demander.",
+    "id": "Saat persetujuan pintar aktif, memutuskan perintah mana yang aman dijalankan tanpa bertanya.",
+    "it": "Con le approvazioni intelligenti attive, decide quali comandi eseguire senza chiederti.",
+    "ja": "スマート承認がオンのとき、確認なしで実行してよいコマンドを判断します。",
+    "ko": "스마트 승인이 켜져 있으면 묻지 않고 실행해도 안전한 명령을 판단합니다.",
+    "pl": "Przy włączonych inteligentnych zgodach decyduje, które polecenia można uruchomić bez pytania.",
+    "pt-BR": "Com as aprovações inteligentes ativadas, decide quais comandos podem rodar sem perguntar.",
+    "ru": "Когда включены умные подтверждения, решает, какие команды можно выполнять без вопроса.",
+    "tr": "Akıllı onaylar açıkken, hangi komutların size sormadan çalıştırılabileceğine karar verir.",
+    "zh-Hans": "开启智能批准时，判断哪些命令无需询问即可安全运行。",
+    "zh-Hant": "開啟智慧核准時，判斷哪些指令不必詢問即可安全執行。"
   },
   "Default": {
     "de": "Standard",
@@ -3839,6 +3989,21 @@
     "zh-Hans": "文件",
     "zh-Hant": "檔案"
   },
+  "Fills in a new Kanban task's details.": {
+    "de": "Ergänzt die Details einer neuen Kanban-Aufgabe.",
+    "es": "Completa los detalles de una nueva tarea de Kanban.",
+    "fr": "Complète les détails d’une nouvelle tâche Kanban.",
+    "id": "Melengkapi detail tugas Kanban baru.",
+    "it": "Completa i dettagli di una nuova attività Kanban.",
+    "ja": "新しいKanbanタスクの詳細を補います。",
+    "ko": "새 Kanban 작업의 세부 정보를 채웁니다.",
+    "pl": "Uzupełnia szczegóły nowego zadania Kanban.",
+    "pt-BR": "Preenche os detalhes de uma nova tarefa do Kanban.",
+    "ru": "Дополняет описание новой задачи Kanban.",
+    "tr": "Yeni bir Kanban görevinin ayrıntılarını doldurur.",
+    "zh-Hans": "补全新 Kanban 任务的详情。",
+    "zh-Hant": "補全新 Kanban 工作的詳細資料。"
+  },
   "Filter": {
     "de": "Filter",
     "es": "Filtro",
@@ -3853,6 +4018,21 @@
     "tr": "Filtre",
     "zh-Hans": "筛选",
     "zh-Hant": "篩選"
+  },
+  "Finds skills in the Skills Hub.": {
+    "de": "Sucht Skills im Skills Hub.",
+    "es": "Busca skills en el Skills Hub.",
+    "fr": "Trouve des skills dans le Skills Hub.",
+    "id": "Mencari skill di Skills Hub.",
+    "it": "Cerca skill nello Skills Hub.",
+    "ja": "Skills Hubでスキルを探します。",
+    "ko": "Skills Hub에서 스킬을 찾습니다.",
+    "pl": "Szuka umiejętności w Skills Hub.",
+    "pt-BR": "Encontra skills no Skills Hub.",
+    "ru": "Ищет навыки в Skills Hub.",
+    "tr": "Skills Hub'da beceri bulur.",
+    "zh-Hans": "在 Skills Hub 中查找技能。",
+    "zh-Hant": "在 Skills Hub 中尋找技能。"
   },
   "Finished": {
     "de": "Abgeschlossen",
@@ -3928,6 +4108,21 @@
     "tr": "Takipler",
     "zh-Hans": "跟进",
     "zh-Hant": "後續追蹤"
+  },
+  "Follows {slot} while it has no model of its own.": {
+    "de": "Folgt {slot}, solange es kein eigenes Modell hat.",
+    "es": "Sigue a {slot} mientras no tenga un modelo propio.",
+    "fr": "Suit {slot} tant qu’il n’a pas de modèle à lui.",
+    "id": "Mengikuti {slot} selama belum punya model sendiri.",
+    "it": "Segue {slot} finché non ha un modello proprio.",
+    "ja": "独自のモデルがない間は{slot}に従います。",
+    "ko": "자체 모델이 없는 동안 {slot}을(를) 따릅니다.",
+    "pl": "Podąża za {slot}, dopóki nie ma własnego modelu.",
+    "pt-BR": "Segue {slot} enquanto não tiver um modelo próprio.",
+    "ru": "Следует за «{slot}», пока у него нет своей модели.",
+    "tr": "Kendi modeli olmadığı sürece {slot} ayarını izler.",
+    "zh-Hans": "在没有自己的模型时跟随{slot}。",
+    "zh-Hant": "在沒有自己的模型時跟隨{slot}。"
   },
   "For a dashboard behind Cloudflare Access or another proxy that checks headers. They go only to this address, over HTTPS.": {
     "de": "Für ein Dashboard hinter Cloudflare Access oder einem anderen Proxy, der Header prüft. Sie gehen nur an diese Adresse, über HTTPS.",
@@ -4214,6 +4409,21 @@
     "zh-Hans": "健康与身心",
     "zh-Hant": "健康與身心"
   },
+  "Helper models": {
+    "de": "Hilfsmodelle",
+    "es": "Modelos auxiliares",
+    "fr": "Modèles auxiliaires",
+    "id": "Model pembantu",
+    "it": "Modelli ausiliari",
+    "ja": "補助モデル",
+    "ko": "보조 모델",
+    "pl": "Modele pomocnicze",
+    "pt-BR": "Modelos auxiliares",
+    "ru": "Вспомогательные модели",
+    "tr": "Yardımcı modeller",
+    "zh-Hans": "辅助模型",
+    "zh-Hant": "輔助模型"
+  },
   "Hermes can't read this folder.": {
     "de": "Hermes kann diesen Ordner nicht lesen.",
     "es": "Hermes no puede leer esta carpeta.",
@@ -4363,6 +4573,21 @@
     "tr": "Hermes geçersiz yedek ses döndürdü.",
     "zh-Hans": "Hermes 返回了无效的备用音频。",
     "zh-Hant": "Hermes 傳回了無效的備用音訊。"
+  },
+  "Hermes runs these jobs on the chat model unless you pick one. A small, fast model saves time and money on most of them.": {
+    "de": "Hermes erledigt diese Aufgaben mit dem Chatmodell, sofern du keines wählst. Ein kleines, schnelles Modell spart bei den meisten Zeit und Geld.",
+    "es": "Hermes hace estas tareas con el modelo del chat salvo que elijas otro. Un modelo pequeño y rápido ahorra tiempo y dinero en la mayoría.",
+    "fr": "Hermes effectue ces tâches avec le modèle de la conversation, sauf si vous en choisissez un. Un petit modèle rapide fait gagner du temps et de l’argent sur la plupart.",
+    "id": "Hermes menjalankan tugas ini dengan model obrolan kecuali Anda memilih model lain. Model kecil yang cepat menghemat waktu dan biaya untuk sebagian besar tugas.",
+    "it": "Hermes svolge questi compiti con il modello della chat, a meno che tu non ne scelga uno. Un modello piccolo e veloce fa risparmiare tempo e denaro sulla maggior parte.",
+    "ja": "モデルを選ばない限り、Hermesはこれらの処理をチャットのモデルで行います。小さく速いモデルにすると、ほとんどの処理で時間と費用を節約できます。",
+    "ko": "모델을 고르지 않으면 Hermes는 이 작업을 채팅 모델로 실행합니다. 작고 빠른 모델을 쓰면 대부분의 작업에서 시간과 비용을 아낄 수 있습니다.",
+    "pl": "Hermes wykonuje te zadania modelem czatu, chyba że wybierzesz inny. Mały, szybki model oszczędza czas i pieniądze przy większości z nich.",
+    "pt-BR": "O Hermes faz essas tarefas com o modelo do chat, a menos que você escolha outro. Um modelo pequeno e rápido economiza tempo e dinheiro na maioria delas.",
+    "ru": "Hermes выполняет эти задачи моделью чата, если вы не выберете другую. Небольшая быстрая модель экономит время и деньги на большинстве из них.",
+    "tr": "Siz bir model seçmedikçe Hermes bu işleri sohbet modeliyle yapar. Küçük ve hızlı bir model, çoğunda zaman ve para kazandırır.",
+    "zh-Hans": "除非你另选模型，Hermes 会用聊天模型执行这些任务。对大多数任务来说，小而快的模型能省时省钱。",
+    "zh-Hant": "除非你另選模型，Hermes 會用聊天模型執行這些工作。對大多數工作來說，小而快的模型能省時省錢。"
   },
   "Hermes signed this computer out. Sign in again.": {
     "de": "Hermes hat diesen Computer abgemeldet. Melde dich erneut an.",
@@ -4558,6 +4783,21 @@
     "tr": "Zaten biliyordum",
     "zh-Hans": "我已经知道了",
     "zh-Hant": "我已經知道了"
+  },
+  "Image reading": {
+    "de": "Bilder lesen",
+    "es": "Lectura de imágenes",
+    "fr": "Lecture d’images",
+    "id": "Membaca gambar",
+    "it": "Lettura delle immagini",
+    "ja": "画像の読み取り",
+    "ko": "이미지 읽기",
+    "pl": "Odczyt obrazów",
+    "pt-BR": "Leitura de imagens",
+    "ru": "Чтение изображений",
+    "tr": "Görüntü okuma",
+    "zh-Hans": "读取图片",
+    "zh-Hant": "讀取圖片"
   },
   "In Conduit on your iPhone, open Settings, then Connection, then Pair a Computer, and scan this code.": {
     "de": "Öffne in Conduit auf deinem iPhone Einstellungen, dann Verbindung, dann „Computer koppeln“, und scanne diesen Code.",
@@ -4798,6 +5038,36 @@
     "tr": "Sadece beğenmedim",
     "zh-Hans": "仅差评",
     "zh-Hant": "僅負評"
+  },
+  "Kanban task details": {
+    "de": "Kanban-Aufgabendetails",
+    "es": "Detalles de tareas de Kanban",
+    "fr": "Détails des tâches Kanban",
+    "id": "Detail tugas Kanban",
+    "it": "Dettagli delle attività Kanban",
+    "ja": "Kanbanタスクの詳細",
+    "ko": "Kanban 작업 세부 정보",
+    "pl": "Szczegóły zadań Kanban",
+    "pt-BR": "Detalhes das tarefas do Kanban",
+    "ru": "Описание задач Kanban",
+    "tr": "Kanban görev ayrıntıları",
+    "zh-Hans": "Kanban 任务详情",
+    "zh-Hant": "Kanban 工作詳細資料"
+  },
+  "Kanban task splitting": {
+    "de": "Kanban-Aufgaben aufteilen",
+    "es": "División de tareas de Kanban",
+    "fr": "Découpage des tâches Kanban",
+    "id": "Pemecahan tugas Kanban",
+    "it": "Suddivisione delle attività Kanban",
+    "ja": "Kanbanタスクの分割",
+    "ko": "Kanban 작업 나누기",
+    "pl": "Dzielenie zadań Kanban",
+    "pt-BR": "Divisão de tarefas do Kanban",
+    "ru": "Разбиение задач Kanban",
+    "tr": "Kanban görevlerini bölme",
+    "zh-Hans": "拆分 Kanban 任务",
+    "zh-Hant": "拆分 Kanban 工作"
   },
   "Kanban task {task}": {
     "de": "Kanban-Aufgabe {task}",
@@ -5249,6 +5519,21 @@
     "zh-Hans": "MCP 服务器",
     "zh-Hant": "MCP 伺服器"
   },
+  "MCP tool routing": {
+    "de": "MCP-Werkzeugauswahl",
+    "es": "Selección de herramientas MCP",
+    "fr": "Choix des outils MCP",
+    "id": "Pemilihan alat MCP",
+    "it": "Scelta degli strumenti MCP",
+    "ja": "MCPツールの振り分け",
+    "ko": "MCP 도구 선택",
+    "pl": "Wybór narzędzi MCP",
+    "pt-BR": "Escolha de ferramentas MCP",
+    "ru": "Выбор инструментов MCP",
+    "tr": "MCP araç seçimi",
+    "zh-Hans": "MCP 工具路由",
+    "zh-Hant": "MCP 工具路由"
+  },
   "Magenta": {
     "de": "Magenta",
     "es": "Magenta",
@@ -5549,6 +5834,21 @@
     "zh-Hans": "模型",
     "zh-Hant": "模型"
   },
+  "Models": {
+    "de": "Modelle",
+    "es": "Modelos",
+    "fr": "Modèles",
+    "id": "Model",
+    "it": "Modelli",
+    "ja": "モデル",
+    "ko": "모델",
+    "pl": "Modele",
+    "pt-BR": "Modelos",
+    "ru": "Модели",
+    "tr": "Modeller",
+    "zh-Hans": "模型",
+    "zh-Hant": "模型"
+  },
   "Moderate effect": {
     "de": "Mittlere Wirkung",
     "es": "Efecto moderado",
@@ -5683,6 +5983,21 @@
     "tr": "Ad (ör. Sabah özeti)",
     "zh-Hans": "名称，例如“晨间简报”",
     "zh-Hant": "名稱，例如「晨間簡報」"
+  },
+  "Names new chats.": {
+    "de": "Benennt neue Chats.",
+    "es": "Pone nombre a los chats nuevos.",
+    "fr": "Nomme les nouvelles conversations.",
+    "id": "Memberi nama obrolan baru.",
+    "it": "Dà un nome alle nuove chat.",
+    "ja": "新しいチャットに名前を付けます。",
+    "ko": "새 채팅의 이름을 짓습니다.",
+    "pl": "Nadaje nazwy nowym czatom.",
+    "pt-BR": "Dá nome aos novos chats.",
+    "ru": "Даёт названия новым чатам.",
+    "tr": "Yeni sohbetlere ad verir.",
+    "zh-Hans": "为新聊天命名。",
+    "zh-Hant": "為新聊天命名。"
   },
   "Needs You": {
     "de": "Braucht dich",
@@ -5863,6 +6178,36 @@
     "tr": "Yeni sohbet (⌘N)",
     "zh-Hans": "新聊天（⌘N）",
     "zh-Hant": "新聊天（⌘N）"
+  },
+  "New chats": {
+    "de": "Neue Chats",
+    "es": "Chats nuevos",
+    "fr": "Nouveaux chats",
+    "id": "Chat baru",
+    "it": "Nuove chat",
+    "ja": "新しいチャット",
+    "ko": "새 채팅",
+    "pl": "Nowe czaty",
+    "pt-BR": "Novos chats",
+    "ru": "Новые чаты",
+    "tr": "Yeni sohbetler",
+    "zh-Hans": "新聊天",
+    "zh-Hant": "新聊天"
+  },
+  "New chats start on this model. A chat that’s already open keeps its own until you change it there.": {
+    "de": "Neue Chats starten mit diesem Modell. Ein bereits offener Chat behält sein eigenes, bis du es dort änderst.",
+    "es": "Los chats nuevos empiezan con este modelo. Un chat ya abierto conserva el suyo hasta que lo cambies allí.",
+    "fr": "Les nouveaux chats démarrent avec ce modèle. Un chat déjà ouvert garde le sien jusqu’à ce que vous le changiez dans ce chat.",
+    "id": "Chat baru dimulai dengan model ini. Chat yang sudah terbuka tetap memakai modelnya sendiri sampai Anda mengubahnya di sana.",
+    "it": "Le nuove chat partono con questo modello. Una chat già aperta mantiene il suo finché non lo cambi lì.",
+    "ja": "新しいチャットはこのモデルで始まります。すでに開いているチャットは、そこで変更するまで自分のモデルを使います。",
+    "ko": "새 채팅은 이 모델로 시작합니다. 이미 열린 채팅은 그곳에서 바꿀 때까지 자체 모델을 유지합니다.",
+    "pl": "Nowe czaty zaczynają z tym modelem. Otwarty już czat zachowuje swój, dopóki go tam nie zmienisz.",
+    "pt-BR": "Novos chats começam com este modelo. Um chat já aberto mantém o seu até você mudá-lo lá.",
+    "ru": "Новые чаты начинаются с этой модели. Уже открытый чат сохраняет свою, пока вы не измените её там.",
+    "tr": "Yeni sohbetler bu modelle başlar. Zaten açık olan bir sohbet, orada değiştirene kadar kendi modelini korur.",
+    "zh-Hans": "新聊天使用此模型开始。已打开的聊天会保留自己的模型，直到你在那里更改。",
+    "zh-Hant": "新聊天使用此模型開始。已開啟的聊天會保留自己的模型，直到你在那裡更改。"
   },
   "New file name": {
     "de": "Name der neuen Datei",
@@ -7349,6 +7694,21 @@
     "zh-Hans": "选中了，但报告已满",
     "zh-Hant": "選中了，但報告已滿"
   },
+  "Picks which MCP tools a turn needs.": {
+    "de": "Wählt aus, welche MCP-Werkzeuge ein Zug braucht.",
+    "es": "Elige qué herramientas MCP necesita un turno.",
+    "fr": "Choisit les outils MCP dont un tour a besoin.",
+    "id": "Memilih alat MCP yang dibutuhkan satu giliran.",
+    "it": "Sceglie quali strumenti MCP servono a un turno.",
+    "ja": "各ターンに必要なMCPツールを選びます。",
+    "ko": "한 턴에 필요한 MCP 도구를 고릅니다.",
+    "pl": "Wybiera narzędzia MCP potrzebne w danej turze.",
+    "pt-BR": "Escolhe quais ferramentas MCP um turno precisa.",
+    "ru": "Выбирает, какие инструменты MCP нужны ходу.",
+    "tr": "Bir turun hangi MCP araçlarına ihtiyacı olduğunu seçer.",
+    "zh-Hans": "挑选每轮需要的 MCP 工具。",
+    "zh-Hant": "挑選每輪需要的 MCP 工具。"
+  },
   "Picture": {
     "de": "Bild",
     "es": "Imagen",
@@ -7468,6 +7828,21 @@
     "tr": "Profil kimliği: {name}",
     "zh-Hans": "配置 ID：{name}",
     "zh-Hant": "設定檔 ID：{name}"
+  },
+  "Profile descriptions": {
+    "de": "Profilbeschreibungen",
+    "es": "Descripciones de perfiles",
+    "fr": "Descriptions des profils",
+    "id": "Deskripsi profil",
+    "it": "Descrizioni dei profili",
+    "ja": "プロファイルの説明",
+    "ko": "프로필 설명",
+    "pl": "Opisy profili",
+    "pt-BR": "Descrições de perfis",
+    "ru": "Описания профилей",
+    "tr": "Profil açıklamaları",
+    "zh-Hans": "配置描述",
+    "zh-Hant": "設定檔描述"
   },
   "Profiles": {
     "de": "Profile",
@@ -8279,6 +8654,36 @@
     "zh-Hans": "正在读取网页",
     "zh-Hant": "正在讀取網頁"
   },
+  "Reads pictures and screenshots for a chat model that can't see them.": {
+    "de": "Liest Bilder und Screenshots für ein Chatmodell, das sie nicht sehen kann.",
+    "es": "Lee imágenes y capturas para un modelo de chat que no puede verlas.",
+    "fr": "Lit les images et captures d’écran pour un modèle de conversation qui ne les voit pas.",
+    "id": "Membaca gambar dan tangkapan layar untuk model obrolan yang tidak bisa melihatnya.",
+    "it": "Legge immagini e screenshot per un modello di chat che non può vederli.",
+    "ja": "画像を見られないチャットモデルのために、写真やスクリーンショットを読み取ります。",
+    "ko": "이미지를 볼 수 없는 채팅 모델을 위해 사진과 스크린샷을 읽습니다.",
+    "pl": "Odczytuje zdjęcia i zrzuty ekranu dla modelu czatu, który ich nie widzi.",
+    "pt-BR": "Lê imagens e capturas de tela para um modelo de chat que não consegue vê-las.",
+    "ru": "Читает изображения и снимки экрана для модели чата, которая их не видит.",
+    "tr": "Göremeyen bir sohbet modeli için resimleri ve ekran görüntülerini okur.",
+    "zh-Hans": "为看不到图片的聊天模型读取图片和截图。",
+    "zh-Hant": "為看不到圖片的聊天模型讀取圖片和截圖。"
+  },
+  "Reads what a bot’s workstreams report while they work and tells its Bot Chat when one may affect another.": {
+    "de": "Liest, was die Workstreams eines Bots während der Arbeit melden, und sagt seinem Bot Chat, wenn einer einen anderen betreffen könnte.",
+    "es": "Lee lo que informan los flujos de trabajo de un bot mientras trabajan y avisa a su Bot Chat cuando uno puede afectar a otro.",
+    "fr": "Lit ce que les tâches de fond d’un bot signalent pendant leur travail et prévient son Bot Chat quand l’une peut en affecter une autre.",
+    "id": "Membaca laporan workstream sebuah bot selama bekerja dan memberi tahu Bot Chat-nya jika satu workstream bisa memengaruhi yang lain.",
+    "it": "Legge ciò che i flussi di lavoro di un bot riportano mentre lavorano e avvisa la sua Bot Chat quando uno può influire su un altro.",
+    "ja": "ボットのワークストリームが作業中に報告する内容を読み、別のワークストリームに影響しそうなときにそのBot Chatに知らせます。",
+    "ko": "봇의 워크스트림이 작업 중에 보고하는 내용을 읽고, 하나가 다른 워크스트림에 영향을 줄 수 있으면 그 봇의 Bot Chat에 알립니다.",
+    "pl": "Czyta, co wątki pracy bota zgłaszają w trakcie pracy, i mówi jego Bot Chat, gdy jeden może wpłynąć na inny.",
+    "pt-BR": "Lê o que os fluxos de trabalho de um bot relatam enquanto trabalham e avisa o Bot Chat dele quando um pode afetar outro.",
+    "ru": "Читает, что сообщают рабочие потоки бота во время работы, и говорит его Bot Chat, когда один может повлиять на другой.",
+    "tr": "Bir botun iş akışlarının çalışırken bildirdiklerini okur ve biri diğerini etkileyebilecekse botun Bot Chat'ine söyler.",
+    "zh-Hans": "读取机器人的工作流在工作时的报告，并在某个工作流可能影响另一个时告诉它的 Bot Chat。",
+    "zh-Hant": "讀取機器人的工作流在工作時的報告，並在某個工作流可能影響另一個時告訴它的 Bot Chat。"
+  },
   "Ready": {
     "de": "Bereit",
     "es": "Listo",
@@ -8879,6 +9284,21 @@
     "zh-Hans": "评审",
     "zh-Hant": "檢閱"
   },
+  "Reviews how skills are used and suggests improvements.": {
+    "de": "Prüft, wie Skills genutzt werden, und schlägt Verbesserungen vor.",
+    "es": "Revisa cómo se usan las skills y sugiere mejoras.",
+    "fr": "Examine l’usage des skills et propose des améliorations.",
+    "id": "Meninjau cara skill dipakai dan menyarankan perbaikan.",
+    "it": "Esamina come vengono usate le skill e suggerisce miglioramenti.",
+    "ja": "スキルの使われ方を確認し、改善を提案します。",
+    "ko": "스킬 사용 방식을 검토하고 개선점을 제안합니다.",
+    "pl": "Sprawdza, jak używane są umiejętności, i proponuje ulepszenia.",
+    "pt-BR": "Revisa como as skills são usadas e sugere melhorias.",
+    "ru": "Проверяет, как используются навыки, и предлагает улучшения.",
+    "tr": "Becerilerin nasıl kullanıldığını inceler ve iyileştirmeler önerir.",
+    "zh-Hans": "检查技能的使用情况并提出改进建议。",
+    "zh-Hant": "檢查技能的使用情況並提出改進建議。"
+  },
   "Right away, with a notification": {
     "de": "Sofort, mit Mitteilung",
     "es": "Al momento, con notificación",
@@ -9044,6 +9464,21 @@
     "zh-Hans": "运行时间",
     "zh-Hant": "執行時間"
   },
+  "Runs the /review command's reviewer.": {
+    "de": "Führt den Prüfer des Befehls /review aus.",
+    "es": "Ejecuta el revisor del comando /review.",
+    "fr": "Exécute le relecteur de la commande /review.",
+    "id": "Menjalankan peninjau untuk perintah /review.",
+    "it": "Esegue il revisore del comando /review.",
+    "ja": "/reviewコマンドのレビュー担当を実行します。",
+    "ko": "/review 명령의 리뷰어를 실행합니다.",
+    "pl": "Uruchamia recenzenta polecenia /review.",
+    "pt-BR": "Executa o revisor do comando /review.",
+    "ru": "Запускает рецензента команды /review.",
+    "tr": "/review komutunun inceleyicisini çalıştırır.",
+    "zh-Hans": "运行 /review 命令的审查者。",
+    "zh-Hant": "執行 /review 指令的審查者。"
+  },
   "Safety": {
     "de": "Sicherheit",
     "es": "Seguridad",
@@ -9086,6 +9521,21 @@
     "pt-BR": "Igual aos chats",
     "ru": "Как в чатах",
     "tr": "Sohbetlerdeki Gibi",
+    "zh-Hans": "与聊天相同",
+    "zh-Hant": "與聊天相同"
+  },
+  "Same as chats": {
+    "de": "Wie in Chats",
+    "es": "Igual que en los chats",
+    "fr": "Comme les discussions",
+    "id": "Sama seperti obrolan",
+    "it": "Come nelle chat",
+    "ja": "チャットと同じ",
+    "ko": "채팅과 동일",
+    "pl": "Jak w czatach",
+    "pt-BR": "Igual aos chats",
+    "ru": "Как в чатах",
+    "tr": "Sohbetlerle aynı",
     "zh-Hans": "与聊天相同",
     "zh-Hant": "與聊天相同"
   },
@@ -9854,6 +10304,36 @@
     "zh-Hans": "一个房间最多容纳六个。",
     "zh-Hant": "一個聊天室最多容納六個。"
   },
+  "Skill curator": {
+    "de": "Skill-Kurator",
+    "es": "Curador de skills",
+    "fr": "Curateur de skills",
+    "id": "Kurator skill",
+    "it": "Curatore delle skill",
+    "ja": "スキルキュレーター",
+    "ko": "스킬 큐레이터",
+    "pl": "Kurator umiejętności",
+    "pt-BR": "Curador de skills",
+    "ru": "Куратор навыков",
+    "tr": "Beceri küratörü",
+    "zh-Hans": "技能整理",
+    "zh-Hant": "技能整理"
+  },
+  "Skill search": {
+    "de": "Skill-Suche",
+    "es": "Búsqueda de skills",
+    "fr": "Recherche de skills",
+    "id": "Pencarian skill",
+    "it": "Ricerca di skill",
+    "ja": "スキル検索",
+    "ko": "스킬 검색",
+    "pl": "Wyszukiwanie umiejętności",
+    "pt-BR": "Busca de skills",
+    "ru": "Поиск навыков",
+    "tr": "Beceri arama",
+    "zh-Hans": "技能搜索",
+    "zh-Hant": "技能搜尋"
+  },
   "Skills": {
     "de": "Skills",
     "es": "Habilidades",
@@ -10004,6 +10484,21 @@
     "zh-Hans": "小事也提：每天六条提醒，承诺检查得更早。",
     "zh-Hant": "小事也提：每天六則提醒，承諾檢查得更早。"
   },
+  "Smart approvals": {
+    "de": "Intelligente Freigaben",
+    "es": "Aprobaciones inteligentes",
+    "fr": "Approbations intelligentes",
+    "id": "Persetujuan pintar",
+    "it": "Approvazioni intelligenti",
+    "ja": "スマート承認",
+    "ko": "스마트 승인",
+    "pl": "Inteligentne zgody",
+    "pt-BR": "Aprovações inteligentes",
+    "ru": "Умные подтверждения",
+    "tr": "Akıllı onaylar",
+    "zh-Hans": "智能批准",
+    "zh-Hant": "智慧核准"
+  },
   "Speaking": {
     "de": "Spricht",
     "es": "Hablando",
@@ -10018,6 +10513,21 @@
     "tr": "Konuşuyor",
     "zh-Hans": "正在说话",
     "zh-Hant": "正在說話"
+  },
+  "Splits a Kanban task into smaller ones.": {
+    "de": "Teilt eine Kanban-Aufgabe in kleinere auf.",
+    "es": "Divide una tarea de Kanban en otras más pequeñas.",
+    "fr": "Découpe une tâche Kanban en tâches plus petites.",
+    "id": "Memecah tugas Kanban menjadi tugas yang lebih kecil.",
+    "it": "Divide un’attività Kanban in attività più piccole.",
+    "ja": "Kanbanタスクを小さなタスクに分割します。",
+    "ko": "Kanban 작업을 더 작은 작업으로 나눕니다.",
+    "pl": "Dzieli zadanie Kanban na mniejsze.",
+    "pt-BR": "Divide uma tarefa do Kanban em tarefas menores.",
+    "ru": "Разбивает задачу Kanban на более мелкие.",
+    "tr": "Bir Kanban görevini daha küçük görevlere böler.",
+    "zh-Hans": "把 Kanban 任务拆分为更小的任务。",
+    "zh-Hant": "把 Kanban 工作拆分為更小的工作。"
   },
   "Star": {
     "de": "Stern setzen",
@@ -10288,6 +10798,36 @@
     "tr": "Güçlü etki",
     "zh-Hans": "影响很大",
     "zh-Hant": "影響很大"
+  },
+  "Suggested replies and draft guesses in Conduit, when Predictive uses the fast model.": {
+    "de": "Antwortvorschläge und Entwurfsvorschläge in Conduit, wenn Predictive das schnelle Modell nutzt.",
+    "es": "Respuestas sugeridas y sugerencias de borrador en Conduit, cuando Predictive usa el modelo rápido.",
+    "fr": "Réponses suggérées et suggestions de brouillon dans Conduit, quand Predictive utilise le modèle rapide.",
+    "id": "Saran balasan dan tebakan draf di Conduit, saat Predictive memakai model cepat.",
+    "it": "Risposte suggerite e completamenti delle bozze in Conduit, quando Predictive usa il modello veloce.",
+    "ja": "Predictiveが高速モデルを使うときの、Conduitの返信候補と下書きの予測です。",
+    "ko": "Predictive가 빠른 모델을 쓸 때 Conduit의 추천 답장과 초안 예측입니다.",
+    "pl": "Proponowane odpowiedzi i podpowiedzi szkiców w Conduit, gdy Predictive używa szybkiego modelu.",
+    "pt-BR": "Respostas sugeridas e palpites de rascunho no Conduit, quando o Predictive usa o modelo rápido.",
+    "ru": "Предложенные ответы и подсказки к черновику в Conduit, когда Predictive использует быструю модель.",
+    "tr": "Predictive hızlı modeli kullandığında Conduit'teki önerilen yanıtlar ve taslak tahminleri.",
+    "zh-Hans": "Predictive 使用快速模型时，Conduit 中的建议回复和草稿推测。",
+    "zh-Hant": "Predictive 使用快速模型時，Conduit 中的建議回覆和草稿推測。"
+  },
+  "Summarizes a long chat so it still fits the model's context.": {
+    "de": "Fasst einen langen Chat zusammen, damit er weiter in den Kontext des Modells passt.",
+    "es": "Resume un chat largo para que siga cabiendo en el contexto del modelo.",
+    "fr": "Résume une longue conversation pour qu’elle tienne encore dans le contexte du modèle.",
+    "id": "Meringkas obrolan panjang agar tetap muat dalam konteks model.",
+    "it": "Riassume una chat lunga perché entri ancora nel contesto del modello.",
+    "ja": "長いチャットを要約して、モデルのコンテキストに収まるようにします。",
+    "ko": "긴 채팅을 요약해 모델의 컨텍스트에 계속 들어가게 합니다.",
+    "pl": "Streszcza długi czat, żeby nadal mieścił się w kontekście modelu.",
+    "pt-BR": "Resume um chat longo para que ainda caiba no contexto do modelo.",
+    "ru": "Сжимает длинный чат, чтобы он помещался в контекст модели.",
+    "tr": "Uzun bir sohbeti modelin bağlamına sığması için özetler.",
+    "zh-Hans": "总结长聊天，让它仍能放进模型的上下文。",
+    "zh-Hant": "摘要長聊天，讓它仍能放進模型的上下文。"
   },
   "Summarizes older messages so the chat has room again. The chat and its memory stay.": {
     "de": "Fasst ältere Nachrichten zusammen, damit der Chat wieder Platz hat. Der Chat und sein Gedächtnis bleiben erhalten.",
@@ -10649,6 +11189,21 @@
     "zh-Hans": "这是 Pulse 对每一类最多的提醒方式。在此范围内，你的评分、“去做”和“完成”会教它该提什么、以多显眼的方式提。",
     "zh-Hant": "這是 Pulse 對每一類最多的提醒方式。在此範圍內，你的評分、「去做」和「完成」會教它該提什麼、以多顯眼的方式提。"
   },
+  "The model Hermes answers you with in a voice conversation. Reasoning is off by default so replies start sooner; typed messages keep the chat's model. Hermes Desktop uses this setting too.": {
+    "de": "Das Modell, mit dem Hermes dir in einer Sprachunterhaltung antwortet. Reasoning ist standardmäßig aus, damit Antworten schneller beginnen; getippte Nachrichten behalten das Modell des Chats. Hermes Desktop nutzt diese Einstellung ebenfalls.",
+    "es": "El modelo con el que Hermes te responde en una conversación de voz. El razonamiento está desactivado por defecto para que las respuestas empiecen antes; los mensajes escritos mantienen el modelo del chat. Hermes Desktop también usa este ajuste.",
+    "fr": "Le modèle avec lequel Hermes vous répond dans une conversation vocale. Le raisonnement est désactivé par défaut pour que les réponses commencent plus tôt ; les messages saisis conservent le modèle de la discussion. Hermes Desktop utilise aussi ce réglage.",
+    "id": "Model yang digunakan Hermes untuk menjawab Anda dalam percakapan suara. Penalaran mati secara default agar balasan dimulai lebih cepat; pesan yang diketik tetap menggunakan model obrolan. Hermes Desktop juga menggunakan pengaturan ini.",
+    "it": "Il modello con cui Hermes ti risponde in una conversazione vocale. Il ragionamento è disattivato per impostazione predefinita, così le risposte iniziano prima; i messaggi scritti mantengono il modello della chat. Anche Hermes Desktop usa questa impostazione.",
+    "ja": "音声会話で Hermes が返答に使うモデルです。返答が早く始まるよう、推論は既定でオフです。入力したメッセージにはチャットのモデルが使われます。Hermes Desktop もこの設定を使います。",
+    "ko": "음성 대화에서 Hermes가 답할 때 사용하는 모델이에요. 응답이 더 빨리 시작되도록 추론은 기본적으로 꺼져 있어요. 입력한 메시지에는 채팅 모델이 그대로 사용돼요. Hermes Desktop도 이 설정을 사용해요.",
+    "pl": "Model, którym Hermes odpowiada w rozmowie głosowej. Rozumowanie jest domyślnie wyłączone, aby odpowiedzi zaczynały się szybciej; wpisywane wiadomości używają modelu czatu. Hermes Desktop również używa tego ustawienia.",
+    "pt-BR": "O modelo com que o Hermes responde em uma conversa por voz. O raciocínio fica desativado por padrão para que as respostas comecem mais cedo; as mensagens digitadas mantêm o modelo do chat. O Hermes Desktop também usa este ajuste.",
+    "ru": "Модель, которой Hermes отвечает вам в голосовом разговоре. Рассуждения по умолчанию выключены, чтобы ответы начинались быстрее; для набранных сообщений используется модель чата. Hermes Desktop тоже использует эту настройку.",
+    "tr": "Hermes'in sesli konuşmada size yanıt verirken kullandığı model. Yanıtlar daha erken başlasın diye akıl yürütme varsayılan olarak kapalıdır; yazılı mesajlar sohbetin modelini kullanmaya devam eder. Hermes Desktop da bu ayarı kullanır.",
+    "zh-Hans": "Hermes 在语音对话中回复你时使用的模型。推理默认关闭，以便更快开始回复；输入的消息仍使用聊天的模型。Hermes Desktop 也使用此设置。",
+    "zh-Hant": "Hermes 在語音對話中回覆你時所使用的模型。推理預設為關閉，讓回覆更快開始；輸入的訊息仍使用聊天的模型。Hermes Desktop 也會使用此設定。"
+  },
   "The model was not saved.": {
     "de": "Das Modell wurde nicht gespeichert.",
     "es": "No se guardó el modelo.",
@@ -10948,6 +11503,21 @@
     "tr": "Bu Hermes kullanım bildirmiyor. Burada görmek için Hermes'i güncelleyin.",
     "zh-Hans": "此 Hermes 不报告用量。更新 Hermes 后即可在此查看。",
     "zh-Hant": "此 Hermes 不回報用量。更新 Hermes 後即可在此查看。"
+  },
+  "This Hermes has no helper models to set.": {
+    "de": "Dieses Hermes hat keine Hilfsmodelle zum Einstellen.",
+    "es": "Este Hermes no tiene modelos auxiliares que configurar.",
+    "fr": "Cet Hermes n’a aucun modèle auxiliaire à régler.",
+    "id": "Hermes ini tidak punya model pembantu untuk diatur.",
+    "it": "Questo Hermes non ha modelli ausiliari da impostare.",
+    "ja": "このHermesには設定できる補助モデルがありません。",
+    "ko": "이 Hermes에는 설정할 보조 모델이 없습니다.",
+    "pl": "Ten Hermes nie ma modeli pomocniczych do ustawienia.",
+    "pt-BR": "Este Hermes não tem modelos auxiliares para definir.",
+    "ru": "В этом Hermes нет вспомогательных моделей для настройки.",
+    "tr": "Bu Hermes'te ayarlanacak yardımcı model yok.",
+    "zh-Hans": "此 Hermes 没有可设置的辅助模型。",
+    "zh-Hant": "此 Hermes 沒有可設定的輔助模型。"
   },
   "This Hermes has no task board.": {
     "de": "Dieses Hermes hat kein Aufgaben-Board.",
@@ -12209,6 +12779,21 @@
     "zh-Hans": "回复结束后会发送语音消息。",
     "zh-Hant": "回覆結束後會傳送語音訊息。"
   },
+  "Voice replies": {
+    "de": "Sprachantworten",
+    "es": "Respuestas de voz",
+    "fr": "Réponses vocales",
+    "id": "Balasan suara",
+    "it": "Risposte vocali",
+    "ja": "音声の返答",
+    "ko": "음성 응답",
+    "pl": "Odpowiedzi głosowe",
+    "pt-BR": "Respostas por voz",
+    "ru": "Голосовые ответы",
+    "tr": "Sesli yanıtlar",
+    "zh-Hans": "语音回复",
+    "zh-Hant": "語音回覆"
+  },
   "Waiting": {
     "de": "Wartet",
     "es": "Esperando",
@@ -12838,6 +13423,21 @@
     "tr": "Her üst bilgiyi kendi satırına Ad: değer biçiminde yazın. Bu satır öyle değil: {line}",
     "zh-Hans": "每个请求头单独一行，格式为“名称: 值”。这一行不是：{line}",
     "zh-Hant": "每個標頭單獨一行，格式為「名稱: 值」。這一行不是：{line}"
+  },
+  "Writes a profile's description.": {
+    "de": "Schreibt die Beschreibung eines Profils.",
+    "es": "Escribe la descripción de un perfil.",
+    "fr": "Rédige la description d’un profil.",
+    "id": "Menulis deskripsi profil.",
+    "it": "Scrive la descrizione di un profilo.",
+    "ja": "プロファイルの説明を書きます。",
+    "ko": "프로필 설명을 작성합니다.",
+    "pl": "Pisze opis profilu.",
+    "pt-BR": "Escreve a descrição de um perfil.",
+    "ru": "Пишет описание профиля.",
+    "tr": "Bir profilin açıklamasını yazar.",
+    "zh-Hans": "编写配置的描述。",
+    "zh-Hant": "撰寫設定檔的描述。"
   },
   "Writing a file": {
     "de": "Schreibt eine Datei",
@@ -13963,6 +14563,21 @@
     "tr": "{on}/{all} açık",
     "zh-Hans": "已开启 {on}/{all}",
     "zh-Hant": "已開啟 {on}/{all}"
+  },
+  "{own} of {all} have a model of their own": {
+    "de": "{own} von {all} haben ein eigenes Modell",
+    "es": "{own} de {all} tienen modelo propio",
+    "fr": "{own} sur {all} ont leur propre modèle",
+    "id": "{own} dari {all} punya model sendiri",
+    "it": "{own} su {all} hanno un modello proprio",
+    "ja": "{own} / {all} 件が独自のモデルを使用",
+    "ko": "{own}/{all}개가 자체 모델 사용",
+    "pl": "{own} z {all} ma własny model",
+    "pt-BR": "{own} de {all} têm modelo próprio",
+    "ru": "У {own} из {all} своя модель",
+    "tr": "{own} / {all} kendi modelini kullanıyor",
+    "zh-Hans": "{own}/{all} 项使用自己的模型",
+    "zh-Hant": "{own}/{all} 項使用自己的模型"
   },
   "{percent} used": {
     "de": "{percent} verbraucht",

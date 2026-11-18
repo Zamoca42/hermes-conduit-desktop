@@ -5184,3 +5184,24 @@ code.file-link:hover {
   background: color-mix(in srgb, var(--warning) 16%, transparent);
   color: var(--warning);
 }
+
+/* Settings > Models */
+.models-select {
+  max-width: 300px;
+}
+
+.models-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.models-slot strong {
+  font-weight: 500;
+}
+
+.models-slot.own strong {
+  color: var(--accent);
+}

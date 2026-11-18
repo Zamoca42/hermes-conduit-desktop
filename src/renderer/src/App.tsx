@@ -33,6 +33,7 @@ import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
+import { ModelsPage } from './components/ModelsPage'
 import { BotEditor } from './components/BotEditor'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
@@ -780,11 +781,17 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
         <UsagePage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'models')
+    return (
+      <main className="settings">
+        <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
       </main>
     )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
@@ -830,6 +837,12 @@ function Settings({
         <dd>
           {status.method ? methods[status.method] : '—'}
           {status.username ? ` (${status.username})` : ''}
+        </dd>
+        <dt>{t('Models')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
+            {t('Chat model and helper models')}
+          </button>
         </dd>
         <dt>{t('Usage')}</dt>
         <dd>
