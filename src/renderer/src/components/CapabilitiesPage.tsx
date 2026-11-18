@@ -385,7 +385,7 @@ export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Prop
           aria-label={tab === 'skills' ? t('Search skills') : tab === 'tools' ? t('Search tools') : t('Search connectors')}
         />
       </div>
-      <p className="meta">{t('Changes apply to new sessions.')}</p>
+      {tab !== 'connectors' ? <p className="meta">{t('Changes apply to new sessions.')}</p> : null}
       {problem ? <p className="error-text">{problem}</p> : null}
       {tab === 'skills' ? skillsTab() : tab === 'tools' ? toolsTab() : connectorsTab()}
     </div>
