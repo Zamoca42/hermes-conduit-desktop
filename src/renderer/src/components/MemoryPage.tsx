@@ -15,9 +15,9 @@ import {
   valueAt,
   withChoices,
   withValue,
-  type Field,
   type Http
 } from '../state/profileConfig'
+import { FieldRow } from './ConfigPage'
 import { FallbackModels } from './FallbackModels'
 import { Icon } from './icons'
 
@@ -147,52 +147,6 @@ export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
           {!schema || schema.has('delegation.fallback_providers') ? <FallbackModels key={`delegate-fallbacks:${profile}`} profile={profile} delegate /> : null}
           <PauseDelegation />
         </>
-      )}
-    </div>
-  )
-}
-
-function FieldRow({ field, value, busy, onSave }: { field: Field; value: boolean | number | string; busy: boolean; onSave: (value: unknown) => void }) {
-  const [draft, setDraft] = useState(String(value))
-  useEffect(() => setDraft(String(value)), [value])
-  const control = field.control
-  const commitNumber = () => {
-    const n = Number(draft.trim())
-    if (!draft.trim() || !Number.isFinite(n)) return setDraft(String(value))
-    if (n !== value) onSave(n)
-  }
-  return (
-    <div className="mem-row">
-      <div className="mem-text">
-        <span>{field.label}</span>
-        <span className="meta">{field.help}</span>
-      </div>
-      {control.kind === 'toggle' ? (
-        <label className="switch-inline">
-          <input type="checkbox" checked={value === true} disabled={busy} aria-label={field.label} onChange={e => onSave(e.target.checked)} />
-        </label>
-      ) : control.kind === 'number' ? (
-        <input
-          className="mem-number"
-          type="number"
-          inputMode="decimal"
-          value={draft}
-          disabled={busy}
-          aria-label={field.label}
-          onChange={e => setDraft(e.target.value)}
-          onBlur={commitNumber}
-          onKeyDown={e => {
-            if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
-          }}
-        />
-      ) : (
-        <select className="language-select" value={String(value)} disabled={busy} aria-label={field.label} onChange={e => onSave(e.target.value)}>
-          {control.options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
       )}
     </div>
   )

@@ -329,6 +329,21 @@
     "zh-Hans": "API 密钥（可选）",
     "zh-Hant": "API 金鑰（選填）"
   },
+  "API retries": {
+    "de": "API-Wiederholungen",
+    "es": "Reintentos de API",
+    "fr": "Nouvelles tentatives API",
+    "id": "Percobaan ulang API",
+    "it": "Tentativi API",
+    "ja": "API の再試行回数",
+    "ko": "API 재시도 횟수",
+    "pl": "Ponowienia API",
+    "pt-BR": "Novas tentativas da API",
+    "ru": "Повторы API",
+    "tr": "API yeniden denemeleri",
+    "zh-Hans": "API 重试次数",
+    "zh-Hant": "API 重試次數"
+  },
   "Account": {
     "de": "Konto",
     "es": "Cuenta",
@@ -719,6 +734,21 @@
     "zh-Hans": "允许一次",
     "zh-Hant": "允許一次"
   },
+  "Allow private URLs": {
+    "de": "Private URLs erlauben",
+    "es": "Permitir URL privadas",
+    "fr": "Autoriser les URL privées",
+    "id": "Izinkan URL pribadi",
+    "it": "Consenti URL privati",
+    "ja": "プライベートURLを許可",
+    "ko": "사설 URL 허용",
+    "pl": "Zezwalaj na prywatne adresy URL",
+    "pt-BR": "Permitir URLs privadas",
+    "ru": "Разрешить частные URL",
+    "tr": "Özel URL'lere izin ver",
+    "zh-Hans": "允许私有 URL",
+    "zh-Hant": "允許私人 URL"
+  },
   "Already done": {
     "de": "Schon erledigt",
     "es": "Ya está hecho",
@@ -869,6 +899,21 @@
     "zh-Hans": "任何兼容 OpenAI 的服务器，例如 vLLM、LM Studio 或 Ollama",
     "zh-Hant": "任何相容 OpenAI 的伺服器，例如 vLLM、LM Studio 或 Ollama"
   },
+  "Approval mode": {
+    "de": "Freigabemodus",
+    "es": "Modo de aprobación",
+    "fr": "Mode d'approbation",
+    "id": "Mode persetujuan",
+    "it": "Modalità di approvazione",
+    "ja": "承認モード",
+    "ko": "승인 모드",
+    "pl": "Tryb zatwierdzania",
+    "pt-BR": "Modo de aprovação",
+    "ru": "Режим разрешений",
+    "tr": "Onay modu",
+    "zh-Hans": "审批模式",
+    "zh-Hant": "核准模式"
+  },
   "Approval needed": {
     "de": "Freigabe erforderlich",
     "es": "Aprobación necesaria",
@@ -883,6 +928,21 @@
     "tr": "Onay gerekiyor",
     "zh-Hans": "需要批准",
     "zh-Hant": "需要核准"
+  },
+  "Approval timeout": {
+    "de": "Zeitlimit für Freigaben",
+    "es": "Tiempo límite de aprobación",
+    "fr": "Délai d'approbation",
+    "id": "Batas waktu persetujuan",
+    "it": "Timeout di approvazione",
+    "ja": "承認のタイムアウト",
+    "ko": "승인 시간 제한",
+    "pl": "Limit czasu zatwierdzenia",
+    "pt-BR": "Tempo limite de aprovação",
+    "ru": "Тайм-аут разрешения",
+    "tr": "Onay zaman aşımı",
+    "zh-Hans": "审批超时",
+    "zh-Hant": "核准逾時"
   },
   "Approvals and questions Hermes is waiting on, in every chat.": {
     "de": "Freigaben und Fragen, auf die Hermes wartet, aus allen Chats.",
@@ -1063,6 +1123,21 @@
     "tr": "Bir şey sorun. Enter gönderir, Shift+Enter satır ekler.",
     "zh-Hans": "随便问。按 Enter 发送，Shift+Enter 换行。",
     "zh-Hant": "隨便問。按 Enter 傳送，Shift+Enter 換行。"
+  },
+  "Ask before Hermes reloads its MCP connectors.": {
+    "de": "Nachfragen, bevor Hermes seine MCP-Konnektoren neu lädt.",
+    "es": "Preguntar antes de que Hermes recargue sus conectores MCP.",
+    "fr": "Demander avant que Hermes recharge ses connecteurs MCP.",
+    "id": "Tanya dulu sebelum Hermes memuat ulang konektor MCP-nya.",
+    "it": "Chiedi prima che Hermes ricarichi i suoi connettori MCP.",
+    "ja": "Hermes が MCP コネクタを再読み込みする前に確認します。",
+    "ko": "Hermes가 MCP 커넥터를 다시 불러오기 전에 확인합니다.",
+    "pl": "Pytaj, zanim Hermes ponownie załaduje swoje łączniki MCP.",
+    "pt-BR": "Perguntar antes de o Hermes recarregar seus conectores MCP.",
+    "ru": "Спрашивать перед тем, как Hermes перезагрузит коннекторы MCP.",
+    "tr": "Hermes MCP bağlayıcılarını yeniden yüklemeden önce sor.",
+    "zh-Hans": "在 Hermes 重新加载 MCP 连接器前先询问。",
+    "zh-Hant": "在 Hermes 重新載入 MCP 連接器前先詢問。"
   },
   "Ask {name}": {
     "de": "{name} fragen",
@@ -1829,6 +1904,51 @@
     "zh-Hans": "浏览技能中心",
     "zh-Hant": "瀏覽技能中心"
   },
+  "Browse with a copy of the host's default Chromium browser profile, including its logins.": {
+    "de": "Mit einer Kopie des Standard-Chromium-Browserprofils des Hosts surfen, einschließlich seiner Anmeldungen.",
+    "es": "Navegar con una copia del perfil predeterminado del navegador Chromium del host, incluidos sus inicios de sesión.",
+    "fr": "Naviguer avec une copie du profil par défaut du navigateur Chromium de l'hôte, connexions comprises.",
+    "id": "Menjelajah dengan salinan profil browser Chromium bawaan host, termasuk login-nya.",
+    "it": "Naviga con una copia del profilo predefinito del browser Chromium dell'host, inclusi i suoi accessi.",
+    "ja": "ホストの既定の Chromium ブラウザプロファイルのコピー（ログイン情報を含む）で閲覧します。",
+    "ko": "호스트의 기본 Chromium 브라우저 프로필 사본(로그인 포함)으로 탐색합니다.",
+    "pl": "Przeglądaj z kopią domyślnego profilu przeglądarki Chromium na hoście, łącznie z jego logowaniami.",
+    "pt-BR": "Navegar com uma cópia do perfil padrão do navegador Chromium do host, incluindo os logins.",
+    "ru": "Открывать сайты с копией профиля браузера Chromium по умолчанию на хосте, включая его входы в аккаунты.",
+    "tr": "Ana makinenin varsayılan Chromium tarayıcı profilinin bir kopyasıyla, oturum açma bilgileri dahil gezinin.",
+    "zh-Hans": "使用主机默认 Chromium 浏览器配置文件的副本浏览，包括其中的登录信息。",
+    "zh-Hant": "使用主機預設 Chromium 瀏覽器設定檔的副本瀏覽，包括其中的登入資訊。"
+  },
+  "Browser": {
+    "de": "Browser",
+    "es": "Navegador",
+    "fr": "Navigateur",
+    "id": "Browser",
+    "it": "Browser",
+    "ja": "ブラウザ",
+    "ko": "브라우저",
+    "pl": "Przeglądarka",
+    "pt-BR": "Navegador",
+    "ru": "Браузер",
+    "tr": "Tarayıcı",
+    "zh-Hans": "浏览器",
+    "zh-Hant": "瀏覽器"
+  },
+  "Browser private URLs": {
+    "de": "Private URLs im Browser",
+    "es": "URL privadas en el navegador",
+    "fr": "URL privées dans le navigateur",
+    "id": "URL pribadi di browser",
+    "it": "URL privati nel browser",
+    "ja": "ブラウザでのプライベートURL",
+    "ko": "브라우저 사설 URL",
+    "pl": "Prywatne adresy URL w przeglądarce",
+    "pt-BR": "URLs privadas no navegador",
+    "ru": "Частные URL в браузере",
+    "tr": "Tarayıcıda özel URL'ler",
+    "zh-Hans": "浏览器私有 URL",
+    "zh-Hant": "瀏覽器私人 URL"
+  },
   "Budgets, memory, next look, time zone, a look through your chats now and recent checks.": {
     "de": "Budgets, Gedächtnis, nächste Durchsicht, Zeitzone, Chats jetzt durchsehen und letzte Durchsichten.",
     "es": "Presupuestos, memoria, próxima revisión, zona horaria, revisar tus chats ahora y revisiones recientes.",
@@ -2249,6 +2369,21 @@
     "zh-Hans": "检查中…",
     "zh-Hant": "檢查中…"
   },
+  "Checkpoint limit": {
+    "de": "Checkpoint-Limit",
+    "es": "Límite de puntos de control",
+    "fr": "Limite de points de contrôle",
+    "id": "Batas checkpoint",
+    "it": "Limite di checkpoint",
+    "ja": "チェックポイントの上限",
+    "ko": "체크포인트 한도",
+    "pl": "Limit punktów kontrolnych",
+    "pt-BR": "Limite de checkpoints",
+    "ru": "Лимит контрольных точек",
+    "tr": "Kontrol noktası sınırı",
+    "zh-Hans": "检查点上限",
+    "zh-Hant": "檢查點上限"
+  },
   "Choose Photo": {
     "de": "Foto auswählen",
     "es": "Elegir foto",
@@ -2459,6 +2594,21 @@
     "zh-Hans": "Cloudflare Access 拒绝了这台电脑。请检查“代理登录”中的服务令牌。",
     "zh-Hant": "Cloudflare Access 拒絕了這台電腦。請檢查「代理伺服器登入」中的服務權杖。"
   },
+  "Code execution mode": {
+    "de": "Codeausführungsmodus",
+    "es": "Modo de ejecución de código",
+    "fr": "Mode d'exécution du code",
+    "id": "Mode eksekusi kode",
+    "it": "Modalità di esecuzione del codice",
+    "ja": "コード実行モード",
+    "ko": "코드 실행 모드",
+    "pl": "Tryb wykonywania kodu",
+    "pt-BR": "Modo de execução de código",
+    "ru": "Режим выполнения кода",
+    "tr": "Kod yürütme modu",
+    "zh-Hans": "代码执行模式",
+    "zh-Hant": "程式碼執行模式"
+  },
   "Code review": {
     "de": "Code-Review",
     "es": "Revisión de código",
@@ -2489,6 +2639,21 @@
     "zh-Hans": "自动提高 Codex 压缩阈值",
     "zh-Hant": "自動提高 Codex 壓縮門檻"
   },
+  "Command allowlist": {
+    "de": "Befehls-Positivliste",
+    "es": "Lista de comandos permitidos",
+    "fr": "Liste des commandes autorisées",
+    "id": "Daftar perintah yang diizinkan",
+    "it": "Elenco comandi consentiti",
+    "ja": "許可するコマンドのリスト",
+    "ko": "명령 허용 목록",
+    "pl": "Lista dozwolonych poleceń",
+    "pt-BR": "Lista de comandos permitidos",
+    "ru": "Список разрешённых команд",
+    "tr": "Komut izin listesi",
+    "zh-Hans": "命令允许列表",
+    "zh-Hant": "命令允許清單"
+  },
   "Command failed: {reason}": {
     "de": "Befehl fehlgeschlagen: {reason}",
     "es": "El comando falló: {reason}",
@@ -2503,6 +2668,36 @@
     "tr": "Komut başarısız: {reason}",
     "zh-Hans": "命令失败：{reason}",
     "zh-Hant": "指令失敗：{reason}"
+  },
+  "Command patterns you approved permanently, one per line. Remove a line to be asked again.": {
+    "de": "Befehlsmuster, die du dauerhaft freigegeben hast, eines pro Zeile. Entferne eine Zeile, um wieder gefragt zu werden.",
+    "es": "Patrones de comandos que aprobaste para siempre, uno por línea. Quita una línea para que se te vuelva a preguntar.",
+    "fr": "Motifs de commandes que vous avez approuvés définitivement, un par ligne. Supprimez une ligne pour être de nouveau sollicité.",
+    "id": "Pola perintah yang Anda setujui permanen, satu per baris. Hapus satu baris agar ditanya lagi.",
+    "it": "Schemi di comandi che hai approvato in modo permanente, uno per riga. Rimuovi una riga per tornare a ricevere la richiesta.",
+    "ja": "常に承認したコマンドパターン（1行に1つ）。行を削除すると再び確認されます。",
+    "ko": "영구적으로 승인한 명령 패턴(한 줄에 하나)입니다. 줄을 지우면 다시 묻습니다.",
+    "pl": "Wzorce poleceń zatwierdzone na stałe, po jednym w wierszu. Usuń wiersz, aby znów pytano o zgodę.",
+    "pt-BR": "Padrões de comando que você aprovou para sempre, um por linha. Remova uma linha para ser perguntado de novo.",
+    "ru": "Шаблоны команд, которые вы разрешили навсегда, по одному в строке. Удалите строку, чтобы снова получать запрос.",
+    "tr": "Kalıcı olarak onayladığınız komut kalıpları, her satıra bir tane. Yeniden sorulması için bir satırı silin.",
+    "zh-Hans": "你已永久批准的命令模式，每行一个。删除某一行后会再次询问。",
+    "zh-Hant": "你已永久核准的命令模式，每行一個。刪除某一行後會再次詢問。"
+  },
+  "Command timeout": {
+    "de": "Zeitlimit für Befehle",
+    "es": "Tiempo límite de comandos",
+    "fr": "Délai des commandes",
+    "id": "Batas waktu perintah",
+    "it": "Timeout dei comandi",
+    "ja": "コマンドのタイムアウト",
+    "ko": "명령 시간 제한",
+    "pl": "Limit czasu polecenia",
+    "pt-BR": "Tempo limite de comandos",
+    "ru": "Тайм-аут команды",
+    "tr": "Komut zaman aşımı",
+    "zh-Hans": "命令超时",
+    "zh-Hant": "命令逾時"
   },
   "Comments": {
     "de": "Kommentare",
@@ -2788,6 +2983,21 @@
     "tr": "Conduit · {count} şey seni bekliyor",
     "zh-Hans": "Conduit · {count} 项需要你处理",
     "zh-Hant": "Conduit · {count} 項需要你處理"
+  },
+  "Confirm connector reloads": {
+    "de": "Neuladen von Konnektoren bestätigen",
+    "es": "Confirmar recarga de conectores",
+    "fr": "Confirmer le rechargement des connecteurs",
+    "id": "Konfirmasi muat ulang konektor",
+    "it": "Conferma ricaricamento connettori",
+    "ja": "コネクタの再読み込みを確認",
+    "ko": "커넥터 다시 불러오기 확인",
+    "pl": "Potwierdzaj przeładowanie łączników",
+    "pt-BR": "Confirmar recarga de conectores",
+    "ru": "Подтверждать перезагрузку коннекторов",
+    "tr": "Bağlayıcı yeniden yüklemesini onayla",
+    "zh-Hans": "确认重新加载连接器",
+    "zh-Hant": "確認重新載入連接器"
   },
   "Connect to Hermes": {
     "de": "Mit Hermes verbinden",
@@ -3974,6 +4184,21 @@
     "zh-Hans": "天",
     "zh-Hant": "天"
   },
+  "Daytona image": {
+    "de": "Daytona-Image",
+    "es": "Imagen de Daytona",
+    "fr": "Image Daytona",
+    "id": "Image Daytona",
+    "it": "Immagine Daytona",
+    "ja": "Daytona イメージ",
+    "ko": "Daytona 이미지",
+    "pl": "Obraz Daytona",
+    "pt-BR": "Imagem do Daytona",
+    "ru": "Образ Daytona",
+    "tr": "Daytona imajı",
+    "zh-Hans": "Daytona 镜像",
+    "zh-Hant": "Daytona 映像檔"
+  },
   "Deadline": {
     "de": "Frist",
     "es": "Fecha límite",
@@ -4048,6 +4273,36 @@
     "tr": "Varsayılan ({name})",
     "zh-Hans": "默认（{name}）",
     "zh-Hant": "預設（{name}）"
+  },
+  "Default execution boundary.": {
+    "de": "Standard-Ausführungsgrenze.",
+    "es": "Límite de ejecución predeterminado.",
+    "fr": "Limite d'exécution par défaut.",
+    "id": "Batas eksekusi default.",
+    "it": "Limite di esecuzione predefinito.",
+    "ja": "デフォルトの実行範囲です。",
+    "ko": "기본 실행 범위.",
+    "pl": "Domyślna granica wykonywania.",
+    "pt-BR": "Limite de execução padrão.",
+    "ru": "Граница выполнения по умолчанию.",
+    "tr": "Varsayılan yürütme sınırı.",
+    "zh-Hans": "默认执行边界。",
+    "zh-Hant": "預設的執行範圍。"
+  },
+  "Default working directory": {
+    "de": "Standard-Arbeitsverzeichnis",
+    "es": "Directorio de trabajo predeterminado",
+    "fr": "Dossier de travail par défaut",
+    "id": "Direktori kerja default",
+    "it": "Directory di lavoro predefinita",
+    "ja": "デフォルトの作業ディレクトリ",
+    "ko": "기본 작업 디렉터리",
+    "pl": "Domyślny katalog roboczy",
+    "pt-BR": "Diretório de trabalho padrão",
+    "ru": "Рабочий каталог по умолчанию",
+    "tr": "Varsayılan çalışma dizini",
+    "zh-Hans": "默认工作目录",
+    "zh-Hant": "預設工作目錄"
   },
   "Delegate agent": {
     "de": "Delegierter Agent",
@@ -4559,6 +4814,21 @@
     "zh-Hans": "去做",
     "zh-Hant": "去做"
   },
+  "Docker image": {
+    "de": "Docker-Image",
+    "es": "Imagen de Docker",
+    "fr": "Image Docker",
+    "id": "Image Docker",
+    "it": "Immagine Docker",
+    "ja": "Docker イメージ",
+    "ko": "Docker 이미지",
+    "pl": "Obraz Docker",
+    "pt-BR": "Imagem do Docker",
+    "ru": "Образ Docker",
+    "tr": "Docker imajı",
+    "zh-Hans": "Docker 镜像",
+    "zh-Hant": "Docker 映像檔"
+  },
   "Don't bring it back": {
     "de": "Nicht wieder anzeigen",
     "es": "No volver a mostrarla",
@@ -5054,6 +5324,36 @@
     "zh-Hans": "请输入用户名和密码。",
     "zh-Hant": "請輸入使用者名稱和密碼。"
   },
+  "Environment passthrough": {
+    "de": "Umgebungsvariablen durchreichen",
+    "es": "Paso de variables de entorno",
+    "fr": "Transmission des variables d'environnement",
+    "id": "Teruskan variabel lingkungan",
+    "it": "Inoltro variabili d'ambiente",
+    "ja": "環境変数の引き継ぎ",
+    "ko": "환경 변수 전달",
+    "pl": "Przekazywanie zmiennych środowiskowych",
+    "pt-BR": "Repasse de variáveis de ambiente",
+    "ru": "Передача переменных окружения",
+    "tr": "Ortam değişkeni aktarımı",
+    "zh-Hans": "环境变量透传",
+    "zh-Hant": "環境變數傳遞"
+  },
+  "Environment variables passed into tool commands, one per line.": {
+    "de": "Umgebungsvariablen, die an Tool-Befehle weitergegeben werden, eine pro Zeile.",
+    "es": "Variables de entorno que se pasan a los comandos de herramientas, una por línea.",
+    "fr": "Variables d'environnement transmises aux commandes des outils, une par ligne.",
+    "id": "Variabel lingkungan yang diteruskan ke perintah alat, satu per baris.",
+    "it": "Variabili d'ambiente passate ai comandi degli strumenti, una per riga.",
+    "ja": "ツールのコマンドに渡す環境変数（1行に1つ）。",
+    "ko": "도구 명령에 전달되는 환경 변수(한 줄에 하나)입니다.",
+    "pl": "Zmienne środowiskowe przekazywane do poleceń narzędzi, po jednej w wierszu.",
+    "pt-BR": "Variáveis de ambiente repassadas aos comandos das ferramentas, uma por linha.",
+    "ru": "Переменные окружения, передаваемые командам инструментов, по одной в строке.",
+    "tr": "Araç komutlarına aktarılan ortam değişkenleri, her satıra bir tane.",
+    "zh-Hans": "传入工具命令的环境变量，每行一个。",
+    "zh-Hant": "傳入工具命令的環境變數，每行一個。"
+  },
   "Error": {
     "de": "Fehler",
     "es": "Error",
@@ -5519,6 +5819,51 @@
     "zh-Hans": "文件",
     "zh-Hant": "檔案"
   },
+  "File checkpoints": {
+    "de": "Datei-Checkpoints",
+    "es": "Puntos de control de archivos",
+    "fr": "Points de contrôle des fichiers",
+    "id": "Checkpoint file",
+    "it": "Checkpoint dei file",
+    "ja": "ファイルのチェックポイント",
+    "ko": "파일 체크포인트",
+    "pl": "Punkty kontrolne plików",
+    "pt-BR": "Checkpoints de arquivos",
+    "ru": "Контрольные точки файлов",
+    "tr": "Dosya kontrol noktaları",
+    "zh-Hans": "文件检查点",
+    "zh-Hant": "檔案檢查點"
+  },
+  "File page limit": {
+    "de": "Seitenlimit für Dateien",
+    "es": "Límite de página de archivo",
+    "fr": "Limite de page de fichier",
+    "id": "Batas halaman file",
+    "it": "Limite di pagina dei file",
+    "ja": "ファイル1ページの上限",
+    "ko": "파일 페이지 한도",
+    "pl": "Limit strony pliku",
+    "pt-BR": "Limite de página de arquivo",
+    "ru": "Лимит страницы файла",
+    "tr": "Dosya sayfa sınırı",
+    "zh-Hans": "文件分页上限",
+    "zh-Hant": "檔案分頁上限"
+  },
+  "File read limit": {
+    "de": "Leselimit für Dateien",
+    "es": "Límite de lectura de archivos",
+    "fr": "Limite de lecture de fichier",
+    "id": "Batas baca file",
+    "it": "Limite di lettura dei file",
+    "ja": "ファイル読み込みの上限",
+    "ko": "파일 읽기 한도",
+    "pl": "Limit odczytu pliku",
+    "pt-BR": "Limite de leitura de arquivo",
+    "ru": "Лимит чтения файла",
+    "tr": "Dosya okuma sınırı",
+    "zh-Hans": "文件读取上限",
+    "zh-Hant": "檔案讀取上限"
+  },
   "Files": {
     "de": "Dateien",
     "es": "Archivos",
@@ -5533,6 +5878,21 @@
     "tr": "Dosyalar",
     "zh-Hans": "文件",
     "zh-Hant": "檔案"
+  },
+  "Files & output": {
+    "de": "Dateien & Ausgabe",
+    "es": "Archivos y salida",
+    "fr": "Fichiers et sortie",
+    "id": "File & keluaran",
+    "it": "File e output",
+    "ja": "ファイルと出力",
+    "ko": "파일 및 출력",
+    "pl": "Pliki i wyniki",
+    "pt-BR": "Arquivos e saída",
+    "ru": "Файлы и вывод",
+    "tr": "Dosyalar ve çıktı",
+    "zh-Hans": "文件与输出",
+    "zh-Hant": "檔案與輸出"
   },
   "Fills in a new Kanban task's details.": {
     "de": "Ergänzt die Details einer neuen Kanban-Aufgabe.",
@@ -6824,6 +7184,21 @@
     "zh-Hans": "隐藏",
     "zh-Hant": "隱藏"
   },
+  "Hide detected credentials from tool output where possible.": {
+    "de": "Erkannte Zugangsdaten nach Möglichkeit in Tool-Ausgaben ausblenden.",
+    "es": "Ocultar las credenciales detectadas en la salida de las herramientas cuando sea posible.",
+    "fr": "Masque les identifiants détectés dans la sortie des outils lorsque c'est possible.",
+    "id": "Sembunyikan kredensial yang terdeteksi dari output alat jika memungkinkan.",
+    "it": "Nascondi le credenziali rilevate nell'output degli strumenti quando possibile.",
+    "ja": "可能な場合は、ツールの出力で検出された認証情報を非表示にします。",
+    "ko": "가능한 경우 도구 출력에서 감지된 자격 증명을 숨겨요.",
+    "pl": "Ukrywaj wykryte dane uwierzytelniające w wynikach narzędzi, gdy to możliwe.",
+    "pt-BR": "Ocultar credenciais detectadas na saída das ferramentas quando possível.",
+    "ru": "Скрывать обнаруженные учётные данные в выводе инструментов, где это возможно.",
+    "tr": "Algılanan kimlik bilgilerini mümkün olduğunda araç çıktısından gizle.",
+    "zh-Hans": "尽可能在工具输出中隐藏检测到的凭据。",
+    "zh-Hant": "盡可能在工具輸出中隱藏偵測到的認證資訊。"
+  },
   "Hide private reminders on the Lock Screen": {
     "de": "Private Erinnerungen auf dem Sperrbildschirm ausblenden",
     "es": "Ocultar recordatorios privados en la pantalla de bloqueo",
@@ -6929,6 +7304,21 @@
     "zh-Hans": "“{kind}”卡片以多显眼的方式出现",
     "zh-Hant": "「{kind}」卡片以多顯眼的方式出現"
   },
+  "How many times Hermes retries a failed model request.": {
+    "de": "Wie oft Hermes eine fehlgeschlagene Modellanfrage wiederholt.",
+    "es": "Cuántas veces reintenta Hermes una solicitud al modelo que falló.",
+    "fr": "Nombre de nouvelles tentatives de Hermes après l'échec d'une requête au modèle.",
+    "id": "Berapa kali Hermes mengulang permintaan model yang gagal.",
+    "it": "Quante volte Hermes riprova una richiesta al modello non riuscita.",
+    "ja": "失敗したモデルへのリクエストを Hermes が再試行する回数です。",
+    "ko": "Hermes가 실패한 모델 요청을 다시 시도하는 횟수입니다.",
+    "pl": "Ile razy Hermes ponawia nieudane zapytanie do modelu.",
+    "pt-BR": "Quantas vezes o Hermes tenta de novo uma solicitação ao modelo que falhou.",
+    "ru": "Сколько раз Hermes повторяет неудачный запрос к модели.",
+    "tr": "Hermes'in başarısız bir model isteğini kaç kez yeniden deneyeceği.",
+    "zh-Hans": "Hermes 重试失败模型请求的次数。",
+    "zh-Hant": "Hermes 重試失敗模型請求的次數。"
+  },
   "How often": {
     "de": "Wie oft",
     "es": "Con qué frecuencia",
@@ -7018,6 +7408,66 @@
     "tr": "Görüntü okuma",
     "zh-Hans": "读取图片",
     "zh-Hant": "讀取圖片"
+  },
+  "Image used when the terminal backend is Daytona.": {
+    "de": "Image für das Terminal-Backend Daytona.",
+    "es": "Imagen que se usa cuando el backend de terminal es Daytona.",
+    "fr": "Image utilisée quand le backend du terminal est Daytona.",
+    "id": "Image yang dipakai saat backend terminal adalah Daytona.",
+    "it": "Immagine usata quando il backend del terminale è Daytona.",
+    "ja": "ターミナルのバックエンドが Daytona のときに使うイメージです。",
+    "ko": "터미널 백엔드가 Daytona일 때 사용하는 이미지입니다.",
+    "pl": "Obraz używany, gdy backendem terminala jest Daytona.",
+    "pt-BR": "Imagem usada quando o backend do terminal é o Daytona.",
+    "ru": "Образ для бэкенда терминала Daytona.",
+    "tr": "Terminal arka ucu Daytona olduğunda kullanılan imaj.",
+    "zh-Hans": "终端后端为 Daytona 时使用的镜像。",
+    "zh-Hant": "終端機後端為 Daytona 時使用的映像檔。"
+  },
+  "Image used when the terminal backend is Docker.": {
+    "de": "Image für das Terminal-Backend Docker.",
+    "es": "Imagen que se usa cuando el backend de terminal es Docker.",
+    "fr": "Image utilisée quand le backend du terminal est Docker.",
+    "id": "Image yang dipakai saat backend terminal adalah Docker.",
+    "it": "Immagine usata quando il backend del terminale è Docker.",
+    "ja": "ターミナルのバックエンドが Docker のときに使うイメージです。",
+    "ko": "터미널 백엔드가 Docker일 때 사용하는 이미지입니다.",
+    "pl": "Obraz używany, gdy backendem terminala jest Docker.",
+    "pt-BR": "Imagem usada quando o backend do terminal é o Docker.",
+    "ru": "Образ для бэкенда терминала Docker.",
+    "tr": "Terminal arka ucu Docker olduğunda kullanılan imaj.",
+    "zh-Hans": "终端后端为 Docker 时使用的镜像。",
+    "zh-Hant": "終端機後端為 Docker 時使用的映像檔。"
+  },
+  "Image used when the terminal backend is Modal.": {
+    "de": "Image für das Terminal-Backend Modal.",
+    "es": "Imagen que se usa cuando el backend de terminal es Modal.",
+    "fr": "Image utilisée quand le backend du terminal est Modal.",
+    "id": "Image yang dipakai saat backend terminal adalah Modal.",
+    "it": "Immagine usata quando il backend del terminale è Modal.",
+    "ja": "ターミナルのバックエンドが Modal のときに使うイメージです。",
+    "ko": "터미널 백엔드가 Modal일 때 사용하는 이미지입니다.",
+    "pl": "Obraz używany, gdy backendem terminala jest Modal.",
+    "pt-BR": "Imagem usada quando o backend do terminal é o Modal.",
+    "ru": "Образ для бэкенда терминала Modal.",
+    "tr": "Terminal arka ucu Modal olduğunda kullanılan imaj.",
+    "zh-Hans": "终端后端为 Modal 时使用的镜像。",
+    "zh-Hant": "終端機後端為 Modal 時使用的映像檔。"
+  },
+  "Image used when the terminal backend is Singularity.": {
+    "de": "Image für das Terminal-Backend Singularity.",
+    "es": "Imagen que se usa cuando el backend de terminal es Singularity.",
+    "fr": "Image utilisée quand le backend du terminal est Singularity.",
+    "id": "Image yang dipakai saat backend terminal adalah Singularity.",
+    "it": "Immagine usata quando il backend del terminale è Singularity.",
+    "ja": "ターミナルのバックエンドが Singularity のときに使うイメージです。",
+    "ko": "터미널 백엔드가 Singularity일 때 사용하는 이미지입니다.",
+    "pl": "Obraz używany, gdy backendem terminala jest Singularity.",
+    "pt-BR": "Imagem usada quando o backend do terminal é o Singularity.",
+    "ru": "Образ для бэкенда терминала Singularity.",
+    "tr": "Terminal arka ucu Singularity olduğunda kullanılan imaj.",
+    "zh-Hans": "终端后端为 Singularity 时使用的镜像。",
+    "zh-Hant": "終端機後端為 Singularity 時使用的映像檔。"
   },
   "In Conduit on your iPhone, open Settings, then Connection, then Pair a Computer, and scan this code.": {
     "de": "Öffne in Conduit auf deinem iPhone Einstellungen, dann Verbindung, dann „Computer koppeln“, und scanne diesen Code.",
@@ -7484,6 +7934,21 @@
     "zh-Hans": "保留照片",
     "zh-Hant": "保留照片"
   },
+  "Keep them": {
+    "de": "Behalten",
+    "es": "Conservarlos",
+    "fr": "Les conserver",
+    "id": "Simpan",
+    "it": "Conservale",
+    "ja": "残す",
+    "ko": "유지",
+    "pl": "Zachowaj",
+    "pt-BR": "Manter",
+    "ru": "Сохранить",
+    "tr": "Koru",
+    "zh-Hans": "保留",
+    "zh-Hant": "保留"
+  },
   "Kept out by what you taught Pulse": {
     "de": "Durch das ausgelassen, was du Pulse beigebracht hast",
     "es": "Excluido por lo que le enseñaste a Pulse",
@@ -7739,6 +8204,21 @@
     "zh-Hans": "允许委派代理启动并协调自己的委派代理，最多到上面的深度。",
     "zh-Hant": "允許委派代理程式啟動並協調自己的委派代理程式，最多到上方的深度。"
   },
+  "Let the browser open private-network addresses.": {
+    "de": "Dem Browser erlauben, Adressen im privaten Netzwerk zu öffnen.",
+    "es": "Permitir que el navegador abra direcciones de redes privadas.",
+    "fr": "Autoriser le navigateur à ouvrir des adresses de réseau privé.",
+    "id": "Izinkan browser membuka alamat jaringan pribadi.",
+    "it": "Consenti al browser di aprire indirizzi di rete privata.",
+    "ja": "ブラウザがプライベートネットワークのアドレスを開けるようにします。",
+    "ko": "브라우저가 사설 네트워크 주소를 열 수 있게 합니다.",
+    "pl": "Pozwól przeglądarce otwierać adresy z sieci prywatnej.",
+    "pt-BR": "Permitir que o navegador abra endereços de rede privada.",
+    "ru": "Разрешить браузеру открывать адреса частной сети.",
+    "tr": "Tarayıcının özel ağ adreslerini açmasına izin ver.",
+    "zh-Hans": "允许浏览器打开私有网络地址。",
+    "zh-Hant": "允許瀏覽器開啟私人網路位址。"
+  },
   "Let {bot} Coordinate It": {
     "de": "Von {bot} koordinieren lassen",
     "es": "Dejar que {bot} lo coordine",
@@ -7828,6 +8308,36 @@
     "tr": "{time} tarihine kadar sınırlı",
     "zh-Hans": "受限至 {time}",
     "zh-Hant": "受限至 {time}"
+  },
+  "Limits and runtime defaults for this profile. Most profiles never need to change these.": {
+    "de": "Grenzen und Laufzeit-Standards für dieses Profil. Die meisten Profile müssen hier nie etwas ändern.",
+    "es": "Límites y valores de ejecución predeterminados de este perfil. La mayoría de los perfiles nunca necesita cambiarlos.",
+    "fr": "Limites et réglages d'exécution par défaut de ce profil. La plupart des profils n'ont jamais besoin de les modifier.",
+    "id": "Batas dan default runtime untuk profil ini. Sebagian besar profil tidak perlu mengubahnya.",
+    "it": "Limiti e impostazioni di esecuzione predefinite di questo profilo. La maggior parte dei profili non deve mai cambiarli.",
+    "ja": "このプロファイルの上限と実行時の既定値です。ほとんどのプロファイルでは変更する必要はありません。",
+    "ko": "이 프로필의 한도와 런타임 기본값입니다. 대부분의 프로필은 바꿀 필요가 없습니다.",
+    "pl": "Limity i domyślne ustawienia działania tego profilu. Większość profili nigdy nie musi ich zmieniać.",
+    "pt-BR": "Limites e padrões de execução deste perfil. A maioria dos perfis nunca precisa mudá-los.",
+    "ru": "Лимиты и параметры выполнения по умолчанию для этого профиля. Большинству профилей менять их не нужно.",
+    "tr": "Bu profilin sınırları ve çalışma zamanı varsayılanları. Çoğu profilin bunları değiştirmesi gerekmez.",
+    "zh-Hans": "此配置文件的限制和运行默认值。大多数配置文件无需更改。",
+    "zh-Hant": "此設定檔的限制與執行預設值。大多數設定檔都不需要更改。"
+  },
+  "Line length limit": {
+    "de": "Zeilenlängenlimit",
+    "es": "Límite de longitud de línea",
+    "fr": "Limite de longueur de ligne",
+    "id": "Batas panjang baris",
+    "it": "Limite di lunghezza della riga",
+    "ja": "1行の長さの上限",
+    "ko": "줄 길이 한도",
+    "pl": "Limit długości wiersza",
+    "pt-BR": "Limite de comprimento de linha",
+    "ru": "Лимит длины строки",
+    "tr": "Satır uzunluğu sınırı",
+    "zh-Hans": "单行长度上限",
+    "zh-Hant": "單行長度上限"
   },
   "Listen": {
     "de": "Zuhören",
@@ -7949,6 +8459,36 @@
     "zh-Hans": "正在载入…",
     "zh-Hant": "正在載入⋯"
   },
+  "Local browser for private URLs": {
+    "de": "Lokaler Browser für private URLs",
+    "es": "Navegador local para URL privadas",
+    "fr": "Navigateur local pour les URL privées",
+    "id": "Browser lokal untuk URL pribadi",
+    "it": "Browser locale per URL privati",
+    "ja": "プライベートURLはローカルブラウザで開く",
+    "ko": "사설 URL은 로컬 브라우저로",
+    "pl": "Lokalna przeglądarka dla prywatnych adresów URL",
+    "pt-BR": "Navegador local para URLs privadas",
+    "ru": "Локальный браузер для частных URL",
+    "tr": "Özel URL'ler için yerel tarayıcı",
+    "zh-Hans": "私有 URL 使用本地浏览器",
+    "zh-Hant": "私人 URL 使用本機瀏覽器"
+  },
+  "Local changes on update": {
+    "de": "Lokale Änderungen beim Update",
+    "es": "Cambios locales al actualizar",
+    "fr": "Modifications locales lors de la mise à jour",
+    "id": "Perubahan lokal saat pembaruan",
+    "it": "Modifiche locali all'aggiornamento",
+    "ja": "更新時のローカルの変更",
+    "ko": "업데이트 시 로컬 변경 사항",
+    "pl": "Lokalne zmiany przy aktualizacji",
+    "pt-BR": "Alterações locais ao atualizar",
+    "ru": "Локальные изменения при обновлении",
+    "tr": "Güncellemede yerel değişiklikler",
+    "zh-Hans": "更新时的本地改动",
+    "zh-Hant": "更新時的本機變更"
+  },
   "Long-term memory": {
     "de": "Langzeitgedächtnis",
     "es": "Memoria a largo plazo",
@@ -7963,6 +8503,21 @@
     "tr": "Uzun süreli bellek",
     "zh-Hans": "长期记忆",
     "zh-Hant": "長期記憶"
+  },
+  "Longer lines are cut to this many characters.": {
+    "de": "Längere Zeilen werden auf so viele Zeichen gekürzt.",
+    "es": "Las líneas más largas se cortan a esta cantidad de caracteres.",
+    "fr": "Les lignes plus longues sont coupées à ce nombre de caractères.",
+    "id": "Baris yang lebih panjang dipotong sampai jumlah karakter ini.",
+    "it": "Le righe più lunghe vengono tagliate a questo numero di caratteri.",
+    "ja": "これより長い行はこの文字数で切り詰められます。",
+    "ko": "더 긴 줄은 이 글자 수로 잘립니다.",
+    "pl": "Dłuższe wiersze są przycinane do tylu znaków.",
+    "pt-BR": "Linhas mais longas são cortadas para esse número de caracteres.",
+    "ru": "Более длинные строки обрезаются до этого числа символов.",
+    "tr": "Daha uzun satırlar bu karakter sayısına kısaltılır.",
+    "zh-Hans": "更长的行会被截断到这个字符数。",
+    "zh-Hant": "更長的行會被截斷到這個字元數。"
   },
   "Look things up first": {
     "de": "Zuerst nachsehen",
@@ -8294,6 +8849,21 @@
     "zh-Hans": "正在生成二维码…",
     "zh-Hant": "正在產生條碼…"
   },
+  "Manual": {
+    "de": "Manuell",
+    "es": "Manual",
+    "fr": "Manuel",
+    "id": "Manual",
+    "it": "Manuale",
+    "ja": "手動",
+    "ko": "수동",
+    "pl": "Ręczny",
+    "pt-BR": "Manual",
+    "ru": "Вручную",
+    "tr": "Elle",
+    "zh-Hans": "手动",
+    "zh-Hant": "手動"
+  },
   "Maps": {
     "de": "Karten",
     "es": "Mapas",
@@ -8609,6 +9179,21 @@
     "zh-Hans": "分钟",
     "zh-Hant": "分鐘"
   },
+  "Modal image": {
+    "de": "Modal-Image",
+    "es": "Imagen de Modal",
+    "fr": "Image Modal",
+    "id": "Image Modal",
+    "it": "Immagine Modal",
+    "ja": "Modal イメージ",
+    "ko": "Modal 이미지",
+    "pl": "Obraz Modal",
+    "pt-BR": "Imagem do Modal",
+    "ru": "Образ Modal",
+    "tr": "Modal imajı",
+    "zh-Hans": "Modal 镜像",
+    "zh-Hant": "Modal 映像檔"
+  },
   "Model": {
     "de": "Modell",
     "es": "Modelo",
@@ -8729,6 +9314,36 @@
     "zh-Hans": "晨间简报",
     "zh-Hant": "晨間簡報"
   },
+  "Most bytes of command output Hermes reads.": {
+    "de": "Höchstzahl an Bytes Befehlsausgabe, die Hermes liest.",
+    "es": "Máximo de bytes de salida de comandos que lee Hermes.",
+    "fr": "Nombre maximal d'octets de sortie de commande lus par Hermes.",
+    "id": "Jumlah byte keluaran perintah terbanyak yang dibaca Hermes.",
+    "it": "Numero massimo di byte di output dei comandi letti da Hermes.",
+    "ja": "Hermes が読み取るコマンド出力の最大バイト数です。",
+    "ko": "Hermes가 읽는 명령 출력의 최대 바이트 수입니다.",
+    "pl": "Maksymalna liczba bajtów wyniku polecenia, którą czyta Hermes.",
+    "pt-BR": "Máximo de bytes de saída de comandos que o Hermes lê.",
+    "ru": "Максимум байт вывода команды, который читает Hermes.",
+    "tr": "Hermes'in okuduğu en fazla komut çıktısı baytı.",
+    "zh-Hans": "Hermes 读取的命令输出最大字节数。",
+    "zh-Hant": "Hermes 讀取的命令輸出最大位元組數。"
+  },
+  "Most characters Hermes reads from a file in one request.": {
+    "de": "Höchstzahl an Zeichen, die Hermes pro Anfrage aus einer Datei liest.",
+    "es": "Máximo de caracteres que Hermes lee de un archivo en una solicitud.",
+    "fr": "Nombre maximal de caractères que Hermes lit dans un fichier en une requête.",
+    "id": "Jumlah karakter terbanyak yang dibaca Hermes dari file dalam satu permintaan.",
+    "it": "Numero massimo di caratteri che Hermes legge da un file in una richiesta.",
+    "ja": "Hermes が1回のリクエストでファイルから読み取る最大文字数です。",
+    "ko": "Hermes가 한 번의 요청으로 파일에서 읽는 최대 글자 수입니다.",
+    "pl": "Maksymalna liczba znaków, którą Hermes czyta z pliku w jednym żądaniu.",
+    "pt-BR": "Máximo de caracteres que o Hermes lê de um arquivo em uma solicitação.",
+    "ru": "Максимум символов, которые Hermes читает из файла за один запрос.",
+    "tr": "Hermes'in tek istekte bir dosyadan okuduğu en fazla karakter.",
+    "zh-Hans": "Hermes 单次请求从文件读取的最大字符数。",
+    "zh-Hant": "Hermes 單次請求從檔案讀取的最大字元數。"
+  },
   "Most characters of one delegate's result; the rest is saved to a file. 0 means no limit.": {
     "de": "Höchstzahl an Zeichen eines Delegiertenergebnisses; der Rest wird in einer Datei gespeichert. 0 bedeutet keine Grenze.",
     "es": "Máximo de caracteres del resultado de un delegado; el resto se guarda en un archivo. 0 significa sin límite.",
@@ -8773,6 +9388,51 @@
     "tr": "Hermes'in sakladığı kullanıcı profilinin en fazla karakteri.",
     "zh-Hans": "Hermes 保留的用户画像最大字符数。",
     "zh-Hant": "Hermes 保留的使用者側寫最大字元數。"
+  },
+  "Most file snapshots kept for rolling back.": {
+    "de": "Höchstzahl an Datei-Snapshots, die zum Zurücksetzen aufbewahrt werden.",
+    "es": "Máximo de instantáneas de archivos que se guardan para revertir.",
+    "fr": "Nombre maximal d'instantanés de fichiers conservés pour revenir en arrière.",
+    "id": "Jumlah snapshot file terbanyak yang disimpan untuk rollback.",
+    "it": "Numero massimo di snapshot dei file conservati per il ripristino.",
+    "ja": "元に戻すために保持するファイルスナップショットの最大数です。",
+    "ko": "되돌리기용으로 보관하는 파일 스냅샷의 최대 개수입니다.",
+    "pl": "Maksymalna liczba migawek plików przechowywanych do wycofania zmian.",
+    "pt-BR": "Máximo de snapshots de arquivos guardados para reverter.",
+    "ru": "Максимум снимков файлов, хранимых для отката.",
+    "tr": "Geri almak için tutulan en fazla dosya anlık görüntüsü.",
+    "zh-Hans": "为回滚保留的文件快照最大数量。",
+    "zh-Hant": "為還原保留的檔案快照最大數量。"
+  },
+  "Most lines Hermes reads from a file at once.": {
+    "de": "Höchstzahl an Zeilen, die Hermes auf einmal aus einer Datei liest.",
+    "es": "Máximo de líneas que Hermes lee de un archivo de una vez.",
+    "fr": "Nombre maximal de lignes que Hermes lit d'un fichier en une fois.",
+    "id": "Jumlah baris terbanyak yang dibaca Hermes dari file sekaligus.",
+    "it": "Numero massimo di righe che Hermes legge da un file in una volta.",
+    "ja": "Hermes が一度にファイルから読み取る最大行数です。",
+    "ko": "Hermes가 한 번에 파일에서 읽는 최대 줄 수입니다.",
+    "pl": "Maksymalna liczba wierszy, które Hermes czyta z pliku naraz.",
+    "pt-BR": "Máximo de linhas que o Hermes lê de um arquivo de uma vez.",
+    "ru": "Максимум строк, которые Hermes читает из файла за раз.",
+    "tr": "Hermes'in bir dosyadan tek seferde okuduğu en fazla satır.",
+    "zh-Hans": "Hermes 一次从文件读取的最大行数。",
+    "zh-Hant": "Hermes 一次從檔案讀取的最大行數。"
+  },
+  "Most tool-calling turns before Hermes stops a run. 0 means no limit.": {
+    "de": "Höchstzahl an Tool-Schritten, bevor Hermes einen Lauf stoppt. 0 bedeutet kein Limit.",
+    "es": "Máximo de turnos con herramientas antes de que Hermes detenga una ejecución. 0 significa sin límite.",
+    "fr": "Nombre maximal de tours d'appel d'outils avant que Hermes n'arrête une exécution. 0 signifie sans limite.",
+    "id": "Jumlah giliran pemanggilan alat terbanyak sebelum Hermes menghentikan proses. 0 berarti tanpa batas.",
+    "it": "Numero massimo di turni con strumenti prima che Hermes interrompa un'esecuzione. 0 significa nessun limite.",
+    "ja": "Hermes が実行を止めるまでのツール呼び出しの最大ターン数です。0 は無制限です。",
+    "ko": "Hermes가 실행을 멈추기 전 도구 호출 턴의 최대 수입니다. 0은 제한 없음입니다.",
+    "pl": "Maksymalna liczba tur z narzędziami, zanim Hermes zatrzyma działanie. 0 oznacza brak limitu.",
+    "pt-BR": "Máximo de turnos com ferramentas antes de o Hermes parar uma execução. 0 significa sem limite.",
+    "ru": "Максимум ходов с вызовом инструментов, после которых Hermes останавливает работу. 0 — без ограничений.",
+    "tr": "Hermes bir çalışmayı durdurmadan önceki en fazla araç çağırma turu. 0 sınırsız demektir.",
+    "zh-Hans": "Hermes 停止运行前调用工具的最大轮次。0 表示不限制。",
+    "zh-Hant": "Hermes 停止執行前呼叫工具的最大回合數。0 表示不限制。"
   },
   "Most turns one delegate agent can take.": {
     "de": "Höchstzahl an Schritten für einen delegierten Agenten.",
@@ -10559,6 +11219,21 @@
     "zh-Hans": "在 Conduit 中打开",
     "zh-Hant": "在 Conduit 中打開"
   },
+  "Open private-network addresses in a local browser even when a cloud browser is set up.": {
+    "de": "Adressen im privaten Netzwerk in einem lokalen Browser öffnen, auch wenn ein Cloud-Browser eingerichtet ist.",
+    "es": "Abrir direcciones de redes privadas en un navegador local aunque haya un navegador en la nube configurado.",
+    "fr": "Ouvrir les adresses de réseau privé dans un navigateur local même si un navigateur cloud est configuré.",
+    "id": "Buka alamat jaringan pribadi di browser lokal meskipun browser cloud sudah disiapkan.",
+    "it": "Apri gli indirizzi di rete privata in un browser locale anche se è configurato un browser cloud.",
+    "ja": "クラウドブラウザを設定していても、プライベートネットワークのアドレスはローカルブラウザで開きます。",
+    "ko": "클라우드 브라우저가 설정되어 있어도 사설 네트워크 주소는 로컬 브라우저로 엽니다.",
+    "pl": "Otwieraj adresy z sieci prywatnej w lokalnej przeglądarce, nawet gdy skonfigurowano przeglądarkę w chmurze.",
+    "pt-BR": "Abrir endereços de rede privada em um navegador local mesmo com um navegador na nuvem configurado.",
+    "ru": "Открывать адреса частной сети в локальном браузере, даже если настроен облачный браузер.",
+    "tr": "Bulut tarayıcı kurulu olsa bile özel ağ adreslerini yerel bir tarayıcıda aç.",
+    "zh-Hans": "即使已设置云浏览器，也在本地浏览器中打开私有网络地址。",
+    "zh-Hant": "即使已設定雲端瀏覽器，也在本機瀏覽器中開啟私人網路位址。"
+  },
   "Open sign-in page": {
     "de": "Anmeldeseite öffnen",
     "es": "Abrir página de inicio de sesión",
@@ -11024,6 +11699,36 @@
     "zh-Hans": "时间段",
     "zh-Hant": "時段"
   },
+  "Permit tool access to private-network URLs.": {
+    "de": "Tool-Zugriff auf URLs im privaten Netzwerk erlauben.",
+    "es": "Permitir que las herramientas accedan a URL de redes privadas.",
+    "fr": "Autorise l'accès des outils aux URL de réseaux privés.",
+    "id": "Izinkan akses alat ke URL jaringan pribadi.",
+    "it": "Consenti agli strumenti l'accesso agli URL della rete privata.",
+    "ja": "ツールがプライベートネットワークのURLにアクセスすることを許可します。",
+    "ko": "도구가 사설 네트워크 URL에 접근하도록 허용해요.",
+    "pl": "Zezwalaj narzędziom na dostęp do adresów URL w sieci prywatnej.",
+    "pt-BR": "Permitir que ferramentas acessem URLs de redes privadas.",
+    "ru": "Разрешить инструментам доступ к URL частной сети.",
+    "tr": "Araçların özel ağ URL'lerine erişmesine izin ver.",
+    "zh-Hans": "允许工具访问内网 URL。",
+    "zh-Hant": "允許工具存取私人網路 URL。"
+  },
+  "Persistent shell": {
+    "de": "Dauerhafte Shell",
+    "es": "Shell persistente",
+    "fr": "Shell persistant",
+    "id": "Shell persisten",
+    "it": "Shell persistente",
+    "ja": "シェルを維持",
+    "ko": "지속 셸",
+    "pl": "Trwała powłoka",
+    "pt-BR": "Shell persistente",
+    "ru": "Постоянная оболочка",
+    "tr": "Kalıcı kabuk",
+    "zh-Hans": "持久 Shell",
+    "zh-Hant": "持續性 Shell"
+  },
   "Personal matters": {
     "de": "Persönliches",
     "es": "Asuntos personales",
@@ -11324,6 +12029,21 @@
     "zh-Hans": "配置描述",
     "zh-Hant": "設定檔描述"
   },
+  "Profile-wide default: manual asks every time; smart asks when risk warrants it; off is YOLO mode. When set to off, Hermes auto-approves everything and per-session YOLO toggles have no effect — that's a Hermes limitation, not a Conduit bug. To use per-session YOLO, set this to manual or smart.": {
+    "de": "Profilweiter Standard: „Manuell“ fragt jedes Mal; „Smart“ fragt, wenn das Risiko es erfordert; „Aus“ ist der YOLO-Modus. Bei „Aus“ gibt Hermes alles automatisch frei, und YOLO-Schalter pro Sitzung haben keine Wirkung – das ist eine Einschränkung von Hermes, kein Fehler von Conduit. Um YOLO pro Sitzung zu nutzen, stelle dies auf „Manuell“ oder „Smart“.",
+    "es": "Valor predeterminado para todo el perfil: Manual pregunta siempre; Inteligente pregunta cuando el riesgo lo justifica; Desactivado es el modo YOLO. Si está desactivado, Hermes aprueba todo automáticamente y los interruptores YOLO por sesión no tienen efecto (es una limitación de Hermes, no un error de Conduit). Para usar YOLO por sesión, elige Manual o Inteligente.",
+    "fr": "Valeur par défaut pour tout le profil : Manuel demande à chaque fois ; Intelligent demande quand le risque le justifie ; Désactivé correspond au mode YOLO. Une fois désactivé, Hermes approuve tout automatiquement et les bascules YOLO par session n'ont aucun effet : c'est une limite d'Hermes, pas un bug de Conduit. Pour utiliser YOLO par session, choisissez Manuel ou Intelligent.",
+    "id": "Default untuk seluruh profil: Manual selalu bertanya; Cerdas bertanya jika risikonya memerlukan; mode YOLO (off) tidak bertanya. Jika diatur ke mode YOLO, Hermes menyetujui semuanya secara otomatis dan sakelar YOLO per sesi tidak berpengaruh — itu batasan Hermes, bukan bug Conduit. Untuk menggunakan YOLO per sesi, atur ke Manual atau Cerdas.",
+    "it": "Valore predefinito per tutto il profilo: Manuale chiede ogni volta; Smart chiede quando il rischio lo giustifica; Disattivato è la modalità YOLO. Se è disattivato, Hermes approva automaticamente tutto e gli interruttori YOLO per sessione non hanno effetto: è un limite di Hermes, non un bug di Conduit. Per usare YOLO per sessione, imposta Manuale o Smart.",
+    "ja": "プロファイル全体のデフォルトです。manualは毎回確認し、smartはリスクに応じて確認します。offはYOLOモードです。offに設定すると、Hermesがすべてを自動承認し、セッションごとのYOLO切り替えは無効になります。これはHermesの制限であり、Conduitの不具合ではありません。セッションごとのYOLOを使うには、manualまたはsmartに設定してください。",
+    "ko": "프로필 전체 기본값이에요. ‘수동’은 매번 묻고, ‘스마트’는 위험할 때만 묻고, off는 ‘YOLO 모드’예요. off로 설정하면 Hermes가 모든 것을 자동 승인하고 세션별 YOLO 전환은 효과가 없어요. 이는 Conduit 버그가 아니라 Hermes의 제한이에요. 세션별 YOLO를 사용하려면 ‘수동’ 또는 ‘스마트’로 설정하세요.",
+    "pl": "Domyślne ustawienie profilu: tryb ręczny pyta za każdym razem; inteligentny pyta, gdy wymaga tego ryzyko; wyłączony to tryb YOLO. Gdy jest wyłączony, Hermes automatycznie zatwierdza wszystko, a przełączniki YOLO dla poszczególnych sesji nie działają — to ograniczenie Hermesa, a nie błąd Conduit. Aby używać YOLO dla sesji, ustaw tryb ręczny lub inteligentny.",
+    "pt-BR": "Padrão de todo o perfil: manual pergunta sempre; inteligente pergunta quando o risco justifica; desativado é o modo YOLO. Quando desativado, o Hermes aprova tudo automaticamente e as opções de YOLO por sessão não têm efeito — isso é uma limitação do Hermes, não um bug do Conduit. Para usar o YOLO por sessão, defina como manual ou inteligente.",
+    "ru": "Значение по умолчанию для профиля: «Вручную» спрашивает каждый раз; «Умный» спрашивает, когда этого требует риск; «Выкл.» — режим YOLO. Если выбрано «Выкл.», Hermes автоматически разрешает всё, и переключатели YOLO для отдельных сеансов не действуют — это ограничение Hermes, а не ошибка Conduit. Чтобы использовать YOLO для отдельных сеансов, выберите «Вручную» или «Умный».",
+    "tr": "Profil genelinde varsayılan: Elle her seferinde sorar; Akıllı, risk gerektirdiğinde sorar; Kapalı, YOLO modudur. Kapalı olarak ayarlandığında Hermes her şeyi otomatik onaylar ve oturum başına YOLO anahtarlarının etkisi olmaz — bu bir Conduit hatası değil, Hermes sınırlamasıdır. Oturum başına YOLO kullanmak için bunu Elle veya Akıllı olarak ayarlayın.",
+    "zh-Hans": "档案级默认：手动模式每次询问；智能模式按风险询问；关闭即 YOLO 模式。设为关闭时 Hermes 会自动批准一切，且各会话的 YOLO 开关不再生效——这是 Hermes 的限制，并非 Conduit 的问题。要使用会话级 YOLO，请将此项设为手动或智能。",
+    "zh-Hant": "設定檔層級的預設值：「手動」每次都會詢問；「智慧」會在有風險時才詢問；關閉（off）即「YOLO 模式」。設為關閉時，Hermes 會自動核准所有操作，個別工作階段的 YOLO 開關也不會生效：這是 Hermes 的限制，而非 Conduit 的錯誤。若要使用個別工作階段的 YOLO，請將此項設為「手動」或「智慧」。"
+  },
   "Profiles": {
     "de": "Profile",
     "es": "Perfiles",
@@ -11353,6 +12073,21 @@
     "tr": "Bu ağ geçidindeki profiller: {profiles}",
     "zh-Hans": "此网关上的配置：{profiles}",
     "zh-Hant": "此閘道上的設定檔：{profiles}"
+  },
+  "Project": {
+    "de": "Projekt",
+    "es": "Proyecto",
+    "fr": "Projet",
+    "id": "Proyek",
+    "it": "Progetto",
+    "ja": "プロジェクト",
+    "ko": "프로젝트",
+    "pl": "Projekt",
+    "pt-BR": "Projeto",
+    "ru": "Проект",
+    "tr": "Proje",
+    "zh-Hans": "项目",
+    "zh-Hant": "專案"
   },
   "Promise": {
     "de": "Versprechen",
@@ -12358,6 +13093,21 @@
     "tr": "Kırmızı",
     "zh-Hans": "红色",
     "zh-Hant": "紅色"
+  },
+  "Redact secrets": {
+    "de": "Geheimnisse schwärzen",
+    "es": "Ocultar secretos",
+    "fr": "Masquer les secrets",
+    "id": "Samarkan rahasia",
+    "it": "Oscura i segreti",
+    "ja": "機密情報を伏せる",
+    "ko": "비밀 정보 가리기",
+    "pl": "Ukrywaj sekrety",
+    "pt-BR": "Ocultar segredos",
+    "ru": "Скрывать секреты",
+    "tr": "Gizli bilgileri maskele",
+    "zh-Hans": "隐藏密钥",
+    "zh-Hant": "遮蔽機密資訊"
   },
   "Refresh": {
     "de": "Aktualisieren",
@@ -13394,6 +14144,36 @@
     "zh-Hans": "运行 /review 命令的审查者。",
     "zh-Hant": "執行 /review 指令的審查者。"
   },
+  "Runtime": {
+    "de": "Laufzeit",
+    "es": "Ejecución",
+    "fr": "Exécution",
+    "id": "Runtime",
+    "it": "Esecuzione",
+    "ja": "実行",
+    "ko": "런타임",
+    "pl": "Działanie",
+    "pt-BR": "Execução",
+    "ru": "Выполнение",
+    "tr": "Çalışma zamanı",
+    "zh-Hans": "运行",
+    "zh-Hant": "執行"
+  },
+  "SSH backend: keep exported variables between commands. The working directory always carries over.": {
+    "de": "SSH-Backend: exportierte Variablen zwischen Befehlen behalten. Das Arbeitsverzeichnis bleibt immer erhalten.",
+    "es": "Backend SSH: conserva las variables exportadas entre comandos. El directorio de trabajo siempre se mantiene.",
+    "fr": "Backend SSH : conserver les variables exportées entre les commandes. Le dossier de travail est toujours conservé.",
+    "id": "Backend SSH: pertahankan variabel yang diekspor antarperintah. Direktori kerja selalu ikut terbawa.",
+    "it": "Backend SSH: mantieni le variabili esportate tra un comando e l'altro. La directory di lavoro viene sempre mantenuta.",
+    "ja": "SSH バックエンド: エクスポートした変数をコマンド間で保持します。作業ディレクトリは常に引き継がれます。",
+    "ko": "SSH 백엔드: 명령 사이에 내보낸 변수를 유지합니다. 작업 디렉터리는 항상 이어집니다.",
+    "pl": "Backend SSH: zachowuj wyeksportowane zmienne między poleceniami. Katalog roboczy zawsze jest zachowywany.",
+    "pt-BR": "Backend SSH: manter as variáveis exportadas entre comandos. O diretório de trabalho sempre é mantido.",
+    "ru": "Бэкенд SSH: сохранять экспортированные переменные между командами. Рабочий каталог сохраняется всегда.",
+    "tr": "SSH arka ucu: dışa aktarılan değişkenleri komutlar arasında koru. Çalışma dizini her zaman korunur.",
+    "zh-Hans": "SSH 后端：在命令之间保留导出的变量。工作目录始终会沿用。",
+    "zh-Hant": "SSH 後端：在命令之間保留匯出的變數。工作目錄一律會沿用。"
+  },
   "Safety": {
     "de": "Sicherheit",
     "es": "Seguridad",
@@ -13964,6 +14744,36 @@
     "zh-Hans": "正在搜索…",
     "zh-Hant": "正在搜尋…"
   },
+  "Seconds a terminal command can run.": {
+    "de": "Sekunden, die ein Terminalbefehl laufen darf.",
+    "es": "Segundos que puede ejecutarse un comando de terminal.",
+    "fr": "Secondes pendant lesquelles une commande du terminal peut s'exécuter.",
+    "id": "Detik maksimal sebuah perintah terminal boleh berjalan.",
+    "it": "Secondi per cui può essere eseguito un comando del terminale.",
+    "ja": "ターミナルのコマンドを実行できる秒数です。",
+    "ko": "터미널 명령이 실행될 수 있는 초입니다.",
+    "pl": "Liczba sekund, przez które może działać polecenie terminala.",
+    "pt-BR": "Segundos que um comando de terminal pode rodar.",
+    "ru": "Сколько секунд может выполняться команда терминала.",
+    "tr": "Bir terminal komutunun çalışabileceği saniye.",
+    "zh-Hans": "终端命令可运行的秒数。",
+    "zh-Hant": "終端機命令可執行的秒數。"
+  },
+  "Seconds an approval request waits before it times out.": {
+    "de": "Sekunden, die eine Freigabeanfrage wartet, bevor sie abläuft.",
+    "es": "Segundos que espera una solicitud de aprobación antes de caducar.",
+    "fr": "Secondes d'attente d'une demande d'approbation avant expiration.",
+    "id": "Detik sebuah permintaan persetujuan menunggu sebelum habis waktu.",
+    "it": "Secondi di attesa di una richiesta di approvazione prima della scadenza.",
+    "ja": "承認リクエストがタイムアウトするまで待つ秒数です。",
+    "ko": "승인 요청이 시간 초과되기 전까지 기다리는 초입니다.",
+    "pl": "Liczba sekund oczekiwania prośby o zatwierdzenie przed wygaśnięciem.",
+    "pt-BR": "Segundos que um pedido de aprovação espera antes de expirar.",
+    "ru": "Сколько секунд запрос на разрешение ждёт до истечения.",
+    "tr": "Bir onay isteğinin zaman aşımına uğramadan önce beklediği saniye.",
+    "zh-Hans": "审批请求在超时前等待的秒数。",
+    "zh-Hant": "核准請求在逾時前等待的秒數。"
+  },
   "Seconds before a delegate agent is stopped. 0 means no limit.": {
     "de": "Sekunden, bevor ein delegierter Agent gestoppt wird. 0 bedeutet kein Limit.",
     "es": "Segundos antes de detener a un agente delegado. 0 significa sin límite.",
@@ -14113,6 +14923,21 @@
     "tr": "Gönderildi. Ajan bunu bir sonraki adımında okuyacak.",
     "zh-Hans": "已发送。智能体会在下一步读取。",
     "zh-Hant": "已傳送。代理程式會在下一步讀取。"
+  },
+  "Server-side path for new workspaces.": {
+    "de": "Serverseitiger Pfad für neue Arbeitsbereiche.",
+    "es": "Ruta en el servidor para los espacios de trabajo nuevos.",
+    "fr": "Chemin côté serveur pour les nouveaux espaces de travail.",
+    "id": "Jalur di sisi server untuk ruang kerja baru.",
+    "it": "Percorso sul server per i nuovi spazi di lavoro.",
+    "ja": "新しいワークスペースに使用するサーバ側のパスです。",
+    "ko": "새 작업 공간의 서버 측 경로.",
+    "pl": "Ścieżka po stronie serwera dla nowych obszarów roboczych.",
+    "pt-BR": "Caminho no servidor para novos espaços de trabalho.",
+    "ru": "Путь на сервере для новых рабочих пространств.",
+    "tr": "Yeni çalışma alanları için sunucu tarafı yol.",
+    "zh-Hans": "新工作区的服务器端路径。",
+    "zh-Hant": "新工作區在伺服器端的路徑。"
   },
   "Session token": {
     "de": "Sitzungstoken",
@@ -14669,6 +15494,21 @@
     "zh-Hans": "正在登录…",
     "zh-Hant": "正在登入…"
   },
+  "Singularity image": {
+    "de": "Singularity-Image",
+    "es": "Imagen de Singularity",
+    "fr": "Image Singularity",
+    "id": "Image Singularity",
+    "it": "Immagine Singularity",
+    "ja": "Singularity イメージ",
+    "ko": "Singularity 이미지",
+    "pl": "Obraz Singularity",
+    "pt-BR": "Imagem do Singularity",
+    "ru": "Образ Singularity",
+    "tr": "Singularity imajı",
+    "zh-Hans": "Singularity 镜像",
+    "zh-Hant": "Singularity 映像檔"
+  },
   "Six is the most a room holds.": {
     "de": "Ein Raum fasst höchstens sechs.",
     "es": "Una sala admite seis como máximo.",
@@ -14909,6 +15749,21 @@
     "zh-Hans": "小事也提：每天六条提醒，承诺检查得更早。",
     "zh-Hant": "小事也提：每天六則提醒，承諾檢查得更早。"
   },
+  "Smart": {
+    "de": "Smart",
+    "es": "Inteligente",
+    "fr": "Intelligent",
+    "id": "Cerdas",
+    "it": "Smart",
+    "ja": "スマート",
+    "ko": "스마트",
+    "pl": "Inteligentny",
+    "pt-BR": "Inteligente",
+    "ru": "Умный",
+    "tr": "Akıllı",
+    "zh-Hans": "智能",
+    "zh-Hant": "智慧"
+  },
   "Smart approvals": {
     "de": "Intelligente Freigaben",
     "es": "Aprobaciones inteligentes",
@@ -14923,6 +15778,21 @@
     "tr": "Akıllı onaylar",
     "zh-Hans": "智能批准",
     "zh-Hant": "智慧核准"
+  },
+  "Snapshot files before Hermes edits them, so changes can be rolled back.": {
+    "de": "Dateien vor dem Bearbeiten durch Hermes sichern, damit Änderungen rückgängig gemacht werden können.",
+    "es": "Guarda una instantánea de los archivos antes de que Hermes los edite, para poder revertir los cambios.",
+    "fr": "Créer un instantané des fichiers avant que Hermes ne les modifie, pour pouvoir annuler les changements.",
+    "id": "Buat snapshot file sebelum Hermes mengeditnya, agar perubahan bisa dikembalikan.",
+    "it": "Crea uno snapshot dei file prima che Hermes li modifichi, così le modifiche si possono annullare.",
+    "ja": "Hermes が編集する前にファイルのスナップショットを取り、変更を元に戻せるようにします。",
+    "ko": "Hermes가 파일을 편집하기 전에 스냅샷을 만들어 변경 사항을 되돌릴 수 있게 합니다.",
+    "pl": "Twórz migawki plików przed edycją przez Hermesa, aby można było wycofać zmiany.",
+    "pt-BR": "Faz um snapshot dos arquivos antes de o Hermes editá-los, para que as alterações possam ser revertidas.",
+    "ru": "Делать снимок файлов перед их изменением Hermes, чтобы изменения можно было откатить.",
+    "tr": "Hermes dosyaları düzenlemeden önce anlık görüntü al, böylece değişiklikler geri alınabilir.",
+    "zh-Hans": "在 Hermes 编辑文件前创建快照，以便回滚更改。",
+    "zh-Hant": "在 Hermes 編輯檔案前建立快照，以便還原變更。"
   },
   "Source": {
     "de": "Quelle",
@@ -15404,6 +16274,21 @@
     "zh-Hans": "正在停止网关…",
     "zh-Hant": "正在停止閘道…"
   },
+  "Strict": {
+    "de": "Streng",
+    "es": "Estricto",
+    "fr": "Strict",
+    "id": "Ketat",
+    "it": "Rigoroso",
+    "ja": "厳格",
+    "ko": "엄격",
+    "pl": "Ścisły",
+    "pt-BR": "Rigoroso",
+    "ru": "Строгий",
+    "tr": "Katı",
+    "zh-Hans": "严格",
+    "zh-Hant": "嚴格"
+  },
   "Strong effect": {
     "de": "Starke Wirkung",
     "es": "Efecto fuerte",
@@ -15583,6 +16468,36 @@
     "tr": "Devredilen bir ajanın arka plan komutu bittiğinde veya izlediği şeyle eşleştiğinde sohbete bildir.",
     "zh-Hans": "当委派代理的后台命令完成或匹配到监视内容时通知聊天。",
     "zh-Hant": "當委派代理程式的背景命令完成或符合監看內容時通知聊天。"
+  },
+  "Terminal": {
+    "de": "Terminal",
+    "es": "Terminal",
+    "fr": "Terminal",
+    "id": "Terminal",
+    "it": "Terminale",
+    "ja": "ターミナル",
+    "ko": "터미널",
+    "pl": "Terminal",
+    "pt-BR": "Terminal",
+    "ru": "Терминал",
+    "tr": "Terminal",
+    "zh-Hans": "终端",
+    "zh-Hant": "終端機"
+  },
+  "Terminal output limit": {
+    "de": "Limit für Terminalausgabe",
+    "es": "Límite de salida del terminal",
+    "fr": "Limite de sortie du terminal",
+    "id": "Batas keluaran terminal",
+    "it": "Limite di output del terminale",
+    "ja": "ターミナル出力の上限",
+    "ko": "터미널 출력 한도",
+    "pl": "Limit wyniku terminala",
+    "pt-BR": "Limite de saída do terminal",
+    "ru": "Лимит вывода терминала",
+    "tr": "Terminal çıktı sınırı",
+    "zh-Hans": "终端输出上限",
+    "zh-Hant": "終端機輸出上限"
   },
   "Test Connection": {
     "de": "Verbindung testen",
@@ -17009,6 +17924,21 @@
     "zh-Hans": "已思考",
     "zh-Hant": "已思考"
   },
+  "Throw them away": {
+    "de": "Verwerfen",
+    "es": "Descartarlos",
+    "fr": "Les jeter",
+    "id": "Buang",
+    "it": "Scartale",
+    "ja": "破棄する",
+    "ko": "버리기",
+    "pl": "Odrzuć",
+    "pt-BR": "Descartar",
+    "ru": "Удалить",
+    "tr": "At",
+    "zh-Hans": "丢弃",
+    "zh-Hant": "捨棄"
+  },
   "Time": {
     "de": "Uhrzeit",
     "es": "Hora",
@@ -17398,6 +18328,36 @@
     "tr": "{seconds} sn sonra yeniden denenecek.",
     "zh-Hans": "{seconds} 秒后重试。",
     "zh-Hant": "{seconds} 秒後重試。"
+  },
+  "Turn limit": {
+    "de": "Schrittlimit",
+    "es": "Límite de turnos",
+    "fr": "Limite de tours",
+    "id": "Batas giliran",
+    "it": "Limite di turni",
+    "ja": "ターンの上限",
+    "ko": "턴 한도",
+    "pl": "Limit tur",
+    "pt-BR": "Limite de turnos",
+    "ru": "Лимит ходов",
+    "tr": "Tur sınırı",
+    "zh-Hans": "轮次上限",
+    "zh-Hant": "回合上限"
+  },
+  "Turn limits, terminal, and tool output": {
+    "de": "Schrittlimits, Terminal und Tool-Ausgabe",
+    "es": "Límites de turnos, terminal y salida de herramientas",
+    "fr": "Limites de tours, terminal et sortie des outils",
+    "id": "Batas giliran, terminal, dan keluaran alat",
+    "it": "Limiti di turni, terminale e output degli strumenti",
+    "ja": "ターンの上限、ターミナル、ツール出力",
+    "ko": "턴 한도, 터미널, 도구 출력",
+    "pl": "Limity tur, terminal i wyniki narzędzi",
+    "pt-BR": "Limites de turnos, terminal e saída de ferramentas",
+    "ru": "Лимиты ходов, терминал и вывод инструментов",
+    "tr": "Tur sınırları, terminal ve araç çıktısı",
+    "zh-Hans": "轮次上限、终端和工具输出",
+    "zh-Hant": "回合上限、終端機與工具輸出"
   },
   "Turn on Pulse": {
     "de": "Pulse einschalten",
@@ -17879,6 +18839,21 @@
     "zh-Hans": "已更新计划",
     "zh-Hant": "已更新計畫"
   },
+  "Updates": {
+    "de": "Updates",
+    "es": "Actualizaciones",
+    "fr": "Mises à jour",
+    "id": "Pembaruan",
+    "it": "Aggiornamenti",
+    "ja": "アップデート",
+    "ko": "업데이트",
+    "pl": "Aktualizacje",
+    "pt-BR": "Atualizações",
+    "ru": "Обновления",
+    "tr": "Güncellemeler",
+    "zh-Hans": "更新",
+    "zh-Hant": "更新"
+  },
   "Updating Hermes…": {
     "de": "Hermes wird aktualisiert…",
     "es": "Actualizando Hermes…",
@@ -18058,6 +19033,21 @@
     "tr": "Anahtar kullanımı",
     "zh-Hans": "密钥使用方式",
     "zh-Hant": "金鑰使用方式"
+  },
+  "Use my real browser profile": {
+    "de": "Mein echtes Browserprofil verwenden",
+    "es": "Usar mi perfil real del navegador",
+    "fr": "Utiliser mon vrai profil de navigateur",
+    "id": "Gunakan profil browser asli saya",
+    "it": "Usa il mio vero profilo del browser",
+    "ja": "実際のブラウザプロファイルを使う",
+    "ko": "실제 브라우저 프로필 사용",
+    "pl": "Używaj mojego prawdziwego profilu przeglądarki",
+    "pt-BR": "Usar meu perfil real do navegador",
+    "ru": "Использовать мой настоящий профиль браузера",
+    "tr": "Gerçek tarayıcı profilimi kullan",
+    "zh-Hans": "使用我的真实浏览器配置文件",
+    "zh-Hant": "使用我的真實瀏覽器設定檔"
   },
   "Use the shared key": {
     "de": "Gemeinsamen Schlüssel nutzen",
@@ -18689,6 +19679,21 @@
     "zh-Hans": "已逾期或一天内到期的事",
     "zh-Hant": "已逾期或一天內到期的事"
   },
+  "When Hermes updates itself from an app, keep local source edits or throw them away. Terminal updates always ask.": {
+    "de": "Wenn Hermes sich aus einer App aktualisiert: lokale Quelltextänderungen behalten oder verwerfen. Updates im Terminal fragen immer nach.",
+    "es": "Cuando Hermes se actualiza desde una app, conservar o descartar los cambios locales en el código. Las actualizaciones desde el terminal siempre preguntan.",
+    "fr": "Quand Hermes se met à jour depuis une app, conserver ou jeter les modifications locales du code. Les mises à jour depuis le terminal demandent toujours.",
+    "id": "Saat Hermes memperbarui dirinya dari aplikasi, simpan atau buang perubahan kode lokal. Pembaruan dari terminal selalu bertanya.",
+    "it": "Quando Hermes si aggiorna da un'app, conserva o scarta le modifiche locali al codice. Gli aggiornamenti dal terminale chiedono sempre.",
+    "ja": "Hermes がアプリから自身を更新するとき、ローカルのソース変更を残すか破棄するかを選びます。ターミナルからの更新では毎回確認されます。",
+    "ko": "Hermes가 앱에서 스스로 업데이트할 때 로컬 소스 변경 사항을 유지할지 버릴지 정합니다. 터미널 업데이트는 항상 묻습니다.",
+    "pl": "Gdy Hermes aktualizuje się z aplikacji: zachowaj lub odrzuć lokalne zmiany w kodzie. Aktualizacje z terminala zawsze pytają.",
+    "pt-BR": "Quando o Hermes se atualiza por um app, manter ou descartar as alterações locais no código. Atualizações pelo terminal sempre perguntam.",
+    "ru": "Когда Hermes обновляется из приложения: сохранить или удалить локальные правки исходного кода. Обновления из терминала всегда спрашивают.",
+    "tr": "Hermes kendini bir uygulamadan güncellediğinde yerel kaynak değişikliklerini koru ya da at. Terminal güncellemeleri her zaman sorar.",
+    "zh-Hans": "Hermes 从应用中自我更新时，保留还是丢弃本地源码改动。从终端更新时总会询问。",
+    "zh-Hant": "Hermes 從應用程式自我更新時，保留或捨棄本機原始碼變更。從終端機更新時一律會詢問。"
+  },
   "When Pulse speaks up": {
     "de": "Wann Pulse sich meldet",
     "es": "Cuándo habla Pulse",
@@ -18884,6 +19889,36 @@
     "zh-Hans": "处理中",
     "zh-Hant": "處理中"
   },
+  "Working defaults and safeguards for this profile.": {
+    "de": "Arbeitsstandards und Schutzmaßnahmen für dieses Profil.",
+    "es": "Valores de trabajo predeterminados y medidas de seguridad para este perfil.",
+    "fr": "Valeurs par défaut de travail et garde-fous de ce profil.",
+    "id": "Default kerja dan pengaman untuk profil ini.",
+    "it": "Impostazioni di lavoro predefinite e protezioni per questo profilo.",
+    "ja": "このプロファイルの作業時のデフォルト設定と安全対策。",
+    "ko": "이 프로필의 기본 작업 설정과 안전장치.",
+    "pl": "Domyślne ustawienia pracy i zabezpieczenia tego profilu.",
+    "pt-BR": "Padrões de trabalho e proteções deste perfil.",
+    "ru": "Рабочие параметры по умолчанию и меры защиты для этого профиля.",
+    "tr": "Bu profil için çalışma varsayılanları ve güvenlik önlemleri.",
+    "zh-Hans": "此档案的默认工作方式与安全防护。",
+    "zh-Hant": "此設定檔的工作預設值與安全防護。"
+  },
+  "Working directory, approvals, and privacy": {
+    "de": "Arbeitsverzeichnis, Freigaben und Datenschutz",
+    "es": "Directorio de trabajo, aprobaciones y privacidad",
+    "fr": "Dossier de travail, approbations et confidentialité",
+    "id": "Direktori kerja, persetujuan, dan privasi",
+    "it": "Directory di lavoro, approvazioni e privacy",
+    "ja": "作業ディレクトリ、承認、プライバシー",
+    "ko": "작업 디렉터리, 승인, 개인정보 보호",
+    "pl": "Katalog roboczy, zatwierdzenia i prywatność",
+    "pt-BR": "Diretório de trabalho, aprovações e privacidade",
+    "ru": "Рабочий каталог, разрешения и конфиденциальность",
+    "tr": "Çalışma dizini, onaylar ve gizlilik",
+    "zh-Hans": "工作目录、审批与隐私",
+    "zh-Hant": "工作目錄、核准與隱私權"
+  },
   "Working folder: {folder}": {
     "de": "Arbeitsordner: {folder}",
     "es": "Carpeta de trabajo: {folder}",
@@ -18913,6 +19948,36 @@
     "tr": "Çalışıyor…",
     "zh-Hans": "处理中…",
     "zh-Hant": "處理中…"
+  },
+  "Workspace": {
+    "de": "Arbeitsbereich",
+    "es": "Espacio de trabajo",
+    "fr": "Espace de travail",
+    "id": "Ruang kerja",
+    "it": "Spazio di lavoro",
+    "ja": "ワークスペース",
+    "ko": "작업 공간",
+    "pl": "Obszar roboczy",
+    "pt-BR": "Espaço de trabalho",
+    "ru": "Рабочее пространство",
+    "tr": "Çalışma Alanı",
+    "zh-Hans": "工作区",
+    "zh-Hant": "工作區"
+  },
+  "Workspace & safety": {
+    "de": "Umgebung & Schutz",
+    "es": "Entorno y seguridad",
+    "fr": "Dossier et sécurité",
+    "id": "Folder & keamanan",
+    "it": "Cartella e sicurezza",
+    "ja": "ワークスペースと安全性",
+    "ko": "작업 공간 및 안전",
+    "pl": "Folder i ochrona",
+    "pt-BR": "Ambiente e proteção",
+    "ru": "Среда и защита",
+    "tr": "Ortam ve güvenlik",
+    "zh-Hans": "工作区与安全",
+    "zh-Hant": "工作區與安全性"
   },
   "Workstream Model": {
     "de": "Modell für Workstreams",

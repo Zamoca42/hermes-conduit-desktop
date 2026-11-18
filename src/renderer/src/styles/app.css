@@ -5960,3 +5960,12 @@ button.cap-row-text {
   gap: 8px;
   margin-top: 6px;
 }
+.mem-row.wide {
+  flex-direction: column;
+  align-items: stretch;
+}
+.mem-text-input {
+  width: 100%;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 13px;
+}

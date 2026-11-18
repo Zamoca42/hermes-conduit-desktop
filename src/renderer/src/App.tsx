@@ -44,6 +44,8 @@ import { useAgents } from './state/useAgents'
 import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
 import { NewBot } from './components/NewBot'
+import { ConfigPage } from './components/ConfigPage'
+import { advancedSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
@@ -894,7 +896,7 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
@@ -905,6 +907,24 @@ function Settings({
     return (
       <main className="settings">
         <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'workspace' || page === 'advanced')
+    return (
+      <main className="settings">
+        <ConfigPage
+          key={page}
+          title={page === 'workspace' ? t('Workspace & safety') : t('Advanced')}
+          subtitle={
+            page === 'workspace'
+              ? t('Working defaults and safeguards for this profile.')
+              : t('Limits and runtime defaults for this profile. Most profiles never need to change these.')
+          }
+          sections={page === 'workspace' ? workspaceSections : advancedSections}
+          bots={bots}
+          profile={profile}
+          onBack={() => setPage('main')}
+        />
       </main>
     )
   if (page === 'memory')
@@ -970,10 +990,22 @@ function Settings({
             {t('Chat model and helper models')}
           </button>
         </dd>
+        <dt>{t('Workspace & safety')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('workspace')}>
+            {t('Working directory, approvals, and privacy')}
+          </button>
+        </dd>
         <dt>{t('Memory & delegation')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('memory')}>
             {t('Memory, compression, and child agents')}
+          </button>
+        </dd>
+        <dt>{t('Advanced')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('advanced')}>
+            {t('Turn limits, terminal, and tool output')}
           </button>
         </dd>
         <dt>{t('Capabilities')}</dt>

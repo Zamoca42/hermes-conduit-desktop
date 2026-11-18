@@ -1,5 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { fieldValue, memorySections, pluginChoices, pluginRouteBody, schemaKeys, shownFields, updateConfig, valueAt, withChoices, withValue, type Http } from '../src/renderer/src/state/profileConfig'
+import {
+  advancedSections,
+  fieldValue,
+  listLines,
+  workspaceSections,
+  memorySections,
+  pluginChoices,
+  pluginRouteBody,
+  schemaKeys,
+  shownFields,
+  updateConfig,
+  valueAt,
+  withChoices,
+  withValue,
+  type Http
+} from '../src/renderer/src/state/profileConfig'
 
 const delegation = () => memorySections().find(s => s.fields.some(f => f.key.startsWith('delegation.')))!
 
@@ -91,5 +106,19 @@ describe('plugin choices', () => {
     expect(pluginRouteBody('default', 'memory.provider', 'honcho')).toEqual({ memory_provider: 'honcho' })
     expect(pluginRouteBody('nova', 'context.engine', 'lcm')).toBeNull()
     expect(pluginRouteBody('', 'memory.memory_enabled', true)).toBeNull()
+  })
+})
+
+describe('workspace and advanced rows', () => {
+  const field = (key: string) => [...workspaceSections(), ...advancedSections()].flatMap(s => s.fields).find(f => f.key === key)!
+  it('reads lists one per line and text as it is', () => {
+    expect(fieldValue({ command_allowlist: ['git *', 3, null] }, field('command_allowlist'))).toBe('git *\n3')
+    expect(fieldValue({}, field('terminal.env_passthrough'))).toBe('')
+    expect(fieldValue({ terminal: { cwd: '/srv' } }, field('terminal.cwd'))).toBe('/srv')
+    expect(fieldValue({}, field('approvals.mode'))).toBe('smart')
+    expect(fieldValue({}, field('agent.api_max_retries'))).toBe(3)
+  })
+  it('saves a list trimmed, blanks left out', () => {
+    expect(listLines(' git *\n\n  ls -la \n')).toEqual(['git *', 'ls -la'])
   })
 })

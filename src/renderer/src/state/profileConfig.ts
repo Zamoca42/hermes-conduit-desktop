@@ -16,6 +16,9 @@ export type Control =
   | { kind: 'toggle'; defaultValue: boolean }
   | { kind: 'number'; defaultValue: number }
   | { kind: 'options'; options: { value: string; label: string }[]; defaultValue: string }
+  | { kind: 'text'; defaultValue: string }
+  /** A list of strings, one per line. */
+  | { kind: 'list' }
 
 export interface Field {
   key: string
@@ -29,6 +32,212 @@ export interface Field {
 export interface Section {
   title: string
   fields: Field[]
+}
+
+/** A list control's lines as Hermes stores them: trimmed, blanks left out. */
+export const listLines = (text: string) =>
+  text
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+
+const opts = (pairs: [string, string][]) => pairs.map(([value, label]) => ({ value, label }))
+
+/** Settings > Workspace & safety's rows, after the phone's. */
+export function workspaceSections(): Section[] {
+  return [
+    {
+      title: t('Workspace'),
+      fields: [
+        {
+          key: 'terminal.cwd',
+          label: t('Default working directory'),
+          help: t('Server-side path for new workspaces.'),
+          control: { kind: 'text', defaultValue: '' }
+        },
+        {
+          key: 'code_execution.mode',
+          label: t('Code execution mode'),
+          help: t('Default execution boundary.'),
+          control: {
+            kind: 'options',
+            options: opts([
+              ['project', t('Project')],
+              ['strict', t('Strict')]
+            ]),
+            defaultValue: 'project'
+          }
+        },
+        {
+          key: 'terminal.persistent_shell',
+          label: t('Persistent shell'),
+          help: t('SSH backend: keep exported variables between commands. The working directory always carries over.'),
+          control: { kind: 'toggle', defaultValue: true },
+          requiresSchema: true
+        },
+        {
+          key: 'terminal.env_passthrough',
+          label: t('Environment passthrough'),
+          help: t('Environment variables passed into tool commands, one per line.'),
+          control: { kind: 'list' },
+          requiresSchema: true
+        },
+        {
+          key: 'file_read_max_chars',
+          label: t('File read limit'),
+          help: t('Most characters Hermes reads from a file in one request.'),
+          control: { kind: 'number', defaultValue: 100000 },
+          requiresSchema: true
+        }
+      ]
+    },
+    {
+      title: t('Safety'),
+      fields: [
+        {
+          key: 'approvals.mode',
+          label: t('Approval mode'),
+          help: t(
+            "Profile-wide default: manual asks every time; smart asks when risk warrants it; off is YOLO mode. When set to off, Hermes auto-approves everything and per-session YOLO toggles have no effect — that's a Hermes limitation, not a Conduit bug. To use per-session YOLO, set this to manual or smart."
+          ),
+          control: {
+            kind: 'options',
+            options: opts([
+              ['manual', t('Manual')],
+              ['smart', t('Smart')],
+              ['off', t('YOLO mode')]
+            ]),
+            defaultValue: 'smart'
+          }
+        },
+        {
+          key: 'approvals.timeout',
+          label: t('Approval timeout'),
+          help: t('Seconds an approval request waits before it times out.'),
+          control: { kind: 'number', defaultValue: 300 },
+          requiresSchema: true
+        },
+        {
+          key: 'approvals.mcp_reload_confirm',
+          label: t('Confirm connector reloads'),
+          help: t('Ask before Hermes reloads its MCP connectors.'),
+          control: { kind: 'toggle', defaultValue: true },
+          requiresSchema: true
+        },
+        {
+          key: 'command_allowlist',
+          label: t('Command allowlist'),
+          help: t('Command patterns you approved permanently, one per line. Remove a line to be asked again.'),
+          control: { kind: 'list' },
+          requiresSchema: true
+        },
+        {
+          key: 'security.redact_secrets',
+          label: t('Redact secrets'),
+          help: t('Hide detected credentials from tool output where possible.'),
+          control: { kind: 'toggle', defaultValue: true }
+        },
+        {
+          key: 'security.allow_private_urls',
+          label: t('Allow private URLs'),
+          help: t('Permit tool access to private-network URLs.'),
+          control: { kind: 'toggle', defaultValue: false }
+        },
+        {
+          key: 'checkpoints.enabled',
+          label: t('File checkpoints'),
+          help: t('Snapshot files before Hermes edits them, so changes can be rolled back.'),
+          control: { kind: 'toggle', defaultValue: false },
+          requiresSchema: true
+        }
+      ]
+    },
+    {
+      title: t('Browser'),
+      fields: [
+        {
+          key: 'browser.use_real_profile',
+          label: t('Use my real browser profile'),
+          help: t("Browse with a copy of the host's default Chromium browser profile, including its logins."),
+          control: { kind: 'toggle', defaultValue: false },
+          requiresSchema: true
+        },
+        {
+          key: 'browser.allow_private_urls',
+          label: t('Browser private URLs'),
+          help: t('Let the browser open private-network addresses.'),
+          control: { kind: 'toggle', defaultValue: false },
+          requiresSchema: true
+        },
+        {
+          key: 'browser.auto_local_for_private_urls',
+          label: t('Local browser for private URLs'),
+          help: t('Open private-network addresses in a local browser even when a cloud browser is set up.'),
+          control: { kind: 'toggle', defaultValue: true },
+          requiresSchema: true
+        }
+      ]
+    }
+  ]
+}
+
+/** Settings > Advanced's rows, after the phone's. */
+export function advancedSections(): Section[] {
+  const number = (key: string, label: string, help: string, defaultValue: number): Field => ({
+    key,
+    label,
+    help,
+    control: { kind: 'number', defaultValue },
+    requiresSchema: true
+  })
+  const text = (key: string, label: string, help: string): Field => ({ key, label, help, control: { kind: 'text', defaultValue: '' }, requiresSchema: true })
+  return [
+    {
+      title: t('Runtime'),
+      fields: [
+        number('agent.max_turns', t('Turn limit'), t('Most tool-calling turns before Hermes stops a run. 0 means no limit.'), 0),
+        number('agent.api_max_retries', t('API retries'), t('How many times Hermes retries a failed model request.'), 3)
+      ]
+    },
+    {
+      title: t('Terminal'),
+      fields: [
+        number('terminal.timeout', t('Command timeout'), t('Seconds a terminal command can run.'), 180),
+        text('terminal.docker_image', t('Docker image'), t('Image used when the terminal backend is Docker.')),
+        text('terminal.singularity_image', t('Singularity image'), t('Image used when the terminal backend is Singularity.')),
+        text('terminal.modal_image', t('Modal image'), t('Image used when the terminal backend is Modal.')),
+        text('terminal.daytona_image', t('Daytona image'), t('Image used when the terminal backend is Daytona.'))
+      ]
+    },
+    {
+      title: t('Files & output'),
+      fields: [
+        number('tool_output.max_bytes', t('Terminal output limit'), t('Most bytes of command output Hermes reads.'), 50000),
+        number('tool_output.max_lines', t('File page limit'), t('Most lines Hermes reads from a file at once.'), 2000),
+        number('tool_output.max_line_length', t('Line length limit'), t('Longer lines are cut to this many characters.'), 2000),
+        number('checkpoints.max_snapshots', t('Checkpoint limit'), t('Most file snapshots kept for rolling back.'), 20)
+      ]
+    },
+    {
+      title: t('Updates'),
+      fields: [
+        {
+          key: 'updates.non_interactive_local_changes',
+          label: t('Local changes on update'),
+          help: t('When Hermes updates itself from an app, keep local source edits or throw them away. Terminal updates always ask.'),
+          control: {
+            kind: 'options',
+            options: opts([
+              ['stash', t('Keep them')],
+              ['discard', t('Throw them away')]
+            ]),
+            defaultValue: 'stash'
+          },
+          requiresSchema: true
+        }
+      ]
+    }
+  ]
 }
 
 /** Settings > Memory & delegation's rows, after the phone's. */
@@ -247,7 +456,12 @@ export function pluginChoices(hub: unknown): Record<string, string[]> {
       .filter((n): n is string => typeof n === 'string' && !!n)
   return {
     'memory.provider': names(providers.memory_options, true).sort(),
-    'context.engine': ['compressor', ...names(providers.context_options, false).filter(n => n !== 'compressor').sort()]
+    'context.engine': [
+      'compressor',
+      ...names(providers.context_options, false)
+        .filter(n => n !== 'compressor')
+        .sort()
+    ]
   }
 }
 
@@ -283,6 +497,10 @@ export function fieldValue(config: unknown, field: Field): boolean | number | st
       if (typeof raw === 'number' && Number.isFinite(raw)) return raw
       if (typeof raw === 'string' && raw.trim() && Number.isFinite(Number(raw))) return Number(raw)
       return field.control.defaultValue
+    case 'list':
+      return Array.isArray(raw) ? raw.filter(v => typeof v === 'string' || typeof v === 'number').join('\n') : typeof raw === 'string' ? raw : ''
+    case 'text':
+      return typeof raw === 'string' ? raw : typeof raw === 'number' ? String(raw) : field.control.defaultValue
     default:
       return typeof raw === 'string' && raw ? raw : field.control.defaultValue
   }
