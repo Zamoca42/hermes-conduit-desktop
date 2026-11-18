@@ -37,11 +37,13 @@ const api: ConduitApi = {
   onRequests: listener => listen<PendingRequest[]>(IPC.requestsChanged, listener),
   answerRequest: (id, result) => ipcRenderer.invoke(IPC.answerRequest, id, result),
   dismissRequest: id => ipcRenderer.invoke(IPC.dismissRequest, id),
+  setWaiting: count => ipcRenderer.send(IPC.setWaiting, count),
   onMenu: listener => listen<MenuAction>(IPC.menu, listener),
   window: {
     minimize: () => ipcRenderer.send(IPC.windowMinimize),
     toggleMaximize: () => ipcRenderer.send(IPC.windowToggleMaximize),
-    close: () => ipcRenderer.send(IPC.windowClose)
+    close: () => ipcRenderer.send(IPC.windowClose),
+    show: () => ipcRenderer.send(IPC.windowShow)
   }
 }
 

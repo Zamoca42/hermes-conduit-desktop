@@ -5,10 +5,34 @@ import { IPC, type GatewayEventMessage, type MenuAction, type RpcOutcome, type S
 import { probeHost } from './auth'
 import { Connection } from './connection'
 import { createFileStore } from './store'
+import { ConduitTray } from './tray'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
 
 const isMac = process.platform === 'darwin'
 let mainWindow: BrowserWindow | null = null
+/** Set by Quit: until then, closing the window only hides it (Conduit stays in the tray). */
+let quitting = false
+
+function showWindow(): void {
+  if (!mainWindow) createWindow()
+  const window = mainWindow
+  if (!window) return
+  if (window.isMinimized()) window.restore()
+  window.show()
+  window.focus()
+}
+
+function sendCommand(action: MenuAction): void {
+  const target = mainWindow ?? BrowserWindow.getAllWindows()[0]
+  if (target && !target.isDestroyed()) target.webContents.send(IPC.menu, action)
+}
+
+const tray = new ConduitTray({
+  window: () => mainWindow,
+  showWindow,
+  command: sendCommand,
+  quit: () => app.quit()
+})
 
 function send(channel: string, payload: unknown): void {
   for (const window of BrowserWindow.getAllWindows()) {
@@ -47,6 +71,11 @@ function createWindow(): void {
   })
   mainWindow = window
   window.on('ready-to-show', () => window.show())
+  window.on('close', event => {
+    if (quitting) return
+    event.preventDefault()
+    window.hide()
+  })
   window.on('closed', () => {
     if (mainWindow === window) mainWindow = null
   })
@@ -72,6 +101,8 @@ function createWindow(): void {
 function registerIpc(): void {
   if (process.platform === 'darwin') Menu.setApplicationMenu(macMenu())
   ipcMain.handle(IPC.requests, () => connection.requests())
+  ipcMain.on(IPC.setWaiting, (_event, count: number) => tray.setWaiting(Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0))
+  ipcMain.on(IPC.windowShow, () => showWindow())
   ipcMain.handle(IPC.answerRequest, (_event, id: string, result: Record<string, unknown>) => connection.answerRequest(id, result))
   ipcMain.handle(IPC.dismissRequest, (_event, id: string) => connection.dropRequest(id))
   ipcMain.handle(IPC.probe, (_event, url: string) => probeHost(url, globalThis.fetch.bind(globalThis)))
@@ -107,22 +138,22 @@ function registerIpc(): void {
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
-  app.on('second-instance', () => {
-    if (!mainWindow) return
-    if (mainWindow.isMinimized()) mainWindow.restore()
-    mainWindow.focus()
+  app.on('second-instance', () => showWindow())
+  app.on('before-quit', () => {
+    quitting = true
   })
   app.setAppUserModelId('dev.conduit.desktop')
   void app.whenReady().then(() => {
     registerIpc()
     createWindow()
+    tray.create()
     void connection.restore()
-    app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
+    // The Dock icon brings the hidden window back.
+    app.on('activate', () => showWindow())
   })
+  // The window only hides, so this comes with Quit; Conduit otherwise lives on in the tray.
   app.on('window-all-closed', () => {
-    if (!isMac) app.quit()
+    if (quitting) app.quit()
   })
 }
 
@@ -133,8 +164,8 @@ if (!app.requestSingleInstanceLock()) {
  */
 function macMenu(): Menu {
   const command = (action: MenuAction) => () => {
-    const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
-    if (target && !target.isDestroyed()) target.webContents.send(IPC.menu, action)
+    showWindow()
+    sendCommand(action)
   }
   const template: MenuItemConstructorOptions[] = [
     { role: 'appMenu' },
