@@ -1122,6 +1122,7 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: flex-end;
   gap: 6px;
   max-width: min(560px, 85%);
 }
@@ -2348,4 +2349,13 @@ html[data-window='quick'] body {
 .composer-row .attach:hover:not(:disabled) {
   background: var(--surface-hover);
   color: var(--text);
+}
+
+.room-picture {
+  max-width: 280px;
+  max-height: 220px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  object-fit: cover;
+  display: block;
 }

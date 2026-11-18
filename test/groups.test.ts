@@ -146,3 +146,14 @@ describe('room files', () => {
     ])
   })
 })
+
+describe('room pictures', () => {
+  it('read back as pictures, and anything else as gone', async () => {
+    const { pictureFromDownload } = await import('../src/renderer/src/state/roomPictures')
+    const png = btoa(String.fromCharCode(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3))
+    expect(pictureFromDownload({ data_base64: png })).toBe(`data:image/png;base64,${png}`)
+    expect(pictureFromDownload({ data_base64: btoa('not a picture') })).toBeNull()
+    expect(pictureFromDownload({ data_base64: 'x'.repeat(23_000_000) })).toBeNull()
+    expect(pictureFromDownload(null)).toBeNull()
+  })
+})

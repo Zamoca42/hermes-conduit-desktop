@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Bot } from "../state/bots";
 import { dayLabel, roomItems, startsNewDay, type Room } from "../state/groups";
 import { Fragment } from "react";
@@ -8,6 +8,7 @@ import { Composer } from "./Composer";
 import { Reply, clock } from "./Transcript";
 import { Icon } from "./icons";
 import { displayName, roomUploadProblem } from "../state/attachments";
+import { keptPictures, readRoomPicture } from "../state/roomPictures";
 import { t } from "@shared/i18n";
 
 interface Props {
@@ -19,16 +20,55 @@ interface Props {
   canAttach: boolean;
 }
 
-/** A room message's files, by name. */
-function FileChips({ files }: { files: { kind: string; name: string }[] }) {
+interface ShownFile {
+  kind: string;
+  name: string;
+  /** Where Hermes keeps it, to read a picture back. */
+  attachmentId?: string;
+  /** A picture's bytes already here (the sender's own, while it sends). */
+  dataUrl?: string;
+}
+
+/** A picture in a room message, read back from Hermes; its name if it won't load. */
+function RoomPicture({ roomId, eventId, file }: { roomId: string; eventId?: string; file: ShownFile }) {
+  const [src, setSrc] = useState<string | null | undefined>(
+    file.dataUrl ?? (file.attachmentId ? keptPictures.get(file.attachmentId) : null),
+  );
+  useEffect(() => {
+    if (src !== undefined || !file.attachmentId || !eventId) return;
+    let live = true;
+    void readRoomPicture(roomId, eventId, file.attachmentId).then((url) => {
+      if (live) setSrc(url);
+    });
+    return () => {
+      live = false;
+    };
+  }, [src, roomId, eventId, file.attachmentId]);
+  if (!src) {
+    return (
+      <span className="chip" title={file.name}>
+        <Icon name="image" />
+        <span>{displayName(file.name)}</span>
+      </span>
+    );
+  }
+  return <img className="room-picture" src={src} alt={file.name} title={file.name} />;
+}
+
+/** A room message's files: pictures as themselves, the rest by name. */
+function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: string; eventId?: string }) {
   return (
     <div className="attachments">
-      {files.map((f, i) => (
-        <span key={i} className="chip" title={f.name}>
-          <Icon name={f.kind === "image" ? "image" : "file"} />
-          <span>{displayName(f.name)}</span>
-        </span>
-      ))}
+      {files.map((f, i) =>
+        f.kind === "image" ? (
+          <RoomPicture key={i} roomId={roomId} eventId={eventId} file={f} />
+        ) : (
+          <span key={i} className="chip" title={f.name}>
+            <Icon name="file" />
+            <span>{displayName(f.name)}</span>
+          </span>
+        ),
+      )}
     </div>
   );
 }
@@ -111,7 +151,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
                 {day}
                 {item.kind === "user" ? (
                   <div key={item.key} className="user">
-                    {item.files ? <FileChips files={item.files} /> : null}
+                    {item.files ? <FileChips files={item.files} roomId={room.roomId} eventId={item.key} /> : null}
                     {item.text.trim() ? <div className="bubble">{item.text}</div> : null}
                     <span className="time">{clock(item.at)}</span>
                   </div>
@@ -152,7 +192,14 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
               className={`user pending${p.failed ? " failed" : ""}`}
             >
               {p.attachments.length ? (
-                <FileChips files={p.attachments.map((a) => ({ kind: a.kind, name: a.name }))} />
+                <FileChips
+                  roomId={room.roomId}
+                  files={p.attachments.map((a) => ({
+                    kind: a.kind,
+                    name: a.name,
+                    dataUrl: a.kind === "image" ? `data:${a.mime};base64,${a.base64}` : undefined,
+                  }))}
+                />
               ) : null}
               {p.text ? <div className="bubble">{p.text}</div> : null}
               {p.failed ? (
