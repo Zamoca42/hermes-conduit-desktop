@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mintedSocket } from '../src/shared/ipc'
 import {
+  quotaExhausted,
   availability,
   audioMessage,
   decode,
@@ -91,5 +92,15 @@ describe('Gemini Live events', () => {
     ])
     expect(decode('{"toolCallCancellation":{"ids":["c1"]}}')).toEqual([{ type: 'toolCancel', ids: ['c1'] }])
     expect(decode('nope')).toEqual([])
+  })
+})
+
+describe('quotaExhausted', () => {
+  it("reads Google's spent-quota wordings, not any mention of a quota", () => {
+    expect(quotaExhausted('You exceeded your current quota, please check your plan and billing details.')).toBe(true)
+    expect(quotaExhausted('RESOURCE_EXHAUSTED')).toBe(true)
+    expect(quotaExhausted('Resource has been exhausted (e.g. check quota).')).toBe(true)
+    expect(quotaExhausted('Check the model, workspace and quota.')).toBe(false)
+    expect(quotaExhausted('')).toBe(false)
   })
 })
