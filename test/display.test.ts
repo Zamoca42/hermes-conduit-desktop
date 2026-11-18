@@ -89,3 +89,14 @@ describe('self-improvement reviews', () => {
     expect(chatDisplay({ display: { memory_notifications: 'off' } }).showReviews).toBe(false)
   })
 })
+
+describe('cron reports in a Bot Chat', () => {
+  it('reads the plugin’s note as a report, not a message of yours', async () => {
+    const { cronReport, fromHistory } = await import('../src/renderer/src/state/transcript')
+    const note = '[Cron job "Morning news" report: shown in the chat, no reply asked for]\r\n\r\nThree stories today.'
+    expect(cronReport(note)).toEqual({ job: 'Morning news', report: 'Three stories today.' })
+    expect(cronReport('[Cron job "" report: shown in the chat, no reply asked for]')).toBeNull()
+    expect(cronReport('hello')).toBeNull()
+    expect(fromHistory([{ role: 'user', content: note }])).toMatchObject([{ kind: 'cron', job: 'Morning news' }])
+  })
+})

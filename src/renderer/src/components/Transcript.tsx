@@ -244,6 +244,30 @@ interface ItemProps {
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
+/** A scheduled job's report the bot was only shown, after the phone's CronReportCard: folded to a preview, Show all opens it. */
+function CronReportCard({ job, report, at }: { job: string; report: string; at?: number }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="cron-report">
+      <div className="cron-report-head">
+        <Icon name="clock" />
+        <strong>{job}</strong>
+        <span className="spacer" />
+        {report ? (
+          <button className="link" aria-expanded={open} onClick={() => setOpen(o => !o)}>
+            {open ? t('Show less') : t('Show all')}
+          </button>
+        ) : null}
+      </div>
+      {report ? <div className={open ? 'cron-report-body' : 'cron-report-body folded'}>{open ? <Markdown text={report} /> : report}</div> : null}
+      <span className="meta">
+        {t('Scheduled job report')}
+        {at ? ` · ${clock(at)}` : ''}
+      </span>
+    </div>
+  )
+}
+
 function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: string; menu: MessageMenuItem[] }) {
   const reading = useReadingKey() === messageKey
   const profile = useContext(PictureProfile)
@@ -368,6 +392,8 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
         </details>
       )
     }
+    case 'cron':
+      return <CronReportCard job={item.job} report={item.report} at={item.at} />
     case 'review':
       return (
         <details className="review-card" data-key={item.key}>

@@ -102,7 +102,34 @@ export interface ReviewItem {
   at?: number
 }
 
-export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem
+/** A scheduled job's report a Bot Chat was only shown (the plugin's cron_bot_chat note), not a message of yours. */
+export interface CronReportItem {
+  kind: 'cron'
+  key: string
+  job: string
+  report: string
+  at?: number
+}
+
+export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem | CronReportItem
+
+const CRON_PREFIX = '[Cron job "'
+const CRON_SUFFIX = '" report: shown in the chat, no reply asked for]'
+
+/** The note's job and report, as the phone reads it (CronBotChatReport.parse). */
+export function cronReport(raw: string): { job: string; report: string } | null {
+  if (!raw.startsWith(CRON_PREFIX)) return null
+  const text = raw.replace(/\r\n/g, '\n')
+  const first = text.split('\n', 1)[0]!
+  if (!first.endsWith(CRON_SUFFIX) || first.length <= CRON_PREFIX.length + CRON_SUFFIX.length) return null
+  return { job: first.slice(CRON_PREFIX.length, -CRON_SUFFIX.length), report: text.slice(first.length).trim() }
+}
+
+/** A user row: a cron report's note, or a message of yours. */
+function userRow(key: string, raw: string, at?: number): UserItem | CronReportItem | null {
+  const cron = cronReport(raw)
+  return cron ? { kind: 'cron', key, ...cron, at } : userItem(key, raw, at)
+}
 
 const REVIEW_PREFIX = '💾 self-improvement review:'
 
@@ -199,7 +226,7 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
     const key = row.row_id != null ? `row-${row.row_id}` : nextKey('h')
     switch (row.role) {
       case 'user': {
-        const item = userItem(key, rowText(row), at)
+        const item = userRow(key, rowText(row), at)
         if (item) items.push(item)
         break
       }
@@ -350,7 +377,7 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     }
     case 'user.message': {
       // Sent from another client of this chat (the phone).
-      const item = userItem(nextKey('u'), str(payload.text) ?? '', Date.now())
+      const item = userRow(nextKey('u'), str(payload.text) ?? '', Date.now())
       if (!item) return state
       return { ...state, items: [...seal(state.items), item] }
     }

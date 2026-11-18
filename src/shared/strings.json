@@ -15449,6 +15449,21 @@
     "zh-Hans": "已排期",
     "zh-Hant": "已排程"
   },
+  "Scheduled job report": {
+    "de": "Bericht eines geplanten Jobs",
+    "es": "Informe de trabajo programado",
+    "fr": "Rapport de tâche planifiée",
+    "id": "Laporan tugas terjadwal",
+    "it": "Report di job pianificato",
+    "ja": "スケジュールジョブのレポート",
+    "ko": "예약 작업 보고서",
+    "pl": "Raport zaplanowanego zadania",
+    "pt-BR": "Relatório de tarefa agendada",
+    "ru": "Отчёт задания по расписанию",
+    "tr": "Zamanlanmış iş raporu",
+    "zh-Hans": "定时任务报告",
+    "zh-Hant": "排程任務報告"
+  },
   "Scheduled jobs": {
     "de": "Geplante Jobs",
     "es": "Trabajos programados",
@@ -16168,6 +16183,21 @@
     "tr": "Göster",
     "zh-Hans": "显示",
     "zh-Hant": "顯示"
+  },
+  "Show all": {
+    "de": "Alle anzeigen",
+    "es": "Mostrar todo",
+    "fr": "Tout afficher",
+    "id": "Tampilkan semua",
+    "it": "Mostra tutto",
+    "ja": "すべて表示",
+    "ko": "모두 보기",
+    "pl": "Pokaż wszystkie",
+    "pt-BR": "Mostrar todos",
+    "ru": "Показать все",
+    "tr": "Tümünü göster",
+    "zh-Hans": "显示全部",
+    "zh-Hant": "全部顯示"
   },
   "Show all {count}": {
     "de": "Alle {count} anzeigen",
