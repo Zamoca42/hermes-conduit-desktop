@@ -7347,3 +7347,136 @@ button.cap-row-text {
   height: 160px;
   border-radius: 8px;
 }
+
+/* A bot's screen, after the phone's Bot's Screen sheet. */
+.screen-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 18px 18px;
+  background: var(--backdrop);
+  overflow: auto;
+}
+.screen-sheet.full {
+  position: fixed;
+  z-index: 70;
+  padding: 10px;
+}
+.screen-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.screen-head button.primary,
+.screen-head button.secondary {
+  height: 32px;
+  padding: 0 14px;
+}
+.screen-titles {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.screen-titles h1 {
+  margin: 0;
+  font-size: 18px;
+}
+.screen-mine {
+  color: var(--accent);
+}
+.screen-frame {
+  position: relative;
+  width: 100%;
+  max-height: calc(100% - 60px);
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #111;
+  flex: none;
+}
+.screen-sheet.full .screen-frame {
+  flex: 1;
+  max-height: none;
+  aspect-ratio: auto !important;
+}
+.screen-frame.hidden {
+  display: none;
+}
+.screen-canvas {
+  position: absolute;
+  inset: 0;
+}
+.screen-lost {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #eee;
+  background: rgba(0, 0, 0, 0.45);
+}
+.screen-note {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.screen-note h2 {
+  margin: 8px 0 0;
+  font-size: 16px;
+}
+.screen-note .pset-actions button {
+  height: 34px;
+  padding: 0 16px;
+}
+.screen-log {
+  max-height: 260px;
+  overflow: auto;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--field);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.screen-command {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.screen-command code {
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--field);
+  font-size: 12px;
+  word-break: break-all;
+}
+.screen-sudo label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.screen-sudo input,
+.screen-type input {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--field);
+}
+.screen-type {
+  display: flex;
+  gap: 8px;
+}
+.screen-type input {
+  flex: 1;
+}
+.screen-error {
+  margin: 0;
+}

@@ -69,4 +69,4 @@ and this app draws what it sends.
 
 ## License
 
-MIT
+MIT. The Bot's Screen viewer bundles [noVNC](https://github.com/novnc/noVNC)'s RFB client, under the MPL-2.0.

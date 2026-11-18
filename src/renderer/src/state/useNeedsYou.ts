@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
-import type { PendingRequest } from '../../../shared/ipc'
+import { isNeedsYouRequest, type PendingRequest } from '../../../shared/ipc'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 
-/** The approvals and questions waiting on this window, as the main process holds them. */
-export function useRequests(): PendingRequest[] {
+/** The approvals and questions waiting on this window, as the main process holds them; `all` adds the screen install's sudo asks. */
+export function useRequests(all = false): PendingRequest[] {
   const [requests, setRequests] = useState<PendingRequest[]>([])
   useEffect(() => {
-    const off = window.conduit.onRequests(setRequests)
-    void window.conduit.requests().then(setRequests)
+    const take = (list: PendingRequest[]) => setRequests(all ? list : list.filter(isNeedsYouRequest))
+    const off = window.conduit.onRequests(take)
+    void window.conduit.requests().then(take)
     return off
-  }, [])
+  }, [all])
   return requests
 }
 
