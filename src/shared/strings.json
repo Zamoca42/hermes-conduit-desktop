@@ -44,6 +44,21 @@
     "zh-Hans": "0 9 * * 1 或 every monday 9am",
     "zh-Hant": "0 9 * * 1 或 every monday 9am"
   },
+  "2FA codes": {
+    "de": "2FA-Codes",
+    "es": "Códigos 2FA",
+    "fr": "Codes 2FA",
+    "id": "Kode 2FA",
+    "it": "Codici 2FA",
+    "ja": "2FAコード",
+    "ko": "2FA 코드",
+    "pl": "Kody 2FA",
+    "pt-BR": "Códigos 2FA",
+    "ru": "Коды 2FA",
+    "tr": "2FA kodları",
+    "zh-Hans": "2FA 验证码",
+    "zh-Hant": "2FA 驗證碼"
+  },
   "30 days": {
     "de": "30 Tage",
     "es": "30 días",
@@ -419,6 +434,21 @@
     "zh-Hans": "添加评论，或说明完成了什么",
     "zh-Hant": "新增留言，或說明完成了什麼"
   },
+  "Add a login, card or address": {
+    "de": "Login, Karte oder Adresse hinzufügen",
+    "es": "Añadir un inicio de sesión, tarjeta o dirección",
+    "fr": "Ajouter un identifiant, une carte ou une adresse",
+    "id": "Tambahkan login, kartu, atau alamat",
+    "it": "Aggiungi un accesso, una carta o un indirizzo",
+    "ja": "ログイン、カード、住所を追加",
+    "ko": "로그인, 카드 또는 주소 추가",
+    "pl": "Dodaj login, kartę lub adres",
+    "pt-BR": "Adicionar login, cartão ou endereço",
+    "ru": "Добавить вход, карту или адрес",
+    "tr": "Giriş, kart veya adres ekle",
+    "zh-Hans": "添加登录信息、卡片或地址",
+    "zh-Hant": "新增登入資訊、卡片或地址"
+  },
   "Add a provider": {
     "de": "Anbieter hinzufügen",
     "es": "Añadir un proveedor",
@@ -523,6 +553,36 @@
     "tr": "Mesaja ekle",
     "zh-Hans": "添加到消息",
     "zh-Hant": "加入訊息"
+  },
+  "Add to vault": {
+    "de": "Zum Tresor hinzufügen",
+    "es": "Añadir a la bóveda",
+    "fr": "Ajouter au coffre",
+    "id": "Tambahkan ke brankas",
+    "it": "Aggiungi alla cassaforte",
+    "ja": "保管庫に追加",
+    "ko": "보관함에 추가",
+    "pl": "Dodaj do sejfu",
+    "pt-BR": "Adicionar ao cofre",
+    "ru": "Добавить в хранилище",
+    "tr": "Kasaya ekle",
+    "zh-Hans": "添加到保险库",
+    "zh-Hant": "新增到保險庫"
+  },
+  "Added {date}": {
+    "de": "Hinzugefügt am {date}",
+    "es": "Añadido el {date}",
+    "fr": "Ajouté le {date}",
+    "id": "Ditambahkan {date}",
+    "it": "Aggiunto il {date}",
+    "ja": "{date}に追加",
+    "ko": "{date}에 추가됨",
+    "pl": "Dodano {date}",
+    "pt-BR": "Adicionado em {date}",
+    "ru": "Добавлено {date}",
+    "tr": "{date} tarihinde eklendi",
+    "zh-Hans": "添加于 {date}",
+    "zh-Hant": "新增於 {date}"
   },
   "Address": {
     "de": "Adresse",
@@ -928,6 +988,21 @@
     "tr": "vLLM, LM Studio veya Ollama gibi OpenAI uyumlu herhangi bir sunucu",
     "zh-Hans": "任何兼容 OpenAI 的服务器，例如 vLLM、LM Studio 或 Ollama",
     "zh-Hant": "任何相容 OpenAI 的伺服器，例如 vLLM、LM Studio 或 Ollama"
+  },
+  "Apartment, suite (optional)": {
+    "de": "Wohnung, Etage (optional)",
+    "es": "Piso, puerta (opcional)",
+    "fr": "Appartement, étage (facultatif)",
+    "id": "Apartemen, unit (opsional)",
+    "it": "Interno, scala (facoltativo)",
+    "ja": "建物名・部屋番号（任意）",
+    "ko": "동, 호수 (선택)",
+    "pl": "Mieszkanie, lokal (opcjonalnie)",
+    "pt-BR": "Apartamento, complemento (opcional)",
+    "ru": "Квартира, офис (необязательно)",
+    "tr": "Daire, kat (isteğe bağlı)",
+    "zh-Hans": "公寓、单元（可选）",
+    "zh-Hant": "公寓、樓層（選填）"
   },
   "Approval mode": {
     "de": "Freigabemodus",
@@ -1394,6 +1469,21 @@
     "zh-Hans": "附件发送失败：{reason}",
     "zh-Hant": "附加失敗：{reason}"
   },
+  "Authenticator key (optional)": {
+    "de": "Authenticator-Schlüssel (optional)",
+    "es": "Clave de autenticador (opcional)",
+    "fr": "Clé d'authentification (facultatif)",
+    "id": "Kunci autentikator (opsional)",
+    "it": "Chiave dell'autenticatore (facoltativa)",
+    "ja": "認証キー（任意）",
+    "ko": "인증 키 (선택)",
+    "pl": "Klucz uwierzytelniający (opcjonalnie)",
+    "pt-BR": "Chave do autenticador (opcional)",
+    "ru": "Ключ аутентификатора (необязательно)",
+    "tr": "Doğrulayıcı anahtarı (isteğe bağlı)",
+    "zh-Hans": "验证器密钥（可选）",
+    "zh-Hant": "驗證器金鑰（選填）"
+  },
   "Auto": {
     "de": "Automatisch",
     "es": "Auto",
@@ -1783,6 +1873,21 @@
     "tr": "İş Akışları Arasında",
     "zh-Hans": "工作流之间",
     "zh-Hant": "工作流程之間"
+  },
+  "Billing postal code (optional)": {
+    "de": "Rechnungs-PLZ (optional)",
+    "es": "Código postal de facturación (opcional)",
+    "fr": "Code postal de facturation (facultatif)",
+    "id": "Kode pos penagihan (opsional)",
+    "it": "CAP di fatturazione (facoltativo)",
+    "ja": "請求先の郵便番号（任意）",
+    "ko": "청구지 우편번호 (선택)",
+    "pl": "Kod pocztowy rozliczeniowy (opcjonalnie)",
+    "pt-BR": "CEP de cobrança (opcional)",
+    "ru": "Индекс для счетов (необязательно)",
+    "tr": "Fatura posta kodu (isteğe bağlı)",
+    "zh-Hans": "账单邮编（可选）",
+    "zh-Hant": "帳單郵遞區號（選填）"
   },
   "Blocked": {
     "de": "Blockiert",
@@ -2204,6 +2309,21 @@
     "zh-Hans": "容量",
     "zh-Hant": "容量"
   },
+  "Card number": {
+    "de": "Kartennummer",
+    "es": "Número de tarjeta",
+    "fr": "Numéro de carte",
+    "id": "Nomor kartu",
+    "it": "Numero della carta",
+    "ja": "カード番号",
+    "ko": "카드 번호",
+    "pl": "Numer karty",
+    "pt-BR": "Número do cartão",
+    "ru": "Номер карты",
+    "tr": "Kart numarası",
+    "zh-Hans": "卡号",
+    "zh-Hant": "卡號"
+  },
   "Card {number}": {
     "de": "Karte {number}",
     "es": "Tarjeta {number}",
@@ -2563,6 +2683,21 @@
     "tr": "Conduit'in bakım güncellemelerini Hermes'e göre mi göstereceğini, her zaman mı göstereceğini yoksa hiç mi göstermeyeceğini seçin.",
     "zh-Hans": "选择 Conduit 跟随 Hermes、始终显示还是从不显示维护动态。",
     "zh-Hant": "選擇 Conduit 要跟隨 Hermes、一律顯示，還是永不顯示維護更新。"
+  },
+  "City": {
+    "de": "Stadt",
+    "es": "Ciudad",
+    "fr": "Ville",
+    "id": "Kota",
+    "it": "Città",
+    "ja": "市区町村",
+    "ko": "도시",
+    "pl": "Miasto",
+    "pt-BR": "Cidade",
+    "ru": "Город",
+    "tr": "Şehir",
+    "zh-Hans": "城市",
+    "zh-Hant": "城市"
   },
   "Classic voice": {
     "de": "Klassisch",
@@ -4244,6 +4379,21 @@
     "zh-Hans": "无法保存此更改：{error}",
     "zh-Hant": "無法儲存此變更：{error}"
   },
+  "Country": {
+    "de": "Land",
+    "es": "País",
+    "fr": "Pays",
+    "id": "Negara",
+    "it": "Paese",
+    "ja": "国",
+    "ko": "국가",
+    "pl": "Kraj",
+    "pt-BR": "País",
+    "ru": "Страна",
+    "tr": "Ülke",
+    "zh-Hans": "国家/地区",
+    "zh-Hant": "國家/地區"
+  },
   "Create": {
     "de": "Erstellen",
     "es": "Crear",
@@ -5024,6 +5174,36 @@
     "zh-Hans": "描述",
     "zh-Hant": "描述"
   },
+  "Detected but turned off for Hermes.": {
+    "de": "Erkannt, aber für Hermes ausgeschaltet.",
+    "es": "Detectado, pero desactivado para Hermes.",
+    "fr": "Détecté, mais désactivé pour Hermes.",
+    "id": "Terdeteksi, tetapi dimatikan untuk Hermes.",
+    "it": "Rilevato, ma disattivato per Hermes.",
+    "ja": "検出されましたが、Hermes ではオフになっています。",
+    "ko": "감지되었지만 Hermes에서 꺼져 있습니다.",
+    "pl": "Wykryto, ale wyłączono dla Hermesa.",
+    "pt-BR": "Detectado, mas desativado para o Hermes.",
+    "ru": "Обнаружен, но выключен для Hermes.",
+    "tr": "Algılandı ama Hermes için kapalı.",
+    "zh-Hans": "已检测到，但已为 Hermes 关闭。",
+    "zh-Hant": "已偵測到，但已為 Hermes 關閉。"
+  },
+  "Detected. Hermes asks you to unlock it when it needs a login, or unlock it now.": {
+    "de": "Erkannt. Hermes bittet dich ums Entsperren, wenn es ein Login braucht, oder entsperre jetzt.",
+    "es": "Detectado. Hermes te pide desbloquearlo cuando necesita un inicio de sesión, o desbloquéalo ahora.",
+    "fr": "Détecté. Hermes vous demande de le déverrouiller quand il a besoin d'un identifiant, ou déverrouillez-le maintenant.",
+    "id": "Terdeteksi. Hermes memintamu membukanya saat membutuhkan login, atau buka sekarang.",
+    "it": "Rilevato. Hermes ti chiede di sbloccarlo quando gli serve un accesso, oppure sbloccalo ora.",
+    "ja": "検出されました。Hermes はログインが必要になるとロック解除を求めます。今すぐ解除することもできます。",
+    "ko": "감지됨. Hermes가 로그인이 필요할 때 잠금 해제를 요청합니다. 지금 잠금 해제할 수도 있습니다.",
+    "pl": "Wykryto. Hermes poprosi o odblokowanie, gdy będzie potrzebować loginu, albo odblokuj teraz.",
+    "pt-BR": "Detectado. O Hermes pede para desbloqueá-lo quando precisa de um login, ou desbloqueie agora.",
+    "ru": "Обнаружен. Hermes попросит разблокировать его, когда понадобится вход, или разблокируйте сейчас.",
+    "tr": "Algılandı. Hermes bir girişe ihtiyaç duyduğunda kilidi açmanızı ister; isterseniz şimdi açın.",
+    "zh-Hans": "已检测到。Hermes 需要登录信息时会请你解锁，也可以现在解锁。",
+    "zh-Hant": "已偵測到。Hermes 需要登入資訊時會請你解鎖，也可以現在解鎖。"
+  },
   "Dictate": {
     "de": "Diktieren",
     "es": "Dictar",
@@ -5534,6 +5714,21 @@
     "zh-Hans": "正在编辑文件",
     "zh-Hant": "正在編輯檔案"
   },
+  "Email": {
+    "de": "E-Mail",
+    "es": "Correo",
+    "fr": "E-mail",
+    "id": "Email",
+    "it": "Email",
+    "ja": "メール",
+    "ko": "이메일",
+    "pl": "E-mail",
+    "pt-BR": "E-mail",
+    "ru": "Почта",
+    "tr": "E-posta",
+    "zh-Hans": "邮件",
+    "zh-Hant": "郵件"
+  },
   "Empty Folder": {
     "de": "Leerer Ordner",
     "es": "Carpeta vacía",
@@ -5638,6 +5833,96 @@
     "tr": "Hermes panonuzun adresini girin; telefonunuzdaki Conduit uygulamasının kullandığıyla aynı.",
     "zh-Hans": "输入你的 Hermes 控制台地址，和手机上 Conduit app 用的一样。",
     "zh-Hant": "輸入你的 Hermes 控制台位址，和手機上 Conduit App 用的一樣。"
+  },
+  "Enter the card number.": {
+    "de": "Gib die Kartennummer ein.",
+    "es": "Introduce el número de tarjeta.",
+    "fr": "Saisissez le numéro de carte.",
+    "id": "Masukkan nomor kartu.",
+    "it": "Inserisci il numero della carta.",
+    "ja": "カード番号を入力してください。",
+    "ko": "카드 번호를 입력하세요.",
+    "pl": "Wpisz numer karty.",
+    "pt-BR": "Digite o número do cartão.",
+    "ru": "Введите номер карты.",
+    "tr": "Kart numarasını girin.",
+    "zh-Hans": "请输入卡号。",
+    "zh-Hant": "請輸入卡號。"
+  },
+  "Enter the expiry month (1 to 12) and year.": {
+    "de": "Gib Ablaufmonat (1 bis 12) und Jahr ein.",
+    "es": "Introduce el mes de caducidad (1 a 12) y el año.",
+    "fr": "Saisissez le mois d'expiration (1 à 12) et l'année.",
+    "id": "Masukkan bulan kedaluwarsa (1 sampai 12) dan tahunnya.",
+    "it": "Inserisci il mese di scadenza (da 1 a 12) e l'anno.",
+    "ja": "有効期限の月（1〜12）と年を入力してください。",
+    "ko": "만료 월(1~12)과 연도를 입력하세요.",
+    "pl": "Wpisz miesiąc ważności (od 1 do 12) i rok.",
+    "pt-BR": "Digite o mês de validade (1 a 12) e o ano.",
+    "ru": "Введите месяц (от 1 до 12) и год окончания срока.",
+    "tr": "Son kullanma ayını (1-12) ve yılını girin.",
+    "zh-Hans": "请输入到期月份（1 到 12）和年份。",
+    "zh-Hant": "請輸入到期月份（1 到 12）和年份。"
+  },
+  "Enter the login's email or username and its password.": {
+    "de": "Gib die E-Mail oder den Benutzernamen des Logins und sein Passwort ein.",
+    "es": "Introduce el correo o el usuario del inicio de sesión y su contraseña.",
+    "fr": "Saisissez l'e-mail ou le nom d'utilisateur de l'identifiant et son mot de passe.",
+    "id": "Masukkan email atau nama pengguna login dan kata sandinya.",
+    "it": "Inserisci l'email o il nome utente dell'accesso e la sua password.",
+    "ja": "ログインのメールアドレスまたはユーザ名とパスワードを入力してください。",
+    "ko": "로그인의 이메일 또는 사용자 이름과 암호를 입력하세요.",
+    "pl": "Wpisz e-mail lub nazwę użytkownika loginu oraz jego hasło.",
+    "pt-BR": "Digite o e-mail ou o nome de usuário do login e a senha.",
+    "ru": "Введите почту или имя пользователя для входа и пароль.",
+    "tr": "Girişin e-postasını veya kullanıcı adını ve parolasını girin.",
+    "zh-Hans": "请输入登录用的邮箱或用户名及其密码。",
+    "zh-Hant": "請輸入登入用的電子郵件或使用者名稱及其密碼。"
+  },
+  "Enter the security code.": {
+    "de": "Gib den Sicherheitscode ein.",
+    "es": "Introduce el código de seguridad.",
+    "fr": "Saisissez le code de sécurité.",
+    "id": "Masukkan kode keamanan.",
+    "it": "Inserisci il codice di sicurezza.",
+    "ja": "セキュリティコードを入力してください。",
+    "ko": "보안 코드를 입력하세요.",
+    "pl": "Wpisz kod zabezpieczający.",
+    "pt-BR": "Digite o código de segurança.",
+    "ru": "Введите код безопасности.",
+    "tr": "Güvenlik kodunu girin.",
+    "zh-Hans": "请输入安全码。",
+    "zh-Hant": "請輸入安全碼。"
+  },
+  "Enter the site's address, like github.com.": {
+    "de": "Gib die Adresse der Website ein, etwa github.com.",
+    "es": "Introduce la dirección del sitio, como github.com.",
+    "fr": "Saisissez l'adresse du site, par exemple github.com.",
+    "id": "Masukkan alamat situs, seperti github.com.",
+    "it": "Inserisci l'indirizzo del sito, come github.com.",
+    "ja": "サイトのアドレスを入力してください（例: github.com）。",
+    "ko": "사이트 주소를 입력하세요(예: github.com).",
+    "pl": "Wpisz adres witryny, np. github.com.",
+    "pt-BR": "Digite o endereço do site, como github.com.",
+    "ru": "Введите адрес сайта, например github.com.",
+    "tr": "Sitenin adresini girin, örneğin github.com.",
+    "zh-Hans": "请输入网站地址，例如 github.com。",
+    "zh-Hant": "請輸入網站位址，例如 github.com。"
+  },
+  "Enter the street, city, postal code and country.": {
+    "de": "Gib Straße, Stadt, Postleitzahl und Land ein.",
+    "es": "Introduce la calle, la ciudad, el código postal y el país.",
+    "fr": "Saisissez la rue, la ville, le code postal et le pays.",
+    "id": "Masukkan jalan, kota, kode pos, dan negara.",
+    "it": "Inserisci via, città, CAP e paese.",
+    "ja": "番地、市区町村、郵便番号、国を入力してください。",
+    "ko": "도로명, 도시, 우편번호, 국가를 입력하세요.",
+    "pl": "Wpisz ulicę, miasto, kod pocztowy i kraj.",
+    "pt-BR": "Digite a rua, a cidade, o CEP e o país.",
+    "ru": "Введите улицу, город, индекс и страну.",
+    "tr": "Sokak, şehir, posta kodu ve ülkeyi girin.",
+    "zh-Hans": "请输入街道、城市、邮编和国家/地区。",
+    "zh-Hant": "請輸入街道、城市、郵遞區號和國家/地區。"
   },
   "Enter this code on the sign-in page:": {
     "de": "Gib diesen Code auf der Anmeldeseite ein:",
@@ -6494,6 +6779,21 @@
     "zh-Hans": "留到晨间简报",
     "zh-Hant": "留到晨間簡報"
   },
+  "For the {name} profile. Ask Hermes to sign in to a site and it asks you for the login once, on the spot, then signs in by itself. Passwords stay encrypted on the Hermes computer and go straight into the page: the model never sees them, and Conduit never shows them.": {
+    "de": "Für das Profil {name}. Bitte Hermes, sich bei einer Website anzumelden: Es fragt dich einmal direkt nach dem Login und meldet sich danach selbst an. Passwörter bleiben verschlüsselt auf dem Hermes-Computer und gehen direkt in die Seite: Das Modell sieht sie nie, und Conduit zeigt sie nie.",
+    "es": "Para el perfil {name}. Pide a Hermes que inicie sesión en un sitio y te pedirá los datos una vez, en el momento; después inicia sesión solo. Las contraseñas se guardan cifradas en el ordenador de Hermes y van directas a la página: el modelo nunca las ve y Conduit nunca las muestra.",
+    "fr": "Pour le profil {name}. Demandez à Hermes de se connecter à un site : il vous demande l'identifiant une fois, sur le moment, puis se connecte tout seul. Les mots de passe restent chiffrés sur l'ordinateur de Hermes et vont directement dans la page : le modèle ne les voit jamais, et Conduit ne les affiche jamais.",
+    "id": "Untuk profil {name}. Minta Hermes masuk ke sebuah situs, dan ia akan menanyakan login sekali saat itu juga, lalu masuk sendiri. Kata sandi tetap terenkripsi di komputer Hermes dan langsung masuk ke halaman: model tidak pernah melihatnya, dan Conduit tidak pernah menampilkannya.",
+    "it": "Per il profilo {name}. Chiedi a Hermes di accedere a un sito: ti chiede i dati di accesso una volta, sul momento, poi accede da solo. Le password restano cifrate sul computer di Hermes e vanno dritte nella pagina: il modello non le vede mai e Conduit non le mostra mai.",
+    "ja": "{name}プロファイル用です。Hermes にサイトへのサインインを頼むと、その場で一度だけログイン情報を尋ね、以後は自分でサインインします。パスワードは Hermes のコンピュータで暗号化されたまま、ページに直接入力されます。モデルが見ることはなく、Conduit が表示することもありません。",
+    "ko": "{name} 프로필용입니다. Hermes에게 사이트 로그인을 부탁하면 그 자리에서 한 번 로그인 정보를 묻고, 그 뒤로는 알아서 로그인합니다. 암호는 Hermes 컴퓨터에 암호화된 채로 페이지에 바로 입력됩니다. 모델은 절대 보지 못하고, Conduit도 절대 표시하지 않습니다.",
+    "pl": "Dla profilu {name}. Poproś Hermesa o zalogowanie się na stronie, a raz, na miejscu, zapyta o dane logowania, a potem zaloguje się sam. Hasła pozostają zaszyfrowane na komputerze Hermesa i trafiają prosto na stronę: model nigdy ich nie widzi, a Conduit nigdy ich nie pokazuje.",
+    "pt-BR": "Para o perfil {name}. Peça ao Hermes para entrar em um site e ele pede o login uma vez, na hora, e depois entra sozinho. As senhas ficam criptografadas no computador do Hermes e vão direto para a página: o modelo nunca as vê, e o Conduit nunca as mostra.",
+    "ru": "Для профиля {name}. Попросите Hermes войти на сайт — он один раз спросит данные для входа прямо на месте, а дальше будет входить сам. Пароли хранятся зашифрованными на компьютере Hermes и вводятся прямо на странице: модель их никогда не видит, а Conduit никогда не показывает.",
+    "tr": "{name} profili için. Hermes'ten bir siteye giriş yapmasını isteyin; giriş bilgisini o anda bir kez sorar, sonra kendisi giriş yapar. Parolalar Hermes bilgisayarında şifreli kalır ve doğrudan sayfaya girilir: model onları asla görmez, Conduit de asla göstermez.",
+    "zh-Hans": "适用于 {name} 配置文件。让 Hermes 登录某个网站时，它会当场向你询问一次登录信息，之后便自行登录。密码以加密形式保存在 Hermes 的电脑上，并直接填入网页：模型永远看不到，Conduit 也永远不会显示。",
+    "zh-Hant": "適用於 {name} 設定檔。請 Hermes 登入某個網站時，它會當場向你詢問一次登入資訊，之後便自行登入。密碼以加密形式保存在 Hermes 的電腦上，並直接填入網頁：模型永遠看不到，Conduit 也永遠不會顯示。"
+  },
   "For the {profile} profile. Sign-ins and shared keys reach every profile.": {
     "de": "Für das Profil {profile}. Anmeldungen und gemeinsame Schlüssel gelten für jedes Profil.",
     "es": "Para el perfil {profile}. Los inicios de sesión y las claves compartidas llegan a todos los perfiles.",
@@ -6763,6 +7063,21 @@
     "tr": "Anahtar al",
     "zh-Hans": "获取密钥",
     "zh-Hant": "取得金鑰"
+  },
+  "Give it a label.": {
+    "de": "Gib ihm einen Namen.",
+    "es": "Ponle un nombre.",
+    "fr": "Donnez-lui un nom.",
+    "id": "Beri label.",
+    "it": "Dagli un nome.",
+    "ja": "ラベルを付けてください。",
+    "ko": "레이블을 입력하세요.",
+    "pl": "Nadaj mu nazwę.",
+    "pt-BR": "Dê um nome.",
+    "ru": "Дайте ему название.",
+    "tr": "Bir ad verin.",
+    "zh-Hans": "请填写标签。",
+    "zh-Hant": "請填寫標籤。"
   },
   "Go to": {
     "de": "Gehe zu",
@@ -7259,6 +7574,21 @@
     "zh-Hans": "Hermes 会在你的主机上结束它。它提供或监视的内容也会一起停止。",
     "zh-Hant": "Hermes 會在你的主機上結束它。它提供或監看的內容也會一起停止。"
   },
+  "Hermes forgets “{name}”. This can't be undone.": {
+    "de": "Hermes vergisst „{name}“. Das lässt sich nicht rückgängig machen.",
+    "es": "Hermes olvida «{name}». No se puede deshacer.",
+    "fr": "Hermes oublie « {name} ». Cette action est irréversible.",
+    "id": "Hermes melupakan “{name}”. Ini tidak dapat dibatalkan.",
+    "it": "Hermes dimentica «{name}». L'operazione non si può annullare.",
+    "ja": "Hermes は「{name}」を削除します。元に戻せません。",
+    "ko": "Hermes가 “{name}” 항목을 잊습니다. 되돌릴 수 없습니다.",
+    "pl": "Hermes zapomni „{name}”. Tego nie można cofnąć.",
+    "pt-BR": "O Hermes esquece “{name}”. Não dá para desfazer.",
+    "ru": "Hermes забудет «{name}». Это нельзя отменить.",
+    "tr": "Hermes “{name}” öğesini unutur. Bu geri alınamaz.",
+    "zh-Hans": "Hermes 将忘记“{name}”。此操作无法撤销。",
+    "zh-Hant": "Hermes 將忘記「{name}」。此動作無法復原。"
+  },
   "Hermes gave an answer Conduit didn’t expect. Update Hermes and try again.": {
     "de": "Hermes hat unerwartet geantwortet. Aktualisiere Hermes und versuche es erneut.",
     "es": "Hermes dio una respuesta que Conduit no esperaba. Actualiza Hermes e inténtalo de nuevo.",
@@ -7273,6 +7603,21 @@
     "tr": "Hermes, Conduit'in beklemediği bir yanıt verdi. Hermes'i güncelleyip tekrar deneyin.",
     "zh-Hans": "Hermes 返回了 Conduit 意料之外的应答。请更新 Hermes 后重试。",
     "zh-Hant": "Hermes 傳回了 Conduit 意料之外的回應。請更新 Hermes 後再試一次。"
+  },
+  "Hermes hands your master password to {name} on its computer and forgets it. It's never saved, logged or shown to the model.": {
+    "de": "Hermes gibt dein Master-Passwort an {name} auf seinem Computer weiter und vergisst es. Es wird nie gespeichert, protokolliert oder dem Modell gezeigt.",
+    "es": "Hermes entrega tu contraseña maestra a {name} en su ordenador y la olvida. Nunca se guarda, se registra ni se muestra al modelo.",
+    "fr": "Hermes transmet votre mot de passe principal à {name} sur son ordinateur puis l'oublie. Il n'est jamais enregistré, journalisé ni montré au modèle.",
+    "id": "Hermes menyerahkan kata sandi utamamu ke {name} di komputernya lalu melupakannya. Kata sandi itu tidak pernah disimpan, dicatat, atau ditunjukkan ke model.",
+    "it": "Hermes passa la tua password principale a {name} sul suo computer e la dimentica. Non viene mai salvata, registrata o mostrata al modello.",
+    "ja": "Hermes はマスターパスワードを自分のコンピュータ上の {name} に渡し、すぐに破棄します。保存、記録、モデルへの表示は一切ありません。",
+    "ko": "Hermes는 마스터 암호를 자신의 컴퓨터에 있는 {name}에 넘긴 뒤 잊습니다. 저장, 기록되거나 모델에 표시되지 않습니다.",
+    "pl": "Hermes przekazuje Twoje hasło główne do {name} na swoim komputerze i je zapomina. Nigdy nie jest zapisywane, logowane ani pokazywane modelowi.",
+    "pt-BR": "O Hermes entrega sua senha mestra ao {name} no computador dele e a esquece. Ela nunca é salva, registrada ou mostrada ao modelo.",
+    "ru": "Hermes передаёт ваш мастер-пароль программе {name} на своём компьютере и забывает его. Он никогда не сохраняется, не попадает в журналы и не показывается модели.",
+    "tr": "Hermes ana parolanızı kendi bilgisayarındaki {name} aracına verir ve unutur. Asla kaydedilmez, günlüğe yazılmaz veya modele gösterilmez.",
+    "zh-Hans": "Hermes 会把你的主密码交给其电脑上的 {name}，随即忘记。它不会被保存、记录或展示给模型。",
+    "zh-Hant": "Hermes 會把你的主密碼交給其電腦上的 {name}，隨即忘記。它不會被儲存、記錄或顯示給模型。"
   },
   "Hermes has a question.": {
     "de": "Hermes hat eine Frage.",
@@ -7378,6 +7723,21 @@
     "tr": "{title} tamamlandı olarak işaretlenmeden önce Hermes'in ne yapıldığına dair bir nota ihtiyacı var. Görevi açın, notu yazın ve Tamamlandı olarak işaretle'yi seçin.",
     "zh-Hans": "要将 {title} 标记为完成，Hermes 需要一条说明完成了什么的备注。打开任务，写下备注，然后选择“标记为完成”。",
     "zh-Hant": "要將 {title} 標記為完成，Hermes 需要一則說明完成了什麼的備註。開啟任務，寫下備註，然後選擇「標記為完成」。"
+  },
+  "Hermes picks up a password manager installed on its computer. It asks you to unlock one the first time it needs a login from it; only the manager's session stays in Hermes' memory, never your master password.": {
+    "de": "Hermes erkennt einen auf seinem Computer installierten Passwortmanager. Es bittet dich ums Entsperren, wenn es zum ersten Mal ein Login daraus braucht; nur die Sitzung des Managers bleibt in Hermes' Speicher, nie dein Master-Passwort.",
+    "es": "Hermes detecta un gestor de contraseñas instalado en su ordenador. Te pide desbloquearlo la primera vez que necesita un inicio de sesión de él; solo la sesión del gestor queda en la memoria de Hermes, nunca tu contraseña maestra.",
+    "fr": "Hermes détecte un gestionnaire de mots de passe installé sur son ordinateur. Il vous demande de le déverrouiller la première fois qu'il en a besoin pour un identifiant ; seule la session du gestionnaire reste dans la mémoire de Hermes, jamais votre mot de passe principal.",
+    "id": "Hermes mengenali pengelola kata sandi yang terpasang di komputernya. Ia memintamu membukanya saat pertama kali membutuhkan login darinya; hanya sesi pengelola yang tersimpan di memori Hermes, tidak pernah kata sandi utamamu.",
+    "it": "Hermes rileva un gestore di password installato sul suo computer. Ti chiede di sbloccarlo la prima volta che gli serve un accesso da lì; nella memoria di Hermes resta solo la sessione del gestore, mai la tua password principale.",
+    "ja": "Hermes は自分のコンピュータにインストールされたパスワードマネージャを検出します。そこからログインが初めて必要になったときにロック解除を求めます。Hermes のメモリに残るのはマネージャのセッションだけで、マスターパスワードは残りません。",
+    "ko": "Hermes는 자신의 컴퓨터에 설치된 암호 관리자를 감지합니다. 처음으로 그곳의 로그인이 필요할 때 잠금 해제를 요청하며, Hermes의 메모리에는 관리자의 세션만 남고 마스터 암호는 남지 않습니다.",
+    "pl": "Hermes wykrywa menedżer haseł zainstalowany na swoim komputerze. Prosi o jego odblokowanie, gdy pierwszy raz potrzebuje z niego loginu; w pamięci Hermesa zostaje tylko sesja menedżera, nigdy Twoje hasło główne.",
+    "pt-BR": "O Hermes reconhece um gerenciador de senhas instalado no computador dele. Ele pede para desbloqueá-lo na primeira vez que precisa de um login dali; só a sessão do gerenciador fica na memória do Hermes, nunca sua senha mestra.",
+    "ru": "Hermes находит менеджер паролей, установленный на его компьютере. Он просит разблокировать его, когда впервые нужен вход оттуда; в памяти Hermes остаётся только сеанс менеджера, но не мастер-пароль.",
+    "tr": "Hermes, bilgisayarında kurulu bir parola yöneticisini algılar. Ondan ilk kez bir girişe ihtiyaç duyduğunda kilidi açmanızı ister; Hermes'in belleğinde yalnızca yöneticinin oturumu kalır, ana parolanız asla kalmaz.",
+    "zh-Hans": "Hermes 会识别其电脑上安装的密码管理器。第一次需要从中获取登录信息时，它会请你解锁；Hermes 的内存中只保留管理器的会话，绝不保留你的主密码。",
+    "zh-Hant": "Hermes 會辨識其電腦上安裝的密碼管理工具。第一次需要從中取得登入資訊時，它會請你解鎖；Hermes 的記憶體中只保留管理工具的工作階段，絕不保留你的主密碼。"
   },
   "Hermes pulls the new version and restarts. Chats and messaging channels pause until it's back.": {
     "de": "Hermes lädt die neue Version und startet neu. Chats und Messaging-Kanäle pausieren, bis er zurück ist.",
@@ -8684,6 +9044,36 @@
     "zh-Hans": "键盘快捷键",
     "zh-Hant": "鍵盤快速鍵"
   },
+  "Kind": {
+    "de": "Art",
+    "es": "Tipo",
+    "fr": "Type",
+    "id": "Jenis",
+    "it": "Tipo",
+    "ja": "種類",
+    "ko": "종류",
+    "pl": "Rodzaj",
+    "pt-BR": "Tipo",
+    "ru": "Тип",
+    "tr": "Tür",
+    "zh-Hans": "类型",
+    "zh-Hant": "類型"
+  },
+  "Label, like GitHub work account": {
+    "de": "Name, etwa GitHub-Arbeitskonto",
+    "es": "Nombre, como Cuenta de trabajo de GitHub",
+    "fr": "Nom, par exemple Compte GitHub pro",
+    "id": "Label, seperti Akun kerja GitHub",
+    "it": "Nome, come Account GitHub di lavoro",
+    "ja": "ラベル（例: GitHub 仕事用アカウント）",
+    "ko": "레이블(예: GitHub 업무용 계정)",
+    "pl": "Nazwa, np. Konto służbowe GitHub",
+    "pt-BR": "Nome, como Conta de trabalho do GitHub",
+    "ru": "Название, например Рабочий аккаунт GitHub",
+    "tr": "Ad, örneğin GitHub iş hesabı",
+    "zh-Hans": "标签，例如 GitHub 工作账号",
+    "zh-Hant": "標籤，例如 GitHub 工作帳號"
+  },
   "Language": {
     "de": "Sprache",
     "es": "Idioma",
@@ -9164,6 +9554,66 @@
     "zh-Hans": "更新时的本地改动",
     "zh-Hant": "更新時的本機變更"
   },
+  "Lock": {
+    "de": "Sperren",
+    "es": "Bloquear",
+    "fr": "Verrouiller",
+    "id": "Kunci",
+    "it": "Blocca",
+    "ja": "ロック",
+    "ko": "잠금",
+    "pl": "Zablokuj",
+    "pt-BR": "Bloquear",
+    "ru": "Заблокировать",
+    "tr": "Kilitle",
+    "zh-Hans": "锁定",
+    "zh-Hant": "鎖定"
+  },
+  "Locked": {
+    "de": "Gesperrt",
+    "es": "Bloqueado",
+    "fr": "Verrouillé",
+    "id": "Terkunci",
+    "it": "Bloccato",
+    "ja": "ロック中",
+    "ko": "잠김",
+    "pl": "Zablokowany",
+    "pt-BR": "Bloqueado",
+    "ru": "Заблокирован",
+    "tr": "Kilitli",
+    "zh-Hans": "已锁定",
+    "zh-Hant": "已鎖定"
+  },
+  "Login": {
+    "de": "Login",
+    "es": "Inicio de sesión",
+    "fr": "Identifiant",
+    "id": "Login",
+    "it": "Accesso",
+    "ja": "ログイン",
+    "ko": "로그인",
+    "pl": "Login",
+    "pt-BR": "Login",
+    "ru": "Вход",
+    "tr": "Giriş",
+    "zh-Hans": "登录信息",
+    "zh-Hant": "登入資訊"
+  },
+  "Logins, cards and password managers Hermes signs in with": {
+    "de": "Logins, Karten und Passwortmanager, mit denen Hermes sich anmeldet",
+    "es": "Inicios de sesión, tarjetas y gestores de contraseñas con los que Hermes entra",
+    "fr": "Identifiants, cartes et gestionnaires de mots de passe avec lesquels Hermes se connecte",
+    "id": "Login, kartu, dan pengelola kata sandi yang dipakai Hermes untuk masuk",
+    "it": "Accessi, carte e gestori di password con cui Hermes accede",
+    "ja": "Hermes がサインインに使うログイン、カード、パスワードマネージャ",
+    "ko": "Hermes가 로그인에 쓰는 로그인, 카드, 암호 관리자",
+    "pl": "Loginy, karty i menedżery haseł, którymi loguje się Hermes",
+    "pt-BR": "Logins, cartões e gerenciadores de senhas com que o Hermes entra",
+    "ru": "Входы, карты и менеджеры паролей, с которыми Hermes входит на сайты",
+    "tr": "Hermes'in giriş yaptığı girişler, kartlar ve parola yöneticileri",
+    "zh-Hans": "Hermes 用于登录的登录信息、卡片和密码管理器",
+    "zh-Hant": "Hermes 用來登入的登入資訊、卡片和密碼管理工具"
+  },
   "Long-term memory": {
     "de": "Langzeitgedächtnis",
     "es": "Memoria a largo plazo",
@@ -9599,6 +10049,21 @@
     "zh-Hans": "标记为已完成",
     "zh-Hant": "標示為已完成"
   },
+  "Master password": {
+    "de": "Master-Passwort",
+    "es": "Contraseña maestra",
+    "fr": "Mot de passe principal",
+    "id": "Kata sandi utama",
+    "it": "Password principale",
+    "ja": "マスターパスワード",
+    "ko": "마스터 암호",
+    "pl": "Hasło główne",
+    "pt-BR": "Senha mestra",
+    "ru": "Мастер-пароль",
+    "tr": "Ana parola",
+    "zh-Hans": "主密码",
+    "zh-Hant": "主密碼"
+  },
   "Max": {
     "de": "Maximal",
     "es": "Máximo",
@@ -10019,6 +10484,21 @@
     "zh-Hans": "钱与财务",
     "zh-Hant": "錢與財務"
   },
+  "Month": {
+    "de": "Monat",
+    "es": "Mes",
+    "fr": "Mois",
+    "id": "Bulan",
+    "it": "Mese",
+    "ja": "月",
+    "ko": "월",
+    "pl": "Miesiąc",
+    "pt-BR": "Mês",
+    "ru": "Месяц",
+    "tr": "Ay",
+    "zh-Hans": "月",
+    "zh-Hant": "月"
+  },
   "Monthly on day {day} at {time}": {
     "de": "Monatlich am {day}. um {time}",
     "es": "Cada mes el día {day} a las {time}",
@@ -10273,6 +10753,36 @@
     "tr": "Ad",
     "zh-Hans": "名称",
     "zh-Hant": "名稱"
+  },
+  "Name and site": {
+    "de": "Name und Website",
+    "es": "Nombre y sitio",
+    "fr": "Nom et site",
+    "id": "Nama dan situs",
+    "it": "Nome e sito",
+    "ja": "名前とサイト",
+    "ko": "이름과 사이트",
+    "pl": "Nazwa i witryna",
+    "pt-BR": "Nome e site",
+    "ru": "Название и сайт",
+    "tr": "Ad ve site",
+    "zh-Hans": "名称和网站",
+    "zh-Hant": "名稱和網站"
+  },
+  "Name on card (optional)": {
+    "de": "Name auf der Karte (optional)",
+    "es": "Nombre en la tarjeta (opcional)",
+    "fr": "Nom sur la carte (facultatif)",
+    "id": "Nama di kartu (opsional)",
+    "it": "Nome sulla carta (facoltativo)",
+    "ja": "カードの名義（任意）",
+    "ko": "카드 명의 (선택)",
+    "pl": "Imię i nazwisko na karcie (opcjonalnie)",
+    "pt-BR": "Nome no cartão (opcional)",
+    "ru": "Имя на карте (необязательно)",
+    "tr": "Kart üzerindeki ad (isteğe bağlı)",
+    "zh-Hans": "持卡人姓名（可选）",
+    "zh-Hant": "持卡人姓名（選填）"
   },
   "Name, like Morning brief": {
     "de": "Name, z. B. Morgenbriefing",
@@ -11369,6 +11879,36 @@
     "zh-Hans": "未连接。",
     "zh-Hant": "未連線。"
   },
+  "Not detected": {
+    "de": "Nicht erkannt",
+    "es": "No detectado",
+    "fr": "Non détecté",
+    "id": "Tidak terdeteksi",
+    "it": "Non rilevato",
+    "ja": "未検出",
+    "ko": "감지 안 됨",
+    "pl": "Nie wykryto",
+    "pt-BR": "Não detectado",
+    "ru": "Не обнаружен",
+    "tr": "Algılanmadı",
+    "zh-Hans": "未检测到",
+    "zh-Hant": "未偵測到"
+  },
+  "Not detected. Install the {name} command-line tool on the Hermes computer and sign in to it; Hermes picks it up automatically.": {
+    "de": "Nicht erkannt. Installiere das Befehlszeilentool von {name} auf dem Hermes-Computer und melde dich dort an; Hermes erkennt es automatisch.",
+    "es": "No detectado. Instala la herramienta de línea de comandos de {name} en el ordenador de Hermes e inicia sesión en ella; Hermes la detecta automáticamente.",
+    "fr": "Non détecté. Installez l'outil en ligne de commande de {name} sur l'ordinateur de Hermes et connectez-vous-y ; Hermes le détecte automatiquement.",
+    "id": "Tidak terdeteksi. Pasang alat baris perintah {name} di komputer Hermes dan masuk ke dalamnya; Hermes akan mengenalinya otomatis.",
+    "it": "Non rilevato. Installa lo strumento da riga di comando di {name} sul computer di Hermes e accedi; Hermes lo rileva da solo.",
+    "ja": "未検出です。Hermes のコンピュータに {name} のコマンドラインツールをインストールしてサインインすると、Hermes が自動的に検出します。",
+    "ko": "감지되지 않았습니다. Hermes 컴퓨터에 {name} 명령줄 도구를 설치하고 로그인하면 Hermes가 자동으로 감지합니다.",
+    "pl": "Nie wykryto. Zainstaluj narzędzie wiersza poleceń {name} na komputerze Hermesa i zaloguj się w nim; Hermes wykryje je automatycznie.",
+    "pt-BR": "Não detectado. Instale a ferramenta de linha de comando do {name} no computador do Hermes e entre nela; o Hermes a reconhece automaticamente.",
+    "ru": "Не обнаружен. Установите инструмент командной строки {name} на компьютер Hermes и войдите в него — Hermes найдёт его сам.",
+    "tr": "Algılanmadı. {name} komut satırı aracını Hermes bilgisayarına kurun ve oturum açın; Hermes onu kendiliğinden algılar.",
+    "zh-Hans": "未检测到。请在 Hermes 的电脑上安装 {name} 命令行工具并登录；Hermes 会自动识别。",
+    "zh-Hant": "未偵測到。請在 Hermes 的電腦上安裝 {name} 命令列工具並登入；Hermes 會自動辨識。"
+  },
   "Not now": {
     "de": "Nicht jetzt",
     "es": "Ahora no",
@@ -11698,6 +12238,21 @@
     "tr": "Henüz çözülen bir şey yok.",
     "zh-Hans": "还没有已解决的工作。",
     "zh-Hant": "還沒有已解決的工作。"
+  },
+  "Nothing saved yet. You don't have to add anything: Hermes asks for a login the first time it needs one. Use Add to enter one ahead of time.": {
+    "de": "Noch nichts gespeichert. Du musst nichts hinzufügen: Hermes fragt nach einem Login, wenn es zum ersten Mal eines braucht. Mit Hinzufügen kannst du eines vorab eintragen.",
+    "es": "Aún no hay nada guardado. No tienes que añadir nada: Hermes pide un inicio de sesión la primera vez que lo necesita. Usa Añadir para introducir uno por adelantado.",
+    "fr": "Rien d'enregistré pour l'instant. Vous n'avez rien à ajouter : Hermes demande un identifiant la première fois qu'il en a besoin. Utilisez Ajouter pour en saisir un à l'avance.",
+    "id": "Belum ada yang tersimpan. Kamu tidak perlu menambahkan apa pun: Hermes meminta login saat pertama kali membutuhkannya. Gunakan Tambah untuk memasukkannya lebih dulu.",
+    "it": "Ancora niente di salvato. Non devi aggiungere nulla: Hermes chiede un accesso la prima volta che gli serve. Usa Aggiungi per inserirne uno in anticipo.",
+    "ja": "まだ何も保存されていません。追加は必須ではありません。Hermes は初めてログインが必要になったときに尋ねます。事前に入力するには「追加」を使います。",
+    "ko": "아직 저장된 항목이 없습니다. 아무것도 추가하지 않아도 됩니다. Hermes는 처음으로 로그인이 필요할 때 물어봅니다. 미리 입력하려면 추가를 사용하세요.",
+    "pl": "Nic jeszcze nie zapisano. Nie musisz niczego dodawać: Hermes zapyta o login, gdy pierwszy raz będzie go potrzebować. Użyj Dodaj, aby wpisać go wcześniej.",
+    "pt-BR": "Nada salvo ainda. Você não precisa adicionar nada: o Hermes pede um login na primeira vez que precisa. Use Adicionar para cadastrar um antes.",
+    "ru": "Пока ничего не сохранено. Добавлять ничего не нужно: Hermes спросит данные для входа, когда они впервые понадобятся. Кнопка «Добавить» позволяет ввести их заранее.",
+    "tr": "Henüz kayıtlı bir şey yok. Bir şey eklemeniz gerekmez: Hermes ilk kez ihtiyaç duyduğunda giriş bilgisini sorar. Önceden girmek için Ekle'yi kullanın.",
+    "zh-Hans": "还没有保存任何内容。你无需添加：Hermes 第一次需要登录信息时会询问你。如需提前填写，请使用“添加”。",
+    "zh-Hant": "還沒有儲存任何內容。你不必新增：Hermes 第一次需要登入資訊時會詢問你。如需事先填寫，請使用「新增」。"
   },
   "Nothing stands out yet. The more you use thumbs, Do it and Done, the more Pulse learns what to bring up.": {
     "de": "Noch sticht nichts heraus. Je mehr du Daumen, „Erledigen“ und „Fertig“ nutzt, desto besser lernt Pulse, was es ansprechen soll.",
@@ -12389,6 +12944,36 @@
     "zh-Hans": "密码",
     "zh-Hant": "密碼"
   },
+  "Password managers": {
+    "de": "Passwortmanager",
+    "es": "Gestores de contraseñas",
+    "fr": "Gestionnaires de mots de passe",
+    "id": "Pengelola kata sandi",
+    "it": "Gestori di password",
+    "ja": "パスワードマネージャ",
+    "ko": "암호 관리자",
+    "pl": "Menedżery haseł",
+    "pt-BR": "Gerenciadores de senhas",
+    "ru": "Менеджеры паролей",
+    "tr": "Parola yöneticileri",
+    "zh-Hans": "密码管理器",
+    "zh-Hant": "密碼管理工具"
+  },
+  "Passwords & logins": {
+    "de": "Passwörter & Logins",
+    "es": "Contraseñas e inicios de sesión",
+    "fr": "Mots de passe et identifiants",
+    "id": "Kata sandi & login",
+    "it": "Password e accessi",
+    "ja": "パスワードとログイン",
+    "ko": "암호 및 로그인",
+    "pl": "Hasła i loginy",
+    "pt-BR": "Senhas e logins",
+    "ru": "Пароли и входы",
+    "tr": "Parolalar ve girişler",
+    "zh-Hans": "密码与登录信息",
+    "zh-Hant": "密碼與登入資訊"
+  },
   "Paste API key": {
     "de": "API-Schlüssel einfügen",
     "es": "Pega la clave de API",
@@ -12539,6 +13124,21 @@
     "zh-Hans": "已暂停",
     "zh-Hant": "已暫停"
   },
+  "Payment card": {
+    "de": "Zahlungskarte",
+    "es": "Tarjeta de pago",
+    "fr": "Carte de paiement",
+    "id": "Kartu pembayaran",
+    "it": "Carta di pagamento",
+    "ja": "支払いカード",
+    "ko": "결제 카드",
+    "pl": "Karta płatnicza",
+    "pt-BR": "Cartão de pagamento",
+    "ru": "Платёжная карта",
+    "tr": "Ödeme kartı",
+    "zh-Hans": "支付卡",
+    "zh-Hant": "付款卡"
+  },
   "Period": {
     "de": "Zeitraum",
     "es": "Periodo",
@@ -12643,6 +13243,21 @@
     "tr": "Filozof",
     "zh-Hans": "哲学家",
     "zh-Hant": "哲學家"
+  },
+  "Phone": {
+    "de": "Telefon",
+    "es": "Teléfono",
+    "fr": "Téléphone",
+    "id": "Telepon",
+    "it": "Telefono",
+    "ja": "電話番号",
+    "ko": "전화",
+    "pl": "Telefon",
+    "pt-BR": "Telefone",
+    "ru": "Телефон",
+    "tr": "Telefon",
+    "zh-Hans": "电话",
+    "zh-Hant": "電話"
   },
   "Pick a job to see its details and run history.": {
     "de": "Wähle einen Job, um seine Details und den Verlauf seiner Läufe zu sehen.",
@@ -12853,6 +13468,36 @@
     "tr": "Hermes Index'ten popüler beceriler. Hermes her beceriyi yüklemeden önce tarar.",
     "zh-Hans": "来自 Hermes Index 的热门技能。Hermes 会在安装前扫描每个技能。",
     "zh-Hant": "來自 Hermes Index 的熱門技能。Hermes 會在安裝前掃描每個技能。"
+  },
+  "Postal address": {
+    "de": "Postanschrift",
+    "es": "Dirección postal",
+    "fr": "Adresse postale",
+    "id": "Alamat pos",
+    "it": "Indirizzo postale",
+    "ja": "住所",
+    "ko": "우편 주소",
+    "pl": "Adres pocztowy",
+    "pt-BR": "Endereço postal",
+    "ru": "Почтовый адрес",
+    "tr": "Posta adresi",
+    "zh-Hans": "邮寄地址",
+    "zh-Hant": "郵寄地址"
+  },
+  "Postal code": {
+    "de": "Postleitzahl",
+    "es": "Código postal",
+    "fr": "Code postal",
+    "id": "Kode pos",
+    "it": "CAP",
+    "ja": "郵便番号",
+    "ko": "우편번호",
+    "pl": "Kod pocztowy",
+    "pt-BR": "CEP",
+    "ru": "Почтовый индекс",
+    "tr": "Posta kodu",
+    "zh-Hans": "邮编",
+    "zh-Hant": "郵遞區號"
   },
   "Previous 7 days": {
     "de": "Letzte 7 Tage",
@@ -14099,6 +14744,21 @@
     "zh-Hans": "提醒事项",
     "zh-Hant": "提醒事項"
   },
+  "Remove": {
+    "de": "Entfernen",
+    "es": "Eliminar",
+    "fr": "Supprimer",
+    "id": "Hapus",
+    "it": "Rimuovi",
+    "ja": "削除",
+    "ko": "제거",
+    "pl": "Usuń",
+    "pt-BR": "Remover",
+    "ru": "Удалить",
+    "tr": "Kaldır",
+    "zh-Hans": "移除",
+    "zh-Hant": "移除"
+  },
   "Remove All": {
     "de": "Alle entfernen",
     "es": "Quitar todos",
@@ -14263,6 +14923,21 @@
     "tr": "Paylaşılan anahtar kaldırılsın mı?",
     "zh-Hans": "要移除共享密钥吗？",
     "zh-Hant": "要移除共用金鑰嗎？"
+  },
+  "Remove this item?": {
+    "de": "Diesen Eintrag entfernen?",
+    "es": "¿Eliminar este elemento?",
+    "fr": "Supprimer cet élément ?",
+    "id": "Hapus item ini?",
+    "it": "Rimuovere questo elemento?",
+    "ja": "この項目を削除しますか？",
+    "ko": "이 항목을 제거하시겠습니까?",
+    "pl": "Usunąć ten element?",
+    "pt-BR": "Remover este item?",
+    "ru": "Удалить этот элемент?",
+    "tr": "Bu öğe kaldırılsın mı?",
+    "zh-Hans": "移除此项？",
+    "zh-Hant": "要移除此項目嗎？"
   },
   "Remove this profile's key": {
     "de": "Schlüssel dieses Profils entfernen",
@@ -15434,6 +16109,21 @@
     "zh-Hans": "仅保存",
     "zh-Hant": "僅儲存"
   },
+  "Saved": {
+    "de": "Gespeichert",
+    "es": "Guardado",
+    "fr": "Enregistré",
+    "id": "Disimpan",
+    "it": "Salvato",
+    "ja": "保存済み",
+    "ko": "저장됨",
+    "pl": "Zapisano",
+    "pt-BR": "Salvo",
+    "ru": "Сохранено",
+    "tr": "Kaydedildi",
+    "zh-Hans": "已保存",
+    "zh-Hant": "已儲存"
+  },
   "Saved as the bot's SOUL.md.": {
     "de": "Wird als SOUL.md des Bots gespeichert.",
     "es": "Guardado como SOUL.md del bot.",
@@ -15448,6 +16138,21 @@
     "tr": "Botun SOUL.md dosyası olarak kaydedilir.",
     "zh-Hans": "保存为机器人的 SOUL.md。",
     "zh-Hant": "會儲存為機器人的 SOUL.md。"
+  },
+  "Saved encrypted on the Hermes computer. Conduit keeps none of it and never shows it again.": {
+    "de": "Verschlüsselt auf dem Hermes-Computer gespeichert. Conduit behält nichts davon und zeigt es nie wieder.",
+    "es": "Se guarda cifrado en el ordenador de Hermes. Conduit no conserva nada y no vuelve a mostrarlo.",
+    "fr": "Enregistré chiffré sur l'ordinateur de Hermes. Conduit n'en garde rien et ne l'affiche plus jamais.",
+    "id": "Disimpan terenkripsi di komputer Hermes. Conduit tidak menyimpan apa pun darinya dan tidak pernah menampilkannya lagi.",
+    "it": "Salvato cifrato sul computer di Hermes. Conduit non ne conserva nulla e non lo mostra più.",
+    "ja": "Hermes のコンピュータに暗号化して保存されます。Conduit は何も保持せず、二度と表示しません。",
+    "ko": "Hermes 컴퓨터에 암호화되어 저장됩니다. Conduit는 아무것도 보관하지 않으며 다시 표시하지 않습니다.",
+    "pl": "Zapisane w postaci zaszyfrowanej na komputerze Hermesa. Conduit niczego nie zachowuje i nigdy więcej tego nie pokazuje.",
+    "pt-BR": "Salvo com criptografia no computador do Hermes. O Conduit não guarda nada e nunca mais mostra.",
+    "ru": "Хранится в зашифрованном виде на компьютере Hermes. Conduit ничего не сохраняет и больше это не показывает.",
+    "tr": "Hermes bilgisayarında şifreli olarak saklanır. Conduit hiçbirini tutmaz ve bir daha göstermez.",
+    "zh-Hans": "以加密形式保存在 Hermes 的电脑上。Conduit 不保留任何内容，也不会再次显示。",
+    "zh-Hant": "以加密形式保存在 Hermes 的電腦上。Conduit 不保留任何內容，也不會再次顯示。"
   },
   "Saved for the main profile only": {
     "de": "Nur für das Hauptprofil gespeichert",
@@ -15958,6 +16663,21 @@
     "tr": "Güvenlik taraması",
     "zh-Hans": "安全扫描",
     "zh-Hant": "安全掃描"
+  },
+  "Security code": {
+    "de": "Sicherheitscode",
+    "es": "Código de seguridad",
+    "fr": "Code de sécurité",
+    "id": "Kode keamanan",
+    "it": "Codice di sicurezza",
+    "ja": "セキュリティコード",
+    "ko": "보안 코드",
+    "pl": "Kod zabezpieczający",
+    "pt-BR": "Código de segurança",
+    "ru": "Код безопасности",
+    "tr": "Güvenlik kodu",
+    "zh-Hans": "安全码",
+    "zh-Hant": "安全碼"
   },
   "Security fixes": {
     "de": "Sicherheitskorrekturen",
@@ -16754,6 +17474,21 @@
     "zh-Hans": "正在登录…",
     "zh-Hant": "正在登入…"
   },
+  "Signs in with": {
+    "de": "Meldet sich an mit",
+    "es": "Inicia sesión con",
+    "fr": "Se connecte avec",
+    "id": "Masuk dengan",
+    "it": "Accede con",
+    "ja": "サインインに使うもの",
+    "ko": "로그인 방식",
+    "pl": "Loguje się przez",
+    "pt-BR": "Entra com",
+    "ru": "Вход через",
+    "tr": "Giriş türü",
+    "zh-Hans": "登录方式",
+    "zh-Hant": "登入方式"
+  },
   "Singularity image": {
     "de": "Singularity-Image",
     "es": "Imagen de Singularity",
@@ -16768,6 +17503,36 @@
     "tr": "Singularity imajı",
     "zh-Hans": "Singularity 镜像",
     "zh-Hant": "Singularity 映像檔"
+  },
+  "Site (optional)": {
+    "de": "Website (optional)",
+    "es": "Sitio (opcional)",
+    "fr": "Site (facultatif)",
+    "id": "Situs (opsional)",
+    "it": "Sito (facoltativo)",
+    "ja": "サイト（任意）",
+    "ko": "사이트 (선택)",
+    "pl": "Witryna (opcjonalnie)",
+    "pt-BR": "Site (opcional)",
+    "ru": "Сайт (необязательно)",
+    "tr": "Site (isteğe bağlı)",
+    "zh-Hans": "网站（可选）",
+    "zh-Hant": "網站（選填）"
+  },
+  "Site, like github.com": {
+    "de": "Website, etwa github.com",
+    "es": "Sitio, como github.com",
+    "fr": "Site, par exemple github.com",
+    "id": "Situs, seperti github.com",
+    "it": "Sito, come github.com",
+    "ja": "サイト（例: github.com）",
+    "ko": "사이트(예: github.com)",
+    "pl": "Witryna, np. github.com",
+    "pt-BR": "Site, como github.com",
+    "ru": "Сайт, например github.com",
+    "tr": "Site, örneğin github.com",
+    "zh-Hans": "网站，例如 github.com",
+    "zh-Hant": "網站，例如 github.com"
   },
   "Six is the most a room holds.": {
     "de": "Ein Raum fasst höchstens sechs.",
@@ -17279,6 +18044,21 @@
     "zh-Hans": "起始列",
     "zh-Hant": "起始欄"
   },
+  "State or region (optional)": {
+    "de": "Bundesland oder Region (optional)",
+    "es": "Provincia o región (opcional)",
+    "fr": "État ou région (facultatif)",
+    "id": "Provinsi atau wilayah (opsional)",
+    "it": "Provincia o regione (facoltativa)",
+    "ja": "都道府県・地域（任意）",
+    "ko": "시/도 또는 지역 (선택)",
+    "pl": "Województwo lub region (opcjonalnie)",
+    "pt-BR": "Estado ou região (opcional)",
+    "ru": "Область или регион (необязательно)",
+    "tr": "İl veya bölge (isteğe bağlı)",
+    "zh-Hans": "省份或地区（可选）",
+    "zh-Hant": "州/省或地區（選填）"
+  },
   "Status": {
     "de": "Status",
     "es": "Estado",
@@ -17593,6 +18373,21 @@
     "tr": "Ağ geçidi durduruluyor…",
     "zh-Hans": "正在停止网关…",
     "zh-Hant": "正在停止閘道…"
+  },
+  "Street": {
+    "de": "Straße",
+    "es": "Calle",
+    "fr": "Rue",
+    "id": "Jalan",
+    "it": "Via",
+    "ja": "番地",
+    "ko": "도로명 주소",
+    "pl": "Ulica",
+    "pt-BR": "Rua",
+    "ru": "Улица",
+    "tr": "Sokak",
+    "zh-Hans": "街道",
+    "zh-Hant": "街道"
   },
   "Strict": {
     "de": "Streng",
@@ -18659,6 +19454,21 @@
     "zh-Hans": "服务器已响应。",
     "zh-Hant": "伺服器已回應。"
   },
+  "The setup key a site shows when you turn on two-factor sign-in, or its otpauth:// link. With it saved, Hermes makes the codes itself.": {
+    "de": "Der Einrichtungsschlüssel, den eine Website beim Einschalten der Zwei-Faktor-Anmeldung zeigt, oder ihr otpauth://-Link. Ist er gespeichert, erzeugt Hermes die Codes selbst.",
+    "es": "La clave de configuración que muestra un sitio al activar la verificación en dos pasos, o su enlace otpauth://. Con ella guardada, Hermes genera los códigos por sí mismo.",
+    "fr": "La clé de configuration qu'un site affiche quand vous activez la connexion en deux étapes, ou son lien otpauth://. Une fois enregistrée, Hermes génère les codes lui-même.",
+    "id": "Kunci penyiapan yang ditampilkan situs saat kamu mengaktifkan masuk dua langkah, atau tautan otpauth://-nya. Dengan kunci itu tersimpan, Hermes membuat kodenya sendiri.",
+    "it": "La chiave di configurazione che un sito mostra quando attivi l'accesso in due passaggi, o il suo link otpauth://. Se è salvata, Hermes genera i codici da solo.",
+    "ja": "2 段階認証をオンにするときにサイトが表示するセットアップキー、または otpauth:// リンク。保存しておくと、Hermes がコードを自分で生成します。",
+    "ko": "2단계 인증을 켤 때 사이트가 보여 주는 설정 키 또는 otpauth:// 링크입니다. 저장해 두면 Hermes가 코드를 직접 만듭니다.",
+    "pl": "Klucz konfiguracji, który witryna pokazuje po włączeniu logowania dwuetapowego, lub jej link otpauth://. Gdy jest zapisany, Hermes sam generuje kody.",
+    "pt-BR": "A chave de configuração que um site mostra quando você ativa a verificação em duas etapas, ou o link otpauth:// dele. Com ela salva, o Hermes gera os códigos sozinho.",
+    "ru": "Ключ настройки, который сайт показывает при включении двухэтапного входа, или его ссылка otpauth://. Когда он сохранён, Hermes сам создаёт коды.",
+    "tr": "Bir sitenin iki adımlı girişi açarken gösterdiği kurulum anahtarı veya otpauth:// bağlantısı. Kaydedildiğinde kodları Hermes kendisi üretir.",
+    "zh-Hans": "网站在你开启两步验证时显示的设置密钥，或其 otpauth:// 链接。保存后，Hermes 会自行生成验证码。",
+    "zh-Hant": "網站在你開啟兩步驟驗證時顯示的設定金鑰，或其 otpauth:// 連結。儲存後，Hermes 會自行產生驗證碼。"
+  },
   "The sign-in didn’t finish.": {
     "de": "Die Anmeldung wurde nicht abgeschlossen.",
     "es": "El inicio de sesión no terminó.",
@@ -19018,6 +19828,21 @@
     "tr": "Bu Hermes kullanım bildirmiyor. Burada görmek için Hermes'i güncelleyin.",
     "zh-Hans": "此 Hermes 不报告用量。更新 Hermes 后即可在此查看。",
     "zh-Hant": "此 Hermes 不回報用量。更新 Hermes 後即可在此查看。"
+  },
+  "This Hermes has no credential vault yet. Update Hermes to 0.23 or later to keep logins here.": {
+    "de": "Dieses Hermes hat noch keinen Zugangsdaten-Tresor. Aktualisiere Hermes auf 0.23 oder neuer, um Logins hier zu speichern.",
+    "es": "Este Hermes aún no tiene bóveda de credenciales. Actualiza Hermes a 0.23 o posterior para guardar inicios de sesión aquí.",
+    "fr": "Ce Hermes n'a pas encore de coffre d'identifiants. Mettez Hermes à jour vers la 0.23 ou plus récente pour garder des identifiants ici.",
+    "id": "Hermes ini belum punya brankas kredensial. Perbarui Hermes ke 0.23 atau lebih baru untuk menyimpan login di sini.",
+    "it": "Questo Hermes non ha ancora una cassaforte delle credenziali. Aggiorna Hermes alla 0.23 o successiva per tenere qui gli accessi.",
+    "ja": "この Hermes にはまだ認証情報の保管庫がありません。ここにログインを保存するには Hermes を 0.23 以降に更新してください。",
+    "ko": "이 Hermes에는 아직 자격 증명 보관함이 없습니다. 여기에 로그인을 보관하려면 Hermes를 0.23 이상으로 업데이트하세요.",
+    "pl": "Ten Hermes nie ma jeszcze sejfu danych logowania. Zaktualizuj Hermesa do wersji 0.23 lub nowszej, aby przechowywać tu loginy.",
+    "pt-BR": "Este Hermes ainda não tem cofre de credenciais. Atualize o Hermes para a 0.23 ou mais recente para guardar logins aqui.",
+    "ru": "В этом Hermes ещё нет хранилища учётных данных. Обновите Hermes до 0.23 или новее, чтобы хранить здесь входы.",
+    "tr": "Bu Hermes'te henüz kimlik bilgisi kasası yok. Girişleri burada tutmak için Hermes'i 0.23 veya üstüne güncelleyin.",
+    "zh-Hans": "此 Hermes 还没有凭据保险库。请将 Hermes 更新到 0.23 或更高版本，以便在这里保存登录信息。",
+    "zh-Hant": "此 Hermes 還沒有憑證保險庫。請將 Hermes 更新到 0.23 或更新版本，以便在這裡保存登入資訊。"
   },
   "This Hermes has no helper models to set.": {
     "de": "Dieses Hermes hat keine Hilfsmodelle zum Einstellen.",
@@ -20234,6 +21059,66 @@
     "zh-Hans": "单位",
     "zh-Hant": "單位"
   },
+  "Unlock": {
+    "de": "Entsperren",
+    "es": "Desbloquear",
+    "fr": "Déverrouiller",
+    "id": "Buka",
+    "it": "Sblocca",
+    "ja": "ロック解除",
+    "ko": "잠금 해제",
+    "pl": "Odblokuj",
+    "pt-BR": "Desbloquear",
+    "ru": "Разблокировать",
+    "tr": "Kilidi aç",
+    "zh-Hans": "解锁",
+    "zh-Hant": "解鎖"
+  },
+  "Unlock {name}": {
+    "de": "{name} entsperren",
+    "es": "Desbloquea {name}",
+    "fr": "Déverrouiller {name}",
+    "id": "Buka kunci {name}",
+    "it": "Sblocca {name}",
+    "ja": "{name}のロックを解除",
+    "ko": "{name} 잠금 해제",
+    "pl": "Odblokuj {name}",
+    "pt-BR": "Desbloquear {name}",
+    "ru": "Разблокируйте {name}",
+    "tr": "{name} kilidini aç",
+    "zh-Hans": "解锁 {name}",
+    "zh-Hant": "解鎖 {name}"
+  },
+  "Unlocked": {
+    "de": "Entsperrt",
+    "es": "Desbloqueado",
+    "fr": "Déverrouillé",
+    "id": "Terbuka",
+    "it": "Sbloccato",
+    "ja": "ロック解除済み",
+    "ko": "잠금 해제됨",
+    "pl": "Odblokowany",
+    "pt-BR": "Desbloqueado",
+    "ru": "Разблокирован",
+    "tr": "Kilidi açık",
+    "zh-Hans": "已解锁",
+    "zh-Hant": "已解鎖"
+  },
+  "Unlocked for this session. Locks itself after 30 minutes idle or when Hermes closes.": {
+    "de": "Für diese Sitzung entsperrt. Sperrt sich nach 30 Minuten Inaktivität oder wenn Hermes beendet wird.",
+    "es": "Desbloqueado para esta sesión. Se bloquea solo tras 30 minutos sin uso o al cerrarse Hermes.",
+    "fr": "Déverrouillé pour cette session. Se verrouille après 30 minutes d'inactivité ou à la fermeture de Hermes.",
+    "id": "Terbuka untuk sesi ini. Terkunci sendiri setelah 30 menit tidak aktif atau saat Hermes ditutup.",
+    "it": "Sbloccato per questa sessione. Si blocca da solo dopo 30 minuti di inattività o alla chiusura di Hermes.",
+    "ja": "このセッションの間はロック解除されています。30 分間操作がないか、Hermes が終了すると自動的にロックされます。",
+    "ko": "이 세션 동안 잠금 해제되었습니다. 30분 동안 사용하지 않거나 Hermes가 종료되면 자동으로 잠깁니다.",
+    "pl": "Odblokowany na tę sesję. Zablokuje się sam po 30 minutach bezczynności lub po zamknięciu Hermesa.",
+    "pt-BR": "Desbloqueado nesta sessão. Bloqueia sozinho após 30 minutos sem uso ou quando o Hermes fecha.",
+    "ru": "Разблокирован на этот сеанс. Заблокируется сам через 30 минут бездействия или при закрытии Hermes.",
+    "tr": "Bu oturum için kilidi açık. 30 dakika boşta kalınca veya Hermes kapanınca kendiliğinden kilitlenir.",
+    "zh-Hans": "本次会话已解锁。闲置 30 分钟或 Hermes 关闭时会自动锁定。",
+    "zh-Hant": "本次工作階段已解鎖。閒置 30 分鐘或 Hermes 關閉時會自動鎖定。"
+  },
   "Unmute microphone": {
     "de": "Stummschaltung aufheben",
     "es": "Activar micrófono",
@@ -20998,6 +21883,21 @@
     "tr": "Kullanıcı profili belleği",
     "zh-Hans": "用户画像记忆",
     "zh-Hant": "使用者個人資料記憶"
+  },
+  "Username": {
+    "de": "Benutzername",
+    "es": "Nombre de usuario",
+    "fr": "Nom d'utilisateur",
+    "id": "Nama pengguna",
+    "it": "Nome utente",
+    "ja": "ユーザ名",
+    "ko": "사용자 이름",
+    "pl": "Nazwa użytkownika",
+    "pt-BR": "Nome de usuário",
+    "ru": "Имя пользователя",
+    "tr": "Kullanıcı adı",
+    "zh-Hans": "用户名",
+    "zh-Hant": "使用者名稱"
   },
   "Using {tool}": {
     "de": "Nutzt {tool}",
@@ -22078,6 +22978,21 @@
     "tr": "YOLO modu",
     "zh-Hans": "YOLO 模式",
     "zh-Hant": "YOLO 模式"
+  },
+  "Year": {
+    "de": "Jahr",
+    "es": "Año",
+    "fr": "Année",
+    "id": "Tahun",
+    "it": "Anno",
+    "ja": "年",
+    "ko": "연도",
+    "pl": "Rok",
+    "pt-BR": "Ano",
+    "ru": "Год",
+    "tr": "Yıl",
+    "zh-Hans": "年",
+    "zh-Hant": "年"
   },
   "Yellow": {
     "de": "Gelb",

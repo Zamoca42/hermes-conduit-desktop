@@ -27,7 +27,15 @@ import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
 import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
 import { useRequests, useWaiting } from './state/useNeedsYou'
-import { isWatching, notificationsEnabled, requestNotification, setNotificationsEnabled, turnNotification, type ChatRef, type NotificationSpec } from './state/notifications'
+import {
+  isWatching,
+  notificationsEnabled,
+  requestNotification,
+  setNotificationsEnabled,
+  turnNotification,
+  type ChatRef,
+  type NotificationSpec
+} from './state/notifications'
 import { cleanTitle } from './state/text'
 import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
@@ -47,6 +55,7 @@ import { NewBot } from './components/NewBot'
 import { useChatDisplay } from './state/display'
 import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
+import { VaultPage } from './components/VaultPage'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
@@ -224,10 +233,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [reveal, setReveal] = useState<{ path: string; id: number } | null>(null)
   const cwd = chat.cwd
   const openPath = useMemo(
-    () => (cwd ? (path: string) => {
-      setReveal(current => ({ path: absolutePath(path, cwd), id: (current?.id ?? 0) + 1 }))
-      showFiles(true)
-    } : null),
+    () =>
+      cwd
+        ? (path: string) => {
+            setReveal(current => ({ path: absolutePath(path, cwd), id: (current?.id ?? 0) + 1 }))
+            showFiles(true)
+          }
+        : null,
     [cwd, showFiles]
   )
   // Each reply's end reads the open folders again: the agent may have changed files.
@@ -284,7 +296,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [workOpen, setWorkOpen] = useState(false)
   const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined
   const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || !!openBotChat || workSessions.has(selected.id ?? '')))
-  const workItem: WorkItem | undefined = selected.id ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined
+  const workItem: WorkItem | undefined = selected.id
+    ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id)
+    : undefined
   // A workstream's checklist is its chat's plan, ahead of Hermes' own todo list there.
   const workChecklist = workItem?.checklist
   const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
@@ -369,7 +383,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   )
 
   // A Bot Chat goes by its bot's name: Hermes titles every one "Bot Chat".
-  const title = workItem ? shownTitle(workItem) : selected.botChat && selected.title ? selected.title : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
+  const title = workItem
+    ? shownTitle(workItem)
+    : selected.botChat && selected.title
+      ? selected.title
+      : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
   const openBot = useCallback((bot: Bot) => {
@@ -406,7 +424,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           if (!copy.lookSaved) return t('The bot was created, but its picture or look was not saved. Edit the bot to try again.')
         } else if (kind === 'delete') {
           if (!canDelete(bot)) return null
-          if (!window.confirm(`${t('Delete {name}?', { name: bot.title })}\n\n${t("This permanently removes the bot's profile, chats, memory and skills from the gateway.")}`)) return null
+          if (
+            !window.confirm(
+              `${t('Delete {name}?', { name: bot.title })}\n\n${t("This permanently removes the bot's profile, chats, memory and skills from the gateway.")}`
+            )
+          )
+            return null
           await gateway.http('DELETE', `/api/profiles/${encodeURIComponent(bot.name)}`, undefined, 30000)
           forgetAvatars()
         }
@@ -469,8 +492,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const chats = useRef(new Map<string, ChatRef>())
   if (chat.liveId) chats.current.set(chat.liveId, { storedId: chat.storedId, profile: selected.profile, title: title || undefined })
   const titleFor = useCallback(
-    (sessionId: string) =>
-      chats.current.get(sessionId)?.title ?? waiting.rows.find(row => row.sessionIds.includes(sessionId))?.title,
+    (sessionId: string) => chats.current.get(sessionId)?.title ?? waiting.rows.find(row => row.sessionIds.includes(sessionId))?.title,
     [waiting.rows]
   )
 
@@ -625,7 +647,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               onStar={row => updateMarks(current => toggleStar(current, row))}
               onToggleRead={toggleRead}
               onDelete={row => {
-                if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`)) void chatAction(row, null)
+                if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`))
+                  void chatAction(row, null)
               }}
             />
             <main className="chat" ref={chatPane}>
@@ -682,20 +705,26 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 </div>
               </div>
               <FileLinks.Provider value={openPath}>
-              <Transcript
-                state={transcript}
-                loading={loading}
-                error={error}
-                requests={openRequests}
-                profile={selected.profile}
-                author={botTitle}
-                onQuote={setQuote}
-                onCommand={text => void onSend(text)}
-                display={chatDisplay}
-              />
+                <Transcript
+                  state={transcript}
+                  loading={loading}
+                  error={error}
+                  requests={openRequests}
+                  profile={selected.profile}
+                  author={botTitle}
+                  onQuote={setQuote}
+                  onCommand={text => void onSend(text)}
+                  display={chatDisplay}
+                />
               </FileLinks.Provider>
               {contextOpen && chat.liveId ? (
-                <ContextPanel chat={chat} profile={selected.profile} running={transcript.running} onClose={closeContext} onCompress={() => void onSend('/compress')} />
+                <ContextPanel
+                  chat={chat}
+                  profile={selected.profile}
+                  running={transcript.running}
+                  onClose={closeContext}
+                  onCompress={() => void onSend('/compress')}
+                />
               ) : null}
               {modelOpen && chat.liveId ? (
                 <ModelPicker
@@ -852,7 +881,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onOpenBoard={() => setSection('tasks')}
           />
         ) : section === 'room' && openRoom ? (
-          <RoomView key={openRoom.roomId} room={openRoom} bots={roster.bots ?? []} connected={connected} canStop={groupRooms.capabilities?.canStop === true} canAttach={groupRooms.capabilities?.attachments === true} />
+          <RoomView
+            key={openRoom.roomId}
+            room={openRoom}
+            bots={roster.bots ?? []}
+            connected={connected}
+            canStop={groupRooms.capabilities?.canStop === true}
+            canAttach={groupRooms.capabilities?.attachments === true}
+          />
         ) : section === 'needs' ? (
           <NeedsYou
             requests={requests}
@@ -901,7 +937,7 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
@@ -914,6 +950,12 @@ function Settings({
         <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
       </main>
     )
+  if (page === 'vault')
+    return (
+      <main className="settings">
+        <VaultPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
   if (page === 'plugin')
     return (
       <main className="settings">
@@ -923,7 +965,14 @@ function Settings({
   if (page === 'chat')
     return (
       <main className="settings">
-        <ConfigPage title={t('Chat')} subtitle={t('Response behavior, visibility, and timezone')} sections={chatSections} bots={bots} profile={profile} onBack={() => setPage('main')} />
+        <ConfigPage
+          title={t('Chat')}
+          subtitle={t('Response behavior, visibility, and timezone')}
+          sections={chatSections}
+          bots={bots}
+          profile={profile}
+          onBack={() => setPage('main')}
+        />
       </main>
     )
   if (page === 'workspace' || page === 'advanced')
@@ -964,30 +1013,32 @@ function Settings({
         <dt>Hermes</dt>
         <dd>
           <ul className="hosts">
-            {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(host => (
-              <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
-                <span className="host-label">{hostName(host.url)}</span>
-                {host.username ? <span className="meta">{host.username}</span> : null}
-                <span className="spacer" />
-                {host.url === status.url ? (
-                  <span className="meta">{t('In use')}</span>
-                ) : (
-                  <button className="link" onClick={() => void window.conduit.switchHost(host.url)}>
-                    {t('Switch')}
-                  </button>
-                )}
-                {host.url !== status.url ? (
-                  <button
-                    className="link danger"
-                    onClick={() => {
-                      if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) void window.conduit.removeHost(host.url)
-                    }}
-                  >
-                    {t('Sign out')}
-                  </button>
-                ) : null}
-              </li>
-            ))}
+            {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(
+              host => (
+                <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
+                  <span className="host-label">{hostName(host.url)}</span>
+                  {host.username ? <span className="meta">{host.username}</span> : null}
+                  <span className="spacer" />
+                  {host.url === status.url ? (
+                    <span className="meta">{t('In use')}</span>
+                  ) : (
+                    <button className="link" onClick={() => void window.conduit.switchHost(host.url)}>
+                      {t('Switch')}
+                    </button>
+                  )}
+                  {host.url !== status.url ? (
+                    <button
+                      className="link danger"
+                      onClick={() => {
+                        if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) void window.conduit.removeHost(host.url)
+                      }}
+                    >
+                      {t('Sign out')}
+                    </button>
+                  ) : null}
+                </li>
+              )
+            )}
           </ul>
           <button className="link add-host" onClick={onAddHost}>
             {t('Add another Hermes…')}
@@ -1043,6 +1094,12 @@ function Settings({
             {t('Version, updates and what it does here')}
           </button>
         </dd>
+        <dt>{t('Passwords & logins')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('vault')}>
+            {t('Logins, cards and password managers Hermes signs in with')}
+          </button>
+        </dd>
         <dt>{t('Usage')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('usage')}>
@@ -1076,7 +1133,9 @@ function Settings({
             />
             {t('Read replies aloud')}
           </label>
-          <p className="meta settings-caption">{t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}</p>
+          <p className="meta settings-caption">
+            {t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}
+          </p>
         </dd>
         <dt>{t('Chat text size')}</dt>
         <dd>
