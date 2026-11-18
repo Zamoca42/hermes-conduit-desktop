@@ -2547,3 +2547,75 @@ html[data-window='quick'] body {
     background: transparent;
   }
 }
+
+/* A slash command's output, or a side agent's answer. */
+.command-output {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  min-width: 0;
+}
+
+.command-name {
+  margin-bottom: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.command-output pre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 18px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.command-output .assistant {
+  font-size: 14px;
+  line-height: 21px;
+}
+
+/* The composer's `/` suggestions, above the field. */
+.slash-suggestions {
+  display: flex;
+  flex-direction: column;
+  max-height: 272px;
+  overflow-y: auto;
+  margin: -2px -2px 0 -8px;
+}
+
+.slash-suggestions button {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  text-align: left;
+  font-size: 13px;
+  min-width: 0;
+}
+
+.slash-suggestions button.active {
+  background: var(--surface-hover);
+}
+
+.slash-name {
+  flex: none;
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.slash-description {
+  min-width: 0;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

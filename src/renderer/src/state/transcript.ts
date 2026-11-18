@@ -5,6 +5,7 @@
  */
 import { cleanUserText, type Attachment } from './text'
 import { t } from '../../../shared/i18n'
+import { sideAgentNote } from './slash'
 
 export interface UserItem {
   kind: 'user'
@@ -51,7 +52,18 @@ export interface NoticeItem {
   tone: 'error' | 'info'
 }
 
-export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem
+/** What a slash command printed, or a side agent's answer: beside the turn, not part of it. */
+export interface OutputItem {
+  kind: 'output'
+  key: string
+  /** The command that printed it, when one did. */
+  command?: string
+  text: string
+  /** Hermes' terminal output keeps its columns; Conduit's own notes are Markdown. */
+  format: 'plain' | 'markdown'
+}
+
+export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem
 
 export interface TranscriptState {
   items: TranscriptItem[]
@@ -255,6 +267,13 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
       if (!item) return state
       return { ...state, items: [...seal(state.items), item] }
     }
+    case 'btw.complete':
+    case 'background.complete': {
+      const text = str(payload.text)
+      if (!text) return state
+      const note = sideAgentNote(event.type === 'btw.complete' ? 'btw' : 'background', str(payload.task_id) ?? '', text, str(payload.question))
+      return addOutput(state, { text: note, format: 'markdown' })
+    }
     case 'message.interrupted':
     case 'session.interrupted':
       return { ...state, running: false, status: undefined, items: seal(state.items) }
@@ -266,6 +285,15 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     default:
       return state
   }
+}
+
+/** A command's output or a note, after what's there (a live reply's words stay above it). */
+export function addOutput(state: TranscriptState, output: { command?: string; text: string; format: OutputItem['format'] }): TranscriptState {
+  return { ...state, items: [...seal(state.items), { kind: 'output', key: nextKey('o'), ...output }] }
+}
+
+export function addNotice(state: TranscriptState, text: string, tone: NoticeItem['tone'] = 'info'): TranscriptState {
+  return { ...state, items: [...state.items, { kind: 'notice', key: nextKey('n'), text, tone }] }
 }
 
 function confirmPending(items: TranscriptItem[]): TranscriptItem[] {

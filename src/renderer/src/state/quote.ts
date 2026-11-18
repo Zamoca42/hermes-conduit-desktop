@@ -141,5 +141,13 @@ export interface ReplyReference {
   text: string
 }
 
-/** One quote on its way to the composer; each has its own id, so quoting twice lands twice. */
-export type QuoteRequest = { id: number; text: string } | { id: number; reply: ReplyReference }
+/**
+ * Words on their way to the composer; each has its own id, so quoting twice
+ * lands twice. `text` is a quote added to the draft, `reply` a whole message
+ * as the "Replying to" chip, `draft` words that replace the draft (what
+ * /undo takes back).
+ */
+export type QuoteRequest =
+  | { id: number; text: string }
+  | { id: number; reply: ReplyReference }
+  | { id: number; draft: string; reply?: ReplyReference }

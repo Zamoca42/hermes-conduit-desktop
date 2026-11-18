@@ -8,7 +8,7 @@ import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar, hostName } from './components/TitleBar'
-import { Transcript } from './components/Transcript'
+import { Transcript, prefillRequest } from './components/Transcript'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
 import { forgetAvatars, useBots } from './state/useBots'
@@ -22,6 +22,8 @@ import { isWatching, notificationsEnabled, requestNotification, setNotifications
 import { cleanTitle } from './state/text'
 import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
+import { looksLikeSlashCommand } from './state/slash'
+import { useCommands } from './state/useCommands'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -82,7 +84,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [section, setSection] = useState<Section>(reopenedSection)
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
   const list = useChatList(connected)
-  const { transcript, chat, loading, error, send, stop } = useChat(
+  const { transcript, chat, loading, error, send, stop, command } = useChat(
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
@@ -135,24 +137,33 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     return ids
   }, [transcript.running, chat.storedId])
 
+  const roster = useBots(connected)
+  const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
+  const [quote, setQuote] = useState<QuoteRequest | null>(null)
+  const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
     async (text: string, attachments: StagedAttachment[] = []) => {
-      const created = await send(text, attachments)
+      let created: string | null
+      if (looksLikeSlashCommand(text) && !attachments.length) {
+        const outcome = await command(text, commands)
+        if (outcome.kind === 'new') return newChat()
+        if (outcome.kind === 'prefill') setQuote(prefillRequest(outcome.text, botTitle))
+        created = outcome.created
+      } else {
+        created = await send(text, attachments)
+      }
       if (created) {
         setSelected(s => ({ ...s, id: created }))
         void list.refresh()
       }
     },
-    [send, list]
+    [send, command, commands, newChat, list, botTitle]
   )
 
   // A Bot Chat goes by its bot's name: Hermes titles every one "Bot Chat".
   const title = selected.botChat && selected.title ? selected.title : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
-  const roster = useBots(connected)
-  const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
-  const [quote, setQuote] = useState<QuoteRequest | null>(null)
   const openBot = useCallback((bot: Bot) => {
     setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: !!bot.botChatId })
     setSection('chats')
@@ -364,10 +375,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 profile={selected.profile}
                 author={botTitle}
                 onQuote={setQuote}
+                onCommand={text => void onSend(text)}
               />
               <Composer
                 placeholder={t('Message {name}…', { name: botTitle })}
                 quote={quote}
+                commands={commands}
                 running={transcript.running}
                 disabled={!connected}
                 model={chat.model}

@@ -3,9 +3,11 @@ import type { ConnectionStatus } from '@shared/ipc'
 import { useChat } from '../state/useChat'
 import { useRequests } from '../state/useNeedsYou'
 import { Composer } from './Composer'
-import { Transcript } from './Transcript'
+import { Transcript, prefillRequest } from './Transcript'
 import { t } from '@shared/i18n'
 import type { QuoteRequest } from '../state/quote'
+import { looksLikeSlashCommand } from '../state/slash'
+import { useCommands } from '../state/useCommands'
 
 /**
  * The quick ask window: one field to ask Hermes something from anywhere,
@@ -38,7 +40,7 @@ export function QuickAsk() {
 
 function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => void }) {
   const connected = status.phase === 'open'
-  const { transcript, chat, loading, error, send, stop } = useChat(null, undefined, status.sessionAuthority === true, connected)
+  const { transcript, chat, loading, error, send, stop, command } = useChat(null, undefined, status.sessionAuthority === true, connected)
   const requests = useRequests()
   const openRequests = requests.filter(r => r.sessionId && r.sessionId === chat.liveId)
   const [shown, setShown] = useState(0)
@@ -66,6 +68,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
   // Staged files need the taller window too.
   const [staged, setStaged] = useState(false)
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
+  const commands = useCommands(undefined, connected)
   // Before a reply, staged files grow the window only as far as the field
   // needs, so no empty space sits above them.
   const [fieldHeight, setFieldHeight] = useState(0)
@@ -105,7 +108,14 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
         running={transcript.running}
         disabled={!connected}
         model={chat.model}
-        onSend={(text, attachments) => void send(text, attachments)}
+        onSend={(text, attachments) => {
+          if (!looksLikeSlashCommand(text) || attachments.length) return void send(text, attachments)
+          void command(text, commands).then(outcome => {
+            if (outcome.kind === 'new') onNew()
+            else if (outcome.kind === 'prefill') setQuote(prefillRequest(outcome.text, 'Hermes'))
+          })
+        }}
+        commands={commands}
         onStop={() => void stop()}
         focusKey={`quick-${shown}`}
         draftKey="quick"
