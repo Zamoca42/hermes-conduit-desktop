@@ -6464,6 +6464,21 @@
     "zh-Hans": "解释这些步骤",
     "zh-Hant": "解釋這些步驟"
   },
+  "Explain this step": {
+    "de": "Diesen Schritt erklären",
+    "es": "Explicar este paso",
+    "fr": "Expliquer cette étape",
+    "id": "Jelaskan langkah ini",
+    "it": "Spiega questo passaggio",
+    "ja": "このステップを説明",
+    "ko": "이 단계 설명하기",
+    "pl": "Wyjaśnij ten krok",
+    "pt-BR": "Explicar esta etapa",
+    "ru": "Объяснить этот шаг",
+    "tr": "Bu adımı açıkla",
+    "zh-Hans": "解释此步骤",
+    "zh-Hant": "解釋此步驟"
+  },
   "Extra High": {
     "de": "Sehr hoch",
     "es": "Muy alto",

@@ -6400,3 +6400,20 @@ button.cap-row-text {
   margin: 2px 6px 0;
   font-size: 13px;
 }
+.lone-step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lone-step > .step-run-summary {
+  margin: 2px 14px 0;
+}
+/* Explain this step shows on a lone step under the pointer or keyboard focus, so a chat of single steps isn't lined with it. */
+.step-run-explain.lone {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.lone-step:hover .step-run-explain.lone,
+.step-run-explain.lone:focus-visible {
+  opacity: 1;
+}

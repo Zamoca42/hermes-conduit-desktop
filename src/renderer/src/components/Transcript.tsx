@@ -3,7 +3,7 @@ import { mediaKind, splitReply } from '../state/media'
 import { baseName, type Attachment } from '../state/text'
 import { displayName } from '../state/attachments'
 import type { PendingRequest } from '@shared/ipc'
-import type { TranscriptItem, TranscriptState } from '../state/transcript'
+import type { ToolItem, TranscriptItem, TranscriptState } from '../state/transcript'
 import type { DelegationEntry } from '../state/timeline'
 import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
@@ -15,7 +15,7 @@ import { BoardView } from './BoardView'
 import { DEFAULT_DISPLAY, type ChatDisplay } from '../state/display'
 import { readAloud, stopReading, useReadingKey } from '../state/readAloud'
 import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
-import { foldRuns, span, spanText, type Row } from '../state/runs'
+import { foldRuns, isStep, span, spanText, type Row } from '../state/runs'
 import { useStepSummaries, type StepSummaries } from '../state/useStepSummaries'
 
 export interface MessageMenuItem {
@@ -540,6 +540,30 @@ function StepRun({
   )
 }
 
+/** A step on its own, after the phone's singleExplained: its card, then what Hermes said about it when asked (Explain this step). */
+function LoneStep({ step, live, summaries, children }: { step: ToolItem; live: boolean; summaries: StepSummaries; children: React.ReactNode }) {
+  const steps = [step]
+  const summary = summaries.summary(steps)
+  const lookingBack = summaries.lookingBack(steps)
+  const explain = live || lookingBack ? undefined : summaries.explain(steps)
+  return (
+    <div className="lone-step">
+      {children}
+      {summary ? <p className="step-run-summary">{summary}</p> : null}
+      {lookingBack ? (
+        <p className="step-run-summary looking">
+          <span className="running" /> {t('Hermes is looking back…')}
+        </p>
+      ) : null}
+      {explain ? (
+        <button className="link step-run-explain lone" onClick={explain}>
+          {summary ? t('Explain again') : t('Explain this step')}
+        </button>
+      ) : null}
+    </div>
+  )
+}
+
 /** Consecutive self-improvement reviews as one line, after the phone's ChatReviewRun: folded until opened. */
 function ReviewRun({ count, children }: { count: number; children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
@@ -708,6 +732,10 @@ export function Transcript({
               <ReviewRun key={row.id} count={row.items.length}>
                 {row.items.map(renderItem)}
               </ReviewRun>
+            ) : row.item.kind === 'tool' && isStep(row.item) ? (
+              <LoneStep key={row.item.key} step={row.item} live={state.running && row === rows[rows.length - 1]} summaries={summaries}>
+                {renderItem(row.item)}
+              </LoneStep>
             ) : (
               renderItem(row.item)
             )
