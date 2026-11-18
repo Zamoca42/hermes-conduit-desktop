@@ -13,7 +13,8 @@ import {
   readChatFont,
   swatchColor,
   markColor,
-  type AccentChoice,
+  isHex,
+  type Accent,
   type ChatFontStyle
 } from '../state/appearance'
 import { Icon } from './icons'
@@ -33,12 +34,25 @@ function useDark(): boolean {
   return dark
 }
 
+const LAST_CUSTOM_KEY = 'conduit.accentLastCustomColor'
+/** The phone's first pick for a color of your own. */
+const FIRST_PICK = '#E36140'
+function readLastCustom(): string {
+  try {
+    const value = localStorage.getItem(LAST_CUSTOM_KEY)
+    return value && isHex(value) ? value : FIRST_PICK
+  } catch {
+    return FIRST_PICK
+  }
+}
+
 const rgb = (hex: string): [number, number, number] => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255) as [number, number, number]
 
 /** Settings > Appearance, after the phone's: theme, accent color and chat text style, all kept on this computer. */
 export function AppearancePage({ onBack }: { onBack: () => void }) {
   const [theme, setTheme] = useState<ThemeChoice>(window.conduit.theme)
-  const [accent, setAccent] = useState<AccentChoice>(readAccent)
+  const [accent, setAccent] = useState<Accent>(readAccent)
+  const [lastCustom, setLastCustom] = useState(readLastCustom)
   const [font, setFont] = useState<ChatFontStyle>(readChatFont)
   const dark = useDark()
 
@@ -95,7 +109,38 @@ export function AppearancePage({ onBack }: { onBack: () => void }) {
               </button>
             )
           })}
+          <label
+            className={isHex(accent) ? 'accent-swatch custom on' : 'accent-swatch custom'}
+            title={t('Custom color')}
+            style={isHex(accent) ? { background: accent } : undefined}
+          >
+            <input
+              type="color"
+              aria-label={t('Custom color')}
+              value={(isHex(accent) ? accent : lastCustom).toLowerCase()}
+              onChange={e => {
+                const pick = e.target.value.toUpperCase() as Accent
+                setAccent(pick)
+                setLastCustom(pick)
+                applyAccent(pick)
+                try {
+                  localStorage.setItem(LAST_CUSTOM_KEY, pick)
+                } catch {
+                  // The first pick next time.
+                }
+              }}
+            />
+          </label>
         </div>
+        {isHex(accent) ? (
+          <>
+            <p className="meta">{t('Your color is adjusted where needed so text stays readable in light and dark mode.')}</p>
+            <div className="accent-preview">
+              <span className="accent-preview-highlight">{t('Highlights')}</span>
+              <span className="accent-preview-bubble">{t('Your messages')}</span>
+            </div>
+          </>
+        ) : null}
       </section>
 
       <section className="pset-section">

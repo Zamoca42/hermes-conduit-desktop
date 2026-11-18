@@ -6417,3 +6417,39 @@ button.cap-row-text {
 .step-run-explain.lone:focus-visible {
   opacity: 1;
 }
+.accent-swatch.custom {
+  position: relative;
+  cursor: pointer;
+  background: conic-gradient(#ff5f5f, #ffd25f, #6be07b, #5fd3ff, #8a6bff, #ff6bd0, #ff5f5f);
+  overflow: hidden;
+}
+.accent-swatch.custom input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.accent-swatch.custom:focus-within {
+  outline: 2px solid var(--accent);
+}
+.accent-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+.accent-preview-highlight {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 14px;
+}
+.accent-preview-bubble {
+  padding: 8px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--accent-fill), var(--accent-fill-2));
+  color: var(--accent-ink);
+  font-size: 14px;
+}
