@@ -4788,3 +4788,125 @@ code.file-link:hover {
   margin: 4px 0 0 24px;
   white-space: normal;
 }
+
+/* Settings > Usage */
+.pulse-head .spacer {
+  flex: 1;
+}
+
+.usage-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.usage-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.usage-model {
+  align-items: flex-start;
+}
+
+.usage-model-name {
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+
+.usage-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.usage-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 140px;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.usage-axis {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pset .usage-peak,
+.pset .usage-axis {
+  font-size: 11px;
+}
+
+.usage-bar {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  min-width: 2px;
+}
+
+.usage-bar > span {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+}
+
+.usage-bar:hover > span {
+  opacity: 0.75;
+}
+
+.usage-quota {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.usage-quota + .usage-quota {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.usage-window {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.usage-meter {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.usage-meter > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.usage-meter.high > span {
+  background: var(--warning);
+}
+
+.usage-meter.full > span {
+  background: var(--danger);
+}
+
+.usage-account {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 8px;
+  font-size: 13px;
+}
+
+.usage-limit {
+  color: var(--warning);
+  font-size: 13px;
+}

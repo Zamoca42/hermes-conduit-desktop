@@ -14,6 +14,51 @@
     "zh-Hans": "0 9 * * 1 或 every monday 9am",
     "zh-Hant": "0 9 * * 1 或 every monday 9am"
   },
+  "30 days": {
+    "de": "30 Tage",
+    "es": "30 días",
+    "fr": "30 jours",
+    "id": "30 hari",
+    "it": "30 giorni",
+    "ja": "30日",
+    "ko": "30일",
+    "pl": "30 dni",
+    "pt-BR": "30 dias",
+    "ru": "30 дней",
+    "tr": "30 gün",
+    "zh-Hans": "30 天",
+    "zh-Hant": "30 天"
+  },
+  "7 days": {
+    "de": "7 Tage",
+    "es": "7 días",
+    "fr": "7 jours",
+    "id": "7 hari",
+    "it": "7 giorni",
+    "ja": "7日",
+    "ko": "7일",
+    "pl": "7 dni",
+    "pt-BR": "7 dias",
+    "ru": "7 дней",
+    "tr": "7 gün",
+    "zh-Hans": "7 天",
+    "zh-Hant": "7 天"
+  },
+  "90 days": {
+    "de": "90 Tage",
+    "es": "90 días",
+    "fr": "90 jours",
+    "id": "90 hari",
+    "it": "90 giorni",
+    "ja": "90日",
+    "ko": "90일",
+    "pl": "90 dni",
+    "pt-BR": "90 dias",
+    "ru": "90 дней",
+    "tr": "90 gün",
+    "zh-Hans": "90 天",
+    "zh-Hant": "90 天"
+  },
   "A Cloudflare Access service token needs both its client ID and its secret.": {
     "de": "Ein Cloudflare-Access-Diensttoken braucht Client-ID und Secret.",
     "es": "Un token de servicio de Cloudflare Access necesita su ID de cliente y su secreto.",
@@ -163,6 +208,21 @@
     "tr": "API çağrıları",
     "zh-Hans": "API 调用",
     "zh-Hant": "API 呼叫"
+  },
+  "Account {number}": {
+    "de": "Konto {number}",
+    "es": "Cuenta {number}",
+    "fr": "Compte {number}",
+    "id": "Akun {number}",
+    "it": "Account {number}",
+    "ja": "アカウント {number}",
+    "ko": "계정 {number}",
+    "pl": "Konto {number}",
+    "pt-BR": "Conta {number}",
+    "ru": "Аккаунт {number}",
+    "tr": "Hesap {number}",
+    "zh-Hans": "账户 {number}",
+    "zh-Hant": "帳號 {number}"
   },
   "Active": {
     "de": "Aktiv",
@@ -1094,6 +1154,36 @@
     "zh-Hans": "预算、记忆、下次查看、时区、立即查看聊天和最近的查看。",
     "zh-Hant": "預算、記憶、下次查看、時區、立即查看聊天和最近的查看。"
   },
+  "Busiest day {day}, {amount} tokens": {
+    "de": "Stärkster Tag {day}, {amount} Tokens",
+    "es": "Día de más uso {day}, {amount} tokens",
+    "fr": "Jour le plus chargé {day}, {amount} jetons",
+    "id": "Hari tersibuk {day}, {amount} token",
+    "it": "Giorno più intenso {day}, {amount} token",
+    "ja": "最も多かった日 {day}、{amount} トークン",
+    "ko": "가장 많이 쓴 날 {day}, 토큰 {amount}개",
+    "pl": "Najbardziej intensywny dzień {day}, tokeny: {amount}",
+    "pt-BR": "Dia de maior uso {day}, {amount} tokens",
+    "ru": "Самый загруженный день {day}, токенов: {amount}",
+    "tr": "En yoğun gün {day}, {amount} token",
+    "zh-Hans": "用量最多的一天 {day}，{amount} 个 token",
+    "zh-Hant": "用量最多的一天 {day}，{amount} 個 token"
+  },
+  "By model": {
+    "de": "Nach Modell",
+    "es": "Por modelo",
+    "fr": "Par modèle",
+    "id": "Per model",
+    "it": "Per modello",
+    "ja": "モデル別",
+    "ko": "모델별",
+    "pl": "Według modelu",
+    "pt-BR": "Por modelo",
+    "ru": "По моделям",
+    "tr": "Modele göre",
+    "zh-Hans": "按模型",
+    "zh-Hant": "依模型"
+  },
   "Cache reads": {
     "de": "Cache-Lesevorgänge",
     "es": "Lecturas de caché",
@@ -1739,6 +1829,21 @@
     "zh-Hans": "费用",
     "zh-Hant": "費用"
   },
+  "Costs are Hermes' estimates from each model's prices, unless the provider reports what it billed.": {
+    "de": "Die Kosten schätzt Hermes anhand der Preise jedes Modells, sofern der Anbieter nicht meldet, was er berechnet hat.",
+    "es": "Los costes son estimaciones de Hermes según los precios de cada modelo, salvo que el proveedor informe de lo que cobró.",
+    "fr": "Les coûts sont des estimations d’Hermes d’après les prix de chaque modèle, sauf si le fournisseur indique ce qu’il a facturé.",
+    "id": "Biaya adalah perkiraan Hermes dari harga tiap model, kecuali penyedia melaporkan jumlah yang ditagihkan.",
+    "it": "I costi sono stime di Hermes basate sui prezzi di ogni modello, a meno che il fornitore non indichi quanto ha addebitato.",
+    "ja": "費用は、プロバイダが請求額を報告しない限り、各モデルの価格から Hermes が見積もった値です。",
+    "ko": "비용은 제공업체가 청구 금액을 알려주지 않는 한 각 모델의 가격으로 Hermes가 추정한 값입니다.",
+    "pl": "Koszty to szacunki Hermes na podstawie cen każdego modelu, chyba że dostawca podaje, ile naliczył.",
+    "pt-BR": "Os custos são estimativas do Hermes com base nos preços de cada modelo, a menos que o provedor informe o que cobrou.",
+    "ru": "Стоимость — оценка Hermes по ценам каждой модели, если поставщик не сообщает, сколько списал.",
+    "tr": "Maliyetler, sağlayıcı faturaladığı tutarı bildirmediği sürece Hermes'in her modelin fiyatlarına göre yaptığı tahminlerdir.",
+    "zh-Hans": "费用是 Hermes 根据各模型价格估算的，除非提供方报告了实际收费。",
+    "zh-Hant": "費用是 Hermes 依各模型價格估算的，除非供應商回報了實際收費。"
+  },
   "Could not delete scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht gelöscht werden: {reason}",
     "es": "No se pudo eliminar el trabajo programado: {reason}",
@@ -1858,6 +1963,21 @@
     "tr": "Bu sohbetin kullanımı yüklenemedi.",
     "zh-Hans": "无法加载此聊天的用量。",
     "zh-Hant": "無法載入此聊天的用量。"
+  },
+  "Couldn't load usage. Refresh to try again.": {
+    "de": "Nutzung konnte nicht geladen werden. Aktualisiere, um es erneut zu versuchen.",
+    "es": "No se pudo cargar el uso. Actualiza para intentarlo de nuevo.",
+    "fr": "Impossible de charger l’utilisation. Actualisez pour réessayer.",
+    "id": "Tidak dapat memuat penggunaan. Muat ulang untuk mencoba lagi.",
+    "it": "Impossibile caricare l’utilizzo. Aggiorna per riprovare.",
+    "ja": "使用状況を読み込めませんでした。更新してもう一度お試しください。",
+    "ko": "사용량을 불러올 수 없습니다. 새로 고침하여 다시 시도하세요.",
+    "pl": "Nie udało się wczytać użycia. Odśwież, aby spróbować ponownie.",
+    "pt-BR": "Não foi possível carregar o uso. Atualize para tentar de novo.",
+    "ru": "Не удалось загрузить использование. Обновите, чтобы попробовать снова.",
+    "tr": "Kullanım yüklenemedi. Yeniden denemek için yenileyin.",
+    "zh-Hans": "无法载入用量。请刷新后重试。",
+    "zh-Hant": "無法載入用量。請重新整理後再試一次。"
   },
   "Couldn't open this file": {
     "de": "Diese Datei konnte nicht geöffnet werden",
@@ -4304,6 +4424,36 @@
     "zh-Hans": "未写进报告",
     "zh-Hant": "未寫進報告"
   },
+  "Limited": {
+    "de": "Begrenzt",
+    "es": "Limitado",
+    "fr": "Limité",
+    "id": "Dibatasi",
+    "it": "Limitato",
+    "ja": "制限中",
+    "ko": "제한됨",
+    "pl": "Ograniczone",
+    "pt-BR": "Limitado",
+    "ru": "Ограничено",
+    "tr": "Sınırlı",
+    "zh-Hans": "已受限",
+    "zh-Hant": "已受限"
+  },
+  "Limited until {time}": {
+    "de": "Begrenzt bis {time}",
+    "es": "Limitado hasta {time}",
+    "fr": "Limité jusqu’à {time}",
+    "id": "Dibatasi hingga {time}",
+    "it": "Limitato fino a {time}",
+    "ja": "{time} まで制限中",
+    "ko": "{time}까지 제한됨",
+    "pl": "Ograniczone do {time}",
+    "pt-BR": "Limitado até {time}",
+    "ru": "Ограничено до {time}",
+    "tr": "{time} tarihine kadar sınırlı",
+    "zh-Hans": "受限至 {time}",
+    "zh-Hant": "受限至 {time}"
+  },
   "Listen": {
     "de": "Zuhören",
     "es": "Escuchar",
@@ -5504,6 +5654,21 @@
     "zh-Hans": "不再提醒“{topic}”",
     "zh-Hant": "不再提醒「{topic}」"
   },
+  "No usage in this period.": {
+    "de": "Keine Nutzung in diesem Zeitraum.",
+    "es": "Sin uso en este periodo.",
+    "fr": "Aucune utilisation sur cette période.",
+    "id": "Tidak ada penggunaan dalam periode ini.",
+    "it": "Nessun utilizzo in questo periodo.",
+    "ja": "この期間の使用はありません。",
+    "ko": "이 기간에는 사용량이 없습니다.",
+    "pl": "Brak użycia w tym okresie.",
+    "pt-BR": "Nenhum uso neste período.",
+    "ru": "За этот период использования нет.",
+    "tr": "Bu dönemde kullanım yok.",
+    "zh-Hans": "此期间没有用量。",
+    "zh-Hant": "此期間沒有用量。"
+  },
   "Normal": {
     "de": "Normal",
     "es": "Normal",
@@ -5668,6 +5833,21 @@
     "tr": "Bu ana bilgisayar bildirmiyor",
     "zh-Hans": "此主机未报告",
     "zh-Hant": "此主機未回報"
+  },
+  "Not reported yet": {
+    "de": "Noch nicht gemeldet",
+    "es": "Aún sin datos",
+    "fr": "Pas encore signalé",
+    "id": "Belum dilaporkan",
+    "it": "Non ancora riportato",
+    "ja": "まだ報告なし",
+    "ko": "아직 보고되지 않음",
+    "pl": "Jeszcze nie zgłoszono",
+    "pt-BR": "Ainda não informado",
+    "ru": "Пока нет данных",
+    "tr": "Henüz bildirilmedi",
+    "zh-Hans": "尚未报告",
+    "zh-Hant": "尚未回報"
   },
   "Not sent: {reason}": {
     "de": "Nicht gesendet: {reason}",
@@ -6344,6 +6524,21 @@
     "zh-Hans": "已暂停",
     "zh-Hant": "已暫停"
   },
+  "Period": {
+    "de": "Zeitraum",
+    "es": "Periodo",
+    "fr": "Période",
+    "id": "Periode",
+    "it": "Periodo",
+    "ja": "期間",
+    "ko": "기간",
+    "pl": "Okres",
+    "pt-BR": "Período",
+    "ru": "Период",
+    "tr": "Dönem",
+    "zh-Hans": "时间段",
+    "zh-Hant": "時段"
+  },
   "Personal matters": {
     "de": "Persönliches",
     "es": "Asuntos personales",
@@ -6553,6 +6748,21 @@
     "tr": "İstem",
     "zh-Hans": "提示词",
     "zh-Hant": "提示詞"
+  },
+  "Provider quota": {
+    "de": "Anbieterkontingent",
+    "es": "Cuota del proveedor",
+    "fr": "Quota du fournisseur",
+    "id": "Kuota penyedia",
+    "it": "Quota del fornitore",
+    "ja": "プロバイダの使用枠",
+    "ko": "제공업체 할당량",
+    "pl": "Limit dostawcy",
+    "pt-BR": "Cota do provedor",
+    "ru": "Квота поставщика",
+    "tr": "Sağlayıcı kotası",
+    "zh-Hans": "提供方配额",
+    "zh-Hant": "供應商配額"
   },
   "Proxy sign-in": {
     "de": "Proxy-Anmeldung",
@@ -7139,6 +7349,36 @@
     "zh-Hans": "已运行代码",
     "zh-Hant": "已執行程式碼"
   },
+  "Rate limited": {
+    "de": "Ratenbegrenzt",
+    "es": "Límite de frecuencia alcanzado",
+    "fr": "Limite de débit atteinte",
+    "id": "Batas laju tercapai",
+    "it": "Limite di frequenza raggiunto",
+    "ja": "レート制限中",
+    "ko": "속도 제한됨",
+    "pl": "Limit szybkości osiągnięty",
+    "pt-BR": "Limite de taxa atingido",
+    "ru": "Ограничение частоты запросов",
+    "tr": "Hız sınırına ulaşıldı",
+    "zh-Hans": "已达速率限制",
+    "zh-Hant": "已達速率限制"
+  },
+  "Rate limited until {time}": {
+    "de": "Ratenbegrenzt bis {time}",
+    "es": "Límite de frecuencia hasta {time}",
+    "fr": "Limite de débit jusqu’à {time}",
+    "id": "Batas laju hingga {time}",
+    "it": "Limite di frequenza fino a {time}",
+    "ja": "{time} までレート制限中",
+    "ko": "{time}까지 속도 제한됨",
+    "pl": "Limit szybkości do {time}",
+    "pt-BR": "Limite de taxa até {time}",
+    "ru": "Ограничение частоты до {time}",
+    "tr": "{time} tarihine kadar hız sınırlı",
+    "zh-Hans": "速率限制至 {time}",
+    "zh-Hant": "速率限制至 {time}"
+  },
   "Read Aloud": {
     "de": "Vorlesen",
     "es": "Leer en voz alta",
@@ -7588,6 +7828,21 @@
     "tr": "Sıfırlandı: {subject}",
     "zh-Hans": "已重置：{subject}",
     "zh-Hant": "已重設：{subject}"
+  },
+  "Resets {time}": {
+    "de": "Wird {time} zurückgesetzt",
+    "es": "Se restablece {time}",
+    "fr": "Réinitialisation {time}",
+    "id": "Direset {time}",
+    "it": "Si azzera {time}",
+    "ja": "{time}にリセット",
+    "ko": "{time} 초기화",
+    "pl": "Reset {time}",
+    "pt-BR": "Reinicia {time}",
+    "ru": "Сброс {time}",
+    "tr": "{time} sıfırlanır",
+    "zh-Hans": "{time}重置",
+    "zh-Hant": "{time}重置"
   },
   "Resting after you said Not now": {
     "de": "Pausiert, nachdem du „Nicht jetzt“ gesagt hast",
@@ -8309,6 +8564,21 @@
     "zh-Hans": "显示此会话的 Token 用量",
     "zh-Hant": "顯示此工作階段的 token 用量"
   },
+  "Shown for providers that report a quota, such as subscription sign-ins. Hermes checks it in the background, so refresh if one is missing.": {
+    "de": "Wird für Anbieter angezeigt, die ein Kontingent melden, etwa Abo-Anmeldungen. Hermes prüft es im Hintergrund – aktualisiere, wenn eines fehlt.",
+    "es": "Se muestra para los proveedores que informan de una cuota, como los inicios de sesión con suscripción. Hermes la comprueba en segundo plano, así que actualiza si falta alguna.",
+    "fr": "Affiché pour les fournisseurs qui indiquent un quota, comme les connexions par abonnement. Hermes le vérifie en arrière-plan : actualisez s’il en manque un.",
+    "id": "Ditampilkan untuk penyedia yang melaporkan kuota, seperti masuk dengan langganan. Hermes memeriksanya di latar belakang, jadi muat ulang jika ada yang hilang.",
+    "it": "Mostrata per i fornitori che indicano una quota, come gli accessi con abbonamento. Hermes la controlla in background, quindi aggiorna se ne manca una.",
+    "ja": "サブスクリプションでのサインインなど、使用枠を報告するプロバイダに表示されます。Hermes がバックグラウンドで確認するので、表示がない場合は更新してください。",
+    "ko": "구독 로그인처럼 할당량을 알려주는 제공업체에 표시됩니다. Hermes가 백그라운드에서 확인하므로 보이지 않으면 새로 고치세요.",
+    "pl": "Wyświetlane dla dostawców, którzy podają limit, np. przy logowaniu z subskrypcją. Hermes sprawdza go w tle, więc odśwież, jeśli czegoś brakuje.",
+    "pt-BR": "Exibida para provedores que informam uma cota, como logins com assinatura. O Hermes verifica em segundo plano, então atualize se alguma estiver faltando.",
+    "ru": "Показывается для поставщиков, которые сообщают квоту, например при входе по подписке. Hermes проверяет её в фоне, поэтому обновите, если чего-то не хватает.",
+    "tr": "Abonelik girişleri gibi kota bildiren sağlayıcılar için gösterilir. Hermes bunu arka planda denetler; eksikse yenileyin.",
+    "zh-Hans": "适用于会报告配额的提供方，例如订阅登录。Hermes 会在后台检查，如有缺失请刷新。",
+    "zh-Hant": "適用於會回報配額的供應商，例如訂閱登入。Hermes 會在背景檢查，如有缺漏請重新整理。"
+  },
   "Sign in": {
     "de": "Anmelden",
     "es": "Iniciar sesión",
@@ -8338,6 +8608,21 @@
     "tr": "Önce Conduit penceresinde Hermes’e giriş yapın.",
     "zh-Hans": "请先在 Conduit 窗口中登录 Hermes。",
     "zh-Hant": "請先在 Conduit 視窗中登入 Hermes。"
+  },
+  "Sign in to this dashboard again to see usage.": {
+    "de": "Melde dich erneut bei diesem Dashboard an, um die Nutzung zu sehen.",
+    "es": "Vuelve a iniciar sesión en este panel para ver el uso.",
+    "fr": "Reconnectez-vous à ce tableau de bord pour voir l’utilisation.",
+    "id": "Masuk lagi ke dasbor ini untuk melihat penggunaan.",
+    "it": "Accedi di nuovo a questa dashboard per vedere l’utilizzo.",
+    "ja": "使用状況を見るには、このダッシュボードに再度サインインしてください。",
+    "ko": "사용량을 보려면 이 대시보드에 다시 로그인하세요.",
+    "pl": "Zaloguj się ponownie do tego pulpitu, aby zobaczyć użycie.",
+    "pt-BR": "Entre novamente neste painel para ver o uso.",
+    "ru": "Войдите в эту панель снова, чтобы увидеть использование.",
+    "tr": "Kullanımı görmek için bu panoda yeniden oturum açın.",
+    "zh-Hans": "请重新登录此面板以查看用量。",
+    "zh-Hant": "請重新登入此儀表板以查看用量。"
   },
   "Sign out": {
     "de": "Abmelden",
@@ -8458,6 +8743,21 @@
     "tr": "Giriş yapıldı, şunlar hariç:",
     "zh-Hans": "已登录，但以下除外：",
     "zh-Hant": "已登入，但以下除外："
+  },
+  "Signed out": {
+    "de": "Abgemeldet",
+    "es": "Sesión cerrada",
+    "fr": "Déconnecté",
+    "id": "Keluar",
+    "it": "Disconnesso",
+    "ja": "サインアウト済み",
+    "ko": "로그아웃됨",
+    "pl": "Wylogowano",
+    "pt-BR": "Desconectado",
+    "ru": "Выполнен выход",
+    "tr": "Oturum kapalı",
+    "zh-Hans": "已退出登录",
+    "zh-Hant": "已登出"
   },
   "Signing in…": {
     "de": "Anmeldung…",
@@ -9374,6 +9674,21 @@
     "zh-Hans": "思考中…",
     "zh-Hant": "思考中…"
   },
+  "This Hermes doesn't report usage. Update Hermes to see it here.": {
+    "de": "Dieses Hermes meldet keine Nutzung. Aktualisiere Hermes, um sie hier zu sehen.",
+    "es": "Este Hermes no informa del uso. Actualiza Hermes para verlo aquí.",
+    "fr": "Cet Hermes n’indique pas l’utilisation. Mettez Hermes à jour pour la voir ici.",
+    "id": "Hermes ini tidak melaporkan penggunaan. Perbarui Hermes untuk melihatnya di sini.",
+    "it": "Questo Hermes non riporta l’utilizzo. Aggiorna Hermes per vederlo qui.",
+    "ja": "この Hermes は使用状況を報告しません。ここに表示するには Hermes を更新してください。",
+    "ko": "이 Hermes는 사용량을 알려주지 않습니다. 여기서 보려면 Hermes를 업데이트하세요.",
+    "pl": "Ten Hermes nie podaje użycia. Zaktualizuj Hermes, aby zobaczyć je tutaj.",
+    "pt-BR": "Este Hermes não informa o uso. Atualize o Hermes para vê-lo aqui.",
+    "ru": "Этот Hermes не сообщает об использовании. Обновите Hermes, чтобы видеть его здесь.",
+    "tr": "Bu Hermes kullanım bildirmiyor. Burada görmek için Hermes'i güncelleyin.",
+    "zh-Hans": "此 Hermes 不报告用量。更新 Hermes 后即可在此查看。",
+    "zh-Hant": "此 Hermes 不回報用量。更新 Hermes 後即可在此查看。"
+  },
   "This Hermes has no task board.": {
     "de": "Dieses Hermes hat kein Aufgaben-Board.",
     "es": "Este Hermes no tiene tablero de tareas.",
@@ -9719,6 +10034,21 @@
     "zh-Hans": "今天",
     "zh-Hant": "今天"
   },
+  "Tokens per day": {
+    "de": "Tokens pro Tag",
+    "es": "Tokens por día",
+    "fr": "Jetons par jour",
+    "id": "Token per hari",
+    "it": "Token al giorno",
+    "ja": "1日あたりのトークン",
+    "ko": "일별 토큰",
+    "pl": "Tokeny dziennie",
+    "pt-BR": "Tokens por dia",
+    "ru": "Токены по дням",
+    "tr": "Günlük token",
+    "zh-Hans": "每日 token",
+    "zh-Hant": "每日 token"
+  },
   "Tokens today": {
     "de": "Tokens heute",
     "es": "Tokens hoy",
@@ -9733,6 +10063,21 @@
     "tr": "Bugünkü token",
     "zh-Hans": "今日 Token",
     "zh-Hant": "今日 Token"
+  },
+  "Tokens, cost and provider quota": {
+    "de": "Tokens, Kosten und Anbieterkontingent",
+    "es": "Tokens, coste y cuota del proveedor",
+    "fr": "Jetons, coût et quota du fournisseur",
+    "id": "Token, biaya, dan kuota penyedia",
+    "it": "Token, costi e quota del fornitore",
+    "ja": "トークン、費用、プロバイダの使用枠",
+    "ko": "토큰, 비용 및 제공업체 할당량",
+    "pl": "Tokeny, koszt i limit dostawcy",
+    "pt-BR": "Tokens, custo e cota do provedor",
+    "ru": "Токены, стоимость и квота поставщика",
+    "tr": "Tokenler, maliyet ve sağlayıcı kotası",
+    "zh-Hans": "token、费用和提供方配额",
+    "zh-Hant": "token、費用和供應商配額"
   },
   "Tomorrow": {
     "de": "Morgen",
@@ -9808,6 +10153,36 @@
     "tr": "Araçlar",
     "zh-Hans": "工具",
     "zh-Hant": "工具"
+  },
+  "Total tokens": {
+    "de": "Tokens gesamt",
+    "es": "Tokens totales",
+    "fr": "Total des jetons",
+    "id": "Total token",
+    "it": "Token totali",
+    "ja": "合計トークン",
+    "ko": "총 토큰",
+    "pl": "Tokeny łącznie",
+    "pt-BR": "Total de tokens",
+    "ru": "Всего токенов",
+    "tr": "Toplam token",
+    "zh-Hans": "总 token",
+    "zh-Hant": "總 token"
+  },
+  "Totals": {
+    "de": "Summen",
+    "es": "Totales",
+    "fr": "Totaux",
+    "id": "Total",
+    "it": "Totali",
+    "ja": "合計",
+    "ko": "합계",
+    "pl": "Sumy",
+    "pt-BR": "Totais",
+    "ru": "Итого",
+    "tr": "Toplamlar",
+    "zh-Hans": "总计",
+    "zh-Hant": "總計"
   },
   "Transcribing": {
     "de": "Wird transkribiert",
@@ -11594,6 +11969,21 @@
     "zh-Hans": "{count} 个令牌",
     "zh-Hant": "{count} 個 token"
   },
+  "{input} in · {output} out": {
+    "de": "{input} Eingabe · {output} Ausgabe",
+    "es": "{input} entrada · {output} salida",
+    "fr": "{input} entrée · {output} sortie",
+    "id": "{input} masuk · {output} keluar",
+    "it": "{input} input · {output} output",
+    "ja": "入力 {input} · 出力 {output}",
+    "ko": "입력 {input} · 출력 {output}",
+    "pl": "{input} wejście · {output} wyjście",
+    "pt-BR": "{input} entrada · {output} saída",
+    "ru": "{input} ввод · {output} вывод",
+    "tr": "{input} girdi · {output} çıktı",
+    "zh-Hans": "输入 {input} · 输出 {output}",
+    "zh-Hant": "輸入 {input} · 輸出 {output}"
+  },
   "{kind}: Bring up sooner": {
     "de": "{kind}: Früher ansprechen",
     "es": "{kind}: Mencionar antes",
@@ -11714,6 +12104,36 @@
     "zh-Hans": "{kind}：{level}",
     "zh-Hant": "{kind}：{level}"
   },
+  "{model} limited": {
+    "de": "{model} begrenzt",
+    "es": "{model} limitado",
+    "fr": "{model} limité",
+    "id": "{model} dibatasi",
+    "it": "{model} limitato",
+    "ja": "{model} は制限中",
+    "ko": "{model} 제한됨",
+    "pl": "{model} ograniczony",
+    "pt-BR": "{model} limitado",
+    "ru": "{model} ограничена",
+    "tr": "{model} sınırlı",
+    "zh-Hans": "{model} 已受限",
+    "zh-Hant": "{model} 已受限"
+  },
+  "{model} limited until {time}": {
+    "de": "{model} begrenzt bis {time}",
+    "es": "{model} limitado hasta {time}",
+    "fr": "{model} limité jusqu’à {time}",
+    "id": "{model} dibatasi hingga {time}",
+    "it": "{model} limitato fino a {time}",
+    "ja": "{model} は {time} まで制限中",
+    "ko": "{model} {time}까지 제한됨",
+    "pl": "{model} ograniczony do {time}",
+    "pt-BR": "{model} limitado até {time}",
+    "ru": "{model} ограничена до {time}",
+    "tr": "{model} {time} tarihine kadar sınırlı",
+    "zh-Hans": "{model} 受限至 {time}",
+    "zh-Hant": "{model} 受限至 {time}"
+  },
   "{names} are answering…": {
     "de": "{names} antworten…",
     "es": "{names} están respondiendo…",
@@ -11773,6 +12193,21 @@
     "tr": "{name} çalışıyor. Çalışma birazdan geçmişinde görünecek.",
     "zh-Hans": "{name} 正在运行，稍后会显示在运行记录中。",
     "zh-Hant": "{name} 正在執行，稍後會顯示在執行紀錄中。"
+  },
+  "{percent} used": {
+    "de": "{percent} verbraucht",
+    "es": "{percent} usado",
+    "fr": "{percent} utilisé",
+    "id": "{percent} terpakai",
+    "it": "{percent} usato",
+    "ja": "{percent} 使用済み",
+    "ko": "{percent} 사용됨",
+    "pl": "{percent} wykorzystano",
+    "pt-BR": "{percent} usado",
+    "ru": "использовано {percent}",
+    "tr": "{percent} kullanıldı",
+    "zh-Hans": "已用 {percent}",
+    "zh-Hant": "已用 {percent}"
   },
   "{question} (+{count} more)": {
     "de": "{question} (+{count} weitere)",

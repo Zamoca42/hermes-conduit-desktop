@@ -32,6 +32,7 @@ import { cleanTitle } from './state/text'
 import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
+import { UsagePage } from './components/UsagePage'
 import { VoiceCall } from './components/VoiceCall'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
@@ -679,16 +680,38 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             openLiveId={chat.liveId}
           />
         ) : (
-          <Settings status={status} onAddHost={onAddHost} />
+          <Settings
+            status={status}
+            onAddHost={onAddHost}
+            bots={(roster.bots ?? []).map(bot => ({ name: bot.name, title: bot.title }))}
+            profile={selected.profile ?? 'default'}
+          />
         )}
       </div>
     </>
   )
 }
 
-function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
+function Settings({
+  status,
+  onAddHost,
+  bots,
+  profile
+}: {
+  status: ConnectionStatus
+  onAddHost: () => void
+  bots: { name: string; title: string }[]
+  profile: string
+}) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
+  const [page, setPage] = useState<'main' | 'usage'>('main')
+  if (page === 'usage')
+    return (
+      <main className="settings">
+        <UsagePage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
   return (
     <main className="settings">
@@ -732,6 +755,12 @@ function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: 
         <dd>
           {status.method ? methods[status.method] : '—'}
           {status.username ? ` (${status.username})` : ''}
+        </dd>
+        <dt>{t('Usage')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('usage')}>
+            {t('Tokens, cost and provider quota')}
+          </button>
         </dd>
         <dt>{t('Notifications')}</dt>
         <dd>
