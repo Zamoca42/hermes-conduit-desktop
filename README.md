@@ -1,2 +1,65 @@
-# hermes-conduit-desktop
-Conduit for desktop: Windows and Mac client for Hermes Agent
+# Conduit for desktop
+
+Conduit for Windows and Mac: a desktop client for
+[Hermes Agent](https://github.com/NousResearch/hermes-agent), from the makers
+of the [Conduit](https://github.com/kaishi00/hermes-conduit) iPhone app. It
+talks to the same Hermes dashboard and the same
+[Conduit plugin](https://github.com/kaishi00/hermes-conduit-notifier) the
+phone does.
+
+**Status: early prototype.** Sign in, the chat list, a live transcript and
+the composer work. Next: Needs you (approvals and questions), Bots home and
+group chats, the tray and quick ask, notifications, and pairing with the
+phone by QR code.
+
+## Run it
+
+You need Node 22 and pnpm 10.
+
+    pnpm install
+    pnpm dev
+
+Enter your dashboard's address, the one the phone uses, and sign in the way
+it asks: user name and password, a session token, or nothing for a dashboard
+without its sign-in gate. The sign-in is kept between launches, its secrets
+encrypted by the system keychain.
+
+## Checks
+
+    pnpm typecheck
+    pnpm test
+    pnpm build
+
+`test/live` runs a real turn against a dashboard and is skipped unless you
+point it at one:
+
+    CONDUIT_LIVE_URL=http://127.0.0.1:9119 pnpm test test/live
+
+(add `CONDUIT_LIVE_USER` and `CONDUIT_LIVE_PASSWORD`, or `CONDUIT_LIVE_TOKEN`,
+for a dashboard that asks for a sign-in).
+
+## Packages
+
+    pnpm package
+
+builds an installer for the platform you're on, in `release/`. CI builds the
+Windows installer and the Mac dmg for every pull request (unsigned for now;
+Windows will be signed by the Microsoft Store, the Mac notarized).
+
+## How it's put together
+
+- `src/main`: the Electron main process. It owns the connection to Hermes
+  (`connection.ts`), signs in (`auth.ts`) and keeps the sign-in
+  (`store.ts`). The window never sees a password, cookie or token.
+- `src/preload`: the small API the window gets (`window.conduit`).
+- `src/renderer`: the window, in React. `state/` turns Hermes' events into
+  the transcript and the chat list; `components/` draws them.
+- `src/vendor/hermes-shared`: Hermes' own gateway client and wire types,
+  copied unchanged under its MIT license (see `UPSTREAM.md` there).
+
+As in the phone app, logic that both apps need goes in the Conduit plugin,
+and this app draws what it sends.
+
+## License
+
+MIT

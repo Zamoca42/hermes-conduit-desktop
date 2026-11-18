@@ -1,0 +1,82 @@
+/*
+ * Conduit's colors, from the Hermes Conduit design system. Dark is the
+ * phone's look; light follows it. The system decides which (Eric, 2026-11-17).
+ */
+:root {
+  color-scheme: dark;
+  --accent: #e0ab47;
+  --accent-strong: #c99436;
+  --accent-hover: #fad47a;
+  /* Fills (user bubbles, the send button) keep the gold and its dark ink in both themes. */
+  --accent-fill: #e0ab47;
+  --accent-fill-2: #c99436;
+  --accent-ink: #1a1408;
+  --accent-soft: rgba(224, 171, 71, 0.14);
+  --accent-line: rgba(224, 171, 71, 0.25);
+  --accent-time: rgba(224, 171, 71, 0.75);
+  --aura: #6194fa;
+  --warning: #ffa83d;
+  --success: #30d158;
+  --danger: #ff6b6b;
+
+  --backdrop: #0b0d12;
+  --canvas: radial-gradient(60% 70% at 55% 18%, rgba(224, 171, 71, 0.2), rgba(224, 171, 71, 0) 70%),
+    radial-gradient(55% 60% at 85% 90%, rgba(97, 148, 250, 0.14), rgba(97, 148, 250, 0) 70%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.18)), #0b0d12;
+  --bar: rgba(11, 13, 18, 0.55);
+  --rail: rgba(11, 13, 18, 0.35);
+  --list: rgba(11, 13, 18, 0.25);
+  --composer: rgba(18, 20, 27, 0.96);
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  --field: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.06);
+  --line-strong: rgba(255, 255, 255, 0.12);
+  --text: #ffffff;
+  --text-2: rgba(235, 235, 245, 0.75);
+  --text-3: rgba(235, 235, 245, 0.6);
+  --text-4: rgba(235, 235, 245, 0.45);
+  --code-bg: rgba(255, 255, 255, 0.06);
+  --bubble-shadow: 0 6px 14px rgba(224, 171, 71, 0.16);
+
+  --radius-bubble: 21px;
+  --radius-card: 18px;
+  --radius-composer: 24px;
+  --font: 'Segoe UI Variable', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, system-ui, sans-serif;
+  --mono: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --accent: #b9831f;
+    --accent-strong: #a0711a;
+    --accent-hover: #8f6416;
+    --accent-soft: rgba(185, 131, 31, 0.12);
+    --accent-line: rgba(185, 131, 31, 0.3);
+    --accent-time: rgba(150, 105, 25, 0.85);
+    --aura: #3b6fe0;
+    --warning: #c76a00;
+    --success: #1f9d48;
+    --danger: #d43c3c;
+
+    --backdrop: #f5f5f7;
+    --canvas: radial-gradient(60% 70% at 55% 18%, rgba(224, 171, 71, 0.16), rgba(224, 171, 71, 0) 70%),
+      radial-gradient(55% 60% at 85% 90%, rgba(97, 148, 250, 0.1), rgba(97, 148, 250, 0) 70%), #f5f5f7;
+    --bar: rgba(255, 255, 255, 0.6);
+    --rail: rgba(255, 255, 255, 0.45);
+    --list: rgba(255, 255, 255, 0.35);
+    --composer: rgba(255, 255, 255, 0.96);
+    --surface: rgba(0, 0, 0, 0.04);
+    --surface-hover: rgba(0, 0, 0, 0.07);
+    --field: rgba(0, 0, 0, 0.05);
+    --line: rgba(0, 0, 0, 0.07);
+    --line-strong: rgba(0, 0, 0, 0.14);
+    --text: #111318;
+    --text-2: rgba(30, 32, 40, 0.8);
+    --text-3: rgba(60, 60, 67, 0.65);
+    --text-4: rgba(60, 60, 67, 0.5);
+    --code-bg: rgba(0, 0, 0, 0.05);
+    --bubble-shadow: 0 6px 14px rgba(185, 131, 31, 0.18);
+  }
+}
