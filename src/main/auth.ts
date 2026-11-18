@@ -14,7 +14,7 @@
  */
 import type { HostProbe, SignInMethod } from '../shared/ipc'
 import { t } from '../shared/i18n'
-import { proxyFetch, type ProxyHeaders } from './proxyHeaders'
+import { httpsIssue, proxyFetch, type ProxyHeaders } from './proxyHeaders'
 
 export type Fetch = typeof fetch
 
@@ -124,6 +124,8 @@ export async function probeHost(input: string, fetchImpl: Fetch, headers?: Proxy
   } catch (error) {
     return { ok: false, error: (error as Error).message }
   }
+  const insecure = httpsIssue(url, headers)
+  if (insecure) return { ok: false, error: insecure }
   try {
     const response = await timedFetch(proxyFetch(fetchImpl, url, headers), endpoint(url, '/api/status'), {
       headers: { Accept: 'application/json' }

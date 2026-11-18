@@ -126,12 +126,13 @@ describe('the connection', () => {
     await h.connection.http('GET', '/api/profiles/sessions')
     expect(h.sentHeaders.at(-1)!.get('CF-Access-Client-Secret')).toBe('shh')
 
-    // Plain http never carries them.
+    // Plain http never carries them, so it says so rather than dropping them.
     const plain = harness()
-    await plain.connection.signIn({ url: 'http://192.168.1.20:9119', method: 'password', username: 'eric', password: 'pw', headers })
-    await tick()
-    expect(plain.sentHeaders.every(sent => !sent.has('CF-Access-Client-Id'))).toBe(true)
-    expect(plain.sockets[0]!.headers).not.toHaveProperty('CF-Access-Client-Id')
+    expect(await plain.connection.signIn({ url: 'http://192.168.1.20:9119', method: 'password', username: 'eric', password: 'pw', headers })).toEqual({
+      ok: false,
+      error: 'Extra headers are only sent over HTTPS. Enter an https:// server address first.'
+    })
+    expect(plain.log).toEqual([])
   })
 
   it('refuses headers Conduit sets itself, or half a Cloudflare token', async () => {

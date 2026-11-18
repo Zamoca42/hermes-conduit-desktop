@@ -30,7 +30,7 @@ import {
   readOpenSessionToken,
   webSocketUrl
 } from './auth'
-import { cleanHeaders, proxyFetch, withProxyHeaders, type ProxyHeaders } from './proxyHeaders'
+import { cleanHeaders, httpsIssue, proxyFetch, withProxyHeaders, type ProxyHeaders } from './proxyHeaders'
 import { t } from '../shared/i18n'
 
 /** What we keep between launches. Secrets are encrypted by the store. */
@@ -150,6 +150,8 @@ export class Connection {
     }
     const cleaned = cleanHeaders(request.headers)
     if (!cleaned.ok) return { ok: false, error: cleaned.error }
+    const insecure = httpsIssue(url, cleaned.headers)
+    if (insecure) return { ok: false, error: insecure }
     const saved: SavedConnection = { url, method: request.method, headers: cleaned.headers }
     try {
       if (request.method === 'password') {

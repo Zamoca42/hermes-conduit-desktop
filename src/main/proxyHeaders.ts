@@ -50,6 +50,12 @@ export function cleanHeaders(input: ProxyHeaders | undefined): { ok: true; heade
   return { ok: true, headers: Object.keys(headers).length ? headers : undefined }
 }
 
+/** The error for headers entered for an address that isn't https, where they'd never be sent. */
+export function httpsIssue(baseUrl: string, headers: ProxyHeaders | undefined): string | null {
+  if (!headers || baseUrl.toLowerCase().startsWith('https://')) return null
+  return t('Extra headers are only sent over HTTPS. Enter an https:// server address first.')
+}
+
 /** Whether `url` may carry the headers entered for `baseUrl`: the same origin, over HTTPS or WSS. */
 export function carriesHeaders(url: string, baseUrl: string): boolean {
   try {
