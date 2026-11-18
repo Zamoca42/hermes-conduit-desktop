@@ -232,7 +232,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // Pulse's own chat stays behind its screen, as on the phone.
   // Workstreams' chats stay with their bots, as on the phone.
   const botNames = useMemo(() => (roster.bots ?? []).map(bot => bot.name), [roster.bots])
-  const workSessions = useWorkSessions(botNames, connected)
+  const { sessions: workSessions, byBot: workByBot } = useWorkSessions(botNames, connected)
   const listedRows = useMemo(
     () => (list.rows && (pulseChat || workSessions.size) ? list.rows.filter(row => row.id !== pulseChat && !workSessions.has(row.id)) : list.rows),
     [list.rows, pulseChat, workSessions]
@@ -708,6 +708,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onOpenRoom={showRoom}
             onCreateRoom={groupRooms.create}
             onEdit={connected ? setEditingBot : undefined}
+            work={workByBot}
+            onWork={bot => {
+              openBot(bot)
+              if (bot.botChatId) {
+                showFiles(false)
+                setWorkOpen(true)
+              }
+            }}
           />
         ) : section === 'tasks' ? (
           <Tasks

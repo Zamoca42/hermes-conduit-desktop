@@ -58,11 +58,16 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
 
 /**
  * Every bot's workstream chats, so the Chats list leaves them to their
- * bots, resolved ones too. Read when the roster changes and as sessions
- * change.
+ * bots, resolved ones too, and each bot's counts for its Bots home pill.
+ * Read when the roster changes and as sessions change or turns end.
  */
-export function useWorkSessions(profiles: string[], connected: boolean): ReadonlySet<string> {
-  const [ids, setIds] = useState<ReadonlySet<string>>(new Set())
+export interface BotWork {
+  working: number
+  needsYou: number
+}
+
+export function useWorkSessions(profiles: string[], connected: boolean): { sessions: ReadonlySet<string>; byBot: ReadonlyMap<string, BotWork> } {
+  const [state, setState] = useState<{ sessions: ReadonlySet<string>; byBot: ReadonlyMap<string, BotWork> }>({ sessions: new Set(), byBot: new Map() })
   const key = profiles.join('\n')
   useEffect(() => {
     if (!connected || !profiles.length) return
@@ -72,16 +77,21 @@ export function useWorkSessions(profiles: string[], connected: boolean): Readonl
         profiles.map(profile =>
           gateway
             .http('GET', workPath(WORK, profile))
-            .then(answer => parseWork(answer).sessionIds)
-            .catch(() => [] as string[])
+            .then(answer => parseWork(answer))
+            .catch(() => null)
         )
       )
-      if (live) setIds(new Set(answers.flat()))
+      if (!live) return
+      const byBot = new Map<string, BotWork>()
+      answers.forEach((answer, index) => {
+        if (answer) byBot.set(profiles[index]!, { working: answer.working, needsYou: answer.needsYou })
+      })
+      setState({ sessions: new Set(answers.flatMap(answer => answer?.sessionIds ?? [])), byBot })
     }
     void read()
     let timer: ReturnType<typeof setTimeout> | null = null
     const off = window.conduit.onEvent(event => {
-      if (event.type !== 'sessions.changed') return
+      if (event.type !== 'sessions.changed' && event.type !== 'message.complete') return
       if (timer) clearTimeout(timer)
       timer = setTimeout(() => void read(), 3000)
     })
@@ -91,5 +101,5 @@ export function useWorkSessions(profiles: string[], connected: boolean): Readonl
       if (timer) clearTimeout(timer)
     }
   }, [key, connected])
-  return ids
+  return state
 }

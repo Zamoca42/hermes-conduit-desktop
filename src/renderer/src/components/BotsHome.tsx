@@ -1,4 +1,5 @@
-import { useEffect, useState, type DragEvent, type FormEvent, type MouseEvent } from "react";
+import { useEffect, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
+import type { BotWork } from "../state/useWork";
 import { timeLabel } from "../state/chats";
 import { botColor, homeLayout, keptColor, type Bot } from "../state/bots";
 import {
@@ -82,6 +83,43 @@ interface Props {
   onCreateRoom: (roomId: string, name: string, bots: Bot[]) => Promise<Room>;
   /** Edit Bot, from a bot's right-click menu. */
   onEdit?: (bot: Bot) => void;
+  /** Each bot's workstreams: what needs you and what's working. */
+  work?: ReadonlyMap<string, BotWork>;
+  /** The pill opens the bot's work. */
+  onWork?: (bot: Bot) => void;
+}
+
+/** A bot's pill: what needs you first, then what's working, else nothing. */
+export function workPill(work: BotWork | undefined): { text: string; needs: boolean } | null {
+  if (!work) return null;
+  if (work.needsYou > 0) return { text: t("{count} needs you", { count: work.needsYou }), needs: true };
+  if (work.working > 0) return { text: t("{count} working", { count: work.working }), needs: false };
+  return null;
+}
+
+function WorkPill({ bot, work, onWork }: { bot: Bot; work?: BotWork; onWork?: (bot: Bot) => void }) {
+  const pill = workPill(work);
+  if (!pill) return null;
+  return (
+    <span
+      role="button"
+      tabIndex={0}
+      className={`work-pill${pill.needs ? " needs" : ""}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        onWork?.(bot);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          e.stopPropagation();
+          onWork?.(bot);
+        }
+      }}
+    >
+      {pill.text}
+    </span>
+  );
 }
 
 interface Draft {
@@ -109,6 +147,8 @@ export function BotsHome({
   onOpenRoom,
   onCreateRoom,
   onEdit,
+  work,
+  onWork,
 }: Props) {
   const [menu, setMenu] = useState<{ bot: Bot; x: number; y: number } | null>(
     null,
@@ -236,6 +276,7 @@ export function BotsHome({
               onOpen={onOpen}
               onAsk={onAsk}
               onMenu={openMenu?.(bots[0])}
+              pill={<WorkPill bot={bots[0]} work={work?.get(bots[0].name)} onWork={onWork} />}
             />
           ) : null}
           {bots && layout !== "one" ? (
@@ -250,6 +291,7 @@ export function BotsHome({
                   target={dropTarget === bot.name}
                   onClick={() => openOrPick(bot)}
                   onMenu={openMenu?.(bot)}
+                  pill={<WorkPill bot={bot} work={work?.get(bot.name)} onWork={onWork} />}
                   drag={tileDrag(bot)}
                 />
               ))}
@@ -399,12 +441,14 @@ function OneBot({
   onOpen,
   onAsk,
   onMenu,
+  pill,
 }: {
   bot: Bot;
   running: boolean;
   onOpen: (bot: Bot) => void;
   onAsk: (bot: Bot, text: string) => void;
   onMenu?: (e: MouseEvent) => void;
+  pill?: ReactNode;
 }) {
   const [text, setText] = useState("");
   const submit = (event: FormEvent) => {
@@ -424,6 +468,7 @@ function OneBot({
         <BotAvatar bot={bot} size={168} />
       </button>
       <h2>{bot.title}</h2>
+      {pill}
       {running ? (
         <span className="running">{t('Working')}</span>
       ) : bot.description ? (
@@ -465,6 +510,7 @@ interface TileProps {
   target: boolean;
   onClick: () => void;
   onMenu?: (e: MouseEvent) => void;
+  pill?: ReactNode;
   drag: Record<string, unknown>;
 }
 
@@ -476,6 +522,7 @@ function BotTile({
   target,
   onClick,
   onMenu,
+  pill,
   drag,
 }: TileProps) {
   return (
@@ -502,6 +549,7 @@ function BotTile({
         ) : null}
         {bot.title}
       </span>
+      {pill}
       {running ? (
         <span className="running">{t('Working')}</span>
       ) : (
