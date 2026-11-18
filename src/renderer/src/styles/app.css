@@ -4496,3 +4496,80 @@ code.file-link:hover {
 .pset-row > .meta {
   text-align: right;
 }
+
+.pulse-head-link {
+  align-self: center;
+  font-weight: 500;
+}
+
+.pset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.pset-item .secondary {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+  flex: none;
+}
+
+.pset-pref {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.pset-start-over {
+  align-self: flex-start;
+}
+
+.pset-leftout {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.pset-section h2 + .pset-leftout {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.pset-leftout .secondary {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.pset-chat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pset-chat svg,
+.pset-done svg {
+  width: 14px;
+  height: 14px;
+}
+
+.pset-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--success);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pset-footer {
+  font-size: 12px;
+  padding: 0 4px;
+}

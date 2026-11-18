@@ -28,6 +28,7 @@ import {
 import type { PulseState } from '../state/usePulse'
 import { Icon } from './icons'
 import { Markdown } from './Markdown'
+import { PulseLearnedView, PulseLeftOutView } from './PulseLearned'
 import { PulseSettings } from './PulseSettings'
 
 interface Props {
@@ -56,7 +57,7 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
   const [note, setNote] = useState<string | null>(null)
   const [menu, setMenu] = useState<Menu | null>(null)
   const seenSent = useRef(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [view, setView] = useState<'feed' | 'settings' | 'learned' | 'leftOut'>('feed')
 
   useEffect(() => {
     if (!feed || fresh) return
@@ -245,7 +246,7 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
       <div className="needs-empty">
         <Icon name="pulse" />
         <strong>{t('Pulse is off')}</strong>
-        <button className="secondary" onClick={() => setSettingsOpen(true)}>
+        <button className="secondary" onClick={() => setView('settings')}>
           {t('Turn on Pulse')}
         </button>
       </div>
@@ -303,15 +304,31 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
 
   return (
     <main className="needs pulse-page">
-      {settingsOpen ? (
+      {view !== 'feed' ? (
         <div className="needs-inner">
-          <PulseSettings onBack={() => setSettingsOpen(false)} onChanged={() => void pulse.reload()} />
+          {view === 'settings' ? (
+            <PulseSettings onBack={() => setView('feed')} onChanged={() => void pulse.reload()} />
+          ) : view === 'learned' ? (
+            <PulseLearnedView onBack={() => setView('feed')} onChanged={() => void pulse.reload()} />
+          ) : (
+            <PulseLeftOutView onBack={() => setView('feed')} onBroughtUp={() => void pulse.reload()} />
+          )}
         </div>
       ) : (
         <div className="needs-inner">
           <div className="pulse-head">
             <h1>{t('Pulse')}</h1>
             <span className="spacer" />
+            {availability === 'on' ? (
+              <>
+                <button className="link-button pulse-head-link" onClick={() => setView('leftOut')}>
+                  {t('What Pulse left out')}
+                </button>
+                <button className="link-button pulse-head-link" onClick={() => setView('learned')}>
+                  {t('What Pulse learned')}
+                </button>
+              </>
+            ) : null}
             {availability === 'on' && feed && !feed.quietNow ? (
               <button className="secondary" onClick={() => void pulse.quiet(true).catch(e => setNote(refusalText(e)))}>
                 {t('Quiet for today')}
@@ -322,7 +339,7 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
                 className="staged-remove pulse-settings-button"
                 aria-label={t('Pulse settings')}
                 title={t('Pulse settings')}
-                onClick={() => setSettingsOpen(true)}
+                onClick={() => setView('settings')}
               >
                 <Icon name="settings" />
               </button>
