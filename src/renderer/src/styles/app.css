@@ -5260,3 +5260,93 @@ code.file-link:hover {
   margin: 4px 0 0;
   padding-left: 18px;
 }
+
+/* Settings > Capabilities: a row per skill, toolset or connector with its switch. */
+.cap-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 4px 0 6px;
+}
+.cap-search {
+  flex: 1;
+  min-width: 180px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: inherit;
+}
+.cap-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.cap-row-block:first-of-type .cap-row,
+.pset-section h2 + .cap-row {
+  border-top: none;
+}
+.cap-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
+button.cap-row-text {
+  cursor: pointer;
+}
+.cap-row-text > .meta {
+  flex-basis: 100%;
+}
+.cap-row.off .cap-row-text strong,
+.cap-row-block.off .cap-row-text strong {
+  opacity: 0.6;
+}
+.cap-badge {
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: var(--line);
+  color: var(--muted, inherit);
+}
+.cap-badge.warn {
+  background: rgba(217, 130, 43, 0.16);
+  color: #b4651c;
+}
+.cap-ok {
+  color: #2f9e55;
+}
+.cap-detail {
+  padding: 0 0 10px;
+}
+.cap-detail code,
+.cap-tool-list code {
+  overflow-wrap: anywhere;
+}
+.cap-tool-list {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+.cap-skill-body {
+  user-select: text;
+}
+.cap-row .switch,
+.cap-skill-switch .switch {
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: none;
+  flex: none;
+}

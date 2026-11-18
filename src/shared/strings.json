@@ -1514,6 +1514,21 @@
     "zh-Hans": "已取消。",
     "zh-Hant": "已取消。"
   },
+  "Capabilities": {
+    "de": "Fähigkeiten",
+    "es": "Capacidades",
+    "fr": "Capacités",
+    "id": "Kemampuan",
+    "it": "Funzionalità",
+    "ja": "機能",
+    "ko": "기능",
+    "pl": "Możliwości",
+    "pt-BR": "Recursos",
+    "ru": "Возможности",
+    "tr": "Yetenekler",
+    "zh-Hans": "技能与工具",
+    "zh-Hant": "能力"
+  },
   "Capacity": {
     "de": "Kapazität",
     "es": "Capacidad",
@@ -1543,6 +1558,21 @@
     "tr": "Kart {number}",
     "zh-Hans": "卡片 {number}",
     "zh-Hant": "卡片 {number}"
+  },
+  "Changes apply to new sessions.": {
+    "de": "Änderungen gelten für neue Sitzungen.",
+    "es": "Los cambios se aplican a las sesiones nuevas.",
+    "fr": "Les modifications s'appliquent aux nouvelles sessions.",
+    "id": "Perubahan berlaku untuk sesi baru.",
+    "it": "Le modifiche valgono per le nuove sessioni.",
+    "ja": "変更は新しいセッションから適用されます。",
+    "ko": "변경 사항은 새 세션부터 적용됩니다.",
+    "pl": "Zmiany obowiązują w nowych sesjach.",
+    "pt-BR": "As alterações valem para novas sessões.",
+    "ru": "Изменения применяются к новым сеансам.",
+    "tr": "Değişiklikler yeni oturumlarda geçerli olur.",
+    "zh-Hans": "更改将应用于新会话。",
+    "zh-Hant": "變更將套用於新工作階段。"
   },
   "Chat check": {
     "de": "Chat-Prüfung",
@@ -2143,6 +2173,21 @@
     "tr": "Bağlantı",
     "zh-Hans": "连接",
     "zh-Hant": "連線"
+  },
+  "Connectors": {
+    "de": "Konnektoren",
+    "es": "Conectores",
+    "fr": "Connecteurs",
+    "id": "Konektor",
+    "it": "Connettori",
+    "ja": "コネクタ",
+    "ko": "커넥터",
+    "pl": "Łączniki",
+    "pt-BR": "Conectores",
+    "ru": "Коннекторы",
+    "tr": "Bağlayıcılar",
+    "zh-Hans": "连接器",
+    "zh-Hant": "連接器"
   },
   "Context": {
     "de": "Kontext",
@@ -3494,6 +3539,21 @@
     "zh-Hans": "每次运行都会另存为一个对话。让 Hermes 添加或更改计划，或在这里创建。",
     "zh-Hant": "每次執行都會另存為一個對話。請 Hermes 新增或變更排程，或在這裡建立。"
   },
+  "Each server is tested when this page opens. Changes apply to new sessions.": {
+    "de": "Jeder Server wird beim Öffnen dieser Seite getestet. Änderungen gelten für neue Sitzungen.",
+    "es": "Cada servidor se prueba al abrir esta página. Los cambios se aplican a las sesiones nuevas.",
+    "fr": "Chaque serveur est testé à l'ouverture de cette page. Les modifications s'appliquent aux nouvelles sessions.",
+    "id": "Setiap server diuji saat halaman ini dibuka. Perubahan berlaku untuk sesi baru.",
+    "it": "Ogni server viene verificato all'apertura di questa pagina. Le modifiche valgono per le nuove sessioni.",
+    "ja": "このページを開くと各サーバーをテストします。変更は新しいセッションから適用されます。",
+    "ko": "이 페이지를 열면 각 서버를 테스트합니다. 변경 사항은 새 세션부터 적용됩니다.",
+    "pl": "Każdy serwer jest testowany po otwarciu tej strony. Zmiany obowiązują w nowych sesjach.",
+    "pt-BR": "Cada servidor é testado quando esta página abre. As alterações valem para novas sessões.",
+    "ru": "Каждый сервер проверяется при открытии этой страницы. Изменения применяются к новым сеансам.",
+    "tr": "Bu sayfa açıldığında her sunucu test edilir. Değişiklikler yeni oturumlarda geçerli olur.",
+    "zh-Hans": "打开此页面时会测试每个服务器。更改将应用于新会话。",
+    "zh-Hant": "開啟此頁面時會測試每個伺服器。變更將套用於新工作階段。"
+  },
   "Eager": {
     "de": "Eifrig",
     "es": "Insistente",
@@ -3763,6 +3823,21 @@
     "tr": "Kullanıcı adınızı ve parolanızı girin.",
     "zh-Hans": "请输入用户名和密码。",
     "zh-Hant": "請輸入使用者名稱和密碼。"
+  },
+  "Error": {
+    "de": "Fehler",
+    "es": "Error",
+    "fr": "Erreur",
+    "id": "Galat",
+    "it": "Errore",
+    "ja": "エラー",
+    "ko": "오류",
+    "pl": "Błąd",
+    "pt-BR": "Erro",
+    "ru": "Ошибка",
+    "tr": "Hata",
+    "zh-Hans": "错误",
+    "zh-Hant": "錯誤"
   },
   "Esc stops": {
     "de": "Esc stoppt",
@@ -5069,6 +5144,21 @@
     "zh-Hans": "频率",
     "zh-Hant": "頻率"
   },
+  "Hub": {
+    "de": "Hub",
+    "es": "Hub",
+    "fr": "Hub",
+    "id": "Hub",
+    "it": "Hub",
+    "ja": "Hub",
+    "ko": "Hub",
+    "pl": "Hub",
+    "pt-BR": "Hub",
+    "ru": "Hub",
+    "tr": "Hub",
+    "zh-Hans": "Hub",
+    "zh-Hant": "Hub"
+  },
   "I already knew": {
     "de": "Wusste ich schon",
     "es": "Ya lo sabía",
@@ -5203,6 +5293,21 @@
     "tr": "Girdi",
     "zh-Hans": "输入",
     "zh-Hant": "輸入"
+  },
+  "Instructions": {
+    "de": "Anweisungen",
+    "es": "Instrucciones",
+    "fr": "Instructions",
+    "id": "Instruksi",
+    "it": "Istruzioni",
+    "ja": "指示",
+    "ko": "지침",
+    "pl": "Instrukcje",
+    "pt-BR": "Instruções",
+    "ru": "Инструкции",
+    "tr": "Talimatlar",
+    "zh-Hans": "说明",
+    "zh-Hant": "說明"
   },
   "Intentions": {
     "de": "Vorhaben",
@@ -5503,6 +5608,21 @@
     "tr": "Son özet",
     "zh-Hans": "最新摘要",
     "zh-Hant": "最新摘要"
+  },
+  "Learned": {
+    "de": "Gelernt",
+    "es": "Aprendida",
+    "fr": "Apprise",
+    "id": "Dipelajari",
+    "it": "Appresa",
+    "ja": "学習済み",
+    "ko": "학습됨",
+    "pl": "Wyuczona",
+    "pt-BR": "Aprendida",
+    "ru": "Изученный",
+    "tr": "Öğrenilmiş",
+    "zh-Hans": "已习得",
+    "zh-Hant": "已習得"
   },
   "Learned from your ratings": {
     "de": "Aus deinen Bewertungen gelernt",
@@ -5863,6 +5983,36 @@
     "tr": "MCP araç seçimi",
     "zh-Hans": "MCP 工具路由",
     "zh-Hant": "MCP 工具路由"
+  },
+  "MCP · Custom": {
+    "de": "MCP · Eigener",
+    "es": "MCP · Personalizado",
+    "fr": "MCP · Personnalisé",
+    "id": "MCP · Kustom",
+    "it": "MCP · Personalizzato",
+    "ja": "MCP · カスタム",
+    "ko": "MCP · 사용자 지정",
+    "pl": "MCP · Własny",
+    "pt-BR": "MCP · Personalizado",
+    "ru": "MCP · Свой",
+    "tr": "MCP · Özel",
+    "zh-Hans": "MCP · 自定义",
+    "zh-Hant": "MCP · 自訂"
+  },
+  "MCP · Plugin {plugin}": {
+    "de": "MCP · Plugin {plugin}",
+    "es": "MCP · Plugin {plugin}",
+    "fr": "MCP · Plugin {plugin}",
+    "id": "MCP · Plugin {plugin}",
+    "it": "MCP · Plugin {plugin}",
+    "ja": "MCP · プラグイン {plugin}",
+    "ko": "MCP · 플러그인 {plugin}",
+    "pl": "MCP · Wtyczka {plugin}",
+    "pt-BR": "MCP · Plugin {plugin}",
+    "ru": "MCP · Плагин {plugin}",
+    "tr": "MCP · Eklenti {plugin}",
+    "zh-Hans": "MCP · 插件 {plugin}",
+    "zh-Hant": "MCP · 外掛 {plugin}"
   },
   "Magenta": {
     "de": "Magenta",
@@ -6343,6 +6493,21 @@
     "tr": "Seni bekliyor",
     "zh-Hans": "需要你处理",
     "zh-Hant": "需要你處理"
+  },
+  "Needs keys": {
+    "de": "Schlüssel nötig",
+    "es": "Faltan claves",
+    "fr": "Clés requises",
+    "id": "Perlu kunci",
+    "it": "Servono chiavi",
+    "ja": "キーが必要",
+    "ko": "키 필요",
+    "pl": "Wymaga kluczy",
+    "pt-BR": "Precisa de chaves",
+    "ru": "Нужны ключи",
+    "tr": "Anahtar gerekli",
+    "zh-Hans": "需要密钥",
+    "zh-Hant": "需要金鑰"
   },
   "Needs you": {
     "de": "Braucht dich",
@@ -6854,6 +7019,66 @@
     "zh-Hans": "暂无评论。",
     "zh-Hant": "尚無留言。"
   },
+  "No connectors yet": {
+    "de": "Noch keine Konnektoren",
+    "es": "Aún no hay conectores",
+    "fr": "Aucun connecteur pour l'instant",
+    "id": "Belum ada konektor",
+    "it": "Ancora nessun connettore",
+    "ja": "コネクタはまだありません",
+    "ko": "아직 커넥터가 없습니다",
+    "pl": "Brak łączników",
+    "pt-BR": "Nenhum conector ainda",
+    "ru": "Пока нет коннекторов",
+    "tr": "Henüz bağlayıcı yok",
+    "zh-Hans": "暂无连接器",
+    "zh-Hant": "尚無連接器"
+  },
+  "No matching connectors": {
+    "de": "Keine passenden Konnektoren",
+    "es": "No hay conectores que coincidan",
+    "fr": "Aucun connecteur correspondant",
+    "id": "Tidak ada konektor yang cocok",
+    "it": "Nessun connettore corrispondente",
+    "ja": "一致するコネクタはありません",
+    "ko": "일치하는 커넥터가 없습니다",
+    "pl": "Brak pasujących łączników",
+    "pt-BR": "Nenhum conector correspondente",
+    "ru": "Нет подходящих коннекторов",
+    "tr": "Eşleşen bağlayıcı yok",
+    "zh-Hans": "没有匹配的连接器",
+    "zh-Hant": "沒有符合的連接器"
+  },
+  "No matching skills": {
+    "de": "Keine passenden Skills",
+    "es": "No hay habilidades que coincidan",
+    "fr": "Aucune compétence correspondante",
+    "id": "Tidak ada skill yang cocok",
+    "it": "Nessuna skill corrispondente",
+    "ja": "一致するスキルはありません",
+    "ko": "일치하는 스킬이 없습니다",
+    "pl": "Brak pasujących umiejętności",
+    "pt-BR": "Nenhuma habilidade correspondente",
+    "ru": "Нет подходящих навыков",
+    "tr": "Eşleşen beceri yok",
+    "zh-Hans": "没有匹配的技能",
+    "zh-Hant": "沒有符合的技能"
+  },
+  "No matching tools": {
+    "de": "Keine passenden Tools",
+    "es": "No hay herramientas que coincidan",
+    "fr": "Aucun outil correspondant",
+    "id": "Tidak ada alat yang cocok",
+    "it": "Nessuno strumento corrispondente",
+    "ja": "一致するツールはありません",
+    "ko": "일치하는 도구가 없습니다",
+    "pl": "Brak pasujących narzędzi",
+    "pt-BR": "Nenhuma ferramenta correspondente",
+    "ru": "Нет подходящих инструментов",
+    "tr": "Eşleşen araç yok",
+    "zh-Hans": "没有匹配的工具",
+    "zh-Hant": "沒有符合的工具"
+  },
   "No microphone found.": {
     "de": "Kein Mikrofon gefunden.",
     "es": "No se encontró ningún micrófono.",
@@ -6914,6 +7139,21 @@
     "zh-Hans": "无需登录",
     "zh-Hant": "無需登入"
   },
+  "No skills yet": {
+    "de": "Noch keine Skills",
+    "es": "Aún no hay habilidades",
+    "fr": "Aucune compétence pour l'instant",
+    "id": "Belum ada skill",
+    "it": "Ancora nessuna skill",
+    "ja": "スキルはまだありません",
+    "ko": "아직 스킬이 없습니다",
+    "pl": "Brak umiejętności",
+    "pt-BR": "Nenhuma habilidade ainda",
+    "ru": "Пока нет навыков",
+    "tr": "Henüz beceri yok",
+    "zh-Hans": "暂无技能",
+    "zh-Hant": "尚無技能"
+  },
   "No starred chats. Star one from its menu to keep it here.": {
     "de": "Keine markierten Chats. Markiere einen über sein Menü, um ihn hier zu behalten.",
     "es": "No hay chats destacados. Destaca uno desde su menú para tenerlo aquí.",
@@ -6943,6 +7183,21 @@
     "tr": "Görev yok",
     "zh-Hans": "没有任务",
     "zh-Hant": "沒有任務"
+  },
+  "No tools yet": {
+    "de": "Noch keine Tools",
+    "es": "Aún no hay herramientas",
+    "fr": "Aucun outil pour l'instant",
+    "id": "Belum ada alat",
+    "it": "Ancora nessuno strumento",
+    "ja": "ツールはまだありません",
+    "ko": "아직 도구가 없습니다",
+    "pl": "Brak narzędzi",
+    "pt-BR": "Nenhuma ferramenta ainda",
+    "ru": "Пока нет инструментов",
+    "tr": "Henüz araç yok",
+    "zh-Hans": "暂无工具",
+    "zh-Hant": "尚無工具"
   },
   "No unread chats.": {
     "de": "Keine ungelesenen Chats.",
@@ -7468,6 +7723,21 @@
     "tr": "Daha eski",
     "zh-Hans": "更早",
     "zh-Hant": "更早"
+  },
+  "On": {
+    "de": "Ein",
+    "es": "Activado",
+    "fr": "Activé",
+    "id": "Nyala",
+    "it": "Attivato",
+    "ja": "オン",
+    "ko": "켬",
+    "pl": "Włączone",
+    "pt-BR": "Ativado",
+    "ru": "Вкл.",
+    "tr": "Açık",
+    "zh-Hans": "开启",
+    "zh-Hant": "開啟"
   },
   "On quiet days and on vacation, Pulse sends nothing on its own: no report and no morning brief, and follow-ups wait for the first brief after. It keeps remembering, and Do it still checks.": {
     "de": "An Ruhetagen und im Urlaub sendet Pulse nichts von sich aus: keinen Bericht und kein Morgenbriefing, und Nachfassen wartet auf das erste Briefing danach. Pulse merkt sich weiter alles, und „Erledigen“ prüft weiterhin.",
@@ -8113,6 +8383,21 @@
     "tr": "Plan",
     "zh-Hans": "计划",
     "zh-Hant": "計畫"
+  },
+  "Plugin": {
+    "de": "Plugin",
+    "es": "Plugin",
+    "fr": "Plugin",
+    "id": "Plugin",
+    "it": "Plugin",
+    "ja": "プラグイン",
+    "ko": "플러그인",
+    "pl": "Wtyczka",
+    "pt-BR": "Plugin",
+    "ru": "Плагин",
+    "tr": "Eklenti",
+    "zh-Hans": "插件",
+    "zh-Hant": "外掛"
   },
   "Previous 7 days": {
     "de": "Letzte 7 Tage",
@@ -9854,6 +10139,21 @@
     "zh-Hans": "正在运行代码",
     "zh-Hant": "正在執行程式碼"
   },
+  "Runs": {
+    "de": "Führt aus",
+    "es": "Ejecuta",
+    "fr": "Exécute",
+    "id": "Menjalankan",
+    "it": "Esegue",
+    "ja": "実行内容",
+    "ko": "실행 내용",
+    "pl": "Uruchamia",
+    "pt-BR": "Executa",
+    "ru": "Запускает",
+    "tr": "Çalıştırır",
+    "zh-Hans": "运行内容",
+    "zh-Hant": "執行內容"
+  },
   "Runs at": {
     "de": "Läuft am",
     "es": "Se ejecuta el",
@@ -10094,6 +10394,21 @@
     "zh-Hans": "搜索聊天",
     "zh-Hant": "搜尋聊天"
   },
+  "Search connectors": {
+    "de": "Konnektoren durchsuchen",
+    "es": "Buscar conectores",
+    "fr": "Rechercher des connecteurs",
+    "id": "Cari konektor",
+    "it": "Cerca connettori",
+    "ja": "コネクタを検索",
+    "ko": "커넥터 검색",
+    "pl": "Szukaj łączników",
+    "pt-BR": "Buscar conectores",
+    "ru": "Поиск коннекторов",
+    "tr": "Bağlayıcılarda ara",
+    "zh-Hans": "搜索连接器",
+    "zh-Hant": "搜尋連接器"
+  },
   "Search files": {
     "de": "Dateien durchsuchen",
     "es": "Buscar archivos",
@@ -10124,6 +10439,21 @@
     "zh-Hans": "搜索提供方或模型",
     "zh-Hant": "搜尋供應商或模型"
   },
+  "Search skills": {
+    "de": "Skills durchsuchen",
+    "es": "Buscar habilidades",
+    "fr": "Rechercher des compétences",
+    "id": "Cari skill",
+    "it": "Cerca skill",
+    "ja": "スキルを検索",
+    "ko": "스킬 검색",
+    "pl": "Szukaj umiejętności",
+    "pt-BR": "Buscar habilidades",
+    "ru": "Поиск навыков",
+    "tr": "Becerilerde ara",
+    "zh-Hans": "搜索技能…",
+    "zh-Hant": "搜尋技能"
+  },
   "Search tasks": {
     "de": "Aufgaben durchsuchen",
     "es": "Buscar tareas",
@@ -10138,6 +10468,21 @@
     "tr": "Görevlerde ara",
     "zh-Hans": "搜索任务",
     "zh-Hant": "搜尋任務"
+  },
+  "Search tools": {
+    "de": "Tools durchsuchen",
+    "es": "Buscar herramientas",
+    "fr": "Rechercher des outils",
+    "id": "Cari alat",
+    "it": "Cerca strumenti",
+    "ja": "ツールを検索",
+    "ko": "도구 검색",
+    "pl": "Szukaj narzędzi",
+    "pt-BR": "Buscar ferramentas",
+    "ru": "Поиск инструментов",
+    "tr": "Araçlarda ara",
+    "zh-Hans": "搜索工具",
+    "zh-Hant": "搜尋工具"
   },
   "Searched files": {
     "de": "Dateien durchsucht",
@@ -10769,6 +11114,21 @@
     "zh-Hans": "技能和工具",
     "zh-Hant": "技能和工具"
   },
+  "Skills, tools and connectors": {
+    "de": "Skills, Tools und Konnektoren",
+    "es": "Habilidades, herramientas y conectores",
+    "fr": "Compétences, outils et connecteurs",
+    "id": "Skill, alat, dan konektor",
+    "it": "Skill, strumenti e connettori",
+    "ja": "スキル、ツール、コネクタ",
+    "ko": "스킬, 도구, 커넥터",
+    "pl": "Umiejętności, narzędzia i łączniki",
+    "pt-BR": "Habilidades, ferramentas e conectores",
+    "ru": "Навыки, инструменты и коннекторы",
+    "tr": "Beceriler, araçlar ve bağlayıcılar",
+    "zh-Hans": "技能、工具和连接器",
+    "zh-Hant": "技能、工具和連接器"
+  },
   "Skip": {
     "de": "Überspringen",
     "es": "Omitir",
@@ -11369,6 +11729,36 @@
     "zh-Hans": "任务",
     "zh-Hant": "任務"
   },
+  "Test Connection": {
+    "de": "Verbindung testen",
+    "es": "Probar conexión",
+    "fr": "Tester la connexion",
+    "id": "Uji Koneksi",
+    "it": "Verifica connessione",
+    "ja": "接続をテスト",
+    "ko": "연결 테스트",
+    "pl": "Testuj połączenie",
+    "pt-BR": "Testar Conexão",
+    "ru": "Проверить подключение",
+    "tr": "Bağlantıyı Test Et",
+    "zh-Hans": "测试连接",
+    "zh-Hant": "測試連線"
+  },
+  "Testing…": {
+    "de": "Wird getestet…",
+    "es": "Probando…",
+    "fr": "Test en cours…",
+    "id": "Menguji…",
+    "it": "Verifica in corso…",
+    "ja": "テスト中…",
+    "ko": "테스트 중…",
+    "pl": "Testowanie…",
+    "pt-BR": "Testando…",
+    "ru": "Проверка…",
+    "tr": "Test ediliyor…",
+    "zh-Hans": "正在测试…",
+    "zh-Hant": "正在測試…"
+  },
   "That doesn’t look like a web address.": {
     "de": "Das sieht nicht nach einer Webadresse aus.",
     "es": "Eso no parece una dirección web.",
@@ -11818,6 +12208,21 @@
     "tr": "Güncelleme hâlâ sürüyor olabilir. Birkaç dakika sonra güncellemeleri yeniden denetleyin.",
     "zh-Hans": "更新可能仍在进行。请过几分钟再检查更新。",
     "zh-Hant": "更新可能仍在進行。請過幾分鐘再檢查更新。"
+  },
+  "The {plugin} plugin provides this server. Change it from Plugins.": {
+    "de": "Das Plugin {plugin} stellt diesen Server bereit. Ändere ihn unter Plugins.",
+    "es": "El plugin {plugin} proporciona este servidor. Cámbialo desde Plugins.",
+    "fr": "Le plugin {plugin} fournit ce serveur. Modifiez-le depuis Plugins.",
+    "id": "Plugin {plugin} menyediakan server ini. Ubah dari Plugin.",
+    "it": "Il plugin {plugin} fornisce questo server. Modificalo da Plugin.",
+    "ja": "このサーバーは {plugin} プラグインが提供しています。変更はプラグインから行ってください。",
+    "ko": "{plugin} 플러그인이 이 서버를 제공합니다. 플러그인에서 변경하세요.",
+    "pl": "Ten serwer pochodzi z wtyczki {plugin}. Zmień go w sekcji Wtyczki.",
+    "pt-BR": "O plugin {plugin} fornece este servidor. Altere-o em Plugins.",
+    "ru": "Этот сервер предоставляет плагин {plugin}. Измените его в разделе «Плагины».",
+    "tr": "Bu sunucuyu {plugin} eklentisi sağlıyor. Eklentiler'den değiştirin.",
+    "zh-Hans": "此服务器由 {plugin} 插件提供。请在“插件”中更改。",
+    "zh-Hant": "此伺服器由 {plugin} 外掛提供。請在「外掛」中更改。"
   },
   "These files are larger than the {limit} MB attachment limit: {names}.": {
     "de": "Diese Dateien überschreiten das Anhanglimit von {limit} MB: {names}.",
@@ -12539,6 +12944,21 @@
     "zh-Hans": "工具",
     "zh-Hant": "工具"
   },
+  "Toolsets": {
+    "de": "Toolsets",
+    "es": "Conjuntos de herramientas",
+    "fr": "Ensembles d'outils",
+    "id": "Set alat",
+    "it": "Set di strumenti",
+    "ja": "ツールセット",
+    "ko": "도구 세트",
+    "pl": "Zestawy narzędzi",
+    "pt-BR": "Conjuntos de ferramentas",
+    "ru": "Наборы инструментов",
+    "tr": "Araç setleri",
+    "zh-Hans": "工具集",
+    "zh-Hant": "工具集"
+  },
   "Total tokens": {
     "de": "Tokens gesamt",
     "es": "Tokens totales",
@@ -12703,6 +13123,21 @@
     "tr": "Pulse'u aç",
     "zh-Hans": "打开 Pulse",
     "zh-Hant": "開啟 Pulse"
+  },
+  "Turned off": {
+    "de": "Ausgeschaltet",
+    "es": "Desactivados",
+    "fr": "Désactivés",
+    "id": "Nonaktif",
+    "it": "Disattivati",
+    "ja": "オフ",
+    "ko": "꺼짐",
+    "pl": "Wyłączone",
+    "pt-BR": "Desativados",
+    "ru": "Выключенные",
+    "tr": "Kapalı",
+    "zh-Hans": "已关闭",
+    "zh-Hant": "已關閉"
   },
   "Two of these bots would have the same @handle. Rename one, then try again.": {
     "de": "Zwei dieser Bots hätten denselben @Namen. Benenne einen um und versuche es erneut.",
@@ -15178,6 +15613,21 @@
     "tr": "{name}, {limit} MB ek sınırından büyük.",
     "zh-Hans": "{name} 超过了 {limit} MB 的附件大小上限。",
     "zh-Hant": "{name} 超過 {limit} MB 的附件大小上限。"
+  },
+  "{name} is off. Turn it on to read the tools it brings.": {
+    "de": "{name} ist aus. Schalte es ein, um seine Tools zu lesen.",
+    "es": "{name} está desactivado. Actívalo para ver sus herramientas.",
+    "fr": "{name} est désactivé. Activez-le pour lire ses outils.",
+    "id": "{name} nonaktif. Aktifkan untuk membaca alat yang dibawanya.",
+    "it": "{name} è disattivato. Attivalo per leggere i suoi strumenti.",
+    "ja": "{name} はオフです。提供されるツールを読むにはオンにしてください。",
+    "ko": "{name}이(가) 꺼져 있습니다. 제공하는 도구를 보려면 켜세요.",
+    "pl": "{name} jest wyłączony. Włącz go, aby odczytać jego narzędzia.",
+    "pt-BR": "{name} está desligado. Ative-o para ler as ferramentas dele.",
+    "ru": "{name} выключен. Включите его, чтобы увидеть его инструменты.",
+    "tr": "{name} kapalı. Sağladığı araçları görmek için açın.",
+    "zh-Hans": "{name} 已关闭。打开后可读取它提供的工具。",
+    "zh-Hant": "{name} 已關閉。開啟後可讀取它提供的工具。"
   },
   "{name} is running. Its run shows in its history in a moment.": {
     "de": "{name} läuft. Der Lauf erscheint gleich im Verlauf.",
