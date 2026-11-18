@@ -464,6 +464,21 @@
     "zh-Hans": "添加评论",
     "zh-Hant": "新增留言"
   },
+  "Add fallback": {
+    "de": "Ersatzmodell hinzufügen",
+    "es": "Añadir modelo de respaldo",
+    "fr": "Ajouter un modèle de secours",
+    "id": "Tambah model cadangan",
+    "it": "Aggiungi modello di riserva",
+    "ja": "代替モデルを追加",
+    "ko": "대체 모델 추가",
+    "pl": "Dodaj model zapasowy",
+    "pt-BR": "Adicionar modelo reserva",
+    "ru": "Добавить резервную модель",
+    "tr": "Yedek model ekle",
+    "zh-Hans": "添加备用模型",
+    "zh-Hant": "新增備用模型"
+  },
   "Add to message": {
     "de": "Zur Nachricht hinzufügen",
     "es": "Añadir al mensaje",
@@ -3104,6 +3119,21 @@
     "zh-Hans": "无法删除定时任务：{reason}",
     "zh-Hant": "無法刪除排程工作：{reason}"
   },
+  "Could not load fallback models.": {
+    "de": "Ersatzmodelle konnten nicht geladen werden.",
+    "es": "No se pudieron cargar los modelos de respaldo.",
+    "fr": "Impossible de charger les modèles de secours.",
+    "id": "Tidak dapat memuat model cadangan.",
+    "it": "Impossibile caricare i modelli di riserva.",
+    "ja": "代替モデルを読み込めませんでした。",
+    "ko": "대체 모델을 불러올 수 없습니다.",
+    "pl": "Nie udało się wczytać modeli zapasowych.",
+    "pt-BR": "Não foi possível carregar os modelos reserva.",
+    "ru": "Не удалось загрузить резервные модели.",
+    "tr": "Yedek modeller yüklenemedi.",
+    "zh-Hans": "无法加载备用模型。",
+    "zh-Hant": "無法載入備用模型。"
+  },
   "Could not load models.": {
     "de": "Modelle konnten nicht geladen werden.",
     "es": "No se pudieron cargar los modelos.",
@@ -3253,6 +3283,21 @@
     "tr": "Kimlik bilgisi kaydedilemedi: {error}",
     "zh-Hans": "无法保存凭据：{error}",
     "zh-Hant": "無法儲存認證資訊：{error}"
+  },
+  "Could not save fallback models: {error}": {
+    "de": "Ersatzmodelle konnten nicht gesichert werden: {error}",
+    "es": "No se pudieron guardar los modelos de respaldo: {error}",
+    "fr": "Impossible d'enregistrer les modèles de secours : {error}",
+    "id": "Tidak dapat menyimpan model cadangan: {error}",
+    "it": "Impossibile salvare i modelli di riserva: {error}",
+    "ja": "代替モデルを保存できませんでした: {error}",
+    "ko": "대체 모델을 저장할 수 없습니다: {error}",
+    "pl": "Nie udało się zapisać modeli zapasowych: {error}",
+    "pt-BR": "Não foi possível salvar os modelos reserva: {error}",
+    "ru": "Не удалось сохранить резервные модели: {error}",
+    "tr": "Yedek modeller kaydedilemedi: {error}",
+    "zh-Hans": "无法保存备用模型：{error}",
+    "zh-Hant": "無法儲存備用模型：{error}"
   },
   "Could not save the bot: {error}": {
     "de": "Der Bot konnte nicht gespeichert werden: {error}",
@@ -3988,6 +4033,21 @@
     "tr": "Devredilen ajan sıkıştırma sınırı",
     "zh-Hans": "委派代理压缩上限",
     "zh-Hant": "委派代理程式壓縮上限"
+  },
+  "Delegate fallback models": {
+    "de": "Ersatzmodelle für Delegierte",
+    "es": "Modelos de respaldo de delegación",
+    "fr": "Modèles de secours de délégation",
+    "id": "Model cadangan delegasi",
+    "it": "Modelli di riserva per la delega",
+    "ja": "委任用の代替モデル",
+    "ko": "위임 대체 모델",
+    "pl": "Modele zapasowe agentów delegowanych",
+    "pt-BR": "Modelos reserva da delegação",
+    "ru": "Резервные модели делегатов",
+    "tr": "Devir yedek modelleri",
+    "zh-Hans": "委派备用模型",
+    "zh-Hant": "委派備用模型"
   },
   "Delegate model": {
     "de": "Modell für Delegierung",
@@ -5263,6 +5323,51 @@
     "tr": "Başarısız",
     "zh-Hans": "失败",
     "zh-Hant": "失敗"
+  },
+  "Fallback models": {
+    "de": "Ersatzmodelle",
+    "es": "Modelos de respaldo",
+    "fr": "Modèles de secours",
+    "id": "Model cadangan",
+    "it": "Modelli di riserva",
+    "ja": "代替モデル",
+    "ko": "대체 모델",
+    "pl": "Modele zapasowe",
+    "pt-BR": "Modelos reserva",
+    "ru": "Резервные модели",
+    "tr": "Yedek modeller",
+    "zh-Hans": "备用模型",
+    "zh-Hant": "備用模型"
+  },
+  "Fallback {number}": {
+    "de": "Ersatzmodell {number}",
+    "es": "Respaldo {number}",
+    "fr": "Secours {number}",
+    "id": "Cadangan {number}",
+    "it": "Riserva {number}",
+    "ja": "代替モデル {number}",
+    "ko": "대체 모델 {number}",
+    "pl": "Zapasowy {number}",
+    "pt-BR": "Reserva {number}",
+    "ru": "Резервная {number}",
+    "tr": "Yedek {number}",
+    "zh-Hans": "备用模型 {number}",
+    "zh-Hant": "備用模型 {number}"
+  },
+  "Fallbacks": {
+    "de": "Ersatzmodelle",
+    "es": "Modelos de respaldo",
+    "fr": "Modèles de secours",
+    "id": "Cadangan",
+    "it": "Modelli di riserva",
+    "ja": "代替モデル",
+    "ko": "대체 모델",
+    "pl": "Modele zapasowe",
+    "pt-BR": "Modelos reserva",
+    "ru": "Резервные модели",
+    "tr": "Yedekler",
+    "zh-Hans": "备用模型",
+    "zh-Hant": "備用模型"
   },
   "Fast": {
     "de": "Schnell",
@@ -6764,6 +6869,36 @@
     "zh-Hans": "我已经知道了",
     "zh-Hant": "我已經知道了"
   },
+  "If a subagent's model fails, Hermes tries these in order. A subagent on the chat's model can use the chat's fallbacks; one on its own delegate model or route gets none unless these are its own.": {
+    "de": "Wenn das Modell eines Subagenten ausfällt, probiert Hermes diese der Reihe nach. Ein Subagent mit dem Modell des Chats kann die Ersatzmodelle des Chats nutzen; einer mit eigenem Modell für Delegierung oder eigener Route bekommt keine, außer diese hier sind seine eigenen.",
+    "es": "Si falla el modelo de un subagente, Hermes prueba estos en orden. Un subagente con el modelo del chat puede usar los respaldos del chat; uno con su propio modelo de delegación o ruta no tiene ninguno salvo que estos sean los suyos.",
+    "fr": "Si le modèle d’un sous-agent échoue, Hermes essaie ceux-ci dans l’ordre. Un sous-agent sur le modèle de la discussion peut utiliser les secours de la discussion ; un sous-agent sur son propre modèle de délégation ou sa propre route n’en a aucun, sauf si ceux-ci sont les siens.",
+    "id": "Jika model subagen gagal, Hermes mencoba model ini secara berurutan. Subagen yang memakai model chat dapat memakai cadangan chat; subagen dengan model delegasi atau rute sendiri tidak mendapat cadangan kecuali ini miliknya sendiri.",
+    "it": "Se il modello di un sottoagente non funziona, Hermes prova questi in ordine. Un sottoagente sul modello della chat può usare le riserve della chat; uno con un proprio modello per la delega o una propria route non ne ha, a meno che queste non siano le sue.",
+    "ja": "サブエージェントのモデルが失敗すると、Hermes はこれらを順に試します。チャットのモデルを使うサブエージェントはチャットの代替モデルを使えます。独自の委任用モデルやルートを使うサブエージェントは、これが自分のものでない限り代替モデルを使いません。",
+    "ko": "하위 에이전트의 모델이 실패하면 Hermes가 이 모델들을 순서대로 시도합니다. 채팅 모델을 쓰는 하위 에이전트는 채팅의 대체 모델을 쓸 수 있고, 자체 위임 모델이나 경로를 쓰는 하위 에이전트는 이것이 자기 것이 아니면 대체 모델이 없습니다.",
+    "pl": "Jeśli model subagenta zawiedzie, Hermes próbuje tych po kolei. Subagent na modelu czatu może używać modeli zapasowych czatu; subagent z własnym modelem agentów delegowanych lub własną trasą nie dostaje żadnych, chyba że te są jego własne.",
+    "pt-BR": "Se o modelo de um subagente falhar, o Hermes tenta estes em ordem. Um subagente no modelo do chat pode usar os modelos reserva do chat; um com seu próprio modelo de delegação ou rota não recebe nenhum, a menos que estes sejam os dele.",
+    "ru": "Если модель субагента не сработала, Hermes по очереди пробует эти. Субагент на модели чата может использовать резервные модели чата; у субагента со своей моделью делегатов или своим маршрутом их нет, если только эти не его собственные.",
+    "tr": "Bir alt ajanın modeli başarısız olursa Hermes bunları sırayla dener. Sohbetin modelindeki bir alt ajan sohbetin yedeklerini kullanabilir; kendi devir modeli ya da rotası olan bir alt ajan, bunlar kendi yedekleri değilse hiç yedek almaz.",
+    "zh-Hans": "子代理的模型出错时，Hermes 会按顺序尝试这些模型。使用聊天模型的子代理可以使用聊天的备用模型；使用自己的委派模型或路由的子代理没有备用模型，除非这些是它自己的。",
+    "zh-Hant": "子代理程式的模型出錯時，Hermes 會依序嘗試這些模型。使用聊天模型的子代理程式可以使用聊天的備用模型；使用自己的委派模型或路由的子代理程式沒有備用模型，除非這些是它自己的。"
+  },
+  "If the default model fails, Hermes tries these in order.": {
+    "de": "Wenn das Standardmodell ausfällt, probiert Hermes diese der Reihe nach.",
+    "es": "Si el modelo predeterminado falla, Hermes prueba estos en orden.",
+    "fr": "Si le modèle par défaut échoue, Hermes essaie ceux-ci dans l'ordre.",
+    "id": "Jika model default gagal, Hermes mencoba model ini secara berurutan.",
+    "it": "Se il modello predefinito non funziona, Hermes prova questi in ordine.",
+    "ja": "既定のモデルが失敗すると、Hermes はこれらを順番に試します。",
+    "ko": "기본 모델이 실패하면 Hermes가 이 모델들을 순서대로 시도합니다.",
+    "pl": "Jeśli model domyślny zawiedzie, Hermes wypróbuje te po kolei.",
+    "pt-BR": "Se o modelo padrão falhar, o Hermes tenta estes em ordem.",
+    "ru": "Если модель по умолчанию не сработает, Hermes попробует эти по порядку.",
+    "tr": "Varsayılan model başarısız olursa Hermes bunları sırayla dener.",
+    "zh-Hans": "如果默认模型失败，Hermes 会按顺序尝试这些模型。",
+    "zh-Hant": "如果預設模型失敗，Hermes 會依序嘗試這些模型。"
+  },
   "Image reading": {
     "de": "Bilder lesen",
     "es": "Lectura de imágenes",
@@ -7603,6 +7738,21 @@
     "tr": "Pulse yükleniyor…",
     "zh-Hans": "正在载入 Pulse…",
     "zh-Hant": "正在載入 Pulse…"
+  },
+  "Loading available models…": {
+    "de": "Verfügbare Modelle werden geladen …",
+    "es": "Cargando modelos disponibles…",
+    "fr": "Chargement des modèles disponibles…",
+    "id": "Memuat model yang tersedia…",
+    "it": "Caricamento modelli disponibili…",
+    "ja": "利用可能なモデルを読み込み中…",
+    "ko": "사용 가능한 모델 불러오는 중…",
+    "pl": "Wczytywanie dostępnych modeli…",
+    "pt-BR": "Carregando modelos disponíveis…",
+    "ru": "Загрузка доступных моделей…",
+    "tr": "Kullanılabilir modeller yükleniyor…",
+    "zh-Hans": "正在加载可用模型…",
+    "zh-Hant": "正在載入可用的模型…"
   },
   "Loading chats…": {
     "de": "Chats werden geladen…",
@@ -8474,6 +8624,36 @@
     "zh-Hans": "单个委派代理可用的最大轮次。",
     "zh-Hant": "單一委派代理程式可用的最大回合數。"
   },
+  "Move down": {
+    "de": "Nach unten",
+    "es": "Bajar",
+    "fr": "Descendre",
+    "id": "Pindah ke bawah",
+    "it": "Sposta giù",
+    "ja": "下へ移動",
+    "ko": "아래로 이동",
+    "pl": "Przenieś niżej",
+    "pt-BR": "Mover para baixo",
+    "ru": "Переместить вниз",
+    "tr": "Aşağı taşı",
+    "zh-Hans": "下移",
+    "zh-Hant": "下移"
+  },
+  "Move up": {
+    "de": "Nach oben",
+    "es": "Subir",
+    "fr": "Monter",
+    "id": "Pindah ke atas",
+    "it": "Sposta su",
+    "ja": "上へ移動",
+    "ko": "위로 이동",
+    "pl": "Przenieś wyżej",
+    "pt-BR": "Mover para cima",
+    "ru": "Переместить вверх",
+    "tr": "Yukarı taşı",
+    "zh-Hans": "上移",
+    "zh-Hant": "上移"
+  },
   "Mute microphone": {
     "de": "Mikrofon stummschalten",
     "es": "Silenciar micrófono",
@@ -9134,6 +9314,21 @@
     "zh-Hans": "没有描述。",
     "zh-Hant": "沒有描述。"
   },
+  "No fallback models yet.": {
+    "de": "Noch keine Ersatzmodelle.",
+    "es": "Aún no hay modelos de respaldo.",
+    "fr": "Aucun modèle de secours pour l'instant.",
+    "id": "Belum ada model cadangan.",
+    "it": "Ancora nessun modello di riserva.",
+    "ja": "代替モデルはまだありません。",
+    "ko": "아직 대체 모델이 없습니다.",
+    "pl": "Brak modeli zapasowych.",
+    "pt-BR": "Nenhum modelo reserva ainda.",
+    "ru": "Резервных моделей пока нет.",
+    "tr": "Henüz yedek model yok.",
+    "zh-Hans": "还没有备用模型。",
+    "zh-Hant": "尚無備用模型。"
+  },
   "No key yet": {
     "de": "Noch kein Schlüssel",
     "es": "Aún no hay clave",
@@ -9448,6 +9643,21 @@
     "tr": "Yok",
     "zh-Hans": "无",
     "zh-Hant": "無"
+  },
+  "None: a subagent's model that fails isn't retried on another.": {
+    "de": "Keine: Fällt das Modell eines Subagenten aus, wird kein anderes versucht.",
+    "es": "Ninguno: si falla el modelo de un subagente, no se prueba otro.",
+    "fr": "Aucun : si le modèle d’un sous-agent échoue, aucun autre n’est essayé.",
+    "id": "Tidak ada: jika model subagen gagal, tidak dicoba model lain.",
+    "it": "Nessuno: se il modello di un sottoagente non funziona, non se ne prova un altro.",
+    "ja": "なし: サブエージェントのモデルが失敗しても、別のモデルは試しません。",
+    "ko": "없음: 하위 에이전트의 모델이 실패해도 다른 모델을 시도하지 않습니다.",
+    "pl": "Brak: gdy model subagenta zawiedzie, nie próbuje się innego.",
+    "pt-BR": "Nenhum: se o modelo de um subagente falhar, nenhum outro é tentado.",
+    "ru": "Нет: если модель субагента не сработала, другая не пробуется.",
+    "tr": "Yok: bir alt ajanın modeli başarısız olursa başkası denenmez.",
+    "zh-Hans": "无：子代理的模型出错时不会尝试其他模型。",
+    "zh-Hant": "無：子代理程式的模型出錯時不會嘗試其他模型。"
   },
   "Normal": {
     "de": "Normal",
@@ -10678,6 +10888,21 @@
     "tr": "Ayrıntılarını ve çalışma geçmişini görmek için bir iş seçin.",
     "zh-Hans": "选择一个任务，查看其详情和运行记录。",
     "zh-Hant": "選擇一個工作，查看其詳細資料和執行紀錄。"
+  },
+  "Pick a provider and model for every fallback to save.": {
+    "de": "Wähle für jede Ausweichoption einen Anbieter und ein Modell, um zu speichern.",
+    "es": "Elige un proveedor y un modelo para cada alternativa para poder guardar.",
+    "fr": "Choisissez un fournisseur et un modèle pour chaque solution de repli pour enregistrer.",
+    "id": "Pilih penyedia dan model untuk setiap cadangan agar bisa menyimpan.",
+    "it": "Scegli un provider e un modello per ogni alternativa per salvare.",
+    "ja": "保存するには、すべてのフォールバックでプロバイダとモデルを選んでください。",
+    "ko": "저장하려면 모든 대체 항목에 제공자와 모델을 선택하세요.",
+    "pl": "Aby zapisać, wybierz dostawcę i model dla każdej opcji zapasowej.",
+    "pt-BR": "Escolha um provedor e um modelo para cada alternativa para salvar.",
+    "ru": "Чтобы сохранить, выберите провайдера и модель для каждого запасного варианта.",
+    "tr": "Kaydetmek için her yedek için bir sağlayıcı ve model seçin.",
+    "zh-Hans": "请为每个备用项选择提供商和模型后再保存。",
+    "zh-Hant": "請為每個備用項目選擇供應商和模型後再儲存。"
   },
   "Pick at least one day.": {
     "de": "Wähle mindestens einen Tag.",
@@ -13019,6 +13244,21 @@
     "zh-Hans": "与聊天相同",
     "zh-Hant": "與聊天相同"
   },
+  "Same as the chat": {
+    "de": "Wie im Chat",
+    "es": "Igual que el chat",
+    "fr": "Comme la discussion",
+    "id": "Sama dengan chat",
+    "it": "Come la chat",
+    "ja": "チャットと同じ",
+    "ko": "채팅과 같게",
+    "pl": "Jak w czacie",
+    "pt-BR": "Igual ao chat",
+    "ru": "Как в чате",
+    "tr": "Sohbetle aynı",
+    "zh-Hans": "与聊天相同",
+    "zh-Hant": "與聊天相同"
+  },
   "Same as this computer": {
     "de": "Wie dieser Computer",
     "es": "Igual que este ordenador",
@@ -13078,6 +13318,21 @@
     "tr": "Uç noktayı kaydet",
     "zh-Hans": "保存端点",
     "zh-Hant": "儲存端點"
+  },
+  "Save fallbacks": {
+    "de": "Ersatzmodelle sichern",
+    "es": "Guardar modelos de respaldo",
+    "fr": "Enregistrer les modèles de secours",
+    "id": "Simpan model cadangan",
+    "it": "Salva modelli di riserva",
+    "ja": "代替モデルを保存",
+    "ko": "대체 모델 저장",
+    "pl": "Zapisz modele zapasowe",
+    "pt-BR": "Salvar modelos reserva",
+    "ru": "Сохранить резервные модели",
+    "tr": "Yedek modelleri kaydet",
+    "zh-Hans": "保存备用模型",
+    "zh-Hant": "儲存備用模型"
   },
   "Save key": {
     "de": "Schlüssel sichern",
@@ -15763,6 +16018,21 @@
     "tr": "Bu sunucuyu {plugin} eklentisi sağlıyor. Eklentiler'den değiştirin.",
     "zh-Hans": "此服务器由 {plugin} 插件提供。请在“插件”中更改。",
     "zh-Hant": "此伺服器由 {plugin} 外掛提供。請在「外掛」中更改。"
+  },
+  "Their own": {
+    "de": "Eigene",
+    "es": "Propios",
+    "fr": "Les siens",
+    "id": "Milik sendiri",
+    "it": "Propri",
+    "ja": "独自",
+    "ko": "자체 설정",
+    "pl": "Własne",
+    "pt-BR": "Próprios",
+    "ru": "Свои",
+    "tr": "Kendi yedekleri",
+    "zh-Hans": "自己的",
+    "zh-Hant": "自己的"
   },
   "These files are larger than the {limit} MB attachment limit: {names}.": {
     "de": "Diese Dateien überschreiten das Anhanglimit von {limit} MB: {names}.",

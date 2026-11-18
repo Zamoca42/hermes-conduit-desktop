@@ -14,6 +14,7 @@ import {
   type Field,
   type Http
 } from '../state/profileConfig'
+import { FallbackModels } from './FallbackModels'
 import { Icon } from './icons'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
@@ -127,6 +128,7 @@ export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
             )
           })}
           <DelegateModel profile={profile} config={config} busy={saving !== null} onSave={values => save('delegate-model', values)} />
+          {!schema || schema.has('delegation.fallback_providers') ? <FallbackModels key={`delegate-fallbacks:${profile}`} profile={profile} delegate /> : null}
           <PauseDelegation />
         </>
       )}

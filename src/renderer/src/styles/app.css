@@ -5928,3 +5928,25 @@ button.cap-row-text {
   font-size: 15px;
   font-weight: 600;
 }
+
+/* Fallback models: numbered rows with move and delete. */
+.fallback-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.fallback-list .pset-row {
+  gap: 6px;
+  justify-content: flex-start;
+}
+.fallback-list select {
+  flex: 1;
+  min-width: 0;
+}
+.fallback-rank {
+  width: 18px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
