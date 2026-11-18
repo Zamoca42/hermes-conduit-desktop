@@ -4589,6 +4589,21 @@
     "zh-Hans": "自定义",
     "zh-Hant": "自訂"
   },
+  "Custom color": {
+    "de": "Eigene Farbe",
+    "es": "Color personalizado",
+    "fr": "Couleur personnalisée",
+    "id": "Warna kustom",
+    "it": "Colore personalizzato",
+    "ja": "カスタムカラー",
+    "ko": "사용자 지정 색상",
+    "pl": "Własny kolor",
+    "pt-BR": "Cor personalizada",
+    "ru": "Свой цвет",
+    "tr": "Özel renk",
+    "zh-Hans": "自定颜色",
+    "zh-Hant": "自訂顏色"
+  },
   "Custom endpoint": {
     "de": "Eigener Endpunkt",
     "es": "Endpoint personalizado",
@@ -5279,6 +5294,21 @@
     "zh-Hans": "拒绝",
     "zh-Hant": "拒絕"
   },
+  "Describe finished steps": {
+    "de": "Fertige Schritte beschreiben",
+    "es": "Describir los pasos terminados",
+    "fr": "Décrire les étapes terminées",
+    "id": "Jelaskan langkah yang selesai",
+    "it": "Descrivi i passaggi completati",
+    "ja": "完了したステップを説明",
+    "ko": "끝난 단계 설명",
+    "pl": "Opisuj zakończone kroki",
+    "pt-BR": "Descrever etapas concluídas",
+    "ru": "Описывать завершённые шаги",
+    "tr": "Biten adımları açıkla",
+    "zh-Hans": "描述已完成的步骤",
+    "zh-Hant": "描述已完成的步驟"
+  },
   "Description": {
     "de": "Beschreibung",
     "es": "Descripción",
@@ -5683,6 +5713,21 @@
     "tr": "Bu sayfa açıldığında her sunucu test edilir. Değişiklikler yeni oturumlarda geçerli olur.",
     "zh-Hans": "打开此页面时会测试每个服务器。更改将应用于新会话。",
     "zh-Hant": "開啟此頁面時會測試每個伺服器。變更將套用於新工作階段。"
+  },
+  "Each summary is one more short request to your model. It reuses the chat's prompt cache and never changes the chat.": {
+    "de": "Jede Zusammenfassung ist eine weitere kurze Anfrage an dein Modell. Sie nutzt den Prompt-Cache des Chats und ändert den Chat nie.",
+    "es": "Cada resumen es una solicitud breve más a tu modelo. Reutiliza la caché de prompts del chat y nunca cambia el chat.",
+    "fr": "Chaque résumé est une courte requête de plus à votre modèle. Il réutilise le cache de prompt de la conversation et ne la modifie jamais.",
+    "id": "Setiap ringkasan adalah satu permintaan singkat tambahan ke model Anda. Permintaan ini memakai ulang cache prompt obrolan dan tidak pernah mengubah obrolan.",
+    "it": "Ogni riepilogo è una breve richiesta in più al tuo modello. Riutilizza la cache dei prompt della chat e non modifica mai la chat.",
+    "ja": "要約ごとにモデルへの短いリクエストが 1 回増えます。チャットのプロンプトキャッシュを再利用し、チャットは変更しません。",
+    "ko": "요약마다 모델에 짧은 요청이 하나 더 갑니다. 채팅의 프롬프트 캐시를 재사용하며 채팅은 바꾸지 않습니다.",
+    "pl": "Każde podsumowanie to jedno dodatkowe krótkie zapytanie do modelu. Korzysta z pamięci podręcznej promptu czatu i nigdy nie zmienia czatu.",
+    "pt-BR": "Cada resumo é mais uma solicitação curta ao seu modelo. Ele reutiliza o cache de prompt do chat e nunca altera o chat.",
+    "ru": "Каждая сводка — ещё один короткий запрос к модели. Он использует кеш промпта чата и никогда не меняет чат.",
+    "tr": "Her özet modelinize bir kısa istek daha demektir. Sohbetin istem önbelleğini yeniden kullanır ve sohbeti asla değiştirmez.",
+    "zh-Hans": "每条摘要都会向你的模型多发一次简短请求。它复用聊天的提示缓存，绝不会更改聊天。",
+    "zh-Hant": "每則摘要都會向你的模型多送一次簡短請求。它會重用聊天的提示快取，絕不會更改聊天。"
   },
   "Eager": {
     "de": "Eifrig",
@@ -6403,6 +6448,51 @@
     "tr": "Çıktı",
     "zh-Hans": "已退出",
     "zh-Hant": "已結束"
+  },
+  "Explain again": {
+    "de": "Erneut erklären",
+    "es": "Explicar de nuevo",
+    "fr": "Expliquer à nouveau",
+    "id": "Jelaskan lagi",
+    "it": "Spiega di nuovo",
+    "ja": "もう一度説明",
+    "ko": "다시 설명하기",
+    "pl": "Wyjaśnij ponownie",
+    "pt-BR": "Explicar novamente",
+    "ru": "Объяснить ещё раз",
+    "tr": "Yeniden açıkla",
+    "zh-Hans": "重新解释",
+    "zh-Hant": "重新解釋"
+  },
+  "Explain these steps": {
+    "de": "Diese Schritte erklären",
+    "es": "Explicar estos pasos",
+    "fr": "Expliquer ces étapes",
+    "id": "Jelaskan langkah-langkah ini",
+    "it": "Spiega questi passaggi",
+    "ja": "これらのステップを説明",
+    "ko": "이 단계들 설명하기",
+    "pl": "Wyjaśnij te kroki",
+    "pt-BR": "Explicar estas etapas",
+    "ru": "Объяснить эти шаги",
+    "tr": "Bu adımları açıkla",
+    "zh-Hans": "解释这些步骤",
+    "zh-Hant": "解釋這些步驟"
+  },
+  "Explain this step": {
+    "de": "Diesen Schritt erklären",
+    "es": "Explicar este paso",
+    "fr": "Expliquer cette étape",
+    "id": "Jelaskan langkah ini",
+    "it": "Spiega questo passaggio",
+    "ja": "このステップを説明",
+    "ko": "이 단계 설명하기",
+    "pl": "Wyjaśnij ten krok",
+    "pt-BR": "Explicar esta etapa",
+    "ru": "Объяснить этот шаг",
+    "tr": "Bu adımı açıkla",
+    "zh-Hans": "解释此步骤",
+    "zh-Hant": "解釋此步驟"
   },
   "Extra High": {
     "de": "Sehr hoch",
@@ -7769,6 +7859,21 @@
     "zh-Hans": "Hermes 有个问题。",
     "zh-Hant": "Hermes 有個問題。"
   },
+  "Hermes is looking back…": {
+    "de": "Hermes blickt zurück…",
+    "es": "Hermes está repasando…",
+    "fr": "Hermes revient sur ses pas…",
+    "id": "Hermes sedang meninjau ulang…",
+    "it": "Hermes sta ripercorrendo…",
+    "ja": "Hermes が振り返っています…",
+    "ko": "Hermes가 되짚어 보는 중…",
+    "pl": "Hermes przegląda kroki…",
+    "pt-BR": "Hermes está revendo…",
+    "ru": "Hermes вспоминает ход работы…",
+    "tr": "Hermes geriye bakıyor…",
+    "zh-Hans": "Hermes 正在回顾…",
+    "zh-Hant": "Hermes 正在回顧…"
+  },
   "Hermes is restarting on the new version…": {
     "de": "Hermes startet mit der neuen Version neu…",
     "es": "Hermes se reinicia con la nueva versión…",
@@ -8263,6 +8368,21 @@
     "tr": "Yüksek",
     "zh-Hans": "高",
     "zh-Hant": "高"
+  },
+  "Highlights": {
+    "de": "Hervorhebungen",
+    "es": "Resaltados",
+    "fr": "Mises en avant",
+    "id": "Sorotan",
+    "it": "Evidenziazioni",
+    "ja": "ハイライト",
+    "ko": "강조 표시",
+    "pl": "Wyróżnienia",
+    "pt-BR": "Destaques",
+    "ru": "Акценты",
+    "tr": "Vurgular",
+    "zh-Hans": "高亮",
+    "zh-Hant": "重點標示"
   },
   "Home and household": {
     "de": "Zuhause und Haushalt",
@@ -17924,6 +18044,21 @@
     "zh-Hans": "跳过你已在聊天中看到的消息",
     "zh-Hant": "跳過你已在聊天中看到的消息"
   },
+  "Skip runs over {count} steps": {
+    "de": "Läufe über {count} Schritte überspringen",
+    "es": "Omitir series de más de {count} pasos",
+    "fr": "Ignorer les séries de plus de {count} étapes",
+    "id": "Lewati rangkaian lebih dari {count} langkah",
+    "it": "Salta le serie oltre {count} passaggi",
+    "ja": "{count} ステップを超える実行はスキップ",
+    "ko": "{count}단계를 넘는 실행은 건너뛰기",
+    "pl": "Pomijaj serie powyżej {count} kroków",
+    "pt-BR": "Pular sequências com mais de {count} etapas",
+    "ru": "Пропускать серии длиннее {count} шагов",
+    "tr": "{count} adımdan uzun dizileri atla",
+    "zh-Hans": "跳过超过 {count} 个步骤的过程",
+    "zh-Hant": "略過超過 {count} 個步驟的過程"
+  },
   "Skipped": {
     "de": "Übersprungen",
     "es": "Omitido",
@@ -18343,6 +18478,21 @@
     "tr": "Bu ajanı yönlendir…",
     "zh-Hans": "引导此代理…",
     "zh-Hant": "引導此代理…"
+  },
+  "Step summaries": {
+    "de": "Schritt-Zusammenfassungen",
+    "es": "Resúmenes de pasos",
+    "fr": "Résumés des étapes",
+    "id": "Ringkasan langkah",
+    "it": "Riepiloghi dei passaggi",
+    "ja": "ステップの要約",
+    "ko": "단계 요약",
+    "pl": "Podsumowania kroków",
+    "pt-BR": "Resumos das etapas",
+    "ru": "Сводки шагов",
+    "tr": "Adım özetleri",
+    "zh-Hans": "步骤摘要",
+    "zh-Hant": "步驟摘要"
   },
   "Step {current} of {last} · {time}": {
     "de": "Schritt {current} von {last} · {time}",
@@ -22784,6 +22934,21 @@
     "zh-Hans": "当你没在看的聊天中回复完成或有事需要你处理时",
     "zh-Hant": "當你沒在看的聊天中回覆完成或有事需要你處理時"
   },
+  "When a reply took several steps, Hermes looks back on them in a short paragraph: what it set out to do and why each step came next, shown under the folded steps.": {
+    "de": "Wenn eine Antwort mehrere Schritte brauchte, blickt Hermes in einem kurzen Absatz darauf zurück: was es vorhatte und warum ein Schritt zum nächsten führte. Er steht unter den eingeklappten Schritten.",
+    "es": "Cuando una respuesta necesitó varios pasos, Hermes los repasa en un párrafo breve: qué se propuso y por qué vino cada paso, debajo de los pasos plegados.",
+    "fr": "Quand une réponse a pris plusieurs étapes, Hermes y revient en un court paragraphe : ce qu’il voulait faire et pourquoi chaque étape a suivi, affiché sous les étapes repliées.",
+    "id": "Saat sebuah balasan memakai beberapa langkah, Hermes meninjaunya dalam satu paragraf singkat: apa yang hendak dilakukan dan mengapa tiap langkah menyusul, ditampilkan di bawah langkah yang dilipat.",
+    "it": "Quando una risposta ha richiesto più passaggi, Hermes li ripercorre in un breve paragrafo: cosa voleva fare e perché è venuto ogni passaggio, mostrato sotto i passaggi compressi.",
+    "ja": "返信に複数のステップがかかったとき、Hermes が短い段落で振り返ります。何をしようとし、なぜ次のステップに進んだかを、折りたたんだステップの下に表示します。",
+    "ko": "답변에 여러 단계가 걸렸을 때 Hermes가 짧은 단락으로 돌아봅니다. 무엇을 하려 했고 왜 각 단계로 넘어갔는지 접힌 단계 아래에 표시합니다.",
+    "pl": "Gdy odpowiedź wymagała kilku kroków, Hermes wraca do nich w krótkim akapicie: co zamierzał zrobić i dlaczego przyszedł każdy kolejny krok. Widać go pod zwiniętymi krokami.",
+    "pt-BR": "Quando uma resposta levou várias etapas, o Hermes as revisita em um parágrafo curto: o que pretendia fazer e por que cada etapa veio em seguida, mostrado abaixo das etapas recolhidas.",
+    "ru": "Когда ответ занял несколько шагов, Hermes оглядывается на них в коротком абзаце: что он собирался сделать и почему пришёл к каждому следующему шагу. Абзац показывается под свёрнутыми шагами.",
+    "tr": "Bir yanıt birkaç adım sürdüğünde Hermes bunlara kısa bir paragrafla geri bakar: ne yapmaya çalıştığını ve her adıma neden geçtiğini katlanmış adımların altında gösterir.",
+    "zh-Hans": "当一条回复用了多个步骤时，Hermes 会用一小段话回顾：它打算做什么、为什么走到下一步，显示在折叠的步骤下方。",
+    "zh-Hant": "當一則回覆用了多個步驟時，Hermes 會用一小段話回顧：它打算做什麼、為什麼走到下一步，顯示在收合的步驟下方。"
+  },
   "When this many are running, {bot} waits for one to finish or sends new work to one that’s already on it.": {
     "de": "Laufen so viele, wartet {bot}, bis einer fertig ist, oder gibt neue Arbeit an einen, der schon daran sitzt.",
     "es": "Cuando hay tantos en marcha, {bot} espera a que termine uno o manda el trabajo nuevo a uno que ya se ocupa de ello.",
@@ -23474,6 +23639,21 @@
     "zh-Hans": "你的日历、提醒事项或定时任务已经涵盖了它",
     "zh-Hant": "你的行事曆、提醒事項或排程工作已經涵蓋了它"
   },
+  "Your color is adjusted where needed so text stays readable in light and dark mode.": {
+    "de": "Deine Farbe wird bei Bedarf angepasst, damit Text im hellen und dunklen Modus lesbar bleibt.",
+    "es": "Tu color se ajusta cuando hace falta para que el texto siga siendo legible en modo claro y oscuro.",
+    "fr": "Votre couleur est ajustée si nécessaire pour que le texte reste lisible en mode clair et sombre.",
+    "id": "Warna Anda disesuaikan bila perlu agar teks tetap terbaca dalam mode terang dan gelap.",
+    "it": "Il tuo colore viene regolato quando serve, così il testo resta leggibile in modalità chiara e scura.",
+    "ja": "ライトモードとダークモードの両方で文字が読みやすいよう、必要に応じて色が調整されます。",
+    "ko": "라이트 모드와 다크 모드에서 텍스트를 읽기 쉽도록 필요한 경우 색상이 조정됩니다.",
+    "pl": "W razie potrzeby Twój kolor jest dopasowywany, aby tekst pozostał czytelny w trybie jasnym i ciemnym.",
+    "pt-BR": "Sua cor é ajustada quando necessário para que o texto continue legível nos modos claro e escuro.",
+    "ru": "При необходимости цвет подстраивается, чтобы текст оставался читаемым в светлой и тёмной теме.",
+    "tr": "Metnin açık ve koyu modda okunabilir kalması için renginiz gerektiğinde ayarlanır.",
+    "zh-Hans": "必要时会调整你的颜色，确保文字在浅色和深色模式下都清晰可读。",
+    "zh-Hant": "必要時會調整你的顏色，確保文字在淺色和深色模式下都清楚易讀。"
+  },
   "Your later messages and the replies to them leave the chat, and this one goes back in the composer to change and send again.": {
     "de": "Deine späteren Nachrichten und die Antworten darauf verschwinden aus dem Chat, und diese kommt zurück ins Eingabefeld, um sie zu ändern und erneut zu senden.",
     "es": "Tus mensajes posteriores y sus respuestas salen del chat, y este vuelve al editor para cambiarlo y enviarlo de nuevo.",
@@ -23488,6 +23668,21 @@
     "tr": "Sonraki mesajlarınız ve onlara verilen yanıtlar sohbetten çıkar, bu mesaj ise değiştirip yeniden göndermeniz için yazma alanına döner.",
     "zh-Hans": "你之后的消息及对它们的回复将离开聊天，这条消息会回到输入框，供你修改后再次发送。",
     "zh-Hant": "你之後的訊息及對它們的回覆將離開聊天，這則訊息會回到輸入框，供你修改後再次傳送。"
+  },
+  "Your messages": {
+    "de": "Deine Nachrichten",
+    "es": "Tus mensajes",
+    "fr": "Vos messages",
+    "id": "Pesan Anda",
+    "it": "I tuoi messaggi",
+    "ja": "自分のメッセージ",
+    "ko": "내 메시지",
+    "pl": "Twoje wiadomości",
+    "pt-BR": "Suas mensagens",
+    "ru": "Ваши сообщения",
+    "tr": "Mesajlarınız",
+    "zh-Hans": "你的消息",
+    "zh-Hant": "你的訊息"
   },
   "Your phone sends its sign-ins sealed to this computer. Nobody in between can read them. The code works for {time} more.": {
     "de": "Dein Handy sendet seine Anmeldungen versiegelt an diesen Computer. Niemand dazwischen kann sie lesen. Der Code gilt noch {time}.",

@@ -6382,3 +6382,74 @@ button.cap-row-text {
 .step-run-body > .review-card {
   border-color: transparent;
 }
+.step-run-summary {
+  margin: -4px 14px 10px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-2);
+  user-select: text;
+}
+.step-run-summary.looking {
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.step-run-explain {
+  align-self: flex-start;
+  margin: 2px 6px 0;
+  font-size: 13px;
+}
+.lone-step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lone-step > .step-run-summary {
+  margin: 2px 14px 0;
+}
+/* Explain this step shows on a lone step under the pointer or keyboard focus, so a chat of single steps isn't lined with it. */
+.step-run-explain.lone {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.lone-step:hover .step-run-explain.lone,
+.step-run-explain.lone:focus-visible {
+  opacity: 1;
+}
+.accent-swatch.custom {
+  position: relative;
+  cursor: pointer;
+  background: conic-gradient(#ff5f5f, #ffd25f, #6be07b, #5fd3ff, #8a6bff, #ff6bd0, #ff5f5f);
+  overflow: hidden;
+}
+.accent-swatch.custom input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.accent-swatch.custom:focus-within {
+  outline: 2px solid var(--accent);
+}
+.accent-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+.accent-preview-highlight {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 14px;
+}
+.accent-preview-bubble {
+  padding: 8px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--accent-fill), var(--accent-fill-2));
+  color: var(--accent-ink);
+  font-size: 14px;
+}

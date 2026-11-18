@@ -57,6 +57,7 @@ import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
+import { StepSummarySettings } from './components/StepSummarySettings'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
@@ -716,6 +717,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onQuote={setQuote}
                   onCommand={text => void onSend(text)}
                   display={chatDisplay}
+                  sessionId={chat.liveId ?? undefined}
                 />
               </FileLinks.Provider>
               {contextOpen && chat.liveId ? (
@@ -981,7 +983,9 @@ function Settings({
           bots={bots}
           profile={profile}
           onBack={() => setPage('main')}
-        />
+        >
+          <StepSummarySettings />
+        </ConfigPage>
       </main>
     )
   if (page === 'workspace' || page === 'advanced')

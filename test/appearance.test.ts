@@ -29,3 +29,17 @@ describe('chat text style', () => {
     expect(fontFamily('serif')).toContain('serif')
   })
 })
+
+describe('a color of your own', () => {
+  it('keeps a pick that reads and moves one that does not', async () => {
+    const { customShades, contrast, accentStyle } = await import('../src/renderer/src/state/appearance')
+    const { dark, light } = customShades('#E36140')
+    expect(contrast(dark, [0.045, 0.052, 0.072])).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(light, [0.94, 0.95, 0.98])).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(light, [1, 1, 1])).toBeGreaterThanOrEqual(4.5)
+    const yellow = customShades('#FFFF00')
+    expect(yellow.dark).toEqual([1, 1, 0])
+    expect(contrast(yellow.light, [1, 1, 1])).toBeGreaterThanOrEqual(4.5)
+    expect(accentStyle('#E36140')).toContain('--accent-ink: #ffffff;')
+  })
+})
