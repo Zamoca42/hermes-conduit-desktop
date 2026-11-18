@@ -458,6 +458,9 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   )
 
   /** A `config.set` on this chat's session, its answer's info folded in. */
+  /** Words a call put into the running reply (a correction): shown in the chat as the user's, where Hermes keeps them. */
+  const noteCorrection = useCallback((text: string) => dispatch({ type: 'event', event: { type: 'user.message', payload: { text } } }), [])
+
   const configure = useCallback(
     async (key: string, value: unknown, extra: Record<string, unknown> = {}) => {
       const sid = liveId.current
@@ -519,5 +522,5 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     [configure]
   )
 
-  return { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo }
+  return { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection }
 }

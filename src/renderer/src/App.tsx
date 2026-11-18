@@ -149,7 +149,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [section, setSection] = useState<Section>(reopenedSection)
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
   const list = useChatList(connected)
-  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo } = useChat(
+  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection } = useChat(
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
@@ -838,6 +838,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <LocalLiveCall
                   profile={selected.profile}
                   chatId={selected.id}
+                  liveId={chat.liveId}
+                  onCorrected={noteCorrection}
                   items={transcript.items}
                   onSay={words => void onSend(words)}
                   running={transcript.running}

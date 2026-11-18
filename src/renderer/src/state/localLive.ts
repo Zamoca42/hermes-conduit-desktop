@@ -11,6 +11,7 @@
  * `conduit.turn.delta`, then `conduit.turn.done`.
  */
 import { t } from '../../../shared/i18n'
+import { gateway } from '../gateway'
 import type { ClarifyQuestion } from './needsYou'
 
 export const STATUS_PATH = '/api/plugins/conduit_push/local-live/status'
@@ -401,4 +402,29 @@ export function spokenChoice(words: string): string {
     return /^\d+$/.test(word) ? Number(word) : (NUMBER_WORDS[word] ?? null)
   })
   return parts.length && numbers.every(n => n !== null) ? numbers.join(', ') : words.trim()
+}
+
+// MARK: Corrections
+
+export type Correction = 'redirected' | 'queued' | 'rejected'
+
+/**
+ * Words the user said while Hermes was still on the call's last turn, put into
+ * that reply (the phone's redirect): `redirected` when the reply goes on with
+ * them, `queued` when Hermes runs them after it, `rejected` when nothing was
+ * running to take them. A Hermes without session.redirect gets session.steer.
+ */
+export async function correctTurn(sessionId: string, text: string, profile?: string): Promise<Correction> {
+  const params: Record<string, unknown> = { session_id: sessionId, text }
+  if (profile) params.profile = profile
+  try {
+    const result = await gateway.rpc<{ status?: string } | null>('session.redirect', params)
+    const status = result?.status?.toLowerCase()
+    return status === 'redirected' || status === 'queued' ? status : 'rejected'
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e)
+    if (!/unknown method|method not found|not supported/i.test(message)) throw e
+    const result = await gateway.rpc<{ status?: string } | null>('session.steer', params)
+    return result && result.status !== 'rejected' ? 'redirected' : 'rejected'
+  }
 }

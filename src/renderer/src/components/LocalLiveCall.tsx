@@ -30,7 +30,8 @@ import {
   stopsPlayback,
   turnDelta,
   turnDone,
-  turnFrame
+  turnFrame,
+  correctTurn
 } from '../state/localLive'
 import { answerApproval, answerQuestion, openQuestion } from '../state/liveRequests'
 import { approvalView, clarifyQuestions } from '../state/needsYou'
@@ -41,10 +42,14 @@ interface Props {
   profile?: string
   /** The chat's saved session, which keeps the call's transcript when it ends. */
   chatId?: string | null
+  /** The chat's live session, which takes the user's corrections to the reply running there. */
+  liveId?: string | null
   /** The chat's turns, whose newest reply is spoken as it is written. */
   items: TranscriptItem[]
   /** Sends a turn as the chat's next message. */
   onSay: (text: string) => void
+  /** Shows words the call put into the running reply in the chat. */
+  onCorrected?: (text: string) => void
   /** A reply is running in the chat. */
   running: boolean
   /** Counts the chat's finished turns: the next one after a send is its reply. */
@@ -75,7 +80,8 @@ const SILENCE = new Float32Array(Math.round(SAMPLE_RATE * 0.8))
 
 /** The reply the call follows, from its send until its turn ends. */
 interface Follow {
-  from: number
+  /** The turn ends once the chat has finished this many turns. */
+  until: number
   at: number
   started: boolean
   /** Assistant items the chat had before the send: not this reply's. */
@@ -91,7 +97,7 @@ interface Follow {
  * written. Audio goes both ways as 24 kHz PCM over the plugin's relay, which
  * hands Conduit each turn the server asks for.
  */
-export function LocalLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [] }: Props) {
+export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrected, running, turnsDone, lastReply, onEnd, onClassic, requests = [] }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -115,8 +121,8 @@ export function LocalLiveCall({ profile, chatId, items, onSay, running, turnsDon
   const follow = useRef<Follow | null>(null)
   const splitter = useRef(new SpokenSplitter())
   const told = useRef(new Set<string>())
-  const live = useRef({ items, running, turnsDone, lastReply, onSay, chatId, requests })
-  live.current = { items, running, turnsDone, lastReply, onSay, chatId, requests }
+  const live = useRef({ items, running, turnsDone, lastReply, onSay, onCorrected, chatId, requests, liveId })
+  live.current = { items, running, turnsDone, lastReply, onSay, onCorrected, chatId, requests, liveId }
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
   const callId = useRef(newCallId())
@@ -277,7 +283,7 @@ export function LocalLiveCall({ profile, chatId, items, onSay, running, turnsDon
       if (item.streaming) spoken.set(item.key, item.text)
       else before.add(item.key)
     }
-    follow.current = { from: live.current.turnsDone, at: Date.now(), started: live.current.running, before, spoken }
+    follow.current = { until: live.current.turnsDone + 1, at: Date.now(), started: live.current.running, before, spoken }
   }
 
   /** Hermes took the user's answer: the reply it goes on with is spoken in this turn. */
@@ -313,10 +319,26 @@ export function LocalLiveCall({ profile, chatId, items, onSay, running, turnsDon
         return goOn(id)
       }
     }
-    // Hermes is still on a turn (typed, or the last one): the chat can't take another yet.
+    // The user spoke again while Hermes was still on the call's last turn: the words go into that reply.
+    const sessionId = live.current.liveId
+    if (follow.current && live.current.running && sessionId) {
+      const correction = await correctTurn(sessionId, words, profile)
+      if (ended.current || turn.current?.id !== id) return
+      if (correction !== 'rejected') {
+        // What the reply said before the user cut in isn't said again; Hermes' words from here are this turn's.
+        live.current.onCorrected?.(words)
+        const queued = correction === 'queued'
+        followRunning()
+        if (queued && follow.current) follow.current.until += 1
+        return
+      }
+      // The reply ended meanwhile: the words are a turn of their own.
+      follow.current = null
+    }
+    // Hermes is on a turn the call didn't send (typed, or from another device): the chat can't take another yet.
     if (live.current.running || follow.current) return say(id, BUSY_LINE())
     const before = new Set(assistantItems().map(item => item.key))
-    follow.current = { from: live.current.turnsDone, at: Date.now(), started: false, before, spoken: new Map() }
+    follow.current = { until: live.current.turnsDone + 1, at: Date.now(), started: false, before, spoken: new Map() }
     live.current.onSay(words)
   }
 
@@ -498,7 +520,7 @@ export function LocalLiveCall({ profile, chatId, items, onSay, running, turnsDon
         speak(item.text.slice(said.length))
       }
     }
-    if (!running && turnsDone !== current.from) {
+    if (!running && turnsDone >= current.until) {
       follow.current = null
       // A reply whose words never streamed is said whole.
       if (turn.current && !turn.current.spoke && lastReply?.trim()) speak(lastReply)
