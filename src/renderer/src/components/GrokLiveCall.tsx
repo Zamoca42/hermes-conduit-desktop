@@ -33,6 +33,8 @@ import {
   type ServerEvent
 } from '../state/grokLive'
 import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
+import type { PendingRequest } from '@shared/ipc'
+import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
 
 interface Props {
@@ -52,6 +54,8 @@ interface Props {
   onEnd: () => void
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
+  /** The approvals and questions the chat waits on, which the call can answer by voice. */
+  requests?: PendingRequest[]
 }
 
 type Phase = 'starting' | 'listening' | 'speaking' | 'ending' | 'failed'
@@ -82,7 +86,7 @@ const SILENCE = new Float32Array(Math.round(SAMPLE_RATE * 0.8))
  * goes to Hermes as the chat's next message, with Hermes' reply told back to
  * you in the call. Audio goes both ways as 24 kHz PCM over the plugin's relay.
  */
-export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic }: Props) {
+export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [] }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -112,8 +116,10 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   const queue = useRef<string[]>([])
   const active = useRef<{ from: number; at: number; started: boolean } | null>(null)
   // The latest props, for the socket's handlers.
-  const live = useRef({ running, turnsDone, lastReply, onSay, chatId })
-  live.current = { running, turnsDone, lastReply, onSay, chatId }
+  const live = useRef({ running, turnsDone, lastReply, onSay, chatId, requests })
+  live.current = { running, turnsDone, lastReply, onSay, chatId, requests }
+  // Requests the model was told about, so each is told once.
+  const told = useRef(new Set<string>())
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
   const callId = useRef(newCallId())
@@ -272,6 +278,12 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
         const reply = live.current.lastReply?.trim()
         return answer(event.id, reply ? readReply(reply) : NOTHING_TO_READ)
       }
+      case ANSWER_APPROVAL:
+        void answerApproval(live.current.requests, event.args.choice ?? '').then(result => !ended.current && answer(event.id, result))
+        return
+      case ANSWER_QUESTION:
+        void answerQuestion(live.current.requests, event.args.answer ?? '').then(result => !ended.current && answer(event.id, result))
+        return
       case END_CONVERSATION:
         // Left unanswered: the call closes once the goodbye has played.
         return endCall()
@@ -451,6 +463,16 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
     }, SEND_STALL_MS)
     return () => window.clearTimeout(timer)
   }, [running, turnsDone, lastReply])
+
+  // What Hermes waits on in the chat: told once the conversation is quiet, and answered only with the user's words.
+  useEffect(() => {
+    for (const request of requests) {
+      if (told.current.has(request.id)) continue
+      told.current.add(request.id)
+      const update = requestUpdate(request)
+      if (update) updates.current.push(update)
+    }
+  }, [requests])
 
   const toggleMute = () => {
     const next = !muted

@@ -8,6 +8,7 @@
  * delegation for the model to tell. Pure, so every message shape is testable.
  */
 import { t } from '../../../shared/i18n'
+import { DELEGATED_REQUESTS_RULE } from './liveRequests'
 
 export type Billing = 'subscription' | 'api'
 export type Dialect = 'frameless' | 'ga'
@@ -365,7 +366,7 @@ const rules = `[Conduit voice app rules. You are the voice of the user's Hermes 
 ${ANSWER_LENGTH} This replaces any other guidance on reply length in these instructions; it doesn't change what you delegate.
 Answer yourself, without delegating: greetings and small talk, repeating or rephrasing something already said on this call, and questions you can fully answer from this conversation, from the context Conduit sends you, or from settled general knowledge. Delegate real work to the client: anything to do, check, find, send, change or remember; current information (news, weather, prices, anything that may have changed); anything about their files, code, systems, accounts or earlier work that isn't in your context; and complex reasoning or research. This takes precedence over any other delegation policy in these instructions. Each delegation goes to Hermes as the chat's next message, so Hermes has the chat's earlier turns; while Hermes is still answering one, the next waits and goes once it's done. Never say something was done, sent, saved or changed unless Conduit or Hermes told you it was. Before delegating, acknowledge it out loud. ${ACKNOWLEDGEMENT} Then keep talking; Hermes' reply arrives later on that delegation. When it arrives, tell the user what Hermes found or did, with the details that matter.
 ${READ_BACK_RULE}
-Never approve, deny, or answer anything on Hermes' behalf yourself; if Hermes asks the user for an OK or an answer, tell them to answer it in the chat on their screen.
+${DELEGATED_REQUESTS_RULE}
 Only say you're sending or passing something to Hermes in a turn where you delegate it: saying so sends nothing, only the delegation does.
 ${END_CALL_RULE}]`
 

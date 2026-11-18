@@ -46,7 +46,7 @@ describe('Grok Live session', () => {
     expect(update.session.audio.input.format).toEqual({ type: 'audio/pcm', rate: 24000 })
     expect(update.session.turn_detection.type).toBe('server_vad')
     const names = update.session.tools.map((tool: Record<string, string>) => tool.name ?? tool.type)
-    expect(names).toEqual(['web_search', 'x_search', 'ask_thread', 'read_last_reply', 'end_conversation'])
+    expect(names).toEqual(['web_search', 'x_search', 'ask_thread', 'read_last_reply', 'end_conversation', 'answer_approval', 'answer_question'])
     expect((sessionUpdate('x') as { session: Record<string, unknown> }).session.voice).toBeUndefined()
   })
 

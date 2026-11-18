@@ -54,6 +54,8 @@ import {
   webSearchAvailable
 } from '../state/qwenLive'
 import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
+import type { PendingRequest } from '@shared/ipc'
+import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
 
 interface Props {
@@ -75,6 +77,8 @@ interface Props {
   onClassic: () => void
   /** Gemini, or Qwen on the same shell through the phone's adapter. */
   provider?: 'gemini' | 'qwen'
+  /** The approvals and questions the chat waits on, which the call can answer by voice. */
+  requests?: PendingRequest[]
 }
 
 /** What the call says, by provider: each a literal key, so translations find it. */
@@ -117,7 +121,7 @@ const ECHO_TAIL_MS = 300
  * next message. Its ask_thread call stays open (NON_BLOCKING) until Hermes
  * replies, and the reply is told once Gemini is idle.
  */
-export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, provider = 'gemini' }: Props) {
+export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, provider = 'gemini', requests = [] }: Props) {
   const qwen = provider === 'qwen'
   const copy = COPY[provider]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -152,8 +156,10 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const active = useRef<{ from: number; at: number; started: boolean; call: string } | null>(null)
   const openCalls = useRef(new Set<string>())
   // The latest props, for the socket's handlers.
-  const live = useRef({ running, turnsDone, lastReply, onSay, chatId })
-  live.current = { running, turnsDone, lastReply, onSay, chatId }
+  const live = useRef({ running, turnsDone, lastReply, onSay, chatId, requests })
+  live.current = { running, turnsDone, lastReply, onSay, chatId, requests }
+  // Requests the model was told about, so each is told once.
+  const told = useRef(new Set<string>())
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
   const callId = useRef(newCallId())
@@ -295,6 +301,12 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         const reply = live.current.lastReply?.trim()
         return answer(reply ? readReply(reply) : NOTHING_TO_READ)
       }
+      case ANSWER_APPROVAL:
+        void answerApproval(live.current.requests, event.args.choice ?? '').then(result => !ended.current && answer(result))
+        return
+      case ANSWER_QUESTION:
+        void answerQuestion(live.current.requests, event.args.answer ?? '').then(result => !ended.current && answer(result))
+        return
       case WEB_SEARCH:
         void webSearch(profile, event.args.query ?? '').then(result => !ended.current && answer(result))
         return
@@ -518,6 +530,21 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
     }, SEND_STALL_MS)
     return () => window.clearTimeout(timer)
   }, [running, turnsDone, lastReply])
+
+  // What Hermes waits on in the chat: told once the conversation is quiet, and answered only with the user's words.
+  useEffect(() => {
+    for (const request of requests) {
+      if (told.current.has(request.id)) continue
+      told.current.add(request.id)
+      const update = requestUpdate(request)
+      if (!update) continue
+      // The request Hermes stopped on answers its open call now (a call left open holds Qwen's replies);
+      // Hermes' reply then comes as an update once the conversation is quiet.
+      const call = active.current?.call
+      if (call && openCalls.current.delete(call)) send(toolResponse(call, ASK_THREAD, { status: 'waiting_for_user', message: update }, 'WHEN_IDLE'))
+      else updates.current.push(update)
+    }
+  }, [requests])
 
   const toggleMute = () => {
     const next = !muted

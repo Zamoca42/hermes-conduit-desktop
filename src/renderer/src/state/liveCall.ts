@@ -6,6 +6,7 @@
  * model, not UI copy.
  */
 import { ACKNOWLEDGEMENT, ANSWER_LENGTH, languageRule } from './gptLive'
+import { REQUESTS_RULE, REQUEST_TOOL_SPECS } from './liveRequests'
 
 export const ASK_THREAD = 'ask_thread'
 export const READ_LAST_REPLY = 'read_last_reply'
@@ -36,7 +37,9 @@ export const TOOL_SPECS: { name: string; description: string; parameters: Record
     description:
       'End this voice conversation and close it. Call only when the user says goodbye or asks to end, hang up, or close the conversation, after you have said a short goodbye.',
     parameters: { type: 'object', properties: {} }
-  }
+  },
+  // Answering the chat's approvals and questions by voice.
+  ...REQUEST_TOOL_SPECS
 ]
 
 export const RECALL_MEMORY = 'recall_memory'
@@ -145,7 +148,7 @@ Never speak while the user is speaking. If they interrupt you, stop and listen. 
 Answer quick questions yourself. ${options.lookups}
 Call ask_thread for work that needs the user's Hermes agent: their files, code, systems, accounts, questions about this chat, follow-ups, or longer multi-step research. Pass the complete request. It goes to Hermes as the chat's next message, so Hermes has the chat's earlier turns; while Hermes is still answering one, the next waits and goes once it's done. ${options.announces ? 'Every time you call ask_thread, first acknowledge it out loud.' : 'Call ask_thread without announcing it first, and only once it returns, acknowledge it out loud.'} ${ACKNOWLEDGEMENT} Then carry on with the conversation; Hermes' reply arrives later on this call. When it arrives, tell the user what Hermes found or did, with the details that matter.
 When the user asks to hear a reply again, word for word or in full (Hermes' last reply), don't answer from memory: call read_last_reply and read what it returns word for word, all of it, once.
-Never approve, deny, or answer anything on Hermes' behalf yourself; if Hermes asks the user for an OK or an answer, tell them to answer it in the chat on their screen.
+${REQUESTS_RULE}
 When the user says goodbye to you, or asks to end, hang up or close the call, say a short goodbye, then call end_conversation.`
   return (
     rules +

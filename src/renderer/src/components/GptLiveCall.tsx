@@ -43,6 +43,8 @@ import {
   type ServerEvent
 } from '../state/gptLive'
 import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
+import type { PendingRequest } from '@shared/ipc'
+import { answerApproval, answerQuestion, answerWords, isApprove, isDeny, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
 
 interface Props {
@@ -62,6 +64,8 @@ interface Props {
   onEnd: () => void
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
+  /** The approvals and questions the chat waits on, which the call can answer by voice. */
+  requests?: PendingRequest[]
 }
 
 type Phase = 'starting' | 'listening' | 'speaking' | 'ending' | 'failed'
@@ -86,7 +90,7 @@ const GOODBYE =
  * you talk with GPT-Live, and what you ask it to do goes to Hermes as the chat's
  * next message, with Hermes' reply told back to you in the call.
  */
-export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic }: Props) {
+export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [] }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -111,8 +115,10 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const queue = useRef<{ id: string; request: string }[]>([])
   const active = useRef<{ id: string; from: number; at: number; started: boolean } | null>(null)
   // The latest props, for the data channel's handlers.
-  const live = useRef({ running, turnsDone, lastReply, onSay, chatId })
-  live.current = { running, turnsDone, lastReply, onSay, chatId }
+  const live = useRef({ running, turnsDone, lastReply, onSay, chatId, requests })
+  live.current = { running, turnsDone, lastReply, onSay, chatId, requests }
+  // Requests the model was told about, so each is told once.
+  const told = useRef(new Set<string>())
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
   const callId = useRef(newCallId())
@@ -218,6 +224,13 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
       setPhase('ending')
       mic.current?.getAudioTracks().forEach(track => (track.enabled = false))
       endSoon(END_TIMEOUT_MS)
+      return
+    }
+    // The user's spoken answer to what Hermes waits on in the chat.
+    const reply = answerWords(text)
+    if (isApprove(text) || isDeny(text) || reply !== null) {
+      const answering = reply !== null ? answerQuestion(live.current.requests, reply) : answerApproval(live.current.requests, isApprove(text) ? 'once' : 'deny')
+      void answering.then(result => append(result.next_question ?? result.message ?? result.error ?? '', 'speakable', id))
       return
     }
     if (isReadBack(text)) {
@@ -426,6 +439,15 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     setMuted(next)
     mic.current?.getAudioTracks().forEach(track => (track.enabled = !next && !ending.current))
   }
+
+  // What Hermes waits on in the chat, told to the model: it asks the user and answers only with their words.
+  useEffect(() => {
+    for (const request of requests) {
+      if (told.current.has(request.id)) continue
+      const update = requestUpdate(request)
+      if (update && append(update, 'speakable', null)) told.current.add(request.id)
+    }
+  }, [requests])
 
   const status =
     phase === 'starting'
