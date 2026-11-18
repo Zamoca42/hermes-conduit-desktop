@@ -39,6 +39,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
   const openRequests = requests.filter(r => r.sessionId && r.sessionId === chat.liveId)
   const [shown, setShown] = useState(0)
   const running = useRef(false)
+  const pane = useRef<HTMLDivElement>(null)
   running.current = transcript.running
 
   useEffect(() => window.conduit.onQuickAskShown(() => setShown(n => n + 1)), [])
@@ -58,9 +59,11 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
   }, [onNew])
 
   const started = transcript.items.length > 0
-  useEffect(() => window.conduit.setQuickAskExpanded(started), [started])
+  // Staged files need the taller window too.
+  const [staged, setStaged] = useState(false)
+  useEffect(() => window.conduit.setQuickAskExpanded(started || staged), [started, staged])
   return (
-    <div className={`quick${started ? ' started' : ''}`}>
+    <div className={`quick${started ? ' started' : ''}`} ref={pane}>
       <div className="quick-head">
         <span className="quick-title">{chat.title || t('Ask Hermes')}</span>
         {started ? (
@@ -85,9 +88,13 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
         running={transcript.running}
         disabled={!connected}
         model={chat.model}
-        onSend={text => void send(text)}
+        onSend={(text, attachments) => void send(text, attachments)}
         onStop={() => void stop()}
         focusKey={`quick-${shown}`}
+        draftKey="quick"
+        canAttach
+        dropZone={pane}
+        onStagedChange={setStaged}
       />
     </div>
   )
