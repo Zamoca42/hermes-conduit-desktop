@@ -36,6 +36,7 @@ import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
+import { MemoryPage } from './components/MemoryPage'
 import { PlanDock } from './components/PlanDock'
 import { AgentsDock } from './components/AgentsDock'
 import { ControlDock } from './components/ControlDock'
@@ -840,7 +841,7 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
@@ -851,6 +852,12 @@ function Settings({
     return (
       <main className="settings">
         <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'memory')
+    return (
+      <main className="settings">
+        <MemoryPage bots={bots} profile={profile} onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'capabilities')
@@ -908,6 +915,12 @@ function Settings({
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
             {t('Chat model and helper models')}
+          </button>
+        </dd>
+        <dt>{t('Memory & delegation')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('memory')}>
+            {t('Memory, compression, and child agents')}
           </button>
         </dd>
         <dt>{t('Capabilities')}</dt>
