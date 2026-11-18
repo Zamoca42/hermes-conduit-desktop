@@ -73,9 +73,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     connected
   )
 
+  // The chat list's profile: a new chat starts in it.
+  const [chatProfile, setChatProfile] = useState<string | null>(null)
+  const chatProfileRef = useRef(chatProfile)
+  chatProfileRef.current = chatProfile
   const newChat = useCallback(() => {
     setSection('chats')
-    setSelected({ id: null })
+    setSelected({ id: null, profile: chatProfileRef.current ?? undefined })
   }, [])
 
   // ⌘N comes from the Mac's menu bar (so Ctrl+N stays the text field's next line there); Ctrl+N elsewhere.
@@ -310,12 +314,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               runningStatus={transcript.status}
               onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
               onNewChat={newChat}
+              bots={roster.bots}
+              profile={chatProfile}
+              onProfile={setChatProfile}
             />
             <main className="chat">
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
               <Transcript state={transcript} loading={loading} error={error} requests={openRequests} />
               <Composer
-                placeholder="Message Hermes…"
+                placeholder={`Message ${roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'}…`}
                 running={transcript.running}
                 disabled={!connected}
                 model={chat.model}

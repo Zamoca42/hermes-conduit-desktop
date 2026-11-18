@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { sectionRows, timeLabel, type ChatRow } from '../state/chats'
+import type { Bot } from '../state/bots'
+import { BotAvatar } from './BotsHome'
 import { Icon } from './icons'
 
 interface Props {
@@ -10,15 +12,28 @@ interface Props {
   runningStatus?: string
   onSelect: (row: ChatRow) => void
   onNewChat: () => void
+  /** The bots, for the profile strip and the rows' bot names. */
+  bots?: Bot[] | null
+  /** The profile the list shows (null: every one). */
+  profile?: string | null
+  onProfile?: (profile: string | null) => void
 }
 
-export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat }: Props) {
+const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
+
+export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat, bots, profile = null, onProfile }: Props) {
   const [query, setQuery] = useState('')
   const sections = useMemo(() => {
     const q = query.trim().toLowerCase()
-    const filtered = q ? (rows ?? []).filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : (rows ?? [])
+    const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
+    const filtered = q ? inProfile.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : inProfile
     return sectionRows(filtered)
-  }, [rows, query])
+  }, [rows, query, profile])
+  const showStrip = !!onProfile && (bots?.length ?? 0) > 1
+  const botName = (row: ChatRow) => {
+    if (!row.profile || row.profile === 'default' || profile) return null
+    return bots?.find(b => b.name === row.profile)?.title ?? row.profile
+  }
 
   // Bring the open chat into view once its row is there: a chat just made
   // from the composer shows up a moment after its first send.
@@ -44,10 +59,31 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
         <span className="sr-only">Search chats</span>
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search chats" />
       </label>
+      {showStrip ? (
+        <div
+          className="profile-strip"
+          role="tablist"
+          aria-label="Bots"
+          // A mouse wheel scrolls the strip sideways.
+          onWheel={e => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY
+          }}
+        >
+          <button role="tab" className="profile-chip all" aria-selected={profile === null} onClick={() => onProfile!(null)}>
+            All
+          </button>
+          {bots!.map(bot => (
+            <button key={bot.name} role="tab" className="profile-chip" aria-selected={profile === bot.name} title={bot.title} onClick={() => onProfile!(profile === bot.name ? null : bot.name)}>
+              <BotAvatar bot={bot} size={22} />
+              <span>{bot.title}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="chatlist-scroll" ref={scroller}>
         {rows === null && !error ? <div className="empty">Loading chats…</div> : null}
         {error ? <div className="empty">Couldn’t load your chats: {error}</div> : null}
-        {rows && rows.length === 0 ? <div className="empty">No chats yet. Start one with the + button.</div> : null}
+        {rows && sections.length === 0 && !query.trim() ? <div className="empty">No chats yet. Start one with the + button.</div> : null}
         {sections.map(section => (
           <div key={section.title} role="group" aria-label={section.title}>
             <div className="sect">{section.title}</div>
@@ -66,9 +102,9 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
                   </span>
                   {running ? (
                     <span className="running">Running{runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}</span>
-                  ) : row.preview || (row.profile && row.profile !== 'default') ? (
+                  ) : row.preview || botName(row) ? (
                     <span className="meta">
-                      {row.profile && row.profile !== 'default' ? `${row.profile} · ` : ''}
+                      {botName(row) ? `${botName(row)} · ` : ''}
                       {row.preview ?? ''}
                     </span>
                   ) : null}

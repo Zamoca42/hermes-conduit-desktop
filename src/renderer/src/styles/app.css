@@ -2085,3 +2085,45 @@ html[data-window='quick'] body {
 .add-host {
   padding-left: 0;
 }
+
+/* The chat list's bots */
+.profile-strip {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: none;
+}
+
+.profile-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.profile-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px 0 4px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.profile-chip.all {
+  padding: 0 12px;
+}
+
+.profile-chip:hover {
+  background: var(--surface-hover);
+}
+
+.profile-chip[aria-selected='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
