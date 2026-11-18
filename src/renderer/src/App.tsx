@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ConnectionStatus } from '@shared/ipc'
+import { BotsHome } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { Icon } from './components/icons'
@@ -7,7 +8,9 @@ import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar } from './components/TitleBar'
 import { Transcript } from './components/Transcript'
+import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
+import { useBots } from './state/useBots'
 import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
 import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
@@ -34,7 +37,7 @@ export function App() {
   )
 }
 
-type Section = 'chats' | 'needs' | 'settings'
+type Section = 'bots' | 'chats' | 'needs' | 'settings'
 
 function Shell({ status }: { status: ConnectionStatus }) {
   const connected = status.phase === 'open'
@@ -101,6 +104,44 @@ function Shell({ status }: { status: ConnectionStatus }) {
   )
 
   const title = cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : 'New chat')
+
+  // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
+  const roster = useBots(connected)
+  const openBot = useCallback((bot: Bot) => {
+    setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title })
+    setSection('chats')
+  }, [])
+  const pendingAsk = useRef<{ text: string; storedId: string | null; profile: string; resumed?: boolean } | null>(null)
+  const askBot = useCallback(
+    (bot: Bot, text: string) => {
+      pendingAsk.current = { text, storedId: bot.botChatId ?? null, profile: bot.name }
+      openBot(bot)
+    },
+    [openBot]
+  )
+  useEffect(() => {
+    const ask = pendingAsk.current
+    if (!ask || ask.profile !== selected.profile || ask.storedId !== selected.id) return
+    if (ask.storedId) {
+      // A Bot Chat waits until it has resumed (this render may still hold the chat open before it).
+      if (loading) {
+        ask.resumed = true
+        return
+      }
+      if (error && ask.resumed) {
+        pendingAsk.current = null
+        return
+      }
+      if (!chat.liveId || (chat.storedId !== ask.storedId && !ask.resumed)) return
+    }
+    pendingAsk.current = null
+    void onSend(ask.text)
+  }, [selected, loading, error, chat.liveId, chat.storedId, onSend])
+  const runningProfiles = useMemo(() => {
+    const names = new Set<string>()
+    if (transcript.running && selected.profile) names.add(selected.profile)
+    return names
+  }, [transcript.running, selected.profile])
 
   // Needs you: the requests this window holds, and every profile's waiting list.
   const requests = useRequests()
@@ -189,6 +230,15 @@ function Shell({ status }: { status: ConnectionStatus }) {
         <nav className="rail" aria-label="Sections">
           <button
             className="railbtn"
+            aria-label="Bots"
+            title="Bots"
+            aria-current={section === 'bots' ? 'page' : undefined}
+            onClick={() => setSection('bots')}
+          >
+            <Icon name="bots" />
+          </button>
+          <button
+            className="railbtn"
             aria-label="Chats"
             aria-current={section === 'chats' ? 'page' : undefined}
             onClick={() => setSection('chats')}
@@ -247,6 +297,8 @@ function Shell({ status }: { status: ConnectionStatus }) {
               />
             </main>
           </>
+        ) : section === 'bots' ? (
+          <BotsHome bots={roster.bots} error={roster.error} runningProfiles={runningProfiles} onOpen={openBot} onAsk={askBot} />
         ) : section === 'needs' ? (
           <NeedsYou
             requests={requests}
