@@ -2119,6 +2119,10 @@ html[data-window='quick'] body {
   padding: 0 12px;
 }
 
+.profile-chip.face-only {
+  padding: 0 3px;
+}
+
 .profile-chip:hover {
   background: var(--surface-hover);
 }

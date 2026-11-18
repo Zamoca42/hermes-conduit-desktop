@@ -73,9 +73,18 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
             All
           </button>
           {bots!.map(bot => (
-            <button key={bot.name} role="tab" className="profile-chip" aria-selected={profile === bot.name} title={bot.title} onClick={() => onProfile!(profile === bot.name ? null : bot.name)}>
+            // Only the chosen bot shows its name, so the strip fits the list's width; the rest are faces.
+            <button
+              key={bot.name}
+              role="tab"
+              className={`profile-chip${profile === bot.name ? '' : ' face-only'}`}
+              aria-selected={profile === bot.name}
+              aria-label={bot.title}
+              title={bot.title}
+              onClick={() => onProfile!(profile === bot.name ? null : bot.name)}
+            >
               <BotAvatar bot={bot} size={22} />
-              <span>{bot.title}</span>
+              {profile === bot.name ? <span>{bot.title}</span> : null}
             </button>
           ))}
         </div>

@@ -77,6 +77,18 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [chatProfile, setChatProfile] = useState<string | null>(null)
   const chatProfileRef = useRef(chatProfile)
   chatProfileRef.current = chatProfile
+  // Picking a bot on the strip opens its newest chat (or a new one), so the open chat matches the list.
+  const chooseProfile = useCallback(
+    (next: string | null) => {
+      setChatProfile(next)
+      if (!next) return
+      const same = (name: string | undefined) => (name ?? 'default').toLowerCase() === next.toLowerCase()
+      if (same(selected.profile)) return
+      const newest = (list.rows ?? []).filter(row => same(row.profile)).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))[0]
+      setSelected(newest ? { id: newest.id, profile: newest.profile, title: newest.title } : { id: null, profile: next })
+    },
+    [selected.profile, list.rows]
+  )
   const newChat = useCallback(() => {
     setSection('chats')
     setSelected({ id: null, profile: chatProfileRef.current ?? undefined })
@@ -316,7 +328,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               onNewChat={newChat}
               bots={roster.bots}
               profile={chatProfile}
-              onProfile={setChatProfile}
+              onProfile={chooseProfile}
             />
             <main className="chat">
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
