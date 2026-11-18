@@ -18,6 +18,7 @@ import {
   setSendsMemory,
   setSendsPersona,
   setVoiceMode,
+  VOICE_MODE_EVENT,
   sendsMemory,
   sendsPersona,
   voiceMode,
@@ -152,6 +153,11 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
     }
   }, [mode, billing, profile])
 
+  useEffect(() => {
+    const changed = () => setMode(voiceMode())
+    window.addEventListener(VOICE_MODE_EVENT, changed)
+    return () => window.removeEventListener(VOICE_MODE_EVENT, changed)
+  }, [])
   const choose = (next: VoiceMode) => {
     setMode(next)
     setVoiceMode(next)

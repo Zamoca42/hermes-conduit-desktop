@@ -3855,6 +3855,24 @@ html[data-window='quick'] body {
   justify-content: center;
 }
 
+.chat-head-mode {
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 12px;
+  padding: 0 6px;
+  max-width: 120px;
+  cursor: pointer;
+}
+
+.chat-head-mode:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .chat-head-button:hover {
   color: var(--text);
 }

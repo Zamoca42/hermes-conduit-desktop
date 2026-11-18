@@ -71,7 +71,7 @@ import { GrokLiveCall } from './components/GrokLiveCall'
 import { LocalLiveCall } from './components/LocalLiveCall'
 import { GeminiLiveCall } from './components/GeminiLiveCall'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
-import { voiceMode, type VoiceMode } from './state/gptLive'
+import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
@@ -274,6 +274,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   useEffect(() => {
     if (calling) setCallMode(voiceMode())
   }, [calling])
+  // The mode the next call takes, picked beside the call button or in Settings > Voice.
+  const [nextMode, setNextMode] = useState<VoiceMode>(voiceMode)
+  useEffect(() => {
+    const changed = () => setNextMode(voiceMode())
+    window.addEventListener(VOICE_MODE_EVENT, changed)
+    return () => window.removeEventListener(VOICE_MODE_EVENT, changed)
+  }, [])
   // The open chat's saved voice calls, read again once a call here ends (its save lands a moment later).
   const [chatCallList, setChatCallList] = useState<ChatCall[]>([])
   const [openCall, setOpenCall] = useState<string | null>(null)
@@ -729,10 +736,24 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   ) : null}
                 </div>
                 <div className="chat-head-actions">
+                  <select
+                    className="chat-head-mode"
+                    aria-label={t('Voice mode')}
+                    title={t('Voice mode')}
+                    value={calling ? callMode : nextMode}
+                    disabled={calling}
+                    onChange={e => setVoiceMode(e.target.value as VoiceMode)}
+                  >
+                    {VOICE_MODES.map(mode => (
+                      <option key={mode} value={mode}>
+                        {voiceModeTitle(mode)}
+                      </option>
+                    ))}
+                  </select>
                   <button
                     className={`chat-head-button${calling ? ' on' : ''}`}
-                    aria-label={calling ? t('End call') : t('Voice call')}
-                    title={calling ? t('End call') : t('Voice call')}
+                    aria-label={calling ? t('End call') : t('Voice call in {mode}', { mode: voiceModeTitle(nextMode) })}
+                    title={calling ? t('End call') : t('Voice call in {mode}', { mode: voiceModeTitle(nextMode) })}
                     disabled={!connected && !calling}
                     onClick={() => setCalling(on => !on)}
                   >

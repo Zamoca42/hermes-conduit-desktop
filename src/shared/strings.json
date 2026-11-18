@@ -24854,6 +24854,21 @@
     "zh-Hans": "语音通话",
     "zh-Hant": "語音通話"
   },
+  "Voice call in {mode}": {
+    "de": "Sprachanruf mit {mode}",
+    "es": "Llamada de voz con {mode}",
+    "fr": "Appel vocal avec {mode}",
+    "id": "Panggilan suara dengan {mode}",
+    "it": "Chiamata vocale con {mode}",
+    "ja": "{mode}で音声通話",
+    "ko": "{mode}(으)로 음성 통화",
+    "pl": "Połączenie głosowe: {mode}",
+    "pt-BR": "Chamada de voz com {mode}",
+    "ru": "Голосовой звонок: {mode}",
+    "tr": "{mode} ile sesli arama",
+    "zh-Hans": "使用 {mode} 语音通话",
+    "zh-Hant": "使用 {mode} 語音通話"
+  },
   "Voice message": {
     "de": "Sprachnachricht",
     "es": "Mensaje de voz",

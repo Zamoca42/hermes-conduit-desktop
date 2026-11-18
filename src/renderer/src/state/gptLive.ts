@@ -616,6 +616,34 @@ export function setVoiceMode(mode: VoiceMode): void {
   } catch {
     // Classic next time.
   }
+  try {
+    window.dispatchEvent(new CustomEvent(VOICE_MODE_EVENT, { detail: mode }))
+  } catch {
+    // No window in tests.
+  }
+}
+
+/** Sent when the voice mode changes, so the chat header's picker and Settings agree. */
+export const VOICE_MODE_EVENT = 'conduit-voice-mode'
+
+/** Every voice mode in the order Settings and the header show them. */
+export const VOICE_MODES: VoiceMode[] = ['classic', 'gemini', 'qwen', 'gpt', 'grok', 'local']
+
+export function voiceModeTitle(mode: VoiceMode): string {
+  switch (mode) {
+    case 'gemini':
+      return t('Gemini Live')
+    case 'qwen':
+      return t('Qwen Live')
+    case 'gpt':
+      return t('GPT-Live')
+    case 'grok':
+      return t('Grok Live')
+    case 'local':
+      return t('Local Live')
+    default:
+      return t('Classic')
+  }
 }
 
 export function gptLiveBilling(): Billing {
