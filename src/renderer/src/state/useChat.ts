@@ -46,13 +46,26 @@ interface ResumeResult {
   messages?: HistoryRow[]
   running?: boolean | null
   inflight?: { assistant?: string; streaming?: boolean } | null
-  info?: { title?: string; model?: string; cwd?: string; profile_name?: string | null }
+  info?: ChatInfo
 }
 
 interface CreateResult {
   session_id: string
   stored_session_id?: string
   info?: ResumeResult['info']
+}
+
+/** The parts of Hermes' session info the window shows. */
+interface ChatInfo {
+  title?: string
+  model?: string
+  provider?: string
+  cwd?: string
+  profile_name?: string | null
+  reasoning_effort?: string
+  fast?: boolean
+  service_tier?: string
+  yolo?: boolean
 }
 
 export interface OpenChat {
@@ -62,8 +75,29 @@ export interface OpenChat {
   liveId: string | null
   title?: string
   model?: string
+  provider?: string
   cwd?: string
+  /** Hermes' effort word: "none" is off, empty the model's own default. */
+  reasoning?: string
+  speed?: 'normal' | 'fast' | 'ultrafast'
+  yolo?: boolean
 }
+
+/** The chat's settings from a session info Hermes sent (resume, create, `session.info`, a `config.set`). */
+export function chatSettings(info: ChatInfo | null | undefined): Partial<OpenChat> {
+  if (!info) return {}
+  const out: Partial<OpenChat> = {}
+  if (typeof info.model === 'string' && info.model) out.model = info.model
+  if (typeof info.provider === 'string' && info.provider) out.provider = info.provider
+  if (typeof info.cwd === 'string' && info.cwd) out.cwd = info.cwd
+  if (typeof info.reasoning_effort === 'string') out.reasoning = info.reasoning_effort
+  if (typeof info.fast === 'boolean') out.speed = !info.fast ? 'normal' : (info.service_tier ?? '').toLowerCase() === 'ultrafast' ? 'ultrafast' : 'fast'
+  if (typeof info.yolo === 'boolean') out.yolo = info.yolo
+  return out
+}
+
+/** What a model pick got from Hermes. */
+export type ModelSwitch = { kind: 'switched'; deferred: boolean } | { kind: 'confirm'; message: string } | { kind: 'failed'; message: string }
 
 const uuid = () => crypto.randomUUID()
 
@@ -71,7 +105,12 @@ const uuid = () => crypto.randomUUID()
  * What a slash command leaves for the window: a new chat, words for the
  * composer, or the stored id of the chat it had to start.
  */
-export type CommandOutcome = { kind: 'new' } | { kind: 'prefill'; text: string; created: string | null } | { kind: 'done'; created: string | null }
+export type CommandOutcome =
+  | { kind: 'new' }
+  | { kind: 'prefill'; text: string; created: string | null }
+  | { kind: 'done'; created: string | null }
+  /** `/model` alone: the Model panel. */
+  | { kind: 'model'; created: string | null }
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 
@@ -120,8 +159,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           storedId: result.stored_session_id ?? storedId,
           liveId: result.session_id,
           title: result.info?.title,
-          model: result.info?.model,
-          cwd: result.info?.cwd
+          ...chatSettings(result.info)
         })
         let state: TranscriptState = { items: fromHistory(result.messages ?? []), running: result.running === true }
         if (result.running && result.inflight?.assistant) {
@@ -144,6 +182,11 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     () =>
       window.conduit.onEvent(event => {
         if (!event.session_id || event.session_id !== liveId.current) return
+        if (event.type === 'session.info') {
+          const settings = chatSettings(event.payload as ChatInfo | undefined)
+          setChat(c => ({ ...c, ...settings }))
+          return
+        }
         if (event.type === 'session.title') {
           const title = (event.payload as { title?: unknown } | undefined)?.title
           if (typeof title === 'string') setChat(c => ({ ...c, title }))
@@ -164,7 +207,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     liveId.current = sid
     created.current = storedId
     request.current++ // a resume still in flight is stale now
-    setChat(c => ({ ...c, liveId: sid, storedId: storedId ?? c.storedId, model: made.info?.model, cwd: made.info?.cwd }))
+    setChat(c => ({ ...c, liveId: sid, storedId: storedId ?? c.storedId, ...chatSettings(made.info) }))
     return { sid, storedId }
   }, [profile, sessionAuthority])
 
@@ -301,6 +344,8 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       }
       const scoped = (params: Record<string, unknown>) => (profile ? { ...params, profile } : params)
 
+      if (name === 'model' && !arg) return { kind: 'model', created }
+
       // Side agents answer on the chat as an event; through slash.exec the answer would be lost.
       if ((name === 'btw' || name === 'background' || name === 'bg') && arg) {
         try {
@@ -359,5 +404,61 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     [profile, createSession, reloadHistory, send, stop]
   )
 
-  return { transcript, chat, loading, error, send, stop, command }
+  /** A `config.set` on this chat's session, its answer's info folded in. */
+  const configure = useCallback(
+    async (key: string, value: unknown, extra: Record<string, unknown> = {}) => {
+      const sid = liveId.current
+      if (!sid) throw new Error(t('Not connected.'))
+      const params: Record<string, unknown> = { key, value, session_id: sid, ...extra }
+      if (profile) params.profile = profile
+      const result = await window.conduit.rpc<{ info?: ChatInfo | null; confirm_required?: boolean | null; confirm_message?: string | null; deferred?: boolean | null; value?: unknown }>('config.set', params)
+      if (result.info) setChat(c => ({ ...c, ...chatSettings(result.info) }))
+      return result
+    },
+    [profile]
+  )
+
+  /** Switches the chat's model; a pick Hermes guards (an expensive model) asks first. */
+  const setModel = useCallback(
+    async (model: string, provider: string, confirmed = false): Promise<ModelSwitch> => {
+      try {
+        const result = await configure('model', `${model} --provider ${provider} --session`, confirmed ? { confirm_expensive_model: true } : {})
+        if (result.confirm_required) {
+          const words = result.confirm_message || t('Hermes did not accept the model switch.')
+          return confirmed ? { kind: 'failed', message: words } : { kind: 'confirm', message: words }
+        }
+        if (!result.info) setChat(c => ({ ...c, model, provider }))
+        return { kind: 'switched', deferred: result.deferred === true }
+      } catch (e) {
+        return { kind: 'failed', message: message(e) }
+      }
+    },
+    [configure]
+  )
+
+  const setReasoning = useCallback(
+    async (effort: string) => {
+      await configure('reasoning', effort)
+      setChat(c => ({ ...c, reasoning: effort }))
+    },
+    [configure]
+  )
+
+  const setSpeed = useCallback(
+    async (speed: 'normal' | 'fast' | 'ultrafast') => {
+      await configure('fast', speed)
+      setChat(c => ({ ...c, speed }))
+    },
+    [configure]
+  )
+
+  const setYolo = useCallback(
+    async (on: boolean) => {
+      await configure('yolo', on ? '1' : '0')
+      setChat(c => ({ ...c, yolo: on }))
+    },
+    [configure]
+  )
+
+  return { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo }
 }

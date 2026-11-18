@@ -406,6 +406,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  position: relative;
 }
 
 .chat-head {
@@ -953,7 +954,8 @@ a:hover {
   font-weight: 500;
 }
 
-.segmented button[aria-pressed='true'] {
+.segmented button[aria-pressed='true'],
+.segmented button.on {
   border-color: transparent;
   background: var(--accent-soft);
   color: var(--accent);
@@ -2618,4 +2620,171 @@ html[data-window='quick'] body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* The Model panel, over the chat above the composer. */
+.model-picker {
+  position: absolute;
+  z-index: 40;
+  left: 50%;
+  bottom: 108px;
+  transform: translateX(-50%);
+  width: min(560px, calc(100% - 32px));
+  max-height: min(620px, calc(100% - 140px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: var(--composer);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.model-current {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 2px 0 4px;
+}
+
+.model-current-name {
+  font-weight: 700;
+  font-size: 15px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-current .meta {
+  flex: 1;
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.model-note {
+  padding: 4px 4px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.model-note.error {
+  color: var(--danger);
+}
+
+.model-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.model-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.model-setting-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.model-setting .segmented {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.model-setting .segmented button {
+  height: 26px;
+  padding: 0 9px;
+}
+
+.model-setting-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  font-size: 13px;
+}
+
+.model-setting-row .toggle input {
+  margin-top: 2px;
+}
+
+.model-search {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--field);
+  font-size: 13px;
+}
+
+.model-list {
+  flex: 1;
+  min-height: 80px;
+  overflow-y: auto;
+}
+
+.model-group + .model-group {
+  margin-top: 8px;
+}
+
+.model-group-name {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.model-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  text-align: left;
+  font-size: 13px;
+}
+
+.model-row:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.model-row.on {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.model-row-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-row svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.chip-button {
+  cursor: pointer;
+}
+
+.chip-button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
 }

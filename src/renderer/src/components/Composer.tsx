@@ -45,6 +45,8 @@ interface Props {
   checkAttachments?: (attachments: StagedAttachment[]) => string | null
   /** A quote from the transcript: words go in the draft, a whole message becomes the "Replying to" chip. */
   quote?: QuoteRequest | null
+  /** The model chip's click: the Model panel. Without it the chip only shows the model. */
+  onModel?: () => void
   /** The slash commands this chat takes, suggested as a `/` is typed. None in a room. */
   commands?: SlashCommand[]
   /** The text sent for a draft replying to a message. Defaults to a chat's reply envelope. */
@@ -54,7 +56,7 @@ interface Props {
 const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands }: Props) {
+export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands, onModel }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
@@ -363,7 +365,15 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
               />
             </>
           ) : null}
-          {model ? <span className="chip" title={t('Model')}>{model}</span> : null}
+          {model && onModel ? (
+            <button className="chip chip-button" title={t('Model')} aria-haspopup="dialog" disabled={disabled} onClick={onModel}>
+              {model}
+            </button>
+          ) : model ? (
+            <span className="chip" title={t('Model')}>
+              {model}
+            </span>
+          ) : null}
           {cwd ? (
             <span className="chip" title={t('Working folder: {folder}', { folder: cwd })}>
               {folderName(cwd)}
