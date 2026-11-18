@@ -418,6 +418,25 @@ a:hover {
   padding: 0 16px;
 }
 
+/* With buttons on the right, the title stays centered while there's room and gives way to them when there isn't. */
+.chat-head:has(> .chat-head-actions) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, max-content) minmax(max-content, 1fr);
+  gap: 8px;
+}
+
+.chat-head:has(> .chat-head-actions) > .chat-titles {
+  grid-column: 2;
+  max-width: 100%;
+  justify-self: center;
+}
+
+.chat-head:has(> .chat-head-actions) > .chat-head-actions {
+  grid-column: 3;
+  justify-self: end;
+  position: static;
+}
+
 .chat-title {
   max-width: 60%;
   height: 32px;
@@ -3855,6 +3874,24 @@ html[data-window='quick'] body {
   justify-content: center;
 }
 
+.chat-head-mode {
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 12px;
+  padding: 0 6px;
+  max-width: 120px;
+  cursor: pointer;
+}
+
+.chat-head-mode:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .chat-head-button:hover {
   color: var(--text);
 }
@@ -6905,4 +6942,277 @@ button.cap-row-text {
 }
 .voice-mode-settings .segmented button {
   white-space: nowrap;
+}
+.local-live-agent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.local-live-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.local-live-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Artifacts beside a chat, after the phone's In This Chat sheet. */
+.chat-head-button.active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.artifacts-panel {
+  width: 360px;
+}
+
+.artifact-chips {
+  padding: 0 10px 8px;
+  flex-wrap: wrap;
+}
+
+.artifact-list {
+  padding: 0 6px 12px;
+}
+
+.artifact-day h4 {
+  margin: 10px 6px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.artifact-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 10px;
+}
+
+.artifact-row:hover {
+  background: var(--surface);
+}
+
+.artifact-row.gone .artifact-name {
+  color: var(--text-3);
+  text-decoration: line-through;
+}
+
+.artifact-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.artifact-thumb {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--text-3);
+}
+
+.artifact-thumb svg {
+  width: 18px;
+  height: 18px;
+}
+
+.artifact-thumb .picture-button,
+.artifact-thumb .artifact-picture {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  pointer-events: none;
+}
+
+.artifact-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.artifact-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.artifact-name,
+.artifact-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artifact-name {
+  font-size: 13px;
+}
+
+.artifact-meta {
+  font-size: 11px;
+}
+
+.artifact-note {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.artifact-actions {
+  display: flex;
+  gap: 2px;
+  padding-right: 4px;
+  opacity: 0;
+}
+
+.artifact-row:hover .artifact-actions,
+.artifact-row:focus-within .artifact-actions {
+  opacity: 1;
+}
+
+.artifact-actions .on {
+  color: var(--accent);
+}
+
+.artifact-empty {
+  padding: 24px 12px;
+  text-align: center;
+}
+
+.artifact-more {
+  display: block;
+  margin: 10px auto;
+}
+
+
+.artifact-text {
+  white-space: pre-wrap;
+  padding: 10px;
+}
+
+.artifact-viewer-note {
+  padding: 12px;
+}
+
+.artifacts-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* A page Hermes drew, in its reply (::preview) or opened from Artifacts. */
+.page-frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.ws-viewer .page-frame,
+.page-full .page-frame {
+  flex: 1;
+  min-height: 0;
+}
+
+.page-preview {
+  margin: 8px 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 720px;
+}
+
+.page-preview-head,
+.page-full-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.page-preview-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-frame-loading {
+  background: var(--surface);
+}
+
+.page-preview-cut {
+  padding: 4px 10px 6px;
+  font-size: 11px;
+}
+
+.page-full {
+  position: fixed;
+  inset: 24px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--backdrop);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.artifacts-page > .ws-head {
+  height: auto;
+  padding: 0 0 12px;
+}
+
+.artifacts-page > .ws-head > svg {
+  display: none;
+}
+
+.artifacts-page > .ws-head .ws-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.artifacts-page .ws-search,
+.artifacts-page .artifact-chips {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.artifacts-page .artifact-list {
+  overflow: visible;
+  padding: 0;
+}
+
+.artifacts-page .ws-viewer .page-frame {
+  min-height: 70vh;
 }

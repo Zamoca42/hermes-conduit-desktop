@@ -159,6 +159,8 @@ export interface ConduitApi {
    */
   liveOpen(path: string, query?: Record<string, string>): Promise<{ ok: true; id: string } | { ok: false; error: string }>
   /** A live call's socket opened with a single-use token the host mints at `path` (Gemini Live); the token stays in the main process. */
+  /** A page Hermes drew, served on its own scheme for a sandboxed frame; null when it's too large. */
+  pageUrl(html: string): Promise<string | null>
   liveOpenMinted(path: string): Promise<{ ok: true; id: string; model: string | null; voice: string | null } | { ok: false; error: string; code?: number }>
   liveSend(id: string, text: string): void
   liveClose(id: string, code?: number): void
@@ -260,6 +262,7 @@ export const IPC = {
   pluginRelease: 'conduit:plugin-release',
   liveOpen: 'conduit:live-open',
   liveOpenMinted: 'conduit:live-open-minted',
+  pageUrl: 'conduit:page-url',
   liveSend: 'conduit:live-send',
   liveClose: 'conduit:live-close',
   liveEvent: 'conduit:live-event'

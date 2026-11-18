@@ -37,6 +37,46 @@ export const qualifiedModel = (model: string) => (model.startsWith('models/') ? 
 /** Where quick lookups go: Google Search (Gemini's own), the host's web search (a web_search function), or none. */
 export type Search = 'google' | 'hermes' | 'none'
 
+/** Where lookups go, as chosen in Settings, after the phone's GeminiLiveSearchMode; Qwen has no Google. */
+export type SearchMode = 'automatic' | 'hermes' | 'google' | 'off'
+const SEARCH_KEYS = { gemini: 'conduit.geminiLiveSearch', qwen: 'conduit.qwenLiveSearch' } as const
+
+export function searchMode(provider: 'gemini' | 'qwen'): SearchMode {
+  try {
+    const saved = localStorage.getItem(SEARCH_KEYS[provider])
+    return saved === 'hermes' || saved === 'off' || (saved === 'google' && provider === 'gemini') ? saved : 'automatic'
+  } catch {
+    return 'automatic'
+  }
+}
+
+export function setSearchMode(provider: 'gemini' | 'qwen', mode: SearchMode): void {
+  try {
+    if (mode === 'automatic') localStorage.removeItem(SEARCH_KEYS[provider])
+    else localStorage.setItem(SEARCH_KEYS[provider], mode)
+  } catch {
+    // Automatic next time.
+  }
+}
+
+/** The call's lookups: automatic takes the host's web search when it has one, else Google (Qwen: none). */
+export function resolvedSearch(mode: SearchMode, hostSearch: boolean, provider: 'gemini' | 'qwen'): Search {
+  if (mode === 'off') return 'none'
+  if (mode === 'hermes') return 'hermes'
+  if (mode === 'google' && provider === 'gemini') return 'google'
+  return hostSearch ? 'hermes' : provider === 'gemini' ? 'google' : 'none'
+}
+
+/**
+ * Google's wording for a spent quota ("You exceeded your current quota…",
+ * RESOURCE_EXHAUSTED), after the phone's isQuotaExhausted: Google Search is
+ * metered on its own, so a call refused for it goes on without Search.
+ */
+export function quotaExhausted(reason: string): boolean {
+  const text = reason.toLowerCase().replace(/_/g, ' ').split(/\s+/).join(' ')
+  return text.includes('exceeded your current quota') || text.includes('resource exhausted') || text.includes('resource has been exhausted')
+}
+
 const LOOKUPS: Record<Search, string> = {
   google: 'For weather, news, sports, prices, and other quick facts from the web, use Google Search and answer directly.',
   // The answer is a turn of its own, after the call's turn ended: told only "first say 'Let me check.'", the model opened that turn with the same words again.

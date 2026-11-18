@@ -57,6 +57,7 @@ const api: ConduitApi = {
   pluginRelease: () => ipcRenderer.invoke(IPC.pluginRelease),
   liveOpen: (path, query) => ipcRenderer.invoke(IPC.liveOpen, path, query),
   liveOpenMinted: path => ipcRenderer.invoke(IPC.liveOpenMinted, path),
+  pageUrl: html => ipcRenderer.invoke(IPC.pageUrl, html),
   liveSend: (id, text) => ipcRenderer.send(IPC.liveSend, id, text),
   liveClose: (id, code) => ipcRenderer.send(IPC.liveClose, id, code),
   onLive: listener => listen<LiveSocketEvent>(IPC.liveEvent, listener),

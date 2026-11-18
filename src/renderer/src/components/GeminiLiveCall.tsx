@@ -34,6 +34,9 @@ import {
   geminiSendsPersona,
   geminiVoice,
   instructions,
+  quotaExhausted,
+  resolvedSearch,
+  searchMode,
   setupMessage,
   textTurn,
   toolResponse,
@@ -400,6 +403,43 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
     let voice: string | null = null
     let recall = false
     let search: Search = qwen ? 'none' : 'google'
+    const restartTimer = () => {
+      window.clearTimeout(startTimer)
+      startTimer = window.setTimeout(() => {
+        if (!ready.current) fail(copy.couldNot())
+      }, START_TIMEOUT_MS)
+    }
+    let toldWith: Parameters<typeof instructions>[0] = {}
+    let startedOpen = false
+    // A single-use credential per connection, minted by the host and kept in the main process.
+    const open = async (): Promise<boolean> => {
+      const opened = await window.conduit.liveOpenMinted(withProfile(qwen ? QWEN_TOKEN_PATH : TOKEN_PATH, profile))
+      if (!opened.ok) {
+        fail(
+          opened.code === 404
+            ? t('Install or update the Hermes notifier plugin on your Hermes server.')
+            : opened.error === 'Invalid Qwen Live credential.'
+              ? t('Invalid Qwen Live credential.')
+              : copy.couldNotBecause(opened.error)
+        )
+        return false
+      }
+      if (ended.current) {
+        window.conduit.liveClose(opened.id)
+        return false
+      }
+      model = opened.model ?? (qwen ? QWEN_MODEL : DEFAULT_MODEL)
+      // The voice picked here, else the host's.
+      voice = (qwen ? qwenVoice() : geminiVoice()) || opened.voice
+      if (qwen) {
+        const id = opened.id
+        adapter.current = new QwenAdapter(voice || QWEN_VOICE, event => window.conduit.liveSend(id, JSON.stringify(event)))
+      }
+      socket.current = opened.id
+      if (startedOpen) restartTimer()
+      startedOpen = true
+      return true
+    }
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
       if (event.type === 'open') send(setupMessage(model, told, voice, recall, search))
@@ -420,6 +460,13 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
       } else if (event.type === 'close') {
         socket.current = null
         if (ending.current) return void (!ended.current && finish())
+        if (!qwen && search === 'google' && quotaExhausted(event.reason)) {
+          // As on the phone: most likely Search's own quota, so the call opens again without it.
+          search = 'none'
+          told = instructions({ ...toldWith, search })
+          ready.current = false
+          return void open()
+        }
         const reason = closeReason(event.code, event.reason)
         if (!ready.current) fail(reason ? copy.couldNotBecause(reason) : copy.couldNot())
         else fail(reason ? copy.refused(reason) : copy.couldNot())
@@ -447,32 +494,16 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
                 () => ({ text: '', recall: false })
               )
             : { text: '', recall: false },
-          // Qwen's native search can't run beside function tools: its lookups use the host's web search, when it has one.
-          qwen ? webSearchAvailable(profile) : false
+          // The host's web search when it has one, as on the phone's automatic search: Qwen's native search can't run
+          // beside function tools, and Gemini's Google Search is metered on a quota of its own.
+          webSearchAvailable(profile)
         ])
         if (ended.current) return
         recall = memory.recall
-        if (qwen) search = searches ? 'hermes' : 'none'
-        told = instructions({ language: language(), persona, memory: memory.text, recall, chat: chatContext(turns), search })
-        // A single-use credential per connection, minted by the host and kept in the main process.
-        const opened = await window.conduit.liveOpenMinted(withProfile(qwen ? QWEN_TOKEN_PATH : TOKEN_PATH, profile))
-        if (!opened.ok)
-          return fail(
-            opened.code === 404
-              ? t('Install or update the Hermes notifier plugin on your Hermes server.')
-              : opened.error === 'Invalid Qwen Live credential.'
-                ? t('Invalid Qwen Live credential.')
-                : copy.couldNotBecause(opened.error)
-          )
-        if (ended.current) return window.conduit.liveClose(opened.id)
-        model = opened.model ?? (qwen ? QWEN_MODEL : DEFAULT_MODEL)
-        // The voice picked here, else the host's.
-        voice = (qwen ? qwenVoice() : geminiVoice()) || opened.voice
-        if (qwen) {
-          const id = opened.id
-          adapter.current = new QwenAdapter(voice || QWEN_VOICE, event => window.conduit.liveSend(id, JSON.stringify(event)))
-        }
-        socket.current = opened.id
+        search = resolvedSearch(searchMode(provider), searches, provider)
+        toldWith = { language: language(), persona, memory: memory.text, recall, chat: chatContext(turns) }
+        told = instructions({ ...toldWith, search })
+        if (!(await open())) return
         // The microphone, as 16 kHz PCM, while the call listens.
         const source = input.createMediaStreamSource(stream)
         const node = input.createScriptProcessor(1024, 1, 1)
@@ -486,9 +517,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         }
         source.connect(node)
         node.connect(input.destination)
-        startTimer = window.setTimeout(() => {
-          if (!ready.current) fail(copy.couldNot())
-        }, START_TIMEOUT_MS)
+        restartTimer()
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e)
         if (e instanceof DOMException && (e.name === 'NotAllowedError' || e.name === 'SecurityError'))

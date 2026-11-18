@@ -6,7 +6,31 @@
  * Tags inside code or a blockquote are examples, not files.
  */
 
-export type ReplyBlock = { kind: 'markdown'; text: string } | { kind: 'media'; path: string; alt?: string }
+export type ReplyBlock = { kind: 'markdown'; text: string } | { kind: 'media'; path: string; alt?: string } | { kind: 'preview'; path: string }
+
+/**
+ * Hermes Desktop's `::preview{file="…"}`, after the phone's TranscriptDirectives: the directive starts a
+ * word (so `std::preview` isn't one), its file is `file="…"` or `file='…'`, and one without a file stays text.
+ */
+const PREVIEW = /(?:^|(?<=\s))::preview\{([^{}\n]{0,1024})\}/g
+const FILE_ATTRIBUTE = /(?:^|\s)file=(?:"([^"]*)"|'([^']*)')/
+
+/** The previews in a line, each with where it stands; none inside a code span. */
+function previews(line: string): { index: number; length: number; path: string }[] {
+  const found: { index: number; length: number; path: string }[] = []
+  for (const match of line.matchAll(PREVIEW)) {
+    const index = match.index ?? 0
+    const ticks = (line.slice(0, index).match(/`/g) ?? []).length
+    if (ticks % 2 === 1 && line.indexOf('`', index) >= 0) continue
+    const attribute = FILE_ATTRIBUTE.exec(match[1] ?? '')
+    const path = (attribute?.[1] ?? attribute?.[2] ?? '').trim()
+    if (path) found.push({ index, length: match[0].length, path })
+  }
+  return found
+}
+
+/** Whether a preview's file draws in place; anything else gets a file card. */
+export const isHtmlPage = (path: string) => /\.(?:html?|xhtml)$/i.test(path)
 
 export const KNOWN_EXTENSIONS = [
   'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'heic', 'heif', 'svg',
@@ -44,7 +68,7 @@ export function mediaKind(path: string): MediaKind {
 
 /** Splits a reply into Markdown runs and the files it delivers. */
 export function splitReply(text: string): ReplyBlock[] {
-  if (!/MEDIA:/i.test(text) && !DIRECTIVES.some(d => text.includes(d))) return [{ kind: 'markdown', text }]
+  if (!/MEDIA:/i.test(text) && !text.includes('::preview') && !DIRECTIVES.some(d => text.includes(d))) return [{ kind: 'markdown', text }]
   const blocks: ReplyBlock[] = []
   let run: string[] = []
   const flush = () => {
@@ -70,6 +94,20 @@ export function splitReply(text: string): ReplyBlock[] {
     for (const directive of DIRECTIVES) line = line.split(directive).join('')
     const trimmed = line.trim()
     if (hadDirective && !trimmed) continue
+    const drawn = trimmed.startsWith('>') ? [] : previews(trimmed)
+    if (drawn.length) {
+      let cursor = 0
+      for (const page of drawn) {
+        const before = trimmed.slice(cursor, page.index).trim()
+        if (before) run.push(before)
+        flush()
+        blocks.push(isHtmlPage(page.path) ? { kind: 'preview', path: page.path } : { kind: 'media', path: page.path })
+        cursor = page.index + page.length
+      }
+      const after = trimmed.slice(cursor).trim()
+      if (after) run.push(after)
+      continue
+    }
     if (!/MEDIA:/i.test(trimmed) || trimmed.startsWith('>')) {
       run.push(hadDirective ? line : rawLine)
       continue

@@ -18,6 +18,7 @@ import {
   setSendsMemory,
   setSendsPersona,
   setVoiceMode,
+  VOICE_MODE_EVENT,
   sendsMemory,
   sendsPersona,
   voiceMode,
@@ -54,6 +55,9 @@ import {
   type Availability as QwenAvailability
 } from '../state/qwenLive'
 import {
+  searchMode,
+  setSearchMode,
+  type SearchMode,
   STATUS_PATH as GEMINI_STATUS_PATH,
   VOICES as GEMINI_VOICES,
   availability as geminiAvailability,
@@ -69,6 +73,8 @@ import {
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [mode, setMode] = useState<VoiceMode>(voiceMode)
+  const [geminiSearch, setGeminiSearch] = useState<SearchMode>(() => searchMode('gemini'))
+  const [qwenSearch, setQwenSearch] = useState<SearchMode>(() => searchMode('qwen'))
   const [billing, setBilling] = useState<Billing>(gptLiveBilling)
   const [voice, setVoice] = useState(() => gptLiveVoice(gptLiveBilling()))
   const [limit, setLimit] = useState(apiLimitMinutes)
@@ -152,6 +158,11 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
     }
   }, [mode, billing, profile])
 
+  useEffect(() => {
+    const changed = () => setMode(voiceMode())
+    window.addEventListener(VOICE_MODE_EVENT, changed)
+    return () => window.removeEventListener(VOICE_MODE_EVENT, changed)
+  }, [])
   const choose = (next: VoiceMode) => {
     setMode(next)
     setVoiceMode(next)
@@ -231,6 +242,27 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
             </select>
           </label>
           <p className="meta settings-caption">{t('The voice Gemini speaks with. Applies to the next conversation.')}</p>
+          <label className="voice-mode-pick">
+            <span className="meta">{t('Web lookups')}</span>
+            <select
+              value={geminiSearch}
+              onChange={e => {
+                const next = e.target.value as SearchMode
+                setGeminiSearch(next)
+                setSearchMode('gemini', next)
+              }}
+            >
+              <option value="automatic">{t('Automatic')}</option>
+              <option value="hermes">{t('Hermes web search')}</option>
+              <option value="google">{t('Google Search')}</option>
+              <option value="off">{t('Off')}</option>
+            </select>
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              'How Gemini answers quick questions like weather or news. Hermes web search uses the search your Hermes server is set up with (SearXNG, Firecrawl…). Google Search has its own quota on your Gemini key. Automatic uses Hermes when it has a search set up, otherwise Google. Applies to the next conversation.'
+            )}
+          </p>
           <label className="toggle">
             <input
               type="checkbox"
@@ -300,6 +332,22 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
             />
           </label>
           <p className="meta settings-caption">{t('The voice Qwen speaks with. Applies to the next conversation.')}</p>
+          <label className="voice-mode-pick">
+            <span className="meta">{t('Web lookups')}</span>
+            <select
+              value={qwenSearch}
+              onChange={e => {
+                const next = e.target.value as SearchMode
+                setQwenSearch(next)
+                setSearchMode('qwen', next)
+              }}
+            >
+              <option value="automatic">{t('Automatic')}</option>
+              <option value="hermes">{t('Hermes web search')}</option>
+              <option value="off">{t('Off')}</option>
+            </select>
+          </label>
+          <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
           <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
           <label className="toggle">
             <input

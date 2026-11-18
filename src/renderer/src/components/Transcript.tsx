@@ -1,5 +1,6 @@
 import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { mediaKind, splitReply } from '../state/media'
+import { PagePreview } from './PagePreview'
 import { baseName, type Attachment } from '../state/text'
 import { displayName } from '../state/attachments'
 import type { PendingRequest } from '@shared/ipc'
@@ -186,6 +187,8 @@ export const Reply = memo(function Reply({ text }: { text: string }) {
       {blocks.map((block, i) =>
         block.kind === 'markdown' ? (
           <Markdown key={i} text={block.text} />
+        ) : block.kind === 'preview' ? (
+          <PagePreview key={i} path={block.path} name={baseName(block.path)} fallback={<FileCard path={block.path} />} />
         ) : mediaKind(block.path) === 'image' ? (
           <GatewayPicture
             key={i}
@@ -305,7 +308,12 @@ function DelegationCard({ title, entries, at }: { title: string; entries: Delega
 function CallCard({ startedAt, endedAt, onOpen }: { startedAt: number; endedAt: number; onOpen?: () => void }) {
   const length = callLength(endedAt - startedAt)
   return (
-    <button className="call-card" onClick={onOpen} disabled={!onOpen} aria-label={`${t('Voice call')}, ${length}, ${t('Started {time}', { time: clock(startedAt) })}`}>
+    <button
+      className="call-card"
+      onClick={onOpen}
+      disabled={!onOpen}
+      aria-label={`${t('Voice call')}, ${length}, ${t('Started {time}', { time: clock(startedAt) })}`}
+    >
       <span className="call-card-icon" aria-hidden="true">
         <Icon name="phone" />
       </span>
@@ -646,7 +654,13 @@ export function Transcript({
     () =>
       withCalls(
         state.items.filter(item =>
-          item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : item.kind === 'review' ? display.showReviews : true
+          item.kind === 'thinking'
+            ? showsThinking
+            : item.kind === 'tool' && !item.board
+              ? display.toolCards
+              : item.kind === 'review'
+                ? display.showReviews
+                : true
         ),
         calls ?? []
       ),

@@ -12,6 +12,7 @@ import {
   type ThemeChoice
 } from '../shared/ipc'
 import { probeHost } from './auth'
+import { isPageUrl, pageUrl, registerPageScheme, servePages } from './pages'
 import { pluginRelease } from './pluginRelease'
 import { cleanHeaders } from './proxyHeaders'
 import { Connection } from './connection'
@@ -111,6 +112,12 @@ function createWindow(): void {
     // Web pages, and a Pulse card's mail, phone and message links; Maps and Calendar links on a Mac.
     if (/^(https?:\/\/|mailto:|tel:|sms:)/i.test(url) || (isMac && /^(maps:|calshow:|x-apple-reminderkit:)/i.test(url))) void shell.openExternal(url)
     return { action: 'deny' }
+  })
+  // A page Hermes drew stays in its frame: a link it follows opens in the browser.
+  window.webContents.on('will-frame-navigate', event => {
+    if (event.isMainFrame || isPageUrl(event.url)) return
+    event.preventDefault()
+    if (/^https?:\/\//.test(event.url)) void shell.openExternal(event.url)
   })
   window.webContents.on('will-navigate', (event, url) => {
     if (url !== window.webContents.getURL()) {
@@ -232,6 +239,7 @@ function registerIpc(): void {
       return { ok: false, error: error instanceof Error ? error.message : String(error) }
     }
   })
+  ipcMain.handle(IPC.pageUrl, (_event, html: unknown) => pageUrl(html))
   ipcMain.handle(IPC.liveOpenMinted, async (event, path: unknown) => {
     if (typeof path !== 'string' || !LIVE_TOKEN_PATHS.some(allowed => path === allowed || path.startsWith(`${allowed}?`)))
       return { ok: false, error: 'Not a live token route.' }
@@ -279,7 +287,9 @@ if (!app.requestSingleInstanceLock()) {
   })
   app.on('will-quit', () => globalShortcut.unregisterAll())
   app.setAppUserModelId('dev.conduit.desktop')
+  registerPageScheme()
   void app.whenReady().then(() => {
+    servePages()
     setLanguage(resolvedLanguage())
     chooseTheme(themeChoice(), false)
     registerIpc()
