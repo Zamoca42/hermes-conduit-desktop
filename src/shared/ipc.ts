@@ -111,6 +111,8 @@ export type Platform = 'win32' | 'darwin' | 'linux'
 
 /** "system" follows the computer's language. */
 export type LanguageChoice = 'system' | Language
+/** "system" follows the computer's light or dark mode. */
+export type ThemeChoice = 'system' | 'dark' | 'light'
 
 export interface ConduitApi {
   platform: Platform
@@ -118,6 +120,10 @@ export interface ConduitApi {
   language: { choice: LanguageChoice; resolved: Language }
   /** Saves a new choice; every window reloads in it. */
   setLanguage(choice: LanguageChoice): void
+  /** Light or dark, as picked in Settings > Appearance when the window opened. */
+  theme: ThemeChoice
+  /** Saves a new choice; the window follows it at once. */
+  setTheme(choice: ThemeChoice): void
   /** `headers` are for a proxy in front of the dashboard (Cloudflare Access and the like). */
   probe(url: string, headers?: Record<string, string>): Promise<HostProbe>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
@@ -239,5 +245,7 @@ export const IPC = {
   windowClose: 'conduit:window-close',
   language: 'conduit:language',
   setLanguage: 'conduit:set-language',
+  theme: 'conduit:theme',
+  setTheme: 'conduit:set-theme',
   pluginRelease: 'conduit:plugin-release'
 } as const

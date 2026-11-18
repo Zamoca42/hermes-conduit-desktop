@@ -56,6 +56,7 @@ import { useChatDisplay } from './state/display'
 import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
+import { AppearancePage } from './components/AppearancePage'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
@@ -937,7 +938,9 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault'>('main')
+  const [page, setPage] = useState<
+    'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance'
+  >('main')
   if (page === 'usage')
     return (
       <main className="settings">
@@ -948,6 +951,12 @@ function Settings({
     return (
       <main className="settings">
         <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'appearance')
+    return (
+      <main className="settings">
+        <AppearancePage onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'vault')
@@ -1136,6 +1145,12 @@ function Settings({
           <p className="meta settings-caption">
             {t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}
           </p>
+        </dd>
+        <dt>{t('Appearance')}</dt>
+        <dd>
+          <button className="link" onClick={() => setPage('appearance')}>
+            {t('Choose how Conduit appears across the app.')}
+          </button>
         </dd>
         <dt>{t('Chat text size')}</dt>
         <dd>

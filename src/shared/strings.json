@@ -374,6 +374,21 @@
     "zh-Hans": "API 重试次数",
     "zh-Hant": "API 重試次數"
   },
+  "Accent color": {
+    "de": "Akzentfarbe",
+    "es": "Color de acento",
+    "fr": "Couleur d’accent",
+    "id": "Warna aksen",
+    "it": "Colore di accento",
+    "ja": "アクセントカラー",
+    "ko": "강조 색상",
+    "pl": "Kolor akcentu",
+    "pt-BR": "Cor de destaque",
+    "ru": "Цвет акцента",
+    "tr": "Vurgu rengi",
+    "zh-Hans": "强调色",
+    "zh-Hant": "強調色"
+  },
   "Account": {
     "de": "Konto",
     "es": "Cuenta",
@@ -869,6 +884,21 @@
     "zh-Hans": "始终显示",
     "zh-Hant": "一律顯示"
   },
+  "Amber": {
+    "de": "Bernstein",
+    "es": "Ámbar",
+    "fr": "Ambre",
+    "id": "Kuning amber",
+    "it": "Ambra",
+    "ja": "アンバー",
+    "ko": "앰버",
+    "pl": "Bursztynowy",
+    "pt-BR": "Âmbar",
+    "ru": "Янтарный",
+    "tr": "Kehribar",
+    "zh-Hans": "琥珀色",
+    "zh-Hant": "琥珀色"
+  },
   "An update is available": {
     "de": "Ein Update ist verfügbar",
     "es": "Hay una actualización disponible",
@@ -1003,6 +1033,21 @@
     "tr": "Daire, kat (isteğe bağlı)",
     "zh-Hans": "公寓、单元（可选）",
     "zh-Hant": "公寓、樓層（選填）"
+  },
+  "Appearance": {
+    "de": "Erscheinungsbild",
+    "es": "Apariencia",
+    "fr": "Apparence",
+    "id": "Tampilan",
+    "it": "Aspetto",
+    "ja": "外観",
+    "ko": "모양",
+    "pl": "Wygląd",
+    "pt-BR": "Aparência",
+    "ru": "Оформление",
+    "tr": "Görünüm",
+    "zh-Hans": "外观",
+    "zh-Hant": "外觀"
   },
   "Approval mode": {
     "de": "Freigabemodus",
@@ -2474,6 +2519,21 @@
     "zh-Hans": "对话字号",
     "zh-Hant": "聊天文字大小"
   },
+  "Chat text style": {
+    "de": "Chat-Schriftstil",
+    "es": "Estilo del texto del chat",
+    "fr": "Style du texte des chats",
+    "id": "Gaya teks obrolan",
+    "it": "Stile del testo delle chat",
+    "ja": "チャットの書体",
+    "ko": "채팅 글꼴 스타일",
+    "pl": "Styl tekstu czatu",
+    "pt-BR": "Estilo do texto do chat",
+    "ru": "Стиль текста чата",
+    "tr": "Sohbet metin stili",
+    "zh-Hans": "聊天文字样式",
+    "zh-Hant": "聊天文字樣式"
+  },
   "Chat titles": {
     "de": "Chat-Titel",
     "es": "Títulos de chats",
@@ -2668,6 +2728,51 @@
     "tr": "Fotoğraf Seç",
     "zh-Hans": "选择照片",
     "zh-Hant": "選擇照片"
+  },
+  "Choose how Conduit appears across the app.": {
+    "de": "Wähle, wie Conduit in der gesamten App aussieht.",
+    "es": "Elige cómo se ve Conduit en toda la app.",
+    "fr": "Choisissez l'apparence de Conduit dans toute l'app.",
+    "id": "Pilih tampilan Conduit di seluruh app.",
+    "it": "Scegli l'aspetto di Conduit in tutta l'app.",
+    "ja": "アプリ全体でのConduitの外観を選択します。",
+    "ko": "앱 전체에서 Conduit이 어떻게 보일지 선택하세요.",
+    "pl": "Wybierz wygląd Conduit w całej aplikacji.",
+    "pt-BR": "Escolha a aparência do Conduit em todo o app.",
+    "ru": "Выберите, как Conduit выглядит во всём приложении.",
+    "tr": "Conduit'in uygulama genelinde nasıl görüneceğini seçin.",
+    "zh-Hans": "选择 Conduit 在整个应用中的外观。",
+    "zh-Hant": "選擇 Conduit 在整個 App 中的外觀。"
+  },
+  "Choose how Conduit appears across this device.": {
+    "de": "Wähle, wie Conduit auf diesem Gerät aussieht.",
+    "es": "Elige cómo se ve Conduit en este dispositivo.",
+    "fr": "Choisissez l'apparence de Conduit sur cet appareil.",
+    "id": "Pilih tampilan Conduit di seluruh perangkat ini.",
+    "it": "Scegli l'aspetto di Conduit su questo dispositivo.",
+    "ja": "このデバイスでのConduitの外観を選択します。",
+    "ko": "이 기기에서 Conduit이 어떻게 보일지 선택하세요.",
+    "pl": "Wybierz wygląd Conduit na tym urządzeniu.",
+    "pt-BR": "Escolha a aparência do Conduit neste aparelho.",
+    "ru": "Выберите, как Conduit выглядит на этом устройстве.",
+    "tr": "Conduit'in bu cihazda nasıl görüneceğini seçin.",
+    "zh-Hans": "选择 Conduit 在此设备上的外观。",
+    "zh-Hant": "選擇 Conduit 在此裝置上的外觀。"
+  },
+  "Choose the color of your own messages and Conduit’s highlights.": {
+    "de": "Wähle die Farbe deiner eigenen Nachrichten und der Hervorhebungen in Conduit.",
+    "es": "Elige el color de tus propios mensajes y de los detalles destacados de Conduit.",
+    "fr": "Choisissez la couleur de vos propres messages et des éléments mis en avant dans Conduit.",
+    "id": "Pilih warna pesan Anda sendiri dan sorotan Conduit.",
+    "it": "Scegli il colore dei tuoi messaggi e degli elementi evidenziati di Conduit.",
+    "ja": "自分のメッセージと Conduit の強調表示の色を選択します。",
+    "ko": "내 메시지와 Conduit 강조 표시의 색상을 선택하세요.",
+    "pl": "Wybierz kolor własnych wiadomości i wyróżnień w Conduit.",
+    "pt-BR": "Escolha a cor das suas mensagens e dos destaques do Conduit.",
+    "ru": "Выберите цвет своих сообщений и акцентов Conduit.",
+    "tr": "Kendi mesajlarınızın ve Conduit vurgularının rengini seçin.",
+    "zh-Hans": "选择你自己发送的消息和 Conduit 强调元素的颜色。",
+    "zh-Hant": "選擇你自己傳送的訊息和 Conduit 強調元素的顏色。"
   },
   "Choose whether Conduit follows Hermes, always shows, or never shows maintenance updates.": {
     "de": "Wähle, ob Conduit Hermes folgt oder Wartungsupdates immer bzw. nie anzeigt.",
@@ -4543,6 +4648,21 @@
     "tr": "Her gün saat {time}",
     "zh-Hans": "每天 {time}",
     "zh-Hant": "每天 {time}"
+  },
+  "Dark": {
+    "de": "Dunkel",
+    "es": "Oscuro",
+    "fr": "Sombre",
+    "id": "Gelap",
+    "it": "Scuro",
+    "ja": "ダーク",
+    "ko": "다크",
+    "pl": "Ciemny",
+    "pt-BR": "Escuro",
+    "ru": "Тёмное",
+    "tr": "Koyu",
+    "zh-Hans": "暗色",
+    "zh-Hant": "深色"
   },
   "Dashboard": {
     "de": "Dashboard",
@@ -7184,6 +7304,21 @@
     "zh-Hans": "灰色",
     "zh-Hant": "灰色"
   },
+  "Green": {
+    "de": "Grün",
+    "es": "Verde",
+    "fr": "Vert",
+    "id": "Hijau",
+    "it": "Verde",
+    "ja": "グリーン",
+    "ko": "초록색",
+    "pl": "Zielony",
+    "pt-BR": "Verde",
+    "ru": "Зелёный",
+    "tr": "Yeşil",
+    "zh-Hans": "绿色",
+    "zh-Hant": "綠色"
+  },
   "Grok Live": {
     "de": "Grok Live",
     "es": "Grok Live",
@@ -7753,6 +7888,21 @@
     "tr": "Hermes yeni sürümü çeker ve yeniden başlar. Geri gelene kadar sohbetler ve mesajlaşma kanalları duraklar.",
     "zh-Hans": "Hermes 会拉取新版本并重启。在恢复之前，聊天和消息渠道会暂停。",
     "zh-Hant": "Hermes 會取得新版本並重新啟動。在恢復之前，聊天和訊息頻道會暫停。"
+  },
+  "Hermes replies like this.": {
+    "de": "So antwortet Hermes.",
+    "es": "Así responde Hermes.",
+    "fr": "Hermes répond comme ceci.",
+    "id": "Hermes membalas seperti ini.",
+    "it": "Hermes risponde così.",
+    "ja": "Hermes はこのように返信します。",
+    "ko": "Hermes는 이렇게 답장합니다.",
+    "pl": "Tak odpowiada Hermes.",
+    "pt-BR": "O Hermes responde assim.",
+    "ru": "Hermes отвечает так.",
+    "tr": "Hermes böyle yanıt verir.",
+    "zh-Hans": "Hermes 会这样回复。",
+    "zh-Hant": "Hermes 會這樣回覆。"
   },
   "Hermes restarts its gateway process. Messaging channels, running sessions and any profiles that share this gateway reconnect once it's back.": {
     "de": "Hermes startet seinen Gateway-Prozess neu. Messaging-Kanäle, laufende Sitzungen und alle Profile, die sich dieses Gateway teilen, verbinden sich wieder, sobald es zurück ist.",
@@ -9329,6 +9479,21 @@
     "zh-Hans": "可以再启动委派代理的层数。1 表示委派代理不能再启动。",
     "zh-Hant": "可以再啟動委派代理程式的層數。1 表示委派代理程式不能再啟動。"
   },
+  "Light": {
+    "de": "Hell",
+    "es": "Claro",
+    "fr": "Clair",
+    "id": "Terang",
+    "it": "Chiaro",
+    "ja": "ライト",
+    "ko": "라이트",
+    "pl": "Jasny",
+    "pt-BR": "Claro",
+    "ru": "Светлое",
+    "tr": "Açık",
+    "zh-Hans": "明亮",
+    "zh-Hant": "淺色"
+  },
   "Lime": {
     "de": "Limette",
     "es": "Lima",
@@ -10483,6 +10648,21 @@
     "tr": "Para ve finans",
     "zh-Hans": "钱与财务",
     "zh-Hant": "錢與財務"
+  },
+  "Mono": {
+    "de": "Mono",
+    "es": "Mono",
+    "fr": "Mono",
+    "id": "Mono",
+    "it": "Mono",
+    "ja": "等幅",
+    "ko": "고정폭",
+    "pl": "Mono",
+    "pt-BR": "Mono",
+    "ru": "Моно",
+    "tr": "Mono",
+    "zh-Hans": "等宽",
+    "zh-Hant": "等寬"
   },
   "Month": {
     "de": "Monat",
@@ -15674,6 +15854,21 @@
     "zh-Hans": "房间名称",
     "zh-Hant": "聊天室名稱"
   },
+  "Rounded": {
+    "de": "Abgerundet",
+    "es": "Redondeada",
+    "fr": "Arrondie",
+    "id": "Bulat",
+    "it": "Arrotondato",
+    "ja": "丸ゴシック",
+    "ko": "둥근",
+    "pl": "Zaokrąglony",
+    "pt-BR": "Arredondada",
+    "ru": "Скруглённый",
+    "tr": "Yuvarlak",
+    "zh-Hans": "圆体",
+    "zh-Hant": "圓體"
+  },
   "Run": {
     "de": "Ausführen",
     "es": "Ejecutar",
@@ -16798,6 +16993,21 @@
     "tr": "Gönderildi. Ajan bunu bir sonraki adımında okuyacak.",
     "zh-Hans": "已发送。智能体会在下一步读取。",
     "zh-Hant": "已傳送。代理程式會在下一步讀取。"
+  },
+  "Serif": {
+    "de": "Serif",
+    "es": "Serif",
+    "fr": "Serif",
+    "id": "Serif",
+    "it": "Serif",
+    "ja": "セリフ",
+    "ko": "세리프",
+    "pl": "Szeryfowy",
+    "pt-BR": "Serifa",
+    "ru": "С засечками",
+    "tr": "Serif",
+    "zh-Hans": "衬线",
+    "zh-Hant": "襯線"
   },
   "Server's local time": {
     "de": "Ortszeit des Servers",
@@ -18659,6 +18869,21 @@
     "zh-Hans": "教师",
     "zh-Hant": "老師"
   },
+  "Teal": {
+    "de": "Petrol",
+    "es": "Verde azulado",
+    "fr": "Bleu canard",
+    "id": "Hijau kebiruan",
+    "it": "Verde acqua",
+    "ja": "ティール",
+    "ko": "청록색",
+    "pl": "Morski",
+    "pt-BR": "Azul-petróleo",
+    "ru": "Бирюзовый",
+    "tr": "Camgöbeği",
+    "zh-Hans": "青色",
+    "zh-Hant": "青色"
+  },
   "Technical": {
     "de": "Technisch",
     "es": "Técnico",
@@ -19544,6 +19769,21 @@
     "zh-Hans": "本轮失败了。",
     "zh-Hant": "本輪失敗了。"
   },
+  "The typeface of messages in a chat. Code stays monospaced, and the rest of the interface keeps the system font.": {
+    "de": "Die Schrift der Nachrichten in einem Chat. Code bleibt in Festbreitenschrift, der Rest der Oberfläche behält die Systemschrift.",
+    "es": "La tipografía de los mensajes de un chat. El código sigue en monoespaciada y el resto de la interfaz mantiene la fuente del sistema.",
+    "fr": "La police des messages d’un chat. Le code reste en chasse fixe et le reste de l’interface garde la police du système.",
+    "id": "Jenis huruf pesan dalam obrolan. Kode tetap monospace, dan bagian lain antarmuka tetap memakai font sistem.",
+    "it": "Il carattere dei messaggi in una chat. Il codice resta a spaziatura fissa e il resto dell’interfaccia mantiene il font di sistema.",
+    "ja": "チャット内のメッセージの書体です。コードは等幅のまま、その他のインターフェイスはシステムフォントのままです。",
+    "ko": "채팅 메시지의 글꼴입니다. 코드는 고정폭으로 유지되며 나머지 인터페이스는 시스템 글꼴을 유지합니다.",
+    "pl": "Krój pisma wiadomości w czacie. Kod pozostaje o stałej szerokości, a reszta interfejsu zachowuje czcionkę systemową.",
+    "pt-BR": "A fonte das mensagens em um chat. O código continua monoespaçado e o resto da interface mantém a fonte do sistema.",
+    "ru": "Шрифт сообщений в чате. Код остаётся моноширинным, а остальной интерфейс сохраняет системный шрифт.",
+    "tr": "Sohbetteki mesajların yazı tipi. Kod eş aralıklı kalır, arayüzün geri kalanı sistem yazı tipini korur.",
+    "zh-Hans": "聊天中消息的字体。代码保持等宽，界面其余部分保持系统字体。",
+    "zh-Hant": "聊天中訊息的字體。程式碼維持等寬，介面其餘部分維持系統字體。"
+  },
   "The update is still running on the host. You'll get a notification when it's done.": {
     "de": "Das Update läuft noch auf dem Host. Du bekommst eine Mitteilung, wenn es fertig ist.",
     "es": "La actualización sigue en curso en el host. Recibirás una notificación cuando termine.",
@@ -19603,6 +19843,21 @@
     "tr": "Kendi yedekleri",
     "zh-Hans": "自己的",
     "zh-Hant": "自己的"
+  },
+  "Theme": {
+    "de": "Design",
+    "es": "Tema",
+    "fr": "Thème",
+    "id": "Tema",
+    "it": "Tema",
+    "ja": "テーマ",
+    "ko": "테마",
+    "pl": "Motyw",
+    "pt-BR": "Tema",
+    "ru": "Тема",
+    "tr": "Tema",
+    "zh-Hans": "主题",
+    "zh-Hant": "主題"
   },
   "Then restart the Hermes dashboard, so it serves the new plugin.": {
     "de": "Starte danach das Hermes-Dashboard neu, damit es das neue Plugin verwendet.",

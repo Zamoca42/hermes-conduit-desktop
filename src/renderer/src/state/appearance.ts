@@ -1,0 +1,216 @@
+/**
+ * Settings > Appearance, after the phone's: the theme (in the main process,
+ * so Chromium's `prefers-color-scheme` follows it), the accent color of your
+ * own messages and Conduit's highlights (ConduitAccentChoice), and the chat
+ * text style (ChatFontStyle). The accent and the style stay on this computer.
+ */
+import { t } from '../../../shared/i18n'
+
+export type AccentChoice = 'amber' | 'blue' | 'green' | 'teal' | 'purple' | 'pink'
+export const ACCENTS: AccentChoice[] = ['amber', 'blue', 'green', 'teal', 'purple', 'pink']
+export type ChatFontStyle = 'standard' | 'rounded' | 'serif' | 'mono'
+export const CHAT_FONTS: ChatFontStyle[] = ['standard', 'rounded', 'serif', 'mono']
+
+const ACCENT_KEY = 'conduit.accentChoice'
+const FONT_KEY = 'conduit.chatFontStyle'
+const STYLE_ID = 'conduit-accent'
+
+type RGB = [number, number, number]
+/** The phone's sRGB presets: [dark, light] for the accent and for its soft companion. */
+const PRESETS: Record<AccentChoice, { color: [RGB, RGB]; soft: [RGB, RGB] }> = {
+  amber: {
+    color: [
+      [0.88, 0.67, 0.28],
+      [0.55, 0.37, 0.13]
+    ],
+    soft: [
+      [0.98, 0.83, 0.48],
+      [0.67, 0.49, 0.28]
+    ]
+  },
+  blue: {
+    color: [
+      [0.33, 0.58, 0.98],
+      [0.12, 0.36, 0.8]
+    ],
+    soft: [
+      [0.58, 0.76, 1.0],
+      [0.27, 0.48, 0.85]
+    ]
+  },
+  green: {
+    color: [
+      [0.3, 0.72, 0.47],
+      [0.09, 0.47, 0.27]
+    ],
+    soft: [
+      [0.54, 0.86, 0.64],
+      [0.21, 0.56, 0.37]
+    ]
+  },
+  teal: {
+    color: [
+      [0.22, 0.7, 0.75],
+      [0.04, 0.45, 0.51]
+    ],
+    soft: [
+      [0.5, 0.86, 0.89],
+      [0.16, 0.55, 0.6]
+    ]
+  },
+  purple: {
+    color: [
+      [0.62, 0.48, 0.96],
+      [0.43, 0.28, 0.8]
+    ],
+    soft: [
+      [0.79, 0.7, 1.0],
+      [0.54, 0.41, 0.85]
+    ]
+  },
+  pink: {
+    color: [
+      [0.93, 0.42, 0.64],
+      [0.76, 0.19, 0.44]
+    ],
+    soft: [
+      [1.0, 0.65, 0.79],
+      [0.83, 0.35, 0.56]
+    ]
+  }
+}
+
+export function accentTitle(choice: AccentChoice): string {
+  switch (choice) {
+    case 'amber':
+      return t('Amber')
+    case 'blue':
+      return t('Blue')
+    case 'green':
+      return t('Green')
+    case 'teal':
+      return t('Teal')
+    case 'purple':
+      return t('Purple')
+    default:
+      return t('Pink')
+  }
+}
+
+export function chatFontTitle(style: ChatFontStyle): string {
+  switch (style) {
+    case 'rounded':
+      return t('Rounded')
+    case 'serif':
+      return t('Serif')
+    case 'mono':
+      return t('Mono')
+    default:
+      return t('Default')
+  }
+}
+
+export const hex = (rgb: RGB) =>
+  `#${rgb
+    .map(c =>
+      Math.round(Math.min(1, Math.max(0, c)) * 255)
+        .toString(16)
+        .padStart(2, '0')
+    )
+    .join('')}`
+
+/** Black or white, whichever has the higher WCAG contrast on `fill`, as the phone's markColor. */
+export function markColor(fill: RGB): '#000000' | '#ffffff' {
+  const linear = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+  const luminance = 0.2126 * linear(fill[0]) + 0.7152 * linear(fill[1]) + 0.0722 * linear(fill[2])
+  return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? '#000000' : '#ffffff'
+}
+
+/** The swatch's color in the mode the window shows. */
+export const swatchColor = (choice: AccentChoice, dark: boolean) => hex(PRESETS[choice].color[dark ? 0 : 1])
+
+function block(choice: AccentChoice, dark: boolean): string {
+  const color = PRESETS[choice].color[dark ? 0 : 1]
+  const soft = PRESETS[choice].soft[dark ? 0 : 1]
+  const accent = hex(color)
+  const strong = `color-mix(in srgb, ${accent} 86%, black)`
+  const vars: Record<string, string> = {
+    '--accent': accent,
+    '--accent-strong': strong,
+    '--accent-hover': dark ? hex(soft) : `color-mix(in srgb, ${accent} 78%, black)`,
+    '--accent-fill': accent,
+    '--accent-fill-2': strong,
+    '--accent-ink': markColor(color),
+    '--accent-soft': `color-mix(in srgb, ${accent} ${dark ? 14 : 12}%, transparent)`,
+    '--accent-line': `color-mix(in srgb, ${accent} ${dark ? 25 : 30}%, transparent)`,
+    '--accent-time': `color-mix(in srgb, ${accent} ${dark ? 75 : 85}%, transparent)`,
+    '--bubble-shadow': `0 6px 14px color-mix(in srgb, ${accent} ${dark ? 16 : 18}%, transparent)`
+  }
+  return Object.entries(vars)
+    .map(([k, v]) => `${k}: ${v};`)
+    .join(' ')
+}
+
+/** The stylesheet an accent adds over theme.css; amber is theme.css's own look, so none. */
+export function accentStyle(choice: AccentChoice): string {
+  if (choice === 'amber') return ''
+  return `:root { ${block(choice, true)} }\n@media (prefers-color-scheme: light) { :root { ${block(choice, false)} } }`
+}
+
+export function fontFamily(style: ChatFontStyle): string | null {
+  switch (style) {
+    case 'rounded':
+      return "ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', var(--font)"
+    case 'serif':
+      return "ui-serif, 'New York', Georgia, Cambria, 'Times New Roman', serif"
+    case 'mono':
+      return 'var(--mono)'
+    default:
+      return null
+  }
+}
+
+function stored<T extends string>(key: string, allowed: readonly T[], fallback: T): T {
+  try {
+    const value = localStorage.getItem(key)
+    return allowed.includes(value as T) ? (value as T) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function store(key: string, value: string, fallback: string): void {
+  try {
+    if (value === fallback) localStorage.removeItem(key)
+    else localStorage.setItem(key, value)
+  } catch {
+    // The default next time.
+  }
+}
+
+export const readAccent = () => stored(ACCENT_KEY, ACCENTS, 'amber')
+export const readChatFont = () => stored(FONT_KEY, CHAT_FONTS, 'standard')
+
+export function applyAccent(choice: AccentChoice, save = true): void {
+  let style = document.getElementById(STYLE_ID)
+  if (!style) {
+    style = document.createElement('style')
+    style.id = STYLE_ID
+    document.head.appendChild(style)
+  }
+  style.textContent = accentStyle(choice)
+  if (save) store(ACCENT_KEY, choice, 'amber')
+}
+
+export function applyChatFont(style: ChatFontStyle, save = true): void {
+  const family = fontFamily(style)
+  if (family) document.documentElement.style.setProperty('--chat-font', family)
+  else document.documentElement.style.removeProperty('--chat-font')
+  if (save) store(FONT_KEY, style, 'standard')
+}
+
+/** At startup, before the first paint. */
+export function applyStoredAppearance(): void {
+  applyAccent(readAccent(), false)
+  applyChatFont(readChatFont(), false)
+}
