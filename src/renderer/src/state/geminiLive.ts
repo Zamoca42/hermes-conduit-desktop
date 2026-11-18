@@ -7,6 +7,7 @@
  */
 import { t } from '../../../shared/i18n'
 import { RECALL_SPEC, TOOL_SPECS, liveInstructions, pcmBase64 } from './liveCall'
+import { WEB_SEARCH_SPEC } from './qwenLive'
 
 export const STATUS_PATH = '/api/plugins/conduit_push/gemini-live/status'
 export const TOKEN_PATH = '/api/plugins/conduit_push/gemini-live/token'
@@ -33,15 +34,26 @@ export const qualifiedModel = (model: string) => (model.startsWith('models/') ? 
 
 // MARK: Instructions
 
+/** Where quick lookups go: Google Search (Gemini's own), the host's web search (a web_search function), or none. */
+export type Search = 'google' | 'hermes' | 'none'
+
+const LOOKUPS: Record<Search, string> = {
+  google: 'For weather, news, sports, prices, and other quick facts from the web, use Google Search and answer directly.',
+  // The answer is a turn of its own, after the call's turn ended: told only "first say 'Let me check.'", the model opened that turn with the same words again.
+  hermes:
+    'For weather, news, sports, prices, and other quick facts from the web, call web_search. Just before you call it, say a few words out loud so the user knows you\'re looking it up, in your own words and different each time (for example "One sec.", "Let me look that up." or "Checking now."). Say that only once per lookup: the result arrives a few seconds later as its own turn, and that turn opens straight with the answer, never with another "let me check". Never guess the answer before the result arrives; if it returns an error, say in a few words that the lookup failed.',
+  none: 'You have no web search. A question that needs current information from the web (weather, news, prices) is work for Hermes: offer to ask Hermes for it.'
+}
+
 /**
- * Gemini's instructions: the shared ones, with Google Search for quick facts,
- * and the request acknowledged as it goes (its ask_thread call stays open
- * until Hermes replies).
+ * The instructions for Gemini (and Qwen, on the same shell): the shared ones,
+ * with quick facts looked up where `search` says, and the request
+ * acknowledged as it goes (its ask_thread call stays open until Hermes replies).
  */
-export function instructions(options: { language?: string; persona?: string; memory?: string; recall?: boolean; chat?: string }): string {
+export function instructions(options: { language?: string; persona?: string; memory?: string; recall?: boolean; chat?: string; search?: Search }): string {
   return liveInstructions({
     ...options,
-    lookups: 'For weather, news, sports, prices, and other quick facts from the web, use Google Search and answer directly.',
+    lookups: LOOKUPS[options.search ?? 'google'],
     announces: true
   })
 }
@@ -53,14 +65,14 @@ export function instructions(options: { language?: string; persona?: string; mem
  * read_last_reply NON_BLOCKING (the call stays open while the model talks on),
  * end_conversation BLOCKING.
  */
-export function functionDeclarations(recall = false): Row[] {
+export function functionDeclarations(recall = false, webSearch = false): Row[] {
   const upper = (value: unknown): unknown => {
     if (Array.isArray(value)) return value.map(upper)
     if (value && typeof value === 'object')
       return Object.fromEntries(Object.entries(value as Row).map(([k, v]) => [k, k === 'type' && typeof v === 'string' ? v.toUpperCase() : upper(v)]))
     return value
   }
-  return [...TOOL_SPECS, ...(recall ? [RECALL_SPEC] : [])].map(tool => ({
+  return [...TOOL_SPECS, ...(recall ? [RECALL_SPEC] : []), ...(webSearch ? [WEB_SEARCH_SPEC] : [])].map(tool => ({
     name: tool.name,
     description: tool.description,
     parameters: upper(tool.parameters),
@@ -68,8 +80,8 @@ export function functionDeclarations(recall = false): Row[] {
   }))
 }
 
-/** The session's setup: audio replies, the instructions, the tools with Google Search, and both transcriptions. */
-export function setupMessage(model: string, systemInstruction: string, voice?: string | null, recall = false): Row {
+/** The session's setup: audio replies, the instructions, the tools (with Google Search or the host's web_search), and both transcriptions. */
+export function setupMessage(model: string, systemInstruction: string, voice?: string | null, recall = false, search: Search = 'google'): Row {
   const generationConfig: Row = { responseModalities: ['AUDIO'] }
   if (voice) generationConfig.speechConfig = { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } }
   return {
@@ -77,7 +89,7 @@ export function setupMessage(model: string, systemInstruction: string, voice?: s
       model: qualifiedModel(model),
       generationConfig,
       systemInstruction: { parts: [{ text: systemInstruction }] },
-      tools: [{ functionDeclarations: functionDeclarations(recall) }, { googleSearch: {} }],
+      tools: [{ functionDeclarations: functionDeclarations(recall, search === 'hermes') }, ...(search === 'google' ? [{ googleSearch: {} }] : [])],
       realtimeInputConfig: {
         automaticActivityDetection: { disabled: false },
         // The user's speech always interrupts the model.

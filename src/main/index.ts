@@ -238,7 +238,7 @@ function registerIpc(): void {
     try {
       const minted = mintedSocket(await connection.http('POST', path, {}, 20_000))
       if (!minted.ok) return minted
-      const socket = new WebSocket(minted.url, { maxPayload: 16 * 1024 * 1024 }) as unknown as WebSocketLike
+      const socket = new WebSocket(minted.url, { maxPayload: 16 * 1024 * 1024, headers: minted.headers }) as unknown as WebSocketLike
       return { ok: true, id: keepLive(event.sender, socket), model: minted.model, voice: minted.voice }
     } catch (error) {
       const code = (error as { code?: unknown }).code

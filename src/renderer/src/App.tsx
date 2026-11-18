@@ -798,8 +798,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
                 />
-              ) : calling && callMode === 'gemini' ? (
+              ) : calling && (callMode === 'gemini' || callMode === 'qwen') ? (
                 <GeminiLiveCall
+                  provider={callMode}
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
