@@ -10,6 +10,7 @@ import {
   type StagedAttachment
 } from '../state/attachments'
 import { stageFile } from '../state/picture'
+import { suggestCommands, type SlashCommand } from '../state/slash'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
 /** The last folder of a path, the way the phone's chip shows it. */
@@ -38,12 +39,14 @@ interface Props {
   canAttach?: boolean
   /** Where else a dropped file attaches (the chat around the composer). */
   dropZone?: RefObject<HTMLElement | null>
-  /** Told whether files are staged (or staging), so a small window can make room for them. */
+  /** Told whether anything shows above the field (files, a reply, suggestions), so a small window can make room. */
   onStagedChange?: (staged: boolean) => void
   /** Why the staged files can't go with this message, checked on Send, or null. */
   checkAttachments?: (attachments: StagedAttachment[]) => string | null
   /** A quote from the transcript: words go in the draft, a whole message becomes the "Replying to" chip. */
   quote?: QuoteRequest | null
+  /** The slash commands this chat takes, suggested as a `/` is typed. None in a room. */
+  commands?: SlashCommand[]
   /** The text sent for a draft replying to a message. Defaults to a chat's reply envelope. */
   wrapReply?: (reply: ReplyReference, draft: string) => string
 }
@@ -51,13 +54,15 @@ interface Props {
 const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply }: Props) {
+export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [staging, setStaging] = useState(0)
   const [dragging, setDragging] = useState(false)
   const [replyTo, setReplyTo] = useState<ReplyReference | null>(null)
+  const [highlight, setHighlight] = useState(0)
+  const [dismissed, setDismissed] = useState<string | null>(null)
   const area = useRef<HTMLTextAreaElement>(null)
   const picker = useRef<HTMLInputElement>(null)
 
@@ -77,7 +82,10 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
   useEffect(() => {
     if (!quote || quote.id === quoted.current) return
     quoted.current = quote.id
-    if ('reply' in quote) setReplyTo(quote.reply)
+    if ('draft' in quote) {
+      setText(quote.draft)
+      setReplyTo(quote.reply ?? null)
+    } else if ('reply' in quote) setReplyTo(quote.reply)
     else setText(current => insertQuote(quote.text, current))
     const el = area.current
     if (!el) return
@@ -116,10 +124,6 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
     }
   }
 
-  const staged = attachments.length > 0 || staging > 0 || !!notice
-  useEffect(() => {
-    onStagedChange?.(staged)
-  }, [staged, onStagedChange])
 
   // Files dropped on the chat around the composer attach too.
   const stageRef = useRef(stage)
@@ -200,6 +204,23 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
     area.current?.focus()
   }
 
+  // `/` and the start of a name: Hermes' commands that fit, until a space or Esc.
+  const suggestions = commands?.length && /^\/[^\s/]*$/.test(text) && text !== dismissed ? suggestCommands(commands, text) : []
+  const picked = suggestions[Math.min(highlight, suggestions.length - 1)]
+  useEffect(() => setHighlight(0), [text])
+
+  // Staged files, a note, a reply chip or the suggestions: a small window makes room for them.
+  const staged = attachments.length > 0 || staging > 0 || !!notice || !!replyTo || !!picked
+  useEffect(() => {
+    onStagedChange?.(staged)
+  }, [staged, onStagedChange])
+
+  /** A pick only puts the command in the field, with a space for its words. */
+  function pick(command: SlashCommand) {
+    setText(`/${command.name} `)
+    area.current?.focus()
+  }
+
   const hasContent = text.trim().length > 0 || attachments.length > 0
   const canSend = !disabled && hasContent && staging === 0
 
@@ -220,6 +241,25 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (picked && !event.nativeEvent.isComposing) {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault()
+        const step = event.key === 'ArrowDown' ? 1 : -1
+        setHighlight(h => (Math.min(h, suggestions.length - 1) + step + suggestions.length) % suggestions.length)
+        return
+      }
+      // Tab takes the highlighted command; Enter does too, unless it's already what's typed.
+      if (event.key === 'Tab' || (event.key === 'Enter' && !event.shiftKey && text.slice(1).toLowerCase() !== picked.name)) {
+        event.preventDefault()
+        pick(picked)
+        return
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setDismissed(text)
+        return
+      }
+    }
     if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
       event.preventDefault()
       send()
@@ -260,6 +300,24 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
               </span>
             ))}
             {staging ? <span className="staged-chip busy">{t('Attaching…')}</span> : null}
+          </div>
+        ) : null}
+        {picked ? (
+          <div className="slash-suggestions" role="listbox" aria-label={t('Slash commands')}>
+            {suggestions.map((command, i) => (
+              <button
+                key={command.name}
+                role="option"
+                aria-selected={command === picked}
+                className={command === picked ? 'active' : undefined}
+                onMouseDown={e => e.preventDefault()}
+                onMouseEnter={() => setHighlight(i)}
+                onClick={() => pick(command)}
+              >
+                <span className="slash-name">/{command.name}</span>
+                <span className="slash-description">{command.description}</span>
+              </button>
+            ))}
           </div>
         ) : null}
         {replyTo ? (

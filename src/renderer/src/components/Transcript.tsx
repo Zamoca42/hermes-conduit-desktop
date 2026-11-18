@@ -107,10 +107,18 @@ export function revealMessage(container: HTMLElement | null, key: string | undef
   el.classList.add('flash')
 }
 
+/** Words /undo gave back, for the draft: a message that replied to another gets its "Replying to" chip back. */
+export function prefillRequest(text: string, author: string): QuoteRequest {
+  const envelope = parseReplyEnvelope(text)
+  return envelope
+    ? ({ id: ++quoteIds, draft: envelope.message, reply: { author, text: envelope.quote } } as QuoteRequest)
+    : ({ id: ++quoteIds, draft: text } as QuoteRequest)
+}
+
 let quoteIds = 0
 /** A fresh quote request. */
-export function quoteRequest(content: { text: string } | { reply: { author: string; text: string } }): QuoteRequest {
-  return { id: ++quoteIds, ...content }
+export function quoteRequest(content: { text: string } | { reply: { author: string; text: string } } | { draft: string }): QuoteRequest {
+  return { id: ++quoteIds, ...content } as QuoteRequest
 }
 
 const MEDIA_ICONS: Record<ReturnType<typeof mediaKind>, IconName> = { image: 'image', audio: 'audio', video: 'video', file: 'file' }
@@ -219,9 +227,13 @@ interface ItemProps {
   onQuote?: (request: QuoteRequest) => void
   /** The card's click for a quote, when the quoted reply is loaded. */
   jump: (quote: string) => (() => void) | undefined
+  /** ⋯'s Retry, on the newest reply while it answers the last message sent. */
+  onRetry?: () => void
+  /** ⋯'s Edit and resend on this message of yours. */
+  onEdit?: () => void
 }
 
-function Item({ item, author, onQuote, jump }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -235,7 +247,10 @@ function Item({ item, author, onQuote, jump }: ItemProps) {
           {!item.pending && words.trim() ? (
             <MessageActions
               copy={words}
-              menu={onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ text: blockquote(words) })) }] : []}
+              menu={[
+                ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ text: blockquote(words) })) }] : []),
+                ...(onEdit ? [{ label: t('Edit and resend'), onSelect: onEdit }] : [])
+              ]}
             />
           ) : null}
         </div>
@@ -248,7 +263,10 @@ function Item({ item, author, onQuote, jump }: ItemProps) {
           {!item.streaming && item.text.trim() ? (
             <MessageActions
               copy={copyableReply(item.text)}
-              menu={onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []}
+              menu={[
+                ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []),
+                ...(onRetry ? [{ label: t('Retry'), onSelect: onRetry }] : [])
+              ]}
             />
           ) : null}
         </div>
@@ -283,6 +301,13 @@ function Item({ item, author, onQuote, jump }: ItemProps) {
     }
     case 'notice':
       return <div className={`notice${item.tone === 'error' ? ' error' : ''}`}>{item.text}</div>
+    case 'output':
+      return (
+        <div className="command-output" data-key={item.key}>
+          {item.command ? <div className="command-name">{item.command}</div> : null}
+          {item.format === 'plain' ? <pre>{item.text}</pre> : <div className="assistant"><Markdown text={item.text} /></div>}
+        </div>
+      )
   }
 }
 
@@ -293,7 +318,8 @@ export function Transcript({
   requests = [],
   profile,
   author = 'Hermes',
-  onQuote
+  onQuote,
+  onCommand
 }: {
   state: TranscriptState
   loading: boolean
@@ -306,6 +332,8 @@ export function Transcript({
   author?: string
   /** Quote goes to the composer; without it there is only Copy. */
   onQuote?: (request: QuoteRequest) => void
+  /** Runs a slash command for ⋯'s Retry (`/retry`) and Edit and resend (`/undo N`). */
+  onCommand?: (command: string) => void
 }) {
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
@@ -320,6 +348,46 @@ export function Transcript({
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Retry is on the newest reply while it answers the last message sent;
+  // Edit and resend on a message of yours with only words, which /undo can give back.
+  const actions = useMemo(() => {
+    const retryKey = new Set<string>()
+    const editTurns = new Map<string, number>()
+    if (!onCommand || state.running) return { retryKey, editTurns }
+    const items = state.items
+    const lastUser = items.map(i => i.kind).lastIndexOf('user')
+    const lastReply = items.map(i => i.kind).lastIndexOf('assistant')
+    if (lastReply > lastUser && lastUser >= 0) retryKey.add(items[lastReply]!.key)
+    let turns = 0
+    for (let i = items.length - 1; i >= 0; i--) {
+      const item = items[i]!
+      if (item.kind !== 'user' || item.pending) continue
+      turns++
+      if (!item.attachments?.length) editTurns.set(item.key, turns)
+    }
+    return { retryKey, editTurns }
+  }, [state, onCommand])
+
+  const retry = () => {
+    const lastUser = state.items.map(i => i.kind).lastIndexOf('user')
+    const ranSteps = state.items.slice(lastUser + 1).some(i => i.kind === 'tool')
+    // Steps run again: a file written, a message sent, twice.
+    if (ranSteps && !window.confirm(`${t('Retry this reply?')}\n\n${t('Steps ran for this reply, and retrying runs them again.')}`)) return
+    onCommand?.('/retry')
+  }
+
+  const edit = (turns: number) => {
+    const later = turns > 1
+    if (
+      later &&
+      !window.confirm(
+        `${t('Edit and resend this message?')}\n\n${t('Your later messages and the replies to them leave the chat, and this one goes back in the composer to change and send again.')}`
+      )
+    )
+      return
+    onCommand?.(turns > 1 ? `/undo ${turns}` : '/undo')
+  }
 
   const jump = (quote: string) => {
     const target = state.items.find(i => i.kind === 'assistant' && sameQuotedText(i.text, quote))
@@ -344,7 +412,15 @@ export function Transcript({
           </div>
         ) : null}
         {state.items.map(item => (
-          <Item key={item.key} item={item} author={author} onQuote={onQuote} jump={jump} />
+          <Item
+            key={item.key}
+            item={item}
+            author={author}
+            onQuote={onQuote}
+            jump={jump}
+            onRetry={actions.retryKey.has(item.key) ? retry : undefined}
+            onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
+          />
         ))}
         {requests.map(request => (
           <RequestCard key={request.id} request={request} />

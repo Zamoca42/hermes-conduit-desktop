@@ -194,6 +194,21 @@
     "zh-Hans": "回答",
     "zh-Hant": "回答"
   },
+  "Answering from a snapshot of this chat. The answer will appear here.": {
+    "de": "Antwort anhand eines Schnappschusses dieses Chats. Sie erscheint hier.",
+    "es": "Respondiendo a partir de una instantánea de este chat. La respuesta aparecerá aquí.",
+    "fr": "Réponse à partir d'un instantané de ce chat. Elle apparaîtra ici.",
+    "id": "Menjawab dari cuplikan obrolan ini. Jawabannya akan muncul di sini.",
+    "it": "Risposta basata su un'istantanea di questa chat. Apparirà qui.",
+    "ja": "このチャットのスナップショットから回答しています。回答はここに表示されます。",
+    "ko": "이 채팅의 스냅샷으로 답변하는 중입니다. 답변이 여기에 표시됩니다.",
+    "pl": "Odpowiedź na podstawie migawki tego czatu. Pojawi się tutaj.",
+    "pt-BR": "Respondendo a partir de um instantâneo deste chat. A resposta aparecerá aqui.",
+    "ru": "Отвечаю по снимку этого чата. Ответ появится здесь.",
+    "tr": "Bu sohbetin anlık görüntüsünden yanıtlanıyor. Yanıt burada görünecek.",
+    "zh-Hans": "正在根据此聊天的快照作答。回答将显示在这里。",
+    "zh-Hant": "正在根據此聊天的快照作答。回答將顯示在這裡。"
+  },
   "Approval needed": {
     "de": "Freigabe erforderlich",
     "es": "Aprobación necesaria",
@@ -253,6 +268,21 @@
     "tr": "Hermes’e bir şey sorun…",
     "zh-Hans": "问 Hermes 任何问题…",
     "zh-Hant": "問 Hermes 任何問題…"
+  },
+  "Ask a side question about this chat": {
+    "de": "Eine Nebenfrage zu diesem Chat stellen",
+    "es": "Hacer una pregunta aparte sobre este chat",
+    "fr": "Poser une question annexe sur ce chat",
+    "id": "Ajukan pertanyaan sampingan tentang obrolan ini",
+    "it": "Fai una domanda a parte su questa chat",
+    "ja": "このチャットについて別の質問をする",
+    "ko": "이 채팅에 대해 별도로 질문하기",
+    "pl": "Zadaj poboczne pytanie o ten czat",
+    "pt-BR": "Fazer uma pergunta paralela sobre este chat",
+    "ru": "Задать попутный вопрос об этом чате",
+    "tr": "Bu sohbet hakkında ayrı bir soru sor",
+    "zh-Hans": "就此聊天另问一个问题",
+    "zh-Hant": "就此聊天另問一個問題"
   },
   "Ask anything. Enter sends, Shift Enter adds a line.": {
     "de": "Frag etwas. Eingabe sendet, Umschalt+Eingabe fügt eine Zeile hinzu.",
@@ -343,6 +373,21 @@
     "tr": "Ek eklenemedi: {reason}",
     "zh-Hans": "附件发送失败：{reason}",
     "zh-Hant": "附加失敗：{reason}"
+  },
+  "Background processes stopped: {count}": {
+    "de": "Gestoppte Hintergrundprozesse: {count}",
+    "es": "Procesos en segundo plano detenidos: {count}",
+    "fr": "Processus en arrière-plan arrêtés : {count}",
+    "id": "Proses latar yang dihentikan: {count}",
+    "it": "Processi in background interrotti: {count}",
+    "ja": "停止したバックグラウンドプロセス：{count}",
+    "ko": "중지된 백그라운드 프로세스: {count}",
+    "pl": "Zatrzymane procesy w tle: {count}",
+    "pt-BR": "Processos em segundo plano interrompidos: {count}",
+    "ru": "Остановлено фоновых процессов: {count}",
+    "tr": "Durdurulan arka plan işlemleri: {count}",
+    "zh-Hans": "已停止的后台进程：{count}",
+    "zh-Hant": "已停止的背景程序：{count}"
   },
   "Behind Cloudflare Access or another proxy?": {
     "de": "Hinter Cloudflare Access oder einem anderen Proxy?",
@@ -538,6 +583,36 @@
     "tr": "Cloudflare Access bu bilgisayarı reddetti. Proxy girişi altındaki hizmet belirtecini kontrol edin.",
     "zh-Hans": "Cloudflare Access 拒绝了这台电脑。请检查“代理登录”中的服务令牌。",
     "zh-Hant": "Cloudflare Access 拒絕了這台電腦。請檢查「代理伺服器登入」中的服務權杖。"
+  },
+  "Command failed: {reason}": {
+    "de": "Befehl fehlgeschlagen: {reason}",
+    "es": "El comando falló: {reason}",
+    "fr": "La commande a échoué : {reason}",
+    "id": "Perintah gagal: {reason}",
+    "it": "Comando non riuscito: {reason}",
+    "ja": "コマンドが失敗しました: {reason}",
+    "ko": "명령 실패: {reason}",
+    "pl": "Polecenie nie powiodło się: {reason}",
+    "pt-BR": "O comando falhou: {reason}",
+    "ru": "Команда не выполнена: {reason}",
+    "tr": "Komut başarısız: {reason}",
+    "zh-Hans": "命令失败：{reason}",
+    "zh-Hant": "指令失敗：{reason}"
+  },
+  "Compress this conversation context": {
+    "de": "Kontext dieser Unterhaltung komprimieren",
+    "es": "Comprimir el contexto de esta conversación",
+    "fr": "Compresser le contexte de cette conversation",
+    "id": "Padatkan konteks percakapan ini",
+    "it": "Comprimi il contesto di questa conversazione",
+    "ja": "この会話のコンテキストを圧縮",
+    "ko": "이 대화의 컨텍스트 압축",
+    "pl": "Skompresuj kontekst tej rozmowy",
+    "pt-BR": "Comprimir o contexto desta conversa",
+    "ru": "Сжать контекст этого разговора",
+    "tr": "Bu konuşmanın bağlamını sıkıştır",
+    "zh-Hans": "压缩此对话的上下文",
+    "zh-Hant": "壓縮此對話的上下文"
   },
   "Conduit manages this header itself, so it can't be set here.": {
     "de": "Conduit verwaltet diesen Header selbst, daher kann er hier nicht festgelegt werden.",
@@ -943,6 +1018,36 @@
     "tr": "Eklemek için bırakın",
     "zh-Hans": "拖放以添加附件",
     "zh-Hant": "拖放以加入附件"
+  },
+  "Edit and resend": {
+    "de": "Bearbeiten und neu senden",
+    "es": "Editar y reenviar",
+    "fr": "Modifier et renvoyer",
+    "id": "Edit dan kirim ulang",
+    "it": "Modifica e reinvia",
+    "ja": "編集して再送信",
+    "ko": "편집 후 다시 보내기",
+    "pl": "Edytuj i wyślij ponownie",
+    "pt-BR": "Editar e reenviar",
+    "ru": "Изменить и отправить заново",
+    "tr": "Düzenle ve yeniden gönder",
+    "zh-Hans": "编辑并重新发送",
+    "zh-Hant": "編輯並重新傳送"
+  },
+  "Edit and resend this message?": {
+    "de": "Diese Nachricht bearbeiten und neu senden?",
+    "es": "¿Editar y reenviar este mensaje?",
+    "fr": "Modifier et renvoyer ce message ?",
+    "id": "Edit dan kirim ulang pesan ini?",
+    "it": "Modificare e reinviare questo messaggio?",
+    "ja": "このメッセージを編集して再送信しますか？",
+    "ko": "이 메시지를 편집해 다시 보낼까요?",
+    "pl": "Edytować i wysłać ponownie tę wiadomość?",
+    "pt-BR": "Editar e reenviar esta mensagem?",
+    "ru": "Изменить и отправить это сообщение заново?",
+    "tr": "Bu mesaj düzenlenip yeniden gönderilsin mi?",
+    "zh-Hans": "要编辑并重新发送这条消息吗？",
+    "zh-Hant": "要編輯並重新傳送這則訊息嗎？"
   },
   "Edited a file": {
     "de": "Datei bearbeitet",
@@ -1904,6 +2009,21 @@
     "zh-Hans": "没有可登录的主机。",
     "zh-Hant": "沒有可登入的主機。"
   },
+  "Nothing was running.": {
+    "de": "Es lief nichts.",
+    "es": "No había nada en ejecución.",
+    "fr": "Rien n’était en cours.",
+    "id": "Tidak ada yang berjalan.",
+    "it": "Non c’era nulla in esecuzione.",
+    "ja": "実行中のものはありませんでした。",
+    "ko": "실행 중인 항목이 없었습니다.",
+    "pl": "Nic nie było uruchomione.",
+    "pt-BR": "Nada estava em execução.",
+    "ru": "Ничего не выполнялось.",
+    "tr": "Çalışan bir şey yoktu.",
+    "zh-Hans": "没有正在运行的内容。",
+    "zh-Hant": "沒有正在執行的內容。"
+  },
   "Notifications": {
     "de": "Mitteilungen",
     "es": "Notificaciones",
@@ -2204,6 +2324,21 @@
     "zh-Hans": "问题：{summary}",
     "zh-Hant": "問題：{summary}"
   },
+  "Queue a prompt for the next turn": {
+    "de": "Einen Prompt für den nächsten Durchgang einreihen",
+    "es": "Poner en cola una instrucción para el siguiente turno",
+    "fr": "Mettre un prompt en file pour le prochain tour",
+    "id": "Antrekan prompt untuk giliran berikutnya",
+    "it": "Metti in coda un prompt per il prossimo turno",
+    "ja": "次のターンのプロンプトをキューに追加",
+    "ko": "다음 턴을 위한 프롬프트를 대기열에 추가",
+    "pl": "Dodaj prompt do kolejki na następną turę",
+    "pt-BR": "Enfileirar um prompt para o próximo turno",
+    "ru": "Поставить запрос в очередь на следующий ответ",
+    "tr": "Sonraki tur için bir istemi sıraya al",
+    "zh-Hans": "将提示词加入下一轮的队列",
+    "zh-Hant": "將提示詞排入下一個回合"
+  },
   "Quick Ask": {
     "de": "Schnellfrage",
     "es": "Pregunta rápida",
@@ -2354,6 +2489,21 @@
     "zh-Hans": "正在读取网页",
     "zh-Hant": "正在讀取網頁"
   },
+  "Remove the last user and assistant exchange": {
+    "de": "Den letzten Austausch zwischen Nutzer und Assistent entfernen",
+    "es": "Eliminar el último intercambio entre el usuario y el asistente",
+    "fr": "Supprimer le dernier échange entre l'utilisateur et l'assistant",
+    "id": "Hapus pertukaran terakhir antara pengguna dan asisten",
+    "it": "Rimuovi l'ultimo scambio tra utente e assistente",
+    "ja": "最後のユーザとアシスタントのやり取りを削除",
+    "ko": "마지막 사용자 메시지와 어시스턴트 응답 제거",
+    "pl": "Usuń ostatnią wymianę między użytkownikiem a asystentem",
+    "pt-BR": "Remover a última troca entre usuário e assistente",
+    "ru": "Удалить последний обмен репликами пользователя и ассистента",
+    "tr": "Son kullanıcı ve asistan alışverişini kaldır",
+    "zh-Hans": "移除最后一轮用户与助手的对话",
+    "zh-Hant": "移除最後一輪使用者與助理的對話"
+  },
   "Remove the reply": {
     "de": "Antwort entfernen",
     "es": "Quitar la respuesta",
@@ -2429,6 +2579,51 @@
     "zh-Hans": "回复 {name}",
     "zh-Hant": "正在回覆 {name}"
   },
+  "Retry": {
+    "de": "Erneut versuchen",
+    "es": "Reintentar",
+    "fr": "Réessayer",
+    "id": "Coba Lagi",
+    "it": "Riprova",
+    "ja": "再試行",
+    "ko": "다시 시도",
+    "pl": "Spróbuj ponownie",
+    "pt-BR": "Tentar Novamente",
+    "ru": "Повторить",
+    "tr": "Yeniden Dene",
+    "zh-Hans": "重试",
+    "zh-Hant": "重試"
+  },
+  "Retry the last user message": {
+    "de": "Die letzte Nutzernachricht erneut senden",
+    "es": "Reintentar el último mensaje del usuario",
+    "fr": "Renvoyer le dernier message de l'utilisateur",
+    "id": "Coba lagi pesan pengguna terakhir",
+    "it": "Riprova l'ultimo messaggio dell'utente",
+    "ja": "最後のユーザメッセージを再試行",
+    "ko": "마지막 사용자 메시지 다시 시도",
+    "pl": "Ponów ostatnią wiadomość użytkownika",
+    "pt-BR": "Repetir a última mensagem do usuário",
+    "ru": "Повторить последнее сообщение пользователя",
+    "tr": "Son kullanıcı mesajını yeniden dene",
+    "zh-Hans": "重试最后一条用户消息",
+    "zh-Hant": "重試最後一則使用者訊息"
+  },
+  "Retry this reply?": {
+    "de": "Diese Antwort wiederholen?",
+    "es": "¿Reintentar esta respuesta?",
+    "fr": "Relancer cette réponse ?",
+    "id": "Coba lagi balasan ini?",
+    "it": "Riprovare questa risposta?",
+    "ja": "この返信を再試行しますか？",
+    "ko": "이 답변을 다시 시도할까요?",
+    "pl": "Ponowić tę odpowiedź?",
+    "pt-BR": "Tentar esta resposta de novo?",
+    "ru": "Повторить этот ответ?",
+    "tr": "Bu yanıt yeniden denensin mi?",
+    "zh-Hans": "要重试这条回复吗？",
+    "zh-Hant": "要重試這則回覆嗎？"
+  },
   "Room name": {
     "de": "Raumname",
     "es": "Nombre de la sala",
@@ -2443,6 +2638,21 @@
     "tr": "Oda adı",
     "zh-Hans": "房间名称",
     "zh-Hant": "聊天室名稱"
+  },
+  "Run a prompt in the background": {
+    "de": "Einen Prompt im Hintergrund ausführen",
+    "es": "Ejecutar una instrucción en segundo plano",
+    "fr": "Exécuter un prompt en arrière-plan",
+    "id": "Jalankan prompt di latar belakang",
+    "it": "Esegui un prompt in background",
+    "ja": "プロンプトをバックグラウンドで実行",
+    "ko": "백그라운드에서 프롬프트 실행",
+    "pl": "Uruchom prompt w tle",
+    "pt-BR": "Executar um prompt em segundo plano",
+    "ru": "Выполнить запрос в фоне",
+    "tr": "Bir istemi arka planda çalıştır",
+    "zh-Hans": "在后台运行提示词",
+    "zh-Hant": "在背景執行提示詞"
   },
   "Running": {
     "de": "Läuft",
@@ -2669,6 +2879,51 @@
     "zh-Hans": "显示",
     "zh-Hant": "顯示"
   },
+  "Show available slash commands": {
+    "de": "Verfügbare Slash-Befehle anzeigen",
+    "es": "Mostrar los comandos de barra disponibles",
+    "fr": "Afficher les commandes slash disponibles",
+    "id": "Tampilkan perintah slash yang tersedia",
+    "it": "Mostra i comandi slash disponibili",
+    "ja": "使用可能なスラッシュコマンドを表示",
+    "ko": "사용 가능한 슬래시 명령 보기",
+    "pl": "Pokaż dostępne polecenia z ukośnikiem",
+    "pt-BR": "Mostrar os comandos de barra disponíveis",
+    "ru": "Показать доступные слэш-команды",
+    "tr": "Kullanılabilir eğik çizgi komutlarını göster",
+    "zh-Hans": "查看可用命令",
+    "zh-Hant": "顯示可用的斜線指令"
+  },
+  "Show current session status": {
+    "de": "Aktuellen Sitzungsstatus anzeigen",
+    "es": "Mostrar el estado de la sesión actual",
+    "fr": "Afficher l'état de la session actuelle",
+    "id": "Tampilkan status sesi saat ini",
+    "it": "Mostra lo stato della sessione attuale",
+    "ja": "現在のセッションの状態を表示",
+    "ko": "현재 세션 상태 보기",
+    "pl": "Pokaż stan bieżącej sesji",
+    "pt-BR": "Mostrar o status da sessão atual",
+    "ru": "Показать состояние текущего сеанса",
+    "tr": "Geçerli oturum durumunu göster",
+    "zh-Hans": "显示当前会话状态",
+    "zh-Hant": "顯示目前工作階段的狀態"
+  },
+  "Show the Hermes Agent version": {
+    "de": "Version von Hermes Agent anzeigen",
+    "es": "Mostrar la versión de Hermes Agent",
+    "fr": "Afficher la version d'Hermes Agent",
+    "id": "Tampilkan versi Hermes Agent",
+    "it": "Mostra la versione di Hermes Agent",
+    "ja": "Hermes Agentのバージョンを表示",
+    "ko": "Hermes Agent 버전 보기",
+    "pl": "Pokaż wersję Hermes Agent",
+    "pt-BR": "Mostrar a versão do Hermes Agent",
+    "ru": "Показать версию Hermes Agent",
+    "tr": "Hermes Agent sürümünü göster",
+    "zh-Hans": "显示 Hermes Agent 版本",
+    "zh-Hant": "顯示 Hermes Agent 版本"
+  },
   "Show the message": {
     "de": "Nachricht anzeigen",
     "es": "Mostrar el mensaje",
@@ -2683,6 +2938,21 @@
     "tr": "Mesajı göster",
     "zh-Hans": "显示该消息",
     "zh-Hant": "顯示該訊息"
+  },
+  "Show this session's token usage": {
+    "de": "Token-Nutzung dieser Sitzung anzeigen",
+    "es": "Mostrar el uso de tokens de esta sesión",
+    "fr": "Afficher l'utilisation des jetons de cette session",
+    "id": "Tampilkan penggunaan token sesi ini",
+    "it": "Mostra l'uso dei token di questa sessione",
+    "ja": "このセッションのトークン使用量を表示",
+    "ko": "이 세션의 토큰 사용량 보기",
+    "pl": "Pokaż zużycie tokenów w tej sesji",
+    "pt-BR": "Mostrar o uso de tokens desta sessão",
+    "ru": "Показать расход токенов в этом сеансе",
+    "tr": "Bu oturumun token kullanımını göster",
+    "zh-Hans": "显示此会话的 Token 用量",
+    "zh-Hant": "顯示此工作階段的 token 用量"
   },
   "Sign in": {
     "de": "Anmelden",
@@ -2909,6 +3179,81 @@
     "zh-Hans": "已跳过",
     "zh-Hant": "已略過"
   },
+  "Slash commands": {
+    "de": "Slash-Befehle",
+    "es": "Comandos de barra",
+    "fr": "Commandes slash",
+    "id": "Perintah garis miring",
+    "it": "Comandi slash",
+    "ja": "スラッシュコマンド",
+    "ko": "슬래시 명령",
+    "pl": "Polecenia z ukośnikiem",
+    "pt-BR": "Comandos de barra",
+    "ru": "Слэш-команды",
+    "tr": "Eğik çizgi komutları",
+    "zh-Hans": "斜杠命令",
+    "zh-Hant": "斜線指令"
+  },
+  "Start a new conversation": {
+    "de": "Neue Unterhaltung beginnen",
+    "es": "Inicia una conversación nueva",
+    "fr": "Démarrer une nouvelle conversation",
+    "id": "Mulai percakapan baru",
+    "it": "Inizia una nuova conversazione",
+    "ja": "新しいチャットを開始",
+    "ko": "새 대화 시작",
+    "pl": "Rozpocznij nową rozmowę",
+    "pt-BR": "Iniciar uma nova conversa",
+    "ru": "Начать новый чат",
+    "tr": "Yeni bir konuşma başlat",
+    "zh-Hans": "开始新对话",
+    "zh-Hant": "開始新對話"
+  },
+  "Started in the background. The answer will appear here.": {
+    "de": "Im Hintergrund gestartet. Die Antwort erscheint hier.",
+    "es": "Iniciado en segundo plano. La respuesta aparecerá aquí.",
+    "fr": "Lancé en arrière-plan. La réponse apparaîtra ici.",
+    "id": "Dimulai di latar belakang. Jawabannya akan muncul di sini.",
+    "it": "Avviato in background. La risposta apparirà qui.",
+    "ja": "バックグラウンドで開始しました。回答はここに表示されます。",
+    "ko": "백그라운드에서 시작했습니다. 답변이 여기에 표시됩니다.",
+    "pl": "Uruchomiono w tle. Odpowiedź pojawi się tutaj.",
+    "pt-BR": "Iniciado em segundo plano. A resposta aparecerá aqui.",
+    "ru": "Запущено в фоне. Ответ появится здесь.",
+    "tr": "Arka planda başlatıldı. Yanıt burada görünecek.",
+    "zh-Hans": "已在后台开始。回答将显示在这里。",
+    "zh-Hant": "已在背景開始。回答將顯示在這裡。"
+  },
+  "Steer the current run": {
+    "de": "Die laufende Ausführung nachsteuern",
+    "es": "Guiar la ejecución actual",
+    "fr": "Réorienter l'exécution en cours",
+    "id": "Arahkan eksekusi saat ini",
+    "it": "Reindirizza l'esecuzione attuale",
+    "ja": "現在の実行を軌道修正",
+    "ko": "현재 실행 방향 조정",
+    "pl": "Pokieruj bieżącym działaniem",
+    "pt-BR": "Orientar a execução atual",
+    "ru": "Скорректировать текущий запуск",
+    "tr": "Geçerli çalıştırmayı yönlendir",
+    "zh-Hans": "引导当前运行",
+    "zh-Hant": "引導目前的執行"
+  },
+  "Steps ran for this reply, and retrying runs them again.": {
+    "de": "Für diese Antwort liefen Schritte, und Wiederholen führt sie erneut aus.",
+    "es": "Esta respuesta ejecutó pasos, y reintentar los vuelve a ejecutar.",
+    "fr": "Des étapes ont été exécutées pour cette réponse, et la relancer les exécute à nouveau.",
+    "id": "Ada langkah yang dijalankan untuk balasan ini, dan mencoba lagi akan menjalankannya lagi.",
+    "it": "Per questa risposta sono stati eseguiti dei passaggi, e riprovare li esegue di nuovo.",
+    "ja": "この返信ではステップが実行されました。再試行するともう一度実行されます。",
+    "ko": "이 답변에서 단계가 실행되었으며, 다시 시도하면 다시 실행됩니다.",
+    "pl": "Dla tej odpowiedzi wykonano kroki, a ponowienie wykona je jeszcze raz.",
+    "pt-BR": "Etapas foram executadas para esta resposta, e tentar de novo as executa outra vez.",
+    "ru": "Для этого ответа выполнялись шаги, и повтор выполнит их снова.",
+    "tr": "Bu yanıt için adımlar çalıştı ve yeniden denemek onları tekrar çalıştırır.",
+    "zh-Hans": "这条回复运行过步骤，重试会再次运行它们。",
+    "zh-Hant": "這則回覆執行過步驟，重試會再次執行它們。"
+  },
   "Stop": {
     "de": "Stoppen",
     "es": "Detener",
@@ -2939,6 +3284,21 @@
     "zh-Hans": "停止（Esc）",
     "zh-Hant": "停止（Esc）"
   },
+  "Stop the reply and background processes": {
+    "de": "Antwort und Hintergrundprozesse stoppen",
+    "es": "Detener la respuesta y los procesos en segundo plano",
+    "fr": "Arrêter la réponse et les processus en arrière-plan",
+    "id": "Hentikan balasan dan proses latar",
+    "it": "Interrompi la risposta e i processi in background",
+    "ja": "返信とバックグラウンドプロセスを停止",
+    "ko": "응답과 백그라운드 프로세스 중지",
+    "pl": "Zatrzymaj odpowiedź i procesy w tle",
+    "pt-BR": "Parar a resposta e os processos em segundo plano",
+    "ru": "Остановить ответ и фоновые процессы",
+    "tr": "Yanıtı ve arka plan işlemlerini durdur",
+    "zh-Hans": "停止回复和后台进程",
+    "zh-Hant": "停止回覆和背景程序"
+  },
   "Stopped": {
     "de": "Gestoppt",
     "es": "Detenido",
@@ -2953,6 +3313,21 @@
     "tr": "Durduruldu",
     "zh-Hans": "已停止",
     "zh-Hant": "已停止"
+  },
+  "Stopped the reply.": {
+    "de": "Antwort gestoppt.",
+    "es": "Respuesta detenida.",
+    "fr": "Réponse arrêtée.",
+    "id": "Balasan dihentikan.",
+    "it": "Risposta interrotta.",
+    "ja": "返信を停止しました。",
+    "ko": "응답을 중지했습니다.",
+    "pl": "Zatrzymano odpowiedź.",
+    "pt-BR": "Resposta interrompida.",
+    "ru": "Ответ остановлен.",
+    "tr": "Yanıt durduruldu.",
+    "zh-Hans": "已停止回复。",
+    "zh-Hant": "已停止回覆。"
   },
   "Switch": {
     "de": "Wechseln",
@@ -3718,6 +4093,21 @@
     "tr": "Yanıtınız",
     "zh-Hans": "你的回答",
     "zh-Hant": "你的回答"
+  },
+  "Your later messages and the replies to them leave the chat, and this one goes back in the composer to change and send again.": {
+    "de": "Deine späteren Nachrichten und die Antworten darauf verschwinden aus dem Chat, und diese kommt zurück ins Eingabefeld, um sie zu ändern und erneut zu senden.",
+    "es": "Tus mensajes posteriores y sus respuestas salen del chat, y este vuelve al editor para cambiarlo y enviarlo de nuevo.",
+    "fr": "Vos messages suivants et leurs réponses quittent le chat, et celui-ci revient dans le champ de saisie pour être modifié et renvoyé.",
+    "id": "Pesan Anda berikutnya dan balasannya keluar dari chat, dan pesan ini kembali ke kolom tulis untuk diubah dan dikirim lagi.",
+    "it": "I tuoi messaggi successivi e le relative risposte escono dalla chat, e questo torna nel campo di scrittura per modificarlo e inviarlo di nuovo.",
+    "ja": "以降のメッセージとその返信はチャットから外れ、このメッセージは入力欄に戻るので、変更して送り直せます。",
+    "ko": "이후 메시지와 그 답변은 채팅에서 빠지고, 이 메시지는 입력창으로 돌아가 수정해서 다시 보낼 수 있습니다.",
+    "pl": "Twoje późniejsze wiadomości i odpowiedzi na nie znikną z czatu, a ta wróci do pola tekstowego, aby ją zmienić i wysłać ponownie.",
+    "pt-BR": "Suas mensagens posteriores e as respostas a elas saem do chat, e esta volta ao campo de texto para ser alterada e enviada de novo.",
+    "ru": "Ваши последующие сообщения и ответы на них уйдут из чата, а это вернётся в поле ввода, чтобы изменить его и отправить снова.",
+    "tr": "Sonraki mesajlarınız ve onlara verilen yanıtlar sohbetten çıkar, bu mesaj ise değiştirip yeniden göndermeniz için yazma alanına döner.",
+    "zh-Hans": "你之后的消息及对它们的回复将离开聊天，这条消息会回到输入框，供你修改后再次发送。",
+    "zh-Hant": "你之後的訊息及對它們的回覆將離開聊天，這則訊息會回到輸入框，供你修改後再次傳送。"
   },
   "Your phone sends its sign-ins sealed to this computer. Nobody in between can read them. The code works for {time} more.": {
     "de": "Dein Handy sendet seine Anmeldungen versiegelt an diesen Computer. Niemand dazwischen kann sie lesen. Der Code gilt noch {time}.",
