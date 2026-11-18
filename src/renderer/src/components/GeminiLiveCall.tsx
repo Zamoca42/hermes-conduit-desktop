@@ -492,12 +492,13 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
                 () => ({ text: '', recall: false })
               )
             : { text: '', recall: false },
-          // Qwen's native search can't run beside function tools: its lookups use the host's web search, when it has one.
-          qwen ? webSearchAvailable(profile) : false
+          // The host's web search when it has one, as on the phone's automatic search: Qwen's native search can't run
+          // beside function tools, and Gemini's Google Search is metered on a quota of its own.
+          webSearchAvailable(profile)
         ])
         if (ended.current) return
         recall = memory.recall
-        if (qwen) search = searches ? 'hermes' : 'none'
+        search = searches ? 'hermes' : qwen ? 'none' : 'google'
         toldWith = { language: language(), persona, memory: memory.text, recall, chat: chatContext(turns) }
         told = instructions({ ...toldWith, search })
         if (!(await open())) return
