@@ -146,7 +146,8 @@ export interface ConduitApi {
   /** The quick ask window was just shown: focus its field. */
   onQuickAskShown(listener: () => void): () => void
   /** Grows the quick ask window for a reply, or shrinks it back to its field. */
-  setQuickAskExpanded(expanded: boolean): void
+  /** true for a reply, false for the field alone, or the px the field and its staged files need. */
+  setQuickAskExpanded(expanded: boolean | number): void
   /** Hides the quick ask window. */
   hideQuickAsk(): void
   /** The quick ask shortcut, and whether the system let Conduit have it. */

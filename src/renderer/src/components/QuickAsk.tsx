@@ -11,6 +11,9 @@ import { t } from '@shared/i18n'
  * the reply streaming under it, and the chat it made a click away in the
  * main window. Esc hides it (or stops a running turn first).
  */
+/** The quick window's padding above and below the field (.quick). */
+const QUICK_PADDING = 16
+
 export function QuickAsk() {
   const [status, setStatus] = useState<ConnectionStatus | null>(null)
   const [round, setRound] = useState(0)
@@ -61,7 +64,19 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
   const started = transcript.items.length > 0
   // Staged files need the taller window too.
   const [staged, setStaged] = useState(false)
-  useEffect(() => window.conduit.setQuickAskExpanded(started || staged), [started, staged])
+  // Before a reply, staged files grow the window only as far as the field
+  // needs, so no empty space sits above them.
+  const [fieldHeight, setFieldHeight] = useState(0)
+  useEffect(() => {
+    const field = pane.current?.querySelector('.composer-wrap')
+    if (started || !staged || !field) return
+    const measure = () => setFieldHeight(field.getBoundingClientRect().height + QUICK_PADDING)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(field)
+    return () => observer.disconnect()
+  }, [started, staged])
+  useEffect(() => window.conduit.setQuickAskExpanded(started ? true : staged && fieldHeight ? fieldHeight : false), [started, staged, fieldHeight])
   return (
     <div className={`quick${started ? ' started' : ''}`} ref={pane}>
       <div className="quick-head">
