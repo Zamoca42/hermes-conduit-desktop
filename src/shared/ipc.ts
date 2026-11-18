@@ -175,7 +175,21 @@ export interface ConduitApi {
 }
 
 /** Commands the menu bar sends the window. */
-export type MenuAction = 'new-chat' | 'needs-you'
+export type MenuAction =
+  | 'new-chat'
+  | 'needs-you'
+  | 'search'
+  | 'stop'
+  | 'settings'
+  | 'text-bigger'
+  | 'text-smaller'
+  | 'text-normal'
+  | 'shortcuts'
+  | 'go-1'
+  | 'go-2'
+  | 'go-3'
+  | 'go-4'
+  | 'go-5'
 
 export interface OpenChatRequest {
   storedId: string

@@ -1694,6 +1694,21 @@
     "zh-Hans": "更改将应用于新会话。",
     "zh-Hant": "變更將套用於新工作階段。"
   },
+  "Chat": {
+    "de": "Chat",
+    "es": "Chat",
+    "fr": "Discussion",
+    "id": "Obrolan",
+    "it": "Chat",
+    "ja": "チャット",
+    "ko": "채팅",
+    "pl": "Czat",
+    "pt-BR": "Chat",
+    "ru": "Чат",
+    "tr": "Sohbet",
+    "zh-Hans": "对话",
+    "zh-Hant": "聊天"
+  },
   "Chat check": {
     "de": "Chat-Prüfung",
     "es": "Revisión de chats",
@@ -1738,6 +1753,21 @@
     "tr": "Sohbet modeli ve yardımcı modeller",
     "zh-Hans": "聊天模型和辅助模型",
     "zh-Hant": "聊天模型與輔助模型"
+  },
+  "Chat text size": {
+    "de": "Textgröße im Chat",
+    "es": "Tamaño del texto del chat",
+    "fr": "Taille du texte des discussions",
+    "id": "Ukuran teks obrolan",
+    "it": "Dimensione testo chat",
+    "ja": "チャットの文字サイズ",
+    "ko": "채팅 텍스트 크기",
+    "pl": "Rozmiar tekstu czatu",
+    "pt-BR": "Tamanho do texto do chat",
+    "ru": "Размер текста в чате",
+    "tr": "Sohbet metin boyutu",
+    "zh-Hans": "对话字号",
+    "zh-Hant": "聊天文字大小"
   },
   "Chat titles": {
     "de": "Chat-Titel",
@@ -4784,6 +4814,21 @@
     "zh-Hans": "温和",
     "zh-Hant": "溫和"
   },
+  "Go to": {
+    "de": "Gehe zu",
+    "es": "Ir a",
+    "fr": "Aller à",
+    "id": "Buka",
+    "it": "Vai a",
+    "ja": "移動",
+    "ko": "이동",
+    "pl": "Przejdź do",
+    "pt-BR": "Ir para",
+    "ru": "Перейти",
+    "tr": "Git",
+    "zh-Hans": "前往",
+    "zh-Hant": "前往"
+  },
   "Go to the chat": {
     "de": "Zum Chat",
     "es": "Ir al chat",
@@ -6089,6 +6134,36 @@
     "zh-Hans": "因你教给 Pulse 的内容而略过",
     "zh-Hant": "因你教給 Pulse 的內容而略過"
   },
+  "Keyboard": {
+    "de": "Tastatur",
+    "es": "Teclado",
+    "fr": "Clavier",
+    "id": "Keyboard",
+    "it": "Tastiera",
+    "ja": "キーボード",
+    "ko": "키보드",
+    "pl": "Klawiatura",
+    "pt-BR": "Teclado",
+    "ru": "Клавиатура",
+    "tr": "Klavye",
+    "zh-Hans": "键盘",
+    "zh-Hant": "鍵盤"
+  },
+  "Keyboard Shortcuts": {
+    "de": "Tastaturkurzbefehle",
+    "es": "Atajos de teclado",
+    "fr": "Raccourcis clavier",
+    "id": "Pintasan Papan Ketik",
+    "it": "Abbreviazioni da tastiera",
+    "ja": "キーボードショートカット",
+    "ko": "키보드 단축키",
+    "pl": "Skróty klawiszowe",
+    "pt-BR": "Atalhos de Teclado",
+    "ru": "Сочетания клавиш",
+    "tr": "Klavye Kestirmeleri",
+    "zh-Hans": "键盘快捷键",
+    "zh-Hant": "鍵盤快速鍵"
+  },
   "Language": {
     "de": "Sprache",
     "es": "Idioma",
@@ -6658,6 +6733,51 @@
     "tr": "Macenta",
     "zh-Hans": "品红色",
     "zh-Hant": "洋紅色"
+  },
+  "Make Text Bigger": {
+    "de": "Text vergrößern",
+    "es": "Aumentar texto",
+    "fr": "Agrandir le texte",
+    "id": "Perbesar Teks",
+    "it": "Ingrandisci testo",
+    "ja": "テキストを大きく",
+    "ko": "텍스트 크게",
+    "pl": "Powiększ tekst",
+    "pt-BR": "Aumentar Texto",
+    "ru": "Увеличить текст",
+    "tr": "Metni Büyüt",
+    "zh-Hans": "放大文字",
+    "zh-Hant": "放大文字"
+  },
+  "Make Text Normal Size": {
+    "de": "Normale Textgröße",
+    "es": "Tamaño de texto normal",
+    "fr": "Taille de texte normale",
+    "id": "Ukuran Teks Normal",
+    "it": "Dimensione testo normale",
+    "ja": "標準のテキストサイズ",
+    "ko": "기본 텍스트 크기",
+    "pl": "Normalny rozmiar tekstu",
+    "pt-BR": "Tamanho Normal do Texto",
+    "ru": "Обычный размер текста",
+    "tr": "Normal Metin Boyutu",
+    "zh-Hans": "正常文字大小",
+    "zh-Hant": "正常文字大小"
+  },
+  "Make Text Smaller": {
+    "de": "Text verkleinern",
+    "es": "Reducir texto",
+    "fr": "Réduire le texte",
+    "id": "Perkecil Teks",
+    "it": "Riduci testo",
+    "ja": "テキストを小さく",
+    "ko": "텍스트 작게",
+    "pl": "Pomniejsz tekst",
+    "pt-BR": "Diminuir Texto",
+    "ru": "Уменьшить текст",
+    "tr": "Metni Küçült",
+    "zh-Hans": "缩小文字",
+    "zh-Hant": "縮小文字"
   },
   "Make a new code": {
     "de": "Neuen Code erstellen",
@@ -11294,6 +11414,21 @@
     "zh-Hans": "定时任务会按计划自动运行提示词。",
     "zh-Hant": "排程工作會依排程自動執行提示詞。"
   },
+  "Search": {
+    "de": "Suchen",
+    "es": "Buscar",
+    "fr": "Rechercher",
+    "id": "Cari",
+    "it": "Cerca",
+    "ja": "検索",
+    "ko": "검색",
+    "pl": "Szukaj",
+    "pt-BR": "Buscar",
+    "ru": "Поиск",
+    "tr": "Ara",
+    "zh-Hans": "搜索",
+    "zh-Hant": "搜尋"
+  },
   "Search chats": {
     "de": "Chats durchsuchen",
     "es": "Buscar chats",
@@ -15013,6 +15148,21 @@
     "tr": "Sürüm",
     "zh-Hans": "版本",
     "zh-Hant": "版本"
+  },
+  "View": {
+    "de": "Darstellung",
+    "es": "Visualización",
+    "fr": "Présentation",
+    "id": "Tampilan",
+    "it": "Vista",
+    "ja": "表示",
+    "ko": "보기",
+    "pl": "Widok",
+    "pt-BR": "Visualizar",
+    "ru": "Вид",
+    "tr": "Görüntü",
+    "zh-Hans": "显示",
+    "zh-Hant": "顯示"
   },
   "View Source": {
     "de": "Quelle ansehen",

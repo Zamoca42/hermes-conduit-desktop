@@ -5604,3 +5604,88 @@ button.cap-row-text {
 .control-note {
   padding: 0 12px;
 }
+
+/* The chat's text size: ⌘+ ⌘− ⌘0. */
+.transcript-inner {
+  zoom: var(--chat-scale, 1);
+}
+
+.shortcuts-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.shortcuts-sheet {
+  width: min(440px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  background: var(--composer);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  padding: 14px 18px 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.shortcuts-sheet header {
+  display: flex;
+  align-items: center;
+}
+
+.shortcuts-sheet h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.shortcuts-sheet h3 {
+  margin: 14px 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.shortcuts-sheet ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.shortcuts-sheet li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.shortcuts-sheet li:last-child {
+  border-bottom: none;
+}
+
+.shortcuts-sheet kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--field);
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  padding: 2px 6px;
+}
+
+.text-size-slider {
+  width: 180px;
+  vertical-align: middle;
+  margin-right: 8px;
+  accent-color: var(--accent);
+}
+
+.shortcuts-sheet .spacer {
+  flex: 1;
+}
