@@ -20,6 +20,11 @@ import {
   decode,
   gptLiveBilling,
   history,
+  TIME_LIMIT_GOODBYE,
+  apiLimitMinutes,
+  gptLiveVoice,
+  notStartedMessage,
+  voiceNote,
   isEndCall,
   isReadBack,
   MEMORY_PATH,
@@ -84,6 +89,8 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
   const [muted, setMuted] = useState(false)
   const [lines, setLines] = useState<Line[]>([])
   const [billing] = useState(gptLiveBilling)
+  const [voice] = useState(() => gptLiveVoice(gptLiveBilling()))
+  const [note, setNote] = useState<string | null>(null)
 
   const pc = useRef<RTCPeerConnection | null>(null)
   const channel = useRef<RTCDataChannel | null>(null)
@@ -173,6 +180,22 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
     append(SENT_TO_CHAT, 'speakable', next.id)
   }
 
+  // An API-key call is billed by the minute: at the limit set, it says goodbye and ends.
+  const limitTimer = useRef(0)
+  const startLimit = () => {
+    const minutes = billing === 'api' ? apiLimitMinutes() : 0
+    if (!minutes || limitTimer.current) return
+    limitTimer.current = window.setTimeout(() => {
+      if (ended.current || ending.current) return
+      setNote(t('This call reached its time limit on the API key.'))
+      append(TIME_LIMIT_GOODBYE, 'speakable', null)
+      ending.current = true
+      setPhase('ending')
+      mic.current?.getAudioTracks().forEach(track => (track.enabled = false))
+      endSoon(END_TIMEOUT_MS)
+    }, minutes * 60_000)
+  }
+
   const delegate = (id: string, text: string) => {
     const said = [words.current.done, words.current.open].join(' ').trim()
     words.current = { done: '', open: '' }
@@ -205,7 +228,10 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
   const handle = (event: ServerEvent) => {
     switch (event.type) {
       case 'started':
-        setPhase(current => (current === 'starting' ? 'listening' : current))
+        setPhase(current => {
+          if (current === 'starting') startLimit()
+          return current === 'starting' ? 'listening' : current
+        })
         return
       case 'input':
         words.current.open += event.text
@@ -319,9 +345,11 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
         const told = briefing(language(), persona, memory)
         const body: Record<string, unknown> = { sdp: peer.localDescription?.sdp ?? '', billing, briefing: told }
         if (seed.length) body.history = seed
+        if (voice) body.voice = voice
         const answer = sessionAnswer(await gateway.http('POST', withProfile(SESSION_PATH, profile), body, SESSION_TIMEOUT_MS), billing)
         if (ended.current) return
         dialect.current = answer.dialect
+        setNote(voiceNote(voice, answer.voice))
         await peer.setRemoteDescription({ type: 'answer', sdp: answer.sdp })
         // Given with the session where the host takes it; otherwise once it starts.
         if (!answer.briefingApplied) {
@@ -331,7 +359,7 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
         }
         startTimer = window.setTimeout(() => {
           setPhase(current => {
-            if (current === 'starting') window.setTimeout(() => fail(t("GPT-Live didn't start the conversation. Try again.")))
+            if (current === 'starting') window.setTimeout(() => fail(notStartedMessage(voice, billing)))
             return current
           })
         }, START_TIMEOUT_MS)
@@ -346,6 +374,7 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
     void connect()
     return () => {
       window.clearTimeout(startTimer)
+      window.clearTimeout(limitTimer.current)
       ended.current = true
       teardown()
     }
@@ -406,7 +435,11 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
         <span className="voice-call-orb" />
         <div className="voice-call-words">
           <strong>{status}</strong>
-          {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{`${t('GPT-Live')} · ${badge}`}</span>}
+          {problem ? (
+            <span className="voice-call-problem">{problem}</span>
+          ) : (
+            <span className="meta">{note ? `${t('GPT-Live')} · ${badge} · ${note}` : `${t('GPT-Live')} · ${badge}`}</span>
+          )}
         </div>
       </div>
       {lines.length ? (

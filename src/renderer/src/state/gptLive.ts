@@ -55,6 +55,8 @@ export interface SessionAnswer {
   /** The host put the briefing into the session. */
   briefingApplied: boolean
   dialect: Dialect
+  /** The voice the host started the call with; null from a host that doesn't say. */
+  voice: string | null
 }
 
 /** The host's answer to the offer; throws with the host's own words, or when it billed another path. */
@@ -79,7 +81,8 @@ export function sessionAnswer(response: unknown, billing: Billing): SessionAnswe
     billing,
     // Codex's GA endpoint drops the request's instructions: the briefing goes after the start there.
     briefingApplied: r.briefing_applied === true && !(billing === 'subscription' && r.events === 'ga'),
-    dialect: ga ? 'ga' : 'frameless'
+    dialect: ga ? 'ga' : 'frameless',
+    voice: str(r.voice)
   }
 }
 
@@ -440,7 +443,128 @@ export function readBack(reply: string | null): { quiet: string; cue: string } |
 }
 export const NOTHING_TO_READ = "There's no reply in the chat to read yet. Tell the user in a few words."
 
+// MARK: Voices and the API key's time limit
+
+/** ChatGPT's voices, with how each sounds (the phone's GPTLiveVoice). */
+export const PLAN_VOICES: { name: string; style: () => string }[] = [
+  { name: 'arbor', style: () => t('Easy-going') },
+  { name: 'breeze', style: () => t('Animated') },
+  { name: 'cove', style: () => t('Composed') },
+  { name: 'ember', style: () => t('Confident') },
+  { name: 'juniper', style: () => t('Upbeat') },
+  { name: 'maple', style: () => t('Cheerful') },
+  { name: 'sol', style: () => t('Savvy') },
+  { name: 'spruce', style: () => t('Calm') },
+  { name: 'vale', style: () => t('Bright') },
+  // ChatGPT's Korean voices: they speak the call's language like the others.
+  { name: 'haetsal', style: () => t('Korean') },
+  { name: 'hanul', style: () => t('Korean') }
+]
+
+/** The public GPT-Live API's voices, as Hermes lists them. */
+export const API_VOICES = [
+  'marin',
+  'cedar',
+  'quartz',
+  'ripple',
+  'vesper',
+  'willow',
+  'stone',
+  'gleam',
+  'meridian',
+  'bossa',
+  'tempo',
+  'beacon',
+  'delta',
+  'cinder',
+  'nuri',
+  'juni',
+  'flitz',
+  'brise',
+  'sillage',
+  'nira',
+  'harema',
+  'shida',
+  'noeul'
+]
+
+export const voiceName = (name: string) => name.charAt(0).toUpperCase() + name.slice(1)
+
+/** Explains a chosen voice the host didn't use; null when none was asked for, or it was used. */
+export function voiceNote(requested: string, applied: string | null): string | null {
+  if (!requested) return null
+  if (!applied) return t("The Conduit plugin on your Hermes server didn't confirm the voice you chose.")
+  return applied.toLowerCase() === requested.toLowerCase()
+    ? null
+    : t('Your Hermes server used the voice {applied} instead of {requested}.', { applied, requested })
+}
+
+/** Why a call never started: on the ChatGPT plan, a voice the plan doesn't offer is a likely cause. */
+export function notStartedMessage(voice: string, billing: Billing): string {
+  return billing === 'subscription' && voice
+    ? t("GPT-Live didn't start the conversation. If your ChatGPT plan doesn't offer the voice {voice}, pick another in GPT-Live's settings.", {
+        voice: voiceName(voice)
+      })
+    : t("GPT-Live didn't start the conversation. Try again.")
+}
+
+export const LIMIT_CHOICES = [5, 10, 20, 30, 60, 0]
+export const DEFAULT_LIMIT_MINUTES = 20
+
+/** A limit as Settings lists it: "20 min", "1 hr", or No limit. */
+export function limitTitle(minutes: number, locale?: string): string {
+  if (!minutes) return t('No limit')
+  const hours = minutes % 60 === 0
+  return new Intl.NumberFormat(locale, { style: 'unit', unit: hours ? 'hour' : 'minute', unitDisplay: 'short' }).format(hours ? minutes / 60 : minutes)
+}
+
+/** Asks the model to wrap up when the time limit ends the call. Written for the model, not UI copy. */
+export const TIME_LIMIT_GOODBYE =
+  '[Conduit: this call has reached the time limit the user set. Tell them in one short sentence that the call is ending now, then say goodbye.]'
+
 // MARK: Settings
+
+const VOICE_KEY = 'conduit.gptLiveVoice'
+const API_VOICE_KEY = 'conduit.gptLiveApiVoice'
+const LIMIT_KEY = 'conduit.gptLiveApiMaxMinutes'
+
+/** The voice for calls on `billing`; '' is the one set on the Hermes server. */
+export function gptLiveVoice(billing: Billing): string {
+  try {
+    return localStorage.getItem(billing === 'api' ? API_VOICE_KEY : VOICE_KEY) ?? ''
+  } catch {
+    return ''
+  }
+}
+
+export function setGptLiveVoice(billing: Billing, voice: string): void {
+  try {
+    if (voice) localStorage.setItem(billing === 'api' ? API_VOICE_KEY : VOICE_KEY, voice)
+    else localStorage.removeItem(billing === 'api' ? API_VOICE_KEY : VOICE_KEY)
+  } catch {
+    // The server's voice next time.
+  }
+}
+
+/** Minutes an API-key call may run; 0 is no limit. */
+export function apiLimitMinutes(): number {
+  try {
+    const raw = localStorage.getItem(LIMIT_KEY)
+    const value = raw === null ? NaN : Number(raw)
+    return Number.isInteger(value) && value >= 0 && value <= 24 * 60 ? value : DEFAULT_LIMIT_MINUTES
+  } catch {
+    return DEFAULT_LIMIT_MINUTES
+  }
+}
+
+export function setApiLimitMinutes(minutes: number): void {
+  try {
+    if (minutes === DEFAULT_LIMIT_MINUTES) localStorage.removeItem(LIMIT_KEY)
+    else localStorage.setItem(LIMIT_KEY, String(minutes))
+  } catch {
+    // The default next time.
+  }
+}
 
 const MODE_KEY = 'conduit.voiceMode'
 const MEMORY_KEY = 'conduit.gptLiveMemory'

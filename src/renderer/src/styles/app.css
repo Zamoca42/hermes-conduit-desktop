@@ -4797,6 +4797,12 @@ code.file-link:hover {
   margin: 0;
 }
 
+.voice-mode-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* A GPT-Live call: what's said, under the status and buttons. */
 .voice-call.live {
   flex-wrap: wrap;

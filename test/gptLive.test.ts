@@ -35,7 +35,8 @@ describe('GPT-Live on the host', () => {
       sessionId: 's1',
       billing: 'subscription',
       briefingApplied: true,
-      dialect: 'frameless'
+      dialect: 'frameless',
+      voice: null
     })
     // Codex's GA endpoint drops the request's briefing.
     expect(sessionAnswer({ ...answer, events: 'ga' }, 'subscription')).toMatchObject({ dialect: 'ga', briefingApplied: false })
@@ -165,5 +166,21 @@ describe('the persona and memory', () => {
     const huge = briefing('en', 'p'.repeat(40_000), 'm'.repeat(40_000))
     expect(huge).not.toContain('<hermes_memory>')
     expect(Array.from(huge).length).toBeLessThanOrEqual(MAX_BRIEFING_CHARACTERS)
+  })
+})
+
+describe('voices and the time limit', () => {
+  it('notes a voice the host didn’t use, and names the voice when a plan call never starts', async () => {
+    const { voiceNote, notStartedMessage, limitTitle, sessionAnswer } = await import('../src/renderer/src/state/gptLive')
+    expect(voiceNote('', 'cove')).toBeNull()
+    expect(voiceNote('cove', 'Cove')).toBeNull()
+    expect(voiceNote('cove', 'marin')).toBe('Your Hermes server used the voice marin instead of cove.')
+    expect(voiceNote('cove', null)).toContain("didn't confirm")
+    expect(notStartedMessage('hanul', 'subscription')).toContain('Hanul')
+    expect(notStartedMessage('hanul', 'api')).toBe("GPT-Live didn't start the conversation. Try again.")
+    expect(limitTitle(0)).toBe('No limit')
+    expect(limitTitle(60, 'en')).toBe('1 hr')
+    expect(limitTitle(20, 'en')).toBe('20 min')
+    expect(sessionAnswer({ ok: true, auth: 'api', transport: { type: 'webrtc', sdp: 'v=0' }, voice: 'marin' }, 'api').voice).toBe('marin')
   })
 })

@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react'
-import { t } from '@shared/i18n'
+import { locale, t } from '@shared/i18n'
 import { GatewayError, gateway } from '../gateway'
 import {
+  API_VOICES,
+  LIMIT_CHOICES,
+  PLAN_VOICES,
   STATUS_PATH,
+  apiLimitMinutes,
+  gptLiveVoice,
+  limitTitle,
+  setApiLimitMinutes,
+  setGptLiveVoice,
+  voiceName,
   availability,
   gptLiveBilling,
   setGptLiveBilling,
@@ -22,6 +31,8 @@ import {
 export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [mode, setMode] = useState<VoiceMode>(voiceMode)
   const [billing, setBilling] = useState<Billing>(gptLiveBilling)
+  const [voice, setVoice] = useState(() => gptLiveVoice(gptLiveBilling()))
+  const [limit, setLimit] = useState(apiLimitMinutes)
   const [memory, setMemory] = useState(sendsMemory)
   const [persona, setPersona] = useState(sendsPersona)
   const [status, setStatus] = useState<Availability | 'checking' | 'missing' | null>(null)
@@ -56,6 +67,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
     )
       return
     setBilling(next)
+    setVoice(gptLiveVoice(next))
     setGptLiveBilling(next)
   }
 
@@ -81,12 +93,68 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
               {t('API key · billed per minute')}
             </button>
           </div>
+          <p className="meta settings-caption">
+            {billing === 'api'
+              ? t(
+                  "Bills your Hermes server's OpenAI API key per minute of call time, separately from any ChatGPT plan. The call screen shows which one a call is on."
+                )
+              : t('Bills the ChatGPT subscription your Hermes server is signed in to. A call never moves to the API key on its own.')}
+          </p>
+          <label className="voice-mode-pick">
+            <span className="meta">{t('Voice')}</span>
+            <select
+              value={voice}
+              onChange={e => {
+                setVoice(e.target.value)
+                setGptLiveVoice(billing, e.target.value)
+              }}
+            >
+              <option value="">{t('Server default')}</option>
+              {billing === 'api'
+                ? API_VOICES.map(name => (
+                    <option key={name} value={name}>
+                      {voiceName(name)}
+                    </option>
+                  ))
+                : PLAN_VOICES.map(v => (
+                    <option key={v.name} value={v.name}>
+                      {`${voiceName(v.name)} · ${v.style()}`}
+                    </option>
+                  ))}
+              {voice && !(billing === 'api' ? API_VOICES.includes(voice) : PLAN_VOICES.some(v => v.name === voice)) ? (
+                <option value={voice}>{voice}</option>
+              ) : null}
+            </select>
+          </label>
+          <p className="meta settings-caption">
+            {billing === 'api'
+              ? t(
+                  "The voice GPT-Live speaks with on the API key. Server default uses voice.gpt_live.voice in the profile's config. Applies to the next conversation."
+                )
+              : t(
+                  "The voice GPT-Live speaks with. Server default uses the voice set on your Hermes server (voice.gpt_live in the profile's config). The model is set there too. Applies to the next conversation."
+                )}
+          </p>
           {billing === 'api' ? (
-            <p className="meta settings-caption">
-              {t(
-                "Bills your Hermes server's OpenAI API key per minute of call time, separately from any ChatGPT plan. The call screen shows which one a call is on."
-              )}
-            </p>
+            <>
+              <label className="voice-mode-pick">
+                <span className="meta">{t('Time limit per call')}</span>
+                <select
+                  value={limit}
+                  onChange={e => {
+                    setLimit(Number(e.target.value))
+                    setApiLimitMinutes(Number(e.target.value))
+                  }}
+                >
+                  {(LIMIT_CHOICES.includes(limit) ? LIMIT_CHOICES : [limit, ...LIMIT_CHOICES]).map(minutes => (
+                    <option key={minutes} value={minutes}>
+                      {limitTitle(minutes, locale())}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <p className="meta settings-caption">{t('An API-key call says goodbye and ends when it reaches this limit.')}</p>
+            </>
           ) : null}
           <p className={`meta settings-caption${status && status !== 'checking' && (status === 'missing' || !status.ok) ? ' voice-call-problem' : ''}`}>
             {status === 'checking'
