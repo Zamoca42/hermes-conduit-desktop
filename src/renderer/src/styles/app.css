@@ -7104,12 +7104,6 @@ button.cap-row-text {
   margin: 10px auto;
 }
 
-.artifact-page {
-  flex: 1;
-  width: 100%;
-  border: 0;
-  background: #fff;
-}
 
 .artifact-text {
   white-space: pre-wrap;
@@ -7126,4 +7120,68 @@ button.cap-row-text {
   flex-direction: column;
   min-height: 0;
   min-width: 0;
+}
+
+/* A page Hermes drew, in its reply (::preview) or opened from Artifacts. */
+.page-frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.ws-viewer .page-frame,
+.page-full .page-frame {
+  flex: 1;
+  min-height: 0;
+}
+
+.page-preview {
+  margin: 8px 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 720px;
+}
+
+.page-preview-head,
+.page-full-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.page-preview-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-frame-loading {
+  background: var(--surface);
+}
+
+.page-preview-cut {
+  padding: 4px 10px 6px;
+  font-size: 11px;
+}
+
+.page-full {
+  position: fixed;
+  inset: 24px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--backdrop);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }

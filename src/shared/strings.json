@@ -14909,6 +14909,21 @@
     "zh-Hans": "打开 Conduit",
     "zh-Hant": "開啟 Conduit"
   },
+  "Open full screen": {
+    "de": "Im Vollbild öffnen",
+    "es": "Abrir en pantalla completa",
+    "fr": "Ouvrir en plein écran",
+    "id": "Buka layar penuh",
+    "it": "Apri a schermo intero",
+    "ja": "フルスクリーンで開く",
+    "ko": "전체 화면으로 열기",
+    "pl": "Otwórz na pełnym ekranie",
+    "pt-BR": "Abrir em tela cheia",
+    "ru": "Открыть на весь экран",
+    "tr": "Tam ekran aç",
+    "zh-Hans": "全屏打开",
+    "zh-Hant": "以全螢幕打開"
+  },
   "Open in Conduit": {
     "de": "In Conduit öffnen",
     "es": "Abrir en Conduit",
@@ -22318,6 +22333,21 @@
     "tr": "Yeni eklenti ana makinede. Kullanmak için Hermes’in yeniden başlaması gerekiyor.",
     "zh-Hans": "新插件已在主机上。Hermes 需要重启才能使用它。",
     "zh-Hant": "新外掛程式已在主機上。Hermes 需要重新啟動才能使用。"
+  },
+  "The page goes on. Open it full screen to see the rest.": {
+    "de": "Die Seite geht weiter. Öffne sie im Vollbild, um den Rest zu sehen.",
+    "es": "La página sigue. Ábrela en pantalla completa para ver el resto.",
+    "fr": "La page continue. Ouvrez-la en plein écran pour voir la suite.",
+    "id": "Halaman berlanjut. Buka layar penuh untuk melihat sisanya.",
+    "it": "La pagina continua. Aprila a schermo intero per vedere il resto.",
+    "ja": "ページには続きがあります。フルスクリーンで開くと残りを表示できます。",
+    "ko": "페이지가 더 있습니다. 전체 화면으로 열어 나머지를 보세요.",
+    "pl": "Strona ma ciąg dalszy. Otwórz ją na pełnym ekranie, aby zobaczyć resztę.",
+    "pt-BR": "A página continua. Abra em tela cheia para ver o resto.",
+    "ru": "У страницы есть продолжение. Откройте её во весь экран, чтобы увидеть остальное.",
+    "tr": "Sayfanın devamı var. Gerisini görmek için tam ekranda açın.",
+    "zh-Hans": "页面还有更多内容。全屏打开即可查看其余部分。",
+    "zh-Hant": "頁面還有更多內容。全螢幕打開即可查看其餘部分。"
   },
   "The picture was not removed.": {
     "de": "Das Bild wurde nicht entfernt.",

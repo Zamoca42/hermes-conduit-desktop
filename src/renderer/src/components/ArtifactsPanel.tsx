@@ -21,6 +21,7 @@ import {
 } from '../state/artifacts'
 import { dayLabel } from '../state/groups'
 import { dataUrlPath, parsePreview, readTextPath, sizeText } from '../state/workspace'
+import { PageFrame, pageAddress } from './PagePreview'
 import { GatewayPicture, PictureProfile } from './Picture'
 import { Icon, type IconName } from './icons'
 
@@ -174,15 +175,18 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
         setViewer(current => (current?.item.id === item.id ? (url ? { item, image: url } : { item, error: t("Couldn't open this file.") }) : current))
         return
       }
+      if (item.kind === 'page') {
+        const url = await pageAddress(path, profile)
+        setViewer(current => (current?.item.id === item.id ? (url ? { item, page: url } : { item, error: t("Couldn't open this file.") }) : current))
+        return
+      }
       const preview = parsePreview(await gateway.http('GET', readTextPath(path, profile), undefined, 30_000))
       setViewer(current =>
         current?.item.id !== item.id
           ? current
           : preview.binary
             ? { item, error: t("This file isn't text, so it can't be shown here.") }
-            : item.kind === 'page'
-              ? { item, page: preview.text }
-              : { item, text: preview.text }
+            : { item, text: preview.text }
       )
     } catch (e) {
       setViewer(current => (current?.item.id === item.id ? { item, error: e instanceof Error ? e.message : String(e) } : current))
@@ -341,8 +345,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
           <img src={viewer.image} alt={viewer.item.name} />
         </div>
       ) : viewer.page !== undefined ? (
-        // A page Hermes drew runs with no scripts, forms or way out, as the phone's preview.
-        <iframe className="artifact-page" title={viewer.item.name} sandbox="" srcDoc={viewer.page} />
+        <PageFrame url={viewer.page} title={viewer.item.name} />
       ) : viewer.text !== undefined ? (
         <pre className="ws-code artifact-text">{viewer.text}</pre>
       ) : (

@@ -66,3 +66,20 @@ describe('pictures on the Hermes host', () => {
     expect(pictureDataUrl(null)).toBeNull()
   })
 })
+
+describe('::preview directives', () => {
+  it("draws an HTML file in place and keeps the words around it", () => {
+    expect(splitReply('I drew it.\n::preview{file="/tmp/a b/report.html"} Have a look.')).toEqual([
+      { kind: 'markdown', text: 'I drew it.' },
+      { kind: 'preview', path: '/tmp/a b/report.html' },
+      { kind: 'markdown', text: 'Have a look.' }
+    ])
+  })
+
+  it("gives another file a card, and leaves examples and fileless ones as text", () => {
+    expect(splitReply("::preview{file='/tmp/data.csv'}")).toEqual([{ kind: 'media', path: '/tmp/data.csv' }])
+    expect(splitReply('Use `::preview{file="/x.html"}` to draw one.')).toEqual([{ kind: 'markdown', text: 'Use `::preview{file="/x.html"}` to draw one.' }])
+    expect(splitReply('std::preview{file="/x.html"}')).toEqual([{ kind: 'markdown', text: 'std::preview{file="/x.html"}' }])
+    expect(splitReply('::preview{}')).toEqual([{ kind: 'markdown', text: '::preview{}' }])
+  })
+})
