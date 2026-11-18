@@ -11,6 +11,8 @@ import {
   type StagedAttachment
 } from '../state/attachments'
 import { stageFile } from '../state/picture'
+import { useRecorder } from '../state/useRecorder'
+import { blobToBase64, durationLabel, transcribe, voiceFileName, voicePromptText } from '../state/voice'
 import { suggestCommands, type SlashCommand } from '../state/slash'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
@@ -55,12 +57,14 @@ interface Props {
   commands?: SlashCommand[]
   /** The text sent for a draft replying to a message. Defaults to a chat's reply envelope. */
   wrapReply?: (reply: ReplyReference, draft: string) => string
+  /** The microphone: a recording typed out (Dictate) or sent as a voice message, transcribed in this profile. */
+  voice?: { profile?: string }
 }
 
 const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands, onModel, context, onContext }: Props) {
+export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands, onModel, context, onContext, voice }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
@@ -71,13 +75,16 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
   const [dismissed, setDismissed] = useState<string | null>(null)
   const area = useRef<HTMLTextAreaElement>(null)
   const picker = useRef<HTMLInputElement>(null)
+  const recorder = useRecorder()
+  const [transcribing, setTranscribing] = useState(false)
 
   useEffect(() => {
     area.current?.focus()
   }, [focusKey])
 
-  // A draft's files belong to the chat they were staged in.
+  // A draft's files belong to the chat they were staged in, and so does a recording.
   useEffect(() => {
+    recorder.cancel()
     setAttachments([])
     setNotice(null)
     setReplyTo(null)
@@ -259,6 +266,77 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
     if (replying) setReplyTo(null)
   }
 
+  useEffect(() => {
+    if (recorder.error === 'denied') setNotice(t("Conduit can't use the microphone. Allow it for Conduit in your computer's privacy settings, then try again."))
+    else if (recorder.error === 'missing') setNotice(t('No microphone found.'))
+    else if (recorder.error) setNotice(recorder.error)
+  }, [recorder.error])
+
+  /** The recording's words, typed in where the caret is. */
+  async function dictate() {
+    const recording = await recorder.stop()
+    if (!recording) return
+    setTranscribing(true)
+    try {
+      const words = await transcribe(await blobToBase64(recording.blob), recording.mime, voice?.profile)
+      if (!words) {
+        setNotice(t("Hermes didn't hear any words."))
+        return
+      }
+      const el = area.current
+      setText(current => {
+        const at = el && document.activeElement === el ? el.selectionStart : current.length
+        const before = current.slice(0, at)
+        const pad = before && !/\s$/.test(before) ? ' ' : ''
+        const next = `${before}${pad}${words}${current.slice(at)}`
+        const caret = at + pad.length + words.length
+        requestAnimationFrame(() => {
+          el?.focus()
+          el?.setSelectionRange(caret, caret)
+        })
+        return next
+      })
+      setNotice(null)
+    } catch (e) {
+      setNotice(t("Hermes couldn't transcribe that: {error}", { error: e instanceof Error ? e.message : String(e) }))
+    } finally {
+      setTranscribing(false)
+    }
+  }
+
+  /** The recording as a voice message: the audio as a file, and what Hermes heard as the prompt. */
+  async function sendVoice() {
+    if (running) {
+      setNotice(t('Voice messages send once the reply has finished.'))
+      return
+    }
+    const recording = await recorder.stop()
+    if (!recording) return
+    setTranscribing(true)
+    try {
+      const base64 = await blobToBase64(recording.blob)
+      const extension = recording.mime.includes('ogg') ? 'ogg' : recording.mime.includes('mp4') ? 'm4a' : 'webm'
+      const file: StagedAttachment = {
+        id: `voice-${Date.now()}`,
+        name: voiceFileName(extension),
+        kind: 'file',
+        mime: recording.mime,
+        size: recording.blob.size,
+        base64
+      }
+      if (file.size > ATTACHMENT_LIMIT_BYTES) {
+        setNotice(t('This voice message is larger than your attachment size limit.'))
+        return
+      }
+      // Words help every model; without them the file still goes, as the phone sends it.
+      const words = await transcribe(base64, recording.mime, voice?.profile).catch(() => '')
+      onSend(voicePromptText(recording.duration, words), [file])
+      setNotice(null)
+    } finally {
+      setTranscribing(false)
+    }
+  }
+
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (picked && !event.nativeEvent.isComposing) {
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -354,6 +432,35 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
         <label className="sr-only" htmlFor="composer-input">
           {t('Message')}
         </label>
+        {recorder.recording || transcribing ? (
+          <div className="voice-strip" role="status">
+            {transcribing ? (
+              <span className="voice-busy">
+                <Icon name="spinner" style={{ animation: 'spin 1s linear infinite' }} />
+                {t('Transcribing')}
+              </span>
+            ) : (
+              <>
+                <span className="voice-dot" />
+                <span className="voice-time">{durationLabel(recorder.elapsed)}</span>
+                <span className="voice-meter" aria-label={t('Microphone input level')}>
+                  <span style={{ transform: `scaleX(${Math.min(1, recorder.level * 2.5)})` }} />
+                </span>
+                <button className="secondary" onClick={recorder.cancel}>
+                  {t('Cancel')}
+                </button>
+                <button className="secondary" onClick={() => void dictate()} title={t('Type out what you said')}>
+                  {t('Dictate')}
+                </button>
+                {canAttach ? (
+                  <button className="primary" onClick={() => void sendVoice()}>
+                    {t('Send voice message')}
+                  </button>
+                ) : null}
+              </>
+            )}
+          </div>
+        ) : null}
         <textarea
           id="composer-input"
           ref={area}
@@ -381,6 +488,21 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
                 }}
               />
             </>
+          ) : null}
+          {voice ? (
+            <button
+              className="attach"
+              aria-label={t('Record')}
+              title={t('Record: dictate, or send a voice message')}
+              disabled={disabled || recorder.recording || transcribing}
+              onClick={() => {
+                setNotice(null)
+                recorder.clearError()
+                void recorder.start()
+              }}
+            >
+              <Icon name="mic" />
+            </button>
           ) : null}
           {model && onModel ? (
             <button className="chip chip-button" title={t('Model')} aria-haspopup="dialog" disabled={disabled} onClick={onModel}>

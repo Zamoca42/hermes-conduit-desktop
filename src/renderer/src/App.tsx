@@ -32,6 +32,10 @@ import { cleanTitle } from './state/text'
 import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
+import { UsagePage } from './components/UsagePage'
+import { BotEditor } from './components/BotEditor'
+import { VoiceCall } from './components/VoiceCall'
+import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
@@ -184,6 +188,38 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   )
   // Each reply's end reads the open folders again: the agent may have changed files.
   const [turnsDone, setTurnsDone] = useState(0)
+  const [calling, setCalling] = useState(false)
+  /** Edit Bot, open over Bots home. */
+  const [editingBot, setEditingBot] = useState<Bot | null>(null)
+  // A call is the open chat's: another chat, or another screen, ends it. A
+  // new chat getting its id from the call's first message is the same chat.
+  const callChat = useRef(selected.id)
+  useEffect(() => {
+    const was = callChat.current
+    callChat.current = selected.id
+    if (was !== null && was !== selected.id) setCalling(false)
+  }, [selected.id])
+  useEffect(() => setCalling(false), [selected.profile, section])
+  // Edit Bot closes when another section opens.
+  useEffect(() => setEditingBot(null), [section])
+  // Read replies aloud: the open chat's reply, as its turn ends, unless a call speaks it.
+  const readTurn = useRef(turnsDone)
+  useEffect(() => {
+    if (readTurn.current === turnsDone) return
+    readTurn.current = turnsDone
+    if (!calling && readsRepliesAloud() && lastReplyRef.current && document.hasFocus())
+      void readAloud(`turn-${turnsDone}`, lastReplyRef.current, selected.profile).catch(() => undefined)
+  }, [turnsDone])
+  const lastReplyRef = useRef<string | null>(null)
+  const lastReply = useMemo(() => {
+    for (let i = transcript.items.length - 1; i >= 0; i--) {
+      const item = transcript.items[i]!
+      if (item.kind === 'user') return null
+      if (item.kind === 'assistant' && item.text.trim()) return item.text
+    }
+    return null
+  }, [transcript.items])
+  lastReplyRef.current = lastReply
   const wasRunning = useRef(false)
   useEffect(() => {
     if (wasRunning.current && !transcript.running) setTurnsDone(n => n + 1)
@@ -501,11 +537,22 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             <main className="chat" ref={chatPane}>
               <div className="chat-head">
                 {title ? <div className="chat-title">{title}</div> : null}
-                {chat.cwd && !filesOpen ? (
-                  <button className="chat-head-button" aria-label={t('Files')} title={t('Files')} onClick={() => showFiles(true)}>
-                    <Icon name="folder" />
+                <div className="chat-head-actions">
+                  <button
+                    className={`chat-head-button${calling ? ' on' : ''}`}
+                    aria-label={calling ? t('End call') : t('Voice call')}
+                    title={calling ? t('End call') : t('Voice call')}
+                    disabled={!connected && !calling}
+                    onClick={() => setCalling(on => !on)}
+                  >
+                    <Icon name={calling ? 'phoneDown' : 'phone'} />
                   </button>
-                ) : null}
+                  {chat.cwd && !filesOpen ? (
+                    <button className="chat-head-button" aria-label={t('Files')} title={t('Files')} onClick={() => showFiles(true)}>
+                      <Icon name="folder" />
+                    </button>
+                  ) : null}
+                </div>
               </div>
               <FileLinks.Provider value={openPath}>
               <Transcript
@@ -531,6 +578,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   setReasoning={setReasoning}
                   setSpeed={setSpeed}
                   setYolo={setYolo}
+                />
+              ) : null}
+              {calling ? (
+                <VoiceCall
+                  profile={selected.profile}
+                  onSay={words => void onSend(words)}
+                  running={transcript.running}
+                  turnsDone={turnsDone}
+                  lastReply={lastReply}
+                  onStop={() => void stop()}
+                  onEnd={() => setCalling(false)}
                 />
               ) : null}
               <Composer
@@ -563,6 +621,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 focusKey={selected.id ?? 'new'}
                 canAttach
                 dropZone={chatPane}
+                voice={calling ? undefined : { profile: selected.profile }}
               />
             </main>
             {filesOpen && chat.cwd ? (
@@ -576,6 +635,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               />
             ) : null}
           </>
+        ) : section === 'bots' && editingBot ? (
+          <BotEditor key={editingBot.name} bot={editingBot} onClose={() => setEditingBot(null)} onSaved={() => void roster.refresh()} />
         ) : section === 'bots' ? (
           <BotsHome
             bots={roster.bots}
@@ -587,6 +648,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onAsk={askBot}
             onOpenRoom={showRoom}
             onCreateRoom={groupRooms.create}
+            onEdit={connected ? setEditingBot : undefined}
           />
         ) : section === 'tasks' ? (
           <Tasks
@@ -626,15 +688,38 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             openLiveId={chat.liveId}
           />
         ) : (
-          <Settings status={status} onAddHost={onAddHost} />
+          <Settings
+            status={status}
+            onAddHost={onAddHost}
+            bots={(roster.bots ?? []).map(bot => ({ name: bot.name, title: bot.title }))}
+            profile={selected.profile ?? 'default'}
+          />
         )}
       </div>
     </>
   )
 }
 
-function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
+function Settings({
+  status,
+  onAddHost,
+  bots,
+  profile
+}: {
+  status: ConnectionStatus
+  onAddHost: () => void
+  bots: { name: string; title: string }[]
+  profile: string
+}) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
+  const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
+  const [page, setPage] = useState<'main' | 'usage'>('main')
+  if (page === 'usage')
+    return (
+      <main className="settings">
+        <UsagePage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
   return (
     <main className="settings">
@@ -679,6 +764,12 @@ function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: 
           {status.method ? methods[status.method] : '—'}
           {status.username ? ` (${status.username})` : ''}
         </dd>
+        <dt>{t('Usage')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('usage')}>
+            {t('Tokens, cost and provider quota')}
+          </button>
+        </dd>
         <dt>{t('Notifications')}</dt>
         <dd>
           <label className="toggle">
@@ -692,6 +783,21 @@ function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: 
             />
             {t('When a reply finishes or something needs you in a chat you’re not looking at')}
           </label>
+        </dd>
+        <dt>{t('Voice')}</dt>
+        <dd>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={readAloudOn}
+              onChange={e => {
+                setReadsRepliesAloud(e.target.checked)
+                setReadAloudOn(e.target.checked)
+              }}
+            />
+            {t('Read replies aloud')}
+          </label>
+          <p className="meta settings-caption">{t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}</p>
         </dd>
         <dt>{t('Language')}</dt>
         <dd>

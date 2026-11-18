@@ -170,9 +170,11 @@ function registerIpc(): void {
       return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }
     }
   })
-  ipcMain.handle(IPC.http, async (_event, method: string, path: string, body?: unknown): Promise<RpcOutcome> => {
+  ipcMain.handle(IPC.http, async (_event, method: string, path: string, body?: unknown, timeoutMs?: unknown): Promise<RpcOutcome> => {
     try {
-      return { ok: true, result: await connection.http(method, path, body) }
+      // A longer wait only for what asks for it (a recording's transcription), never past ten minutes.
+      const timeout = typeof timeoutMs === 'number' && Number.isFinite(timeoutMs) ? Math.min(600_000, Math.max(1_000, timeoutMs)) : undefined
+      return { ok: true, result: await connection.http(method, path, body, timeout) }
     } catch (error) {
       const code = (error as { code?: unknown }).code
       return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }

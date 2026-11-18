@@ -1,4 +1,4 @@
-import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { mediaKind, splitReply } from '../state/media'
 import { baseName, type Attachment } from '../state/text'
 import { displayName } from '../state/attachments'
@@ -11,6 +11,8 @@ import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
 import { locale, t } from '@shared/i18n'
 import { blockquote, copyableReply, excerpt, parseReplyEnvelope, sameQuotedText, type QuoteRequest } from '../state/quote'
 import { BoardView } from './BoardView'
+import { readAloud, stopReading, useReadingKey } from '../state/readAloud'
+import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
 
 export interface MessageMenuItem {
   label: string
@@ -236,20 +238,58 @@ interface ItemProps {
   onFollowUp?: (text: string) => void
 }
 
+/** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
+function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: string; menu: MessageMenuItem[] }) {
+  const reading = useReadingKey() === messageKey
+  const profile = useContext(PictureProfile)
+  const [problem, setProblem] = useState<string | null>(null)
+  const read = {
+    label: reading ? t('Stop reading response') : t('Read Aloud'),
+    onSelect: () => {
+      setProblem(null)
+      if (reading) return stopReading()
+      readAloud(messageKey, text, profile).catch(e => setProblem(e instanceof Error ? e.message : String(e)))
+    }
+  }
+  return (
+    <>
+      <MessageActions copy={copyableReply(text)} menu={[...menu, read]} />
+      {problem ? (
+        <div className="read-problem" role="status">
+          {t("Hermes couldn't read this aloud: {error}", { error: problem })}
+        </div>
+      ) : null}
+    </>
+  )
+}
+
 function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
       const words = envelope ? envelope.message : item.text
+      const voice = parseVoiceMessage(words)
+      // A voice message's audio is the message itself, not a file beside it.
+      const files = voice ? item.attachments?.filter(a => !baseName(a.value).includes(VOICE_FILE_PREFIX)) : item.attachments
       return (
         <div className={`user${item.pending ? ' pending' : ''}`} data-key={item.key}>
           {envelope ? <QuotedCard name={author} quote={envelope.quote} onJump={jump(envelope.quote)} /> : null}
-          {item.attachments?.length ? <AttachmentChips attachments={item.attachments} /> : null}
-          {words.trim() ? <div className="bubble">{words}</div> : null}
+          {files?.length ? <AttachmentChips attachments={files} /> : null}
+          {voice ? (
+            <div className="bubble voice-bubble">
+              <span className="voice-head">
+                <Icon name="mic" />
+                {t('Voice message')} · {voice.duration}
+              </span>
+              {voice.transcript ? <span>{voice.transcript}</span> : null}
+            </div>
+          ) : words.trim() ? (
+            <div className="bubble">{words}</div>
+          ) : null}
           <span className="time">{item.pending ? t('Sending…') : clock(item.at)}</span>
           {!item.pending && words.trim() ? (
             <MessageActions
-              copy={words}
+              copy={voice ? voice.transcript || words : words}
               menu={[
                 ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ text: blockquote(words) })) }] : []),
                 ...(onEdit ? [{ label: t('Edit and resend'), onSelect: onEdit }] : [])
@@ -264,8 +304,9 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp }: Item
         <div className={`assistant${item.streaming ? ' streaming' : ''}`} data-key={item.key}>
           <Reply text={item.text} />
           {!item.streaming && item.text.trim() ? (
-            <MessageActions
-              copy={copyableReply(item.text)}
+            <ReplyActions
+              messageKey={item.key}
+              text={item.text}
               menu={[
                 ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []),
                 ...(onRetry ? [{ label: t('Retry'), onSelect: onRetry }] : [])

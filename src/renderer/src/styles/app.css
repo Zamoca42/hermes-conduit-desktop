@@ -3835,10 +3835,15 @@ html[data-window='quick'] body {
 }
 
 /* The Folder beside the chat */
-.chat-head-button {
+.chat-head-actions {
   position: absolute;
   right: 16px;
   top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.chat-head-button {
   width: 32px;
   height: 32px;
   border-radius: 10px;
@@ -3852,6 +3857,12 @@ html[data-window='quick'] body {
 
 .chat-head-button:hover {
   color: var(--text);
+}
+
+.chat-head-button.on {
+  background: var(--danger);
+  border-color: transparent;
+  color: #fff;
 }
 
 .chat-head-button svg {
@@ -4324,4 +4335,627 @@ code.file-link:hover {
 .shown-next .chip:hover {
   border-color: var(--accent);
   color: var(--text);
+}
+
+/* Pulse settings: the phone's Settings > Pulse, beside the feed. */
+.pulse-settings-button {
+  align-self: center;
+}
+
+.pset {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pset h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.pset-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.pset-section h2 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.pset-section p {
+  margin: 0;
+}
+
+.pset-section > .meta,
+.pset-section p.meta {
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.pset-warn {
+  color: var(--warning);
+  font-size: 13px;
+}
+
+.pset-label {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.pset-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.pset-time {
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.pset-times {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 24px;
+}
+
+.pset-times .pset-row {
+  justify-content: flex-start;
+}
+
+.pset-days {
+  display: flex;
+  gap: 6px;
+}
+
+.pset-days button {
+  width: 34px;
+  height: 34px;
+  border-radius: 17px;
+  border: 0;
+  background: var(--field);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pset-days button.on {
+  background: var(--accent);
+  color: #fff;
+}
+
+.pset-note {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.pset-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.pset-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.pset-link > span:first-child {
+  flex: 1;
+}
+
+.pset-link svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-3);
+}
+
+.pset-recent,
+.pset-memory {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pset-memory li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.pset-evidence {
+  font-style: italic;
+}
+
+.pset .meta {
+  white-space: normal;
+  overflow: visible;
+}
+
+.pset-row > .meta {
+  text-align: right;
+}
+
+.pulse-head-link {
+  align-self: center;
+  font-weight: 500;
+}
+
+.pset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.pset-item .secondary {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+  flex: none;
+}
+
+.pset-pref {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.pset-start-over {
+  align-self: flex-start;
+}
+
+.pset-leftout {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.pset-section h2 + .pset-leftout {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.pset-leftout .secondary {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.pset-chat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pset-chat svg,
+.pset-done svg {
+  width: 14px;
+  height: 14px;
+}
+
+.pset-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--success);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pset-footer {
+  font-size: 12px;
+  padding: 0 4px;
+}
+
+/* Voice: a recording in the composer, a sent voice message, Read Aloud. */
+.voice-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 4px 8px;
+}
+
+.voice-strip .secondary,
+.voice-strip .primary {
+  height: 30px;
+  padding: 0 14px;
+  font-size: 13px;
+  align-self: center;
+}
+
+.voice-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: voice-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes voice-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.voice-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  min-width: 36px;
+}
+
+.voice-meter {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--field);
+  overflow: hidden;
+}
+
+.voice-meter span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transition: transform 80ms linear;
+}
+
+.voice-busy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.voice-busy svg {
+  width: 16px;
+  height: 16px;
+}
+
+.voice-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.voice-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.voice-head svg {
+  width: 14px;
+  height: 14px;
+}
+
+.read-problem {
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 4px;
+}
+
+/* A Classic voice call in the open chat, above the composer. */
+.voice-call {
+  margin: 0 24px 10px;
+  padding: 10px 12px 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 18px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.voice-call-status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.voice-call-orb {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 90ms linear;
+}
+
+.voice-call.phase-thinking .voice-call-orb,
+.voice-call.phase-hearing .voice-call-orb,
+.voice-call.phase-starting .voice-call-orb {
+  animation: voice-pulse 1.2s ease-in-out infinite;
+}
+
+.voice-call.phase-speaking .voice-call-orb {
+  animation: voice-speak 0.8s ease-in-out infinite;
+}
+
+.voice-call.phase-muted .voice-call-orb,
+.voice-call.phase-failed .voice-call-orb {
+  background: var(--text-4);
+}
+
+@keyframes voice-speak {
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+.voice-call-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.voice-call-words .meta {
+  max-width: 420px;
+}
+
+.voice-call-problem {
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.voice-call-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.voice-call-buttons .secondary {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  align-self: center;
+}
+
+.voice-call-round {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-call-round svg {
+  width: 18px;
+  height: 18px;
+}
+
+.voice-call-round.on {
+  background: var(--text);
+  color: var(--surface);
+}
+
+.voice-call-round.end {
+  background: var(--danger);
+  border-color: transparent;
+  color: #fff;
+}
+
+.settings-caption {
+  margin: 4px 0 0 24px;
+  white-space: normal;
+}
+
+/* Settings > Usage */
+.pulse-head .spacer {
+  flex: 1;
+}
+
+.usage-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.usage-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.usage-model {
+  align-items: flex-start;
+}
+
+.usage-model-name {
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+
+.usage-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.usage-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 140px;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.usage-axis {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pset .usage-peak,
+.pset .usage-axis {
+  font-size: 11px;
+}
+
+.usage-bar {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  min-width: 2px;
+}
+
+.usage-bar > span {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+}
+
+.usage-bar:hover > span {
+  opacity: 0.75;
+}
+
+.usage-quota {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.usage-quota + .usage-quota {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.usage-window {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.usage-meter {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.usage-meter > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.usage-meter.high > span {
+  background: var(--warning);
+}
+
+.usage-meter.full > span {
+  background: var(--danger);
+}
+
+.usage-account {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 8px;
+  font-size: 13px;
+}
+
+.usage-limit {
+  color: var(--warning);
+  font-size: 13px;
+}
+
+/* Edit Bot */
+.bot-editor-picture {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bot-faces {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+}
+
+.bot-face {
+  width: 44px;
+  height: 44px;
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: none;
+}
+
+.bot-face svg,
+.bot-face > * {
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.bot-face.on {
+  border-color: var(--text);
+}
+
+.bot-soul {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 19px;
+  min-height: 200px;
+}
+
+.bot-caps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0 8px 4px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-size: 13px;
 }

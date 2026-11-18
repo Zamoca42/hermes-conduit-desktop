@@ -1,0 +1,114 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+export interface Recording {
+  blob: Blob
+  mime: string
+  /** Seconds. */
+  duration: number
+}
+
+/** The phone's longest voice message. */
+export const MAX_RECORDING_S = 10 * 60
+
+const MIME = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4']
+
+/**
+ * The microphone, for a recording: started, then stopped for its audio or
+ * cancelled. `level` (0 to 1) moves the meter while it records.
+ */
+export function useRecorder() {
+  const [recording, setRecording] = useState(false)
+  const [elapsed, setElapsed] = useState(0)
+  const [level, setLevel] = useState(0)
+  const [error, setError] = useState<string | null>(null)
+  const parts = useRef<{ recorder: MediaRecorder; stream: MediaStream; context: AudioContext; chunks: Blob[]; started: number; timer: number; frame: number } | null>(null)
+  const stopping = useRef<((recording: Recording | null) => void) | null>(null)
+
+  const release = useCallback(() => {
+    const current = parts.current
+    parts.current = null
+    if (!current) return
+    window.clearInterval(current.timer)
+    cancelAnimationFrame(current.frame)
+    current.stream.getTracks().forEach(track => track.stop())
+    void current.context.close().catch(() => undefined)
+    setRecording(false)
+    setLevel(0)
+  }, [])
+
+  useEffect(() => release, [release])
+
+  const stop = useCallback((): Promise<Recording | null> => {
+    const current = parts.current
+    if (!current || current.recorder.state === 'inactive') return Promise.resolve(null)
+    return new Promise(resolve => {
+      stopping.current = resolve
+      current.recorder.stop()
+    })
+  }, [])
+
+  const start = useCallback(async (): Promise<boolean> => {
+    if (parts.current) return true
+    setError(null)
+    setElapsed(0)
+    let stream: MediaStream
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } })
+    } catch (e) {
+      const name = (e as { name?: string }).name
+      setError(name === 'NotAllowedError' || name === 'SecurityError' ? 'denied' : name === 'NotFoundError' ? 'missing' : String((e as Error).message ?? e))
+      return false
+    }
+    const mime = MIME.find(type => MediaRecorder.isTypeSupported(type)) ?? ''
+    const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined)
+    const context = new AudioContext()
+    const analyser = context.createAnalyser()
+    analyser.fftSize = 512
+    context.createMediaStreamSource(stream).connect(analyser)
+    const samples = new Uint8Array(analyser.fftSize)
+    const chunks: Blob[] = []
+    const started = performance.now()
+    const current = { recorder, stream, context, chunks, started, timer: 0, frame: 0 }
+    const meter = () => {
+      analyser.getByteTimeDomainData(samples)
+      let peak = 0
+      for (const sample of samples) peak = Math.max(peak, Math.abs(sample - 128) / 128)
+      setLevel(level => Math.max(peak, level * 0.85))
+      current.frame = requestAnimationFrame(meter)
+    }
+    current.frame = requestAnimationFrame(meter)
+    current.timer = window.setInterval(() => {
+      const seconds = (performance.now() - started) / 1000
+      setElapsed(seconds)
+      if (seconds >= MAX_RECORDING_S && recorder.state === 'recording') recorder.stop()
+    }, 250)
+    recorder.ondataavailable = event => {
+      if (event.data.size) chunks.push(event.data)
+    }
+    recorder.onstop = () => {
+      const duration = (performance.now() - started) / 1000
+      const type = recorder.mimeType || mime || 'audio/webm'
+      release()
+      const done = stopping.current
+      stopping.current = null
+      const result = chunks.length ? { blob: new Blob(chunks, { type }), mime: type.split(';')[0]!, duration } : null
+      if (done) done(result)
+    }
+    parts.current = current
+    recorder.start(1000)
+    setRecording(true)
+    return true
+  }, [release])
+
+  const cancel = useCallback(() => {
+    const current = parts.current
+    stopping.current = null
+    if (current && current.recorder.state !== 'inactive') {
+      current.recorder.onstop = null
+      current.recorder.stop()
+    }
+    release()
+  }, [release])
+
+  return { recording, elapsed, level, error, start, stop, cancel, clearError: () => setError(null) }
+}

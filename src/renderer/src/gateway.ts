@@ -26,7 +26,7 @@ export const gateway = {
   async rpc<T = unknown>(method: string, params?: Record<string, unknown>): Promise<T> {
     return settled(await window.conduit.rpcOutcome<T>(method, params))
   },
-  async http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T> {
-    return settled(await window.conduit.httpOutcome<T>(method, path, body))
+  async http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number): Promise<T> {
+    return settled(await window.conduit.httpOutcome<T>(method, path, body, timeoutMs))
   }
 }

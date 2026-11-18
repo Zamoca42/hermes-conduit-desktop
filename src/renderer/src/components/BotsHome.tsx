@@ -1,4 +1,4 @@
-import { useState, type DragEvent, type FormEvent } from "react";
+import { useEffect, useState, type DragEvent, type FormEvent, type MouseEvent } from "react";
 import { timeLabel } from "../state/chats";
 import { botColor, homeLayout, keptColor, type Bot } from "../state/bots";
 import {
@@ -80,6 +80,8 @@ interface Props {
   onAsk: (bot: Bot, text: string) => void;
   onOpenRoom: (room: Room) => void;
   onCreateRoom: (roomId: string, name: string, bots: Bot[]) => Promise<Room>;
+  /** Edit Bot, from a bot's right-click menu. */
+  onEdit?: (bot: Bot) => void;
 }
 
 interface Draft {
@@ -106,7 +108,27 @@ export function BotsHome({
   onAsk,
   onOpenRoom,
   onCreateRoom,
+  onEdit,
 }: Props) {
+  const [menu, setMenu] = useState<{ bot: Bot; x: number; y: number } | null>(
+    null,
+  );
+  useEffect(() => {
+    if (!menu) return;
+    const close = () => setMenu(null);
+    window.addEventListener("click", close);
+    window.addEventListener("blur", close);
+    return () => {
+      window.removeEventListener("click", close);
+      window.removeEventListener("blur", close);
+    };
+  }, [menu]);
+  const openMenu = onEdit
+    ? (bot: Bot) => (e: MouseEvent) => {
+        e.preventDefault();
+        setMenu({ bot, x: e.clientX, y: e.clientY });
+      }
+    : undefined;
   const layout = homeLayout(bots?.length ?? 0);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
@@ -213,6 +235,7 @@ export function BotsHome({
               running={runningProfiles.has(bots[0].name)}
               onOpen={onOpen}
               onAsk={onAsk}
+              onMenu={openMenu?.(bots[0])}
             />
           ) : null}
           {bots && layout !== "one" ? (
@@ -226,6 +249,7 @@ export function BotsHome({
                   picked={draft?.members.includes(bot.name) ?? false}
                   target={dropTarget === bot.name}
                   onClick={() => openOrPick(bot)}
+                  onMenu={openMenu?.(bot)}
                   drag={tileDrag(bot)}
                 />
               ))}
@@ -351,6 +375,20 @@ export function BotsHome({
           </div>
         </form>
       ) : null}
+      {menu && onEdit ? (
+        <div
+          className="host-menu row-menu"
+          role="menu"
+          style={{
+            left: Math.min(menu.x, window.innerWidth - 200),
+            top: Math.min(menu.y, window.innerHeight - 80),
+          }}
+        >
+          <button role="menuitem" onClick={() => onEdit(menu.bot)}>
+            {t("Edit Bot")}
+          </button>
+        </div>
+      ) : null}
     </main>
   );
 }
@@ -360,11 +398,13 @@ function OneBot({
   running,
   onOpen,
   onAsk,
+  onMenu,
 }: {
   bot: Bot;
   running: boolean;
   onOpen: (bot: Bot) => void;
   onAsk: (bot: Bot, text: string) => void;
+  onMenu?: (e: MouseEvent) => void;
 }) {
   const [text, setText] = useState("");
   const submit = (event: FormEvent) => {
@@ -378,6 +418,7 @@ function OneBot({
       <button
         className="bot-hero-face"
         onClick={() => onOpen(bot)}
+        onContextMenu={onMenu}
         aria-label={t('Open {name}', { name: bot.title })}
       >
         <BotAvatar bot={bot} size={168} />
@@ -423,6 +464,7 @@ interface TileProps {
   picked: boolean;
   target: boolean;
   onClick: () => void;
+  onMenu?: (e: MouseEvent) => void;
   drag: Record<string, unknown>;
 }
 
@@ -433,12 +475,14 @@ function BotTile({
   picked,
   target,
   onClick,
+  onMenu,
   drag,
 }: TileProps) {
   return (
     <button
       className={`bot-tile${large ? " large" : ""}${picked ? " picked" : ""}${target ? " drop-target" : ""}`}
       onClick={onClick}
+      onContextMenu={onMenu}
       aria-pressed={picked || undefined}
       {...drag}
     >

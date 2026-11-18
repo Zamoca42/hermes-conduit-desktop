@@ -186,8 +186,12 @@ export function topicTitle(topic: string): string {
 
 /** A card's colour by what it's about, as the phone tints it. */
 export function tint(card: PulseCard): string {
-  if (!isNoticed(card)) return 'var(--accent)'
-  switch (card.topic) {
+  return isNoticed(card) ? topicTint(card.topic) : 'var(--accent)'
+}
+
+/** A report item's topic's colour. */
+export function topicTint(topic: string): string {
+  switch (topic) {
     case 'commitment':
     case 'promise':
     case 'follow-up':

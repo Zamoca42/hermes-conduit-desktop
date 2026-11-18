@@ -247,7 +247,7 @@ export class Connection {
    * A dashboard REST call (`/api/...`) with this sign-in's credential. A
    * password sign-in whose session ran out signs in again once.
    */
-  async http<T>(method: string, path: string, body?: unknown): Promise<T> {
+  async http<T>(method: string, path: string, body?: unknown, timeoutMs = 30_000): Promise<T> {
     const saved = this.saved
     if (!saved) throw new Error(t('Not signed in.'))
     if (!path.startsWith('/api/')) throw new Error('Only dashboard API paths can be called.')
@@ -264,7 +264,7 @@ export class Connection {
         method,
         headers,
         body: body === undefined ? undefined : JSON.stringify(body),
-        signal: AbortSignal.timeout(30_000)
+        signal: AbortSignal.timeout(timeoutMs)
       })
     }
     let response = await send()
