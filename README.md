@@ -10,7 +10,7 @@ phone does.
 **Status: early prototype.** Sign in (or pair with the phone by QR code),
 chats and quick ask (with pictures and files: Attach, paste or drop them, and a long
 paste goes as a text file, as on the phone), Needs you (approvals and
-questions), Bots home and group chats,
+questions), Bots home and group chats (files too, on a Hermes that keeps room attachments),
 several Hermes hosts, the tray and quick ask, and notifications work. It
 speaks the iPhone app's thirteen languages, following the computer's or the
 one picked in Settings.

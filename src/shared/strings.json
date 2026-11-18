@@ -29,6 +29,51 @@
     "zh-Hans": "一个机器人",
     "zh-Hant": "一個機器人"
   },
+  "A group chat can’t take {names}.": {
+    "de": "Ein Gruppenchat kann {names} nicht annehmen.",
+    "es": "Un chat grupal no puede recibir {names}.",
+    "fr": "Une discussion de groupe ne peut pas recevoir {names}.",
+    "id": "Obrolan grup tidak dapat menerima {names}.",
+    "it": "Una chat di gruppo non può ricevere {names}.",
+    "ja": "グループチャットでは{names}を送れません。",
+    "ko": "그룹 채팅에서는 {names}을(를) 보낼 수 없어요.",
+    "pl": "Czat grupowy nie przyjmie: {names}.",
+    "pt-BR": "Um chat em grupo não aceita {names}.",
+    "ru": "Групповой чат не принимает {names}.",
+    "tr": "Grup sohbeti {names} dosyasını kabul edemez.",
+    "zh-Hans": "群聊无法接收 {names}。",
+    "zh-Hant": "群組聊天無法接收 {names}。"
+  },
+  "A group chat message takes up to 25 MB of files.": {
+    "de": "Eine Gruppenchat-Nachricht nimmt bis zu 25 MB an Dateien an.",
+    "es": "Un mensaje de chat grupal admite hasta 25 MB de archivos.",
+    "fr": "Un message de discussion de groupe accepte jusqu’à 25 Mo de fichiers.",
+    "id": "Pesan obrolan grup menerima file hingga 25 MB.",
+    "it": "Un messaggio di una chat di gruppo accetta fino a 25 MB di file.",
+    "ja": "グループチャットのメッセージに添付できるファイルは合計25MBまでです。",
+    "ko": "그룹 채팅 메시지에는 파일을 최대 25MB까지 첨부할 수 있어요.",
+    "pl": "Wiadomość na czacie grupowym przyjmuje do 25 MB plików.",
+    "pt-BR": "Uma mensagem de chat em grupo aceita até 25 MB de arquivos.",
+    "ru": "Сообщение в групповом чате принимает до 25 МБ файлов.",
+    "tr": "Bir grup sohbeti mesajı en fazla 25 MB dosya alır.",
+    "zh-Hans": "一条群聊消息最多可附加 25 MB 的文件。",
+    "zh-Hant": "一則群組聊天訊息最多可附加 25 MB 的檔案。"
+  },
+  "A group chat message takes up to {count} files.": {
+    "de": "Eine Gruppenchat-Nachricht nimmt bis zu {count} Dateien an.",
+    "es": "Un mensaje de chat grupal admite hasta {count} archivos.",
+    "fr": "Un message de discussion de groupe accepte jusqu’à {count} fichiers.",
+    "id": "Pesan obrolan grup menerima hingga {count} file.",
+    "it": "Un messaggio di una chat di gruppo accetta fino a {count} file.",
+    "ja": "グループチャットのメッセージに添付できるファイルは{count}個までです。",
+    "ko": "그룹 채팅 메시지에는 파일을 최대 {count}개까지 첨부할 수 있어요.",
+    "pl": "Wiadomość na czacie grupowym przyjmuje do {count} plików.",
+    "pt-BR": "Uma mensagem de chat em grupo aceita até {count} arquivos.",
+    "ru": "Сообщение в групповом чате принимает до {count} файлов.",
+    "tr": "Bir grup sohbeti mesajı en fazla {count} dosya alır.",
+    "zh-Hans": "一条群聊消息最多可附加 {count} 个文件。",
+    "zh-Hant": "一則群組聊天訊息最多可附加 {count} 個檔案。"
+  },
   "A question": {
     "de": "Eine Frage",
     "es": "Una pregunta",
@@ -1153,6 +1198,21 @@
     "tr": "Üstbilgi değerleri satır sonu içeremez.",
     "zh-Hans": "请求头的值不能包含换行。",
     "zh-Hant": "標頭的值不能包含換行。"
+  },
+  "Hermes didn’t keep {name}.": {
+    "de": "Hermes hat {name} nicht gespeichert.",
+    "es": "Hermes no guardó {name}.",
+    "fr": "Hermes n’a pas conservé {name}.",
+    "id": "Hermes tidak menyimpan {name}.",
+    "it": "Hermes non ha salvato {name}.",
+    "ja": "Hermesは{name}を保存しませんでした。",
+    "ko": "Hermes가 {name}을(를) 저장하지 않았어요.",
+    "pl": "Hermes nie zachował pliku {name}.",
+    "pt-BR": "O Hermes não guardou {name}.",
+    "ru": "Hermes не сохранил {name}.",
+    "tr": "Hermes {name} dosyasını saklamadı.",
+    "zh-Hans": "Hermes 没有保存 {name}。",
+    "zh-Hant": "Hermes 沒有保存 {name}。"
   },
   "Hermes didn’t say what room it made.": {
     "de": "Hermes hat nicht gesagt, welchen Raum es erstellt hat.",

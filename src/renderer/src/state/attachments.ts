@@ -175,3 +175,112 @@ export async function releaseHeldImages(rpc: Rpc, sessionId: string, profile: st
   }
 }
 
+
+// Group rooms ----------------------------------------------------------
+
+/** Hermes' limits for a room message's files (gateway/hosted_room_attachments.py). */
+export const ROOM_MAX_FILES = 8
+export const ROOM_MAX_FILE_BYTES = 15_000_000
+export const ROOM_MAX_MESSAGE_BYTES = 25_000_000
+
+function firstBytes(base64: string, count: number): Uint8Array {
+  const chars = Math.ceil(count / 3) * 4
+  const binary = atob(base64.slice(0, chars))
+  return Uint8Array.from(binary.slice(0, count), c => c.charCodeAt(0))
+}
+
+const startsWith = (bytes: Uint8Array, prefix: number[], at = 0) => prefix.every((b, i) => bytes[at + i] === b)
+const ascii = (text: string) => Array.from(text, c => c.charCodeAt(0))
+
+/** The picture type Hermes recognizes these bytes as, or null. */
+export function pictureType(bytes: Uint8Array): string | null {
+  if (startsWith(bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return 'image/png'
+  if (startsWith(bytes, [0xff, 0xd8, 0xff])) return 'image/jpeg'
+  if (startsWith(bytes, ascii('GIF87a')) || startsWith(bytes, ascii('GIF89a'))) return 'image/gif'
+  if (startsWith(bytes, ascii('RIFF')) && startsWith(bytes, ascii('WEBP'), 8)) return 'image/webp'
+  return null
+}
+
+function isPlainText(base64: string): boolean {
+  try {
+    const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0))
+    if (bytes.includes(0)) return false
+    new TextDecoder('utf-8', { fatal: true }).decode(bytes)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** The kind and type Hermes takes a staged file as in a room, or null where it takes it as nothing. */
+export function roomUploadKind(a: StagedAttachment): { kind: 'image' | 'pdf' | 'file'; mime: string } | null {
+  if (!a.base64 || a.size > ROOM_MAX_FILE_BYTES) return null
+  const head = firstBytes(a.base64, 16)
+  const picture = pictureType(head)
+  if (picture) return { kind: 'image', mime: picture }
+  if (startsWith(head, ascii('%PDF-'))) return { kind: 'pdf', mime: 'application/pdf' }
+  const declared = a.mime.toLowerCase()
+  // A picture or PDF Hermes doesn't recognize (HEIC, a damaged file) isn't taken as a plain file.
+  if (declared.startsWith('image/') || declared === 'application/pdf') return null
+  if (declared.startsWith('text/') || !declared || declared === 'application/octet-stream') {
+    return isPlainText(a.base64) ? { kind: 'file', mime: 'text/plain' } : declared.startsWith('text/') ? null : { kind: 'file', mime: 'application/octet-stream' }
+  }
+  return { kind: 'file', mime: declared }
+}
+
+/** Why these files can't go into a room message, checked before anything goes up, or null. */
+export function roomUploadProblem(attachments: StagedAttachment[]): string | null {
+  const refused = attachments.filter(a => !roomUploadKind(a))
+  if (refused.length) return t('A group chat can’t take {names}.', { names: refused.map(a => displayName(a.name)).join(', ') })
+  if (attachments.length > ROOM_MAX_FILES) return t('A group chat message takes up to {count} files.', { count: ROOM_MAX_FILES })
+  if (attachments.reduce((sum, a) => sum + a.size, 0) > ROOM_MAX_MESSAGE_BYTES) return t('A group chat message takes up to 25 MB of files.')
+  return null
+}
+
+async function digest(base64: string): Promise<string> {
+  const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0))
+  const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))
+  return Array.from(hash.slice(0, 12), b => b.toString(16).padStart(2, '0')).join('')
+}
+
+/** The staged file and its bytes: a retry of the same file reuses the upload Hermes kept. */
+export async function roomUploadId(a: StagedAttachment): Promise<string> {
+  const staged = a.id.replace(/[^A-Za-z0-9-]/g, '').slice(0, 64)
+  return `conduit-${staged}-${await digest(a.base64)}`
+}
+
+export interface RoomManifest {
+  attachment_id: string
+  kind: string
+  name: string
+  size: number
+  mime: string
+}
+
+/** Uploads a room message's files with `groups.attachment.upload`, for `groups.send`'s `attachments`. */
+export async function uploadRoomAttachments(rpc: Rpc, roomId: string, attachments: StagedAttachment[]): Promise<RoomManifest[]> {
+  const problem = roomUploadProblem(attachments)
+  if (problem) throw new Error(problem)
+  const manifests: RoomManifest[] = []
+  for (const a of attachments) {
+    const { kind, mime } = roomUploadKind(a)!
+    const result = await rpc<Record<string, unknown>>('groups.attachment.upload', {
+      room_id: roomId,
+      upload_id: await roomUploadId(a),
+      kind,
+      name: a.name,
+      mime,
+      data_base64: a.base64
+    })
+    const id = typeof result?.attachment_id === 'string' ? result.attachment_id : ''
+    if (!id) throw new Error(t('Hermes didn’t keep {name}.', { name: displayName(a.name) }))
+    manifests.push({
+      attachment_id: id,
+      kind: typeof result.kind === 'string' ? result.kind : kind,
+      name: typeof result.name === 'string' ? result.name : a.name,
+      size: typeof result.size === 'number' ? result.size : a.size,
+      mime: typeof result.mime === 'string' ? result.mime : mime
+    })
+  }
+  return manifests
+}

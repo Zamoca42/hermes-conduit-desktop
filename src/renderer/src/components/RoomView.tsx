@@ -6,6 +6,8 @@ import { useRoom } from "../state/useGroups";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { Reply, clock } from "./Transcript";
+import { Icon } from "./icons";
+import { displayName, roomUploadProblem } from "../state/attachments";
 import { t } from "@shared/i18n";
 
 interface Props {
@@ -13,10 +15,26 @@ interface Props {
   bots: Bot[];
   connected: boolean;
   canStop: boolean;
+  /** The room's Hermes keeps files as its messages' own attachments. */
+  canAttach: boolean;
+}
+
+/** A room message's files, by name. */
+function FileChips({ files }: { files: { kind: string; name: string }[] }) {
+  return (
+    <div className="attachments">
+      {files.map((f, i) => (
+        <span key={i} className="chip" title={f.name}>
+          <Icon name={f.kind === "image" ? "image" : "file"} />
+          <span>{displayName(f.name)}</span>
+        </span>
+      ))}
+    </div>
+  );
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop }: Props) {
+export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
   const { events, status, loading, error, pending, send, stop } = useRoom(
     room,
     connected,
@@ -32,6 +50,7 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
   );
 
   const scroller = useRef<HTMLDivElement>(null);
+  const pane = useRef<HTMLElement>(null);
   const pinned = useRef(true);
   useLayoutEffect(() => {
     const el = scroller.current;
@@ -42,7 +61,7 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
     (m) => m.displayName ?? m.profile ?? m.memberId,
   );
   return (
-    <main className="chat room">
+    <main className="chat room" ref={pane}>
       <div className="chat-head">
         <div className="chat-title room-title" title={names.join(", ")}>
           <RoomFaces room={room} bots={bots} size={20} />
@@ -92,7 +111,8 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
                 {day}
                 {item.kind === "user" ? (
                   <div key={item.key} className="user">
-                    <div className="bubble">{item.text}</div>
+                    {item.files ? <FileChips files={item.files} /> : null}
+                    {item.text.trim() ? <div className="bubble">{item.text}</div> : null}
                     <span className="time">{clock(item.at)}</span>
                   </div>
                 ) : item.kind === "member" ? (
@@ -131,13 +151,16 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
               key={p.eventId}
               className={`user pending${p.failed ? " failed" : ""}`}
             >
-              <div className="bubble">{p.text}</div>
+              {p.attachments.length ? (
+                <FileChips files={p.attachments.map((a) => ({ kind: a.kind, name: a.name }))} />
+              ) : null}
+              {p.text ? <div className="bubble">{p.text}</div> : null}
               {p.failed ? (
                 <span className="time">
                   {t('Not sent: {reason}', { reason: p.failed })}{" "}
                   <button
                     className="link"
-                    onClick={() => void send(p.text, p.eventId)}
+                    onClick={() => void send(p.text, p.attachments, p.eventId)}
                   >
                     {t('Try again')}
                   </button>
@@ -163,9 +186,12 @@ export function RoomView({ room, bots, connected, canStop }: Props) {
         placeholder={t('Message {name}…', { name: room.name })}
         running={canStop && status.working}
         disabled={!connected || status.disbanded}
-        onSend={(text) => void send(text)}
+        onSend={(text, attachments) => void send(text, attachments)}
         onStop={() => void stop()}
         focusKey={room.roomId}
+        canAttach={canAttach && !room.linked}
+        dropZone={pane}
+        checkAttachments={roomUploadProblem}
       />
     </main>
   );

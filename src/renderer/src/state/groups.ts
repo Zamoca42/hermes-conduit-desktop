@@ -27,6 +27,8 @@ export interface Room {
   updatedAt?: number
   latestSeq?: number
   disbanded: boolean
+  /** Another person's agent is in it: Hermes' peer route carries no files. */
+  linked: boolean
 }
 
 export interface RoomEvent {
@@ -41,6 +43,8 @@ export interface RoomEvent {
 export interface RoomCapabilities {
   supported: boolean
   canStop: boolean
+  /** Hermes keeps a message's files as its own attachments (`groups.attachment.upload`). */
+  attachments: boolean
   maxLogLimit?: number
 }
 
@@ -55,6 +59,7 @@ export function roomCapabilities(result: unknown): RoomCapabilities {
   return {
     supported: REQUIRED_ROOM_METHODS.every(m => methods.has(m)),
     canStop: methods.has('groups.stop'),
+    attachments: methods.has('groups.attachment.upload'),
     maxLogLimit: int(obj(result)?.max_log_limit)
   }
 }
@@ -64,10 +69,12 @@ export function roomFromWire(value: unknown): Room | null {
   const roomId = str(row?.room_id)
   if (!row || !roomId) return null
   const members: RoomMember[] = []
+  let linked = false
   for (const raw of Array.isArray(row.members) ? row.members : []) {
     const m = obj(raw)
     const memberId = str(m?.member_id) ?? str(m?.profile)
     if (!m || !memberId) continue
+    if (obj(m.target)?.kind === 'peer') linked = true
     members.push({ memberId, profile: str(m.profile), handle: str(m.handle), displayName: str(m.display_name) })
   }
   return {
@@ -76,7 +83,8 @@ export function roomFromWire(value: unknown): Room | null {
     members,
     updatedAt: seconds(row.updated_at) ?? seconds(row.created_at),
     latestSeq: int(row.latest_seq),
-    disbanded: typeof row.disbanded_at === 'number'
+    disbanded: typeof row.disbanded_at === 'number',
+    linked
   }
 }
 
@@ -129,7 +137,7 @@ export function mergeEvents(existing: readonly RoomEvent[], incoming: readonly R
 }
 
 export type RoomItem =
-  | { kind: 'user'; key: string; text: string; at?: number; pending?: boolean; failed?: boolean }
+  | { kind: 'user'; key: string; text: string; files?: RoomFile[]; at?: number; pending?: boolean; failed?: boolean }
   | { kind: 'member'; key: string; text: string; memberId: string; name: string; at?: number }
   | { kind: 'note'; key: string; text: string; tone?: 'error' }
 
@@ -139,12 +147,32 @@ function memberName(room: Room | null, memberId: string, fallback?: string): str
 }
 
 /** What a room's log shows: the user's and the bots' messages, and a line when a bot's turn failed. */
+/** A file a room message carries, from its `attachments` manifest. */
+export interface RoomFile {
+  attachmentId: string
+  kind: string
+  name: string
+  mime?: string
+}
+
+export function roomFiles(payload: Record<string, unknown>): RoomFile[] {
+  const files: RoomFile[] = []
+  for (const raw of Array.isArray(payload.attachments) ? payload.attachments : []) {
+    const a = obj(raw)
+    const attachmentId = str(a?.attachment_id)
+    if (!a || !attachmentId) continue
+    files.push({ attachmentId, kind: str(a.kind) ?? 'file', name: str(a.name) ?? attachmentId, mime: str(a.mime) })
+  }
+  return files
+}
+
 export function roomItems(room: Room | null, events: readonly RoomEvent[]): RoomItem[] {
   const items: RoomItem[] = []
   for (const event of events) {
     const text = typeof event.payload.text === 'string' ? event.payload.text : ''
     if (event.kind === 'message.user') {
-      if (text.trim()) items.push({ kind: 'user', key: event.eventId, text, at: event.createdAt })
+      const files = roomFiles(event.payload)
+      if (text.trim() || files.length) items.push({ kind: 'user', key: event.eventId, text, ...(files.length ? { files } : {}), at: event.createdAt })
     } else if (event.kind === 'message.member') {
       const memberId = str(event.payload.member_id) ?? event.actor.id
       if (text.trim()) items.push({ kind: 'member', key: event.eventId, text, memberId, name: memberName(room, memberId, event.actor.displayName), at: event.createdAt })

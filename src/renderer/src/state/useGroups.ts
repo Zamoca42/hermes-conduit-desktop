@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { uploadRoomAttachments, type StagedAttachment } from './attachments'
 import {
   ROOM_POLL_MS,
   driverStatus,
@@ -39,7 +40,7 @@ export function useRooms(connected: boolean) {
       // A gateway without the method has no rooms; anything else is worth saying.
       const text = message(e)
       if (/method not found|unknown method|-32601/i.test(text)) {
-        setCapabilities({ supported: false, canStop: false })
+        setCapabilities({ supported: false, canStop: false, attachments: false })
         setRooms([])
       } else setError(text)
     }
@@ -73,6 +74,7 @@ export function useRooms(connected: boolean) {
 export interface PendingSend {
   eventId: string
   text: string
+  attachments: StagedAttachment[]
   failed?: string
 }
 
@@ -134,14 +136,16 @@ export function useRoom(room: Room | null, connected: boolean) {
   }, [roomId, connected, readLog, readState])
 
   const send = useCallback(
-    async (text: string, retryId?: string) => {
+    async (text: string, attachments: StagedAttachment[] = [], retryId?: string) => {
       const trimmed = text.trim()
-      if (!roomId || !trimmed) return
+      if (!roomId || (!trimmed && !attachments.length)) return
       // The event id is the retry key: the same id never posts twice.
       const eventId = retryId ?? uuid()
-      setPending(current => [...current.filter(p => p.eventId !== eventId), { eventId, text: trimmed }])
+      setPending(current => [...current.filter(p => p.eventId !== eventId), { eventId, text: trimmed, attachments }])
       try {
-        await window.conduit.rpc('groups.send', { room_id: roomId, event_id: eventId, payload: { text: trimmed, thread_id: eventId } })
+        const payload: Record<string, unknown> = { text: trimmed, thread_id: eventId }
+        if (attachments.length) payload.attachments = await uploadRoomAttachments((method, params) => window.conduit.rpc(method, params), roomId, attachments)
+        await window.conduit.rpc('groups.send', { room_id: roomId, event_id: eventId, payload })
         setStatus(current => ({ ...current, working: true }))
         await readLog(roomId, ticket.current)
       } catch (e) {
