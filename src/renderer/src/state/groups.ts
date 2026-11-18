@@ -5,6 +5,7 @@
  * with no window open. Read the phone's GroupChatModels.swift for the rest.
  */
 import type { Bot } from './bots'
+import { t } from '../../../shared/i18n'
 
 export const ROOM_MIN_MEMBERS = 2
 export const ROOM_MAX_MEMBERS = 6
@@ -154,11 +155,13 @@ export function roomItems(room: Room | null, events: readonly RoomEvent[]): Room
         kind: 'note',
         key: event.eventId,
         tone: 'error',
-        text: `${memberName(room, memberId, 'A bot')} couldn’t answer${reason ? `: ${reason}` : '.'}`
+        text: reason
+          ? t('{bot} couldn’t answer: {reason}', { bot: memberName(room, memberId, t('A bot')), reason })
+          : t('{bot} couldn’t answer.', { bot: memberName(room, memberId, t('A bot')) })
       })
     } else if (event.kind === 'room.renamed') {
       const name = str(event.payload.name)
-      if (name) items.push({ kind: 'note', key: event.eventId, text: `Renamed to ${name}` })
+      if (name) items.push({ kind: 'note', key: event.eventId, text: t('Renamed to {name}', { name }) })
     }
   }
   return items
@@ -197,9 +200,9 @@ export function roomMembers(bots: readonly Pick<Bot, 'name' | 'title'>[]): Recor
 
 /** The name a room gets when none is typed: its bots' names. */
 export function defaultRoomName(titles: readonly string[]): string {
-  if (titles.length <= 1) return titles[0] ?? 'New room'
-  if (titles.length === 2) return `${titles[0]} & ${titles[1]}`
-  return `${titles.slice(0, -1).join(', ')} & ${titles[titles.length - 1]}`
+  if (titles.length <= 1) return titles[0] ?? t('New room')
+  if (titles.length === 2) return t('{a} & {b}', { a: titles[0]!, b: titles[1]! })
+  return t('{a} & {b}', { a: titles.slice(0, -1).join(', '), b: titles[titles.length - 1]! })
 }
 
 /** The draft's members after a bot is dropped on another (or added by a click): in, once, up to six. */
@@ -217,8 +220,8 @@ export function dayLabel(at: number, now = Date.now()): string {
   const today = new Date(now)
   const start = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
   const days = Math.round((start(today) - start(day)) / 86_400_000)
-  if (days === 0) return 'Today'
-  if (days === 1) return 'Yesterday'
+  if (days === 0) return t('Today')
+  if (days === 1) return t('Yesterday')
   return day.toLocaleDateString(undefined, { weekday: days < 7 ? 'long' : undefined, month: 'short', day: 'numeric', year: day.getFullYear() === today.getFullYear() ? undefined : 'numeric' })
 }
 

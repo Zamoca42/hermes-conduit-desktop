@@ -7,6 +7,7 @@
 import { BrowserWindow, globalShortcut, screen, shell } from 'electron'
 import { join } from 'node:path'
 import { IPC } from '../shared/ipc'
+import { t } from '../shared/i18n'
 
 export const QUICK_ASK_ACCELERATOR = 'Alt+Space'
 
@@ -91,7 +92,7 @@ export class QuickAsk {
       skipTaskbar: true,
       alwaysOnTop: true,
       roundedCorners: true,
-      title: 'Quick ask',
+      title: t('Quick ask'),
       backgroundColor: '#00000000',
       transparent: process.platform !== 'linux',
       webPreferences: {

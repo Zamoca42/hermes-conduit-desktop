@@ -11,6 +11,7 @@ import { createHash, randomBytes } from 'node:crypto'
 import type { PairEvent, PairHost, SignInRequest } from '../shared/ipc'
 import type { Fetch } from './auth'
 import { b64u, inboxId, makePairKeys, openFromPhone, ownerAuthorization, pairLink, pairWords, type PairKeys } from './pairCrypto'
+import { t } from '../shared/i18n'
 
 export const DEFAULT_MAILBOX = 'https://rooms.milim.dev'
 export const PAIR_TTL_MS = 10 * 60_000
@@ -96,9 +97,9 @@ export class Pairing {
       await this.owner('DELETE', `/v1/inboxes/${inbox}/senders/${SENDER}`, undefined, keys).catch(() => undefined)
       await this.owner('PUT', `/v1/inboxes/${inbox}/senders/${SENDER}`, { token_sha256: b64u(createHash('sha256').update(token).digest()) }, keys)
     } catch (error) {
-      return { ok: false, error: `Couldn’t reach the pairing mailbox: ${(error as Error).message}` }
+      return { ok: false, error: t('Couldn’t reach the pairing mailbox: {reason}', { reason: (error as Error).message }) }
     }
-    if (mine !== this.run) return { ok: false, error: 'Cancelled.' }
+    if (mine !== this.run) return { ok: false, error: t('Cancelled.') }
     this.keys = keys
     this.inbox = inbox
     const expires = this.now + PAIR_TTL_MS
@@ -127,7 +128,7 @@ export class Pairing {
     // The phone's own host first, as it listed them.
     if (first) this.deps.switchHost(first)
     await this.cancel({ deleteInbox: true })
-    this.deps.onEvent(first ? { phase: 'done', error: failed.length ? failed.join('\n') : undefined } : { phase: 'failed', error: failed.join('\n') || 'Nothing to sign in to.' })
+    this.deps.onEvent(first ? { phase: 'done', error: failed.length ? failed.join('\n') : undefined } : { phase: 'failed', error: failed.join('\n') || t('Nothing to sign in to.') })
   }
 
   /** Stops waiting and takes the code back (the inbox too, once paired). */
@@ -183,7 +184,7 @@ export class Pairing {
       } catch (error) {
         if (mine !== this.run) return
         if (++failures >= 5) {
-          this.deps.onEvent({ phase: 'failed', error: `Lost the pairing mailbox: ${(error as Error).message}` })
+          this.deps.onEvent({ phase: 'failed', error: t('Lost the pairing mailbox: {reason}', { reason: (error as Error).message }) })
           await this.cancel()
           return
         }

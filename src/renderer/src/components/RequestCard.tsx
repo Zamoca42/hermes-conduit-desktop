@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { PendingRequest } from '@shared/ipc'
 import { approvalView, clarifyQuestions, lockedAnswers, type ClarifyQuestion } from '../state/needsYou'
 import { Icon } from './icons'
+import { t } from '@shared/i18n'
 
 /** An approval or a question Hermes is waiting on, answered here. */
 export function RequestCard({ request, chatTitle }: { request: PendingRequest; chatTitle?: string }) {
@@ -21,18 +22,18 @@ function ApprovalCard({ request, chatTitle }: { request: PendingRequest; chatTit
     setBusy(choice)
     setError(null)
     const ok = await window.conduit.answerRequest(request.id, { choice })
-    if (!ok) setError('This was already answered somewhere else.')
+    if (!ok) setError(t('This was already answered somewhere else.'))
     setBusy(null)
   }
 
   return (
-    <section className="ask" aria-label="Approval needed">
+    <section className="ask" aria-label={t('Approval needed')}>
       <header className="ask-head">
         <span className="ask-icon">
           <Icon name="code" />
         </span>
         <span className="ask-title">
-          Needs your OK{chatTitle ? <span className="ask-chat"> · {chatTitle}</span> : null}
+          {t('Needs your OK')}{chatTitle ? <span className="ask-chat"> · {chatTitle}</span> : null}
         </span>
       </header>
       <p className="ask-text">{view.description}</p>
@@ -63,7 +64,7 @@ function ClarifyCard({ request, chatTitle }: { request: PendingRequest; chatTitl
         answer
       })
       if (result?.status === 'expired') {
-        setError('Hermes stopped waiting for this.')
+        setError(t('Hermes stopped waiting for this.'))
         void window.conduit.dismissRequest(request.id)
         return
       }
@@ -81,13 +82,13 @@ function ClarifyCard({ request, chatTitle }: { request: PendingRequest; chatTitl
   }
 
   return (
-    <section className="ask" aria-label="Question from Hermes">
+    <section className="ask" aria-label={t('Question from Hermes')}>
       <header className="ask-head">
         <span className="ask-icon">
           <Icon name="chats" />
         </span>
         <span className="ask-title">
-          {questions.length > 1 ? `${questions.length} questions` : 'A question'}
+          {questions.length > 1 ? t('{count} questions', { count: questions.length }) : t('A question')}
           {chatTitle ? <span className="ask-chat"> · {chatTitle}</span> : null}
         </span>
       </header>
@@ -96,7 +97,7 @@ function ClarifyCard({ request, chatTitle }: { request: PendingRequest; chatTitl
       ))}
       <div className="ask-actions end">
         <button className="ask-btn plain" onClick={() => void skipAll()}>
-          Skip {questions.length > 1 ? 'all' : ''}
+          {questions.length > 1 ? t('Skip all') : t('Skip')}
         </button>
       </div>
       {error ? <p className="ask-error">{error}</p> : null}
@@ -123,7 +124,7 @@ function Question({
       <p className="ask-text">{question.question}</p>
       {done ? (
         <p className="ask-locked">
-          <Icon name="check" /> {locked === null ? 'Skipped' : locked}
+          <Icon name="check" /> {locked === null ? t('Skipped') : locked}
         </p>
       ) : (
         <>
@@ -158,14 +159,14 @@ function Question({
             <input
               value={own}
               onChange={e => setOwn(e.target.value)}
-              placeholder={question.choices.length ? 'Or type your own answer' : 'Type your answer'}
-              aria-label="Your answer"
+              placeholder={question.choices.length ? t('Or type your own answer') : t('Type your answer')}
+              aria-label={t('Your answer')}
             />
             <button type="submit" className="ask-btn primary" disabled={!own.trim() && !(question.multiSelect && picked.length)}>
-              Answer
+              {t('Answer')}
             </button>
             <button type="button" className="ask-btn plain" onClick={() => onAnswer(null)}>
-              Skip
+              {t('Skip')}
             </button>
           </form>
         </>

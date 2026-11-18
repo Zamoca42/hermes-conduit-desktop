@@ -965,6 +965,16 @@ a:hover {
   margin: 0;
 }
 
+.language-select {
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
 .secondary {
   height: 34px;
   padding: 0 16px;

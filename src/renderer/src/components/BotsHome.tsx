@@ -12,6 +12,7 @@ import { starterFace } from "../state/starterFaces";
 import { useAvatar } from "../state/useBots";
 import { Icon } from "./icons";
 import { StarterFaceArt } from "./StarterFaceArt";
+import { t } from "@shared/i18n";
 
 const BOT_DRAG = "application/x-conduit-bot";
 
@@ -199,12 +200,12 @@ export function BotsHome({
     <main className={`bots${draft ? " drafting" : ""}`}>
       <div className="bots-scroll">
         <div className={`bots-inner ${layout}`}>
-          <h1>Bots</h1>
+          <h1>{t('Bots')}</h1>
           {bots === null && !error ? (
-            <div className="empty">Loading your bots…</div>
+            <div className="empty">{t('Loading your bots…')}</div>
           ) : null}
           {error ? (
-            <div className="empty">Couldn’t load your bots: {error}</div>
+            <div className="empty">{t('Couldn’t load your bots: {error}', { error })}</div>
           ) : null}
           {bots && layout === "one" && bots[0] ? (
             <OneBot
@@ -232,10 +233,10 @@ export function BotsHome({
           ) : null}
           {rooms && (rooms.length > 0 || canDrag) ? (
             <section className="rooms">
-              <h2>Group chats</h2>
+              <h2>{t('Group chats')}</h2>
               {rooms.length === 0 && !draft ? (
                 <p className="meta hint">
-                  Drag one bot onto another to start a group chat.
+                  {t('Drag one bot onto another to start a group chat.')}
                 </p>
               ) : null}
               <div className="rooms-grid">
@@ -257,7 +258,7 @@ export function BotsHome({
                 {draft ? (
                   <div
                     className="room-tile starting"
-                    aria-label="Group chat being started"
+                    aria-label={t('Group chat being started')}
                   >
                     <RoomFaces
                       room={{
@@ -270,7 +271,7 @@ export function BotsHome({
                       size={44}
                     />
                     <span className="bot-name">
-                      {draft.name.trim() || "New room"}
+                      {draft.name.trim() || t('New room')}
                     </span>
                   </div>
                 ) : null}
@@ -298,7 +299,7 @@ export function BotsHome({
                 key={bot.name}
                 type="button"
                 className="draft-face"
-                title={`Take ${bot.title} out`}
+                title={t('Take {name} out', { name: bot.title })}
                 onClick={() => leave(bot.name)}
                 disabled={draft.busy}
               >
@@ -310,10 +311,10 @@ export function BotsHome({
             ))}
             <span className="meta">
               {draftBots.length < ROOM_MIN_MEMBERS
-                ? "Drop or click one more bot."
+                ? t('Drop or click one more bot.')
                 : draftBots.length >= ROOM_MAX_MEMBERS
-                  ? "Six is the most a room holds."
-                  : "Click or drop more bots to add them."}
+                  ? t('Six is the most a room holds.')
+                  : t('Click or drop more bots to add them.')}
             </span>
           </div>
           <input
@@ -322,9 +323,9 @@ export function BotsHome({
             placeholder={
               draftBots.length
                 ? defaultRoomName(draftBots.map((b) => b.title))
-                : "Room name"
+                : t('Room name')
             }
-            aria-label="Group chat name"
+            aria-label={t('Group chat name')}
             disabled={draft.busy}
             autoFocus
           />
@@ -338,14 +339,14 @@ export function BotsHome({
               onClick={() => setDraft(null)}
               disabled={draft.busy}
             >
-              Cancel
+              {t('Cancel')}
             </button>
             <button
               type="submit"
               className="primary"
               disabled={draftBots.length < ROOM_MIN_MEMBERS || draft.busy}
             >
-              {draft.busy ? "Creating…" : "Create"}
+              {draft.busy ? t('Creating…') : t('Create')}
             </button>
           </div>
         </form>
@@ -377,13 +378,13 @@ function OneBot({
       <button
         className="bot-hero-face"
         onClick={() => onOpen(bot)}
-        aria-label={`Open ${bot.title}`}
+        aria-label={t('Open {name}', { name: bot.title })}
       >
         <BotAvatar bot={bot} size={168} />
       </button>
       <h2>{bot.title}</h2>
       {running ? (
-        <span className="running">Working</span>
+        <span className="running">{t('Working')}</span>
       ) : bot.description ? (
         <p className="meta">{bot.description}</p>
       ) : null}
@@ -399,13 +400,13 @@ function OneBot({
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={`Ask ${bot.title}…`}
-          aria-label={`Ask ${bot.title}`}
+          placeholder={t('Ask {name}…', { name: bot.title })}
+          aria-label={t('Ask {name}', { name: bot.title })}
         />
         <button
           type="submit"
           className="round send"
-          aria-label="Send"
+          aria-label={t('Send')}
           disabled={!text.trim()}
         >
           <Icon name="send" />
@@ -451,19 +452,19 @@ function BotTile({
       </span>
       <span className="bot-name">
         {bot.pinned ? (
-          <span className="pin" aria-label="Pinned">
+          <span className="pin" aria-label={t('Pinned')}>
             •
           </span>
         ) : null}
         {bot.title}
       </span>
       {running ? (
-        <span className="running">Working</span>
+        <span className="running">{t('Working')}</span>
       ) : (
         <span className="meta bot-line">
           {bot.lastLine ??
             bot.description ??
-            (bot.model ? bot.model : "No chats yet")}
+            (bot.model ? bot.model : t('No chats yet'))}
         </span>
       )}
       {bot.lastActive ? (

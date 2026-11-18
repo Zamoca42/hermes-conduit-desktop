@@ -6,6 +6,7 @@ import type { TranscriptItem, TranscriptState } from '../state/transcript'
 import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
+import { t } from '@shared/i18n'
 
 const MEDIA_ICONS: Record<ReturnType<typeof mediaKind>, IconName> = { image: 'image', audio: 'audio', video: 'video', file: 'file' }
 
@@ -65,18 +66,18 @@ export function clock(ms?: number): string {
 /** "terminal" → "Ran a command", the way the phone names its tool steps. */
 function toolTitle(name: string, done: boolean): string {
   const known: Record<string, [string, string]> = {
-    terminal: ['Running a command', 'Ran a command'],
-    execute_code: ['Running code', 'Ran code'],
-    read_file: ['Reading a file', 'Read a file'],
-    write_file: ['Writing a file', 'Wrote a file'],
-    patch: ['Editing a file', 'Edited a file'],
-    search_files: ['Searching files', 'Searched files'],
-    web_search: ['Searching the web', 'Searched the web'],
-    web_extract: ['Reading a page', 'Read a page'],
-    browser_navigate: ['Opening a page', 'Opened a page'],
-    memory: ['Updating memory', 'Updated memory'],
-    todo: ['Updating the plan', 'Updated the plan'],
-    delegate_task: ['Handing off a task', 'Handed off a task']
+    terminal: [t('Running a command'), t('Ran a command')],
+    execute_code: [t('Running code'), t('Ran code')],
+    read_file: [t('Reading a file'), t('Read a file')],
+    write_file: [t('Writing a file'), t('Wrote a file')],
+    patch: [t('Editing a file'), t('Edited a file')],
+    search_files: [t('Searching files'), t('Searched files')],
+    web_search: [t('Searching the web'), t('Searched the web')],
+    web_extract: [t('Reading a page'), t('Read a page')],
+    browser_navigate: [t('Opening a page'), t('Opened a page')],
+    memory: [t('Updating memory'), t('Updated memory')],
+    todo: [t('Updating the plan'), t('Updated the plan')],
+    delegate_task: [t('Handing off a task'), t('Handed off a task')]
   }
   const pair = known[name]
   if (pair) return done ? pair[1] : pair[0]
@@ -91,7 +92,7 @@ function Item({ item }: { item: TranscriptItem }) {
         <div className={`user${item.pending ? ' pending' : ''}`}>
           {item.attachments?.length ? <AttachmentChips attachments={item.attachments} /> : null}
           {item.text ? <div className="bubble">{item.text}</div> : null}
-          <span className="time">{item.pending ? 'Sending…' : clock(item.at)}</span>
+          <span className="time">{item.pending ? t('Sending…') : clock(item.at)}</span>
         </div>
       )
     case 'assistant':
@@ -105,8 +106,8 @@ function Item({ item }: { item: TranscriptItem }) {
         <details className="thinking">
           <summary>
             <Icon name="chats" />
-            {item.streaming ? 'Thinking…' : 'Thought'}
-            <span className="show">Show</span>
+            {item.streaming ? t('Thinking…') : t('Thought')}
+            <span className="show">{t('Show')}</span>
           </summary>
           <div className="thinking-text">{item.text}</div>
         </details>
@@ -167,12 +168,12 @@ export function Transcript({
   return (
     <div className="transcript" ref={scroller} aria-live="polite">
       <div className="transcript-inner">
-        {loading ? <div className="notice">Loading…</div> : null}
+        {loading ? <div className="notice">{t('Loading…')}</div> : null}
         {error ? <div className="notice error">{error}</div> : null}
         {!loading && !error && state.items.length === 0 ? (
           <div className="welcome">
-            <h2>What can Hermes do for you?</h2>
-            <span>Ask anything. Enter sends, Shift Enter adds a line.</span>
+            <h2>{t('What can Hermes do for you?')}</h2>
+            <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
           </div>
         ) : null}
         {state.items.map(item => (

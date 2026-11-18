@@ -1,14 +1,16 @@
 import { BrowserWindow, Menu, app, globalShortcut, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import WebSocket from 'ws'
-import { IPC, type GatewayEventMessage, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
+import { IPC, type GatewayEventMessage, type LanguageChoice, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
 import { probeHost } from './auth'
 import { Connection } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
+import { chooseLanguage, languageChoice, resolvedLanguage } from './settings'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
+import { setLanguage, t } from '../shared/i18n'
 
 const isMac = process.platform === 'darwin'
 let mainWindow: BrowserWindow | null = null
@@ -116,6 +118,18 @@ function registerIpc(): void {
   ipcMain.handle(IPC.requests, () => connection.requests())
   ipcMain.on(IPC.setWaiting, (_event, count: number) => tray.setWaiting(Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0))
   ipcMain.on(IPC.windowShow, () => showWindow())
+  ipcMain.on(IPC.language, event => {
+    const choice = languageChoice()
+    event.returnValue = { choice, resolved: resolvedLanguage(choice) }
+  })
+  ipcMain.on(IPC.setLanguage, (_event, choice: LanguageChoice) => {
+    chooseLanguage(choice)
+    if (isMac) Menu.setApplicationMenu(macMenu())
+    tray.refresh()
+    for (const window of BrowserWindow.getAllWindows()) {
+      if (!window.isDestroyed()) window.webContents.reload()
+    }
+  })
   ipcMain.on(IPC.openChat, (_event, chat: OpenChatRequest) => {
     quickAsk.hide()
     showWindow()
@@ -174,6 +188,7 @@ if (!app.requestSingleInstanceLock()) {
   app.on('will-quit', () => globalShortcut.unregisterAll())
   app.setAppUserModelId('dev.conduit.desktop')
   void app.whenReady().then(() => {
+    setLanguage(resolvedLanguage())
     registerIpc()
     createWindow()
     tray.create()
@@ -200,7 +215,7 @@ function macMenu(): Menu {
   }
   const template: MenuItemConstructorOptions[] = [
     { role: 'appMenu' },
-    { label: 'File', submenu: [{ label: 'New Chat', accelerator: 'Cmd+N', click: command('new-chat') }, { type: 'separator' }, { role: 'close' }] },
+    { label: t('File'), submenu: [{ label: t('New Chat'), accelerator: 'Cmd+N', click: command('new-chat') }, { type: 'separator' }, { role: 'close' }] },
     { role: 'editMenu' },
     { role: 'viewMenu' },
     { role: 'windowMenu' }

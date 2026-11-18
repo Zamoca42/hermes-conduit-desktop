@@ -3,6 +3,7 @@
  * profile, newest activity first), with the gateway's `session.list` as the
  * fallback an older dashboard needs, grouped the way the phone groups them.
  */
+import { t } from '../../../shared/i18n'
 import { cleanTitle, previewText } from './text'
 
 export interface ChatRow {
@@ -97,7 +98,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
     }
     rows.push({
       id,
-      title: title || preview || 'Untitled chat',
+      title: title || preview || t('Untitled chat'),
       preview: title && preview && preview !== title ? preview : undefined,
       activeAt,
       profile: typeof obj.profile === 'string' ? obj.profile : undefined,
@@ -134,9 +135,16 @@ export function sectionRows(rows: ChatRow[], now = Date.now()): ChatSection[] {
             : 'Older'
     buckets[bucket]!.push(row)
   }
+  const titles: Record<string, string> = {
+    Pinned: t('Pinned'),
+    Today: t('Today'),
+    Yesterday: t('Yesterday'),
+    'Previous 7 days': t('Previous 7 days'),
+    Older: t('Older')
+  }
   return Object.entries(buckets)
     .filter(([, list]) => list.length > 0)
-    .map(([title, list]) => ({ title, rows: list }))
+    .map(([bucket, list]) => ({ title: titles[bucket]!, rows: list }))
 }
 
 /** 8:07 AM today, a weekday this week, else a short date. */
