@@ -19,6 +19,8 @@ const api: ConduitApi = {
   probe: url => ipcRenderer.invoke(IPC.probe, url),
   signIn: request => ipcRenderer.invoke(IPC.signIn, request),
   signOut: () => ipcRenderer.invoke(IPC.signOut),
+  switchHost: (url: string) => ipcRenderer.invoke(IPC.switchHost, url),
+  removeHost: (url: string) => ipcRenderer.invoke(IPC.removeHost, url),
   status: () => ipcRenderer.invoke(IPC.status),
   reconnect: () => ipcRenderer.invoke(IPC.reconnect),
   async rpc<T>(method: string, params?: Record<string, unknown>) {

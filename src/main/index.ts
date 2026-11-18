@@ -120,6 +120,10 @@ function registerIpc(): void {
   ipcMain.handle(IPC.probe, (_event, url: string) => probeHost(url, globalThis.fetch.bind(globalThis)))
   ipcMain.handle(IPC.signIn, (_event, request: SignInRequest) => connection.signIn(request))
   ipcMain.handle(IPC.signOut, () => connection.signOut())
+  ipcMain.handle(IPC.switchHost, (_e, url: unknown) => typeof url === 'string' && connection.switchHost(url))
+  ipcMain.handle(IPC.removeHost, (_e, url: unknown) => {
+    if (typeof url === 'string') connection.removeHost(url)
+  })
   ipcMain.handle(IPC.status, () => connection.current())
   ipcMain.handle(IPC.reconnect, () => connection.reconnectNow())
   ipcMain.handle(IPC.rpc, async (_event, method: string, params?: Record<string, unknown>): Promise<RpcOutcome> => {

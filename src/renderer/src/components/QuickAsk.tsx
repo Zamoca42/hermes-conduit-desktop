@@ -28,7 +28,7 @@ export function QuickAsk() {
       </div>
     )
   }
-  return <QuickChat key={round} status={status} onNew={() => setRound(r => r + 1)} />
+  return <QuickChat key={`${round}-${status.url}`} status={status} onNew={() => setRound(r => r + 1)} />
 }
 
 function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => void }) {

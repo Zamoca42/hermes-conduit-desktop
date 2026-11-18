@@ -7,11 +7,11 @@ import { RoomView } from './components/RoomView'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
-import { TitleBar } from './components/TitleBar'
+import { TitleBar, hostName } from './components/TitleBar'
 import { Transcript } from './components/Transcript'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
-import { useBots } from './state/useBots'
+import { forgetAvatars, useBots } from './state/useBots'
 import type { Room } from './state/groups'
 import { useRooms } from './state/useGroups'
 import { useChat } from './state/useChat'
@@ -30,19 +30,38 @@ export function App() {
     return off
   }, [])
 
+  const [adding, setAdding] = useState(false)
+  // A new host signed in (or the sign-in screen otherwise left): back to the app.
+  const url = status?.url
+  useEffect(() => setAdding(false), [url])
+
   if (!status) return <div className="app" />
   const signedOut = status.phase === 'signed-out' || (status.phase === 'failed' && !status.url)
   return (
     <div className="app">
-      <TitleBar subtitle={signedOut ? undefined : status.hostLabel} />
-      {signedOut || status.phase === 'failed' ? <SignIn notice={status.error} /> : <Shell status={status} />}
+      <TitleBar
+        subtitle={signedOut ? undefined : status.hostLabel}
+        hosts={status.hosts}
+        currentUrl={status.url}
+        onSwitch={url => void window.conduit.switchHost(url)}
+      />
+      {adding ? (
+        <SignIn onCancel={() => setAdding(false)} />
+      ) : signedOut || status.phase === 'failed' ? (
+        <SignIn notice={status.error} />
+      ) : (
+        // Each host gets a fresh window state: its chats, bots and rooms are its own.
+        <Shell key={status.url} status={status} onAddHost={() => setAdding(true)} />
+      )}
     </div>
   )
 }
 
 type Section = 'bots' | 'room' | 'chats' | 'needs' | 'settings'
 
-function Shell({ status }: { status: ConnectionStatus }) {
+function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
+  // Before any picture is read for this host.
+  useState(forgetAvatars)
   const connected = status.phase === 'open'
   const [section, setSection] = useState<Section>('chats')
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
@@ -334,20 +353,52 @@ function Shell({ status }: { status: ConnectionStatus }) {
             openLiveId={chat.liveId}
           />
         ) : (
-          <Settings status={status} />
+          <Settings status={status} onAddHost={onAddHost} />
         )}
       </div>
     </>
   )
 }
 
-function Settings({ status }: { status: ConnectionStatus }) {
+function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const methods = { password: 'User name and password', token: 'Session token', open: 'No sign-in' }
   return (
     <main className="settings">
       <h1>Settings</h1>
       <dl>
+        <dt>Hermes</dt>
+        <dd>
+          <ul className="hosts">
+            {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(host => (
+              <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
+                <span className="host-label">{hostName(host.url)}</span>
+                {host.username ? <span className="meta">{host.username}</span> : null}
+                <span className="spacer" />
+                {host.url === status.url ? (
+                  <span className="meta">Open</span>
+                ) : (
+                  <button className="link" onClick={() => void window.conduit.switchHost(host.url)}>
+                    Switch
+                  </button>
+                )}
+                {host.url !== status.url ? (
+                  <button
+                    className="link danger"
+                    onClick={() => {
+                      if (window.confirm(`Sign out of ${hostName(host.url)} on this computer?`)) void window.conduit.removeHost(host.url)
+                    }}
+                  >
+                    Sign out
+                  </button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+          <button className="link add-host" onClick={onAddHost}>
+            Add another Hermes…
+          </button>
+        </dd>
         <dt>Dashboard</dt>
         <dd>{status.url}</dd>
         <dt>Signed in with</dt>
@@ -376,7 +427,7 @@ function Settings({ status }: { status: ConnectionStatus }) {
         </dd>
       </dl>
       <button className="secondary" onClick={() => void window.conduit.signOut()}>
-        Sign out
+        {(status.hosts?.length ?? 0) > 1 ? `Sign out of ${status.hostLabel}` : 'Sign out'}
       </button>
     </main>
   )

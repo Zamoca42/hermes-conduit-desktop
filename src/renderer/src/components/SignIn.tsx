@@ -8,7 +8,8 @@ const methodLabels: Record<SignInMethod, string> = {
 }
 
 /** Connect to a Hermes dashboard: its address first, then whatever sign-in it asks for. */
-export function SignIn({ notice }: { notice?: string }) {
+/** `onCancel`, when adding another host, goes back to the one that's open. */
+export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () => void }) {
   const [address, setAddress] = useState('')
   const [url, setUrl] = useState<string | null>(null)
   const [methods, setMethods] = useState<SignInMethod[]>([])
@@ -55,7 +56,7 @@ export function SignIn({ notice }: { notice?: string }) {
     <div className="signin">
       {url === null ? (
         <form className="signin-card" onSubmit={findHost}>
-          <h1>Connect to Hermes</h1>
+          <h1>{onCancel ? 'Add another Hermes' : 'Connect to Hermes'}</h1>
           <p>Enter the address of your Hermes dashboard, the same one the Conduit app on your phone uses.</p>
           <label className="field">
             Dashboard address
@@ -72,6 +73,11 @@ export function SignIn({ notice }: { notice?: string }) {
           <button className="primary" type="submit" disabled={busy || !address.trim()}>
             {busy ? 'Connecting…' : 'Continue'}
           </button>
+          {onCancel ? (
+            <button className="link-button" type="button" onClick={onCancel}>
+              Cancel
+            </button>
+          ) : null}
         </form>
       ) : (
         <form className="signin-card" onSubmit={submit}>

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Connection, type SavedConnection } from '../src/main/connection'
 import type { Fetch } from '../src/main/auth'
+import { createHostList } from '../src/main/hosts'
 import type { ConnectionStatus, PendingRequest } from '../src/shared/ipc'
 import type { WebSocketLike } from '../src/vendor/hermes-shared/json-rpc-gateway'
 
@@ -48,7 +49,7 @@ const json = (body: unknown, status = 200, headers: Record<string, string> = {})
 
 const tick = () => new Promise(resolve => setTimeout(resolve, 5))
 
-function harness(opts: { ticketsBeforeExpiry?: number } = {}) {
+function harness(opts: { ticketsBeforeExpiry?: number; hosts?: boolean } = {}) {
   let session = 0
   let tickets = 0
   const log: string[] = []
@@ -75,9 +76,11 @@ function harness(opts: { ticketsBeforeExpiry?: number } = {}) {
   let saved: SavedConnection | null = null
   const timers: (() => void)[] = []
   const requests: PendingRequest[][] = []
+  const written: { hosts: string[]; active: string | null }[] = []
+  const hostList = createHostList((hosts, active) => written.push({ hosts: hosts.map(h => h.url), active }), { hosts: [], active: null })
   const connection = new Connection({
     fetch: fetchImpl,
-    store: { load: () => saved, save: s => (saved = { ...s }), clear: () => (saved = null) },
+    store: opts.hosts ? hostList : { load: () => saved, save: s => (saved = { ...s }), clear: () => (saved = null) },
     createSocket: (url, headers) => {
       const socket = new FakeSocket(url, headers)
       sockets.push(socket)
@@ -89,7 +92,7 @@ function harness(opts: { ticketsBeforeExpiry?: number } = {}) {
     setTimeout: fn => timers.push(fn),
     clearTimeout: () => undefined
   })
-  return { connection, sockets, statuses, log, timers, requests, saved: () => saved }
+  return { connection, sockets, statuses, log, timers, requests, saved: () => saved, written, hostList }
 }
 
 describe('the connection', () => {
@@ -198,5 +201,48 @@ describe('Needs you requests', () => {
     h.connection.signOut()
     expect(h.connection.requests()).toEqual([])
     expect(h.requests.at(-1)).toEqual([])
+  })
+})
+
+describe('more than one Hermes', () => {
+  it('keeps each host signed in and switches between them', async () => {
+    const h = harness({ hosts: true })
+    await h.connection.signIn({ url: 'https://one', method: 'token', token: 'a' })
+    await tick()
+    await h.connection.signIn({ url: 'https://two', method: 'token', token: 'b' })
+    await tick()
+    expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://two', hosts: [{ url: 'https://one' }, { url: 'https://two' }] })
+    expect(h.connection.switchHost('https://one')).toBe(true)
+    await tick()
+    expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://one' })
+    expect(h.sockets.at(-1)!.url).toBe('wss://one/api/ws?token=a')
+    expect(h.written.at(-1)).toEqual({ hosts: ['https://one', 'https://two'], active: 'https://one' })
+    expect(h.connection.switchHost('https://nowhere')).toBe(false)
+  })
+
+  it('signing out of one opens the next, and removing another keeps this one open', async () => {
+    const h = harness({ hosts: true })
+    await h.connection.signIn({ url: 'https://one', method: 'token', token: 'a' })
+    await h.connection.signIn({ url: 'https://two', method: 'token', token: 'b' })
+    await h.connection.signIn({ url: 'https://three', method: 'token', token: 'c' })
+    await tick()
+    h.connection.removeHost('https://one')
+    expect(h.connection.current()).toMatchObject({ url: 'https://three', hosts: [{ url: 'https://two' }, { url: 'https://three' }] })
+    h.connection.signOut()
+    await tick()
+    expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://two', hosts: [{ url: 'https://two' }] })
+    h.connection.signOut()
+    expect(h.connection.current()).toEqual({ phase: 'signed-out' })
+  })
+
+  it('a failed sign-in to another host goes back to the open one', async () => {
+    const h = harness({ hosts: true })
+    await h.connection.signIn({ url: 'https://one', method: 'token', token: 'a' })
+    await tick()
+    const result = await h.connection.signIn({ url: 'https://two', method: 'password', username: 'eric', password: '' })
+    expect(result.ok).toBe(false)
+    await tick()
+    expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://one' })
+    expect(h.hostList.list!()).toEqual([{ url: 'https://one', method: 'token', username: undefined }])
   })
 })

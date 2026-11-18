@@ -37,6 +37,11 @@ export function useBots(connected: boolean) {
 
 const avatarCache = new Map<string, Promise<string | null>>()
 
+/** Pictures are a host's own: forget them when another host opens. */
+export function forgetAvatars(): void {
+  avatarCache.clear()
+}
+
 /** A bot's picture from its profile's asset store, read once per launch. */
 export function useAvatar(name: string, hasAvatar: boolean): string | null {
   const [url, setUrl] = useState<string | null>(null)
