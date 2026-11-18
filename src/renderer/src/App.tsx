@@ -21,6 +21,7 @@ import { useRequests, useWaiting } from './state/useNeedsYou'
 import { isWatching, notificationsEnabled, requestNotification, setNotificationsEnabled, turnNotification, type ChatRef, type NotificationSpec } from './state/notifications'
 import { cleanTitle } from './state/text'
 import type { StagedAttachment } from './state/attachments'
+import type { QuoteRequest } from './state/quote'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -150,6 +151,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
   const roster = useBots(connected)
+  const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
+  const [quote, setQuote] = useState<QuoteRequest | null>(null)
   const openBot = useCallback((bot: Bot) => {
     setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: !!bot.botChatId })
     setSection('chats')
@@ -353,9 +356,18 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             />
             <main className="chat" ref={chatPane}>
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
-              <Transcript state={transcript} loading={loading} error={error} requests={openRequests} profile={selected.profile} />
+              <Transcript
+                state={transcript}
+                loading={loading}
+                error={error}
+                requests={openRequests}
+                profile={selected.profile}
+                author={botTitle}
+                onQuote={setQuote}
+              />
               <Composer
-                placeholder={t('Message {name}…', { name: roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes' })}
+                placeholder={t('Message {name}…', { name: botTitle })}
+                quote={quote}
                 running={transcript.running}
                 disabled={!connected}
                 model={chat.model}

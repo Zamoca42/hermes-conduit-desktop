@@ -44,6 +44,19 @@ const paths = {
   video: <path d="M4 7h11v10H4zM15 10.5l5-3v9l-5-3" />,
   link: <path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  more: (
+    <>
+      <circle cx="6" cy="12" r="1.2" />
+      <circle cx="12" cy="12" r="1.2" />
+      <circle cx="18" cy="12" r="1.2" />
+    </>
+  ),
+  copy: (
+    <>
+      <rect x="8" y="8" width="12" height="12" rx="2" />
+      <path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2" />
+    </>
+  ),
   spinner: <path d="M12 4a8 8 0 108 8" />,
   attach: <path d="M12 5v14M5 12h14" />,
   mic: (

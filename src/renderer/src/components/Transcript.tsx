@@ -1,4 +1,4 @@
-import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { mediaKind, splitReply } from '../state/media'
 import { baseName, type Attachment } from '../state/text'
 import { displayName } from '../state/attachments'
@@ -9,6 +9,109 @@ import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
 import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
 import { locale, t } from '@shared/i18n'
+import { blockquote, copyableReply, excerpt, parseReplyEnvelope, sameQuotedText, type QuoteRequest } from '../state/quote'
+
+export interface MessageMenuItem {
+  label: string
+  onSelect: () => void
+}
+
+/** Copy, and ⋯ with the rest (Quote, Retry…), under a message on hover. */
+export function MessageActions({ copy, menu = [] }: { copy: string; menu?: MessageMenuItem[] }) {
+  const [copied, setCopied] = useState(false)
+  const [open, setOpen] = useState(false)
+  useEffect(() => {
+    if (!copied) return
+    const timer = setTimeout(() => setCopied(false), 1500)
+    return () => clearTimeout(timer)
+  }, [copied])
+  useEffect(() => {
+    if (!open) return
+    const close = () => setOpen(false)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
+    window.addEventListener('click', close)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('click', close)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+  return (
+    <div className={`message-actions${open ? ' open' : ''}`}>
+      <button
+        className="message-action"
+        aria-label={copied ? t('Copied') : t('Copy')}
+        title={copied ? t('Copied') : t('Copy')}
+        onClick={() => {
+          window.conduit.copyText(copy)
+          setCopied(true)
+        }}
+      >
+        <Icon name={copied ? 'check' : 'copy'} />
+      </button>
+      {menu.length ? (
+        <span className="message-more">
+          <button
+            className="message-action"
+            aria-label={t('More')}
+            title={t('More')}
+            aria-haspopup="menu"
+            aria-expanded={open}
+            onClick={e => {
+              e.stopPropagation()
+              setOpen(o => !o)
+            }}
+          >
+            <Icon name="more" />
+          </button>
+          {open ? (
+            <div className="host-menu message-menu" role="menu">
+              {menu.map(item => (
+                <button
+                  key={item.label}
+                  role="menuitem"
+                  onClick={() => {
+                    setOpen(false)
+                    item.onSelect()
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </span>
+      ) : null}
+    </div>
+  )
+}
+
+/** The "Replying to" card on a sent message: the quoted message in a line, a click away. */
+export function QuotedCard({ name, quote, onJump }: { name: string; quote: string; onJump?: () => void }) {
+  return (
+    <button className="quoted-card" title={onJump ? t('Show the message') : quote} onClick={onJump} disabled={!onJump}>
+      <span className="quoted-card-name">{t('Replying to {name}', { name })}</span>
+      <span className="quoted-card-text">{excerpt(quote)}</span>
+    </button>
+  )
+}
+
+/** Scrolls to the message a card quoted and flashes it. */
+export function revealMessage(container: HTMLElement | null, key: string | undefined) {
+  if (!container || !key) return
+  const el = container.querySelector<HTMLElement>(`[data-key="${CSS.escape(key)}"]`)
+  if (!el) return
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  el.classList.remove('flash')
+  void el.offsetWidth
+  el.classList.add('flash')
+}
+
+let quoteIds = 0
+/** A fresh quote request. */
+export function quoteRequest(content: { text: string } | { reply: { author: string; text: string } }): QuoteRequest {
+  return { id: ++quoteIds, ...content }
+}
 
 const MEDIA_ICONS: Record<ReturnType<typeof mediaKind>, IconName> = { image: 'image', audio: 'audio', video: 'video', file: 'file' }
 
@@ -109,20 +212,45 @@ function toolTitle(name: string, done: boolean): string {
   return done ? words.charAt(0).toUpperCase() + words.slice(1) : `${words.charAt(0).toUpperCase()}${words.slice(1)}…`
 }
 
-function Item({ item }: { item: TranscriptItem }) {
+interface ItemProps {
+  item: TranscriptItem
+  /** Who answers in this chat, for "Replying to". */
+  author: string
+  onQuote?: (request: QuoteRequest) => void
+  /** The card's click for a quote, when the quoted reply is loaded. */
+  jump: (quote: string) => (() => void) | undefined
+}
+
+function Item({ item, author, onQuote, jump }: ItemProps) {
   switch (item.kind) {
-    case 'user':
+    case 'user': {
+      const envelope = parseReplyEnvelope(item.text)
+      const words = envelope ? envelope.message : item.text
       return (
-        <div className={`user${item.pending ? ' pending' : ''}`}>
+        <div className={`user${item.pending ? ' pending' : ''}`} data-key={item.key}>
+          {envelope ? <QuotedCard name={author} quote={envelope.quote} onJump={jump(envelope.quote)} /> : null}
           {item.attachments?.length ? <AttachmentChips attachments={item.attachments} /> : null}
-          {item.text ? <div className="bubble">{item.text}</div> : null}
+          {words.trim() ? <div className="bubble">{words}</div> : null}
           <span className="time">{item.pending ? t('Sending…') : clock(item.at)}</span>
+          {!item.pending && words.trim() ? (
+            <MessageActions
+              copy={words}
+              menu={onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ text: blockquote(words) })) }] : []}
+            />
+          ) : null}
         </div>
       )
+    }
     case 'assistant':
       return (
-        <div className={`assistant${item.streaming ? ' streaming' : ''}`}>
+        <div className={`assistant${item.streaming ? ' streaming' : ''}`} data-key={item.key}>
           <Reply text={item.text} />
+          {!item.streaming && item.text.trim() ? (
+            <MessageActions
+              copy={copyableReply(item.text)}
+              menu={onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []}
+            />
+          ) : null}
         </div>
       )
     case 'thinking':
@@ -163,7 +291,9 @@ export function Transcript({
   loading,
   error,
   requests = [],
-  profile
+  profile,
+  author = 'Hermes',
+  onQuote
 }: {
   state: TranscriptState
   loading: boolean
@@ -172,6 +302,10 @@ export function Transcript({
   requests?: PendingRequest[]
   /** The chat's profile, whose files its pictures are read from. */
   profile?: string
+  /** Who answers in this chat, named on "Replying to". */
+  author?: string
+  /** Quote goes to the composer; without it there is only Copy. */
+  onQuote?: (request: QuoteRequest) => void
 }) {
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
@@ -186,6 +320,11 @@ export function Transcript({
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
+
+  const jump = (quote: string) => {
+    const target = state.items.find(i => i.kind === 'assistant' && sameQuotedText(i.text, quote))
+    return target ? () => revealMessage(scroller.current, target.key) : undefined
+  }
 
   useLayoutEffect(() => {
     const el = scroller.current
@@ -205,7 +344,7 @@ export function Transcript({
           </div>
         ) : null}
         {state.items.map(item => (
-          <Item key={item.key} item={item} />
+          <Item key={item.key} item={item} author={author} onQuote={onQuote} jump={jump} />
         ))}
         {requests.map(request => (
           <RequestCard key={request.id} request={request} />

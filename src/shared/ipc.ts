@@ -145,9 +145,10 @@ export interface ConduitApi {
   onOpenChat(listener: (chat: OpenChatRequest) => void): () => void
   /** The quick ask window was just shown: focus its field. */
   onQuickAskShown(listener: () => void): () => void
-  /** Grows the quick ask window for a reply, or shrinks it back to its field. */
-  /** true for a reply, false for the field alone, or the px the field and its staged files need. */
+  /** Sizes the quick ask window: true for a reply, false for the field alone, or the px the field and its staged files need. */
   setQuickAskExpanded(expanded: boolean | number): void
+  /** Puts text on the system clipboard (a message's Copy). */
+  copyText(text: string): void
   /** Hides the quick ask window. */
   hideQuickAsk(): void
   /** The quick ask shortcut, and whether the system let Conduit have it. */
@@ -183,6 +184,7 @@ export const IPC = {
   setWaiting: 'conduit:set-waiting',
   openChat: 'conduit:open-chat',
   hideQuickAsk: 'conduit:hide-quick-ask',
+  copyText: 'conduit:copy-text',
   quickAskShown: 'conduit:quick-ask-shown',
   quickAskExpanded: 'conduit:quick-ask-expanded',
   quickAskShortcut: 'conduit:quick-ask-shortcut',

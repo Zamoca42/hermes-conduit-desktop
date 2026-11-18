@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, app, globalShortcut, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
+import { BrowserWindow, Menu, app, clipboard, globalShortcut, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import WebSocket from 'ws'
 import { IPC, type GatewayEventMessage, type LanguageChoice, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
@@ -137,6 +137,9 @@ function registerIpc(): void {
     mainWindow?.webContents.send(IPC.openChat, chat)
   })
   ipcMain.on(IPC.hideQuickAsk, () => quickAsk.hide())
+  ipcMain.on(IPC.copyText, (_event, text: unknown) => {
+    if (typeof text === 'string') clipboard.writeText(text)
+  })
   ipcMain.on(IPC.quickAskExpanded, (_event, expanded: unknown) =>
     quickAsk.setExpanded(typeof expanded === 'number' ? expanded : expanded === true)
   )

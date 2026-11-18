@@ -5,7 +5,8 @@ import { Fragment } from "react";
 import { useRoom } from "../state/useGroups";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
-import { Reply, clock } from "./Transcript";
+import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
+import { blockquote, copyableReply, parseRoomReply, roomReplyText, sameQuotedText, type QuoteRequest } from "../state/quote";
 import { Icon } from "./icons";
 import { PictureImage, PictureProfile } from "./Picture";
 import { displayName, roomUploadProblem } from "../state/attachments";
@@ -98,6 +99,23 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
     if (el && pinned.current) el.scrollTop = el.scrollHeight;
   }, [items, pending, status.working]);
 
+  // A message replying to another: the "Replying to" card, then its own words.
+  const [quote, setQuote] = useState<QuoteRequest | null>(null);
+  const replies = useMemo(() => {
+    const map = new Map<string, { author: string; quote: string; message: string }>();
+    for (const item of items) {
+      if (item.kind !== "user") continue;
+      const reply = parseRoomReply(item.text);
+      if (reply) map.set(item.key, reply);
+    }
+    return map;
+  }, [items]);
+  const ownWords = (item: { key: string; text: string }) => replies.get(item.key)?.message ?? item.text;
+  const jump = (quoted: string) => {
+    const target = items.find((i) => i.kind === "member" && sameQuotedText(i.text, quoted));
+    return target ? () => revealMessage(scroller.current, target.key) : undefined;
+  };
+
   const names = room.members.map(
     (m) => m.displayName ?? m.profile ?? m.memberId,
   );
@@ -151,13 +169,26 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
               <Fragment key={item.key}>
                 {day}
                 {item.kind === "user" ? (
-                  <div key={item.key} className="user">
+                  <div key={item.key} className="user" data-key={item.key}>
+                    {replies.get(item.key) ? (
+                      <QuotedCard
+                        name={replies.get(item.key)!.author}
+                        quote={replies.get(item.key)!.quote}
+                        onJump={jump(replies.get(item.key)!.quote)}
+                      />
+                    ) : null}
                     {item.files ? <FileChips files={item.files} roomId={room.roomId} eventId={item.key} /> : null}
-                    {item.text.trim() ? <div className="bubble">{item.text}</div> : null}
+                    {ownWords(item).trim() ? <div className="bubble">{ownWords(item)}</div> : null}
                     <span className="time">{clock(item.at)}</span>
+                    {ownWords(item).trim() ? (
+                      <MessageActions
+                        copy={ownWords(item)}
+                        menu={[{ label: t('Quote'), onSelect: () => setQuote(quoteRequest({ text: blockquote(ownWords(item)) })) }]}
+                      />
+                    ) : null}
                   </div>
                 ) : item.kind === "member" ? (
-                  <div key={item.key} className="room-member">
+                  <div key={item.key} className="room-member" data-key={item.key}>
                     {memberBot(item.memberId) ? (
                       <BotAvatar bot={memberBot(item.memberId)!} size={30} />
                     ) : (
@@ -177,6 +208,10 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
                         >
                           <Reply text={item.text} />
                         </PictureProfile.Provider>
+                        <MessageActions
+                          copy={copyableReply(item.text)}
+                          menu={[{ label: t('Quote'), onSelect: () => setQuote(quoteRequest({ reply: { author: item.name, text: item.text } })) }]}
+                        />
                       </div>
                     </div>
                   </div>
@@ -206,7 +241,12 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
                   }))}
                 />
               ) : null}
-              {p.text ? <div className="bubble">{p.text}</div> : null}
+              {parseRoomReply(p.text) ? (
+                <QuotedCard name={parseRoomReply(p.text)!.author} quote={parseRoomReply(p.text)!.quote} />
+              ) : null}
+              {(parseRoomReply(p.text)?.message ?? p.text).trim() ? (
+                <div className="bubble">{parseRoomReply(p.text)?.message ?? p.text}</div>
+              ) : null}
               {p.failed ? (
                 <span className="time">
                   {t('Not sent: {reason}', { reason: p.failed })}{" "}
@@ -244,6 +284,8 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
         canAttach={canAttach && !room.linked}
         dropZone={pane}
         checkAttachments={roomUploadProblem}
+        quote={quote}
+        wrapReply={(reply, draft) => roomReplyText(reply.text, reply.author, draft)}
       />
     </main>
   );
