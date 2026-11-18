@@ -30,6 +30,7 @@ import {
   readOpenSessionToken,
   webSocketUrl
 } from './auth'
+import { cleanHeaders, httpsIssue, proxyFetch, withProxyHeaders, type ProxyHeaders } from './proxyHeaders'
 import { t } from '../shared/i18n'
 
 /** What we keep between launches. Secrets are encrypted by the store. */
@@ -40,6 +41,8 @@ export interface SavedConnection {
   password?: string
   token?: string
   cookies?: CookieJar
+  /** For a proxy in front of the dashboard (Cloudflare Access, Pangolin…); sent over HTTPS only. */
+  headers?: ProxyHeaders
 }
 
 export interface ConnectionStore {
@@ -145,14 +148,18 @@ export class Connection {
     } catch (error) {
       return { ok: false, error: (error as Error).message }
     }
-    const saved: SavedConnection = { url, method: request.method }
+    const cleaned = cleanHeaders(request.headers)
+    if (!cleaned.ok) return { ok: false, error: cleaned.error }
+    const insecure = httpsIssue(url, cleaned.headers)
+    if (insecure) return { ok: false, error: insecure }
+    const saved: SavedConnection = { url, method: request.method, headers: cleaned.headers }
     try {
       if (request.method === 'password') {
         const username = request.username?.trim() ?? ''
         if (!username || !request.password) return { ok: false, error: t('Enter your user name and password.') }
         saved.username = username
         saved.password = request.password
-        saved.cookies = await passwordLogin(url, username, request.password, this.deps.fetch)
+        saved.cookies = await passwordLogin(url, username, request.password, this.fetchFor(saved))
       } else if (request.method === 'token') {
         const token = request.token?.trim() ?? ''
         if (!token) return { ok: false, error: t('Paste the dashboard’s session token.') }
@@ -250,10 +257,10 @@ export class Connection {
       if (saved.method === 'password' && saved.cookies) headers.Cookie = cookieHeader(saved.cookies)
       if (saved.method === 'token' && saved.token) headers[SESSION_TOKEN_HEADER] = saved.token
       if (saved.method === 'open') {
-        this.openToken ??= await readOpenSessionToken(saved.url, this.deps.fetch)
+        this.openToken ??= await readOpenSessionToken(saved.url, this.fetchFor(saved))
         headers[SESSION_TOKEN_HEADER] = this.openToken
       }
-      return this.deps.fetch(endpoint(saved.url, path), {
+      return this.fetchFor(saved)(endpoint(saved.url, path), {
         method,
         headers,
         body: body === undefined ? undefined : JSON.stringify(body),
@@ -262,7 +269,7 @@ export class Connection {
     }
     let response = await send()
     if (response.status === 401 && saved.method === 'password' && saved.username && saved.password) {
-      this.keepCookies(saved, await passwordLogin(saved.url, saved.username, saved.password, this.deps.fetch))
+      this.keepCookies(saved, await passwordLogin(saved.url, saved.username, saved.password, this.fetchFor(saved)))
       response = await send()
     } else if (response.status === 401 && saved.method === 'open') {
       this.openToken = null
@@ -312,7 +319,7 @@ export class Connection {
     const headers: Record<string, string> = { [CONDUIT_CLIENT_HEADER]: 'conduit' }
     if (saved.method === 'password' && saved.cookies) headers.Cookie = cookieHeader(saved.cookies)
     const client = new JsonRpcGatewayClient({
-      socketFactory: url => this.deps.createSocket(url, headers),
+      socketFactory: url => this.deps.createSocket(url, withProxyHeaders(headers, url, saved.url, saved.headers)),
       requestIdPrefix: 'c'
     })
     this.client = client
@@ -407,25 +414,30 @@ export class Connection {
   }
 
   /** The socket address with a fresh credential: a ticket per socket for a password sign-in. */
+  /** The fetch for this host: with its proxy's headers, when it has any. */
+  private fetchFor(saved: SavedConnection): Fetch {
+    return proxyFetch(this.deps.fetch, saved.url, saved.headers)
+  }
+
   private async socketUrl(saved: SavedConnection): Promise<string> {
     switch (saved.method) {
       case 'open':
-        this.openToken = await readOpenSessionToken(saved.url, this.deps.fetch)
+        this.openToken = await readOpenSessionToken(saved.url, this.fetchFor(saved))
         return webSocketUrl(saved.url, { token: this.openToken })
       case 'token':
         return webSocketUrl(saved.url, { token: saved.token ?? '' })
       case 'password': {
         let jar = saved.cookies ?? {}
         try {
-          const minted = await mintTicket(saved.url, jar, this.deps.fetch)
+          const minted = await mintTicket(saved.url, jar, this.fetchFor(saved))
           jar = minted.jar
           this.keepCookies(saved, jar)
           return webSocketUrl(saved.url, { ticket: minted.ticket })
         } catch (error) {
           if (!(error instanceof AuthError && error.signedOut) || !saved.username || !saved.password) throw error
           // The session ran out: sign in again with the saved password.
-          jar = await passwordLogin(saved.url, saved.username, saved.password, this.deps.fetch)
-          const minted = await mintTicket(saved.url, jar, this.deps.fetch)
+          jar = await passwordLogin(saved.url, saved.username, saved.password, this.fetchFor(saved))
+          const minted = await mintTicket(saved.url, jar, this.fetchFor(saved))
           this.keepCookies(saved, minted.jar)
           return webSocketUrl(saved.url, { ticket: minted.ticket })
         }

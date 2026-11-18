@@ -69,6 +69,8 @@ describe('Pairing', () => {
   it('reads only well-formed payloads', () => {
     expect(readPayload('{"v":1,"hosts":[{"url":"https://h","method":"password","username":"u"}]}')).toBeNull()
     expect(readPayload('{"v":1,"hosts":[{"url":"https://h","method":"token","token":"t","name":"Home"}]}')?.hosts[0]?.name).toBe('Home')
+    // A proxy's headers come along; anything that isn't a string is dropped.
+    expect(readPayload('{"v":1,"hosts":[{"url":"https://h","method":"token","token":"t","headers":{"CF-Access-Client-Id":"id","n":3}}]}')?.hosts[0]?.headers).toEqual({ 'CF-Access-Client-Id': 'id' })
     expect(readPayload('nope')).toBeNull()
   })
 })

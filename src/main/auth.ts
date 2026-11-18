@@ -14,6 +14,7 @@
  */
 import type { HostProbe, SignInMethod } from '../shared/ipc'
 import { t } from '../shared/i18n'
+import { httpsIssue, proxyFetch, type ProxyHeaders } from './proxyHeaders'
 
 export type Fetch = typeof fetch
 
@@ -115,17 +116,28 @@ async function errorDetail(response: Response): Promise<string> {
 }
 
 /** Reads `/api/status` and says which sign-in methods the dashboard offers. */
-export async function probeHost(input: string, fetchImpl: Fetch): Promise<HostProbe> {
+/** `headers`, for a proxy in front of the dashboard, go only to its own address over HTTPS. */
+export async function probeHost(input: string, fetchImpl: Fetch, headers?: ProxyHeaders): Promise<HostProbe> {
   let url: string
   try {
     url = normalizeBaseUrl(input)
   } catch (error) {
     return { ok: false, error: (error as Error).message }
   }
+  const insecure = httpsIssue(url, headers)
+  if (insecure) return { ok: false, error: insecure }
   try {
-    const response = await timedFetch(fetchImpl, endpoint(url, '/api/status'), {
+    const response = await timedFetch(proxyFetch(fetchImpl, url, headers), endpoint(url, '/api/status'), {
       headers: { Accept: 'application/json' }
     })
+    if (behindCloudflareAccess(response)) {
+      return {
+        ok: false,
+        error: headers
+          ? t('Cloudflare Access turned this computer away. Check the service token under Proxy sign-in.')
+          : t('This dashboard is behind Cloudflare Access. Add its service token under Proxy sign-in.')
+      }
+    }
     if (!response.ok) {
       return { ok: false, error: t('This isn’t answering like a Hermes dashboard ({detail}).', { detail: await errorDetail(response) }) }
     }
@@ -137,6 +149,17 @@ export async function probeHost(input: string, fetchImpl: Fetch): Promise<HostPr
   } catch (error) {
     return { ok: false, error: (error as Error).message }
   }
+}
+
+/** Cloudflare Access answered instead of Hermes: its login page, or its refusal. */
+export function behindCloudflareAccess(response: Response): boolean {
+  try {
+    if (new URL(response.url).hostname.endsWith('.cloudflareaccess.com')) return true
+  } catch {
+    // No final address (a test's fake response): judge by the headers.
+  }
+  const location = response.headers.get('location') ?? ''
+  return /\.cloudflareaccess\.com\//.test(location) || (response.status === 403 && response.headers.has('cf-access-domain'))
 }
 
 export function signInMethods(status: Record<string, unknown>): SignInMethod[] {

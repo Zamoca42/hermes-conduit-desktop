@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import WebSocket from 'ws'
 import { IPC, type GatewayEventMessage, type LanguageChoice, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
 import { probeHost } from './auth'
+import { cleanHeaders } from './proxyHeaders'
 import { Connection } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
@@ -140,7 +141,11 @@ function registerIpc(): void {
   ipcMain.handle(IPC.quickAskShortcut, () => ({ accelerator: QUICK_ASK_ACCELERATOR, registered: quickAsk.registered }))
   ipcMain.handle(IPC.answerRequest, (_event, id: string, result: Record<string, unknown>) => connection.answerRequest(id, result))
   ipcMain.handle(IPC.dismissRequest, (_event, id: string) => connection.dropRequest(id))
-  ipcMain.handle(IPC.probe, (_event, url: string) => probeHost(url, globalThis.fetch.bind(globalThis)))
+  ipcMain.handle(IPC.probe, (_event, url: string, headers?: Record<string, string>) => {
+    const cleaned = cleanHeaders(headers)
+    if (!cleaned.ok) return { ok: false, error: cleaned.error }
+    return probeHost(url, globalThis.fetch.bind(globalThis), cleaned.headers)
+  })
   ipcMain.handle(IPC.signIn, (_event, request: SignInRequest) => connection.signIn(request))
   ipcMain.handle(IPC.signOut, () => connection.signOut())
   ipcMain.handle(IPC.pairStart, () => pairing.start())

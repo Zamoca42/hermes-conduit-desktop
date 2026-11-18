@@ -3,6 +3,19 @@ import type { SignInMethod } from '@shared/ipc'
 import { t } from '@shared/i18n'
 import { PairWithPhone } from './PairWithPhone'
 
+/** "Name: value" lines into headers, or the first line that isn't one. */
+export function parseHeaderLines(text: string): { ok: true; headers: Record<string, string> } | { ok: false; line: string } {
+  const headers: Record<string, string> = {}
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (!line) continue
+    const colon = line.indexOf(':')
+    if (colon <= 0) return { ok: false, line }
+    headers[line.slice(0, colon).trim()] = line.slice(colon + 1).trim()
+  }
+  return { ok: true, headers }
+}
+
 const methodLabels = (): Record<SignInMethod, string> => ({
   password: t('User name and password'),
   token: t('Session token'),
@@ -22,12 +35,34 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(notice ?? null)
   const [pairing, setPairing] = useState(false)
+  const [proxyOpen, setProxyOpen] = useState(false)
+  const [accessId, setAccessId] = useState('')
+  const [accessSecret, setAccessSecret] = useState('')
+  const [otherHeaders, setOtherHeaders] = useState('')
+
+  /** The proxy's headers as typed, or an error to show. */
+  function proxyHeaders(): { ok: true; headers?: Record<string, string> } | { ok: false; error: string } {
+    const parsed = parseHeaderLines(otherHeaders)
+    if (!parsed.ok) return { ok: false, error: t('Write each header on its own line as Name: value. This one isn’t: {line}', { line: parsed.line }) }
+    const headers = { ...parsed.headers }
+    if (accessId.trim() || accessSecret.trim()) {
+      headers['CF-Access-Client-Id'] = accessId.trim()
+      headers['CF-Access-Client-Secret'] = accessSecret.trim()
+    }
+    return { ok: true, headers: Object.keys(headers).length ? headers : undefined }
+  }
 
   async function findHost(event: FormEvent) {
     event.preventDefault()
     setBusy(true)
     setError(null)
-    const probe = await window.conduit.probe(address)
+    const proxy = proxyHeaders()
+    if (!proxy.ok) {
+      setBusy(false)
+      setError(proxy.error)
+      return
+    }
+    const probe = await window.conduit.probe(address, proxy.headers)
     setBusy(false)
     if (!probe.ok) {
       setError(probe.error)
@@ -45,7 +80,9 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
   async function signIn(target: string, chosen: SignInMethod) {
     setBusy(true)
     setError(null)
-    const result = await window.conduit.signIn({ url: target, method: chosen, username, password, token })
+    const proxy = proxyHeaders()
+    const headers = proxy.ok ? proxy.headers : undefined
+    const result = await window.conduit.signIn({ url: target, method: chosen, username, password, token, headers })
     setBusy(false)
     if (!result.ok) setError(result.error)
   }
@@ -80,10 +117,40 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
               autoCapitalize="off"
             />
           </label>
+          {proxyOpen ? (
+            <fieldset className="proxy-fields">
+              <legend>{t('Proxy sign-in')}</legend>
+              <p className="hint">{t('For a dashboard behind Cloudflare Access or another proxy that checks headers. They go only to this address, over HTTPS.')}</p>
+              <label className="field">
+                {t('Cloudflare Access client ID')}
+                <input value={accessId} onChange={e => setAccessId(e.target.value)} spellCheck={false} autoCapitalize="off" />
+              </label>
+              <label className="field">
+                {t('Cloudflare Access client secret')}
+                <input type="password" value={accessSecret} onChange={e => setAccessSecret(e.target.value)} />
+              </label>
+              <label className="field">
+                {t('Other headers')}
+                <textarea
+                  rows={2}
+                  value={otherHeaders}
+                  onChange={e => setOtherHeaders(e.target.value)}
+                  placeholder="X-Pangolin-Token: …"
+                  spellCheck={false}
+                  autoCapitalize="off"
+                />
+              </label>
+            </fieldset>
+          ) : null}
           {error ? <div className="error-text" role="alert">{error}</div> : null}
           <button className="primary" type="submit" disabled={busy || !address.trim()}>
             {busy ? t('Connecting…') : t('Continue')}
           </button>
+          {!proxyOpen ? (
+            <button className="link-button proxy-toggle" type="button" onClick={() => setProxyOpen(true)}>
+              {t('Behind Cloudflare Access or another proxy?')}
+            </button>
+          ) : null}
           <div className="or-line">{t('or')}</div>
           <button className="secondary pair-button" type="button" onClick={() => setPairing(true)}>
             {t('Pair with your iPhone')}

@@ -1,4 +1,19 @@
 {
+  "A Cloudflare Access service token needs both its client ID and its secret.": {
+    "de": "Ein Cloudflare-Access-Diensttoken braucht Client-ID und Secret.",
+    "es": "Un token de servicio de Cloudflare Access necesita su ID de cliente y su secreto.",
+    "fr": "Un jeton de service Cloudflare Access a besoin de son ID client et de son secret.",
+    "id": "Token layanan Cloudflare Access memerlukan ID klien dan rahasianya.",
+    "it": "Un token di servizio Cloudflare Access richiede sia l’ID client sia il segreto.",
+    "ja": "Cloudflare Access のサービストークンには、クライアント ID とシークレットの両方が必要です。",
+    "ko": "Cloudflare Access 서비스 토큰에는 클라이언트 ID와 시크릿이 모두 필요합니다.",
+    "pl": "Token usługi Cloudflare Access wymaga identyfikatora klienta i sekretu.",
+    "pt-BR": "Um token de serviço do Cloudflare Access precisa do ID do cliente e do segredo.",
+    "ru": "Для сервисного токена Cloudflare Access нужны и ID клиента, и секрет.",
+    "tr": "Cloudflare Access hizmet belirteci için hem istemci kimliği hem gizli anahtar gerekir.",
+    "zh-Hans": "Cloudflare Access 服务令牌需要客户端 ID 和密钥。",
+    "zh-Hant": "Cloudflare Access 服務權杖需要用戶端 ID 和密鑰。"
+  },
   "A bot": {
     "de": "Ein Bot",
     "es": "Un bot",
@@ -239,6 +254,21 @@
     "zh-Hans": "问 {name}…",
     "zh-Hant": "問 {name}…"
   },
+  "Behind Cloudflare Access or another proxy?": {
+    "de": "Hinter Cloudflare Access oder einem anderen Proxy?",
+    "es": "¿Detrás de Cloudflare Access u otro proxy?",
+    "fr": "Derrière Cloudflare Access ou un autre proxy ?",
+    "id": "Di balik Cloudflare Access atau proxy lain?",
+    "it": "Dietro Cloudflare Access o un altro proxy?",
+    "ja": "Cloudflare Access などのプロキシの背後にありますか？",
+    "ko": "Cloudflare Access나 다른 프록시 뒤에 있나요?",
+    "pl": "Za Cloudflare Access lub innym proxy?",
+    "pt-BR": "Atrás do Cloudflare Access ou de outro proxy?",
+    "ru": "За Cloudflare Access или другим прокси?",
+    "tr": "Cloudflare Access veya başka bir proxy’nin arkasında mı?",
+    "zh-Hans": "在 Cloudflare Access 或其他代理后面？",
+    "zh-Hant": "在 Cloudflare Access 或其他代理伺服器後面？"
+  },
   "Bots": {
     "de": "Bots",
     "es": "Bots",
@@ -358,6 +388,66 @@
     "tr": "Kapat",
     "zh-Hans": "关闭",
     "zh-Hant": "關閉"
+  },
+  "Cloudflare Access client ID": {
+    "de": "Cloudflare-Access-Client-ID",
+    "es": "ID de cliente de Cloudflare Access",
+    "fr": "ID client Cloudflare Access",
+    "id": "ID klien Cloudflare Access",
+    "it": "ID client Cloudflare Access",
+    "ja": "Cloudflare Access クライアント ID",
+    "ko": "Cloudflare Access 클라이언트 ID",
+    "pl": "Identyfikator klienta Cloudflare Access",
+    "pt-BR": "ID do cliente do Cloudflare Access",
+    "ru": "ID клиента Cloudflare Access",
+    "tr": "Cloudflare Access istemci kimliği",
+    "zh-Hans": "Cloudflare Access 客户端 ID",
+    "zh-Hant": "Cloudflare Access 用戶端 ID"
+  },
+  "Cloudflare Access client secret": {
+    "de": "Cloudflare-Access-Client-Secret",
+    "es": "Secreto de cliente de Cloudflare Access",
+    "fr": "Secret client Cloudflare Access",
+    "id": "Rahasia klien Cloudflare Access",
+    "it": "Segreto client Cloudflare Access",
+    "ja": "Cloudflare Access クライアントシークレット",
+    "ko": "Cloudflare Access 클라이언트 시크릿",
+    "pl": "Sekret klienta Cloudflare Access",
+    "pt-BR": "Segredo do cliente do Cloudflare Access",
+    "ru": "Секрет клиента Cloudflare Access",
+    "tr": "Cloudflare Access istemci gizli anahtarı",
+    "zh-Hans": "Cloudflare Access 客户端密钥",
+    "zh-Hant": "Cloudflare Access 用戶端密鑰"
+  },
+  "Cloudflare Access turned this computer away. Check the service token under Proxy sign-in.": {
+    "de": "Cloudflare Access hat diesen Computer abgewiesen. Prüfe das Diensttoken unter Proxy-Anmeldung.",
+    "es": "Cloudflare Access rechazó este ordenador. Revisa el token de servicio en Inicio de sesión del proxy.",
+    "fr": "Cloudflare Access a refusé cet ordinateur. Vérifiez le jeton de service sous Connexion au proxy.",
+    "id": "Cloudflare Access menolak komputer ini. Periksa token layanan di Masuk proxy.",
+    "it": "Cloudflare Access ha rifiutato questo computer. Controlla il token di servizio in Accesso proxy.",
+    "ja": "Cloudflare Access がこのコンピュータを拒否しました。「プロキシのサインイン」でサービストークンを確認してください。",
+    "ko": "Cloudflare Access가 이 컴퓨터를 거부했습니다. 프록시 로그인에서 서비스 토큰을 확인하세요.",
+    "pl": "Cloudflare Access odrzucił ten komputer. Sprawdź token usługi w sekcji Logowanie przez proxy.",
+    "pt-BR": "O Cloudflare Access recusou este computador. Confira o token de serviço em Login do proxy.",
+    "ru": "Cloudflare Access не пустил этот компьютер. Проверьте сервисный токен в разделе «Вход через прокси».",
+    "tr": "Cloudflare Access bu bilgisayarı reddetti. Proxy girişi altındaki hizmet belirtecini kontrol edin.",
+    "zh-Hans": "Cloudflare Access 拒绝了这台电脑。请检查“代理登录”中的服务令牌。",
+    "zh-Hant": "Cloudflare Access 拒絕了這台電腦。請檢查「代理伺服器登入」中的服務權杖。"
+  },
+  "Conduit manages this header itself, so it can't be set here.": {
+    "de": "Conduit verwaltet diesen Header selbst, daher kann er hier nicht festgelegt werden.",
+    "es": "Conduit gestiona este encabezado por sí mismo, así que no se puede definir aquí.",
+    "fr": "Conduit gère cet en-tête lui-même : il ne peut pas être défini ici.",
+    "id": "Conduit mengelola header ini sendiri, jadi tidak dapat diatur di sini.",
+    "it": "Conduit gestisce questa intestazione da sé, quindi non si può impostare qui.",
+    "ja": "このヘッダはConduitが管理しているため、ここでは設定できません。",
+    "ko": "Conduit이 이 헤더를 직접 관리하므로 여기서 설정할 수 없어요.",
+    "pl": "Conduit sam zarządza tym nagłówkiem, więc nie można go tu ustawić.",
+    "pt-BR": "O Conduit gerencia este cabeçalho, então ele não pode ser definido aqui.",
+    "ru": "Conduit управляет этим заголовком сам, поэтому задать его здесь нельзя.",
+    "tr": "Conduit bu üstbilgiyi kendisi yönetir; bu nedenle burada ayarlanamaz.",
+    "zh-Hans": "此请求头由 Conduit 自行管理，无法在此设置。",
+    "zh-Hant": "此標頭由 Conduit 自行管理，因此無法在這裡設定。"
   },
   "Conduit · 1 thing needs you": {
     "de": "Conduit · 1 Sache braucht dich",
@@ -719,6 +809,21 @@
     "zh-Hans": "正在编辑文件",
     "zh-Hant": "正在編輯檔案"
   },
+  "Enter a header name.": {
+    "de": "Gib einen Header-Namen ein.",
+    "es": "Escribe un nombre de encabezado.",
+    "fr": "Saisissez un nom d'en-tête.",
+    "id": "Masukkan nama header.",
+    "it": "Inserisci un nome di intestazione.",
+    "ja": "ヘッダ名を入力してください。",
+    "ko": "헤더 이름을 입력하세요.",
+    "pl": "Wpisz nazwę nagłówka.",
+    "pt-BR": "Digite um nome de cabeçalho.",
+    "ru": "Введите имя заголовка.",
+    "tr": "Bir üstbilgi adı girin.",
+    "zh-Hans": "请输入请求头名称。",
+    "zh-Hant": "輸入標頭名稱。"
+  },
   "Enter sends · Shift Enter new line": {
     "de": "Eingabe sendet · Umschalt+Eingabe neue Zeile",
     "es": "Intro envía · Mayús+Intro nueva línea",
@@ -809,6 +914,21 @@
     "zh-Hans": "这里的每个人都能看到你发的内容。用 @ 提及机器人，只问它。",
     "zh-Hant": "這裡的每個人都能看到你傳的內容。用 @ 提及機器人，只問它。"
   },
+  "Extra headers are only sent over HTTPS. Enter an https:// server address first.": {
+    "de": "Zusätzliche Header werden nur über HTTPS gesendet. Gib zuerst eine https://-Serveradresse ein.",
+    "es": "Los encabezados adicionales solo se envían por HTTPS. Escribe primero una dirección de servidor https://.",
+    "fr": "Les en-têtes supplémentaires ne sont envoyés qu'en HTTPS. Saisissez d'abord une adresse de serveur en https://.",
+    "id": "Header tambahan hanya dikirim melalui HTTPS. Masukkan alamat server https:// terlebih dahulu.",
+    "it": "Le intestazioni aggiuntive vengono inviate solo tramite HTTPS. Inserisci prima un indirizzo server https://.",
+    "ja": "追加ヘッダはHTTPS経由でのみ送信されます。先にhttps://で始まるサーバアドレスを入力してください。",
+    "ko": "추가 헤더는 HTTPS로만 전송돼요. 먼저 https:// 서버 주소를 입력하세요.",
+    "pl": "Dodatkowe nagłówki są wysyłane tylko przez HTTPS. Najpierw wpisz adres serwera zaczynający się od https://.",
+    "pt-BR": "Cabeçalhos extras só são enviados por HTTPS. Digite primeiro um endereço de servidor https://.",
+    "ru": "Дополнительные заголовки отправляются только по HTTPS. Сначала введите адрес сервера https://.",
+    "tr": "Ek üstbilgiler yalnızca HTTPS üzerinden gönderilir. Önce bir https:// sunucu adresi girin.",
+    "zh-Hans": "额外请求头仅通过 HTTPS 发送。请先输入 https:// 服务器地址。",
+    "zh-Hant": "額外標頭只會透過 HTTPS 傳送。請先輸入 https:// 伺服器位址。"
+  },
   "File": {
     "de": "Datei",
     "es": "Archivo",
@@ -823,6 +943,21 @@
     "tr": "Dosya",
     "zh-Hans": "文件",
     "zh-Hant": "檔案"
+  },
+  "For a dashboard behind Cloudflare Access or another proxy that checks headers. They go only to this address, over HTTPS.": {
+    "de": "Für ein Dashboard hinter Cloudflare Access oder einem anderen Proxy, der Header prüft. Sie gehen nur an diese Adresse, über HTTPS.",
+    "es": "Para un panel detrás de Cloudflare Access u otro proxy que comprueba cabeceras. Solo se envían a esta dirección, por HTTPS.",
+    "fr": "Pour un tableau de bord derrière Cloudflare Access ou un autre proxy qui vérifie des en-têtes. Ils ne vont qu’à cette adresse, en HTTPS.",
+    "id": "Untuk dasbor di balik Cloudflare Access atau proxy lain yang memeriksa header. Header hanya dikirim ke alamat ini, lewat HTTPS.",
+    "it": "Per una dashboard dietro Cloudflare Access o un altro proxy che controlla le intestazioni. Vanno solo a questo indirizzo, via HTTPS.",
+    "ja": "Cloudflare Access など、ヘッダを確認するプロキシの背後にあるダッシュボード用です。このアドレスにだけ HTTPS で送られます。",
+    "ko": "헤더를 확인하는 Cloudflare Access나 다른 프록시 뒤의 대시보드용입니다. 이 주소로만 HTTPS로 전송됩니다.",
+    "pl": "Dla panelu za Cloudflare Access lub innym proxy, które sprawdza nagłówki. Trafiają tylko pod ten adres, przez HTTPS.",
+    "pt-BR": "Para um painel atrás do Cloudflare Access ou de outro proxy que verifica cabeçalhos. Eles vão só para este endereço, por HTTPS.",
+    "ru": "Для панели за Cloudflare Access или другим прокси, который проверяет заголовки. Они отправляются только на этот адрес и только по HTTPS.",
+    "tr": "Cloudflare Access veya üst bilgileri denetleyen başka bir proxy’nin arkasındaki pano için. Yalnızca bu adrese, HTTPS üzerinden gönderilir.",
+    "zh-Hans": "适用于位于 Cloudflare Access 或其他检查请求头的代理后面的控制台。它们只会通过 HTTPS 发送到此地址。",
+    "zh-Hant": "適用於位於 Cloudflare Access 或其他檢查標頭的代理伺服器後面的控制台。它們只會透過 HTTPS 傳送到此位址。"
   },
   "Go to the chat": {
     "de": "Zum Chat",
@@ -913,6 +1048,21 @@
     "tr": "Bir görev devrediliyor",
     "zh-Hans": "正在移交任务",
     "zh-Hant": "正在移交任務"
+  },
+  "Header values can't contain line breaks.": {
+    "de": "Header-Werte dürfen keine Zeilenumbrüche enthalten.",
+    "es": "Los valores de encabezado no pueden contener saltos de línea.",
+    "fr": "Les valeurs d'en-tête ne peuvent pas contenir de saut de ligne.",
+    "id": "Nilai header tidak boleh berisi baris baru.",
+    "it": "I valori delle intestazioni non possono contenere interruzioni di riga.",
+    "ja": "ヘッダの値に改行は使用できません。",
+    "ko": "헤더 값에는 줄 바꿈을 넣을 수 없어요.",
+    "pl": "Wartości nagłówków nie mogą zawierać podziałów wierszy.",
+    "pt-BR": "Os valores de cabeçalho não podem conter quebras de linha.",
+    "ru": "Значения заголовков не могут содержать переносы строк.",
+    "tr": "Üstbilgi değerleri satır sonu içeremez.",
+    "zh-Hans": "请求头的值不能包含换行。",
+    "zh-Hant": "標頭的值不能包含換行。"
   },
   "Hermes didn’t say what room it made.": {
     "de": "Hermes hat nicht gesagt, welchen Raum es erstellt hat.",
@@ -1679,6 +1829,21 @@
     "zh-Hans": "或输入你自己的回答",
     "zh-Hant": "或輸入你自己的回答"
   },
+  "Other headers": {
+    "de": "Weitere Header",
+    "es": "Otras cabeceras",
+    "fr": "Autres en-têtes",
+    "id": "Header lain",
+    "it": "Altre intestazioni",
+    "ja": "その他のヘッダ",
+    "ko": "기타 헤더",
+    "pl": "Inne nagłówki",
+    "pt-BR": "Outros cabeçalhos",
+    "ru": "Другие заголовки",
+    "tr": "Diğer üst bilgiler",
+    "zh-Hans": "其他请求头",
+    "zh-Hant": "其他標頭"
+  },
   "Pair with your iPhone": {
     "de": "Mit deinem iPhone koppeln",
     "es": "Vincular con tu iPhone",
@@ -1783,6 +1948,21 @@
     "tr": "Önceki 7 gün",
     "zh-Hans": "过去 7 天",
     "zh-Hant": "過去 7 天"
+  },
+  "Proxy sign-in": {
+    "de": "Proxy-Anmeldung",
+    "es": "Inicio de sesión del proxy",
+    "fr": "Connexion au proxy",
+    "id": "Masuk proxy",
+    "it": "Accesso proxy",
+    "ja": "プロキシのサインイン",
+    "ko": "프록시 로그인",
+    "pl": "Logowanie przez proxy",
+    "pt-BR": "Login do proxy",
+    "ru": "Вход через прокси",
+    "tr": "Proxy girişi",
+    "zh-Hans": "代理登录",
+    "zh-Hant": "代理伺服器登入"
   },
   "Question from Hermes": {
     "de": "Frage von Hermes",
@@ -2729,6 +2909,21 @@
     "zh-Hans": "此控制台无需登录。",
     "zh-Hant": "此控制台無需登入。"
   },
+  "This dashboard is behind Cloudflare Access. Add its service token under Proxy sign-in.": {
+    "de": "Dieses Dashboard liegt hinter Cloudflare Access. Füge sein Diensttoken unter Proxy-Anmeldung hinzu.",
+    "es": "Este panel está detrás de Cloudflare Access. Añade su token de servicio en Inicio de sesión del proxy.",
+    "fr": "Ce tableau de bord est derrière Cloudflare Access. Ajoutez son jeton de service sous Connexion au proxy.",
+    "id": "Dasbor ini berada di balik Cloudflare Access. Tambahkan token layanannya di Masuk proxy.",
+    "it": "Questa dashboard è dietro Cloudflare Access. Aggiungi il suo token di servizio in Accesso proxy.",
+    "ja": "このダッシュボードは Cloudflare Access の背後にあります。「プロキシのサインイン」でサービストークンを追加してください。",
+    "ko": "이 대시보드는 Cloudflare Access 뒤에 있습니다. 프록시 로그인에서 서비스 토큰을 추가하세요.",
+    "pl": "Ten panel jest za Cloudflare Access. Dodaj jego token usługi w sekcji Logowanie przez proxy.",
+    "pt-BR": "Este painel está atrás do Cloudflare Access. Adicione o token de serviço em Login do proxy.",
+    "ru": "Эта панель находится за Cloudflare Access. Добавьте её сервисный токен в разделе «Вход через прокси».",
+    "tr": "Bu pano Cloudflare Access’in arkasında. Hizmet belirtecini Proxy girişi altında ekleyin.",
+    "zh-Hans": "此控制台位于 Cloudflare Access 后面。请在“代理登录”中添加其服务令牌。",
+    "zh-Hant": "此控制台位於 Cloudflare Access 後面。請在「代理伺服器登入」中加入其服務權杖。"
+  },
   "This group chat was disbanded.": {
     "de": "Dieser Gruppenchat wurde aufgelöst.",
     "es": "Este chat de grupo se disolvió.",
@@ -2743,6 +2938,21 @@
     "tr": "Bu grup sohbeti dağıtıldı.",
     "zh-Hans": "此群聊已解散。",
     "zh-Hant": "此群組聊天已解散。"
+  },
+  "This isn’t a valid header name. Use letters, digits, and dashes.": {
+    "de": "Das ist kein gültiger Header-Name. Verwende Buchstaben, Ziffern und Bindestriche.",
+    "es": "No es un nombre de encabezado válido. Usa letras, dígitos y guiones.",
+    "fr": "Ce nom d'en-tête n'est pas valide. Utilisez des lettres, des chiffres et des tirets.",
+    "id": "Nama header ini tidak valid. Gunakan huruf, angka, dan tanda hubung.",
+    "it": "Non è un nome di intestazione valido. Usa lettere, cifre e trattini.",
+    "ja": "有効なヘッダ名ではありません。英字、数字、ハイフンを使用してください。",
+    "ko": "유효한 헤더 이름이 아니에요. 영문자, 숫자, 하이픈을 사용하세요.",
+    "pl": "To nie jest prawidłowa nazwa nagłówka. Używaj liter, cyfr i łączników.",
+    "pt-BR": "Este não é um nome de cabeçalho válido. Use letras, números e hifens.",
+    "ru": "Недопустимое имя заголовка. Используйте буквы, цифры и дефисы.",
+    "tr": "Bu geçerli bir üstbilgi adı değil. Harf, rakam ve kısa çizgi kullanın.",
+    "zh-Hans": "这不是有效的请求头名称。请使用字母、数字和连字符。",
+    "zh-Hant": "這不是有效的標頭名稱。請使用字母、數字和連字號。"
   },
   "This isn’t answering like a Hermes dashboard ({detail}).": {
     "de": "Das antwortet nicht wie ein Hermes-Dashboard ({detail}).",
@@ -3133,6 +3343,21 @@
     "tr": "Çalışıyor…",
     "zh-Hans": "处理中…",
     "zh-Hant": "處理中…"
+  },
+  "Write each header on its own line as Name: value. This one isn’t: {line}": {
+    "de": "Schreib jeden Header in eine eigene Zeile als Name: Wert. Diese Zeile passt nicht: {line}",
+    "es": "Escribe cada cabecera en su propia línea como Nombre: valor. Esta no lo está: {line}",
+    "fr": "Écrivez chaque en-tête sur sa propre ligne sous la forme Nom: valeur. Celle-ci ne l’est pas : {line}",
+    "id": "Tulis setiap header di barisnya sendiri sebagai Nama: nilai. Baris ini tidak: {line}",
+    "it": "Scrivi ogni intestazione su una riga come Nome: valore. Questa non lo è: {line}",
+    "ja": "ヘッダは 1 行に 1 つずつ「名前: 値」の形で書いてください。次の行が違います: {line}",
+    "ko": "헤더는 한 줄에 하나씩 이름: 값 형식으로 쓰세요. 이 줄이 맞지 않습니다: {line}",
+    "pl": "Wpisz każdy nagłówek w osobnym wierszu jako Nazwa: wartość. Ten wiersz nie pasuje: {line}",
+    "pt-BR": "Escreva cada cabeçalho em uma linha própria como Nome: valor. Esta não está: {line}",
+    "ru": "Пишите каждый заголовок на отдельной строке как «Имя: значение». Эта строка не такая: {line}",
+    "tr": "Her üst bilgiyi kendi satırına Ad: değer biçiminde yazın. Bu satır öyle değil: {line}",
+    "zh-Hans": "每个请求头单独一行，格式为“名称: 值”。这一行不是：{line}",
+    "zh-Hant": "每個標頭單獨一行，格式為「名稱: 值」。這一行不是：{line}"
   },
   "Writing a file": {
     "de": "Schreibt eine Datei",

@@ -53,9 +53,11 @@ function harness(opts: { ticketsBeforeExpiry?: number; hosts?: boolean } = {}) {
   let session = 0
   let tickets = 0
   const log: string[] = []
+  const sentHeaders: Headers[] = []
   const fetchImpl: Fetch = async (input, init = {}) => {
     const path = new URL(String(input)).pathname
     log.push(path)
+    sentHeaders.push(new Headers(init.headers))
     if (path === '/auth/password-login') {
       session++
       return json({ ok: true }, 200, { 'Set-Cookie': `hermes_session=s${session}; Path=/` })
@@ -92,7 +94,7 @@ function harness(opts: { ticketsBeforeExpiry?: number; hosts?: boolean } = {}) {
     setTimeout: fn => timers.push(fn),
     clearTimeout: () => undefined
   })
-  return { connection, sockets, statuses, log, timers, requests, saved: () => saved, written, hostList }
+  return { connection, sockets, statuses, log, sentHeaders, timers, requests, saved: () => saved, written, hostList }
 }
 
 describe('the connection', () => {
@@ -108,6 +110,40 @@ describe('the connection', () => {
     expect(h.saved()).toMatchObject({ url: 'https://hermes.example.com', method: 'password', password: 'pw', cookies: { hermes_session: 's1' } })
     // It says it answers server requests, as Hermes' own clients do.
     expect(h.sockets[0]!.sent.some(f => f.includes('client.capabilities'))).toBe(true)
+  })
+
+  it('sends a proxy’s headers on every request and the socket, over HTTPS only', async () => {
+    const h = harness()
+    const headers = { 'CF-Access-Client-Id': 'id.access', 'CF-Access-Client-Secret': 'shh', 'X-Pangolin': 'p' }
+    expect(await h.connection.signIn({ url: 'https://hermes.example.com', method: 'password', username: 'eric', password: 'pw', headers })).toEqual({ ok: true })
+    await tick()
+    for (const sent of h.sentHeaders) {
+      expect(sent.get('CF-Access-Client-Id')).toBe('id.access')
+      expect(sent.get('X-Pangolin')).toBe('p')
+    }
+    expect(h.sockets[0]!.headers).toMatchObject({ 'CF-Access-Client-Secret': 'shh', Cookie: 'hermes_session=s1' })
+    expect(h.saved()?.headers).toEqual(headers)
+    await h.connection.http('GET', '/api/profiles/sessions')
+    expect(h.sentHeaders.at(-1)!.get('CF-Access-Client-Secret')).toBe('shh')
+
+    // Plain http never carries them, so it says so rather than dropping them.
+    const plain = harness()
+    expect(await plain.connection.signIn({ url: 'http://192.168.1.20:9119', method: 'password', username: 'eric', password: 'pw', headers })).toEqual({
+      ok: false,
+      error: 'Extra headers are only sent over HTTPS. Enter an https:// server address first.'
+    })
+    expect(plain.log).toEqual([])
+  })
+
+  it('refuses headers Conduit sets itself, or half a Cloudflare token', async () => {
+    const h = harness()
+    expect(await h.connection.signIn({ url: 'https://h', method: 'token', token: 't', headers: { Cookie: 'x' } })).toMatchObject({ ok: false })
+    expect(await h.connection.signIn({ url: 'https://h', method: 'token', token: 't', headers: { 'CF-Access-Client-Id': 'id' } })).toMatchObject({
+      ok: false,
+      error: 'A Cloudflare Access service token needs both its client ID and its secret.'
+    })
+    expect(await h.connection.signIn({ url: 'https://h', method: 'token', token: 't', headers: { 'Bad Name': 'v' } })).toMatchObject({ ok: false })
+    expect(h.saved()).toBeNull()
   })
 
   it('redials after a drop, signing in again when the session ran out', async () => {

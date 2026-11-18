@@ -18,7 +18,7 @@ const api: ConduitApi = {
   platform: process.platform as Platform,
   language: ipcRenderer.sendSync(IPC.language) as ConduitApi['language'],
   setLanguage: choice => ipcRenderer.send(IPC.setLanguage, choice),
-  probe: url => ipcRenderer.invoke(IPC.probe, url),
+  probe: (url, headers) => ipcRenderer.invoke(IPC.probe, url, headers),
   signIn: request => ipcRenderer.invoke(IPC.signIn, request),
   signOut: () => ipcRenderer.invoke(IPC.signOut),
   switchHost: (url: string) => ipcRenderer.invoke(IPC.switchHost, url),

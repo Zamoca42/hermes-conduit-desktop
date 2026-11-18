@@ -139,3 +139,23 @@ describe('cookies', () => {
     expect(cookieHeader(absorbCookies({ a: '1', b: '1' }, response))).toBe('c=3')
   })
 })
+
+describe('a dashboard behind Cloudflare Access', () => {
+  it('says so, and sends the service token only to the dashboard', async () => {
+    const access = (url: string) => Object.defineProperty(new Response('<html>login</html>', { status: 200 }), 'url', { value: url })
+    const turnedAway = await probeHost('https://hermes.example.com', async () => access('https://team.cloudflareaccess.com/cdn-cgi/access/login'))
+    expect(turnedAway).toEqual({ ok: false, error: 'This dashboard is behind Cloudflare Access. Add its service token under Proxy sign-in.' })
+
+    const seen: [string, string | null][] = []
+    const passes = await probeHost(
+      'https://hermes.example.com',
+      async (input, init) => {
+        seen.push([String(input), new Headers(init?.headers).get('CF-Access-Client-Id')])
+        return new Response(JSON.stringify({ version: '0.22.5', auth: { providers: ['password'] } }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+      },
+      { 'CF-Access-Client-Id': 'id.access', 'CF-Access-Client-Secret': 'shh' }
+    )
+    expect(passes).toMatchObject({ ok: true, url: 'https://hermes.example.com' })
+    expect(seen).toEqual([['https://hermes.example.com/api/status', 'id.access']])
+  })
+})
