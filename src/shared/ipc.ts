@@ -158,6 +158,8 @@ export interface ConduitApi {
    * main process with this sign-in's credential; its events come on `onLive`.
    */
   liveOpen(path: string, query?: Record<string, string>): Promise<{ ok: true; id: string } | { ok: false; error: string }>
+  /** A live call's socket opened with a single-use token the host mints at `path` (Gemini Live); the token stays in the main process. */
+  liveOpenMinted(path: string): Promise<{ ok: true; id: string; model: string | null; voice: string | null } | { ok: false; error: string; code?: number }>
   liveSend(id: string, text: string): void
   liveClose(id: string, code?: number): void
   onLive(listener: (event: LiveSocketEvent) => void): () => void
@@ -257,6 +259,7 @@ export const IPC = {
   setTheme: 'conduit:set-theme',
   pluginRelease: 'conduit:plugin-release',
   liveOpen: 'conduit:live-open',
+  liveOpenMinted: 'conduit:live-open-minted',
   liveSend: 'conduit:live-send',
   liveClose: 'conduit:live-close',
   liveEvent: 'conduit:live-event'
@@ -268,3 +271,26 @@ export type LiveSocketEvent =
   | { id: string; type: 'message'; data: string }
   | { id: string; type: 'close'; code: number; reason: string }
   | { id: string; type: 'error'; message: string }
+
+/** The token routes whose minted socket the main process opens (Gemini Live's). */
+export const LIVE_TOKEN_PATHS = ['/api/plugins/conduit_push/gemini-live/token']
+
+/**
+ * A minted token's socket: the host's `websocket_url` (wss only) with the
+ * single-use token as `access_token`, after the phone's GeminiLiveToken.
+ */
+export function mintedSocket(response: unknown): { ok: true; url: string; model: string | null; voice: string | null } | { ok: false; error: string } {
+  const r = (response ?? {}) as Record<string, unknown>
+  const text = (v: unknown) => (typeof v === 'string' && v ? v : null)
+  if (r.ok !== true) return { ok: false, error: text(r.reason) ?? text(r.error) ?? 'unavailable' }
+  const token = text(r.token)
+  let url: URL | null = null
+  try {
+    url = new URL(text(r.websocket_url) ?? '')
+  } catch {
+    url = null
+  }
+  if (!token || !url || url.protocol !== 'wss:') return { ok: false, error: 'malformed' }
+  if (!url.searchParams.has('access_token')) url.searchParams.set('access_token', token)
+  return { ok: true, url: url.toString(), model: text(r.model), voice: text(r.voice) }
+}

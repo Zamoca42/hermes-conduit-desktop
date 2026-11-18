@@ -597,12 +597,12 @@ function setFlag(key: string, on: boolean): void {
   }
 }
 const BILLING_KEY = 'conduit.gptLiveBilling'
-export type VoiceMode = 'classic' | 'gpt' | 'grok'
+export type VoiceMode = 'classic' | 'gemini' | 'gpt' | 'grok'
 
 export function voiceMode(): VoiceMode {
   try {
     const saved = localStorage.getItem(MODE_KEY)
-    return saved === 'gpt' || saved === 'grok' ? saved : 'classic'
+    return saved === 'gpt' || saved === 'grok' || saved === 'gemini' ? saved : 'classic'
   } catch {
     return 'classic'
   }

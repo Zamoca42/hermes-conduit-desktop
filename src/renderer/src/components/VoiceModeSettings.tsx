@@ -37,6 +37,18 @@ import {
   type Availability as GrokAvailability
 } from '../state/grokLive'
 import { savesCalls, setSavesCalls } from '../state/voiceSave'
+import {
+  STATUS_PATH as GEMINI_STATUS_PATH,
+  VOICES as GEMINI_VOICES,
+  availability as geminiAvailability,
+  geminiSendsMemory,
+  geminiSendsPersona,
+  geminiVoice,
+  setGeminiSendsMemory,
+  setGeminiSendsPersona,
+  setGeminiVoice,
+  type Availability as GeminiAvailability
+} from '../state/geminiLive'
 
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
@@ -48,6 +60,26 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [persona, setPersona] = useState(sendsPersona)
   const [status, setStatus] = useState<Availability | 'checking' | 'missing' | null>(null)
   const [saveCalls, setSaveCalls] = useState(savesCalls)
+  const [geminiMemory, setGeminiMemory] = useState(geminiSendsMemory)
+  const [geminiPersona, setGeminiPersona] = useState(geminiSendsPersona)
+  const [geminiPick, setGeminiPick] = useState(geminiVoice)
+  const [geminiStatus, setGeminiStatus] = useState<GeminiAvailability | 'checking' | 'missing' | null>(null)
+
+  useEffect(() => {
+    if (mode !== 'gemini') return setGeminiStatus(null)
+    let live = true
+    setGeminiStatus('checking')
+    gateway
+      .http('GET', withProfile(GEMINI_STATUS_PATH, profile), undefined, 12_000)
+      .then(body => live && setGeminiStatus(geminiAvailability(body)))
+      .catch((e: unknown) => {
+        if (!live) return
+        setGeminiStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
+      })
+    return () => {
+      live = false
+    }
+  }, [mode, profile])
   const [grokMemory, setGrokMemory] = useState(grokSendsMemory)
   const [grokPersona, setGrokPersona] = useState(grokSendsPersona)
   const [grokStatus, setGrokStatus] = useState<GrokAvailability | 'checking' | 'missing' | null>(null)
@@ -109,6 +141,9 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
         <button aria-pressed={mode === 'classic'} onClick={() => choose('classic')}>
           {t('Classic')}
         </button>
+        <button aria-pressed={mode === 'gemini'} onClick={() => choose('gemini')}>
+          {t('Gemini Live')}
+        </button>
         <button aria-pressed={mode === 'gpt'} onClick={() => choose('gpt')}>
           {t('GPT-Live')}
         </button>
@@ -116,6 +151,78 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           {t('Grok Live')}
         </button>
       </div>
+      {mode === 'gemini' ? (
+        <>
+          <p
+            className={`meta settings-caption${geminiStatus && geminiStatus !== 'checking' && (geminiStatus === 'missing' || !geminiStatus.ok) ? ' voice-call-problem' : ''}`}
+          >
+            {geminiStatus === 'checking'
+              ? t('Checking…')
+              : geminiStatus === 'missing'
+                ? t('Install or update the Hermes notifier plugin on your Hermes server.')
+                : geminiStatus?.ok
+                  ? t('Available ({model})', { model: geminiStatus.model.replace(/^models\//, '') })
+                  : geminiStatus
+                    ? geminiStatus.reason === 'no_api_key'
+                      ? t('Add a Gemini API key on your Hermes server.')
+                      : geminiStatus.reason
+                        ? t('Gemini Live is not available on this Hermes server: {reason}', { reason: geminiStatus.reason })
+                        : t('Gemini Live is not available on this Hermes server.')
+                    : null}
+          </p>
+          <label className="voice-mode-pick">
+            <span className="meta">{t('Voice')}</span>
+            <select
+              value={geminiPick}
+              onChange={e => {
+                setGeminiPick(e.target.value)
+                setGeminiVoice(e.target.value)
+              }}
+            >
+              <option value="">{t('Gemini default')}</option>
+              {GEMINI_VOICES.map(([name, style]) => (
+                <option key={name} value={name}>
+                  {`${name} · ${t(style)}`}
+                </option>
+              ))}
+              {geminiPick && !GEMINI_VOICES.some(([name]) => name === geminiPick) ? <option value={geminiPick}>{geminiPick}</option> : null}
+            </select>
+          </label>
+          <p className="meta settings-caption">{t('The voice Gemini speaks with. Applies to the next conversation.')}</p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={geminiMemory}
+              onChange={e => {
+                setGeminiMemory(e.target.checked)
+                setGeminiSendsMemory(e.target.checked)
+              }}
+            />
+            {t('Use Hermes memory')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              'Gemini gets what your Hermes agent remembers about you, from whichever memory Hermes is set up with, and can search it for more. That memory is sent to Google with the conversation. Applies to the next conversation.'
+            )}
+          </p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={geminiPersona}
+              onChange={e => {
+                setGeminiPersona(e.target.checked)
+                setGeminiSendsPersona(e.target.checked)
+              }}
+            />
+            {t('Use Hermes personality')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              "Gemini talks with the personality in this profile's SOUL.md, without reading out actions or emoji. SOUL.md is sent to Google with the conversation. Applies to the next conversation."
+            )}
+          </p>
+        </>
+      ) : null}
       {mode === 'grok' ? (
         <>
           <p

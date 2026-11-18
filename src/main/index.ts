@@ -21,7 +21,7 @@ import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
 import { chooseLanguage, chooseTheme, languageChoice, resolvedLanguage, themeChoice } from './settings'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
-import type { LiveSocketEvent } from '../shared/ipc'
+import { LIVE_TOKEN_PATHS, mintedSocket, type LiveSocketEvent } from '../shared/ipc'
 import { setLanguage, t } from '../shared/i18n'
 
 const isMac = process.platform === 'darwin'
@@ -201,22 +201,13 @@ function registerIpc(): void {
     }
   })
   ipcMain.handle(IPC.pluginRelease, () => pluginRelease())
-  // Live calls' sockets (Grok Live's relay): opened here, where the sign-in and a proxy's headers are.
+  // Live calls' sockets: opened here, where the sign-in and a proxy's headers are (Grok Live's relay),
+  // or with a single-use token the host minted that never reaches the window (Gemini Live).
   const liveSockets = new Map<string, WebSocketLike>()
   let liveCount = 0
-  ipcMain.handle(IPC.liveOpen, async (event, path: unknown, query: unknown) => {
-    if (typeof path !== 'string') return { ok: false, error: 'No socket path.' }
-    const params: Record<string, string> = {}
-    if (query && typeof query === 'object') for (const [name, value] of Object.entries(query)) if (typeof value === 'string') params[name] = value
-    let socket: WebSocketLike
-    try {
-      socket = await connection.openSocket(path, params)
-    } catch (error) {
-      return { ok: false, error: error instanceof Error ? error.message : String(error) }
-    }
+  const keepLive = (sender: Electron.WebContents, socket: WebSocketLike): string => {
     const id = `live-${++liveCount}`
     liveSockets.set(id, socket)
-    const sender = event.sender
     const report = (payload: LiveSocketEvent) => {
       if (!sender.isDestroyed()) sender.send(IPC.liveEvent, payload)
     }
@@ -229,7 +220,30 @@ function registerIpc(): void {
     }
     // A window that goes away takes its call with it.
     sender.once('destroyed', () => liveSockets.get(id)?.close())
-    return { ok: true, id }
+    return id
+  }
+  ipcMain.handle(IPC.liveOpen, async (event, path: unknown, query: unknown) => {
+    if (typeof path !== 'string') return { ok: false, error: 'No socket path.' }
+    const params: Record<string, string> = {}
+    if (query && typeof query === 'object') for (const [name, value] of Object.entries(query)) if (typeof value === 'string') params[name] = value
+    try {
+      return { ok: true, id: keepLive(event.sender, await connection.openSocket(path, params)) }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
+  })
+  ipcMain.handle(IPC.liveOpenMinted, async (event, path: unknown) => {
+    if (typeof path !== 'string' || !LIVE_TOKEN_PATHS.some(allowed => path === allowed || path.startsWith(`${allowed}?`)))
+      return { ok: false, error: 'Not a live token route.' }
+    try {
+      const minted = mintedSocket(await connection.http('POST', path, {}, 20_000))
+      if (!minted.ok) return minted
+      const socket = new WebSocket(minted.url, { maxPayload: 16 * 1024 * 1024 }) as unknown as WebSocketLike
+      return { ok: true, id: keepLive(event.sender, socket), model: minted.model, voice: minted.voice }
+    } catch (error) {
+      const code = (error as { code?: unknown }).code
+      return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }
+    }
   })
   ipcMain.on(IPC.liveSend, (_event, id: unknown, text: unknown) => {
     const socket = typeof id === 'string' ? liveSockets.get(id) : undefined
