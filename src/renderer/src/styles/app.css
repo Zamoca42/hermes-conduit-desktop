@@ -3610,3 +3610,476 @@ html[data-window='quick'] body {
   height: 9px;
   border-radius: 50%;
 }
+
+/* Pulse */
+.pulse-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pulse-head .secondary,
+.pulse-quiet .secondary {
+  align-self: center;
+}
+
+.pulse-quiet {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.pulse-quiet > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.pulse-section {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.pulse-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.pulse-card.cleared {
+  opacity: 0.7;
+}
+
+.pulse-topic {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.pulse-topic .spacer,
+.pulse-actions .spacer {
+  flex: 1;
+}
+
+.pulse-topic .link-button {
+  align-self: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.pulse-heading {
+  font-weight: 600;
+}
+
+.pulse-news {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.pulse-news > p:first-child,
+.pulse-news .markdown > :first-child {
+  margin-top: 0;
+}
+
+.pulse-news > p:last-child,
+.pulse-news .markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.pulse-card.cleared .pulse-news {
+  color: var(--text-3);
+}
+
+.pulse-news.done {
+  text-decoration: line-through;
+}
+
+.pulse-quote {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.pulse-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+.pulse-source:hover {
+  color: var(--text);
+}
+
+.pulse-source svg {
+  width: 14px;
+  height: 14px;
+}
+
+.pulse-why {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-hover);
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+.pulse-why p {
+  margin: 0;
+}
+
+.pulse-why p + p {
+  margin-top: 6px;
+}
+
+.pulse-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pulse-actions .primary {
+  height: 34px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+.pulse-actions .secondary {
+  align-self: center;
+}
+
+.pulse-actions .thumb {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--surface);
+  font-size: 15px;
+  filter: grayscale(1);
+  opacity: 0.75;
+}
+
+.pulse-actions .thumb.on,
+.pulse-actions .thumb:hover {
+  filter: none;
+  opacity: 1;
+}
+
+.pulse-actions .thumb.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.pulse-cleared {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.pulse-cleared.done {
+  color: var(--success);
+}
+
+.pulse-cleared svg {
+  width: 15px;
+  height: 15px;
+}
+
+.pulse-reason {
+  align-self: flex-end;
+}
+
+.pulse-cleared-toggle {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-3);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.menu-title {
+  padding: 6px 12px 4px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* The Folder beside the chat */
+.chat-head-button {
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-head-button:hover {
+  color: var(--text);
+}
+
+.chat-head-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ws-panel {
+  width: 340px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--line);
+  background: var(--list);
+}
+
+.ws-head {
+  height: 56px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px 0 14px;
+}
+
+.ws-head > svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-3);
+}
+
+.ws-head .spacer,
+.ws-viewer-head .spacer {
+  flex: 1;
+}
+
+.ws-title {
+  font-weight: 600;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ws-head .staged-remove {
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+}
+
+.ws-head .staged-remove svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ws-search {
+  margin: 0 10px 6px;
+}
+
+.ws-plugin-note {
+  margin: 0 14px 6px;
+  font-size: 12px;
+}
+
+.ws-panel .model-note {
+  margin: 0 10px 6px;
+}
+
+.ws-tree {
+  flex: 1;
+  overflow: auto;
+  padding: 0 4px 12px;
+}
+
+.ws-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  text-align: left;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.ws-row:hover {
+  background: var(--surface-hover);
+}
+
+.ws-row svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--text-3);
+}
+
+.ws-twisty {
+  width: 10px;
+  flex: none;
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.ws-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ws-hit {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.ws-snippet {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.ws-note {
+  padding: 4px 14px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.ws-viewer {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ws-viewer-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 8px;
+}
+
+.ws-viewer-head .staged-remove {
+  font-size: 20px;
+}
+
+.ws-viewer-head .secondary,
+.ws-viewer-head .primary {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 13px;
+  align-self: center;
+}
+
+.ws-viewer-name {
+  font-weight: 600;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ws-code {
+  flex: 1;
+  margin: 0;
+  overflow: auto;
+  padding: 4px 0 16px;
+  font: 12px/18px var(--mono);
+  border-top: 1px solid var(--line);
+}
+
+.ws-line {
+  display: flex;
+  white-space: pre;
+}
+
+.ws-num {
+  flex: none;
+  width: 40px;
+  padding-right: 10px;
+  text-align: right;
+  color: var(--text-3);
+  user-select: none;
+}
+
+.ws-editor {
+  flex: 1;
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  outline: none;
+  resize: none;
+  background: var(--field);
+  color: var(--text);
+  font: 12px/18px var(--mono);
+  white-space: pre;
+  tab-size: 2;
+}
+
+.ws-image {
+  flex: 1;
+  overflow: auto;
+  padding: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.ws-image img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+/* A file a reply names, opened in the Folder */
+code.file-link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-line);
+  text-underline-offset: 2px;
+}
+
+code.file-link:hover {
+  color: var(--accent);
+}

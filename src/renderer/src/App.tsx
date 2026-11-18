@@ -8,11 +8,16 @@ import { ModelPicker } from './components/ModelPicker'
 import { ContextPanel } from './components/ContextPanel'
 import { RoomView } from './components/RoomView'
 import { Tasks } from './components/Tasks'
+import { PulsePage } from './components/PulsePage'
+import { FilesPanel } from './components/FilesPanel'
+import { absolutePath, pathForDraft } from './state/workspace'
+import { FileLinks } from './components/Markdown'
+import { usePulse } from './state/usePulse'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar, hostName } from './components/TitleBar'
-import { Transcript, prefillRequest } from './components/Transcript'
+import { Transcript, prefillRequest, quoteRequest } from './components/Transcript'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
 import { forgetAvatars, useBots } from './state/useBots'
@@ -68,7 +73,7 @@ export function App() {
   )
 }
 
-type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'needs' | 'settings'
+type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'pulse' | 'needs' | 'settings'
 
 const REOPEN_SECTION = 'conduit.reopen-section'
 
@@ -146,6 +151,47 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const roster = useBots(connected)
   const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
+  // A quote lands in the composer it was made for, not again on the way back to Chats.
+  useEffect(() => {
+    if (section !== 'chats') setQuote(null)
+  }, [section])
+  const pulse = usePulse(connected, section === 'pulse')
+  // The Folder beside the chat: open until closed, for whichever chat has a folder.
+  const [filesOpen, setFilesOpen] = useState(() => {
+    try {
+      return localStorage.getItem('conduit.filesOpen') === '1'
+    } catch {
+      return false
+    }
+  })
+  const showFiles = useCallback((open: boolean) => {
+    setFilesOpen(open)
+    try {
+      localStorage.setItem('conduit.filesOpen', open ? '1' : '0')
+    } catch {
+      // Kept for this window only.
+    }
+  }, [])
+  // A file path in a reply opens in the Folder.
+  const [reveal, setReveal] = useState<{ path: string; id: number } | null>(null)
+  const cwd = chat.cwd
+  const openPath = useMemo(
+    () => (cwd ? (path: string) => {
+      setReveal(current => ({ path: absolutePath(path, cwd), id: (current?.id ?? 0) + 1 }))
+      showFiles(true)
+    } : null),
+    [cwd, showFiles]
+  )
+  // Each reply's end reads the open folders again: the agent may have changed files.
+  const [turnsDone, setTurnsDone] = useState(0)
+  const wasRunning = useRef(false)
+  useEffect(() => {
+    if (wasRunning.current && !transcript.running) setTurnsDone(n => n + 1)
+    wasRunning.current = transcript.running
+  }, [transcript.running])
+  const pulseChat = pulse.feed?.homeChatId || null
+  // Pulse's own chat stays behind its screen, as on the phone.
+  const listedRows = useMemo(() => (pulseChat && list.rows ? list.rows.filter(row => row.id !== pulseChat) : list.rows), [list.rows, pulseChat])
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
   const [contextOpen, setContextOpen] = useState(false)
@@ -395,6 +441,16 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           </button>
           <button
             className="railbtn"
+            aria-label={pulse.feed?.unseen ? t('Pulse, new cards') : t('Pulse')}
+            title={t('Pulse')}
+            aria-current={section === 'pulse' ? 'page' : undefined}
+            onClick={() => setSection('pulse')}
+          >
+            <Icon name="pulse" />
+            {pulse.feed?.unseen && section !== 'pulse' ? <span className="badge">{pulse.feed.unseen > 99 ? '99+' : pulse.feed.unseen}</span> : null}
+          </button>
+          <button
+            className="railbtn"
             aria-label={needsCount ? t('Needs you, {count}', { count: needsCount }) : t('Needs you')}
             title={t('Needs you')}
             aria-current={section === 'needs' ? 'page' : undefined}
@@ -423,7 +479,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         {section === 'chats' ? (
           <>
             <ChatList
-              rows={list.rows}
+              rows={listedRows}
               error={list.error}
               selectedId={chat.storedId ?? selected.id}
               runningIds={runningIds}
@@ -443,7 +499,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               }}
             />
             <main className="chat" ref={chatPane}>
-              <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
+              <div className="chat-head">
+                {title ? <div className="chat-title">{title}</div> : null}
+                {chat.cwd && !filesOpen ? (
+                  <button className="chat-head-button" aria-label={t('Files')} title={t('Files')} onClick={() => showFiles(true)}>
+                    <Icon name="folder" />
+                  </button>
+                ) : null}
+              </div>
+              <FileLinks.Provider value={openPath}>
               <Transcript
                 state={transcript}
                 loading={loading}
@@ -454,6 +518,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onQuote={setQuote}
                 onCommand={text => void onSend(text)}
               />
+              </FileLinks.Provider>
               {contextOpen && chat.liveId ? (
                 <ContextPanel chat={chat} profile={selected.profile} running={transcript.running} onClose={closeContext} onCompress={() => void onSend('/compress')} />
               ) : null}
@@ -500,6 +565,16 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 dropZone={chatPane}
               />
             </main>
+            {filesOpen && chat.cwd ? (
+              <FilesPanel
+                root={chat.cwd}
+                profile={selected.profile}
+                refreshKey={turnsDone}
+                reveal={reveal}
+                onInsertPath={path => setQuote(quoteRequest({ insert: pathForDraft(path) }))}
+                onClose={() => showFiles(false)}
+              />
+            ) : null}
           </>
         ) : section === 'bots' ? (
           <BotsHome
@@ -525,6 +600,16 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               setSelected({ id: run.id, profile: run.profile ?? job.profile, title: run.title })
               setSection('chats')
             }}
+          />
+        ) : section === 'pulse' ? (
+          <PulsePage
+            pulse={pulse}
+            onOpenChat={(target, draft) => {
+              setSelected({ id: target.id, profile: target.profile, title: target.title })
+              setSection('chats')
+              if (draft) setQuote(quoteRequest({ draft }))
+            }}
+            onOpenBoard={() => setSection('tasks')}
           />
         ) : section === 'room' && openRoom ? (
           <RoomView key={openRoom.roomId} room={openRoom} bots={roster.bots ?? []} connected={connected} canStop={groupRooms.capabilities?.canStop === true} canAttach={groupRooms.capabilities?.attachments === true} />
