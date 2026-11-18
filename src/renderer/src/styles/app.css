@@ -3835,10 +3835,15 @@ html[data-window='quick'] body {
 }
 
 /* The Folder beside the chat */
-.chat-head-button {
+.chat-head-actions {
   position: absolute;
   right: 16px;
   top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.chat-head-button {
   width: 32px;
   height: 32px;
   border-radius: 10px;
@@ -3852,6 +3857,12 @@ html[data-window='quick'] body {
 
 .chat-head-button:hover {
   color: var(--text);
+}
+
+.chat-head-button.on {
+  background: var(--danger);
+  border-color: transparent;
+  color: #fff;
 }
 
 .chat-head-button svg {
@@ -4663,4 +4674,112 @@ code.file-link:hover {
   font-size: 12px;
   color: var(--danger);
   margin-top: 4px;
+}
+
+/* A Classic voice call in the open chat, above the composer. */
+.voice-call {
+  margin: 0 24px 10px;
+  padding: 10px 12px 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 18px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.voice-call-status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.voice-call-orb {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 90ms linear;
+}
+
+.voice-call.phase-thinking .voice-call-orb,
+.voice-call.phase-hearing .voice-call-orb,
+.voice-call.phase-starting .voice-call-orb {
+  animation: voice-pulse 1.2s ease-in-out infinite;
+}
+
+.voice-call.phase-speaking .voice-call-orb {
+  animation: voice-speak 0.8s ease-in-out infinite;
+}
+
+.voice-call.phase-muted .voice-call-orb,
+.voice-call.phase-failed .voice-call-orb {
+  background: var(--text-4);
+}
+
+@keyframes voice-speak {
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+.voice-call-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.voice-call-words .meta {
+  max-width: 420px;
+}
+
+.voice-call-problem {
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.voice-call-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.voice-call-buttons .secondary {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  align-self: center;
+}
+
+.voice-call-round {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-call-round svg {
+  width: 18px;
+  height: 18px;
+}
+
+.voice-call-round.on {
+  background: var(--text);
+  color: var(--surface);
+}
+
+.voice-call-round.end {
+  background: var(--danger);
+  border-color: transparent;
+  color: #fff;
 }

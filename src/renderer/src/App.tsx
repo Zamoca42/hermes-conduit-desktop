@@ -32,6 +32,7 @@ import { cleanTitle } from './state/text'
 import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
+import { VoiceCall } from './components/VoiceCall'
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
@@ -184,6 +185,24 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   )
   // Each reply's end reads the open folders again: the agent may have changed files.
   const [turnsDone, setTurnsDone] = useState(0)
+  const [calling, setCalling] = useState(false)
+  // A call is the open chat's: another chat, or another screen, ends it. A
+  // new chat getting its id from the call's first message is the same chat.
+  const callChat = useRef(selected.id)
+  useEffect(() => {
+    const was = callChat.current
+    callChat.current = selected.id
+    if (was !== null && was !== selected.id) setCalling(false)
+  }, [selected.id])
+  useEffect(() => setCalling(false), [selected.profile, section])
+  const lastReply = useMemo(() => {
+    for (let i = transcript.items.length - 1; i >= 0; i--) {
+      const item = transcript.items[i]!
+      if (item.kind === 'user') return null
+      if (item.kind === 'assistant' && item.text.trim()) return item.text
+    }
+    return null
+  }, [transcript.items])
   const wasRunning = useRef(false)
   useEffect(() => {
     if (wasRunning.current && !transcript.running) setTurnsDone(n => n + 1)
@@ -501,11 +520,22 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             <main className="chat" ref={chatPane}>
               <div className="chat-head">
                 {title ? <div className="chat-title">{title}</div> : null}
-                {chat.cwd && !filesOpen ? (
-                  <button className="chat-head-button" aria-label={t('Files')} title={t('Files')} onClick={() => showFiles(true)}>
-                    <Icon name="folder" />
+                <div className="chat-head-actions">
+                  <button
+                    className={`chat-head-button${calling ? ' on' : ''}`}
+                    aria-label={calling ? t('End call') : t('Voice call')}
+                    title={calling ? t('End call') : t('Voice call')}
+                    disabled={!connected && !calling}
+                    onClick={() => setCalling(on => !on)}
+                  >
+                    <Icon name={calling ? 'phoneDown' : 'phone'} />
                   </button>
-                ) : null}
+                  {chat.cwd && !filesOpen ? (
+                    <button className="chat-head-button" aria-label={t('Files')} title={t('Files')} onClick={() => showFiles(true)}>
+                      <Icon name="folder" />
+                    </button>
+                  ) : null}
+                </div>
               </div>
               <FileLinks.Provider value={openPath}>
               <Transcript
@@ -531,6 +561,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   setReasoning={setReasoning}
                   setSpeed={setSpeed}
                   setYolo={setYolo}
+                />
+              ) : null}
+              {calling ? (
+                <VoiceCall
+                  profile={selected.profile}
+                  onSay={words => void onSend(words)}
+                  running={transcript.running}
+                  turnsDone={turnsDone}
+                  lastReply={lastReply}
+                  onStop={() => void stop()}
+                  onEnd={() => setCalling(false)}
                 />
               ) : null}
               <Composer
@@ -563,7 +604,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 focusKey={selected.id ?? 'new'}
                 canAttach
                 dropZone={chatPane}
-                voice={{ profile: selected.profile }}
+                voice={calling ? undefined : { profile: selected.profile }}
               />
             </main>
             {filesOpen && chat.cwd ? (

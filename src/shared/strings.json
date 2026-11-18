@@ -1259,6 +1259,21 @@
     "zh-Hans": "确认你的 iPhone 显示同样的四个单词。",
     "zh-Hant": "確認你的 iPhone 顯示同樣的四個單字。"
   },
+  "Classic voice": {
+    "de": "Klassisch",
+    "es": "Voz clásica",
+    "fr": "Voix classique",
+    "id": "Suara klasik",
+    "it": "Voce classica",
+    "ja": "クラシック音声",
+    "ko": "클래식 음성",
+    "pl": "Klasyczny głos",
+    "pt-BR": "Voz clássica",
+    "ru": "Классический голос",
+    "tr": "Klasik ses",
+    "zh-Hans": "经典语音",
+    "zh-Hant": "經典語音"
+  },
   "Click or drop more bots to add them.": {
     "de": "Klicke weitere Bots an oder zieh sie hierher, um sie hinzuzufügen.",
     "es": "Haz clic o suelta más bots para añadirlos.",
@@ -2774,6 +2789,21 @@
     "zh-Hans": "空文件夹",
     "zh-Hant": "空白檔案夾"
   },
+  "End call": {
+    "de": "Anruf beenden",
+    "es": "Finalizar llamada",
+    "fr": "Raccrocher",
+    "id": "Akhiri panggilan",
+    "it": "Termina chiamata",
+    "ja": "通話を終了",
+    "ko": "통화 종료",
+    "pl": "Zakończ połączenie",
+    "pt-BR": "Encerrar chamada",
+    "ru": "Завершить звонок",
+    "tr": "Aramayı bitir",
+    "zh-Hans": "结束通话",
+    "zh-Hant": "結束通話"
+  },
   "End quiet time": {
     "de": "Ruhe beenden",
     "es": "Terminar el silencio",
@@ -4019,6 +4049,36 @@
     "zh-Hans": "兴趣",
     "zh-Hant": "興趣"
   },
+  "Interrupt": {
+    "de": "Unterbrechen",
+    "es": "Interrumpir",
+    "fr": "Interrompre",
+    "id": "Interupsi",
+    "it": "Interrompi",
+    "ja": "中断",
+    "ko": "중단",
+    "pl": "Przerwij",
+    "pt-BR": "Interromper",
+    "ru": "Прервать",
+    "tr": "Yarıda Kes",
+    "zh-Hans": "中断",
+    "zh-Hant": "中斷"
+  },
+  "Interrupted": {
+    "de": "Unterbrochen",
+    "es": "Interrumpido",
+    "fr": "Interrompu",
+    "id": "Terinterupsi",
+    "it": "Interrotto",
+    "ja": "中断",
+    "ko": "중단됨",
+    "pl": "Przerwane",
+    "pt-BR": "Interrompido",
+    "ru": "Прервано",
+    "tr": "Kesintiye uğradı",
+    "zh-Hans": "已中断",
+    "zh-Hant": "已中斷"
+  },
   "It sent a sign-in for {host}.": {
     "de": "Es hat eine Anmeldung für {host} gesendet.",
     "es": "Envió un inicio de sesión para {host}.",
@@ -4228,6 +4288,36 @@
     "tr": "Rapora girmeyenler",
     "zh-Hans": "未写进报告",
     "zh-Hant": "未寫進報告"
+  },
+  "Listen": {
+    "de": "Zuhören",
+    "es": "Escuchar",
+    "fr": "Écouter",
+    "id": "Dengarkan",
+    "it": "Ascolta",
+    "ja": "聞き取り",
+    "ko": "듣기",
+    "pl": "Słuchaj",
+    "pt-BR": "Ouvir",
+    "ru": "Слушать",
+    "tr": "Dinle",
+    "zh-Hans": "聆听",
+    "zh-Hant": "聆聽"
+  },
+  "Listening": {
+    "de": "Hört zu",
+    "es": "Escuchando",
+    "fr": "À l'écoute",
+    "id": "Mendengarkan",
+    "it": "In ascolto",
+    "ja": "聞き取り中",
+    "ko": "듣는 중",
+    "pl": "Słucha",
+    "pt-BR": "Ouvindo",
+    "ru": "Слушает",
+    "tr": "Dinliyor",
+    "zh-Hans": "正在聆听",
+    "zh-Hant": "正在聆聽"
   },
   "Loading Pulse…": {
     "de": "Pulse wird geladen …",
@@ -4738,6 +4828,36 @@
     "tr": "Sabah özeti",
     "zh-Hans": "晨间简报",
     "zh-Hant": "晨間簡報"
+  },
+  "Mute microphone": {
+    "de": "Mikrofon stummschalten",
+    "es": "Silenciar micrófono",
+    "fr": "Couper le micro",
+    "id": "Bisukan mikrofon",
+    "it": "Silenzia microfono",
+    "ja": "マイクを消音",
+    "ko": "마이크 음소거",
+    "pl": "Wycisz mikrofon",
+    "pt-BR": "Silenciar microfone",
+    "ru": "Выключить микрофон",
+    "tr": "Mikrofonun sesini kapat",
+    "zh-Hans": "静音麦克风",
+    "zh-Hant": "將麥克風靜音"
+  },
+  "Muted": {
+    "de": "Stummgeschaltet",
+    "es": "Silenciado",
+    "fr": "Micro coupé",
+    "id": "Dibisukan",
+    "it": "Disattivato",
+    "ja": "ミュート中",
+    "ko": "음소거됨",
+    "pl": "Wyciszono",
+    "pt-BR": "Silenciado",
+    "ru": "Микрофон выключен",
+    "tr": "Sessiz",
+    "zh-Hans": "已静音",
+    "zh-Hant": "已靜音"
   },
   "Name": {
     "de": "Name",
@@ -8444,6 +8564,21 @@
     "zh-Hans": "小事也提：每天六条提醒，承诺检查得更早。",
     "zh-Hant": "小事也提：每天六則提醒，承諾檢查得更早。"
   },
+  "Speaking": {
+    "de": "Spricht",
+    "es": "Hablando",
+    "fr": "Parle",
+    "id": "Berbicara",
+    "it": "Sta parlando",
+    "ja": "発話中",
+    "ko": "말하는 중",
+    "pl": "Mówi",
+    "pt-BR": "Falando",
+    "ru": "Говорит",
+    "tr": "Konuşuyor",
+    "zh-Hans": "正在说话",
+    "zh-Hant": "正在說話"
+  },
   "Star": {
     "de": "Stern setzen",
     "es": "Destacar",
@@ -9178,6 +9313,21 @@
     "tr": "Takip edilecekler",
     "zh-Hans": "需关注的事",
     "zh-Hant": "需關注的事"
+  },
+  "Thinking": {
+    "de": "Denkt nach",
+    "es": "Pensamiento",
+    "fr": "Réflexion",
+    "id": "Berpikir",
+    "it": "Pensiero",
+    "ja": "思考",
+    "ko": "생각",
+    "pl": "Myślenie",
+    "pt-BR": "Pensando",
+    "ru": "Размышления",
+    "tr": "Düşünüyor",
+    "zh-Hans": "思考中",
+    "zh-Hant": "思考中"
   },
   "Thinking…": {
     "de": "Denkt nach …",
@@ -9929,6 +10079,21 @@
     "zh-Hans": "单位",
     "zh-Hant": "單位"
   },
+  "Unmute microphone": {
+    "de": "Stummschaltung aufheben",
+    "es": "Activar micrófono",
+    "fr": "Réactiver le micro",
+    "id": "Bunyikan mikrofon",
+    "it": "Riattiva microfono",
+    "ja": "マイクの消音を解除",
+    "ko": "마이크 음소거 해제",
+    "pl": "Wyłącz wyciszenie mikrofonu",
+    "pt-BR": "Ativar microfone",
+    "ru": "Включить микрофон",
+    "tr": "Mikrofonun sesini aç",
+    "zh-Hans": "取消麦克风静音",
+    "zh-Hant": "取消麥克風靜音"
+  },
   "Unpin": {
     "de": "Lösen",
     "es": "Dejar de fijar",
@@ -10258,6 +10423,21 @@
     "tr": "Tatil",
     "zh-Hans": "休假",
     "zh-Hant": "休假"
+  },
+  "Voice call": {
+    "de": "Sprachanruf",
+    "es": "Llamada de voz",
+    "fr": "Appel vocal",
+    "id": "Panggilan suara",
+    "it": "Chiamata vocale",
+    "ja": "音声通話",
+    "ko": "음성 통화",
+    "pl": "Połączenie głosowe",
+    "pt-BR": "Chamada de voz",
+    "ru": "Голосовой звонок",
+    "tr": "Sesli arama",
+    "zh-Hans": "语音通话",
+    "zh-Hant": "語音通話"
   },
   "Voice message": {
     "de": "Sprachnachricht",
