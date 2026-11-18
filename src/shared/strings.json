@@ -404,6 +404,36 @@
     "zh-Hans": "全部",
     "zh-Hant": "全部"
   },
+  "All Categories": {
+    "de": "Alle Kategorien",
+    "es": "Todas las categorías",
+    "fr": "Toutes les catégories",
+    "id": "Semua kategori",
+    "it": "Tutte le categorie",
+    "ja": "すべてのカテゴリ",
+    "ko": "모든 카테고리",
+    "pl": "Wszystkie kategorie",
+    "pt-BR": "Todas as categorias",
+    "ru": "Все категории",
+    "tr": "Tüm kategoriler",
+    "zh-Hans": "所有类别",
+    "zh-Hant": "所有類別"
+  },
+  "All Sources": {
+    "de": "Alle Quellen",
+    "es": "Todas las fuentes",
+    "fr": "Toutes les sources",
+    "id": "Semua sumber",
+    "it": "Tutte le fonti",
+    "ja": "すべてのソース",
+    "ko": "모든 소스",
+    "pl": "Wszystkie źródła",
+    "pt-BR": "Todas as fontes",
+    "ru": "Все источники",
+    "tr": "Tüm kaynaklar",
+    "zh-Hans": "所有来源",
+    "zh-Hant": "所有來源"
+  },
   "All use the chat model": {
     "de": "Alle nutzen das Chatmodell",
     "es": "Todos usan el modelo del chat",
@@ -974,6 +1004,21 @@
     "zh-Hans": "自动",
     "zh-Hant": "自動"
   },
+  "Available to install": {
+    "de": "Zum Installieren verfügbar",
+    "es": "Disponibles para instalar",
+    "fr": "Disponibles à l'installation",
+    "id": "Tersedia untuk dipasang",
+    "it": "Disponibili da installare",
+    "ja": "インストール可能",
+    "ko": "설치 가능",
+    "pl": "Do zainstalowania",
+    "pt-BR": "Disponíveis para instalar",
+    "ru": "Доступно для установки",
+    "tr": "Yüklenebilir",
+    "zh-Hans": "可安装",
+    "zh-Hant": "可安裝"
+  },
   "Back": {
     "de": "Zurück",
     "es": "Atrás",
@@ -1409,6 +1454,21 @@
     "zh-Hans": "最近提过，之后没有变化",
     "zh-Hant": "最近提過，之後沒有變化"
   },
+  "Browse Skill Hub": {
+    "de": "Skill-Hub durchsuchen",
+    "es": "Explorar el centro de habilidades",
+    "fr": "Parcourir le hub de compétences",
+    "id": "Jelajahi Skill Hub",
+    "it": "Sfoglia lo Skill Hub",
+    "ja": "スキルハブを見る",
+    "ko": "스킬 허브 둘러보기",
+    "pl": "Przeglądaj centrum umiejętności",
+    "pt-BR": "Explorar o hub de habilidades",
+    "ru": "Обзор каталога навыков",
+    "tr": "Beceri Merkezi'ne göz at",
+    "zh-Hans": "浏览技能中心",
+    "zh-Hant": "瀏覽技能中心"
+  },
   "Budgets, memory, next look, time zone, a look through your chats now and recent checks.": {
     "de": "Budgets, Gedächtnis, nächste Durchsicht, Zeitzone, Chats jetzt durchsehen und letzte Durchsichten.",
     "es": "Presupuestos, memoria, próxima revisión, zona horaria, revisar tus chats ahora y revisiones recientes.",
@@ -1558,6 +1618,21 @@
     "tr": "Kart {number}",
     "zh-Hans": "卡片 {number}",
     "zh-Hant": "卡片 {number}"
+  },
+  "Category": {
+    "de": "Kategorie",
+    "es": "Categoría",
+    "fr": "Catégorie",
+    "id": "Kategori",
+    "it": "Categoria",
+    "ja": "カテゴリ",
+    "ko": "카테고리",
+    "pl": "Kategoria",
+    "pt-BR": "Categoria",
+    "ru": "Категория",
+    "tr": "Kategori",
+    "zh-Hans": "类别",
+    "zh-Hant": "類別"
   },
   "Changes apply to new sessions.": {
     "de": "Änderungen gelten für neue Sitzungen.",
@@ -1948,6 +2023,21 @@
     "tr": "Taahhütler",
     "zh-Hans": "承诺事项",
     "zh-Hant": "承諾事項"
+  },
+  "Community": {
+    "de": "Community",
+    "es": "Comunidad",
+    "fr": "Communauté",
+    "id": "Komunitas",
+    "it": "Community",
+    "ja": "コミュニティ",
+    "ko": "커뮤니티",
+    "pl": "Społeczność",
+    "pt-BR": "Comunidade",
+    "ru": "Сообщество",
+    "tr": "Topluluk",
+    "zh-Hans": "社区",
+    "zh-Hant": "社群"
   },
   "Compaction": {
     "de": "Komprimierung",
@@ -2578,6 +2668,21 @@
     "tr": "Bu dosya açılamadı",
     "zh-Hans": "无法打开此文件",
     "zh-Hant": "無法打開此檔案"
+  },
+  "Couldn't reach the skill hub": {
+    "de": "Skill-Hub nicht erreichbar",
+    "es": "No se pudo acceder al centro de habilidades",
+    "fr": "Impossible d'accéder au hub de compétences",
+    "id": "Tidak dapat menjangkau Skill Hub",
+    "it": "Impossibile raggiungere lo Skill Hub",
+    "ja": "スキルハブに接続できませんでした",
+    "ko": "스킬 허브에 연결할 수 없습니다",
+    "pl": "Nie udało się połączyć z centrum umiejętności",
+    "pt-BR": "Não foi possível acessar o hub de habilidades",
+    "ru": "Не удалось открыть каталог навыков",
+    "tr": "Beceri Merkezi'ne ulaşılamadı",
+    "zh-Hans": "无法访问技能中心",
+    "zh-Hant": "無法連上技能中心"
   },
   "Couldn't reach this bot's work. Try again in a moment.": {
     "de": "Die Arbeit dieses Bots ist gerade nicht erreichbar. Versuch es gleich noch einmal.",
@@ -4169,6 +4274,21 @@
     "zh-Hans": "快速模式",
     "zh-Hant": "快速模式"
   },
+  "Featured": {
+    "de": "Empfohlen",
+    "es": "Destacadas",
+    "fr": "À la une",
+    "id": "Unggulan",
+    "it": "In evidenza",
+    "ja": "注目",
+    "ko": "추천",
+    "pl": "Polecane",
+    "pt-BR": "Destaques",
+    "ru": "Избранное",
+    "tr": "Öne çıkanlar",
+    "zh-Hans": "精选",
+    "zh-Hant": "精選"
+  },
   "File": {
     "de": "Datei",
     "es": "Archivo",
@@ -4423,6 +4543,21 @@
     "tr": "Arkadaşlar ve aile",
     "zh-Hans": "朋友和家人",
     "zh-Hant": "朋友和家人"
+  },
+  "From Hermes' official skills catalog. Hermes scans each skill before it installs.": {
+    "de": "Aus dem offiziellen Skill-Katalog von Hermes. Hermes prüft jeden Skill vor der Installation.",
+    "es": "Del catálogo oficial de habilidades de Hermes. Hermes analiza cada habilidad antes de instalarla.",
+    "fr": "Depuis le catalogue officiel de compétences de Hermes. Hermes analyse chaque compétence avant de l'installer.",
+    "id": "Dari katalog skill resmi Hermes. Hermes memindai setiap skill sebelum memasangnya.",
+    "it": "Dal catalogo ufficiale di skill di Hermes. Hermes analizza ogni skill prima di installarla.",
+    "ja": "Hermes の公式スキルカタログから。Hermes はインストール前に各スキルをスキャンします。",
+    "ko": "Hermes 공식 스킬 카탈로그에서 가져옵니다. Hermes는 설치 전에 각 스킬을 검사합니다.",
+    "pl": "Z oficjalnego katalogu umiejętności Hermesa. Hermes skanuje każdą umiejętność przed instalacją.",
+    "pt-BR": "Do catálogo oficial de habilidades do Hermes. O Hermes verifica cada habilidade antes de instalar.",
+    "ru": "Из официального каталога навыков Hermes. Hermes проверяет каждый навык перед установкой.",
+    "tr": "Hermes'in resmi beceri kataloğundan. Hermes her beceriyi yüklemeden önce tarar.",
+    "zh-Hans": "来自 Hermes 官方技能目录。Hermes 会在安装前扫描每个技能。",
+    "zh-Hant": "來自 Hermes 官方技能目錄。Hermes 會在安裝前掃描每個技能。"
   },
   "From the latest reports and look ahead. Bring it up makes it a card on the Pulse screen, without a notification, and what you do with it teaches Pulse about things like it.": {
     "de": "Aus den letzten Berichten und der Vorausschau. „Trotzdem zeigen“ macht daraus eine Karte auf dem Pulse-Bildschirm, ohne Mitteilung, und was du damit machst, bringt Pulse etwas über Ähnliches bei.",
@@ -4709,6 +4844,21 @@
     "zh-Hans": "Hermes 无法朗读此内容：{error}",
     "zh-Hant": "Hermes 無法朗讀此內容：{error}"
   },
+  "Hermes couldn't scan this skill, so it can't be installed from here.": {
+    "de": "Hermes konnte diesen Skill nicht prüfen, daher lässt er sich hier nicht installieren.",
+    "es": "Hermes no pudo analizar esta habilidad, así que no se puede instalar desde aquí.",
+    "fr": "Hermes n'a pas pu analyser cette compétence, elle ne peut donc pas être installée d'ici.",
+    "id": "Hermes tidak dapat memindai skill ini, jadi tidak bisa dipasang dari sini.",
+    "it": "Hermes non è riuscito a scansionare questa skill, quindi non si può installare da qui.",
+    "ja": "Hermes がこのスキルをスキャンできなかったため、ここからはインストールできません。",
+    "ko": "Hermes가 이 스킬을 검사하지 못해 여기서 설치할 수 없습니다.",
+    "pl": "Hermes nie mógł przeskanować tej umiejętności, więc nie da się jej tu zainstalować.",
+    "pt-BR": "O Hermes não conseguiu verificar esta habilidade, então ela não pode ser instalada daqui.",
+    "ru": "Hermes не смог проверить этот навык, поэтому установить его отсюда нельзя.",
+    "tr": "Hermes bu beceriyi tarayamadı, bu yüzden buradan yüklenemiyor.",
+    "zh-Hans": "Hermes 无法扫描此技能，因此无法从这里安装。",
+    "zh-Hant": "Hermes 無法掃描此技能，因此無法從這裡安裝。"
+  },
   "Hermes couldn't transcribe that: {error}": {
     "de": "Hermes konnte das nicht transkribieren: {error}",
     "es": "Hermes no pudo transcribir eso: {error}",
@@ -4753,6 +4903,21 @@
     "tr": "Hermes hiçbir kelime duymadı.",
     "zh-Hans": "Hermes 没有听到任何话。",
     "zh-Hant": "Hermes 沒有聽到任何話。"
+  },
+  "Hermes didn't start the install.": {
+    "de": "Hermes hat die Installation nicht gestartet.",
+    "es": "Hermes no inició la instalación.",
+    "fr": "Hermes n'a pas lancé l'installation.",
+    "id": "Hermes tidak memulai pemasangan.",
+    "it": "Hermes non ha avviato l'installazione.",
+    "ja": "Hermes がインストールを開始しませんでした。",
+    "ko": "Hermes가 설치를 시작하지 않았습니다.",
+    "pl": "Hermes nie rozpoczął instalacji.",
+    "pt-BR": "O Hermes não iniciou a instalação.",
+    "ru": "Hermes не начал установку.",
+    "tr": "Hermes yüklemeyi başlatmadı.",
+    "zh-Hans": "Hermes 没有开始安装。",
+    "zh-Hant": "Hermes 沒有開始安裝。"
   },
   "Hermes didn’t keep {name}.": {
     "de": "Hermes hat {name} nicht gespeichert.",
@@ -4813,6 +4978,36 @@
     "tr": "Hermes yeni sürümle yeniden başlıyor…",
     "zh-Hans": "Hermes 正在以新版本重启…",
     "zh-Hant": "Hermes 正在以新版本重新啟動…"
+  },
+  "Hermes is scanning this skill…": {
+    "de": "Hermes prüft diesen Skill …",
+    "es": "Hermes está analizando esta habilidad…",
+    "fr": "Hermes analyse cette compétence…",
+    "id": "Hermes sedang memindai skill ini…",
+    "it": "Hermes sta scansionando questa skill…",
+    "ja": "Hermes がこのスキルをスキャン中…",
+    "ko": "Hermes가 이 스킬을 검사하는 중…",
+    "pl": "Hermes skanuje tę umiejętność…",
+    "pt-BR": "O Hermes está verificando esta habilidade…",
+    "ru": "Hermes проверяет этот навык…",
+    "tr": "Hermes bu beceriyi tarıyor…",
+    "zh-Hans": "Hermes 正在扫描此技能…",
+    "zh-Hant": "Hermes 正在掃描此技能…"
+  },
+  "Hermes is still working on it. Check again in a moment.": {
+    "de": "Hermes arbeitet noch daran. Sieh gleich noch einmal nach.",
+    "es": "Hermes sigue trabajando en ello. Vuelve a comprobarlo en un momento.",
+    "fr": "Hermes y travaille encore. Revérifiez dans un instant.",
+    "id": "Hermes masih mengerjakannya. Periksa lagi sebentar lagi.",
+    "it": "Hermes ci sta ancora lavorando. Ricontrolla tra poco.",
+    "ja": "Hermes はまだ処理中です。少し待ってからもう一度確認してください。",
+    "ko": "Hermes가 아직 작업 중입니다. 잠시 후 다시 확인하세요.",
+    "pl": "Hermes wciąż nad tym pracuje. Sprawdź ponownie za chwilę.",
+    "pt-BR": "O Hermes ainda está trabalhando nisso. Verifique de novo em instantes.",
+    "ru": "Hermes ещё работает над этим. Проверьте чуть позже.",
+    "tr": "Hermes hâlâ üzerinde çalışıyor. Birazdan tekrar kontrol edin.",
+    "zh-Hans": "Hermes 仍在处理。请稍后再查看。",
+    "zh-Hant": "Hermes 仍在處理。請稍後再查看。"
   },
   "Hermes is up to date": {
     "de": "Hermes ist auf dem neuesten Stand",
@@ -4993,6 +5188,21 @@
     "tr": "Hermes bir komut çalıştırmak istiyor.",
     "zh-Hans": "Hermes 想运行一条命令。",
     "zh-Hant": "Hermes 想執行一條指令。"
+  },
+  "Hermes won't install this skill": {
+    "de": "Hermes installiert diesen Skill nicht",
+    "es": "Hermes no instalará esta habilidad",
+    "fr": "Hermes n'installera pas cette compétence",
+    "id": "Hermes tidak akan memasang skill ini",
+    "it": "Hermes non installerà questa skill",
+    "ja": "Hermes はこのスキルをインストールしません",
+    "ko": "Hermes는 이 스킬을 설치하지 않습니다",
+    "pl": "Hermes nie zainstaluje tej umiejętności",
+    "pt-BR": "O Hermes não vai instalar esta habilidade",
+    "ru": "Hermes не установит этот навык",
+    "tr": "Hermes bu beceriyi yüklemeyecek",
+    "zh-Hans": "Hermes 不会安装此技能",
+    "zh-Hant": "Hermes 不會安裝此技能"
   },
   "Hermes {version} is available": {
     "de": "Hermes {version} ist verfügbar",
@@ -5293,6 +5503,66 @@
     "tr": "Girdi",
     "zh-Hans": "输入",
     "zh-Hant": "輸入"
+  },
+  "Install": {
+    "de": "Installieren",
+    "es": "Instalar",
+    "fr": "Installer",
+    "id": "Pasang",
+    "it": "Installa",
+    "ja": "インストール",
+    "ko": "설치",
+    "pl": "Zainstaluj",
+    "pt-BR": "Instalar",
+    "ru": "Установить",
+    "tr": "Yükle",
+    "zh-Hans": "安装",
+    "zh-Hant": "安裝"
+  },
+  "Install waits for Hermes' security scan.": {
+    "de": "Die Installation wartet auf die Sicherheitsprüfung von Hermes.",
+    "es": "La instalación espera al análisis de seguridad de Hermes.",
+    "fr": "L'installation attend l'analyse de sécurité de Hermes.",
+    "id": "Pemasangan menunggu pemindaian keamanan Hermes.",
+    "it": "L'installazione attende la scansione di sicurezza di Hermes.",
+    "ja": "インストールは Hermes のセキュリティスキャンを待っています。",
+    "ko": "설치는 Hermes의 보안 검사를 기다립니다.",
+    "pl": "Instalacja czeka na skan bezpieczeństwa Hermesa.",
+    "pt-BR": "A instalação aguarda a verificação de segurança do Hermes.",
+    "ru": "Установка ждёт проверки безопасности Hermes.",
+    "tr": "Yükleme, Hermes'in güvenlik taramasını bekliyor.",
+    "zh-Hans": "安装需等待 Hermes 的安全扫描。",
+    "zh-Hant": "安裝需等待 Hermes 的安全掃描。"
+  },
+  "Installed": {
+    "de": "Installiert",
+    "es": "Instalado",
+    "fr": "Installé",
+    "id": "Terpasang",
+    "it": "Installato",
+    "ja": "インストール済み",
+    "ko": "설치됨",
+    "pl": "Zainstalowane",
+    "pt-BR": "Instalado",
+    "ru": "Установлено",
+    "tr": "Yüklü",
+    "zh-Hans": "已安装",
+    "zh-Hant": "已安裝"
+  },
+  "Installing…": {
+    "de": "Wird installiert…",
+    "es": "Instalando…",
+    "fr": "Installation…",
+    "id": "Memasang…",
+    "it": "Installazione…",
+    "ja": "インストール中…",
+    "ko": "설치 중…",
+    "pl": "Instalowanie…",
+    "pt-BR": "Instalando…",
+    "ru": "Установка…",
+    "tr": "Yükleniyor…",
+    "zh-Hans": "正在安装…",
+    "zh-Hant": "正在安裝…"
   },
   "Instructions": {
     "de": "Anweisungen",
@@ -7034,6 +7304,21 @@
     "zh-Hans": "暂无连接器",
     "zh-Hant": "尚無連接器"
   },
+  "No description.": {
+    "de": "Keine Beschreibung.",
+    "es": "Sin descripción.",
+    "fr": "Aucune description.",
+    "id": "Tidak ada deskripsi.",
+    "it": "Nessuna descrizione.",
+    "ja": "説明はありません。",
+    "ko": "설명이 없습니다.",
+    "pl": "Brak opisu.",
+    "pt-BR": "Sem descrição.",
+    "ru": "Нет описания.",
+    "tr": "Açıklama yok.",
+    "zh-Hans": "没有描述。",
+    "zh-Hant": "沒有描述。"
+  },
   "No matching connectors": {
     "de": "Keine passenden Konnektoren",
     "es": "No hay conectores que coincidan",
@@ -7094,6 +7379,21 @@
     "zh-Hans": "未找到麦克风。",
     "zh-Hant": "找不到麥克風。"
   },
+  "No problems found": {
+    "de": "Keine Probleme gefunden",
+    "es": "No se encontraron problemas",
+    "fr": "Aucun problème trouvé",
+    "id": "Tidak ada masalah ditemukan",
+    "it": "Nessun problema trovato",
+    "ja": "問題は見つかりませんでした",
+    "ko": "문제가 발견되지 않았습니다",
+    "pl": "Nie znaleziono problemów",
+    "pt-BR": "Nenhum problema encontrado",
+    "ru": "Проблем не найдено",
+    "tr": "Sorun bulunamadı",
+    "zh-Hans": "未发现问题",
+    "zh-Hant": "未發現問題"
+  },
   "No schedule": {
     "de": "Kein Zeitplan",
     "es": "Sin programación",
@@ -7138,6 +7438,21 @@
     "tr": "Giriş yok",
     "zh-Hans": "无需登录",
     "zh-Hant": "無需登入"
+  },
+  "No skill hub on this Hermes": {
+    "de": "Kein Skill-Hub auf diesem Hermes",
+    "es": "Este Hermes no tiene centro de habilidades",
+    "fr": "Pas de hub de compétences sur ce Hermes",
+    "id": "Tidak ada Skill Hub di Hermes ini",
+    "it": "Nessuno Skill Hub su questo Hermes",
+    "ja": "この Hermes にはスキルハブがありません",
+    "ko": "이 Hermes에는 스킬 허브가 없습니다",
+    "pl": "Ten Hermes nie ma centrum umiejętności",
+    "pt-BR": "Este Hermes não tem hub de habilidades",
+    "ru": "На этом Hermes нет каталога навыков",
+    "tr": "Bu Hermes'te Beceri Merkezi yok",
+    "zh-Hans": "此 Hermes 没有技能中心",
+    "zh-Hant": "此 Hermes 沒有技能中心"
   },
   "No skills yet": {
     "de": "Noch keine Skills",
@@ -7708,6 +8023,21 @@
     "tr": "Kapalı",
     "zh-Hans": "关闭",
     "zh-Hant": "關閉"
+  },
+  "Official": {
+    "de": "Offiziell",
+    "es": "Oficial",
+    "fr": "Officiel",
+    "id": "Resmi",
+    "it": "Ufficiale",
+    "ja": "公式",
+    "ko": "공식",
+    "pl": "Oficjalna",
+    "pt-BR": "Oficial",
+    "ru": "Официальный",
+    "tr": "Resmi",
+    "zh-Hans": "官方",
+    "zh-Hant": "官方"
   },
   "Older": {
     "de": "Älter",
@@ -8398,6 +8728,21 @@
     "tr": "Eklenti",
     "zh-Hans": "插件",
     "zh-Hant": "外掛"
+  },
+  "Popular skills from the Hermes Index. Hermes scans each skill before it installs.": {
+    "de": "Beliebte Skills aus dem Hermes Index. Hermes prüft jeden Skill vor der Installation.",
+    "es": "Habilidades populares del Hermes Index. Hermes analiza cada habilidad antes de instalarla.",
+    "fr": "Compétences populaires du Hermes Index. Hermes analyse chaque compétence avant de l'installer.",
+    "id": "Skill populer dari Hermes Index. Hermes memindai setiap skill sebelum memasangnya.",
+    "it": "Skill popolari dall'Hermes Index. Hermes scansiona ogni skill prima di installarla.",
+    "ja": "Hermes Index の人気スキル。Hermes はインストール前に各スキルをスキャンします。",
+    "ko": "Hermes Index의 인기 스킬입니다. Hermes는 설치 전에 각 스킬을 검사합니다.",
+    "pl": "Popularne umiejętności z Hermes Index. Hermes skanuje każdą przed instalacją.",
+    "pt-BR": "Habilidades populares do Hermes Index. O Hermes verifica cada habilidade antes de instalar.",
+    "ru": "Популярные навыки из Hermes Index. Hermes проверяет каждый навык перед установкой.",
+    "tr": "Hermes Index'ten popüler beceriler. Hermes her beceriyi yüklemeden önce tarar.",
+    "zh-Hans": "来自 Hermes Index 的热门技能。Hermes 会在安装前扫描每个技能。",
+    "zh-Hant": "來自 Hermes Index 的熱門技能。Hermes 會在安裝前掃描每個技能。"
   },
   "Previous 7 days": {
     "de": "Letzte 7 Tage",
@@ -9464,6 +9809,21 @@
     "zh-Hans": "移除照片",
     "zh-Hant": "移除照片"
   },
+  "Remove Skill": {
+    "de": "Skill entfernen",
+    "es": "Quitar habilidad",
+    "fr": "Supprimer la compétence",
+    "id": "Hapus skill",
+    "it": "Rimuovi skill",
+    "ja": "スキルを削除",
+    "ko": "스킬 삭제",
+    "pl": "Usuń umiejętność",
+    "pt-BR": "Remover habilidade",
+    "ru": "Удалить навык",
+    "tr": "Beceriyi kaldır",
+    "zh-Hans": "移除技能",
+    "zh-Hant": "移除技能"
+  },
   "Remove the last user and assistant exchange": {
     "de": "Den letzten Austausch zwischen Nutzer und Assistent entfernen",
     "es": "Eliminar el último intercambio entre el usuario y el asistente",
@@ -9508,6 +9868,21 @@
     "tr": "{name} öğesini kaldır",
     "zh-Hans": "移除 {name}",
     "zh-Hant": "移除 {name}"
+  },
+  "Removing…": {
+    "de": "Wird entfernt …",
+    "es": "Quitando…",
+    "fr": "Retrait…",
+    "id": "Menghapus…",
+    "it": "Rimozione…",
+    "ja": "削除中…",
+    "ko": "제거 중…",
+    "pl": "Usuwanie…",
+    "pt-BR": "Removendo…",
+    "ru": "Удаление…",
+    "tr": "Kaldırılıyor…",
+    "zh-Hans": "正在移除…",
+    "zh-Hant": "正在移除…"
   },
   "Rename": {
     "de": "Umbenennen",
@@ -9866,6 +10241,21 @@
     "pt-BR": "Resultado",
     "ru": "Результат",
     "tr": "Sonuç",
+    "zh-Hans": "结果",
+    "zh-Hant": "結果"
+  },
+  "Results": {
+    "de": "Ergebnisse",
+    "es": "Resultados",
+    "fr": "Résultats",
+    "id": "Hasil",
+    "it": "Risultati",
+    "ja": "結果",
+    "ko": "결과",
+    "pl": "Wyniki",
+    "pt-BR": "Resultados",
+    "ru": "Результаты",
+    "tr": "Sonuçlar",
     "zh-Hans": "结果",
     "zh-Hant": "結果"
   },
@@ -10454,6 +10844,21 @@
     "zh-Hans": "搜索技能…",
     "zh-Hant": "搜尋技能"
   },
+  "Search skills.sh, GitHub, ClawHub and the other sources Hermes has.": {
+    "de": "Durchsuche skills.sh, GitHub, ClawHub und die anderen Quellen von Hermes.",
+    "es": "Busca en skills.sh, GitHub, ClawHub y las demás fuentes de Hermes.",
+    "fr": "Cherchez dans skills.sh, GitHub, ClawHub et les autres sources de Hermes.",
+    "id": "Cari di skills.sh, GitHub, ClawHub, dan sumber lain yang dimiliki Hermes.",
+    "it": "Cerca su skills.sh, GitHub, ClawHub e le altre fonti di Hermes.",
+    "ja": "skills.sh、GitHub、ClawHub など Hermes のソースを検索します。",
+    "ko": "skills.sh, GitHub, ClawHub 등 Hermes의 소스를 검색합니다.",
+    "pl": "Szukaj w skills.sh, GitHub, ClawHub i innych źródłach Hermesa.",
+    "pt-BR": "Pesquise no skills.sh, GitHub, ClawHub e nas outras fontes do Hermes.",
+    "ru": "Ищите в skills.sh, GitHub, ClawHub и других источниках Hermes.",
+    "tr": "skills.sh, GitHub, ClawHub ve Hermes'in diğer kaynaklarında ara.",
+    "zh-Hans": "搜索 skills.sh、GitHub、ClawHub 和 Hermes 的其他来源。",
+    "zh-Hant": "搜尋 skills.sh、GitHub、ClawHub 和 Hermes 的其他來源。"
+  },
   "Search tasks": {
     "de": "Aufgaben durchsuchen",
     "es": "Buscar tareas",
@@ -10468,6 +10873,21 @@
     "tr": "Görevlerde ara",
     "zh-Hans": "搜索任务",
     "zh-Hant": "搜尋任務"
+  },
+  "Search the skill hub": {
+    "de": "Skill-Hub durchsuchen",
+    "es": "Busca en el centro de habilidades",
+    "fr": "Cherchez dans le hub de compétences",
+    "id": "Cari di Skill Hub",
+    "it": "Cerca nello Skill Hub",
+    "ja": "スキルハブを検索",
+    "ko": "스킬 허브 검색",
+    "pl": "Przeszukaj centrum umiejętności",
+    "pt-BR": "Pesquise no hub de habilidades",
+    "ru": "Поиск в каталоге навыков",
+    "tr": "Beceri Merkezi'nde ara",
+    "zh-Hans": "搜索技能中心",
+    "zh-Hant": "搜尋技能中心"
   },
   "Search tools": {
     "de": "Tools durchsuchen",
@@ -10573,6 +10993,21 @@
     "tr": "Bölümler",
     "zh-Hans": "分区",
     "zh-Hant": "區段"
+  },
+  "Security Scan": {
+    "de": "Sicherheitsprüfung",
+    "es": "Análisis de seguridad",
+    "fr": "Analyse de sécurité",
+    "id": "Pemindaian keamanan",
+    "it": "Scansione di sicurezza",
+    "ja": "セキュリティスキャン",
+    "ko": "보안 검사",
+    "pl": "Skan bezpieczeństwa",
+    "pt-BR": "Verificação de segurança",
+    "ru": "Проверка безопасности",
+    "tr": "Güvenlik taraması",
+    "zh-Hans": "安全扫描",
+    "zh-Hant": "安全掃描"
   },
   "Send": {
     "de": "Senden",
@@ -11054,6 +11489,21 @@
     "zh-Hans": "一个房间最多容纳六个。",
     "zh-Hant": "一個聊天室最多容納六個。"
   },
+  "Skill Hub": {
+    "de": "Skill-Hub",
+    "es": "Centro de habilidades",
+    "fr": "Hub de compétences",
+    "id": "Skill Hub",
+    "it": "Skill Hub",
+    "ja": "スキルハブ",
+    "ko": "스킬 허브",
+    "pl": "Centrum umiejętności",
+    "pt-BR": "Hub de habilidades",
+    "ru": "Каталог навыков",
+    "tr": "Beceri Merkezi",
+    "zh-Hans": "技能中心",
+    "zh-Hant": "技能中心"
+  },
   "Skill curator": {
     "de": "Skill-Kurator",
     "es": "Curador de skills",
@@ -11263,6 +11713,21 @@
     "tr": "Akıllı onaylar",
     "zh-Hans": "智能批准",
     "zh-Hant": "智慧核准"
+  },
+  "Source": {
+    "de": "Quelle",
+    "es": "Fuente",
+    "fr": "Source",
+    "id": "Sumber",
+    "it": "Fonte",
+    "ja": "ソース",
+    "ko": "소스",
+    "pl": "Źródło",
+    "pt-BR": "Fonte",
+    "ru": "Источник",
+    "tr": "Kaynak",
+    "zh-Hans": "来源",
+    "zh-Hant": "來源"
   },
   "Speaking": {
     "de": "Spricht",
@@ -12014,6 +12479,21 @@
     "zh-Hans": "网关尚未恢复",
     "zh-Hant": "閘道尚未恢復"
   },
+  "The install didn't finish.": {
+    "de": "Die Installation wurde nicht abgeschlossen.",
+    "es": "La instalación no terminó.",
+    "fr": "L'installation ne s'est pas terminée.",
+    "id": "Pemasangan tidak selesai.",
+    "it": "L'installazione non è terminata.",
+    "ja": "インストールが完了しませんでした。",
+    "ko": "설치가 완료되지 않았습니다.",
+    "pl": "Instalacja nie została ukończona.",
+    "pt-BR": "A instalação não terminou.",
+    "ru": "Установка не завершилась.",
+    "tr": "Yükleme tamamlanmadı.",
+    "zh-Hans": "安装没有完成。",
+    "zh-Hant": "安裝沒有完成。"
+  },
   "The look ahead passed over it": {
     "de": "Die Vorausschau hat es übergangen",
     "es": "La previsión lo pasó por alto",
@@ -12163,6 +12643,21 @@
     "tr": "Rapor bunu atladı",
     "zh-Hans": "报告没有提到它",
     "zh-Hant": "報告沒有提到它"
+  },
+  "The search didn't finish": {
+    "de": "Die Suche wurde nicht abgeschlossen",
+    "es": "La búsqueda no terminó",
+    "fr": "La recherche n'a pas abouti",
+    "id": "Pencarian tidak selesai",
+    "it": "La ricerca non è terminata",
+    "ja": "検索が完了しませんでした",
+    "ko": "검색이 완료되지 않았습니다",
+    "pl": "Wyszukiwanie nie zostało ukończone",
+    "pt-BR": "A pesquisa não terminou",
+    "ru": "Поиск не завершился",
+    "tr": "Arama tamamlanmadı",
+    "zh-Hans": "搜索未完成",
+    "zh-Hant": "搜尋未完成"
   },
   "The skills, tools or MCP choices were not saved.": {
     "de": "Die Auswahl für Skills, Tools oder MCP wurde nicht gespeichert.",
@@ -13049,6 +13544,21 @@
     "zh-Hans": "出行与旅行",
     "zh-Hant": "出行與旅行"
   },
+  "Trusted": {
+    "de": "Vertrauenswürdig",
+    "es": "De confianza",
+    "fr": "Fiable",
+    "id": "Tepercaya",
+    "it": "Attendibile",
+    "ja": "信頼済み",
+    "ko": "신뢰함",
+    "pl": "Zaufane",
+    "pt-BR": "Confiável",
+    "ru": "Доверенный",
+    "tr": "Güvenilir",
+    "zh-Hans": "受信任",
+    "zh-Hant": "受信任"
+  },
   "Try Again": {
     "de": "Erneut versuchen",
     "es": "Reintentar",
@@ -13454,6 +13964,21 @@
     "zh-Hans": "“更新 Hermes”会在你的主机上运行 hermes update。Hermes 会以新版本重启，恢复后 Conduit 会重新连接。",
     "zh-Hant": "「更新 Hermes」會在你的主機上執行 hermes update。Hermes 會以新版本重新啟動，恢復後 Conduit 會重新連線。"
   },
+  "Update Hermes to browse and install skills from the hub.": {
+    "de": "Aktualisiere Hermes, um Skills aus dem Hub zu durchsuchen und zu installieren.",
+    "es": "Actualiza Hermes para explorar e instalar habilidades del centro.",
+    "fr": "Mettez à jour Hermes pour parcourir et installer des compétences depuis le hub.",
+    "id": "Perbarui Hermes untuk menjelajahi dan memasang skill dari hub.",
+    "it": "Aggiorna Hermes per sfogliare e installare skill dall'hub.",
+    "ja": "ハブのスキルを見てインストールするには Hermes をアップデートしてください。",
+    "ko": "허브에서 스킬을 둘러보고 설치하려면 Hermes를 업데이트하세요.",
+    "pl": "Zaktualizuj Hermesa, aby przeglądać i instalować umiejętności z centrum.",
+    "pt-BR": "Atualize o Hermes para explorar e instalar habilidades do hub.",
+    "ru": "Обновите Hermes, чтобы просматривать и устанавливать навыки из каталога.",
+    "tr": "Merkezdeki becerilere göz atmak ve yüklemek için Hermes'i güncelle.",
+    "zh-Hans": "更新 Hermes 以浏览并安装技能中心的技能。",
+    "zh-Hant": "更新 Hermes 以瀏覽並安裝技能中心的技能。"
+  },
   "Update Hermes, or run hermes gateway restart on the host.": {
     "de": "Aktualisiere Hermes oder führe hermes gateway restart auf dem Host aus.",
     "es": "Actualiza Hermes o ejecuta hermes gateway restart en el host.",
@@ -13783,6 +14308,21 @@
     "tr": "Sürüm",
     "zh-Hans": "版本",
     "zh-Hant": "版本"
+  },
+  "View Source": {
+    "de": "Quelle ansehen",
+    "es": "Ver código fuente",
+    "fr": "Voir la source",
+    "id": "Lihat sumber",
+    "it": "Visualizza sorgente",
+    "ja": "ソースを見る",
+    "ko": "소스 보기",
+    "pl": "Zobacz źródło",
+    "pt-BR": "Ver código-fonte",
+    "ru": "Открыть исходники",
+    "tr": "Kaynağı görüntüle",
+    "zh-Hans": "查看源代码",
+    "zh-Hant": "檢視原始碼"
   },
   "Voice": {
     "de": "Sprachmodus",
@@ -14473,6 +15013,21 @@
     "tr": "İş akışları komutları onay istemeden çalıştırır. Hermes’in asla çalıştırmadığı komutlar engelli kalır.",
     "zh-Hans": "工作流运行命令时不请求审批。Hermes 从不运行的命令仍会被阻止。",
     "zh-Hant": "工作流程執行命令時不要求核准。Hermes 從不執行的命令仍會被封鎖。"
+  },
+  "Worth a look before you install it": {
+    "de": "Vor der Installation einen Blick wert",
+    "es": "Conviene revisarla antes de instalarla",
+    "fr": "À examiner avant de l'installer",
+    "id": "Layak diperiksa sebelum dipasang",
+    "it": "Meglio darle un'occhiata prima di installarla",
+    "ja": "インストール前に確認してください",
+    "ko": "설치 전에 확인해 보세요",
+    "pl": "Warto ją sprawdzić przed instalacją",
+    "pt-BR": "Vale conferir antes de instalar",
+    "ru": "Стоит проверить перед установкой",
+    "tr": "Yüklemeden önce göz atmaya değer",
+    "zh-Hans": "安装前值得看一看",
+    "zh-Hant": "安裝前值得看一看"
   },
   "Worth knowing": {
     "de": "Gut zu wissen",
@@ -15583,6 +16138,21 @@
     "tr": "{names} yanıtlıyor…",
     "zh-Hans": "{names} 正在回答…",
     "zh-Hant": "{names} 正在回答…"
+  },
+  "{names} didn't answer in time.": {
+    "de": "{names} hat nicht rechtzeitig geantwortet.",
+    "es": "{names} no respondió a tiempo.",
+    "fr": "{names} n'a pas répondu à temps.",
+    "id": "{names} tidak menjawab tepat waktu.",
+    "it": "{names} non ha risposto in tempo.",
+    "ja": "{names} は時間内に応答しませんでした。",
+    "ko": "{names}에서 제때 응답하지 않았습니다.",
+    "pl": "{names} nie odpowiedziało na czas.",
+    "pt-BR": "{names} não respondeu a tempo.",
+    "ru": "{names} не ответили вовремя.",
+    "tr": "{names} zamanında yanıt vermedi.",
+    "zh-Hans": "{names} 未及时响应。",
+    "zh-Hant": "{names} 未及時回應。"
   },
   "{name} is answering…": {
     "de": "{name} antwortet…",

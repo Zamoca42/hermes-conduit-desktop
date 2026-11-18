@@ -5350,3 +5350,50 @@ button.cap-row-text {
   transform: none;
   flex: none;
 }
+.hub-row {
+  width: 100%;
+}
+.cap-badge.on {
+  background: rgba(47, 158, 85, 0.16);
+  color: #2f9e55;
+}
+.cap-badge.sev-critical,
+.cap-badge.sev-high {
+  background: rgba(211, 51, 51, 0.15);
+  color: #c03030;
+}
+.cap-badge.sev-medium {
+  background: rgba(217, 130, 43, 0.16);
+  color: #b4651c;
+}
+.hub-findings {
+  margin: 8px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+.hub-findings li {
+  padding: 4px 0;
+}
+.hub-actions {
+  justify-content: flex-start;
+  align-items: center;
+  gap: 14px;
+}
+.hub-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hub-category {
+  margin: 14px 0 2px;
+  font-size: 13px;
+  color: var(--muted, inherit);
+}
+.cap-skill-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.cap-skill-body pre {
+  max-width: 100%;
+  overflow-x: auto;
+}

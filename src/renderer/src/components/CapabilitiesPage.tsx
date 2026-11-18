@@ -20,6 +20,7 @@ import {
   type Toolset
 } from '../state/capabilities'
 import { Markdown } from './Markdown'
+import { SkillHub } from './SkillHub'
 import { Icon } from './icons'
 
 interface Props {
@@ -71,6 +72,7 @@ export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Prop
   const [problem, setProblem] = useState<string | null>(null)
   const [open, setOpen] = useState<{ skill: Skill; text: string | null; error?: string } | null>(null)
   const [openServer, setOpenServer] = useState<string | null>(null)
+  const [hubOpen, setHubOpen] = useState(false)
   const generation = useRef(0)
   const writes = useRef<Promise<unknown>>(Promise.resolve())
 
@@ -136,6 +138,7 @@ export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Prop
     setTests({})
     setOpen(null)
     setOpenServer(null)
+    setHubOpen(false)
     setProblem(null)
   }, [profile])
 
@@ -197,29 +200,48 @@ export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Prop
       <p className="meta">{t('Loading…')}</p>
     )
 
+  const hubEntry = (
+    <section className="pset-section">
+      <h2>{t('Skill Hub')}</h2>
+      <button className="pset-link" onClick={() => setHubOpen(true)}>
+        <span>{t('Browse Skill Hub')}</span>
+        <Icon name="chevron" />
+      </button>
+    </section>
+  )
+
   const skillsTab = () => {
     if (!skills) return loadingOrError('skills')
-    if (!skills.length) return <p className="meta">{t('No skills yet')}</p>
+    if (!skills.length)
+      return (
+        <>
+          {hubEntry}
+          <p className="meta">{t('No skills yet')}</p>
+        </>
+      )
     const groups = skillGroups(filterSkills(skills, query))
     if (!groups.length) return <p className="meta">{t('No matching skills')}</p>
-    return groups.map(group => (
-      <section key={group.category} className="pset-section">
-        <h2>{group.title}</h2>
-        {group.skills.map(skill => {
-          const badge = provenanceLabel(skill.provenance)
-          return (
-            <div key={skill.name} className={`cap-row${skill.enabled ? '' : ' off'}`}>
-              <button className="cap-row-text" onClick={() => void openSkill(skill)}>
-                <strong>{skill.name}</strong>
-                {badge ? <span className="cap-badge">{badge}</span> : null}
-                {skill.description ? <span className="meta">{skill.description}</span> : null}
-              </button>
-              <Switch label={skill.name} checked={skill.enabled} onChange={on => flip('skills', skill.name, on)} />
-            </div>
-          )
-        })}
-      </section>
-    ))
+    return [
+      query.trim() ? null : <div key="hub">{hubEntry}</div>,
+      ...groups.map(group => (
+        <section key={group.category} className="pset-section">
+          <h2>{group.title}</h2>
+          {group.skills.map(skill => {
+            const badge = provenanceLabel(skill.provenance)
+            return (
+              <div key={skill.name} className={`cap-row${skill.enabled ? '' : ' off'}`}>
+                <button className="cap-row-text" onClick={() => void openSkill(skill)}>
+                  <strong>{skill.name}</strong>
+                  {badge ? <span className="cap-badge">{badge}</span> : null}
+                  {skill.description ? <span className="meta">{skill.description}</span> : null}
+                </button>
+                <Switch label={skill.name} checked={skill.enabled} onChange={on => flip('skills', skill.name, on)} />
+              </div>
+            )
+          })}
+        </section>
+      ))
+    ]
   }
 
   const toolsTab = () => {
@@ -315,6 +337,17 @@ export function CapabilitiesPage({ bots, profile: initialProfile, onBack }: Prop
       </section>
     )
   }
+
+  if (hubOpen)
+    return (
+      <SkillHub
+        profile={profile}
+        onBack={() => setHubOpen(false)}
+        onChanged={() => {
+          setSkills(null)
+        }}
+      />
+    )
 
   if (open)
     return (
