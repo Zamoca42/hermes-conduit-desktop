@@ -49,15 +49,23 @@ function Shell({ status }: { status: ConnectionStatus }) {
     setSelected({ id: null })
   }, [])
 
+  // ⌘N comes from the Mac's menu bar (so Ctrl+N stays the text field's next line there); Ctrl+N elsewhere.
   useEffect(() => {
+    const offMenu = window.conduit.onMenu(action => {
+      if (action === 'new-chat') newChat()
+    })
+    if (window.conduit.platform === 'darwin') return offMenu
     const onKey = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'n') {
+      if (event.ctrlKey && !event.altKey && !event.metaKey && event.key.toLowerCase() === 'n') {
         event.preventDefault()
         newChat()
       }
     }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    return () => {
+      offMenu()
+      window.removeEventListener('keydown', onKey)
+    }
   }, [newChat])
 
   const runningIds = useMemo(() => {

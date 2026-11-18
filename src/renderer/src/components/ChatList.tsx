@@ -35,7 +35,7 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
     <section className="chatlist" aria-label="Chats">
       <div className="chatlist-head">
         <h1>Chats</h1>
-        <button className="round" aria-label="New chat" title="New chat (Ctrl N)" onClick={onNewChat}>
+        <button className="round" aria-label="New chat" title={window.conduit.platform === 'darwin' ? 'New chat (⌘N)' : 'New chat (Ctrl+N)'} onClick={onNewChat}>
           <Icon name="plus" />
         </button>
       </div>

@@ -1,7 +1,7 @@
-import { BrowserWindow, app, ipcMain, nativeTheme, shell } from 'electron'
+import { BrowserWindow, Menu, app, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import WebSocket from 'ws'
-import { IPC, type GatewayEventMessage, type RpcOutcome, type SignInRequest } from '../shared/ipc'
+import { IPC, type GatewayEventMessage, type MenuAction, type RpcOutcome, type SignInRequest } from '../shared/ipc'
 import { probeHost } from './auth'
 import { Connection } from './connection'
 import { createFileStore } from './store'
@@ -69,6 +69,7 @@ function createWindow(): void {
 }
 
 function registerIpc(): void {
+  if (process.platform === 'darwin') Menu.setApplicationMenu(macMenu())
   ipcMain.handle(IPC.probe, (_event, url: string) => probeHost(url, globalThis.fetch.bind(globalThis)))
   ipcMain.handle(IPC.signIn, (_event, request: SignInRequest) => connection.signIn(request))
   ipcMain.handle(IPC.signOut, () => connection.signOut())
@@ -119,4 +120,24 @@ if (!app.requestSingleInstanceLock()) {
   app.on('window-all-closed', () => {
     if (!isMac) app.quit()
   })
+}
+
+/**
+ * The Mac's menu bar: the standard app, Edit, View and Window menus, and
+ * File > New Chat on ⌘N. Windows has no menu bar (the title bar is ours),
+ * so the window takes Ctrl+N itself there.
+ */
+function macMenu(): Menu {
+  const command = (action: MenuAction) => () => {
+    const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+    if (target && !target.isDestroyed()) target.webContents.send(IPC.menu, action)
+  }
+  const template: MenuItemConstructorOptions[] = [
+    { role: 'appMenu' },
+    { label: 'File', submenu: [{ label: 'New Chat', accelerator: 'Cmd+N', click: command('new-chat') }, { type: 'separator' }, { role: 'close' }] },
+    { role: 'editMenu' },
+    { role: 'viewMenu' },
+    { role: 'windowMenu' }
+  ]
+  return Menu.buildFromTemplate(template)
 }

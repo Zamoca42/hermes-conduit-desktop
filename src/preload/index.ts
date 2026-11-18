@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
-import { IPC, type ConduitApi, type ConnectionStatus, type GatewayEventMessage, type Platform, type RpcOutcome } from '../shared/ipc'
+import { IPC, type ConduitApi, type ConnectionStatus, type GatewayEventMessage, type MenuAction, type Platform, type RpcOutcome } from '../shared/ipc'
 
 function listen<T>(channel: string, listener: (value: T) => void): () => void {
   const handler = (_event: IpcRendererEvent, value: T) => listener(value)
@@ -33,6 +33,7 @@ const api: ConduitApi = {
   },
   onStatus: listener => listen<ConnectionStatus>(IPC.statusChanged, listener),
   onEvent: listener => listen<GatewayEventMessage>(IPC.event, listener),
+  onMenu: listener => listen<MenuAction>(IPC.menu, listener),
   window: {
     minimize: () => ipcRenderer.send(IPC.windowMinimize),
     toggleMaximize: () => ipcRenderer.send(IPC.windowToggleMaximize),

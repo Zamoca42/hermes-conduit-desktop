@@ -71,6 +71,8 @@ export interface ConduitApi {
   http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T>
   onStatus(listener: (status: ConnectionStatus) => void): () => void
   onEvent(listener: (event: GatewayEventMessage) => void): () => void
+  /** A menu bar command (the Mac's File > New Chat). */
+  onMenu(listener: (action: MenuAction) => void): () => void
   window: {
     minimize(): void
     toggleMaximize(): void
@@ -78,7 +80,11 @@ export interface ConduitApi {
   }
 }
 
+/** Commands the menu bar sends the window. */
+export type MenuAction = 'new-chat'
+
 export const IPC = {
+  menu: 'conduit:menu',
   probe: 'conduit:probe',
   signIn: 'conduit:sign-in',
   signOut: 'conduit:sign-out',
