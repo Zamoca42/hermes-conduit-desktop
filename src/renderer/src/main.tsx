@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { QuickAsk } from './components/QuickAsk'
+import { PictureViewerHost } from './components/Picture'
 import './styles/theme.css'
 import './styles/app.css'
 import { setLanguage } from '@shared/i18n'
@@ -14,6 +15,6 @@ if (quick) document.documentElement.dataset.window = 'quick'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {quick ? <QuickAsk /> : <App />}
+    <PictureViewerHost>{quick ? <QuickAsk /> : <App />}</PictureViewerHost>
   </StrictMode>
 )

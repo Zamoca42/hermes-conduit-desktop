@@ -53,3 +53,16 @@ describe('mediaKind', () => {
     expect([mediaKind('/a.PNG'), mediaKind('/b.opus'), mediaKind('/c.mov'), mediaKind('/d.zip')]).toEqual(['image', 'audio', 'video', 'file'])
   })
 })
+
+describe('pictures on the Hermes host', () => {
+  it('are read through the dashboard, in the chat’s profile', async () => {
+    const { readDataUrlPath, pictureDataUrl } = await import('../src/renderer/src/state/gatewayPictures')
+    expect(readDataUrlPath('/h/images/a b.png')).toBe('/api/fs/read-data-url?path=%2Fh%2Fimages%2Fa%20b.png')
+    expect(readDataUrlPath('/h/a.png', 'default')).toBe('/api/fs/read-data-url?path=%2Fh%2Fa.png')
+    expect(readDataUrlPath('/h/a.png', 'furina')).toBe('/api/fs/read-data-url?path=%2Fh%2Fa.png&profile=furina')
+    expect(pictureDataUrl({ dataUrl: 'data:image/png;base64,AAAA' })).toBe('data:image/png;base64,AAAA')
+    expect(pictureDataUrl({ dataUrl: 'data:application/pdf;base64,AAAA' })).toBeNull()
+    expect(pictureDataUrl({ dataUrl: 'data:image/png;base64,' + 'A'.repeat(23_000_000) })).toBeNull()
+    expect(pictureDataUrl(null)).toBeNull()
+  })
+})

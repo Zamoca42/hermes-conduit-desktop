@@ -353,7 +353,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             />
             <main className="chat" ref={chatPane}>
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
-              <Transcript state={transcript} loading={loading} error={error} requests={openRequests} />
+              <Transcript state={transcript} loading={loading} error={error} requests={openRequests} profile={selected.profile} />
               <Composer
                 placeholder={t('Message {name}…', { name: roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes' })}
                 running={transcript.running}

@@ -126,3 +126,27 @@ describe('a preview cut just past a long link', () => {
     expect(previewText('ok')).toBe('ok')
   })
 })
+
+describe('a message’s pictures', () => {
+  it('come out of the words wherever they stand', () => {
+    expect(cleanUserText('Look at this\n@image:/home/h/images/upload_t1.png')).toEqual({
+      text: 'Look at this',
+      attachments: [{ kind: 'image', value: '/home/h/images/upload_t1.png' }]
+    })
+    expect(cleanUserText('@file:/up/a.pdf\n\nboth @image:`/x/my pic.png` please')).toEqual({
+      text: 'both please',
+      attachments: [{ kind: 'file', value: '/up/a.pdf' }, { kind: 'image', value: '/x/my pic.png' }]
+    })
+    expect(cleanUserText('[Image attached at: /tmp/a.jpg]\nhi').attachments).toEqual([{ kind: 'image', value: '/tmp/a.jpg' }])
+    expect(
+      cleanUserText('[The user attached an image:\nA cat on a mat.]\n[You can examine it with vision_analyze using image_url: /c/cat.png]\n\nWhat breed?')
+    ).toEqual({ text: 'What breed?', attachments: [{ kind: 'image', value: '/c/cat.png' }] })
+  })
+})
+
+describe('a list preview with a picture', () => {
+  it('shows the words without the picture’s path', () => {
+    expect(previewText('Look at this @image:/tmp/claude-0/-home-user/23727ba9-0ca2-5...')).toBe('Look at this')
+    expect(previewText('@image:/h/images/upload_t1.png')).toBe('upload_t1.png')
+  })
+})
