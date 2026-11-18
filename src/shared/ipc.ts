@@ -93,6 +93,17 @@ export interface ConduitApi {
   answerRequest(id: string, result: Record<string, unknown>): Promise<boolean>
   /** Drops a request the gateway settled some other way (a batch's last `clarify.lock`). */
   dismissRequest(id: string): Promise<void>
+  /** Shows a chat in the main window (quick ask's Open in Conduit). */
+  openChat(chat: OpenChatRequest): void
+  onOpenChat(listener: (chat: OpenChatRequest) => void): () => void
+  /** The quick ask window was just shown: focus its field. */
+  onQuickAskShown(listener: () => void): () => void
+  /** Grows the quick ask window for a reply, or shrinks it back to its field. */
+  setQuickAskExpanded(expanded: boolean): void
+  /** Hides the quick ask window. */
+  hideQuickAsk(): void
+  /** The quick ask shortcut, and whether the system let Conduit have it. */
+  quickAskShortcut(): Promise<{ accelerator: string; registered: boolean }>
   /** How many things wait on the user, for the tray and the Dock's badge. */
   setWaiting(count: number): void
   /** A menu bar command (the Mac's File > New Chat). */
@@ -109,6 +120,12 @@ export interface ConduitApi {
 /** Commands the menu bar sends the window. */
 export type MenuAction = 'new-chat' | 'needs-you'
 
+export interface OpenChatRequest {
+  storedId: string
+  profile?: string
+  title?: string
+}
+
 export const IPC = {
   menu: 'conduit:menu',
   requests: 'conduit:requests',
@@ -116,6 +133,11 @@ export const IPC = {
   answerRequest: 'conduit:answer-request',
   dismissRequest: 'conduit:dismiss-request',
   setWaiting: 'conduit:set-waiting',
+  openChat: 'conduit:open-chat',
+  hideQuickAsk: 'conduit:hide-quick-ask',
+  quickAskShown: 'conduit:quick-ask-shown',
+  quickAskExpanded: 'conduit:quick-ask-expanded',
+  quickAskShortcut: 'conduit:quick-ask-shortcut',
   windowShow: 'conduit:window-show',
   probe: 'conduit:probe',
   signIn: 'conduit:sign-in',

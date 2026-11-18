@@ -1,10 +1,11 @@
-import { BrowserWindow, Menu, app, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
+import { BrowserWindow, Menu, app, globalShortcut, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import WebSocket from 'ws'
-import { IPC, type GatewayEventMessage, type MenuAction, type RpcOutcome, type SignInRequest } from '../shared/ipc'
+import { IPC, type GatewayEventMessage, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
 import { probeHost } from './auth'
 import { Connection } from './connection'
 import { createFileStore } from './store'
+import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
 
@@ -27,7 +28,10 @@ function sendCommand(action: MenuAction): void {
   if (target && !target.isDestroyed()) target.webContents.send(IPC.menu, action)
 }
 
+const quickAsk = new QuickAsk()
+
 const tray = new ConduitTray({
+  quickAsk: () => quickAsk.toggle(),
   window: () => mainWindow,
   showWindow,
   command: sendCommand,
@@ -103,6 +107,14 @@ function registerIpc(): void {
   ipcMain.handle(IPC.requests, () => connection.requests())
   ipcMain.on(IPC.setWaiting, (_event, count: number) => tray.setWaiting(Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0))
   ipcMain.on(IPC.windowShow, () => showWindow())
+  ipcMain.on(IPC.openChat, (_event, chat: OpenChatRequest) => {
+    quickAsk.hide()
+    showWindow()
+    mainWindow?.webContents.send(IPC.openChat, chat)
+  })
+  ipcMain.on(IPC.hideQuickAsk, () => quickAsk.hide())
+  ipcMain.on(IPC.quickAskExpanded, (_event, expanded: boolean) => quickAsk.setExpanded(expanded === true))
+  ipcMain.handle(IPC.quickAskShortcut, () => ({ accelerator: QUICK_ASK_ACCELERATOR, registered: quickAsk.registered }))
   ipcMain.handle(IPC.answerRequest, (_event, id: string, result: Record<string, unknown>) => connection.answerRequest(id, result))
   ipcMain.handle(IPC.dismissRequest, (_event, id: string) => connection.dropRequest(id))
   ipcMain.handle(IPC.probe, (_event, url: string) => probeHost(url, globalThis.fetch.bind(globalThis)))
@@ -141,12 +153,15 @@ if (!app.requestSingleInstanceLock()) {
   app.on('second-instance', () => showWindow())
   app.on('before-quit', () => {
     quitting = true
+    quickAsk.destroy()
   })
+  app.on('will-quit', () => globalShortcut.unregisterAll())
   app.setAppUserModelId('dev.conduit.desktop')
   void app.whenReady().then(() => {
     registerIpc()
     createWindow()
     tray.create()
+    quickAsk.register()
     void connection.restore()
     // The Dock icon brings the hidden window back.
     app.on('activate', () => showWindow())
