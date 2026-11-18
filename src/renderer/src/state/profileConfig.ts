@@ -135,6 +135,26 @@ export function chatSections(config: Row): Section[] {
           control: { kind: 'textToggle', on: 'all', off: 'off', defaultValue: true }
         },
         {
+          key: 'display.expand_tools',
+          label: t('Keep tool cards expanded'),
+          help: t('Keep completed tool details open by default.'),
+          control: { kind: 'toggle', defaultValue: false }
+        },
+        {
+          key: 'display.memory_notifications',
+          label: t('Self-improvement updates'),
+          help: t('Choose whether Conduit follows Hermes, always shows, or never shows maintenance updates.'),
+          control: {
+            kind: 'options',
+            options: opts([
+              ['default', t('Use Hermes default')],
+              ['on', t('Always show')],
+              ['off', t('Never show')]
+            ]),
+            defaultValue: 'default'
+          }
+        },
+        {
           key: 'agent.image_input_mode',
           label: t('Image attachments'),
           help: t('How Hermes supplies images to a model.'),

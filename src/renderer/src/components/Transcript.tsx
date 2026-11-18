@@ -239,6 +239,8 @@ interface ItemProps {
   onFollowUp?: (text: string) => void
   /** ⋯'s Show thinking or Hide thinking, on a reply while Thinking is On request. */
   thinkingToggle?: { label: string; onSelect: () => void }
+  /** Settings > Chat > Keep tool cards expanded. */
+  expandTools?: boolean
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -266,7 +268,7 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   )
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -333,19 +335,37 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
     case 'tool': {
       const done = item.status === 'done'
       if (item.board) return <BoardView board={item.board} onFollowUp={onFollowUp} />
-      return (
-        <div className="card">
+      const head = (
+        <>
           <span className={`card-icon${done ? '' : ' running'}`}>
             <Icon name={done ? 'code' : 'spinner'} style={done ? undefined : { animation: 'spin 1s linear infinite' }} />
           </span>
           <span className="card-body">
             <span className="card-title">
-              {toolTitle(item.name, done)}{' '}
-              {item.durationS != null ? <span className="time">{item.durationS.toFixed(1)}s</span> : null}
+              {toolTitle(item.name, done)} {item.durationS != null ? <span className="time">{item.durationS.toFixed(1)}s</span> : null}
             </span>
             {item.context || item.summary ? <span className="card-detail">{item.summary || item.context}</span> : null}
           </span>
-        </div>
+        </>
+      )
+      // A finished call's arguments and result open under it, kept open by Settings > Chat.
+      if (!done || (!item.args && !item.result)) return <div className="card">{head}</div>
+      return (
+        <details className="card-details" open={expandTools}>
+          <summary className="card">{head}</summary>
+          {item.args ? (
+            <div className="card-section">
+              <span className="meta">{t('Input')}</span>
+              <pre>{item.args}</pre>
+            </div>
+          ) : null}
+          {item.result ? (
+            <div className="card-section">
+              <span className="meta">{t('Output')}</span>
+              <pre>{item.result}</pre>
+            </div>
+          ) : null}
+        </details>
       )
     }
     case 'notice':
@@ -354,7 +374,13 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
       return (
         <div className="command-output" data-key={item.key}>
           {item.command ? <div className="command-name">{item.command}</div> : null}
-          {item.format === 'plain' ? <pre>{item.text}</pre> : <div className="assistant"><Markdown text={item.text} /></div>}
+          {item.format === 'plain' ? (
+            <pre>{item.text}</pre>
+          ) : (
+            <div className="assistant">
+              <Markdown text={item.text} />
+            </div>
+          )}
         </div>
       )
   }
@@ -472,40 +498,41 @@ export function Transcript({
 
   return (
     <PictureProfile.Provider value={profile}>
-    <div className="transcript" ref={scroller} aria-live="polite">
-      <div className="transcript-inner">
-        {loading ? <div className="notice">{t('Loading…')}</div> : null}
-        {error ? <div className="notice error">{error}</div> : null}
-        {!loading && !error && state.items.length === 0 ? (
-          <div className="welcome">
-            <h2>{t('What can Hermes do for you?')}</h2>
-            <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
-          </div>
-        ) : null}
-        {shown.map(item => (
-          <Item
-            key={item.key}
-            item={item}
-            author={author}
-            onQuote={onQuote}
-            jump={jump}
-            onRetry={actions.retryKey.has(item.key) ? retry : undefined}
-            onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
-            onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
-            thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
-          />
-        ))}
-        {requests.map(request => (
-          <RequestCard key={request.id} request={request} />
-        ))}
-        {state.running && state.status ? (
-          <div className="status-line">
-            <span className="running" />
-            {state.status}
-          </div>
-        ) : null}
+      <div className="transcript" ref={scroller} aria-live="polite">
+        <div className="transcript-inner">
+          {loading ? <div className="notice">{t('Loading…')}</div> : null}
+          {error ? <div className="notice error">{error}</div> : null}
+          {!loading && !error && state.items.length === 0 ? (
+            <div className="welcome">
+              <h2>{t('What can Hermes do for you?')}</h2>
+              <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
+            </div>
+          ) : null}
+          {shown.map(item => (
+            <Item
+              key={item.key}
+              item={item}
+              author={author}
+              onQuote={onQuote}
+              jump={jump}
+              onRetry={actions.retryKey.has(item.key) ? retry : undefined}
+              onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
+              onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
+              thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
+              expandTools={display.expandTools}
+            />
+          ))}
+          {requests.map(request => (
+            <RequestCard key={request.id} request={request} />
+          ))}
+          {state.running && state.status ? (
+            <div className="status-line">
+              <span className="running" />
+              {state.status}
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
     </PictureProfile.Provider>
   )
 }

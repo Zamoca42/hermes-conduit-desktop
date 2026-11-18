@@ -794,6 +794,21 @@
     "zh-Hans": "始终允许",
     "zh-Hant": "一律允許"
   },
+  "Always show": {
+    "de": "Immer anzeigen",
+    "es": "Mostrar siempre",
+    "fr": "Toujours afficher",
+    "id": "Selalu tampilkan",
+    "it": "Mostra sempre",
+    "ja": "常に表示",
+    "ko": "항상 보기",
+    "pl": "Zawsze pokazuj",
+    "pt-BR": "Sempre mostrar",
+    "ru": "Всегда показывать",
+    "tr": "Her zaman göster",
+    "zh-Hans": "始终显示",
+    "zh-Hant": "一律顯示"
+  },
   "An update is available": {
     "de": "Ein Update ist verfügbar",
     "es": "Hay una actualización disponible",
@@ -2503,6 +2518,21 @@
     "tr": "Fotoğraf Seç",
     "zh-Hans": "选择照片",
     "zh-Hant": "選擇照片"
+  },
+  "Choose whether Conduit follows Hermes, always shows, or never shows maintenance updates.": {
+    "de": "Wähle, ob Conduit Hermes folgt oder Wartungsupdates immer bzw. nie anzeigt.",
+    "es": "Elige si Conduit sigue a Hermes, muestra siempre o no muestra nunca las actualizaciones de mantenimiento.",
+    "fr": "Choisissez si Conduit suit Hermes, affiche toujours ou n'affiche jamais les mises à jour de maintenance.",
+    "id": "Pilih apakah Conduit mengikuti Hermes, selalu menampilkan, atau tidak pernah menampilkan pembaruan pemeliharaan.",
+    "it": "Scegli se Conduit segue Hermes, mostra sempre o non mostra mai gli aggiornamenti di manutenzione.",
+    "ja": "Conduitがメンテナンスの更新情報をHermesの設定に従って表示するか、常に表示するか、表示しないかを選択します。",
+    "ko": "Conduit이 유지 관리 업데이트를 Hermes 설정에 따라 표시할지, 항상 표시할지, 표시하지 않을지 선택하세요.",
+    "pl": "Wybierz, czy Conduit ma postępować tak jak Hermes, zawsze pokazywać, czy nigdy nie pokazywać komunikatów konserwacyjnych.",
+    "pt-BR": "Escolha se o Conduit segue o Hermes, sempre mostra ou nunca mostra as atualizações de manutenção.",
+    "ru": "Выберите, показывает ли Conduit служебные обновления так, как задано в Hermes, всегда или никогда.",
+    "tr": "Conduit'in bakım güncellemelerini Hermes'e göre mi göstereceğini, her zaman mı göstereceğini yoksa hiç mi göstermeyeceğini seçin.",
+    "zh-Hans": "选择 Conduit 跟随 Hermes、始终显示还是从不显示维护动态。",
+    "zh-Hant": "選擇 Conduit 要跟隨 Hermes、一律顯示，還是永不顯示維護更新。"
   },
   "Classic voice": {
     "de": "Klassisch",
@@ -8474,6 +8504,21 @@
     "zh-Hans": "保留照片",
     "zh-Hant": "保留照片"
   },
+  "Keep completed tool details open by default.": {
+    "de": "Abgeschlossene Tool-Details standardmäßig geöffnet lassen.",
+    "es": "Mantener abiertos por defecto los detalles de las herramientas completadas.",
+    "fr": "Garder les détails des outils terminés ouverts par défaut.",
+    "id": "Biarkan detail alat yang sudah selesai tetap terbuka secara default.",
+    "it": "Mantieni aperti per impostazione predefinita i dettagli degli strumenti completati.",
+    "ja": "完了したツールの詳細をデフォルトで展開したままにします。",
+    "ko": "완료된 도구 세부 정보를 기본적으로 펼쳐 둬요.",
+    "pl": "Domyślnie pozostawiaj szczegóły zakończonych narzędzi rozwinięte.",
+    "pt-BR": "Manter abertos por padrão os detalhes das ferramentas concluídas.",
+    "ru": "Оставлять подробности завершённых инструментов открытыми по умолчанию.",
+    "tr": "Tamamlanan araç ayrıntılarını varsayılan olarak açık tut.",
+    "zh-Hans": "默认保持已完成的工具详情展开。",
+    "zh-Hant": "預設展開已完成的工具詳細資訊。"
+  },
   "Keep them": {
     "de": "Behalten",
     "es": "Conservarlos",
@@ -8488,6 +8533,21 @@
     "tr": "Koru",
     "zh-Hans": "保留",
     "zh-Hant": "保留"
+  },
+  "Keep tool cards expanded": {
+    "de": "Tool-Karten ausgeklappt lassen",
+    "es": "Mantener expandidas las tarjetas de herramientas",
+    "fr": "Garder les cartes d'outils développées",
+    "id": "Biarkan kartu alat terbuka",
+    "it": "Mantieni espanse le schede degli strumenti",
+    "ja": "ツールカードを展開したままにする",
+    "ko": "도구 카드 펼쳐 두기",
+    "pl": "Rozwijaj karty narzędzi",
+    "pt-BR": "Manter cartões de ferramentas expandidos",
+    "ru": "Не сворачивать карточки инструментов",
+    "tr": "Araç kartlarını genişletilmiş tut",
+    "zh-Hans": "工具卡片保持展开",
+    "zh-Hant": "保持展開工具卡片"
   },
   "Kept out by what you taught Pulse": {
     "de": "Durch das ausgelassen, was du Pulse beigebracht hast",
@@ -10243,6 +10303,21 @@
     "tr": "Onayını bekliyor: {summary}",
     "zh-Hans": "需要你批准：{summary}",
     "zh-Hant": "需要你核准：{summary}"
+  },
+  "Never show": {
+    "de": "Nie anzeigen",
+    "es": "No mostrar nunca",
+    "fr": "Ne jamais afficher",
+    "id": "Jangan tampilkan",
+    "it": "Non mostrare mai",
+    "ja": "表示しない",
+    "ko": "표시 안 함",
+    "pl": "Nigdy nie pokazuj",
+    "pt-BR": "Nunca mostrar",
+    "ru": "Никогда не показывать",
+    "tr": "Hiçbir zaman gösterme",
+    "zh-Hans": "从不显示",
+    "zh-Hant": "永不顯示"
   },
   "New": {
     "de": "Neu",
@@ -15734,6 +15809,21 @@
     "zh-Hans": "安全修复",
     "zh-Hant": "安全性修正"
   },
+  "Self-improvement updates": {
+    "de": "Updates zur Selbstverbesserung",
+    "es": "Actualizaciones de automejora",
+    "fr": "Mises à jour d'auto-amélioration",
+    "id": "Pembaruan perbaikan diri",
+    "it": "Aggiornamenti di automiglioramento",
+    "ja": "自己改善の更新",
+    "ko": "자기 개선 업데이트",
+    "pl": "Aktualizacje samodoskonalenia",
+    "pt-BR": "Atualizações de autoaprimoramento",
+    "ru": "Обновления самоулучшения",
+    "tr": "Kendini geliştirme güncellemeleri",
+    "zh-Hans": "自我改进更新",
+    "zh-Hant": "自我改進更新"
+  },
   "Send": {
     "de": "Senden",
     "es": "Enviar",
@@ -20368,6 +20458,21 @@
     "tr": "Kullanım",
     "zh-Hans": "用量",
     "zh-Hant": "用量"
+  },
+  "Use Hermes default": {
+    "de": "Hermes-Standard verwenden",
+    "es": "Usar el valor predeterminado de Hermes",
+    "fr": "Utiliser le réglage d'Hermes",
+    "id": "Gunakan default Hermes",
+    "it": "Usa il valore predefinito di Hermes",
+    "ja": "Hermesのデフォルトを使用",
+    "ko": "Hermes 기본값 사용",
+    "pl": "Według Hermesa",
+    "pt-BR": "Usar padrão do Hermes",
+    "ru": "Как задано в Hermes",
+    "tr": "Hermes varsayılanını kullan",
+    "zh-Hans": "使用 Hermes 默认值",
+    "zh-Hant": "使用 Hermes 預設值"
   },
   "Use This Model?": {
     "de": "Dieses Modell verwenden?",

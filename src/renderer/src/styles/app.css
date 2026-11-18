@@ -6072,3 +6072,54 @@ button.cap-row-text {
   padding: 4px 8px;
   border-radius: 6px;
 }
+.card-details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.card-details > summary::-webkit-details-marker {
+  display: none;
+}
+.card-details[open] > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.card-section {
+  border: 1px solid var(--line);
+  border-top: none;
+  background: var(--surface);
+  padding: 8px 14px;
+  display: grid;
+  gap: 4px;
+}
+.card-section:last-child {
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+}
+.card-section pre {
+  margin: 0;
+  max-height: 320px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 12px;
+}
+/* The Tasks board's .card comes later in this file; a chat's tool card keeps its row. */
+.transcript .card {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  cursor: default;
+}
+.transcript .card:hover {
+  border-color: var(--line);
+}
+.transcript .card-details > summary.card {
+  cursor: pointer;
+}
+.transcript .card-details[open] > summary.card {
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}

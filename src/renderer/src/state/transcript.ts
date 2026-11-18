@@ -47,6 +47,32 @@ export interface ToolItem {
   at?: number
   /** What a finished conduit_show call showed. */
   board?: Board
+  /** The call's arguments and result, cut to a readable length, for the card's details. */
+  args?: string
+  result?: string
+}
+
+/** A tool's arguments or result as the card's details show them: JSON indented, long text cut. */
+export function toolDetail(value: unknown, limit = 4000): string | undefined {
+  if (value == null) return undefined
+  let text: string
+  if (typeof value === 'string') {
+    text = value.trim()
+    try {
+      const parsed = JSON.parse(text)
+      if (parsed && typeof parsed === 'object') text = JSON.stringify(parsed, null, 2)
+    } catch {
+      // Plain text stays as it is.
+    }
+  } else {
+    try {
+      text = JSON.stringify(value, null, 2) ?? ''
+    } catch {
+      text = String(value)
+    }
+  }
+  if (!text || text === '{}' || text === '[]') return undefined
+  return text.length > limit ? `${text.slice(0, limit)}…` : text
 }
 
 export interface NoticeItem {
@@ -151,7 +177,8 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
           context: row.context ?? undefined,
           status: 'done',
           at,
-          board: boardFrom(row.name ?? '', rowText(row), undefined) ?? undefined
+          board: boardFrom(row.name ?? '', rowText(row), undefined) ?? undefined,
+          result: toolDetail(rowText(row))
         })
         break
       default:
@@ -242,6 +269,8 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
               status: 'done' as const,
               summary: str(payload.summary) ?? item.summary,
               board: boardFrom(item.name, payload.result, payload.args) ?? item.board,
+              args: toolDetail(payload.args) ?? item.args,
+              result: toolDetail(payload.result) ?? item.result,
               durationS: typeof payload.duration_s === 'number' ? payload.duration_s : item.durationS
             }
           : item
@@ -332,18 +361,41 @@ export function missingBoards(state: TranscriptState): string[] {
   return state.items.flatMap(item => (item.kind === 'tool' && !item.board && item.name.toLowerCase() === SHOW_TOOL ? [item.toolId] : []))
 }
 
-/** The boards of conduit_show rows, from their answers by tool call id (the REST transcript has them). */
-export function attachBoards(state: TranscriptState, answers: Map<string, string>): TranscriptState {
+/** History rows without the call's details (session.resume leaves them out), or a board to draw. */
+export function missingDetails(state: TranscriptState): boolean {
+  return missingBoards(state).length > 0 || state.items.some(item => item.kind === 'tool' && item.status === 'done' && !item.result && !item.board)
+}
+
+/**
+ * The boards of conduit_show rows and every row's arguments and result, from
+ * their answers by tool call id (the REST transcript has them).
+ */
+export function attachBoards(state: TranscriptState, answers: Map<string, string>, args: Map<string, string> = new Map()): TranscriptState {
   let changed = false
   const items = state.items.map(item => {
-    if (item.kind !== 'tool' || item.board) return item
+    if (item.kind !== 'tool') return item
     const answer = answers.get(item.toolId)
-    const board = answer === undefined ? null : boardFrom(item.name, answer, undefined)
-    if (!board) return item
+    const board = item.board ?? (answer === undefined ? null : boardFrom(item.name, answer, undefined))
+    const result = item.result ?? (answer === undefined ? undefined : toolDetail(answer))
+    const given = item.args ?? (args.has(item.toolId) ? toolDetail(args.get(item.toolId)) : undefined)
+    if (board === (item.board ?? null) && result === item.result && given === item.args) return item
     changed = true
-    return { ...item, board }
+    return { ...item, ...(board ? { board } : {}), result, args: given }
   })
   return changed ? { ...state, items } : state
+}
+
+/** Each call's arguments in a page of `/api/sessions/{id}/messages`, from the assistant rows' tool_calls, by call id. */
+export function toolArgs(raw: unknown): Map<string, string> {
+  const args = new Map<string, string>()
+  const messages = (raw as { messages?: unknown } | null)?.messages
+  for (const row of Array.isArray(messages) ? (messages as { role?: string; tool_calls?: unknown }[]) : []) {
+    if (row.role !== 'assistant' || !Array.isArray(row.tool_calls)) continue
+    for (const call of row.tool_calls as { id?: unknown; function?: { arguments?: unknown } }[]) {
+      if (typeof call?.id === 'string' && typeof call.function?.arguments === 'string') args.set(call.id, call.function.arguments)
+    }
+  }
+  return args
 }
 
 /** Each tool row's answer in a page of `/api/sessions/{id}/messages`, by tool call id. */

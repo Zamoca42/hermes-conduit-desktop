@@ -11,7 +11,8 @@ import {
   emptyTranscript,
   failPendingUser,
   fromHistory,
-  missingBoards,
+  missingDetails,
+  toolArgs,
   toolAnswers,
   type HistoryRow,
   type TranscriptState
@@ -23,20 +24,21 @@ import { t } from '../../../shared/i18n'
 
 type Action =
   | { type: 'reset'; state: TranscriptState }
-  | { type: 'boards'; answers: Map<string, string> }
+  | { type: 'boards'; answers: Map<string, string>; args: Map<string, string> }
   | { type: 'event'; event: { type: string; payload?: unknown } }
   | { type: 'pending'; text: string; attachments?: Attachment[] }
   | { type: 'failed'; error: string }
   | { type: 'output'; command?: string; text: string; format: 'plain' | 'markdown' }
   | { type: 'notice'; text: string; tone?: 'error' | 'info' }
 
-/** The boards a chat's history showed: session.resume leaves the tool answers out, its REST transcript has them. */
+/** The boards and tool details a chat's history showed: session.resume leaves the tool answers out, its REST transcript has them. */
 async function loadBoards(state: TranscriptState, storedId: string, profile: string | undefined, current: () => boolean, dispatch: (action: Action) => void) {
-  if (!missingBoards(state).length) return
+  if (!missingDetails(state)) return
   const path = `/api/sessions/${encodeURIComponent(storedId)}/messages?order=latest&limit=500&inline_images=false${profile && profile !== 'default' ? `&profile=${encodeURIComponent(profile)}` : ''}`
   try {
-    const answers = toolAnswers(await gateway.http('GET', path))
-    if (current() && answers.size) dispatch({ type: 'boards', answers })
+    const page = await gateway.http('GET', path)
+    const answers = toolAnswers(page)
+    if (current() && answers.size) dispatch({ type: 'boards', answers, args: toolArgs(page) })
   } catch {
     // The rows stay as steps.
   }
@@ -47,7 +49,7 @@ function reducer(state: TranscriptState, action: Action): TranscriptState {
     case 'reset':
       return action.state
     case 'boards':
-      return attachBoards(state, action.answers)
+      return attachBoards(state, action.answers, action.args)
     case 'event':
       return applyEvent(state, action.event)
     case 'pending':
@@ -396,7 +398,12 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       if ((name === 'btw' || name === 'background' || name === 'bg') && arg) {
         try {
           await gateway.rpc(name === 'btw' ? 'prompt.btw' : 'prompt.background', scoped({ session_id: sid, text: arg }))
-          output(name === 'btw' ? t('Answering from a snapshot of this chat. The answer will appear here.') : t('Started in the background. The answer will appear here.'), 'markdown')
+          output(
+            name === 'btw'
+              ? t('Answering from a snapshot of this chat. The answer will appear here.')
+              : t('Started in the background. The answer will appear here.'),
+            'markdown'
+          )
           return done
         } catch (e) {
           if (!/method not found|unknown method|-32601/i.test(message(e))) {
@@ -457,7 +464,13 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       if (!sid) throw new Error(t('Not connected.'))
       const params: Record<string, unknown> = { key, value, session_id: sid, ...extra }
       if (profile) params.profile = profile
-      const result = await gateway.rpc<{ info?: ChatInfo | null; confirm_required?: boolean | null; confirm_message?: string | null; deferred?: boolean | null; value?: unknown }>('config.set', params)
+      const result = await gateway.rpc<{
+        info?: ChatInfo | null
+        confirm_required?: boolean | null
+        confirm_message?: string | null
+        deferred?: boolean | null
+        value?: unknown
+      }>('config.set', params)
       if (result.info) setChat(c => ({ ...c, ...chatSettings(result.info) }))
       return result
     },
