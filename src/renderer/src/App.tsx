@@ -38,6 +38,7 @@ import { HostActions } from './components/HostActions'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
 import { PlanDock } from './components/PlanDock'
 import { AgentsDock } from './components/AgentsDock'
+import { ControlDock } from './components/ControlDock'
 import { useAgents } from './state/useAgents'
 import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
@@ -253,6 +254,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const workChecklist = workItem?.checklist
   const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
   const delegates = useAgents(chat.liveId, connected, transcript.running)
+  // Hermes may have changed the goal, loop or heartbeat: a turn ended or a command answered.
+  const outputs = useMemo(() => transcript.items.filter(item => item.kind === 'output').length, [transcript.items])
+  const controlPulse = turnsDone + outputs
   const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
   const showWork = workOpen && (!!openBotChat || !!workItem)
   const [modelOpen, setModelOpen] = useState(false)
@@ -651,6 +655,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                 />
               ) : null}
+              <ControlDock liveId={chat.liveId} profile={selected.profile} connected={connected} pulse={controlPulse} />
               <AgentsDock
                 agents={delegates.agents}
                 running={transcript.running}

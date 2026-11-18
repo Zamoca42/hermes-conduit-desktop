@@ -5550,3 +5550,57 @@ button.cap-row-text {
   font-size: 12px;
 }
 .agent-caption { padding: 4px 10px 6px; }
+
+/* The chat's goal, loop and heartbeat above the composer. */
+.control-dock {
+  margin: 0 auto 6px;
+  width: min(100%, 760px);
+  padding: 0 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.control-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.control-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-wrap: anywhere;
+}
+.control-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: none;
+  max-width: 45%;
+}
+.control-criteria {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.control-criteria li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.control-criteria li::before {
+  content: '·';
+  margin-right: 4px;
+}
+.control-note {
+  padding: 0 12px;
+}
