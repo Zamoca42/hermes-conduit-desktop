@@ -120,6 +120,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
         focusKey={`quick-${shown}`}
         draftKey="quick"
         canAttach
+        voice={{}}
         dropZone={pane}
         onStagedChange={setStaged}
         quote={quote}

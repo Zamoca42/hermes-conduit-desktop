@@ -22,6 +22,11 @@ mac:
     - target: dmg
       arch: [universal]
   hardenedRuntime: true
+  # The microphone, for dictation and voice messages: macOS asks once, with this.
+  extendInfo:
+    NSMicrophoneUsageDescription: Conduit uses the microphone for dictation and voice messages.
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
   # Signing and notarizing come with the Developer ID secrets.
   identity: null
 win:

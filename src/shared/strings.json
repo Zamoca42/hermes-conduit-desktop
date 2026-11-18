@@ -1454,6 +1454,21 @@
     "zh-Hans": "压缩此对话的上下文",
     "zh-Hant": "壓縮此對話的上下文"
   },
+  "Conduit can't use the microphone. Allow it for Conduit in your computer's privacy settings, then try again.": {
+    "de": "Conduit kann das Mikrofon nicht verwenden. Erlaube es für Conduit in den Datenschutzeinstellungen deines Computers und versuche es dann erneut.",
+    "es": "Conduit no puede usar el micrófono. Permítelo para Conduit en los ajustes de privacidad de tu ordenador e inténtalo de nuevo.",
+    "fr": "Conduit ne peut pas utiliser le micro. Autorisez-le pour Conduit dans les réglages de confidentialité de votre ordinateur, puis réessayez.",
+    "id": "Conduit tidak dapat menggunakan mikrofon. Izinkan untuk Conduit di pengaturan privasi komputer Anda, lalu coba lagi.",
+    "it": "Conduit non può usare il microfono. Consentilo per Conduit nelle impostazioni della privacy del computer, poi riprova.",
+    "ja": "Conduitがマイクを使用できません。コンピュータのプライバシー設定でConduitに許可してから、もう一度お試しください。",
+    "ko": "Conduit에서 마이크를 사용할 수 없습니다. 컴퓨터의 개인 정보 보호 설정에서 Conduit을 허용한 다음 다시 시도하세요.",
+    "pl": "Conduit nie może używać mikrofonu. Zezwól na to dla Conduit w ustawieniach prywatności komputera i spróbuj ponownie.",
+    "pt-BR": "O Conduit não pode usar o microfone. Permita-o para o Conduit nos ajustes de privacidade do seu computador e tente novamente.",
+    "ru": "Conduit не может использовать микрофон. Разрешите его для Conduit в настройках конфиденциальности компьютера и повторите попытку.",
+    "tr": "Conduit mikrofonu kullanamıyor. Bilgisayarınızın gizlilik ayarlarında Conduit için izin verin, ardından tekrar deneyin.",
+    "zh-Hans": "Conduit 无法使用麦克风。请在电脑的隐私设置中允许 Conduit 使用，然后重试。",
+    "zh-Hant": "Conduit 無法使用麥克風。請在電腦的隱私權設定中允許 Conduit 使用，然後再試一次。"
+  },
   "Conduit manages this header itself, so it can't be set here.": {
     "de": "Conduit verwaltet diesen Header selbst, daher kann er hier nicht festgelegt werden.",
     "es": "Conduit gestiona este encabezado por sí mismo, así que no se puede definir aquí.",
@@ -2383,6 +2398,21 @@
     "tr": "Açıklama",
     "zh-Hans": "描述",
     "zh-Hant": "描述"
+  },
+  "Dictate": {
+    "de": "Diktieren",
+    "es": "Dictar",
+    "fr": "Dicter",
+    "id": "Dikte",
+    "it": "Detta",
+    "ja": "音声入力",
+    "ko": "받아쓰기",
+    "pl": "Dyktuj",
+    "pt-BR": "Ditar",
+    "ru": "Диктовать",
+    "tr": "Dikte et",
+    "zh-Hans": "听写",
+    "zh-Hant": "聽寫"
   },
   "Didn't fit a card type": {
     "de": "Passte zu keinem Kartentyp",
@@ -3509,6 +3539,36 @@
     "zh-Hans": "Hermes 无法读取此文件夹。",
     "zh-Hant": "Hermes 無法讀取此資料夾。"
   },
+  "Hermes couldn't read this aloud: {error}": {
+    "de": "Hermes konnte das nicht vorlesen: {error}",
+    "es": "Hermes no pudo leer esto en voz alta: {error}",
+    "fr": "Hermes n'a pas pu lire ceci à voix haute : {error}",
+    "id": "Hermes tidak dapat membacakan ini: {error}",
+    "it": "Hermes non è riuscito a leggerlo ad alta voce: {error}",
+    "ja": "Hermesはこれを読み上げられませんでした：{error}",
+    "ko": "Hermes가 이 내용을 소리 내어 읽지 못했습니다: {error}",
+    "pl": "Hermes nie mógł przeczytać tego na głos: {error}",
+    "pt-BR": "O Hermes não conseguiu ler isto em voz alta: {error}",
+    "ru": "Hermes не смог прочитать это вслух: {error}",
+    "tr": "Hermes bunu sesli okuyamadı: {error}",
+    "zh-Hans": "Hermes 无法朗读此内容：{error}",
+    "zh-Hant": "Hermes 無法朗讀此內容：{error}"
+  },
+  "Hermes couldn't transcribe that: {error}": {
+    "de": "Hermes konnte das nicht transkribieren: {error}",
+    "es": "Hermes no pudo transcribir eso: {error}",
+    "fr": "Hermes n’a pas pu transcrire cela : {error}",
+    "id": "Hermes tidak dapat mentranskripsikannya: {error}",
+    "it": "Hermes non è riuscito a trascriverlo: {error}",
+    "ja": "Hermes で文字起こしできませんでした: {error}",
+    "ko": "Hermes가 받아쓰지 못했습니다: {error}",
+    "pl": "Hermes nie mógł tego przepisać: {error}",
+    "pt-BR": "O Hermes não conseguiu transcrever isso: {error}",
+    "ru": "Hermes не смог распознать запись: {error}",
+    "tr": "Hermes bunu yazıya dökemedi: {error}",
+    "zh-Hans": "Hermes 无法转写这段内容：{error}",
+    "zh-Hant": "Hermes 無法轉寫這段內容：{error}"
+  },
   "Hermes did not accept the model switch.": {
     "de": "Hermes hat den Modellwechsel nicht angenommen.",
     "es": "Hermes no aceptó el cambio de modelo.",
@@ -3523,6 +3583,21 @@
     "tr": "Hermes model değişikliğini kabul etmedi.",
     "zh-Hans": "Hermes 未接受模型切换。",
     "zh-Hant": "Hermes 未接受模型切換。"
+  },
+  "Hermes didn't hear any words.": {
+    "de": "Hermes hat keine Worte gehört.",
+    "es": "Hermes no oyó ninguna palabra.",
+    "fr": "Hermes n'a entendu aucun mot.",
+    "id": "Hermes tidak mendengar kata apa pun.",
+    "it": "Hermes non ha sentito nessuna parola.",
+    "ja": "Hermesには言葉が聞き取れませんでした。",
+    "ko": "Hermes가 아무 말도 듣지 못했습니다.",
+    "pl": "Hermes nie usłyszał żadnych słów.",
+    "pt-BR": "O Hermes não ouviu nenhuma palavra.",
+    "ru": "Hermes не услышал ни слова.",
+    "tr": "Hermes hiçbir kelime duymadı.",
+    "zh-Hans": "Hermes 没有听到任何话。",
+    "zh-Hant": "Hermes 沒有聽到任何話。"
   },
   "Hermes didn’t keep {name}.": {
     "de": "Hermes hat {name} nicht gespeichert.",
@@ -3583,6 +3658,21 @@
     "tr": "{title} tamamlandı olarak işaretlenmeden önce Hermes'in ne yapıldığına dair bir nota ihtiyacı var. Görevi açın, notu yazın ve Tamamlandı olarak işaretle'yi seçin.",
     "zh-Hans": "要将 {title} 标记为完成，Hermes 需要一条说明完成了什么的备注。打开任务，写下备注，然后选择“标记为完成”。",
     "zh-Hant": "要將 {title} 標記為完成，Hermes 需要一則說明完成了什麼的備註。開啟任務，寫下備註，然後選擇「標記為完成」。"
+  },
+  "Hermes returned invalid fallback audio.": {
+    "de": "Hermes hat ungültiges Ersatz-Audio zurückgegeben.",
+    "es": "Hermes devolvió un audio de respaldo no válido.",
+    "fr": "Hermes a renvoyé un audio de secours non valide.",
+    "id": "Hermes mengembalikan audio cadangan yang tidak valid.",
+    "it": "Hermes ha restituito un audio di riserva non valido.",
+    "ja": "Hermesから無効なフォールバック音声が返されました。",
+    "ko": "Hermes가 유효하지 않은 대체 오디오를 반환했어요.",
+    "pl": "Hermes zwrócił nieprawidłowy zapasowy dźwięk.",
+    "pt-BR": "O Hermes retornou um áudio alternativo inválido.",
+    "ru": "Hermes вернул некорректный резервный звук.",
+    "tr": "Hermes geçersiz yedek ses döndürdü.",
+    "zh-Hans": "Hermes 返回了无效的备用音频。",
+    "zh-Hant": "Hermes 傳回了無效的備用音訊。"
   },
   "Hermes signed this computer out. Sign in again.": {
     "de": "Hermes hat diesen Computer abgemeldet. Melde dich erneut an.",
@@ -4499,6 +4589,21 @@
     "zh-Hans": "给 {name} 发消息…",
     "zh-Hant": "傳訊息給 {name}…"
   },
+  "Microphone input level": {
+    "de": "Mikrofon-Eingangspegel",
+    "es": "Nivel de entrada del micrófono",
+    "fr": "Niveau d'entrée du micro",
+    "id": "Level input mikrofon",
+    "it": "Livello di ingresso del microfono",
+    "ja": "マイクの入力レベル",
+    "ko": "마이크 입력 레벨",
+    "pl": "Poziom sygnału mikrofonu",
+    "pt-BR": "Nível de entrada do microfone",
+    "ru": "Уровень входного сигнала микрофона",
+    "tr": "Mikrofon giriş düzeyi",
+    "zh-Hans": "麦克风输入电平",
+    "zh-Hant": "麥克風輸入音量"
+  },
   "Minimal": {
     "de": "Minimal",
     "es": "Mínimo",
@@ -5143,6 +5248,21 @@
     "tr": "Henüz yorum yok.",
     "zh-Hans": "暂无评论。",
     "zh-Hant": "尚無留言。"
+  },
+  "No microphone found.": {
+    "de": "Kein Mikrofon gefunden.",
+    "es": "No se encontró ningún micrófono.",
+    "fr": "Aucun micro trouvé.",
+    "id": "Mikrofon tidak ditemukan.",
+    "it": "Nessun microfono trovato.",
+    "ja": "マイクが見つかりません。",
+    "ko": "마이크를 찾을 수 없습니다.",
+    "pl": "Nie znaleziono mikrofonu.",
+    "pt-BR": "Nenhum microfone encontrado.",
+    "ru": "Микрофон не найден.",
+    "tr": "Mikrofon bulunamadı.",
+    "zh-Hans": "未找到麦克风。",
+    "zh-Hant": "找不到麥克風。"
   },
   "No schedule": {
     "de": "Kein Zeitplan",
@@ -6884,6 +7004,21 @@
     "zh-Hans": "已运行代码",
     "zh-Hant": "已執行程式碼"
   },
+  "Read Aloud": {
+    "de": "Vorlesen",
+    "es": "Leer en voz alta",
+    "fr": "Lecture à voix haute",
+    "id": "Bacakan",
+    "it": "Lettura ad alta voce",
+    "ja": "読み上げ",
+    "ko": "소리 내어 읽기",
+    "pl": "Czytanie na głos",
+    "pt-BR": "Ler em Voz Alta",
+    "ru": "Чтение вслух",
+    "tr": "Sesli Okuma",
+    "zh-Hans": "朗读",
+    "zh-Hant": "朗讀"
+  },
   "Read a file": {
     "de": "Datei gelesen",
     "es": "Leyó un archivo",
@@ -6973,6 +7108,36 @@
     "tr": "Akıl yürütme",
     "zh-Hans": "思考强度",
     "zh-Hant": "推理"
+  },
+  "Record": {
+    "de": "Aufnehmen",
+    "es": "Grabar",
+    "fr": "Enregistrer",
+    "id": "Rekam",
+    "it": "Registra",
+    "ja": "録音",
+    "ko": "녹음",
+    "pl": "Nagraj",
+    "pt-BR": "Gravar",
+    "ru": "Записать",
+    "tr": "Kaydet",
+    "zh-Hans": "录音",
+    "zh-Hant": "錄音"
+  },
+  "Record: dictate, or send a voice message": {
+    "de": "Aufnehmen: diktieren oder eine Sprachnachricht senden",
+    "es": "Grabar: dictar o enviar un mensaje de voz",
+    "fr": "Enregistrer : dicter ou envoyer un message vocal",
+    "id": "Rekam: dikte, atau kirim pesan suara",
+    "it": "Registra: detta o invia un messaggio vocale",
+    "ja": "録音：音声入力、またはボイスメッセージを送信",
+    "ko": "녹음: 받아쓰기 또는 음성 메시지 보내기",
+    "pl": "Nagraj: dyktuj lub wyślij wiadomość głosową",
+    "pt-BR": "Gravar: ditar ou enviar uma mensagem de voz",
+    "ru": "Запись: диктовка или голосовое сообщение",
+    "tr": "Kaydet: dikte et veya sesli mesaj gönder",
+    "zh-Hans": "录音：听写，或发送语音消息",
+    "zh-Hant": "錄音：聽寫，或傳送語音訊息"
   },
   "Refresh": {
     "de": "Aktualisieren",
@@ -7829,6 +7994,21 @@
     "zh-Hans": "发送",
     "zh-Hant": "傳送"
   },
+  "Send voice message": {
+    "de": "Sprachnachricht senden",
+    "es": "Enviar mensaje de voz",
+    "fr": "Envoyer le message vocal",
+    "id": "Kirim pesan suara",
+    "it": "Invia messaggio vocale",
+    "ja": "ボイスメッセージを送信",
+    "ko": "음성 메시지 보내기",
+    "pl": "Wyślij wiadomość głosową",
+    "pt-BR": "Enviar mensagem de voz",
+    "ru": "Отправить голосовое сообщение",
+    "tr": "Sesli mesajı gönder",
+    "zh-Hans": "发送语音消息",
+    "zh-Hant": "傳送語音訊息"
+  },
   "Sending…": {
     "de": "Wird gesendet …",
     "es": "Enviando…",
@@ -8428,6 +8608,21 @@
     "tr": "Durdur (Esc)",
     "zh-Hans": "停止（Esc）",
     "zh-Hant": "停止（Esc）"
+  },
+  "Stop reading response": {
+    "de": "Vorlesen der Antwort beenden",
+    "es": "Detener lectura de la respuesta",
+    "fr": "Arrêter la lecture de la réponse",
+    "id": "Hentikan pembacaan respons",
+    "it": "Interrompi lettura della risposta",
+    "ja": "応答の読み上げを停止",
+    "ko": "응답 읽기 중지",
+    "pl": "Zatrzymaj czytanie odpowiedzi",
+    "pt-BR": "Parar leitura da resposta",
+    "ru": "Остановить чтение ответа",
+    "tr": "Yanıtı okumayı durdur",
+    "zh-Hans": "停止朗读回复",
+    "zh-Hant": "停止朗讀回覆"
   },
   "Stop the reply and background processes": {
     "de": "Antwort und Hintergrundprozesse stoppen",
@@ -9224,6 +9419,21 @@
     "zh-Hans": "这会将 {title} 从看板中永久删除。",
     "zh-Hant": "這會將 {title} 從看板中永久刪除。"
   },
+  "This voice message is larger than your attachment size limit.": {
+    "de": "Diese Sprachnachricht ist größer als dein Limit für Anhänge.",
+    "es": "Este mensaje de voz supera tu límite de tamaño de archivos adjuntos.",
+    "fr": "Ce message vocal dépasse votre limite de taille des pièces jointes.",
+    "id": "Pesan suara ini melebihi batas ukuran lampiran Anda.",
+    "it": "Questo messaggio vocale supera il limite di dimensione degli allegati.",
+    "ja": "このボイスメッセージは添付ファイルのサイズ上限を超えています。",
+    "ko": "이 음성 메시지는 첨부 파일 크기 제한보다 커요.",
+    "pl": "Ta wiadomość głosowa przekracza limit rozmiaru załączników.",
+    "pt-BR": "Esta mensagem de voz excede seu limite de tamanho de anexos.",
+    "ru": "Это голосовое сообщение больше вашего лимита размера вложений.",
+    "tr": "Bu sesli mesaj ek boyutu sınırınızı aşıyor.",
+    "zh-Hans": "此语音消息超过了你的附件大小限制。",
+    "zh-Hant": "此語音訊息超過了你的附件大小限制。"
+  },
   "This was already answered somewhere else.": {
     "de": "Das wurde schon woanders beantwortet.",
     "es": "Esto ya se respondió en otro lugar.",
@@ -9419,6 +9629,21 @@
     "zh-Hans": "工具",
     "zh-Hant": "工具"
   },
+  "Transcribing": {
+    "de": "Wird transkribiert",
+    "es": "Transcribiendo",
+    "fr": "Transcription",
+    "id": "Transkripsi",
+    "it": "Trascrizione",
+    "ja": "文字起こし中",
+    "ko": "텍스트 변환 중",
+    "pl": "Transkrypcja",
+    "pt-BR": "Transcrevendo",
+    "ru": "Расшифровка",
+    "tr": "Metne dönüştürülüyor",
+    "zh-Hans": "正在转录",
+    "zh-Hant": "正在轉寫"
+  },
   "Triage": {
     "de": "Triage",
     "es": "Clasificación",
@@ -9553,6 +9778,21 @@
     "tr": "Bunun yerine adres yazın",
     "zh-Hans": "改为输入地址",
     "zh-Hant": "改為輸入位址"
+  },
+  "Type out what you said": {
+    "de": "Das Gesagte als Text eingeben",
+    "es": "Escribir lo que dijiste",
+    "fr": "Écrire ce que vous avez dit",
+    "id": "Ketik apa yang Anda ucapkan",
+    "it": "Scrivi ciò che hai detto",
+    "ja": "話した内容を入力",
+    "ko": "말한 내용을 입력",
+    "pl": "Wpisz to, co powiedziano",
+    "pt-BR": "Digitar o que você disse",
+    "ru": "Ввести сказанное текстом",
+    "tr": "Söylediğini yazıya dök",
+    "zh-Hans": "将你说的话输入为文字",
+    "zh-Hant": "將你說的話輸入為文字"
   },
   "Type your answer": {
     "de": "Gib deine Antwort ein",
@@ -10018,6 +10258,36 @@
     "tr": "Tatil",
     "zh-Hans": "休假",
     "zh-Hant": "休假"
+  },
+  "Voice message": {
+    "de": "Sprachnachricht",
+    "es": "Mensaje de voz",
+    "fr": "Message vocal",
+    "id": "Pesan suara",
+    "it": "Messaggio vocale",
+    "ja": "ボイスメッセージ",
+    "ko": "음성 메시지",
+    "pl": "Wiadomość głosowa",
+    "pt-BR": "Mensagem de voz",
+    "ru": "Голосовое сообщение",
+    "tr": "Sesli mesaj",
+    "zh-Hans": "语音消息",
+    "zh-Hant": "語音訊息"
+  },
+  "Voice messages send once the reply has finished.": {
+    "de": "Sprachnachrichten werden gesendet, sobald die Antwort fertig ist.",
+    "es": "Los mensajes de voz se envían cuando termine la respuesta.",
+    "fr": "Les messages vocaux partent une fois la réponse terminée.",
+    "id": "Pesan suara dikirim setelah balasan selesai.",
+    "it": "I messaggi vocali vengono inviati al termine della risposta.",
+    "ja": "ボイスメッセージは返信が終わると送信されます。",
+    "ko": "음성 메시지는 답변이 끝나면 보내져요.",
+    "pl": "Wiadomości głosowe zostaną wysłane po zakończeniu odpowiedzi.",
+    "pt-BR": "Mensagens de voz são enviadas quando a resposta terminar.",
+    "ru": "Голосовые сообщения отправятся, когда ответ завершится.",
+    "tr": "Sesli mesajlar yanıt bittiğinde gönderilir.",
+    "zh-Hans": "回复结束后会发送语音消息。",
+    "zh-Hant": "回覆結束後會傳送語音訊息。"
   },
   "Watching": {
     "de": "Im Blick",

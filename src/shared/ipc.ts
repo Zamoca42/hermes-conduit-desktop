@@ -136,7 +136,7 @@ export interface ConduitApi {
    * `gateway`, which throws with both.
    */
   rpcOutcome<T = unknown>(method: string, params?: Record<string, unknown>): Promise<RpcOutcome<T>>
-  httpOutcome<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<RpcOutcome<T>>
+  httpOutcome<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number): Promise<RpcOutcome<T>>
   /** A dashboard REST call; `path` starts with `/api/`. */
   http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T>
   onStatus(listener: (status: ConnectionStatus) => void): () => void

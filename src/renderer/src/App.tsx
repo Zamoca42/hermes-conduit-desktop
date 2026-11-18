@@ -563,6 +563,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 focusKey={selected.id ?? 'new'}
                 canAttach
                 dropZone={chatPane}
+                voice={{ profile: selected.profile }}
               />
             </main>
             {filesOpen && chat.cwd ? (

@@ -4573,3 +4573,94 @@ code.file-link:hover {
   font-size: 12px;
   padding: 0 4px;
 }
+
+/* Voice: a recording in the composer, a sent voice message, Read Aloud. */
+.voice-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 4px 8px;
+}
+
+.voice-strip .secondary,
+.voice-strip .primary {
+  height: 30px;
+  padding: 0 14px;
+  font-size: 13px;
+  align-self: center;
+}
+
+.voice-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: voice-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes voice-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.voice-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  min-width: 36px;
+}
+
+.voice-meter {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--field);
+  overflow: hidden;
+}
+
+.voice-meter span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transition: transform 80ms linear;
+}
+
+.voice-busy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.voice-busy svg {
+  width: 16px;
+  height: 16px;
+}
+
+.voice-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.voice-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.voice-head svg {
+  width: 14px;
+  height: 14px;
+}
+
+.read-problem {
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 4px;
+}
