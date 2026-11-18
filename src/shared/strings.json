@@ -1154,6 +1154,21 @@
     "zh-Hans": "明天回来",
     "zh-Hant": "明天回來"
   },
+  "Background agents finished": {
+    "de": "Hintergrund-Agenten fertig",
+    "es": "Agentes en segundo plano terminados",
+    "fr": "Agents en arrière-plan terminés",
+    "id": "Agen latar belakang selesai",
+    "it": "Agenti in background terminati",
+    "ja": "バックグラウンドエージェントが完了しました",
+    "ko": "백그라운드 에이전트 완료",
+    "pl": "Agenci w tle zakończyli pracę",
+    "pt-BR": "Agentes em segundo plano concluídos",
+    "ru": "Фоновые агенты завершили работу",
+    "tr": "Arka plan ajanları bitti",
+    "zh-Hans": "后台代理已完成",
+    "zh-Hant": "背景代理已完成"
+  },
   "Background processes stopped: {count}": {
     "de": "Gestoppte Hintergrundprozesse: {count}",
     "es": "Procesos en segundo plano detenidos: {count}",
@@ -3238,6 +3253,36 @@
     "tr": "Varsayılan ({name})",
     "zh-Hans": "默认（{name}）",
     "zh-Hant": "預設（{name}）"
+  },
+  "Delegate agent": {
+    "de": "Delegierter Agent",
+    "es": "Agente delegado",
+    "fr": "Agent délégué",
+    "id": "Agen delegasi",
+    "it": "Agente delegato",
+    "ja": "委任エージェント",
+    "ko": "위임 에이전트",
+    "pl": "Agent delegowany",
+    "pt-BR": "Agente delegado",
+    "ru": "Делегированный агент",
+    "tr": "Devredilen ajan",
+    "zh-Hans": "委派智能体",
+    "zh-Hant": "委派代理程式"
+  },
+  "Delegate agents": {
+    "de": "Delegierte Agenten",
+    "es": "Agentes delegados",
+    "fr": "Agents délégués",
+    "id": "Agen delegasi",
+    "it": "Agenti delegati",
+    "ja": "委任エージェント",
+    "ko": "위임 에이전트",
+    "pl": "Agenci delegowani",
+    "pt-BR": "Agentes delegados",
+    "ru": "Делегированные агенты",
+    "tr": "Devredilen ajanlar",
+    "zh-Hans": "委派智能体",
+    "zh-Hant": "委派代理程式"
   },
   "Delete": {
     "de": "Löschen",
@@ -6104,6 +6149,21 @@
     "zh-Hans": "正在聆听",
     "zh-Hant": "正在聆聽"
   },
+  "Live output": {
+    "de": "Live-Ausgabe",
+    "es": "Salida en directo",
+    "fr": "Sortie en direct",
+    "id": "Keluaran langsung",
+    "it": "Output in diretta",
+    "ja": "ライブ出力",
+    "ko": "실시간 출력",
+    "pl": "Wynik na żywo",
+    "pt-BR": "Saída ao vivo",
+    "ru": "Вывод в реальном времени",
+    "tr": "Canlı çıktı",
+    "zh-Hans": "实时输出",
+    "zh-Hant": "即時輸出"
+  },
   "Loading Pulse…": {
     "de": "Pulse wird geladen …",
     "es": "Cargando Pulse…",
@@ -8414,6 +8474,21 @@
     "zh-Hans": "输出",
     "zh-Hant": "輸出"
   },
+  "Output appears here once the agent writes some.": {
+    "de": "Die Ausgabe erscheint hier, sobald der Agent etwas schreibt.",
+    "es": "La salida aparecerá aquí cuando el agente escriba algo.",
+    "fr": "La sortie s’affichera ici dès que l’agent écrira quelque chose.",
+    "id": "Keluaran muncul di sini setelah agen menulis sesuatu.",
+    "it": "L’output apparirà qui quando l’agente scriverà qualcosa.",
+    "ja": "エージェントが何か書き込むと、ここに出力が表示されます。",
+    "ko": "에이전트가 무언가를 작성하면 여기에 출력이 표시됩니다.",
+    "pl": "Wynik pojawi się tutaj, gdy agent coś napisze.",
+    "pt-BR": "A saída aparece aqui assim que o agente escrever algo.",
+    "ru": "Вывод появится здесь, как только агент что-нибудь напишет.",
+    "tr": "Ajan bir şey yazdığında çıktı burada görünür.",
+    "zh-Hans": "智能体写出内容后，输出会显示在这里。",
+    "zh-Hant": "代理程式寫出內容後，輸出會顯示在這裡。"
+  },
   "Pair with your iPhone": {
     "de": "Mit deinem iPhone koppeln",
     "es": "Vincular con tu iPhone",
@@ -9403,6 +9478,21 @@
     "tr": "Sonraki tur için bir istemi sıraya al",
     "zh-Hans": "将提示词加入下一轮的队列",
     "zh-Hant": "將提示詞排入下一個回合"
+  },
+  "Queued": {
+    "de": "In Warteschlange",
+    "es": "En cola",
+    "fr": "En file d'attente",
+    "id": "Dalam antrean",
+    "it": "In coda",
+    "ja": "待機中",
+    "ko": "대기 중",
+    "pl": "W kolejce",
+    "pt-BR": "Na fila",
+    "ru": "В очереди",
+    "tr": "Sırada",
+    "zh-Hans": "排队中",
+    "zh-Hant": "排隊中"
   },
   "Quick Ask": {
     "de": "Schnellfrage",
@@ -11114,6 +11204,21 @@
     "zh-Hans": "发送中…",
     "zh-Hant": "傳送中…"
   },
+  "Sent. The agent reads it at its next step.": {
+    "de": "Gesendet. Der Agent liest es bei seinem nächsten Schritt.",
+    "es": "Enviado. El agente lo leerá en su próximo paso.",
+    "fr": "Envoyé. L’agent le lira à sa prochaine étape.",
+    "id": "Terkirim. Agen akan membacanya pada langkah berikutnya.",
+    "it": "Inviato. L’agente lo leggerà al prossimo passo.",
+    "ja": "送信しました。エージェントは次のステップで読み取ります。",
+    "ko": "보냈습니다. 에이전트가 다음 단계에서 읽습니다.",
+    "pl": "Wysłano. Agent przeczyta to w następnym kroku.",
+    "pt-BR": "Enviado. O agente vai ler no próximo passo.",
+    "ru": "Отправлено. Агент прочитает это на следующем шаге.",
+    "tr": "Gönderildi. Ajan bunu bir sonraki adımında okuyacak.",
+    "zh-Hans": "已发送。智能体会在下一步读取。",
+    "zh-Hant": "已傳送。代理程式會在下一步讀取。"
+  },
   "Session token": {
     "de": "Sitzungstoken",
     "es": "Token de sesión",
@@ -11864,6 +11969,21 @@
     "zh-Hans": "重新开始",
     "zh-Hant": "重新開始"
   },
+  "Started by Hermes for this chat. They keep running until they finish or you stop them.": {
+    "de": "Von Hermes für diesen Chat gestartet. Sie laufen weiter, bis sie fertig sind oder du sie beendest.",
+    "es": "Iniciados por Hermes para este chat. Siguen funcionando hasta que terminan o los detienes.",
+    "fr": "Lancés par Hermes pour cette discussion. Ils tournent jusqu’à ce qu’ils se terminent ou que vous les arrêtiez.",
+    "id": "Dimulai oleh Hermes untuk chat ini. Terus berjalan sampai selesai atau Anda menghentikannya.",
+    "it": "Avviati da Hermes per questa chat. Restano attivi finché non terminano o non li fermi.",
+    "ja": "Hermesがこのチャットのために起動したものです。終了するか停止するまで動き続けます。",
+    "ko": "Hermes가 이 채팅을 위해 시작했습니다. 끝나거나 멈출 때까지 계속 실행됩니다.",
+    "pl": "Uruchomione przez Hermesa dla tego czatu. Działają, dopóki się nie zakończą lub ich nie zatrzymasz.",
+    "pt-BR": "Iniciados pelo Hermes para este chat. Continuam rodando até terminarem ou você pará-los.",
+    "ru": "Запущены Hermes для этого чата. Работают, пока не завершатся или пока вы их не остановите.",
+    "tr": "Hermes tarafından bu sohbet için başlatıldı. Bitene veya siz durdurana kadar çalışmaya devam ederler.",
+    "zh-Hans": "由 Hermes 为此聊天启动。它们会一直运行，直到结束或你停止它们。",
+    "zh-Hant": "由 Hermes 為此聊天啟動。它們會一直執行，直到結束或你停止它們。"
+  },
   "Started in the background. The answer will appear here.": {
     "de": "Im Hintergrund gestartet. Die Antwort erscheint hier.",
     "es": "Iniciado en segundo plano. La respuesta aparecerá aquí.",
@@ -11939,6 +12059,21 @@
     "zh-Hans": "状态",
     "zh-Hant": "狀態"
   },
+  "Steer": {
+    "de": "Nachsteuern",
+    "es": "Guiar",
+    "fr": "Réorienter",
+    "id": "Arahkan",
+    "it": "Reindirizza",
+    "ja": "軌道修正",
+    "ko": "방향 조정",
+    "pl": "Pokieruj",
+    "pt-BR": "Orientar",
+    "ru": "Скорректировать",
+    "tr": "Yönlendir",
+    "zh-Hans": "引导",
+    "zh-Hant": "引導"
+  },
   "Steer the current run": {
     "de": "Die laufende Ausführung nachsteuern",
     "es": "Guiar la ejecución actual",
@@ -11953,6 +12088,21 @@
     "tr": "Geçerli çalıştırmayı yönlendir",
     "zh-Hans": "引导当前运行",
     "zh-Hant": "引導目前的執行"
+  },
+  "Steer this agent…": {
+    "de": "Diesen Agenten lenken…",
+    "es": "Guiar a este agente…",
+    "fr": "Orienter cet agent…",
+    "id": "Arahkan agen ini…",
+    "it": "Guida questo agente…",
+    "ja": "このエージェントに指示…",
+    "ko": "이 에이전트에 지시…",
+    "pl": "Pokieruj tym agentem…",
+    "pt-BR": "Orientar este agente…",
+    "ru": "Направить этого агента…",
+    "tr": "Bu ajanı yönlendir…",
+    "zh-Hans": "引导此代理…",
+    "zh-Hant": "引導此代理…"
   },
   "Steps in One Turn": {
     "de": "Schritte pro Antwort",
@@ -12013,6 +12163,21 @@
     "tr": "Durdur (Esc)",
     "zh-Hans": "停止（Esc）",
     "zh-Hant": "停止（Esc）"
+  },
+  "Stop agent": {
+    "de": "Agent stoppen",
+    "es": "Detener agente",
+    "fr": "Arrêter l’agent",
+    "id": "Hentikan agen",
+    "it": "Interrompi l’agente",
+    "ja": "エージェントを停止",
+    "ko": "에이전트 중지",
+    "pl": "Zatrzymaj agenta",
+    "pt-BR": "Parar agente",
+    "ru": "Остановить агента",
+    "tr": "Ajanı durdur",
+    "zh-Hans": "停止智能体",
+    "zh-Hant": "停止代理程式"
   },
   "Stop reading response": {
     "de": "Vorlesen der Antwort beenden",
@@ -12988,6 +13153,21 @@
     "tr": "Bu Hermes'te görev panosu yok.",
     "zh-Hans": "此 Hermes 没有任务看板。",
     "zh-Hant": "此 Hermes 沒有任務看板。"
+  },
+  "This agent has already finished.": {
+    "de": "Dieser Agent ist bereits fertig.",
+    "es": "Este agente ya ha terminado.",
+    "fr": "Cet agent a déjà terminé.",
+    "id": "Agen ini sudah selesai.",
+    "it": "Questo agente ha già finito.",
+    "ja": "このエージェントはすでに終了しています。",
+    "ko": "이 에이전트는 이미 완료되었습니다.",
+    "pl": "Ten agent już skończył.",
+    "pt-BR": "Este agente já terminou.",
+    "ru": "Этот агент уже завершил работу.",
+    "tr": "Bu ajan zaten bitirdi.",
+    "zh-Hans": "此智能体已经完成。",
+    "zh-Hant": "此代理程式已經完成。"
   },
   "This card can’t show all of it. Approve it in its chat, or deny it here.": {
     "de": "Diese Karte kann nicht alles zeigen. Genehmige es im Chat oder lehne es hier ab.",
@@ -14323,6 +14503,21 @@
     "tr": "Kullanıcı adı ve parola",
     "zh-Hans": "用户名和密码",
     "zh-Hant": "使用者名稱和密碼"
+  },
+  "Using {tool}": {
+    "de": "Nutzt {tool}",
+    "es": "Usando {tool}",
+    "fr": "Utilise {tool}",
+    "id": "Menggunakan {tool}",
+    "it": "Sta usando {tool}",
+    "ja": "{tool} を使用中",
+    "ko": "{tool} 사용 중",
+    "pl": "Używa: {tool}",
+    "pt-BR": "Usando {tool}",
+    "ru": "Использует: {tool}",
+    "tr": "{tool} kullanılıyor",
+    "zh-Hans": "正在使用 {tool}",
+    "zh-Hant": "正在使用 {tool}"
   },
   "Vacation": {
     "de": "Urlaub",
@@ -15808,6 +16003,21 @@
     "tr": "{bot} adlı botun işi · {ref} · {status}",
     "zh-Hans": "{bot} 的工作 · {ref} · {status}",
     "zh-Hant": "{bot} 的工作 · {ref} · {status}"
+  },
+  "{count} background agents running": {
+    "de": "{count} Hintergrund-Agenten laufen",
+    "es": "{count} agentes en segundo plano en curso",
+    "fr": "{count} agents en arrière-plan en cours",
+    "id": "{count} agen latar belakang berjalan",
+    "it": "{count} agenti in background in esecuzione",
+    "ja": "{count} 件のバックグラウンドエージェントが実行中",
+    "ko": "백그라운드 에이전트 {count}개 실행 중",
+    "pl": "Agenci w tle w toku: {count}",
+    "pt-BR": "{count} agentes em segundo plano em execução",
+    "ru": "Фоновых агентов в работе: {count}",
+    "tr": "{count} arka plan ajanı çalışıyor",
+    "zh-Hans": "{count} 个后台代理正在运行",
+    "zh-Hant": "{count} 個背景代理正在執行"
   },
   "{count} bytes": {
     "de": "{count} Byte",
