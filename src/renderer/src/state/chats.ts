@@ -3,6 +3,7 @@
  * profile, newest activity first), with the gateway's `session.list` as the
  * fallback an older dashboard needs, grouped the way the phone groups them.
  */
+import { previewText } from './text'
 
 export interface ChatRow {
   id: string
@@ -24,8 +25,41 @@ export interface ChatSection {
 /** Sessions that aren't chats, as the phone's list leaves them out (cron runs have their own list). */
 export const CHAT_LIST_EXCLUDED_SOURCES = 'cron,kanban,oneshot,tool'
 
-export const CHAT_LIST_PATH =
-  `/api/profiles/sessions?limit=200&offset=0&min_messages=1&archived=exclude&order=recent&exclude_sources=${CHAT_LIST_EXCLUDED_SOURCES}`
+/** Rows per page of the chat list. */
+export const CHAT_LIST_PAGE = 200
+
+/** Pages read at most, so a host with years of chats doesn't read them all at once. */
+export const CHAT_LIST_MAX_PAGES = 25
+
+export function chatListPath(offset = 0): string {
+  return `/api/profiles/sessions?limit=${CHAT_LIST_PAGE}&offset=${offset}&min_messages=1&archived=exclude&order=recent&exclude_sources=${CHAT_LIST_EXCLUDED_SOURCES}`
+}
+
+export const CHAT_LIST_PATH = chatListPath(0)
+
+/** How many sessions a response held before any were left out, to tell a full page from the last one. */
+export function responseCount(body: unknown): number {
+  if (Array.isArray(body)) return body.length
+  const sessions = body && typeof body === 'object' ? (body as { sessions?: unknown }).sessions : undefined
+  return Array.isArray(sessions) ? sessions.length : 0
+}
+
+/**
+ * A fresh first page over the rows already read: the page wins for the
+ * newest chats, and the older pages stay as they were read.
+ */
+export function refreshFirstPage(existing: ChatRow[], page: ChatRow[], pageWasFull: boolean): ChatRow[] {
+  if (!pageWasFull) return page
+  const ids = new Set(page.map(r => r.id))
+  const oldest = Math.min(...page.map(r => r.activeAt ?? 0))
+  return [...page, ...existing.filter(r => !ids.has(r.id) && (r.activeAt ?? 0) < oldest)]
+}
+
+/** Adds a later page's rows, keeping the first copy of a chat that moved between pages. */
+export function mergeRows(existing: ChatRow[], page: ChatRow[]): ChatRow[] {
+  const seen = new Set(existing.map(r => r.id))
+  return [...existing, ...page.filter(r => !seen.has(r.id))]
+}
 
 const ACTIVITY_KEYS = ['last_active', 'updated_at', 'last_message_at', 'started_at', 'created_at'] as const
 
@@ -37,10 +71,6 @@ export function toMillis(value: unknown): number | undefined {
   return n * 1000
 }
 
-/** Strips the context Hermes stores after a picture prompt, and folds lines. */
-function cleanPreview(text: string): string {
-  return text.replace(/\n+/g, ' ').trim()
-}
 
 export function rowsFromResponse(body: unknown): ChatRow[] {
   const list = Array.isArray(body)
@@ -59,7 +89,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
     const source = typeof obj.source === 'string' ? obj.source : undefined
     if (source && CHAT_LIST_EXCLUDED_SOURCES.split(',').includes(source.toLowerCase())) continue
     const title = typeof obj.title === 'string' ? obj.title.trim() : ''
-    const preview = typeof obj.preview === 'string' ? cleanPreview(obj.preview) : ''
+    const preview = typeof obj.preview === 'string' ? previewText(obj.preview) : ''
     let activeAt: number | undefined
     for (const key of ACTIVITY_KEYS) {
       activeAt = toMillis(obj[key])

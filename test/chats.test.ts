@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { rowsFromResponse, sectionRows, toMillis } from '../src/renderer/src/state/chats'
+import { chatListPath, mergeRows, refreshFirstPage, responseCount, rowsFromResponse, sectionRows, toMillis } from '../src/renderer/src/state/chats'
 
 const now = new Date(2026, 10, 18, 15, 0).getTime()
 const hoursAgo = (h: number) => (now - h * 3_600_000) / 1000
@@ -48,5 +48,35 @@ describe('chat rows', () => {
       ['Previous 7 days', ['week']],
       ['Older', ['old']]
     ])
+  })
+})
+
+describe('chat list pages', () => {
+  const row = (id: string, activeAt: number) => ({ id, title: id, pinned: false, activeAt })
+
+  it('asks for each page by offset', () => {
+    expect(chatListPath(400)).toContain('limit=200&offset=400')
+  })
+
+  it('counts a page before any rows are left out', () => {
+    expect(responseCount({ sessions: [{ id: 'a', source: 'cron' }, { id: 'b' }] })).toBe(2)
+    expect(responseCount([{}, {}, {}])).toBe(3)
+    expect(responseCount(null)).toBe(0)
+  })
+
+  it('adds a later page without repeating a chat that moved up', () => {
+    expect(mergeRows([row('a', 3), row('b', 2)], [row('b', 2), row('c', 1)]).map(r => r.id)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('refreshes the first page over the older pages already read', () => {
+    const existing = [row('a', 50), row('b', 40), row('c', 10), row('d', 5)]
+    const page = [row('new', 60), row('a', 55), row('b', 40)]
+    expect(refreshFirstPage(existing, page, true).map(r => r.id)).toEqual(['new', 'a', 'b', 'c', 'd'])
+    expect(refreshFirstPage(existing, page, false).map(r => r.id)).toEqual(['new', 'a', 'b'])
+  })
+
+  it('cleans previews', () => {
+    const [r] = rowsFromResponse([{ id: 'x', title: 'Report', preview: '@file:/tmp/q.pdf\nSummarize this' }])
+    expect(r?.preview).toBe('Summarize this')
   })
 })

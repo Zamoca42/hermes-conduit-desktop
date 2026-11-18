@@ -3,11 +3,14 @@
  * `session.resume`, then the live turn's events folded in as they arrive.
  * Pure functions, so the tests can play a turn's events through them.
  */
+import { cleanUserText, type Attachment } from './text'
 
 export interface UserItem {
   kind: 'user'
   key: string
   text: string
+  /** Files and links the message named on its first lines. */
+  attachments?: Attachment[]
   at?: number
   /** Sent from here and not yet confirmed by the gateway. */
   pending?: boolean
@@ -93,6 +96,13 @@ function toMillis(timestamp: number | null | undefined): number | undefined {
   return timestamp < 1e11 ? timestamp * 1000 : timestamp
 }
 
+/** A person's message without what Hermes stored around it; null when nothing is left to show. */
+function userItem(key: string, raw: string, at?: number): UserItem | null {
+  const { text, attachments } = cleanUserText(raw)
+  if (!text && !attachments.length) return null
+  return { kind: 'user', key, text, at, ...(attachments.length ? { attachments } : {}) }
+}
+
 export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
   const items: TranscriptItem[] = []
   for (const row of rows) {
@@ -101,8 +111,8 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
     const key = row.row_id != null ? `row-${row.row_id}` : nextKey('h')
     switch (row.role) {
       case 'user': {
-        const text = rowText(row).trim()
-        if (text) items.push({ kind: 'user', key, text, at })
+        const item = userItem(key, rowText(row), at)
+        if (item) items.push(item)
         break
       }
       case 'assistant': {
@@ -240,9 +250,9 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     }
     case 'user.message': {
       // Sent from another client of this chat (the phone).
-      const text = str(payload.text)?.trim()
-      if (!text) return state
-      return { ...state, items: [...seal(state.items), { kind: 'user', key: nextKey('u'), text, at: Date.now() }] }
+      const item = userItem(nextKey('u'), str(payload.text) ?? '', Date.now())
+      if (!item) return state
+      return { ...state, items: [...seal(state.items), item] }
     }
     case 'message.interrupted':
     case 'session.interrupted':
@@ -263,7 +273,8 @@ function confirmPending(items: TranscriptItem[]): TranscriptItem[] {
 }
 
 export function addPendingUser(state: TranscriptState, text: string): TranscriptState {
-  return { ...state, items: [...state.items, { kind: 'user', key: nextKey('u'), text, at: Date.now(), pending: true }] }
+  const item = userItem(nextKey('u'), text, Date.now()) ?? { kind: 'user' as const, key: nextKey('u'), text, at: Date.now() }
+  return { ...state, items: [...state.items, { ...item, pending: true }] }
 }
 
 /** A send that failed: its bubble goes, with the reason in its place. */

@@ -1,7 +1,60 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { mediaKind, splitReply } from '../state/media'
+import { baseName, type Attachment } from '../state/text'
 import type { TranscriptItem, TranscriptState } from '../state/transcript'
-import { Icon } from './icons'
+import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
+
+const MEDIA_ICONS: Record<ReturnType<typeof mediaKind>, IconName> = { image: 'image', audio: 'audio', video: 'video', file: 'file' }
+
+/** A file Hermes delivered (`MEDIA:`) or a message named (`@file:`): its name, with the full path on hover. */
+function FileCard({ path, label, link }: { path: string; label?: string; link?: boolean }) {
+  const name = label || (link ? path : baseName(path))
+  const folder = path.slice(0, Math.max(0, path.length - baseName(path).length)).replace(/[\\/]+$/, '')
+  return (
+    <div className="file-card" title={path}>
+      <span className="file-icon">
+        <Icon name={link ? 'link' : MEDIA_ICONS[mediaKind(path)]} />
+      </span>
+      <span className="file-body">
+        <span className="file-name">{name}</span>
+        {!link && folder ? <span className="file-path">{folder}</span> : null}
+      </span>
+    </div>
+  )
+}
+
+function AttachmentChips({ attachments }: { attachments: Attachment[] }) {
+  return (
+    <div className="attachments">
+      {attachments.map((a, i) =>
+        a.kind === 'url' ? (
+          <a key={i} className="chip" href={a.value} target="_blank" rel="noreferrer" title={a.value}>
+            <Icon name="link" />
+            <span>{a.value.replace(/^https?:\/\//, '')}</span>
+          </a>
+        ) : (
+          <span key={i} className="chip" title={a.value}>
+            <Icon name={a.kind === 'image' ? 'image' : 'file'} />
+            <span>{baseName(a.value)}</span>
+          </span>
+        )
+      )}
+    </div>
+  )
+}
+
+/** A reply's Markdown, with each `MEDIA:` file as a card where the tag stood. */
+const Reply = memo(function Reply({ text }: { text: string }) {
+  const blocks = useMemo(() => splitReply(text), [text])
+  return (
+    <>
+      {blocks.map((block, i) =>
+        block.kind === 'markdown' ? <Markdown key={i} text={block.text} /> : <FileCard key={i} path={block.path} label={block.alt} />
+      )}
+    </>
+  )
+})
 
 function clock(ms?: number): string {
   return ms ? new Date(ms).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : ''
@@ -34,14 +87,15 @@ function Item({ item }: { item: TranscriptItem }) {
     case 'user':
       return (
         <div className={`user${item.pending ? ' pending' : ''}`}>
-          <div className="bubble">{item.text}</div>
+          {item.attachments?.length ? <AttachmentChips attachments={item.attachments} /> : null}
+          {item.text ? <div className="bubble">{item.text}</div> : null}
           <span className="time">{item.pending ? 'Sending…' : clock(item.at)}</span>
         </div>
       )
     case 'assistant':
       return (
         <div className={`assistant${item.streaming ? ' streaming' : ''}`}>
-          <Markdown text={item.text} />
+          <Reply text={item.text} />
         </div>
       )
     case 'thinking':

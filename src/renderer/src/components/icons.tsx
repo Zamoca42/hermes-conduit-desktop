@@ -30,6 +30,17 @@ const paths = {
   send: <path d="M12 19V5M6 11l6-6 6 6" />,
   stop: <rect x="7" y="7" width="10" height="10" rx="2" />,
   code: <path d="M8 8l-4 4 4 4M16 8l4 4-4 4" />,
+  file: <path d="M7 3h7l4 4v14H7zM14 3v4h4" />,
+  audio: <path d="M9 18V6l10-2v12M9 18a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM19 16a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />,
+  image: (
+    <>
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      <path d="M4 16l5-5 4 4 2-2 5 5" />
+      <circle cx="15.5" cy="9.5" r="1.5" />
+    </>
+  ),
+  video: <path d="M4 7h11v10H4zM15 10.5l5-3v9l-5-3" />,
+  link: <path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
   spinner: <path d="M12 4a8 8 0 108 8" />,
   attach: <path d="M12 5v14M5 12h14" />,
