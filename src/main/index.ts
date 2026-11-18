@@ -107,7 +107,8 @@ function createWindow(): void {
   })
   // Links open in the browser, never inside the app.
   window.webContents.setWindowOpenHandler(({ url }) => {
-    if (/^https?:\/\//.test(url)) void shell.openExternal(url)
+    // Web pages, and a Pulse card's mail, phone and message links; Maps and Calendar links on a Mac.
+    if (/^(https?:\/\/|mailto:|tel:|sms:)/i.test(url) || (isMac && /^(maps:|calshow:|x-apple-reminderkit:)/i.test(url))) void shell.openExternal(url)
     return { action: 'deny' }
   })
   window.webContents.on('will-navigate', (event, url) => {

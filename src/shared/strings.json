@@ -6569,6 +6569,36 @@
     "zh-Hans": "失败",
     "zh-Hant": "失敗"
   },
+  "Failed: {count}": {
+    "de": "Fehlgeschlagen: {count}",
+    "es": "Fallidas: {count}",
+    "fr": "Échecs : {count}",
+    "id": "Gagal: {count}",
+    "it": "Non riuscite: {count}",
+    "ja": "失敗: {count}",
+    "ko": "실패: {count}",
+    "pl": "Nieudane: {count}",
+    "pt-BR": "Com falha: {count}",
+    "ru": "Сбоев: {count}",
+    "tr": "Başarısız: {count}",
+    "zh-Hans": "失败：{count}",
+    "zh-Hant": "失敗：{count}"
+  },
+  "Failing": {
+    "de": "Schlägt fehl",
+    "es": "Fallando",
+    "fr": "En échec",
+    "id": "Gagal",
+    "it": "Non funziona",
+    "ja": "失敗中",
+    "ko": "실패 중",
+    "pl": "Nie działa",
+    "pt-BR": "Falhando",
+    "ru": "Сбоит",
+    "tr": "Başarısız",
+    "zh-Hans": "失败中",
+    "zh-Hant": "失敗中"
+  },
   "Fallback models": {
     "de": "Ersatzmodelle",
     "es": "Modelos de respaldo",
@@ -7573,6 +7603,21 @@
     "tr": "Heartbeat · {every}",
     "zh-Hans": "心跳 · {every}",
     "zh-Hant": "心跳 · {every}"
+  },
+  "Held for this morning: {count}": {
+    "de": "Für heute Morgen zurückgehalten: {count}",
+    "es": "Guardadas para esta mañana: {count}",
+    "fr": "Gardées pour ce matin : {count}",
+    "id": "Ditahan untuk pagi ini: {count}",
+    "it": "Tenute per stamattina: {count}",
+    "ja": "今朝のために保留: {count}",
+    "ko": "오늘 아침을 위해 보류: {count}",
+    "pl": "Zachowane na dziś rano: {count}",
+    "pt-BR": "Guardados para esta manhã: {count}",
+    "ru": "Отложено на это утро: {count}",
+    "tr": "Bu sabah için bekletilen: {count}",
+    "zh-Hans": "留到今早：{count}",
+    "zh-Hant": "留到今早：{count}"
   },
   "Helper models": {
     "de": "Hilfsmodelle",
@@ -9628,6 +9673,21 @@
     "tr": "Limon Yeşili",
     "zh-Hans": "青柠色",
     "zh-Hant": "萊姆綠"
+  },
+  "Limit {amount}": {
+    "de": "Grenze {amount}",
+    "es": "Límite {amount}",
+    "fr": "Limite {amount}",
+    "id": "Batas {amount}",
+    "it": "Limite {amount}",
+    "ja": "上限 {amount}",
+    "ko": "한도 {amount}",
+    "pl": "Limit {amount}",
+    "pt-BR": "Limite {amount}",
+    "ru": "Предел {amount}",
+    "tr": "Sınır {amount}",
+    "zh-Hans": "上限 {amount}",
+    "zh-Hant": "上限 {amount}"
   },
   "Limited": {
     "de": "Begrenzt",
@@ -16199,6 +16259,21 @@
     "zh-Hans": "运行 /review 命令的审查者。",
     "zh-Hant": "執行 /review 指令的審查者。"
   },
+  "Runs: {count}": {
+    "de": "Läufe: {count}",
+    "es": "Ejecuciones: {count}",
+    "fr": "Exécutions : {count}",
+    "id": "Eksekusi: {count}",
+    "it": "Esecuzioni: {count}",
+    "ja": "実行回数: {count}",
+    "ko": "실행: {count}",
+    "pl": "Uruchomienia: {count}",
+    "pt-BR": "Execuções: {count}",
+    "ru": "Запусков: {count}",
+    "tr": "Çalıştırma: {count}",
+    "zh-Hans": "运行：{count}",
+    "zh-Hant": "執行：{count}"
+  },
   "Runtime": {
     "de": "Laufzeit",
     "es": "Ejecución",
@@ -17819,6 +17894,21 @@
     "zh-Hans": "登录方式",
     "zh-Hant": "登入方式"
   },
+  "Since {date} · {relative}": {
+    "de": "Seit {date} · {relative}",
+    "es": "Desde {date} · {relative}",
+    "fr": "Depuis {date} · {relative}",
+    "id": "Sejak {date} · {relative}",
+    "it": "Dal {date} · {relative}",
+    "ja": "{date}から · {relative}",
+    "ko": "{date}부터 · {relative}",
+    "pl": "Od {date} · {relative}",
+    "pt-BR": "Desde {date} · {relative}",
+    "ru": "С {date} · {relative}",
+    "tr": "{date} tarihinden beri · {relative}",
+    "zh-Hans": "自 {date} 起 · {relative}",
+    "zh-Hant": "自 {date} 起 · {relative}"
+  },
   "Singularity image": {
     "de": "Singularity-Image",
     "es": "Imagen de Singularity",
@@ -18509,6 +18599,21 @@
     "zh-Hans": "第 {current} 步，共 {last} 步 · {time}",
     "zh-Hant": "第 {current} 步，共 {last} 步 · {time}"
   },
+  "Step {index} of {count} · {name}": {
+    "de": "Schritt {index} von {count} · {name}",
+    "es": "Paso {index} de {count} · {name}",
+    "fr": "Étape {index} sur {count} · {name}",
+    "id": "Langkah {index} dari {count} · {name}",
+    "it": "Passaggio {index} di {count} · {name}",
+    "ja": "ステップ {index}/{count} · {name}",
+    "ko": "{index}/{count}단계 · {name}",
+    "pl": "Krok {index} z {count} · {name}",
+    "pt-BR": "Etapa {index} de {count} · {name}",
+    "ru": "Шаг {index} из {count} · {name}",
+    "tr": "Adım {index}/{count} · {name}",
+    "zh-Hans": "第 {index} 步，共 {count} 步 · {name}",
+    "zh-Hant": "第 {index} 步，共 {count} 步 · {name}"
+  },
   "Steps in One Turn": {
     "de": "Schritte pro Antwort",
     "es": "Pasos por turno",
@@ -18538,6 +18643,21 @@
     "tr": "Bu yanıt için adımlar çalıştı ve yeniden denemek onları tekrar çalıştırır.",
     "zh-Hans": "这条回复运行过步骤，重试会再次运行它们。",
     "zh-Hant": "這則回覆執行過步驟，重試會再次執行它們。"
+  },
+  "Still open ({count})": {
+    "de": "Noch offen ({count})",
+    "es": "Aún pendiente ({count})",
+    "fr": "Encore en cours ({count})",
+    "id": "Masih terbuka ({count})",
+    "it": "Ancora aperte ({count})",
+    "ja": "未完了 ({count})",
+    "ko": "아직 남음 ({count})",
+    "pl": "Wciąż otwarte ({count})",
+    "pt-BR": "Ainda em aberto ({count})",
+    "ru": "Ещё открыто ({count})",
+    "tr": "Hâlâ açık ({count})",
+    "zh-Hans": "尚未完成 ({count})",
+    "zh-Hant": "尚未完成 ({count})"
   },
   "Still updating on the host": {
     "de": "Wird noch auf dem Host aktualisiert",
@@ -20879,6 +20999,21 @@
     "zh-Hans": "今天",
     "zh-Hant": "今天"
   },
+  "Today ({count})": {
+    "de": "Heute ({count})",
+    "es": "Hoy ({count})",
+    "fr": "Aujourd’hui ({count})",
+    "id": "Hari ini ({count})",
+    "it": "Oggi ({count})",
+    "ja": "今日 ({count})",
+    "ko": "오늘 ({count})",
+    "pl": "Dziś ({count})",
+    "pt-BR": "Hoje ({count})",
+    "ru": "Сегодня ({count})",
+    "tr": "Bugün ({count})",
+    "zh-Hans": "今天 ({count})",
+    "zh-Hant": "今天 ({count})"
+  },
   "Tokens at which a delegate compresses its context, 16000 or more. 0 follows the main setting.": {
     "de": "Tokens, ab denen ein Delegierter seinen Kontext komprimiert, mindestens 16000. 0 folgt der Haupteinstellung.",
     "es": "Tokens a partir de los cuales un delegado comprime su contexto, 16000 o más. 0 sigue el ajuste principal.",
@@ -21884,6 +22019,21 @@
     "zh-Hans": "已更新计划",
     "zh-Hant": "已更新計畫"
   },
+  "Updated {time}": {
+    "de": "Aktualisiert {time}",
+    "es": "Actualizada {time}",
+    "fr": "Mise à jour {time}",
+    "id": "Diperbarui {time}",
+    "it": "Aggiornata {time}",
+    "ja": "更新 {time}",
+    "ko": "업데이트됨 {time}",
+    "pl": "Zaktualizowano {time}",
+    "pt-BR": "Atualizado {time}",
+    "ru": "Обновлено {time}",
+    "tr": "Güncellendi {time}",
+    "zh-Hans": "更新于 {time}",
+    "zh-Hant": "更新於 {time}"
+  },
   "Updates": {
     "de": "Updates",
     "es": "Actualizaciones",
@@ -22558,6 +22708,21 @@
     "tr": "{bot} bekleniyor",
     "zh-Hans": "等待 {bot}",
     "zh-Hant": "等待 {bot}"
+  },
+  "Warning": {
+    "de": "Warnung",
+    "es": "Advertencia",
+    "fr": "Avertissement",
+    "id": "Peringatan",
+    "it": "Avviso",
+    "ja": "警告",
+    "ko": "경고",
+    "pl": "Ostrzeżenie",
+    "pt-BR": "Aviso",
+    "ru": "Предупреждение",
+    "tr": "Uyarı",
+    "zh-Hans": "警告",
+    "zh-Hant": "警告"
   },
   "Watching": {
     "de": "Im Blick",
@@ -23444,6 +23609,21 @@
     "zh-Hans": "昨天",
     "zh-Hant": "昨天"
   },
+  "You asked: {asked} · {place}": {
+    "de": "Du hast gefragt: {asked} · {place}",
+    "es": "Preguntaste: {asked} · {place}",
+    "fr": "Ta demande : {asked} · {place}",
+    "id": "Kamu bertanya: {asked} · {place}",
+    "it": "Hai chiesto: {asked} · {place}",
+    "ja": "依頼内容: {asked} · {place}",
+    "ko": "요청한 내용: {asked} · {place}",
+    "pl": "Twoja prośba: {asked} · {place}",
+    "pt-BR": "Você pediu: {asked} · {place}",
+    "ru": "Вы спрашивали: {asked} · {place}",
+    "tr": "Sorduğun: {asked} · {place}",
+    "zh-Hans": "你问的：{asked} · {place}",
+    "zh-Hant": "你問的：{asked} · {place}"
+  },
   "You said before that it wasn't useful": {
     "de": "Du hast schon gesagt, dass es nicht nützlich war",
     "es": "Ya dijiste que no era útil",
@@ -23728,6 +23908,21 @@
     "tr": "her {interval}",
     "zh-Hans": "每 {interval}",
     "zh-Hant": "每 {interval}"
+  },
+  "from {amount}": {
+    "de": "von {amount}",
+    "es": "desde {amount}",
+    "fr": "depuis {amount}",
+    "id": "dari {amount}",
+    "it": "da {amount}",
+    "ja": "{amount}から",
+    "ko": "{amount}에서",
+    "pl": "z {amount}",
+    "pt-BR": "de {amount}",
+    "ru": "с {amount}",
+    "tr": "{amount} değerinden",
+    "zh-Hans": "原为 {amount}",
+    "zh-Hant": "原為 {amount}"
   },
   "hermes.example.com or 192.168.1.20:9119": {
     "de": "hermes.example.com oder 192.168.1.20:9119",

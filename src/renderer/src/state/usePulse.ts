@@ -22,7 +22,7 @@ export function usePulse(connected: boolean, shown: boolean) {
   const load = useCallback(async () => {
     const mine = ++generation.current
     try {
-      const [raw, state] = await Promise.all([gateway.http('GET', `${PULSE}/feed`), gateway.http('GET', PULSE).catch(() => null)])
+      const [raw, state] = await Promise.all([gateway.http('GET', `${PULSE}/feed?looks=1`), gateway.http('GET', PULSE).catch(() => null)])
       if (mine !== generation.current) return
       setFeed(parseFeed(raw))
       setError(null)

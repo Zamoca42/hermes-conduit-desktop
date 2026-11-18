@@ -5,6 +5,7 @@
  * thumbs up or down (with why), Done, Not now, Do it. Pulse is one per
  * host, so nothing here names a profile.
  */
+import { parseLook, type PulseLook } from './pulseLook'
 import { t } from '../../../shared/i18n'
 
 export const PULSE = '/api/plugins/conduit_push/pulse'
@@ -43,6 +44,10 @@ export interface PulseCard {
   backActedAt?: number
   /** What its turn looked at first: "calendar", "phone", "contacts", "maps", "web", "location". */
   looked: string[]
+  /** The pick it was made from (plugin 0.150.0, asked with looks=1). */
+  look: PulseLook | null
+  /** Rewritten since, because the thing it follows changed. */
+  updatedAt?: number
 }
 
 export type QuietReason = 'until' | 'day'
@@ -93,7 +98,9 @@ export function parseCard(raw: unknown): PulseCard | null {
     ratedAt: when(row.rated_at),
     back: str(row.back),
     backActedAt: when(row.back_acted_at),
-    looked: Array.isArray(row.looked) ? row.looked.filter((s): s is string => typeof s === 'string') : []
+    looked: Array.isArray(row.looked) ? row.looked.filter((s): s is string => typeof s === 'string') : [],
+    look: parseLook(row.look),
+    updatedAt: when(row.updated_at)
   }
 }
 
@@ -377,3 +384,6 @@ export function refusalText(error: unknown): string {
   if (/not_found/.test(text)) return t('Pulse no longer has that one.')
   return text
 }
+
+/** Rewritten at least a second after it came (0.150.0). */
+export const wasUpdated = (card: PulseCard) => card.updatedAt !== undefined && card.createdAt !== undefined && card.updatedAt - card.createdAt >= 1000
