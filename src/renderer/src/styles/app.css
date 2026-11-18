@@ -4325,3 +4325,174 @@ code.file-link:hover {
   border-color: var(--accent);
   color: var(--text);
 }
+
+/* Pulse settings: the phone's Settings > Pulse, beside the feed. */
+.pulse-settings-button {
+  align-self: center;
+}
+
+.pset {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pset h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.pset-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.pset-section h2 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.pset-section p {
+  margin: 0;
+}
+
+.pset-section > .meta,
+.pset-section p.meta {
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.pset-warn {
+  color: var(--warning);
+  font-size: 13px;
+}
+
+.pset-label {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.pset-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.pset-time {
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.pset-times {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 24px;
+}
+
+.pset-times .pset-row {
+  justify-content: flex-start;
+}
+
+.pset-days {
+  display: flex;
+  gap: 6px;
+}
+
+.pset-days button {
+  width: 34px;
+  height: 34px;
+  border-radius: 17px;
+  border: 0;
+  background: var(--field);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pset-days button.on {
+  background: var(--accent);
+  color: #fff;
+}
+
+.pset-note {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.pset-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.pset-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.pset-link > span:first-child {
+  flex: 1;
+}
+
+.pset-link svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-3);
+}
+
+.pset-recent,
+.pset-memory {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pset-memory li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.pset-evidence {
+  font-style: italic;
+}
+
+.pset .meta {
+  white-space: normal;
+  overflow: visible;
+}
+
+.pset-row > .meta {
+  text-align: right;
+}

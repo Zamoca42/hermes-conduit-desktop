@@ -28,6 +28,7 @@ import {
 import type { PulseState } from '../state/usePulse'
 import { Icon } from './icons'
 import { Markdown } from './Markdown'
+import { PulseSettings } from './PulseSettings'
 
 interface Props {
   pulse: PulseState
@@ -55,6 +56,7 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
   const [note, setNote] = useState<string | null>(null)
   const [menu, setMenu] = useState<Menu | null>(null)
   const seenSent = useRef(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
     if (!feed || fresh) return
@@ -141,7 +143,16 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
         </div>
         {card.quote && !cleared ? <p className="pulse-quote">“{card.quote}”</p> : null}
         {hasChat(card) ? (
-          <button className="pulse-source" onClick={() => onOpenChat({ id: card.chatId, profile: card.profile || 'default', title: card.chatTitle || undefined })}>
+          <button
+            className="pulse-source"
+            onClick={() =>
+              onOpenChat({
+                id: card.chatId,
+                profile: card.profile || 'default',
+                title: card.chatTitle || undefined
+              })
+            }
+          >
             <Icon name="chats" />
             <span>{card.chatTitle || t('Open the chat')}</span>
           </button>
@@ -234,7 +245,9 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
       <div className="needs-empty">
         <Icon name="pulse" />
         <strong>{t('Pulse is off')}</strong>
-        <p>{t('Turn it on in Conduit on your iPhone, in Settings > Pulse.')}</p>
+        <button className="secondary" onClick={() => setSettingsOpen(true)}>
+          {t('Turn on Pulse')}
+        </button>
       </div>
     )
   } else if (!feed) {
@@ -290,44 +303,63 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
 
   return (
     <main className="needs pulse-page">
-      <div className="needs-inner">
-        <div className="pulse-head">
-          <h1>{t('Pulse')}</h1>
-          <span className="spacer" />
-          {availability === 'on' && feed && !feed.quietNow ? (
-            <button className="secondary" onClick={() => void pulse.quiet(true).catch(e => setNote(refusalText(e)))}>
-              {t('Quiet for today')}
-            </button>
-          ) : null}
+      {settingsOpen ? (
+        <div className="needs-inner">
+          <PulseSettings onBack={() => setSettingsOpen(false)} onChanged={() => void pulse.reload()} />
         </div>
-        {feed?.quietNow ? (
-          <div className="pulse-quiet">
-            <div>
-              <strong>{t('Pulse is quiet')}</strong>
-              {feed.quietEndsAt ? <span className="meta">{backText(feed.quietEndsAt, Date.now(), language)}</span> : null}
-            </div>
-            {feed.quietNow === 'until' ? (
-              <button className="secondary" onClick={() => void pulse.quiet(false).catch(e => setNote(refusalText(e)))}>
-                {t('End quiet time')}
+      ) : (
+        <div className="needs-inner">
+          <div className="pulse-head">
+            <h1>{t('Pulse')}</h1>
+            <span className="spacer" />
+            {availability === 'on' && feed && !feed.quietNow ? (
+              <button className="secondary" onClick={() => void pulse.quiet(true).catch(e => setNote(refusalText(e)))}>
+                {t('Quiet for today')}
+              </button>
+            ) : null}
+            {availability !== 'missing' ? (
+              <button
+                className="staged-remove pulse-settings-button"
+                aria-label={t('Pulse settings')}
+                title={t('Pulse settings')}
+                onClick={() => setSettingsOpen(true)}
+              >
+                <Icon name="settings" />
               </button>
             ) : null}
           </div>
-        ) : null}
-        {note ? (
-          <div className="model-note" role="status">
-            {note}
-            <button className="staged-remove" aria-label={t('Close')} onClick={() => setNote(null)}>
-              <Icon name="close" />
-            </button>
-          </div>
-        ) : null}
-        {body}
-      </div>
+          {feed?.quietNow ? (
+            <div className="pulse-quiet">
+              <div>
+                <strong>{t('Pulse is quiet')}</strong>
+                {feed.quietEndsAt ? <span className="meta">{backText(feed.quietEndsAt, Date.now(), language)}</span> : null}
+              </div>
+              {feed.quietNow === 'until' ? (
+                <button className="secondary" onClick={() => void pulse.quiet(false).catch(e => setNote(refusalText(e)))}>
+                  {t('End quiet time')}
+                </button>
+              ) : null}
+            </div>
+          ) : null}
+          {note ? (
+            <div className="model-note" role="status">
+              {note}
+              <button className="staged-remove" aria-label={t('Close')} onClick={() => setNote(null)}>
+                <Icon name="close" />
+              </button>
+            </div>
+          ) : null}
+          {body}
+        </div>
+      )}
       {menu ? (
         <div
           className="host-menu row-menu"
           role="menu"
-          style={{ left: Math.min(menu.x, window.innerWidth - 240), top: Math.min(menu.y, window.innerHeight - 260) }}
+          style={{
+            left: Math.min(menu.x, window.innerWidth - 240),
+            top: Math.min(menu.y, window.innerHeight - 260)
+          }}
           onMouseDown={e => e.stopPropagation()}
         >
           <div className="menu-title">{menu.kind === 'down' ? t('What was wrong with it?') : t('Not now, until when?')}</div>
