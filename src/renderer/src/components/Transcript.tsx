@@ -4,6 +4,7 @@ import { baseName, type Attachment } from '../state/text'
 import { displayName } from '../state/attachments'
 import type { PendingRequest } from '@shared/ipc'
 import type { TranscriptItem, TranscriptState } from '../state/transcript'
+import type { DelegationEntry } from '../state/timeline'
 import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
@@ -244,6 +245,56 @@ interface ItemProps {
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
+const outcomeLabel = (outcome: DelegationEntry['outcome']) =>
+  outcome === 'completed' ? t('Completed') : outcome === 'incomplete' ? t('Incomplete') : outcome === 'stopped' ? t('Interrupted') : t('Failed')
+const outcomeMark = { completed: '✓', incomplete: '⚠', stopped: '■', failed: '✕' }
+
+/** Background agents finished, after the phone's DelegationReportCard: each agent's goal and how it ended; Show all opens their results. */
+function DelegationCard({ title, entries, at }: { title: string; entries: DelegationEntry[]; at?: number }) {
+  const [open, setOpen] = useState(false)
+  const shown = open ? entries : entries.slice(0, 6)
+  return (
+    <div className="delegation-card">
+      <div className="delegation-head">
+        <span className="review-label">{t('System')}</span>
+        <span className="spacer" />
+        {at ? <span className="meta">{clock(at)}</span> : null}
+      </div>
+      <div className="delegation-title">
+        <strong>{title}</strong>
+        <span className="spacer" />
+        <button className="link" aria-expanded={open} onClick={() => setOpen(o => !o)}>
+          {open ? t('Show less') : t('Show all')}
+        </button>
+      </div>
+      <ul>
+        {shown.map(entry => {
+          const time = entry.duration != null ? `${entry.duration < 10 ? entry.duration.toFixed(1) : Math.round(entry.duration)}s` : null
+          const caption =
+            entry.outcome === 'completed' ? (time ?? outcomeLabel(entry.outcome)) : [outcomeLabel(entry.outcome), time].filter(Boolean).join(' · ')
+          return (
+            <li key={entry.number} className={`delegation-entry ${entry.outcome}`}>
+              <div className="delegation-line">
+                <span className="delegation-mark" aria-hidden="true">
+                  {outcomeMark[entry.outcome]}
+                </span>
+                <span className={open ? 'delegation-goal' : 'delegation-goal folded'}>{entry.goal || t('Delegate agent')}</span>
+                <span className="meta">{caption}</span>
+              </div>
+              {open && entry.result ? (
+                <div className="delegation-result">
+                  <Markdown text={entry.result} />
+                </div>
+              ) : null}
+            </li>
+          )
+        })}
+      </ul>
+      {!open && entries.length > 6 ? <span className="meta">{t('{count} more', { count: String(entries.length - 6) })}</span> : null}
+    </div>
+  )
+}
+
 /** A scheduled job's report the bot was only shown, after the phone's CronReportCard: folded to a preview, Show all opens it. */
 function CronReportCard({ job, report, at }: { job: string; report: string; at?: number }) {
   const [open, setOpen] = useState(false)
@@ -392,6 +443,8 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
         </details>
       )
     }
+    case 'delegation':
+      return <DelegationCard title={item.title} entries={item.entries} at={item.at} />
     case 'cron':
       return <CronReportCard job={item.job} report={item.report} at={item.at} />
     case 'review':

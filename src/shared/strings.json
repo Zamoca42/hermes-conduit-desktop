@@ -1574,6 +1574,21 @@
     "zh-Hans": "后台",
     "zh-Hant": "背景"
   },
+  "Background agent work finished": {
+    "de": "Arbeit des Hintergrundagenten abgeschlossen",
+    "es": "El trabajo del agente en segundo plano terminó",
+    "fr": "Travail des agents en arrière-plan terminé",
+    "id": "Pekerjaan agen latar selesai",
+    "it": "Lavoro degli agenti in background terminato",
+    "ja": "バックグラウンドのエージェント処理が完了しました",
+    "ko": "백그라운드 에이전트 완료됨",
+    "pl": "Agent w tle zakończył pracę",
+    "pt-BR": "Trabalho do agente em segundo plano concluído",
+    "ru": "Фоновый агент завершил работу",
+    "tr": "Arka plan ajanının işi bitti",
+    "zh-Hans": "后台智能体工作已完成",
+    "zh-Hant": "背景代理程式已完成處理"
+  },
   "Background agents finished": {
     "de": "Hintergrund-Agenten fertig",
     "es": "Agentes en segundo plano terminados",
@@ -1603,6 +1618,21 @@
     "tr": "Arka plandaki devredilen ajanlar sonda hep birlikte değil, tek tek bildirir.",
     "zh-Hans": "后台委派代理逐个汇报结果，而不是在最后一起汇报。",
     "zh-Hant": "背景委派代理程式逐一回報結果，而不是在最後一起回報。"
+  },
+  "Background process finished": {
+    "de": "Hintergrundprozess abgeschlossen",
+    "es": "El proceso en segundo plano terminó",
+    "fr": "Processus en arrière-plan terminé",
+    "id": "Proses latar selesai",
+    "it": "Processo in background terminato",
+    "ja": "バックグラウンドプロセスが完了しました",
+    "ko": "백그라운드 프로세스 완료됨",
+    "pl": "Proces w tle zakończył działanie",
+    "pt-BR": "Processo em segundo plano concluído",
+    "ru": "Фоновый процесс завершён",
+    "tr": "Arka plan işlemi bitti",
+    "zh-Hans": "后台进程已完成",
+    "zh-Hant": "背景處理程序已完成"
   },
   "Background processes": {
     "de": "Hintergrundprozesse",
@@ -2908,6 +2938,21 @@
     "tr": "Sıkıştırma",
     "zh-Hans": "压缩",
     "zh-Hant": "壓縮"
+  },
+  "Completed": {
+    "de": "Abgeschlossen",
+    "es": "Completado",
+    "fr": "Terminé",
+    "id": "Diselesaikan",
+    "it": "Completato",
+    "ja": "完了",
+    "ko": "완료됨",
+    "pl": "Ukończone",
+    "pt-BR": "Concluído",
+    "ru": "Выполнено",
+    "tr": "Tamamlandı",
+    "zh-Hans": "已完成",
+    "zh-Hant": "已完成"
   },
   "Compress Now": {
     "de": "Jetzt komprimieren",
@@ -8099,6 +8144,21 @@
     "zh-Hans": "包括此聊天的压缩及其启动的智能体。",
     "zh-Hant": "包括此聊天的壓縮及其啟動的代理程式。"
   },
+  "Incomplete": {
+    "de": "Unvollständig",
+    "es": "Incompleto",
+    "fr": "Incomplet",
+    "id": "Belum selesai",
+    "it": "Incompleto",
+    "ja": "未完了",
+    "ko": "미완료",
+    "pl": "Niedokończone",
+    "pt-BR": "Incompleto",
+    "ru": "Не завершено",
+    "tr": "Tamamlanmadı",
+    "zh-Hans": "未完成",
+    "zh-Hant": "未完成"
+  },
   "Inherit chat model": {
     "de": "Chat-Modell übernehmen",
     "es": "Heredar modelo del chat",
@@ -9868,6 +9928,36 @@
     "tr": "Model",
     "zh-Hans": "模型",
     "zh-Hant": "模型"
+  },
+  "Model changed": {
+    "de": "Modell geändert",
+    "es": "Modelo cambiado",
+    "fr": "Modèle modifié",
+    "id": "Model diubah",
+    "it": "Modello cambiato",
+    "ja": "モデルを変更しました",
+    "ko": "모델 변경됨",
+    "pl": "Zmieniono model",
+    "pt-BR": "Modelo alterado",
+    "ru": "Модель изменена",
+    "tr": "Model değişti",
+    "zh-Hans": "模型已更改",
+    "zh-Hant": "模型已更改"
+  },
+  "Model has been changed to {provider}/{model}": {
+    "de": "Das Modell wurde zu {provider}/{model} geändert",
+    "es": "El modelo se cambió a {provider}/{model}",
+    "fr": "Le modèle a été remplacé par {provider}/{model}",
+    "id": "Model telah diubah ke {provider}/{model}",
+    "it": "Il modello è stato cambiato in {provider}/{model}",
+    "ja": "モデルを{provider}/{model}に変更しました",
+    "ko": "모델이 {provider}/{model}(으)로 변경됐어요",
+    "pl": "Model został zmieniony na {provider}/{model}",
+    "pt-BR": "O modelo foi alterado para {provider}/{model}",
+    "ru": "Модель изменена на {provider}/{model}",
+    "tr": "Model {provider}/{model} olarak değiştirildi",
+    "zh-Hans": "模型已更改为 {provider}/{model}",
+    "zh-Hant": "模型已更改為 {provider}/{model}"
   },
   "Model name": {
     "de": "Modellname",
@@ -12524,6 +12614,21 @@
     "zh-Hans": "性格",
     "zh-Hant": "個性"
   },
+  "Personality changed": {
+    "de": "Persönlichkeit geändert",
+    "es": "Personalidad cambiada",
+    "fr": "Personnalité modifiée",
+    "id": "Kepribadian diubah",
+    "it": "Personalità cambiata",
+    "ja": "パーソナリティを変更しました",
+    "ko": "성격 변경됨",
+    "pl": "Zmieniono osobowość",
+    "pt-BR": "Personalidade alterada",
+    "ru": "Личность изменена",
+    "tr": "Kişilik değişti",
+    "zh-Hans": "性格已更改",
+    "zh-Hant": "個性已更改"
+  },
   "Philosopher": {
     "de": "Philosoph",
     "es": "Filósofo",
@@ -14773,6 +14878,21 @@
     "tr": "Döngüyü Sürdür",
     "zh-Hans": "恢复循环",
     "zh-Hant": "恢復循環"
+  },
+  "Resumed interrupted turn": {
+    "de": "Unterbrochener Durchgang fortgesetzt",
+    "es": "Se reanudó el turno interrumpido",
+    "fr": "Tour interrompu repris",
+    "id": "Giliran yang terinterupsi dilanjutkan",
+    "it": "Turno interrotto ripreso",
+    "ja": "中断されたターンを再開しました",
+    "ko": "중단된 턴을 재개함",
+    "pl": "Wznowiono przerwaną odpowiedź",
+    "pt-BR": "Turno interrompido retomado",
+    "ru": "Прерванный ответ возобновлён",
+    "tr": "Yarıda kesilen tur sürdürüldü",
+    "zh-Hans": "已恢复中断的回合",
+    "zh-Hant": "已繼續中斷的回合"
   },
   "Retry": {
     "de": "Erneut versuchen",
@@ -17623,6 +17743,36 @@
     "tr": "Bu yanıt bitince {model} modeline geçer.",
     "zh-Hans": "这条回复结束后切换到 {model}。",
     "zh-Hant": "這則回覆結束後切換到 {model}。"
+  },
+  "System": {
+    "de": "System",
+    "es": "Sistema",
+    "fr": "Système",
+    "id": "Sistem",
+    "it": "Sistema",
+    "ja": "システム",
+    "ko": "시스템",
+    "pl": "Systemowy",
+    "pt-BR": "Sistema",
+    "ru": "Система",
+    "tr": "Sistem",
+    "zh-Hans": "跟随系统",
+    "zh-Hant": "系統"
+  },
+  "System notification": {
+    "de": "Systemmitteilung",
+    "es": "Notificación del sistema",
+    "fr": "Notification système",
+    "id": "Pemberitahuan sistem",
+    "it": "Notifica di sistema",
+    "ja": "システム通知",
+    "ko": "시스템 알림",
+    "pl": "Powiadomienie systemowe",
+    "pt-BR": "Notificação do sistema",
+    "ru": "Системное уведомление",
+    "tr": "Sistem bildirimi",
+    "zh-Hans": "系统通知",
+    "zh-Hant": "系統通知"
   },
   "Take turns": {
     "de": "Abwechselnd",
@@ -22559,6 +22709,21 @@
     "zh-Hans": "{bot} 的工作 · {ref} · {status}",
     "zh-Hant": "{bot} 的工作 · {ref} · {status}"
   },
+  "{count} background agents finished": {
+    "de": "{count} Hintergrundagenten fertig",
+    "es": "{count} agentes en segundo plano terminaron",
+    "fr": "{count} agents en arrière-plan ont terminé",
+    "id": "{count} agen latar selesai",
+    "it": "{count} agenti in background hanno terminato",
+    "ja": "{count}件のバックグラウンドエージェントが完了",
+    "ko": "백그라운드 에이전트 {count}개 완료됨",
+    "pl": "{count} agenta w tle zakończyło pracę",
+    "pt-BR": "{count} agentes em segundo plano terminaram",
+    "ru": "{count} фоновых агента завершили работу",
+    "tr": "{count} arka plan ajanı tamamlandı",
+    "zh-Hans": "{count} 个后台智能体已完成",
+    "zh-Hant": "{count} 個背景代理程式已完成"
+  },
   "{count} background agents running": {
     "de": "{count} Hintergrund-Agenten laufen",
     "es": "{count} agentes en segundo plano en curso",
@@ -22633,6 +22798,21 @@
     "tr": "{count} dk",
     "zh-Hans": "{count} 分钟",
     "zh-Hant": "{count} 分鐘"
+  },
+  "{count} more": {
+    "de": "{count} weitere",
+    "es": "{count} más",
+    "fr": "{count} de plus",
+    "id": "{count} lagi",
+    "it": "Altri {count}",
+    "ja": "ほか{count}件",
+    "ko": "{count}개 더",
+    "pl": "{count} więcej",
+    "pt-BR": "Mais {count}",
+    "ru": "Ещё {count}",
+    "tr": "{count} tane daha",
+    "zh-Hans": "另外 {count} 项",
+    "zh-Hant": "另外 {count} 項"
   },
   "{count} needs you": {
     "de": "{count} brauchen dich",

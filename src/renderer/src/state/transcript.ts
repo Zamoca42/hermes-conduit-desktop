@@ -8,6 +8,7 @@ import { isPlanTool, parsePlan, type Plan } from './plan'
 import { t } from '../../../shared/i18n'
 import { sideAgentNote } from './slash'
 import { SHOW_TOOL, boardFrom, type Board } from './boards'
+import { TIMELINE_KINDS, delegationReport, timelineNotice, type DelegationEntry } from './timeline'
 
 export interface UserItem {
   kind: 'user'
@@ -111,7 +112,16 @@ export interface CronReportItem {
   at?: number
 }
 
-export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem | CronReportItem
+/** Background agents finished: each one's goal, outcome and result, from the report Hermes wrote for the model. */
+export interface DelegationItem {
+  kind: 'delegation'
+  key: string
+  title: string
+  entries: DelegationEntry[]
+  at?: number
+}
+
+export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem | CronReportItem | DelegationItem
 
 const CRON_PREFIX = '[Cron job "'
 const CRON_SUFFIX = '" report: shown in the chat, no reply asked for]'
@@ -222,6 +232,17 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
   const items: TranscriptItem[] = []
   for (const row of rows) {
     if (row.display_kind === 'hidden') continue
+    if (row.display_kind && TIMELINE_KINDS.has(row.display_kind)) {
+      // A timeline event, its text written for the model: the notice, or the agents' report.
+      const at = toMillis(row.timestamp)
+      const key = row.row_id != null ? `row-${row.row_id}` : nextKey('h')
+      const raw = rowText(row)
+      const projected = typeof row.display_content === 'string' ? row.display_content : null
+      const title = timelineNotice(row.display_kind, raw, row.display_metadata, projected)!
+      const entries = row.display_kind === 'async_delegation_complete' && projected === null ? delegationReport(raw) : null
+      items.push(entries ? { kind: 'delegation', key, title, entries, at } : { kind: 'notice', key, text: title, tone: 'info' })
+      continue
+    }
     const at = toMillis(row.timestamp)
     const key = row.row_id != null ? `row-${row.row_id}` : nextKey('h')
     switch (row.role) {
@@ -253,6 +274,7 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
           status: 'done',
           at,
           board: boardFrom(row.name ?? '', rowText(row), undefined) ?? undefined,
+          args: toolDetail(row.args),
           result: toolDetail(rowText(row))
         })
         break
