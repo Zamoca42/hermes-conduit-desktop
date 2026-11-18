@@ -284,6 +284,21 @@
     "zh-Hans": "一旦就绪，就会有工作者接手。",
     "zh-Hant": "一旦就緒，就會有工作者接手。"
   },
+  "A workstream that a Hermes restart stops stays interrupted instead of picking up again, because the plugin couldn't find how this Hermes stops its turns.": {
+    "de": "Ein Workstream, den ein Hermes-Neustart anhält, bleibt unterbrochen und wird nicht fortgesetzt, weil das Plugin nicht finden konnte, wie dieses Hermes seine Durchgänge anhält.",
+    "es": "Un flujo de trabajo que un reinicio de Hermes detiene queda interrumpido en lugar de retomarse, porque el plugin no encontró cómo este Hermes detiene sus turnos.",
+    "fr": "Un flux de travail arrêté par un redémarrage de Hermes reste interrompu au lieu de reprendre, car le plugin n'a pas trouvé comment ce Hermes arrête ses tours.",
+    "id": "Alur kerja yang dihentikan oleh mulai ulang Hermes tetap terhenti dan tidak dilanjutkan lagi, karena plugin tidak menemukan cara Hermes ini menghentikan gilirannya.",
+    "it": "Un flusso di lavoro fermato da un riavvio di Hermes resta interrotto invece di riprendere, perché il plugin non ha trovato come questo Hermes ferma i suoi turni.",
+    "ja": "Hermes の再起動で止まったワークストリームは、再開されず中断されたままになります。この Hermes がターンを止める仕組みをプラグインが見つけられなかったためです。",
+    "ko": "Hermes 재시작으로 멈춘 작업 스트림은 다시 이어지지 않고 중단된 상태로 남습니다. 이 Hermes가 턴을 멈추는 방식을 플러그인이 찾지 못했기 때문입니다.",
+    "pl": "Wątek pracy zatrzymany przez restart Hermesa pozostaje przerwany i nie jest wznawiany, bo wtyczka nie znalazła sposobu, w jaki ten Hermes zatrzymuje swoje tury.",
+    "pt-BR": "Um fluxo de trabalho que uma reinicialização do Hermes interrompe fica interrompido em vez de ser retomado, porque o plugin não encontrou como este Hermes para seus turnos.",
+    "ru": "Рабочий поток, остановленный перезапуском Hermes, остаётся прерванным и не возобновляется: плагин не нашёл, как этот Hermes останавливает свои ходы.",
+    "tr": "Hermes yeniden başlatıldığında duran bir iş akışı kaldığı yerden devam etmez, yarıda kalır; çünkü eklenti bu Hermes'in turlarını nasıl durdurduğunu bulamadı.",
+    "zh-Hans": "被 Hermes 重启停下的工作流会保持中断，不会自动接着做，因为插件没找到这个 Hermes 停止回合的方式。",
+    "zh-Hant": "被 Hermes 重新啟動停下的工作流程會維持中斷，不會自動接著做，因為外掛找不到這個 Hermes 停止回合的方式。"
+  },
   "API calls": {
     "de": "API-Aufrufe",
     "es": "Llamadas a la API",
@@ -2069,6 +2084,21 @@
     "zh-Hans": "日历",
     "zh-Hant": "行事曆"
   },
+  "Calls from Hermes": {
+    "de": "Anrufe von Hermes",
+    "es": "Llamadas de Hermes",
+    "fr": "Appels d'Hermes",
+    "id": "Panggilan dari Hermes",
+    "it": "Chiamate da Hermes",
+    "ja": "Hermesからの通話",
+    "ko": "Hermes의 전화",
+    "pl": "Połączenia od Hermesa",
+    "pt-BR": "Chamadas do Hermes",
+    "ru": "Звонки от Hermes",
+    "tr": "Hermes'ten aramalar",
+    "zh-Hans": "Hermes 来电",
+    "zh-Hant": "Hermes 來電"
+  },
   "Cancel": {
     "de": "Abbrechen",
     "es": "Cancelar",
@@ -2413,6 +2443,21 @@
     "tr": "Güncellemeler denetleniyor…",
     "zh-Hans": "正在检查更新…",
     "zh-Hant": "正在檢查更新…"
+  },
+  "Checking this dashboard's notifier…": {
+    "de": "Notifier dieses Dashboards wird geprüft …",
+    "es": "Comprobando el notificador de este panel…",
+    "fr": "Vérification du plugin de notification de ce tableau de bord…",
+    "id": "Memeriksa notifier dasbor ini…",
+    "it": "Verifica del plugin di notifica di questa dashboard…",
+    "ja": "このダッシュボードの通知プラグインを確認中…",
+    "ko": "이 대시보드의 알림 플러그인 확인 중…",
+    "pl": "Sprawdzanie wtyczki powiadomień tego panelu…",
+    "pt-BR": "Verificando o notificador deste painel…",
+    "ru": "Проверка плагина уведомлений этого дашборда…",
+    "tr": "Bu panelin bildirim eklentisi denetleniyor…",
+    "zh-Hans": "正在检查此仪表板的通知插件…",
+    "zh-Hant": "正在檢查此儀表板的通知外掛程式…"
   },
   "Checking…": {
     "de": "Wird geprüft …",
@@ -2998,6 +3043,36 @@
     "tr": "Conduit bir anahtarı asla göstermez, bu yüzden kullanmak için onu yeniden yapıştırman gerekir.",
     "zh-Hans": "Conduit 从不显示密钥，因此要再次使用需重新粘贴。",
     "zh-Hant": "Conduit 從不顯示金鑰，因此要再次使用需重新貼上。"
+  },
+  "Conduit plugin": {
+    "de": "Conduit-Plugin",
+    "es": "Plugin de Conduit",
+    "fr": "Plugin Conduit",
+    "id": "Plugin Conduit",
+    "it": "Plugin Conduit",
+    "ja": "Conduitプラグイン",
+    "ko": "Conduit 플러그인",
+    "pl": "Wtyczka Conduit",
+    "pt-BR": "Plugin do Conduit",
+    "ru": "Плагин Conduit",
+    "tr": "Conduit eklentisi",
+    "zh-Hans": "Conduit 插件",
+    "zh-Hant": "Conduit 外掛程式"
+  },
+  "Conduit plugin {version} is ready": {
+    "de": "Conduit-Plugin {version} ist bereit",
+    "es": "El plugin de Conduit {version} está listo",
+    "fr": "Le plugin Conduit {version} est prêt",
+    "id": "Plugin Conduit {version} siap",
+    "it": "Il plugin Conduit {version} è pronto",
+    "ja": "Conduitプラグイン {version} の準備ができました",
+    "ko": "Conduit 플러그인 {version} 준비 완료",
+    "pl": "Wtyczka Conduit {version} jest gotowa",
+    "pt-BR": "O plugin do Conduit {version} está pronto",
+    "ru": "Плагин Conduit {version} готов",
+    "tr": "Conduit eklentisi {version} hazır",
+    "zh-Hans": "Conduit 插件 {version} 已就绪",
+    "zh-Hant": "Conduit 外掛程式 {version} 已就緒"
   },
   "Conduit predictions": {
     "de": "Conduit-Vorschläge",
@@ -3794,6 +3869,21 @@
     "zh-Hans": "无法连接到此机器人的工作。请稍后再试。",
     "zh-Hant": "無法連線到此機器人的工作。請稍後再試。"
   },
+  "Couldn't reach this dashboard's notifier. Open this page again to retry.": {
+    "de": "Der Notifier dieses Dashboards war nicht erreichbar. Öffne diese Seite erneut, um es noch einmal zu versuchen.",
+    "es": "No se pudo contactar con el notificador de este panel. Vuelve a abrir esta página para reintentarlo.",
+    "fr": "Impossible de joindre le plugin de notification de ce tableau de bord. Rouvrez cette page pour réessayer.",
+    "id": "Tidak dapat menghubungi notifier dasbor ini. Buka halaman ini lagi untuk mencoba ulang.",
+    "it": "Impossibile raggiungere il plugin di notifica di questa dashboard. Riapri questa pagina per riprovare.",
+    "ja": "このダッシュボードの通知プラグインに接続できませんでした。もう一度このページを開いて再試行してください。",
+    "ko": "이 대시보드의 알림 플러그인에 연결할 수 없어요. 다시 시도하려면 이 페이지를 다시 여세요.",
+    "pl": "Nie udało się połączyć z wtyczką powiadomień tego panelu. Otwórz tę stronę ponownie, aby spróbować jeszcze raz.",
+    "pt-BR": "Não foi possível acessar o notificador deste painel. Abra esta página de novo para tentar novamente.",
+    "ru": "Не удалось связаться с плагином уведомлений этого дашборда. Откройте эту страницу снова, чтобы повторить попытку.",
+    "tr": "Bu panelin bildirim eklentisine ulaşılamadı. Yeniden denemek için bu sayfayı tekrar açın.",
+    "zh-Hans": "无法连接此仪表板的通知插件。重新打开此页面即可重试。",
+    "zh-Hant": "無法連線到此儀表板的通知外掛程式。請再次打開此頁面以重試。"
+  },
   "Couldn't read Pulse": {
     "de": "Pulse konnte nicht gelesen werden",
     "es": "No se pudo leer Pulse",
@@ -3868,6 +3958,21 @@
     "tr": "Hermes güncellenemedi",
     "zh-Hans": "无法更新 Hermes",
     "zh-Hant": "無法更新 Hermes"
+  },
+  "Couldn't update the Conduit plugin": {
+    "de": "Conduit-Plugin konnte nicht aktualisiert werden",
+    "es": "No se pudo actualizar el plugin de Conduit",
+    "fr": "Impossible de mettre à jour le plugin Conduit",
+    "id": "Tidak dapat memperbarui plugin Conduit",
+    "it": "Impossibile aggiornare il plugin Conduit",
+    "ja": "Conduitプラグインをアップデートできませんでした",
+    "ko": "Conduit 플러그인을 업데이트할 수 없음",
+    "pl": "Nie udało się zaktualizować wtyczki Conduit",
+    "pt-BR": "Não foi possível atualizar o plugin do Conduit",
+    "ru": "Не удалось обновить плагин Conduit",
+    "tr": "Conduit eklentisi güncellenemedi",
+    "zh-Hans": "无法更新 Conduit 插件",
+    "zh-Hant": "無法更新 Conduit 外掛程式"
   },
   "Couldn’t change “{title}”: {reason}": {
     "de": "„{title}“ konnte nicht geändert werden: {reason}",
@@ -4934,6 +5039,21 @@
     "zh-Hans": "去做",
     "zh-Hant": "去做"
   },
+  "Do it manually": {
+    "de": "Manuell erledigen",
+    "es": "Hazlo manualmente",
+    "fr": "Le faire manuellement",
+    "id": "Lakukan secara manual",
+    "it": "Fallo manualmente",
+    "ja": "手動で行う",
+    "ko": "직접 하기",
+    "pl": "Zrób to ręcznie",
+    "pt-BR": "Fazer manualmente",
+    "ru": "Сделать вручную",
+    "tr": "Elle yapın",
+    "zh-Hans": "手动操作",
+    "zh-Hant": "手動操作"
+  },
   "Docker image": {
     "de": "Docker-Image",
     "es": "Imagen de Docker",
@@ -5023,6 +5143,21 @@
     "tr": "Sorma",
     "zh-Hans": "不询问",
     "zh-Hant": "不詢問"
+  },
+  "Downloading the plugin…": {
+    "de": "Plugin wird geladen …",
+    "es": "Descargando el plugin…",
+    "fr": "Téléchargement du plugin…",
+    "id": "Mengunduh plugin…",
+    "it": "Download del plugin…",
+    "ja": "プラグインをダウンロード中…",
+    "ko": "플러그인 다운로드 중…",
+    "pl": "Pobieranie wtyczki…",
+    "pt-BR": "Baixando o plugin…",
+    "ru": "Загрузка плагина…",
+    "tr": "Eklenti indiriliyor…",
+    "zh-Hans": "正在下载插件…",
+    "zh-Hant": "正在下載外掛程式…"
   },
   "Drag one bot onto another to start a group chat.": {
     "de": "Zieh einen Bot auf einen anderen, um einen Gruppenchat zu starten.",
@@ -5338,6 +5473,21 @@
     "tr": "Boş Klasör",
     "zh-Hans": "空文件夹",
     "zh-Hant": "空白檔案夾"
+  },
+  "Encrypted notifications": {
+    "de": "Verschlüsselte Mitteilungen",
+    "es": "Notificaciones cifradas",
+    "fr": "Notifications chiffrées",
+    "id": "Notifikasi terenkripsi",
+    "it": "Notifiche crittografate",
+    "ja": "暗号化された通知",
+    "ko": "암호화된 알림",
+    "pl": "Szyfrowane powiadomienia",
+    "pt-BR": "Notificações criptografadas",
+    "ru": "Зашифрованные уведомления",
+    "tr": "Şifreli bildirimler",
+    "zh-Hans": "加密通知",
+    "zh-Hant": "加密通知"
   },
   "End call": {
     "de": "Anruf beenden",
@@ -6089,6 +6239,36 @@
     "zh-Hans": "在 Skills Hub 中查找技能。",
     "zh-Hant": "在 Skills Hub 中尋找技能。"
   },
+  "Finish Update": {
+    "de": "Update abschließen",
+    "es": "Terminar actualización",
+    "fr": "Terminer la mise à jour",
+    "id": "Selesaikan Pembaruan",
+    "it": "Completa aggiornamento",
+    "ja": "アップデートを完了",
+    "ko": "업데이트 완료",
+    "pl": "Dokończ aktualizację",
+    "pt-BR": "Concluir Atualização",
+    "ru": "Завершить обновление",
+    "tr": "Güncellemeyi Tamamla",
+    "zh-Hans": "完成更新",
+    "zh-Hant": "完成更新"
+  },
+  "Finish the update?": {
+    "de": "Update abschließen?",
+    "es": "¿Terminar la actualización?",
+    "fr": "Terminer la mise à jour ?",
+    "id": "Selesaikan pembaruan?",
+    "it": "Completare l'aggiornamento?",
+    "ja": "アップデートを完了しますか?",
+    "ko": "업데이트를 마칠까요?",
+    "pl": "Dokończyć aktualizację?",
+    "pt-BR": "Concluir a atualização?",
+    "ru": "Завершить обновление?",
+    "tr": "Güncelleme tamamlansın mı?",
+    "zh-Hans": "要完成更新吗？",
+    "zh-Hant": "要完成更新嗎？"
+  },
   "Finished": {
     "de": "Abgeschlossen",
     "es": "Terminado",
@@ -6118,6 +6298,21 @@
     "tr": "Bitene kadar ilk anahtar",
     "zh-Hans": "先用第一个密钥直到用尽",
     "zh-Hant": "先用第一把金鑰直到用盡"
+  },
+  "Fixes": {
+    "de": "Fehlerbehebungen",
+    "es": "Correcciones",
+    "fr": "Correctifs",
+    "id": "Perbaikan",
+    "it": "Correzioni",
+    "ja": "修正",
+    "ko": "수정",
+    "pl": "Poprawki",
+    "pt-BR": "Correções",
+    "ru": "Исправления",
+    "tr": "Düzeltmeler",
+    "zh-Hans": "修复",
+    "zh-Hant": "修正"
   },
   "Follow-up": {
     "de": "Nachfassen",
@@ -6404,6 +6599,21 @@
     "zh-Hans": "来自你的评分、“去做”和“完成”",
     "zh-Hant": "來自你的評分、「去做」和「完成」"
   },
+  "GPT-Live": {
+    "de": "GPT-Live",
+    "es": "GPT-Live",
+    "fr": "GPT-Live",
+    "id": "GPT-Live",
+    "it": "GPT-Live",
+    "ja": "GPT-Live",
+    "ko": "GPT-Live",
+    "pl": "GPT-Live",
+    "pt-BR": "GPT-Live",
+    "ru": "GPT-Live",
+    "tr": "GPT-Live",
+    "zh-Hans": "GPT-Live",
+    "zh-Hant": "GPT-Live"
+  },
   "Gateway": {
     "de": "Gateway",
     "es": "Pasarela",
@@ -6433,6 +6643,21 @@
     "tr": "Ağ geçidi yeniden başlatıldı",
     "zh-Hans": "网关已重启",
     "zh-Hant": "閘道已重新啟動"
+  },
+  "Gemini Live": {
+    "de": "Gemini Live",
+    "es": "Gemini Live",
+    "fr": "Gemini Live",
+    "id": "Gemini Live",
+    "it": "Gemini Live",
+    "ja": "Gemini Live",
+    "ko": "Gemini Live",
+    "pl": "Gemini Live",
+    "pt-BR": "Gemini Live",
+    "ru": "Gemini Live",
+    "tr": "Gemini Live",
+    "zh-Hans": "Gemini Live",
+    "zh-Hant": "Gemini Live"
   },
   "Gentle": {
     "de": "Sanft",
@@ -6569,6 +6794,21 @@
     "zh-Hans": "灰色",
     "zh-Hant": "灰色"
   },
+  "Grok Live": {
+    "de": "Grok Live",
+    "es": "Grok Live",
+    "fr": "Grok Live",
+    "id": "Grok Live",
+    "it": "Grok Live",
+    "ja": "Grok Live",
+    "ko": "Grok Live",
+    "pl": "Grok Live",
+    "pt-BR": "Grok Live",
+    "ru": "Grok Live",
+    "tr": "Grok Live",
+    "zh-Hans": "Grok Live",
+    "zh-Hant": "Grok Live"
+  },
   "Group chat being started": {
     "de": "Gruppenchat wird gestartet",
     "es": "Chat de grupo en creación",
@@ -6673,6 +6913,21 @@
     "tr": "Sağlık ve iyi oluş",
     "zh-Hans": "健康与身心",
     "zh-Hant": "健康與身心"
+  },
+  "Health data": {
+    "de": "Gesundheitsdaten",
+    "es": "Datos de salud",
+    "fr": "Données de santé",
+    "id": "Data kesehatan",
+    "it": "Dati sulla salute",
+    "ja": "ヘルスケアデータ",
+    "ko": "건강 데이터",
+    "pl": "Dane zdrowotne",
+    "pt-BR": "Dados de saúde",
+    "ru": "Данные о здоровье",
+    "tr": "Sağlık verileri",
+    "zh-Hans": "健康数据",
+    "zh-Hant": "健康資料"
   },
   "Heartbeat · paused": {
     "de": "Heartbeat · pausiert",
@@ -7244,6 +7499,21 @@
     "zh-Hans": "Hermes 已更新到 {version}",
     "zh-Hant": "Hermes 已更新至 {version}"
   },
+  "Hermes updates the plugin on the host, then restarts its gateway and dashboard once running chats finish. You can close Conduit: you'll get a notification when it's done.": {
+    "de": "Hermes aktualisiert das Plugin auf dem Host und startet dann Gateway und Dashboard neu, sobald laufende Chats fertig sind. Du kannst Conduit schließen: Du bekommst eine Mitteilung, wenn es fertig ist.",
+    "es": "Hermes actualiza el plugin en el host y luego reinicia su gateway y su panel cuando terminen los chats en curso. Puedes cerrar Conduit: recibirás una notificación cuando termine.",
+    "fr": "Hermes met à jour le plugin sur l’hôte, puis redémarre sa passerelle et son tableau de bord une fois les conversations en cours terminées. Vous pouvez fermer Conduit : vous recevrez une notification à la fin.",
+    "id": "Hermes memperbarui plugin di host, lalu memulai ulang gateway dan dasbornya setelah chat yang berjalan selesai. Anda bisa menutup Conduit: Anda akan menerima notifikasi saat selesai.",
+    "it": "Hermes aggiorna il plugin sull’host, poi riavvia gateway e dashboard quando le chat in corso finiscono. Puoi chiudere Conduit: riceverai una notifica quando avrà finito.",
+    "ja": "Hermes がホストでプラグインを更新し、実行中のチャットが終わったらゲートウェイとダッシュボードを再起動します。Conduit を閉じても大丈夫です。完了したら通知が届きます。",
+    "ko": "Hermes가 호스트에서 플러그인을 업데이트한 다음, 실행 중인 채팅이 끝나면 게이트웨이와 대시보드를 재시작합니다. Conduit를 닫아도 됩니다. 완료되면 알림을 받게 됩니다.",
+    "pl": "Hermes aktualizuje wtyczkę na hoście, a potem restartuje bramę i panel, gdy trwające czaty się skończą. Możesz zamknąć Conduit: dostaniesz powiadomienie, gdy wszystko będzie gotowe.",
+    "pt-BR": "O Hermes atualiza o plugin no host e depois reinicia o gateway e o painel quando os chats em andamento terminarem. Você pode fechar o Conduit: vai receber uma notificação quando terminar.",
+    "ru": "Hermes обновит плагин на хосте, затем перезапустит шлюз и панель, когда завершатся текущие чаты. Conduit можно закрыть: когда всё будет готово, придёт уведомление.",
+    "tr": "Hermes eklentiyi ana makinede günceller, ardından devam eden sohbetler bitince ağ geçidini ve paneli yeniden başlatır. Conduit'i kapatabilirsiniz: bittiğinde bildirim alırsınız.",
+    "zh-Hans": "Hermes 会在主机上更新插件，然后在进行中的对话结束后重启网关和仪表板。你可以关闭 Conduit：完成后会收到通知。",
+    "zh-Hant": "Hermes 會在主機上更新外掛，接著在進行中的對話結束後重新啟動閘道和儀表板。你可以關閉 Conduit：完成後會收到通知。"
+  },
   "Hermes wants to run a command.": {
     "de": "Hermes möchte einen Befehl ausführen.",
     "es": "Hermes quiere ejecutar un comando.",
@@ -7769,6 +8039,21 @@
     "zh-Hans": "包含在你的套餐中",
     "zh-Hant": "包含在你的方案中"
   },
+  "Includes security fixes": {
+    "de": "Enthält Sicherheitskorrekturen",
+    "es": "Incluye correcciones de seguridad",
+    "fr": "Inclut des correctifs de sécurité",
+    "id": "Termasuk perbaikan keamanan",
+    "it": "Include correzioni di sicurezza",
+    "ja": "セキュリティ修正を含む",
+    "ko": "보안 수정 포함",
+    "pl": "Zawiera poprawki bezpieczeństwa",
+    "pt-BR": "Inclui correções de segurança",
+    "ru": "Включает исправления безопасности",
+    "tr": "Güvenlik düzeltmeleri içerir",
+    "zh-Hans": "包含安全修复",
+    "zh-Hant": "包含安全性修正"
+  },
   "Includes the chat's compressions and the agents it started.": {
     "de": "Enthält die Komprimierungen des Chats und die Agenten, die er gestartet hat.",
     "es": "Incluye las compresiones del chat y los agentes que inició.",
@@ -7873,6 +8158,21 @@
     "tr": "Yükle",
     "zh-Hans": "安装",
     "zh-Hant": "安裝"
+  },
+  "Install the notifier": {
+    "de": "Notifier installieren",
+    "es": "Instalar el notificador",
+    "fr": "Installer le plugin de notification",
+    "id": "Instal notifier",
+    "it": "Installa il plugin di notifica",
+    "ja": "通知プラグインをインストール",
+    "ko": "알림 플러그인 설치",
+    "pl": "Zainstaluj wtyczkę powiadomień",
+    "pt-BR": "Instalar o notificador",
+    "ru": "Установите плагин уведомлений",
+    "tr": "Bildirim eklentisini yükleyin",
+    "zh-Hans": "安装通知插件",
+    "zh-Hant": "安裝通知外掛程式"
   },
   "Install waits for Hermes' security scan.": {
     "de": "Die Installation wartet auf die Sicherheitsprüfung von Hermes.",
@@ -8428,6 +8728,21 @@
     "tr": "Rapora girmeyenler",
     "zh-Hans": "未写进报告",
     "zh-Hant": "未寫進報告"
+  },
+  "Let Hermes change settings": {
+    "de": "Hermes Einstellungen ändern lassen",
+    "es": "Dejar que Hermes cambie ajustes",
+    "fr": "Autoriser Hermes à modifier les réglages",
+    "id": "Izinkan Hermes mengubah pengaturan",
+    "it": "Consenti a Hermes di cambiare le impostazioni",
+    "ja": "Hermesによる設定の変更",
+    "ko": "Hermes의 설정 변경 허용",
+    "pl": "Pozwól Hermesowi zmieniać ustawienia",
+    "pt-BR": "Permitir que o Hermes altere ajustes",
+    "ru": "Разрешить Hermes менять настройки",
+    "tr": "Hermes'in ayarları değiştirmesine izin ver",
+    "zh-Hans": "允许 Hermes 更改设置",
+    "zh-Hant": "允許 Hermes 變更設定"
   },
   "Let a delegate agent start and coordinate its own delegates, up to the depth above.": {
     "de": "Lass einen delegierten Agenten eigene Delegierte starten und koordinieren, bis zur obigen Tiefe.",
@@ -9314,6 +9629,21 @@
     "zh-Hans": "记忆、压缩与子代理",
     "zh-Hant": "記憶、壓縮與子代理程式"
   },
+  "Memory, personality and web search in live voice": {
+    "de": "Gedächtnis, Persönlichkeit und Websuche im Live-Voice",
+    "es": "Memoria, personalidad y búsqueda web en voz en vivo",
+    "fr": "Mémoire, personnalité et recherche web en voix en direct",
+    "id": "Memori, kepribadian, dan pencarian web di suara langsung",
+    "it": "Memoria, personalità e ricerca web nella voce dal vivo",
+    "ja": "ライブ音声でのメモリ、パーソナリティ、ウェブ検索",
+    "ko": "라이브 음성의 메모리, 성격, 웹 검색",
+    "pl": "Pamięć, osobowość i wyszukiwanie w sieci w głosie na żywo",
+    "pt-BR": "Memória, personalidade e busca na web na voz ao vivo",
+    "ru": "Память, личность и веб-поиск в живом голосе",
+    "tr": "Canlı seste bellek, kişilik ve web araması",
+    "zh-Hans": "实时语音中的记忆、个性和网页搜索",
+    "zh-Hant": "即時語音中的記憶、個性和網頁搜尋"
+  },
   "Message": {
     "de": "Nachricht",
     "es": "Mensaje",
@@ -9418,6 +9748,21 @@
     "tr": "Dakika",
     "zh-Hans": "分钟",
     "zh-Hant": "分鐘"
+  },
+  "Missing or out of date on this dashboard's host, so features like taking chats over from Hermes Desktop won't work.": {
+    "de": "Fehlt auf dem Host dieses Dashboards oder ist veraltet, daher funktionieren Funktionen wie das Übernehmen von Chats aus Hermes Desktop nicht.",
+    "es": "Falta o está desactualizado en el host de este panel, así que funciones como retomar chats de Hermes Desktop no funcionarán.",
+    "fr": "Manquant ou obsolète sur l'hôte de ce tableau de bord : des fonctions comme la reprise des discussions d'Hermes Desktop ne fonctionneront pas.",
+    "id": "Tidak ada atau versinya usang di host dasbor ini, sehingga fitur seperti mengambil alih obrolan dari Hermes Desktop tidak akan berfungsi.",
+    "it": "Mancante o non aggiornato sull'host di questa dashboard, quindi funzioni come la ripresa delle chat da Hermes Desktop non saranno disponibili.",
+    "ja": "このダッシュボードのホストにないか古いため、Hermes Desktopからのチャットの引き継ぎなどの機能が使えません。",
+    "ko": "이 대시보드의 호스트에 없거나 오래된 버전이라 Hermes Desktop에서 채팅을 넘겨받는 기능 등이 작동하지 않아요.",
+    "pl": "Niezainstalowana lub nieaktualna na hoście tego panelu, więc funkcje takie jak przejmowanie czatów z Hermes Desktop nie będą działać.",
+    "pt-BR": "Ausente ou desatualizado no host deste painel, então recursos como assumir chats do Hermes Desktop não vão funcionar.",
+    "ru": "Отсутствует или устарел на хосте этого дашборда, поэтому такие функции, как перенос чатов из Hermes Desktop, не будут работать.",
+    "tr": "Bu panelin ana makinesinde eksik veya güncel değil; bu nedenle sohbetleri Hermes Desktop'tan devralma gibi özellikler çalışmaz.",
+    "zh-Hans": "此仪表板的主机上缺少通知插件或版本过旧，因此从 Hermes Desktop 接管对话等功能将无法使用。",
+    "zh-Hant": "此儀表板的主機上未安裝或版本過舊，因此無法使用從 Hermes Desktop 接管聊天等功能。"
   },
   "Modal image": {
     "de": "Modal-Image",
@@ -9973,6 +10318,21 @@
     "tr": "Yeni Klasör",
     "zh-Hans": "新建文件夹",
     "zh-Hant": "新增檔案夾"
+  },
+  "New and improved": {
+    "de": "Neu und verbessert",
+    "es": "Novedades y mejoras",
+    "fr": "Nouveautés et améliorations",
+    "id": "Baru dan ditingkatkan",
+    "it": "Novità e miglioramenti",
+    "ja": "新機能と改善",
+    "ko": "새로운 기능 및 개선",
+    "pl": "Nowości i ulepszenia",
+    "pt-BR": "Novidades e melhorias",
+    "ru": "Новое и улучшенное",
+    "tr": "Yeni ve iyileştirilmiş",
+    "zh-Hans": "新增与改进",
+    "zh-Hant": "新增與改進"
   },
   "New chat": {
     "de": "Neuer Chat",
@@ -10858,6 +11218,21 @@
     "tr": "Şimdi değil, ne zamana kadar?",
     "zh-Hans": "先不看，推迟到什么时候？",
     "zh-Hant": "先不看，延到什麼時候？"
+  },
+  "Not on this host": {
+    "de": "Nicht auf diesem Host",
+    "es": "No está en este host",
+    "fr": "Pas sur cet hôte",
+    "id": "Tidak ada di host ini",
+    "it": "Non su questo host",
+    "ja": "このホストにはありません",
+    "ko": "이 호스트에 없음",
+    "pl": "Brak na tym hoście",
+    "pt-BR": "Não está neste host",
+    "ru": "Нет на этом хосте",
+    "tr": "Bu sunucuda yok",
+    "zh-Hans": "此主机上没有",
+    "zh-Hant": "此主機上沒有"
   },
   "Not picked for the report": {
     "de": "Nicht für den Bericht ausgewählt",
@@ -11773,6 +12148,21 @@
     "tr": "Eşleme başarısız oldu.",
     "zh-Hans": "配对失败。",
     "zh-Hant": "配對失敗。"
+  },
+  "Pairing from Conduit": {
+    "de": "Koppeln aus Conduit",
+    "es": "Vinculación desde Conduit",
+    "fr": "Jumelage depuis Conduit",
+    "id": "Pemasangan dari Conduit",
+    "it": "Abbinamento da Conduit",
+    "ja": "Conduitからのペアリング",
+    "ko": "Conduit에서 페어링",
+    "pl": "Parowanie z Conduit",
+    "pt-BR": "Emparelhamento pelo Conduit",
+    "ru": "Сопряжение из Conduit",
+    "tr": "Conduit’ten eşleme",
+    "zh-Hans": "从 Conduit 配对",
+    "zh-Hant": "從 Conduit 配對"
   },
   "Parked (won't run)": {
     "de": "Geparkt (läuft nicht)",
@@ -13124,6 +13514,21 @@
     "zh-Hans": "引用",
     "zh-Hant": "引用"
   },
+  "Qwen Live": {
+    "de": "Qwen Live",
+    "es": "Qwen Live",
+    "fr": "Qwen Live",
+    "id": "Qwen Live",
+    "it": "Qwen Live",
+    "ja": "Qwen Live",
+    "ko": "Qwen Live",
+    "pl": "Qwen Live",
+    "pt-BR": "Qwen Live",
+    "ru": "Qwen Live",
+    "tr": "Qwen Live",
+    "zh-Hans": "Qwen Live",
+    "zh-Hant": "Qwen Live"
+  },
   "Ran a command": {
     "de": "Hat einen Befehl ausgeführt",
     "es": "Ejecutó un comando",
@@ -13453,6 +13858,21 @@
     "tr": "Yenile",
     "zh-Hans": "刷新",
     "zh-Hant": "重新整理"
+  },
+  "Released {day}": {
+    "de": "Veröffentlicht am {day}",
+    "es": "Publicada el {day}",
+    "fr": "Publiée le {day}",
+    "id": "Dirilis {day}",
+    "it": "Pubblicata il {day}",
+    "ja": "{day} リリース",
+    "ko": "{day} 출시",
+    "pl": "Wydano {day}",
+    "pt-BR": "Lançada em {day}",
+    "ru": "Выпущена {day}",
+    "tr": "{day} tarihinde yayımlandı",
+    "zh-Hans": "发布于 {day}",
+    "zh-Hant": "發佈於 {day}"
   },
   "Reminder": {
     "de": "Erinnerung",
@@ -14039,6 +14459,51 @@
     "zh-Hans": "重启网关",
     "zh-Hant": "重新啟動閘道"
   },
+  "Restart Hermes": {
+    "de": "Hermes neu starten",
+    "es": "Reiniciar Hermes",
+    "fr": "Redémarrer Hermes",
+    "id": "Mulai Ulang Hermes",
+    "it": "Riavvia Hermes",
+    "ja": "Hermesを再起動",
+    "ko": "Hermes 다시 시작",
+    "pl": "Uruchom ponownie Hermesa",
+    "pt-BR": "Reiniciar o Hermes",
+    "ru": "Перезапустить Hermes",
+    "tr": "Hermes’i Yeniden Başlat",
+    "zh-Hans": "重启 Hermes",
+    "zh-Hant": "重新啟動 Hermes"
+  },
+  "Restart the Hermes dashboard to finish": {
+    "de": "Starte das Hermes-Dashboard neu, um abzuschließen",
+    "es": "Reinicia el panel de Hermes para terminar",
+    "fr": "Redémarrez le tableau de bord Hermes pour terminer",
+    "id": "Mulai ulang dasbor Hermes untuk menyelesaikan",
+    "it": "Riavvia la dashboard di Hermes per completare",
+    "ja": "Hermesのダッシュボードを再起動して完了してください",
+    "ko": "Hermes 대시보드를 다시 시작하여 완료하세요",
+    "pl": "Uruchom ponownie panel Hermesa, aby dokończyć",
+    "pt-BR": "Reinicie o painel do Hermes para concluir",
+    "ru": "Перезапустите дашборд Hermes, чтобы завершить",
+    "tr": "Tamamlamak için Hermes panelini yeniden başlatın",
+    "zh-Hans": "重启 Hermes 仪表板以完成",
+    "zh-Hant": "重新啟動 Hermes 儀表板以完成"
+  },
+  "Restart the gateway": {
+    "de": "Gateway neu starten",
+    "es": "Reiniciar la pasarela",
+    "fr": "Redémarrer la passerelle",
+    "id": "Mulai ulang gateway",
+    "it": "Riavvia il gateway",
+    "ja": "ゲートウェイを再起動",
+    "ko": "게이트웨이 재시작",
+    "pl": "Uruchom ponownie bramę",
+    "pt-BR": "Reiniciar o gateway",
+    "ru": "Перезапустите шлюз",
+    "tr": "Ağ geçidini yeniden başlatın",
+    "zh-Hans": "重启网关",
+    "zh-Hant": "重新啟動閘道"
+  },
   "Restart the gateway?": {
     "de": "Gateway neu starten?",
     "es": "¿Reiniciar la pasarela?",
@@ -14053,6 +14518,36 @@
     "tr": "Ağ geçidi yeniden başlatılsın mı?",
     "zh-Hans": "要重启网关吗？",
     "zh-Hant": "要重新啟動閘道嗎？"
+  },
+  "Restarting the dashboard…": {
+    "de": "Dashboard wird neu gestartet …",
+    "es": "Reiniciando el panel…",
+    "fr": "Redémarrage du tableau de bord…",
+    "id": "Memulai ulang dasbor…",
+    "it": "Riavvio della dashboard…",
+    "ja": "ダッシュボードを再起動中…",
+    "ko": "대시보드 다시 시작 중…",
+    "pl": "Ponowne uruchamianie panelu…",
+    "pt-BR": "Reiniciando o painel…",
+    "ru": "Перезапуск дашборда…",
+    "tr": "Panel yeniden başlatılıyor…",
+    "zh-Hans": "正在重启仪表板…",
+    "zh-Hant": "正在重新啟動儀表板…"
+  },
+  "Restarting the gateway…": {
+    "de": "Gateway wird neu gestartet …",
+    "es": "Reiniciando la pasarela…",
+    "fr": "Redémarrage de la passerelle…",
+    "id": "Memulai ulang gateway…",
+    "it": "Riavvio del gateway…",
+    "ja": "ゲートウェイを再起動中…",
+    "ko": "게이트웨이 다시 시작 중…",
+    "pl": "Ponowne uruchamianie bramy…",
+    "pt-BR": "Reiniciando o gateway…",
+    "ru": "Перезапуск шлюза…",
+    "tr": "Ağ geçidi yeniden başlatılıyor…",
+    "zh-Hans": "正在重启网关…",
+    "zh-Hant": "正在重新啟動閘道…"
   },
   "Resting after you said Not now": {
     "de": "Pausiert, nachdem du „Nicht jetzt“ gesagt hast",
@@ -14383,6 +14878,21 @@
     "tr": "Şimdi çalıştır",
     "zh-Hans": "立即运行",
     "zh-Hant": "立即執行"
+  },
+  "Run these on the dashboard's host when Conduit can't update it, such as on an older Hermes.": {
+    "de": "Führe diese auf dem Host des Dashboards aus, wenn Conduit es nicht aktualisieren kann, etwa bei einem älteren Hermes.",
+    "es": "Ejecuta esto en el host del panel cuando Conduit no pueda actualizarlo, por ejemplo con un Hermes antiguo.",
+    "fr": "Exécutez ces commandes sur l’hôte du tableau de bord quand Conduit ne peut pas le mettre à jour, par exemple avec un Hermes plus ancien.",
+    "id": "Jalankan ini di host dasbor jika Conduit tidak dapat memperbaruinya, misalnya pada Hermes versi lama.",
+    "it": "Esegui questi comandi sull’host della dashboard quando Conduit non può aggiornarlo, ad esempio con un Hermes meno recente.",
+    "ja": "Conduitでアップデートできない場合(古いHermesなど)は、ダッシュボードのホストでこれらを実行してください。",
+    "ko": "Conduit에서 업데이트할 수 없을 때(예: 이전 버전 Hermes)는 대시보드 호스트에서 다음을 실행하세요.",
+    "pl": "Uruchom je na hoście panelu, gdy Conduit nie może go zaktualizować, na przykład przy starszym Hermesie.",
+    "pt-BR": "Execute estes comandos no host do painel quando o Conduit não puder atualizá-lo, como em um Hermes mais antigo.",
+    "ru": "Выполните эти команды на хосте дашборда, если Conduit не может обновить плагин, например в старой версии Hermes.",
+    "tr": "Conduit güncelleyemediğinde (ör. eski bir Hermes’te) bunları panelin ana makinesinde çalıştırın.",
+    "zh-Hans": "Conduit 无法更新时（例如 Hermes 版本较旧），请在仪表板的主机上运行这些命令。",
+    "zh-Hant": "Conduit 無法更新時（例如 Hermes 版本較舊），請在儀表板的主機上執行這些指令。"
   },
   "Running": {
     "de": "Läuft",
@@ -14728,6 +15238,21 @@
     "tr": "Yalnızca ana profil için kaydedildi",
     "zh-Hans": "仅为主配置保存",
     "zh-Hant": "僅為主設定檔儲存"
+  },
+  "Saved voice calls": {
+    "de": "Gespeicherte Sprachanrufe",
+    "es": "Llamadas de voz guardadas",
+    "fr": "Appels vocaux enregistrés",
+    "id": "Panggilan suara tersimpan",
+    "it": "Chiamate vocali salvate",
+    "ja": "保存された音声通話",
+    "ko": "저장된 음성 통화",
+    "pl": "Zapisane rozmowy głosowe",
+    "pt-BR": "Chamadas de voz salvas",
+    "ru": "Сохранённые голосовые звонки",
+    "tr": "Kaydedilen sesli aramalar",
+    "zh-Hans": "已保存的语音通话",
+    "zh-Hant": "已儲存的語音通話"
   },
   "Saved, but the old key couldn't be removed everywhere. A profile still using it says Old copy of the shared key.": {
     "de": "Gespeichert, aber der alte Schlüssel konnte nicht überall entfernt werden. Ein Profil, das ihn noch nutzt, zeigt „Alte Kopie des gemeinsamen Schlüssels“.",
@@ -15193,6 +15718,21 @@
     "tr": "Güvenlik taraması",
     "zh-Hans": "安全扫描",
     "zh-Hant": "安全掃描"
+  },
+  "Security fixes": {
+    "de": "Sicherheitskorrekturen",
+    "es": "Correcciones de seguridad",
+    "fr": "Correctifs de sécurité",
+    "id": "Perbaikan keamanan",
+    "it": "Correzioni di sicurezza",
+    "ja": "セキュリティ修正",
+    "ko": "보안 수정",
+    "pl": "Poprawki bezpieczeństwa",
+    "pt-BR": "Correções de segurança",
+    "ru": "Исправления безопасности",
+    "tr": "Güvenlik düzeltmeleri",
+    "zh-Hans": "安全修复",
+    "zh-Hant": "安全性修正"
   },
   "Send": {
     "de": "Senden",
@@ -16514,6 +17054,21 @@
     "zh-Hans": "引导此代理…",
     "zh-Hant": "引導此代理…"
   },
+  "Step {current} of {last} · {time}": {
+    "de": "Schritt {current} von {last} · {time}",
+    "es": "Paso {current} de {last} · {time}",
+    "fr": "Étape {current} sur {last} · {time}",
+    "id": "Langkah {current} dari {last} · {time}",
+    "it": "Passaggio {current} di {last} · {time}",
+    "ja": "ステップ {current}/{last} · {time}",
+    "ko": "{current}/{last}단계 · {time}",
+    "pl": "Krok {current} z {last} · {time}",
+    "pt-BR": "Etapa {current} de {last} · {time}",
+    "ru": "Шаг {current} из {last} · {time}",
+    "tr": "Adım {current}/{last} · {time}",
+    "zh-Hans": "第 {current} 步，共 {last} 步 · {time}",
+    "zh-Hant": "第 {current} 步，共 {last} 步 · {time}"
+  },
   "Steps in One Turn": {
     "de": "Schritte pro Antwort",
     "es": "Pasos por turno",
@@ -16543,6 +17098,21 @@
     "tr": "Bu yanıt için adımlar çalıştı ve yeniden denemek onları tekrar çalıştırır.",
     "zh-Hans": "这条回复运行过步骤，重试会再次运行它们。",
     "zh-Hant": "這則回覆執行過步驟，重試會再次執行它們。"
+  },
+  "Still updating on the host": {
+    "de": "Wird noch auf dem Host aktualisiert",
+    "es": "Aún se está actualizando en el host",
+    "fr": "Mise à jour toujours en cours sur l’hôte",
+    "id": "Masih memperbarui di host",
+    "it": "Aggiornamento ancora in corso sull’host",
+    "ja": "ホストで更新中",
+    "ko": "호스트에서 업데이트 중",
+    "pl": "Aktualizacja wciąż trwa na hoście",
+    "pt-BR": "Ainda atualizando no host",
+    "ru": "Обновление ещё идёт на хосте",
+    "tr": "Ana makinede güncelleme sürüyor",
+    "zh-Hans": "仍在主机上更新",
+    "zh-Hant": "仍在主機上更新"
   },
   "Stop": {
     "de": "Stoppen",
@@ -16799,6 +17369,21 @@
     "zh-Hans": "总结较早的消息，让聊天重新腾出空间。聊天及其记忆都会保留。",
     "zh-Hant": "摘要較早的訊息，讓聊天重新騰出空間。聊天及其記憶都會保留。"
   },
+  "Supported": {
+    "de": "Unterstützt",
+    "es": "Compatible",
+    "fr": "Pris en charge",
+    "id": "Didukung",
+    "it": "Supportato",
+    "ja": "対応",
+    "ko": "지원됨",
+    "pl": "Obsługiwane",
+    "pt-BR": "Compatível",
+    "ru": "Поддерживается",
+    "tr": "Destekleniyor",
+    "zh-Hans": "受支持",
+    "zh-Hant": "支援"
+  },
   "Surfer": {
     "de": "Surfer",
     "es": "Surfero",
@@ -16888,6 +17473,21 @@
     "tr": "{name} adlı botu çıkar",
     "zh-Hans": "移出 {name}",
     "zh-Hant": "移出 {name}"
+  },
+  "Taking chats over from Hermes Desktop": {
+    "de": "Chats von Hermes Desktop übernehmen",
+    "es": "Tomar el control de chats de Hermes Desktop",
+    "fr": "Reprendre des discussions depuis Hermes Desktop",
+    "id": "Mengambil alih chat dari Hermes Desktop",
+    "it": "Prendere il controllo delle chat da Hermes Desktop",
+    "ja": "Hermes Desktopからチャットを引き継ぐ",
+    "ko": "Hermes Desktop에서 채팅 가져오기",
+    "pl": "Przejmowanie czatów z Hermes Desktop",
+    "pt-BR": "Assumir chats do Hermes Desktop",
+    "ru": "Перехват чатов из Hermes Desktop",
+    "tr": "Sohbetleri Hermes Desktop’tan devralma",
+    "zh-Hans": "从 Hermes Desktop 接管聊天",
+    "zh-Hant": "從 Hermes Desktop 接管聊天"
   },
   "Task": {
     "de": "Aufgabe",
@@ -17144,6 +17744,36 @@
     "zh-Hans": "这不是文件夹。",
     "zh-Hant": "這不是資料夾。"
   },
+  "The Conduit plugin is up to date": {
+    "de": "Das Conduit-Plugin ist aktuell",
+    "es": "El plugin de Conduit está actualizado",
+    "fr": "Le plugin Conduit est à jour",
+    "id": "Plugin Conduit sudah versi terbaru",
+    "it": "Il plugin Conduit è aggiornato",
+    "ja": "Conduitプラグインは最新です",
+    "ko": "Conduit 플러그인이 최신 상태입니다",
+    "pl": "Wtyczka Conduit jest aktualna",
+    "pt-BR": "O plugin do Conduit está atualizado",
+    "ru": "Плагин Conduit актуален",
+    "tr": "Conduit eklentisi güncel",
+    "zh-Hans": "Conduit 插件已是最新版本",
+    "zh-Hant": "Conduit 外掛程式已是最新版本"
+  },
+  "The Folder is closed: Hermes couldn't say which folder it keeps files in. Check the files settings on the host.": {
+    "de": "Der Ordner ist geschlossen: Hermes konnte nicht sagen, in welchem Ordner es Dateien ablegt. Prüfe die Dateieinstellungen auf dem Host.",
+    "es": "La Carpeta está cerrada: Hermes no pudo decir en qué carpeta guarda los archivos. Revisa los ajustes de archivos en el host.",
+    "fr": "Le Dossier est fermé : Hermes n'a pas pu dire dans quel dossier il garde les fichiers. Vérifiez les réglages des fichiers sur l'hôte.",
+    "id": "Folder ditutup: Hermes tidak bisa menyebutkan di folder mana ia menyimpan file. Periksa pengaturan file di host.",
+    "it": "La Cartella è chiusa: Hermes non ha saputo dire in quale cartella tiene i file. Controlla le impostazioni dei file sull'host.",
+    "ja": "フォルダは閉じています。Hermes がファイルの保存先フォルダを答えられませんでした。ホストのファイル設定を確認してください。",
+    "ko": "폴더가 닫혀 있습니다. Hermes가 파일을 보관하는 폴더를 알려 주지 못했습니다. 호스트의 파일 설정을 확인하세요.",
+    "pl": "Folder jest zamknięty: Hermes nie potrafił wskazać, w którym folderze trzyma pliki. Sprawdź ustawienia plików na hoście.",
+    "pt-BR": "A Pasta está fechada: o Hermes não soube dizer em qual pasta guarda os arquivos. Confira os ajustes de arquivos no host.",
+    "ru": "Папка закрыта: Hermes не смог сказать, в какой папке он хранит файлы. Проверьте настройки файлов на хосте.",
+    "tr": "Klasör kapalı: Hermes dosyaları hangi klasörde tuttuğunu söyleyemedi. Sunucudaki dosya ayarlarını kontrol edin.",
+    "zh-Hans": "文件夹已关闭：Hermes 说不出它把文件放在哪个文件夹。请检查主机上的文件设置。",
+    "zh-Hant": "檔案夾已關閉：Hermes 說不出它把檔案放在哪個檔案夾。請檢查主機上的檔案設定。"
+  },
   "The board comes with Hermes’ Kanban plugin. Turn it on in the Hermes dashboard to see tasks here.": {
     "de": "Das Board gehört zum Kanban-Plugin von Hermes. Aktiviere es im Hermes-Dashboard, um Aufgaben hier zu sehen.",
     "es": "El tablero viene con el plugin Kanban de Hermes. Actívalo en el panel de Hermes para ver las tareas aquí.",
@@ -17369,6 +17999,21 @@
     "zh-Hans": "网关尚未恢复",
     "zh-Hant": "閘道尚未恢復"
   },
+  "The gateway restarted and runs the new plugin. Only the dashboard still runs the old one.": {
+    "de": "Das Gateway wurde neu gestartet und nutzt das neue Plugin. Nur das Dashboard nutzt noch das alte.",
+    "es": "El gateway se reinició y usa el nuevo plugin. Solo el panel sigue usando el anterior.",
+    "fr": "La passerelle a redémarré et utilise le nouveau plugin. Seul le tableau de bord utilise encore l’ancien.",
+    "id": "Gateway sudah dimulai ulang dan memakai plugin baru. Hanya dasbor yang masih memakai yang lama.",
+    "it": "Il gateway si è riavviato e usa il nuovo plugin. Solo la dashboard usa ancora quello vecchio.",
+    "ja": "ゲートウェイは再起動し、新しいプラグインで動いています。古いプラグインのままなのはダッシュボードだけです。",
+    "ko": "게이트웨이가 다시 시작되어 새 플러그인으로 실행 중입니다. 대시보드만 아직 이전 플러그인을 사용합니다.",
+    "pl": "Brama została ponownie uruchomiona i używa nowej wtyczki. Tylko panel nadal używa starej.",
+    "pt-BR": "O gateway reiniciou e usa o novo plugin. Só o painel ainda usa o antigo.",
+    "ru": "Шлюз перезапущен и работает с новым плагином. Только дашборд ещё работает со старым.",
+    "tr": "Ağ geçidi yeniden başladı ve yeni eklentiyi kullanıyor. Yalnızca panel hâlâ eskisini kullanıyor.",
+    "zh-Hans": "网关已重启并运行新插件。只有仪表板仍在运行旧插件。",
+    "zh-Hant": "閘道已重新啟動並執行新外掛程式。只有儀表板仍在執行舊外掛程式。"
+  },
   "The goal stays; only its extra criteria go.": {
     "de": "Das Ziel bleibt; nur seine zusätzlichen Kriterien fallen weg.",
     "es": "El objetivo se mantiene; solo se quitan sus criterios adicionales.",
@@ -17489,6 +18134,51 @@
     "zh-Hans": "名称或颜色未保存。",
     "zh-Hant": "名稱或顏色未儲存。"
   },
+  "The new plugin is already on the host. Hermes restarts its gateway and dashboard to run it, once running chats finish.": {
+    "de": "Das neue Plugin ist bereits auf dem Host. Hermes startet Gateway und Dashboard neu, um es zu verwenden, sobald laufende Chats fertig sind.",
+    "es": "El nuevo plugin ya está en el host. Hermes reinicia su pasarela y su panel para usarlo cuando terminan los chats en curso.",
+    "fr": "Le nouveau plugin est déjà sur l'hôte. Hermes redémarre sa passerelle et son tableau de bord pour l'utiliser, une fois les discussions en cours terminées.",
+    "id": "Plugin baru sudah ada di host. Hermes memulai ulang gateway dan dasbornya untuk menjalankannya setelah chat yang berjalan selesai.",
+    "it": "Il nuovo plugin è già sull'host. Hermes riavvia il gateway e la dashboard per usarlo, al termine delle chat in corso.",
+    "ja": "新しいプラグインはすでにホストにあります。実行中のチャットが終わってから、Hermesがゲートウェイとダッシュボードを再起動して読み込みます。",
+    "ko": "새 플러그인이 이미 호스트에 있습니다. 실행 중인 채팅이 끝나면 Hermes가 게이트웨이와 대시보드를 다시 시작해 적용합니다.",
+    "pl": "Nowa wtyczka jest już na hoście. Hermes po zakończeniu trwających czatów uruchomi ponownie bramę i panel, aby jej użyć.",
+    "pt-BR": "O novo plugin já está no host. O Hermes reinicia o gateway e o painel para usá-lo quando os chats em andamento terminarem.",
+    "ru": "Новый плагин уже на хосте. Hermes перезапустит шлюз и дашборд, чтобы его загрузить, когда завершатся текущие чаты.",
+    "tr": "Yeni eklenti zaten sunucuda. Hermes, çalışan sohbetler bitince onu kullanmak için ağ geçidini ve paneli yeniden başlatır.",
+    "zh-Hans": "新插件已在主机上。进行中的聊天结束后，Hermes 会重启网关和仪表板来加载它。",
+    "zh-Hant": "新外掛程式已在主機上。進行中的聊天結束後，Hermes 會重新啟動閘道和儀表板來載入它。"
+  },
+  "The new plugin is on the host, and only the dashboard still runs the old one. Restart the dashboard on the host once.": {
+    "de": "Das neue Plugin ist auf dem Host, und nur das Dashboard nutzt noch das alte. Starte das Dashboard einmal auf dem Host neu.",
+    "es": "El nuevo plugin ya está en el host y solo el panel sigue usando el anterior. Reinicia el panel una vez en el host.",
+    "fr": "Le nouveau plugin est sur l’hôte, et seul le tableau de bord utilise encore l’ancien. Redémarrez le tableau de bord une fois sur l’hôte.",
+    "id": "Plugin baru sudah ada di host, dan hanya dasbor yang masih memakai yang lama. Mulai ulang dasbor sekali di host.",
+    "it": "Il nuovo plugin è sull’host e solo la dashboard usa ancora quello vecchio. Riavvia la dashboard una volta sull’host.",
+    "ja": "新しいプラグインはホストにあり、古いプラグインのままなのはダッシュボードだけです。ホストでダッシュボードを一度再起動してください。",
+    "ko": "새 플러그인이 호스트에 있으며, 대시보드만 아직 이전 플러그인을 사용합니다. 호스트에서 대시보드를 한 번 다시 시작하세요.",
+    "pl": "Nowa wtyczka jest na hoście i tylko panel nadal używa starej. Uruchom panel ponownie raz na hoście.",
+    "pt-BR": "O novo plugin já está no host, e só o painel ainda usa o antigo. Reinicie o painel uma vez no host.",
+    "ru": "Новый плагин уже на хосте, и только дашборд ещё работает со старым. Перезапустите дашборд на хосте один раз.",
+    "tr": "Yeni eklenti ana makinede ve yalnızca panel hâlâ eskisini kullanıyor. Paneli ana makinede bir kez yeniden başlatın.",
+    "zh-Hans": "新插件已在主机上，只有仪表板仍在运行旧插件。请在主机上重启一次仪表板。",
+    "zh-Hant": "新外掛程式已在主機上，只有儀表板仍在執行舊外掛程式。請在主機上重新啟動一次儀表板。"
+  },
+  "The new plugin is on the host. Hermes needs a restart to use it.": {
+    "de": "Das neue Plugin ist auf dem Host. Hermes muss neu starten, um es zu verwenden.",
+    "es": "El nuevo plugin está en el host. Hermes necesita reiniciarse para usarlo.",
+    "fr": "Le nouveau plugin est sur l’hôte. Hermes doit redémarrer pour l’utiliser.",
+    "id": "Plugin baru sudah ada di host. Hermes perlu dimulai ulang untuk menggunakannya.",
+    "it": "Il nuovo plugin è sull’host. Hermes deve riavviarsi per usarlo.",
+    "ja": "新しいプラグインはホストにあります。使用するにはHermesの再起動が必要です。",
+    "ko": "새 플러그인이 호스트에 있습니다. 사용하려면 Hermes를 다시 시작해야 합니다.",
+    "pl": "Nowa wtyczka jest na hoście. Hermes musi się ponownie uruchomić, aby jej używać.",
+    "pt-BR": "O novo plugin está no host. O Hermes precisa reiniciar para usá-lo.",
+    "ru": "Новый плагин уже на хосте. Hermes нужно перезапустить, чтобы его использовать.",
+    "tr": "Yeni eklenti ana makinede. Kullanmak için Hermes’in yeniden başlaması gerekiyor.",
+    "zh-Hans": "新插件已在主机上。Hermes 需要重启才能使用它。",
+    "zh-Hant": "新外掛程式已在主機上。Hermes 需要重新啟動才能使用。"
+  },
   "The picture was not removed.": {
     "de": "Das Bild wurde nicht entfernt.",
     "es": "La imagen no se quitó.",
@@ -17533,6 +18223,36 @@
     "tr": "Resim kaydedildi ancak görünümü kaydedilmedi.",
     "zh-Hans": "照片已保存，但外观设置未保存。",
     "zh-Hant": "圖片已儲存，但外觀設定未儲存。"
+  },
+  "The plugin on your Hermes host serves Conduit's notifications, live voice, calls from Hermes and more. Each dashboard's host has its own copy.": {
+    "de": "Das Plugin auf deinem Hermes-Host liefert Conduits Mitteilungen, Live-Voice, Anrufe von Hermes und mehr. Der Host jedes Dashboards hat seine eigene Kopie.",
+    "es": "El plugin de tu host de Hermes ofrece las notificaciones de Conduit, la voz en vivo, las llamadas de Hermes y más. El host de cada panel tiene su propia copia.",
+    "fr": "Le plugin de votre hôte Hermes fournit les notifications de Conduit, la voix en direct, les appels d’Hermes et plus encore. L’hôte de chaque tableau de bord a sa propre copie.",
+    "id": "Plugin di host Hermes Anda melayani notifikasi Conduit, suara langsung, panggilan dari Hermes, dan lainnya. Host setiap dasbor memiliki salinannya sendiri.",
+    "it": "Il plugin sul tuo host Hermes fornisce a Conduit notifiche, voce dal vivo, chiamate da Hermes e altro. L’host di ogni dashboard ha la propria copia.",
+    "ja": "HermesホストのプラグインはConduitの通知、ライブ音声、Hermesからの通話などを提供します。ダッシュボードのホストごとに専用のコピーがあります。",
+    "ko": "Hermes 호스트의 플러그인은 Conduit의 알림, 라이브 음성, Hermes의 전화 등을 제공합니다. 대시보드 호스트마다 자체 사본이 있습니다.",
+    "pl": "Wtyczka na Twoim hoście Hermes obsługuje powiadomienia Conduit, głos na żywo, połączenia od Hermesa i nie tylko. Host każdego panelu ma własną kopię.",
+    "pt-BR": "O plugin no seu host do Hermes fornece as notificações do Conduit, a voz ao vivo, as chamadas do Hermes e mais. O host de cada painel tem sua própria cópia.",
+    "ru": "Плагин на вашем хосте Hermes обеспечивает уведомления Conduit, живой голос, звонки от Hermes и многое другое. У хоста каждого дашборда своя копия.",
+    "tr": "Hermes ana makinenizdeki eklenti Conduit’in bildirimlerini, canlı sesini, Hermes’ten aramaları ve daha fazlasını sağlar. Her panelin ana makinesinde kendi kopyası vardır.",
+    "zh-Hans": "你的 Hermes 主机上的插件为 Conduit 提供通知、实时语音、Hermes 来电等功能。每个仪表板的主机都有自己的一份。",
+    "zh-Hant": "你的 Hermes 主機上的外掛程式為 Conduit 提供通知、即時語音、Hermes 來電等功能。每個儀表板的主機都有自己的一份。"
+  },
+  "The plugin reports a limit on this host that this version of Conduit doesn't know ({code}).": {
+    "de": "Das Plugin meldet auf diesem Host eine Einschränkung, die diese Conduit-Version nicht kennt ({code}).",
+    "es": "El plugin informa de una limitación en este host que esta versión de Conduit no conoce ({code}).",
+    "fr": "Le plugin signale sur cet hôte une limite que cette version de Conduit ne connaît pas ({code}).",
+    "id": "Plugin melaporkan batasan di host ini yang tidak dikenal versi Conduit ini ({code}).",
+    "it": "Il plugin segnala su questo host un limite che questa versione di Conduit non conosce ({code}).",
+    "ja": "プラグインがこのホストで、このバージョンの Conduit が知らない制限を報告しています（{code}）。",
+    "ko": "플러그인이 이 호스트에서 이 버전의 Conduit이 알지 못하는 제한을 보고했습니다({code}).",
+    "pl": "Wtyczka zgłasza na tym hoście ograniczenie, którego ta wersja Conduit nie zna ({code}).",
+    "pt-BR": "O plugin informa uma limitação neste host que esta versão do Conduit não conhece ({code}).",
+    "ru": "Плагин сообщает об ограничении на этом хосте, которое эта версия Conduit не знает ({code}).",
+    "tr": "Eklenti bu sunucuda, Conduit'in bu sürümünün bilmediği bir kısıtlama bildiriyor ({code}).",
+    "zh-Hans": "插件在此主机上报告了一项此版本 Conduit 不认识的限制（{code}）。",
+    "zh-Hant": "外掛在此主機上回報了一項此版本 Conduit 不認識的限制（{code}）。"
   },
   "The provider didn't take this key.": {
     "de": "Der Anbieter hat diesen Schlüssel nicht angenommen.",
@@ -17684,6 +18404,21 @@
     "zh-Hans": "本轮失败了。",
     "zh-Hant": "本輪失敗了。"
   },
+  "The update is still running on the host. You'll get a notification when it's done.": {
+    "de": "Das Update läuft noch auf dem Host. Du bekommst eine Mitteilung, wenn es fertig ist.",
+    "es": "La actualización sigue en curso en el host. Recibirás una notificación cuando termine.",
+    "fr": "La mise à jour est toujours en cours sur l’hôte. Vous recevrez une notification à la fin.",
+    "id": "Pembaruan masih berjalan di host. Anda akan menerima notifikasi saat selesai.",
+    "it": "L’aggiornamento è ancora in corso sull’host. Riceverai una notifica quando avrà finito.",
+    "ja": "ホストで更新がまだ実行中です。完了したら通知が届きます。",
+    "ko": "호스트에서 업데이트가 아직 진행 중입니다. 완료되면 알림을 받게 됩니다.",
+    "pl": "Aktualizacja wciąż trwa na hoście. Dostaniesz powiadomienie, gdy będzie gotowa.",
+    "pt-BR": "A atualização ainda está em andamento no host. Você vai receber uma notificação quando terminar.",
+    "ru": "Обновление ещё идёт на хосте. Когда всё будет готово, придёт уведомление.",
+    "tr": "Güncelleme ana makinede hâlâ sürüyor. Bittiğinde bildirim alırsınız.",
+    "zh-Hans": "更新仍在主机上进行。完成后你会收到通知。",
+    "zh-Hant": "更新仍在主機上進行。完成後你會收到通知。"
+  },
   "The update may still be running. Check for updates again in a few minutes.": {
     "de": "Das Update läuft vielleicht noch. Suche in ein paar Minuten erneut nach Updates.",
     "es": "Puede que la actualización siga en curso. Vuelve a buscar actualizaciones en unos minutos.",
@@ -17728,6 +18463,21 @@
     "tr": "Kendi yedekleri",
     "zh-Hans": "自己的",
     "zh-Hant": "自己的"
+  },
+  "Then restart the Hermes dashboard, so it serves the new plugin.": {
+    "de": "Starte danach das Hermes-Dashboard neu, damit es das neue Plugin verwendet.",
+    "es": "Luego reinicia el panel de Hermes para que use el nuevo plugin.",
+    "fr": "Redémarrez ensuite le tableau de bord Hermes pour qu’il utilise le nouveau plugin.",
+    "id": "Lalu mulai ulang dasbor Hermes agar menggunakan plugin baru.",
+    "it": "Poi riavvia la dashboard di Hermes, così usa il nuovo plugin.",
+    "ja": "その後、新しいプラグインを使うようにHermesのダッシュボードを再起動してください。",
+    "ko": "그런 다음 새 플러그인을 사용하도록 Hermes 대시보드를 다시 시작하세요.",
+    "pl": "Następnie uruchom ponownie panel Hermesa, aby używał nowej wtyczki.",
+    "pt-BR": "Depois reinicie o painel do Hermes para que ele use o novo plugin.",
+    "ru": "Затем перезапустите дашборд Hermes, чтобы он использовал новый плагин.",
+    "tr": "Ardından yeni eklentiyi kullanması için Hermes panelini yeniden başlatın.",
+    "zh-Hans": "然后重启 Hermes 仪表板，让它使用新插件。",
+    "zh-Hant": "然後重新啟動 Hermes 儀表板，讓它使用新外掛程式。"
   },
   "These files are larger than the {limit} MB attachment limit: {names}.": {
     "de": "Diese Dateien überschreiten das Anhanglimit von {limit} MB: {names}.",
@@ -18043,6 +18793,21 @@
     "tr": "Bu pano Cloudflare Access’in arkasında. Hizmet belirtecini Proxy girişi altında ekleyin.",
     "zh-Hans": "此控制台位于 Cloudflare Access 后面。请在“代理登录”中添加其服务令牌。",
     "zh-Hant": "此控制台位於 Cloudflare Access 後面。請在「代理伺服器登入」中加入其服務權杖。"
+  },
+  "This dashboard's host keeps the plugin up to date.": {
+    "de": "Der Host dieses Dashboards hält das Plugin aktuell.",
+    "es": "El host de este panel mantiene el plugin al día.",
+    "fr": "L'hôte de ce tableau de bord garde le plugin à jour.",
+    "id": "Host dasbor ini menjaga plugin tetap terbaru.",
+    "it": "L'host di questa dashboard mantiene il plugin aggiornato.",
+    "ja": "このダッシュボードのホストがプラグインを最新に保ちます。",
+    "ko": "이 대시보드의 호스트가 플러그인을 최신 상태로 유지합니다.",
+    "pl": "Host tego pulpitu dba o aktualność wtyczki.",
+    "pt-BR": "O host deste painel mantém o plugin atualizado.",
+    "ru": "Хост этой панели сам обновляет плагин.",
+    "tr": "Bu panonun sunucusu eklentiyi güncel tutar.",
+    "zh-Hans": "此仪表板的主机会保持插件为最新版本。",
+    "zh-Hant": "此儀表板的主機會讓外掛保持最新版本。"
   },
   "This doesn’t change what workstreams may do: their approvals stay as set under Safety.": {
     "de": "Das ändert nicht, was Workstreams tun dürfen: Ihre Freigaben bleiben so, wie unter Sicherheit eingestellt.",
@@ -19229,6 +19994,21 @@
     "zh-Hans": "无标题聊天",
     "zh-Hant": "無標題聊天"
   },
+  "Up to date on this dashboard's host": {
+    "de": "Aktuell auf dem Host dieses Dashboards",
+    "es": "Actualizado en el host de este panel",
+    "fr": "À jour sur l'hôte de ce tableau de bord",
+    "id": "Versi terbaru di host dasbor ini",
+    "it": "Aggiornato sull'host di questa dashboard",
+    "ja": "このダッシュボードのホストで最新の状態",
+    "ko": "이 대시보드의 호스트에서 최신 상태",
+    "pl": "Aktualna na hoście tego panelu",
+    "pt-BR": "Atualizado no host deste painel",
+    "ru": "Актуален на хосте этого дашборда",
+    "tr": "Bu panelin ana makinesinde güncel",
+    "zh-Hans": "此仪表板的主机上已是最新版本",
+    "zh-Hant": "此儀表板的主機上已是最新版本"
+  },
   "Update Hermes": {
     "de": "Hermes aktualisieren",
     "es": "Actualizar Hermes",
@@ -19319,6 +20099,51 @@
     "zh-Hans": "请更新 Hermes，或在主机上运行 hermes gateway restart。",
     "zh-Hant": "請更新 Hermes，或在主機上執行 hermes gateway restart。"
   },
+  "Update Hermes, or run the commands under Do it manually.": {
+    "de": "Aktualisiere Hermes oder führe die Befehle unter „Manuell erledigen“ aus.",
+    "es": "Actualiza Hermes o ejecuta los comandos de «Hazlo manualmente».",
+    "fr": "Mettez à jour Hermes ou exécutez les commandes de « Le faire manuellement ».",
+    "id": "Perbarui Hermes, atau jalankan perintah di bagian Lakukan secara manual.",
+    "it": "Aggiorna Hermes o esegui i comandi in «Fallo manualmente».",
+    "ja": "Hermesをアップデートするか、「手動で行う」のコマンドを実行してください。",
+    "ko": "Hermes를 업데이트하거나 ‘직접 하기’의 명령을 실행하세요.",
+    "pl": "Zaktualizuj Hermesa albo uruchom polecenia z sekcji „Zrób to ręcznie”.",
+    "pt-BR": "Atualize o Hermes ou execute os comandos em “Fazer manualmente”.",
+    "ru": "Обновите Hermes или выполните команды из раздела «Сделать вручную».",
+    "tr": "Hermes’i güncelleyin veya “Elle yapın” altındaki komutları çalıştırın.",
+    "zh-Hans": "请更新 Hermes，或运行“手动操作”下的命令。",
+    "zh-Hant": "請更新 Hermes，或執行「手動操作」下的指令。"
+  },
+  "Update and Restart Hermes": {
+    "de": "Aktualisieren und Hermes neu starten",
+    "es": "Actualizar y reiniciar Hermes",
+    "fr": "Mettre à jour et redémarrer Hermes",
+    "id": "Perbarui dan Mulai Ulang Hermes",
+    "it": "Aggiorna e riavvia Hermes",
+    "ja": "アップデートしてHermesを再起動",
+    "ko": "업데이트 후 Hermes 다시 시작",
+    "pl": "Zaktualizuj i uruchom ponownie Hermesa",
+    "pt-BR": "Atualizar e Reiniciar o Hermes",
+    "ru": "Обновить и перезапустить Hermes",
+    "tr": "Güncelle ve Hermes’i Yeniden Başlat",
+    "zh-Hans": "更新并重启 Hermes",
+    "zh-Hant": "更新並重新啟動 Hermes"
+  },
+  "Update needed": {
+    "de": "Update erforderlich",
+    "es": "Actualización necesaria",
+    "fr": "Mise à jour requise",
+    "id": "Perlu pembaruan",
+    "it": "Aggiornamento necessario",
+    "ja": "アップデートが必要",
+    "ko": "업데이트 필요",
+    "pl": "Wymagana aktualizacja",
+    "pt-BR": "Atualização necessária",
+    "ru": "Требуется обновление",
+    "tr": "Güncelleme gerekiyor",
+    "zh-Hans": "需要更新",
+    "zh-Hant": "需要更新"
+  },
   "Update the Conduit plugin on this host to search and change files here.": {
     "de": "Aktualisiere das Conduit-Plugin auf diesem Host, um hier Dateien zu durchsuchen und zu ändern.",
     "es": "Actualiza el plugin de Conduit en este host para buscar y cambiar archivos aquí.",
@@ -19364,6 +20189,51 @@
     "zh-Hans": "请更新此主机上的 Conduit 插件以使用 Pulse。",
     "zh-Hant": "請更新此主機上的 Conduit 外掛以使用 Pulse。"
   },
+  "Update the Conduit plugin?": {
+    "de": "Conduit-Plugin aktualisieren?",
+    "es": "¿Actualizar el plugin de Conduit?",
+    "fr": "Mettre à jour le plugin Conduit ?",
+    "id": "Perbarui plugin Conduit?",
+    "it": "Aggiornare il plugin Conduit?",
+    "ja": "Conduitプラグインをアップデートしますか?",
+    "ko": "Conduit 플러그인을 업데이트할까요?",
+    "pl": "Zaktualizować wtyczkę Conduit?",
+    "pt-BR": "Atualizar o plugin do Conduit?",
+    "ru": "Обновить плагин Conduit?",
+    "tr": "Conduit eklentisi güncellensin mi?",
+    "zh-Hans": "要更新 Conduit 插件吗？",
+    "zh-Hant": "要更新 Conduit 外掛程式嗎？"
+  },
+  "Update the notifier": {
+    "de": "Notifier aktualisieren",
+    "es": "Actualizar el notificador",
+    "fr": "Mettre à jour le plugin de notification",
+    "id": "Perbarui notifier",
+    "it": "Aggiorna il plugin di notifica",
+    "ja": "通知プラグインをアップデート",
+    "ko": "알림 플러그인 업데이트",
+    "pl": "Zaktualizuj wtyczkę powiadomień",
+    "pt-BR": "Atualizar o notificador",
+    "ru": "Обновите плагин уведомлений",
+    "tr": "Bildirim eklentisini güncelleyin",
+    "zh-Hans": "更新通知器",
+    "zh-Hant": "更新通知外掛程式"
+  },
+  "Update to {version}": {
+    "de": "Auf {version} aktualisieren",
+    "es": "Actualizar a {version}",
+    "fr": "Mettre à jour vers {version}",
+    "id": "Perbarui ke {version}",
+    "it": "Aggiorna a {version}",
+    "ja": "{version} にアップデート",
+    "ko": "{version}(으)로 업데이트",
+    "pl": "Zaktualizuj do {version}",
+    "pt-BR": "Atualizar para {version}",
+    "ru": "Обновить до {version}",
+    "tr": "{version} sürümüne güncelle",
+    "zh-Hans": "更新到 {version}",
+    "zh-Hant": "更新到 {version}"
+  },
   "Updated memory": {
     "de": "Erinnerung aktualisiert",
     "es": "Actualizó la memoria",
@@ -19408,6 +20278,21 @@
     "tr": "Güncellemeler",
     "zh-Hans": "更新",
     "zh-Hant": "更新"
+  },
+  "Updates from Conduit": {
+    "de": "Updates aus Conduit",
+    "es": "Actualizaciones desde Conduit",
+    "fr": "Mises à jour depuis Conduit",
+    "id": "Pembaruan dari Conduit",
+    "it": "Aggiornamenti da Conduit",
+    "ja": "Conduitからのアップデート",
+    "ko": "Conduit에서 업데이트",
+    "pl": "Aktualizacje z Conduit",
+    "pt-BR": "Atualizações pelo Conduit",
+    "ru": "Обновления из Conduit",
+    "tr": "Conduit’ten güncellemeler",
+    "zh-Hans": "从 Conduit 更新",
+    "zh-Hant": "從 Conduit 更新"
   },
   "Updating Hermes…": {
     "de": "Hermes wird aktualisiert…",
@@ -19799,6 +20684,36 @@
     "zh-Hans": "版本",
     "zh-Hant": "版本"
   },
+  "Version {version} is available.": {
+    "de": "Version {version} ist verfügbar.",
+    "es": "La versión {version} está disponible.",
+    "fr": "La version {version} est disponible.",
+    "id": "Versi {version} tersedia.",
+    "it": "È disponibile la versione {version}.",
+    "ja": "バージョン {version} が利用可能です。",
+    "ko": "버전 {version}을(를) 사용할 수 있습니다.",
+    "pl": "Dostępna jest wersja {version}.",
+    "pt-BR": "A versão {version} está disponível.",
+    "ru": "Доступна версия {version}.",
+    "tr": "{version} sürümü kullanılabilir.",
+    "zh-Hans": "版本 {version} 可用。",
+    "zh-Hant": "版本 {version} 可用。"
+  },
+  "Version, updates and what it does here": {
+    "de": "Version, Updates und was es hier tut",
+    "es": "Versión, actualizaciones y lo que hace aquí",
+    "fr": "Version, mises à jour et ce qu’il fait ici",
+    "id": "Versi, pembaruan, dan fungsinya di sini",
+    "it": "Versione, aggiornamenti e cosa fa qui",
+    "ja": "バージョン、アップデート、ここでできること",
+    "ko": "버전, 업데이트 및 여기서 하는 일",
+    "pl": "Wersja, aktualizacje i co tu robi",
+    "pt-BR": "Versão, atualizações e o que ele faz aqui",
+    "ru": "Версия, обновления и что он здесь делает",
+    "tr": "Sürüm, güncellemeler ve burada ne yaptığı",
+    "zh-Hans": "版本、更新以及它在这里的功能",
+    "zh-Hant": "版本、更新以及它在這裡的功能"
+  },
   "View": {
     "de": "Darstellung",
     "es": "Visualización",
@@ -19948,6 +20863,21 @@
     "tr": "{count} arka plan ajanı bekleniyor",
     "zh-Hans": "正在等待 {count} 个后台智能体",
     "zh-Hant": "正在等待 {count} 個背景代理程式"
+  },
+  "Waiting for {count} running chats to finish…": {
+    "de": "Warten, bis {count} laufende Chats fertig sind …",
+    "es": "Esperando a que terminen {count} chats en curso…",
+    "fr": "Attente de la fin de {count} discussions en cours…",
+    "id": "Menunggu {count} chat yang berjalan selesai…",
+    "it": "In attesa che terminino {count} chat in corso…",
+    "ja": "実行中の{count}件のチャットが終わるのを待っています…",
+    "ko": "실행 중인 채팅 {count}개가 끝나기를 기다리는 중…",
+    "pl": "Czekanie na zakończenie {count} trwającego czatu…",
+    "pt-BR": "Aguardando {count} chats em andamento terminarem…",
+    "ru": "Ожидание завершения {count} текущего чата…",
+    "tr": "{count} çalışan sohbetin bitmesi bekleniyor…",
+    "zh-Hans": "正在等待 {count} 个进行中的聊天结束…",
+    "zh-Hant": "正在等候 {count} 個進行中的聊天結束…"
   },
   "Waiting on {bot}": {
     "de": "Wartet auf {bot}",
@@ -20159,6 +21089,21 @@
     "zh-Hans": "一天内不到期的事",
     "zh-Hant": "一天內不到期的事"
   },
+  "What it does here": {
+    "de": "Was es hier tut",
+    "es": "Qué hace aquí",
+    "fr": "Ce qu’il fait ici",
+    "id": "Fungsinya di sini",
+    "it": "Cosa fa qui",
+    "ja": "ここでの機能",
+    "ko": "여기서 하는 일",
+    "pl": "Co tu robi",
+    "pt-BR": "O que ele faz aqui",
+    "ru": "Что он делает здесь",
+    "tr": "Burada ne yapar",
+    "zh-Hans": "它在这里的作用",
+    "zh-Hant": "它在這裡的作用"
+  },
   "What this bot is for": {
     "de": "Wofür dieser Bot da ist",
     "es": "Para qué sirve este bot",
@@ -20248,6 +21193,21 @@
     "tr": "Yenilikler",
     "zh-Hans": "新内容",
     "zh-Hant": "新內容"
+  },
+  "What's new in {version}": {
+    "de": "Neu in {version}",
+    "es": "Novedades de la {version}",
+    "fr": "Nouveautés de la {version}",
+    "id": "Yang baru di {version}",
+    "it": "Novità della {version}",
+    "ja": "{version} の新機能",
+    "ko": "{version}의 새로운 기능",
+    "pl": "Co nowego w {version}",
+    "pt-BR": "Novidades da {version}",
+    "ru": "Что нового в {version}",
+    "tr": "{version} sürümündeki yenilikler",
+    "zh-Hans": "{version} 的新内容",
+    "zh-Hant": "{version} 的新內容"
   },
   "What's overdue or due within a day": {
     "de": "Was überfällig oder innerhalb eines Tages fällig ist",
@@ -21853,6 +22813,21 @@
     "tr": "{name} çalışıyor. Çalışma birazdan geçmişinde görünecek.",
     "zh-Hans": "{name} 正在运行，稍后会显示在运行记录中。",
     "zh-Hant": "{name} 正在執行，稍後會顯示在執行紀錄中。"
+  },
+  "{name} keeps the plugin up to date.": {
+    "de": "{name} hält das Plugin aktuell.",
+    "es": "{name} mantiene el plugin al día.",
+    "fr": "{name} garde le plugin à jour.",
+    "id": "{name} menjaga plugin tetap terbaru.",
+    "it": "{name} mantiene il plugin aggiornato.",
+    "ja": "{name} がプラグインを最新に保ちます。",
+    "ko": "{name}에서 플러그인을 최신 상태로 유지합니다.",
+    "pl": "{name} dba o aktualność wtyczki.",
+    "pt-BR": "{name} mantém o plugin atualizado.",
+    "ru": "{name} сам обновляет плагин.",
+    "tr": "{name} eklentiyi güncel tutar.",
+    "zh-Hans": "{name} 会保持插件为最新版本。",
+    "zh-Hant": "{name} 會讓外掛保持最新版本。"
   },
   "{on} of {all} on": {
     "de": "{on} von {all} an",

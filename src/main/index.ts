@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import WebSocket from 'ws'
 import { IPC, type GatewayEventMessage, type LanguageChoice, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
 import { probeHost } from './auth'
+import { pluginRelease } from './pluginRelease'
 import { cleanHeaders } from './proxyHeaders'
 import { Connection } from './connection'
 import { Pairing } from './pairing'
@@ -181,6 +182,7 @@ function registerIpc(): void {
       return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }
     }
   })
+  ipcMain.handle(IPC.pluginRelease, () => pluginRelease())
   ipcMain.on(IPC.windowMinimize, event => BrowserWindow.fromWebContents(event.sender)?.minimize())
   ipcMain.on(IPC.windowToggleMaximize, event => {
     const window = BrowserWindow.fromWebContents(event.sender)

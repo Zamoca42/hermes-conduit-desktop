@@ -101,6 +101,12 @@ export interface PendingRequest {
 
 export type RpcOutcome<T = unknown> = { ok: true; result: T } | { ok: false; error: string; code?: number }
 
+/** What main of hermes-conduit-notifier holds: nulls when GitHub didn't answer. */
+export interface PluginRelease {
+  version: string | null
+  changelog: string | null
+}
+
 export type Platform = 'win32' | 'darwin' | 'linux'
 
 /** "system" follows the computer's language. */
@@ -139,6 +145,8 @@ export interface ConduitApi {
   httpOutcome<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number): Promise<RpcOutcome<T>>
   /** A dashboard REST call; `path` starts with `/api/`. */
   http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T>
+  /** The Conduit plugin's newest version and changelog on its main branch, read by the main process (the window can't reach GitHub). */
+  pluginRelease(): Promise<PluginRelease>
   onStatus(listener: (status: ConnectionStatus) => void): () => void
   onEvent(listener: (event: GatewayEventMessage) => void): () => void
   /** The questions Hermes is waiting on, now and whenever they change. */
@@ -230,5 +238,6 @@ export const IPC = {
   windowToggleMaximize: 'conduit:window-toggle-maximize',
   windowClose: 'conduit:window-close',
   language: 'conduit:language',
-  setLanguage: 'conduit:set-language'
+  setLanguage: 'conduit:set-language',
+  pluginRelease: 'conduit:plugin-release'
 } as const

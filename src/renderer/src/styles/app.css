@@ -5974,3 +5974,101 @@ button.cap-row-text {
   gap: 4px;
   justify-items: start;
 }
+.plugin-version.attention {
+  color: var(--warning);
+  font-weight: 600;
+}
+.plugin-degraded {
+  color: var(--warning);
+  font-size: 13px;
+  margin: 4px 0;
+}
+.plugin-notes {
+  margin: 8px 0;
+}
+.plugin-notes summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.plugin-kind h3 {
+  font-size: 13px;
+  margin: 10px 0 4px;
+}
+.plugin-kind.security h3 {
+  color: var(--warning);
+}
+.plugin-kind ul,
+.plugin-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.plugin-kind li {
+  font-size: 13px;
+}
+.plugin-kind li .meta {
+  font-variant-numeric: tabular-nums;
+  margin-right: 6px;
+}
+.plugin-features li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.plugin-features li > span:nth-child(2) {
+  flex: 1;
+}
+.plugin-features li.on > span:first-child {
+  color: var(--success, #2e9d5b);
+}
+.plugin-confirm {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 8px 0;
+}
+.plugin-confirm p {
+  margin: 0 0 6px;
+}
+.plugin-update {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+.plugin-update-text {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+.plugin-update progress {
+  width: 100%;
+}
+.plugin-update.ok strong {
+  color: var(--success, #2e9d5b);
+}
+.plugin-update.warn strong {
+  color: var(--warning);
+}
+.plugin-update.bad strong {
+  color: var(--danger);
+}
+.plugin-commands {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+}
+.plugin-commands li {
+  display: grid;
+  gap: 4px;
+}
+.plugin-commands code {
+  user-select: all;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 12px;
+  background: var(--surface-2, rgba(127, 127, 127, 0.12));
+  padding: 4px 8px;
+  border-radius: 6px;
+}

@@ -46,6 +46,7 @@ import { BotEditor } from './components/BotEditor'
 import { NewBot } from './components/NewBot'
 import { useChatDisplay } from './state/display'
 import { ConfigPage } from './components/ConfigPage'
+import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
@@ -900,7 +901,7 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
@@ -911,6 +912,12 @@ function Settings({
     return (
       <main className="settings">
         <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'plugin')
+    return (
+      <main className="settings">
+        <ConduitPluginPage onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'chat')
@@ -1028,6 +1035,12 @@ function Settings({
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('capabilities')}>
             {t('Skills, tools and connectors')}
+          </button>
+        </dd>
+        <dt>{t('Conduit plugin')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('plugin')}>
+            {t('Version, updates and what it does here')}
           </button>
         </dd>
         <dt>{t('Usage')}</dt>
