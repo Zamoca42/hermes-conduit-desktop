@@ -11,6 +11,7 @@ import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
 import { locale, t } from '@shared/i18n'
 import { blockquote, copyableReply, excerpt, parseReplyEnvelope, sameQuotedText, type QuoteRequest } from '../state/quote'
 import { BoardView } from './BoardView'
+import { DEFAULT_DISPLAY, type ChatDisplay } from '../state/display'
 import { readAloud, stopReading, useReadingKey } from '../state/readAloud'
 import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
 
@@ -236,6 +237,8 @@ interface ItemProps {
   onEdit?: () => void
   /** A board's follow-up, sent as the user's message: on the last turn's last board. */
   onFollowUp?: (text: string) => void
+  /** ⋯'s Show thinking or Hide thinking, on a reply while Thinking is On request. */
+  thinkingToggle?: { label: string; onSelect: () => void }
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -263,7 +266,7 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   )
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -309,7 +312,8 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp }: Item
               text={item.text}
               menu={[
                 ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []),
-                ...(onRetry ? [{ label: t('Retry'), onSelect: onRetry }] : [])
+                ...(onRetry ? [{ label: t('Retry'), onSelect: onRetry }] : []),
+                ...(thinkingToggle ? [thinkingToggle] : [])
               ]}
             />
           ) : null}
@@ -364,7 +368,8 @@ export function Transcript({
   profile,
   author = 'Hermes',
   onQuote,
-  onCommand
+  onCommand,
+  display = DEFAULT_DISPLAY
 }: {
   state: TranscriptState
   loading: boolean
@@ -379,7 +384,19 @@ export function Transcript({
   onQuote?: (request: QuoteRequest) => void
   /** Runs a slash command for ⋯'s Retry (`/retry`) and Edit and resend (`/undo N`). */
   onCommand?: (command: string) => void
+  /** The profile's Thinking and Tool cards settings. */
+  display?: ChatDisplay
 }) {
+  const [thinkingShown, setThinkingShown] = useState(false)
+  const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
+  const hasThinking = display.thinking === 'on_request' && state.items.some(i => i.kind === 'thinking')
+  const thinkingToggle = hasThinking
+    ? { label: thinkingShown ? t('Hide thinking') : t('Show thinking'), onSelect: () => setThinkingShown(shown => !shown) }
+    : undefined
+  const shown = useMemo(
+    () => state.items.filter(item => (item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : true)),
+    [state.items, showsThinking, display.toolCards]
+  )
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
 
@@ -465,7 +482,7 @@ export function Transcript({
             <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
           </div>
         ) : null}
-        {state.items.map(item => (
+        {shown.map(item => (
           <Item
             key={item.key}
             item={item}
@@ -475,6 +492,7 @@ export function Transcript({
             onRetry={actions.retryKey.has(item.key) ? retry : undefined}
             onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
             onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
+            thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
           />
         ))}
         {requests.map(request => (

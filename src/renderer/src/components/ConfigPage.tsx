@@ -160,9 +160,15 @@ export function FieldRow({ field, value, busy, onSave }: { field: Field; value: 
         <span>{field.label}</span>
         <span className="meta">{field.help}</span>
       </div>
-      {control.kind === 'toggle' ? (
+      {control.kind === 'toggle' || control.kind === 'textToggle' ? (
         <label className="switch-inline">
-          <input type="checkbox" checked={value === true} disabled={busy} aria-label={field.label} onChange={e => onSave(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={value === true}
+            disabled={busy}
+            aria-label={field.label}
+            onChange={e => onSave(control.kind === 'textToggle' ? (e.target.checked ? control.on : control.off) : e.target.checked)}
+          />
         </label>
       ) : control.kind === 'number' ? (
         <input

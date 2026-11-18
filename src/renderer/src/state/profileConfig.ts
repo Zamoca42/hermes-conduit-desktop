@@ -8,6 +8,7 @@
  * would ignore.
  */
 import { t } from '../../../shared/i18n'
+import { THINKING_KEY, thinkingMode, withThinking, type ThinkingMode } from './display'
 
 type Row = Record<string, unknown>
 const object = (v: unknown): Row | null => (v && typeof v === 'object' && !Array.isArray(v) ? (v as Row) : null)
@@ -21,6 +22,8 @@ export type Control =
   | { kind: 'list' }
   /** An IANA time zone name; blank is the server's local time. */
   | { kind: 'timezone' }
+  /** A switch saved as one of two strings. */
+  | { kind: 'textToggle'; on: string; off: string; defaultValue: boolean }
 
 export interface Field {
   key: string
@@ -80,7 +83,10 @@ const personalityChoices = (): [string, string][] => [
 export function chatSections(config: Row): Section[] {
   const own = Object.keys(object(object(config.agent)?.personalities) ?? {}).sort()
   const builtIn = personalityChoices()
-  const personalities = [...builtIn.map(([value, label]) => ({ value, label })), ...own.filter(n => !builtIn.some(([v]) => v === n)).map(n => ({ value: n, label: n }))]
+  const personalities = [
+    ...builtIn.map(([value, label]) => ({ value, label })),
+    ...own.filter(n => !builtIn.some(([v]) => v === n)).map(n => ({ value: n, label: n }))
+  ]
   return [
     {
       title: t('Hermes'),
@@ -92,6 +98,28 @@ export function chatSections(config: Row): Section[] {
           control: { kind: 'options', options: personalities, defaultValue: '' }
         },
         { key: 'timezone', label: t('Timezone'), help: t('Used for dates, reminders, and scheduled work.'), control: { kind: 'timezone' } },
+        {
+          key: THINKING_KEY,
+          label: t('Thinking'),
+          help: t(
+            "Show puts Hermes' thinking in every chat. On request hides it, with Show thinking in a run's menu and a reply's ⋯. Off hides it everywhere."
+          ),
+          control: {
+            kind: 'options',
+            options: opts([
+              ['show', t('Show in every chat')],
+              ['on_request', t('On request')],
+              ['off', t('Off')]
+            ]),
+            defaultValue: 'show'
+          }
+        },
+        {
+          key: 'display.tool_progress',
+          label: t('Tool cards'),
+          help: t('Show tool calls and expandable details in conversations.'),
+          control: { kind: 'textToggle', on: 'all', off: 'off', defaultValue: true }
+        },
         {
           key: 'agent.image_input_mode',
           label: t('Image attachments'),
@@ -572,9 +600,12 @@ export function valueAt(config: unknown, key: string): unknown {
 /** The row's value in the config, or its default when the config has none (or one of the wrong type). */
 export function fieldValue(config: unknown, field: Field): boolean | number | string {
   const raw = valueAt(config, field.key)
+  if (field.key === THINKING_KEY) return thinkingMode(config)
   switch (field.control.kind) {
     case 'toggle':
       return typeof raw === 'boolean' ? raw : field.control.defaultValue
+    case 'textToggle':
+      return typeof raw === 'string' ? raw !== field.control.off : field.control.defaultValue
     case 'number':
       if (typeof raw === 'number' && Number.isFinite(raw)) return raw
       if (typeof raw === 'string' && raw.trim() && Number.isFinite(Number(raw))) return Number(raw)
@@ -593,8 +624,9 @@ export function fieldValue(config: unknown, field: Field): boolean | number | st
   }
 }
 
-/** The config with `key` set, its parents made where missing; the original isn't changed. */
+/** The config with `key` set, its parents made where missing; the original isn't changed. Thinking writes its two `display` keys. */
 export function withValue(config: Row, key: string, value: unknown): Row {
+  if (key === THINKING_KEY) return withThinking(config, value as ThinkingMode)
   const parts = key.split('.')
   const out: Row = { ...config }
   let node = out

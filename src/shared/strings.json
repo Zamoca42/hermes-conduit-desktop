@@ -7364,6 +7364,21 @@
     "zh-Hans": "在锁定屏幕上隐藏私密提醒",
     "zh-Hant": "在鎖定畫面上隱藏私密提醒"
   },
+  "Hide thinking": {
+    "de": "Denkprozess ausblenden",
+    "es": "Ocultar pensamiento",
+    "fr": "Masquer la réflexion",
+    "id": "Sembunyikan pemikiran",
+    "it": "Nascondi pensiero",
+    "ja": "思考を隠す",
+    "ko": "생각 숨기기",
+    "pl": "Ukryj myślenie",
+    "pt-BR": "Ocultar pensamento",
+    "ru": "Скрыть размышления",
+    "tr": "Düşünmeyi gizle",
+    "zh-Hans": "隐藏思考",
+    "zh-Hant": "隱藏思考過程"
+  },
   "High": {
     "de": "Hoch",
     "es": "Alto",
@@ -11323,6 +11338,21 @@
     "tr": "Sessiz günlerde ve tatilde Pulse kendiliğinden hiçbir şey göndermez: rapor da sabah özeti de gelmez, takipler de sonraki ilk özeti bekler. Hatırlamaya devam eder, Yap da kontrol etmeyi sürdürür.",
     "zh-Hans": "在安静日和休假期间，Pulse 不会主动发送任何内容：没有报告，也没有晨间简报，跟进会等到之后的第一份简报。它仍会继续记忆，“去做”也仍会检查。",
     "zh-Hant": "在安靜日和休假期間，Pulse 不會主動傳送任何內容：沒有報告，也沒有晨間簡報，後續追蹤會等到之後的第一份簡報。它仍會繼續記憶，「去做」也仍會檢查。"
+  },
+  "On request": {
+    "de": "Auf Anfrage",
+    "es": "A petición",
+    "fr": "Sur demande",
+    "id": "Saat diminta",
+    "it": "Su richiesta",
+    "ja": "必要なときだけ",
+    "ko": "요청할 때만",
+    "pl": "Na żądanie",
+    "pt-BR": "Sob demanda",
+    "ru": "По запросу",
+    "tr": "İstendiğinde",
+    "zh-Hans": "按需显示",
+    "zh-Hant": "需要時顯示"
   },
   "On the Pulse screen": {
     "de": "Auf dem Pulse-Bildschirm",
@@ -15479,6 +15509,21 @@
     "zh-Hans": "显示当前会话状态",
     "zh-Hant": "顯示目前工作階段的狀態"
   },
+  "Show in every chat": {
+    "de": "In jedem Chat zeigen",
+    "es": "Mostrar en cada chat",
+    "fr": "Afficher dans chaque discussion",
+    "id": "Tampilkan di setiap obrolan",
+    "it": "Mostra in ogni chat",
+    "ja": "すべてのチャットで表示",
+    "ko": "모든 채팅에서 보기",
+    "pl": "Pokazuj w każdym czacie",
+    "pt-BR": "Mostrar em todas as conversas",
+    "ru": "Показывать во всех чатах",
+    "tr": "Her sohbette göster",
+    "zh-Hans": "在每个聊天中显示",
+    "zh-Hant": "在每個聊天中顯示"
+  },
   "Show less": {
     "de": "Weniger anzeigen",
     "es": "Ver menos",
@@ -15493,6 +15538,21 @@
     "tr": "Daha az göster",
     "zh-Hans": "收起",
     "zh-Hant": "收起"
+  },
+  "Show puts Hermes' thinking in every chat. On request hides it, with Show thinking in a run's menu and a reply's ⋯. Off hides it everywhere.": {
+    "de": "„In jedem Chat zeigen“ zeigt das Denken von Hermes in jedem Chat. „Auf Anfrage“ blendet es aus, mit „Denkprozess anzeigen“ im Menü eines Durchlaufs und im ⋯ einer Antwort. „Aus“ blendet es überall aus.",
+    "es": "«Mostrar en cada chat» muestra el pensamiento de Hermes en todos los chats. «A petición» lo oculta, con «Mostrar pensamiento» en el menú de una serie de pasos y en el ⋯ de una respuesta. «Desactivado» lo oculta en todas partes.",
+    "fr": "« Afficher dans chaque discussion » montre la réflexion de Hermes partout. « Sur demande » la masque, avec « Afficher la réflexion » dans le menu d'une série d'étapes et le ⋯ d'une réponse. « Désactivé » la masque partout.",
+    "id": "\"Tampilkan di setiap obrolan\" menampilkan pemikiran Hermes di setiap obrolan. \"Saat diminta\" menyembunyikannya, dengan \"Tampilkan pemikiran\" di menu rangkaian langkah dan ⋯ balasan. \"Mati\" menyembunyikannya di mana saja.",
+    "it": "«Mostra in ogni chat» mostra il pensiero di Hermes in tutte le chat. «Su richiesta» lo nasconde, con «Mostra pensiero» nel menu di una serie di passaggi e nel ⋯ di una risposta. «Disattivato» lo nasconde ovunque.",
+    "ja": "「すべてのチャットで表示」はHermesの思考をすべてのチャットに表示します。「必要なときだけ」は非表示にし、ステップの一連のメニューと返信の⋯に「思考を表示」を出します。「オフ」はどこにも表示しません。",
+    "ko": "'모든 채팅에서 보기'는 Hermes의 생각을 모든 채팅에 보여줘요. '요청할 때만'은 숨기고, 단계 묶음의 메뉴와 답장의 ⋯에 '생각 보기'를 둬요. '끔'은 어디에서도 보여주지 않아요.",
+    "pl": "„Pokazuj w każdym czacie” pokazuje myślenie Hermesa we wszystkich czatach. „Na żądanie” je ukrywa, z „Pokaż myślenie” w menu serii kroków i w ⋯ odpowiedzi. „Wyłączone” ukrywa je wszędzie.",
+    "pt-BR": "\"Mostrar em todas as conversas\" mostra o raciocínio do Hermes em todas as conversas. \"Sob demanda\" o oculta, com \"Mostrar pensamento\" no menu de uma série de etapas e no ⋯ de uma resposta. \"Desativado\" o oculta em todo lugar.",
+    "ru": "«Показывать во всех чатах» показывает размышления Hermes в каждом чате. «По запросу» скрывает их, оставляя «Показывать размышления» в меню серии шагов и в ⋯ ответа. «Выкл.» скрывает их везде.",
+    "tr": "\"Her sohbette göster\", Hermes'in düşünmesini her sohbette gösterir. \"İstendiğinde\" onu gizler; bir adım dizisinin menüsünde ve bir yanıtın ⋯ menüsünde \"Düşünmeyi göster\" kalır. \"Kapalı\" her yerde gizler.",
+    "zh-Hans": "“在每个聊天中显示”会在所有聊天中显示 Hermes 的思考。“按需显示”会隐藏它，并在步骤组的菜单和回复的⋯中提供“显示思考”。“关闭”则在任何地方都隐藏。",
+    "zh-Hant": "「在每個聊天中顯示」會在所有聊天中顯示 Hermes 的思考過程。「需要時顯示」會隱藏它，並在步驟組的選單和回覆的⋯中提供「顯示思考過程」。「關閉」則在任何地方都隱藏。"
   },
   "Show the Hermes Agent version": {
     "de": "Version von Hermes Agent anzeigen",
@@ -15524,6 +15584,21 @@
     "zh-Hans": "显示该消息",
     "zh-Hant": "顯示該訊息"
   },
+  "Show thinking": {
+    "de": "Denkprozess anzeigen",
+    "es": "Mostrar pensamiento",
+    "fr": "Afficher la réflexion",
+    "id": "Tampilkan pemikiran",
+    "it": "Mostra pensiero",
+    "ja": "思考を表示",
+    "ko": "생각 보기",
+    "pl": "Pokazuj myślenie",
+    "pt-BR": "Mostrar pensamento",
+    "ru": "Показывать размышления",
+    "tr": "Düşünmeyi göster",
+    "zh-Hans": "显示思考",
+    "zh-Hant": "顯示思考過程"
+  },
   "Show this session's token usage": {
     "de": "Token-Nutzung dieser Sitzung anzeigen",
     "es": "Mostrar el uso de tokens de esta sesión",
@@ -15538,6 +15613,21 @@
     "tr": "Bu oturumun token kullanımını göster",
     "zh-Hans": "显示此会话的 Token 用量",
     "zh-Hant": "顯示此工作階段的 token 用量"
+  },
+  "Show tool calls and expandable details in conversations.": {
+    "de": "Tool-Aufrufe und aufklappbare Details in Unterhaltungen anzeigen.",
+    "es": "Mostrar las llamadas a herramientas y los detalles expandibles en las conversaciones.",
+    "fr": "Afficher les appels d'outils et les détails dépliables dans les conversations.",
+    "id": "Tampilkan panggilan alat dan detail yang dapat diluaskan dalam percakapan.",
+    "it": "Mostra le chiamate agli strumenti e i dettagli espandibili nelle conversazioni.",
+    "ja": "チャットにツール呼び出しと展開可能な詳細を表示します。",
+    "ko": "대화에 도구 호출과 펼칠 수 있는 세부 정보를 표시해요.",
+    "pl": "Pokazuj wywołania narzędzi i rozwijane szczegóły w rozmowach.",
+    "pt-BR": "Mostrar chamadas de ferramentas e detalhes expansíveis nas conversas.",
+    "ru": "Показывать вызовы инструментов и раскрываемые подробности в разговорах.",
+    "tr": "Konuşmalarda araç çağrılarını ve genişletilebilir ayrıntıları göster.",
+    "zh-Hans": "在对话中显示工具调用及可展开的详情。",
+    "zh-Hant": "在對話中顯示工具呼叫與可展開的詳細資訊。"
   },
   "Shown for providers that report a quota, such as subscription sign-ins. Hermes checks it in the background, so refresh if one is missing.": {
     "de": "Wird für Anbieter angezeigt, die ein Kontingent melden, etwa Abo-Anmeldungen. Hermes prüft es im Hintergrund – aktualisiere, wenn eines fehlt.",
@@ -18538,6 +18628,21 @@
     "tr": "Çok sık",
     "zh-Hans": "太频繁",
     "zh-Hant": "太頻繁"
+  },
+  "Tool cards": {
+    "de": "Tool-Karten",
+    "es": "Tarjetas de herramientas",
+    "fr": "Cartes d'outils",
+    "id": "Kartu alat",
+    "it": "Schede strumenti",
+    "ja": "ツールカード",
+    "ko": "도구 카드",
+    "pl": "Karty narzędzi",
+    "pt-BR": "Cartões de ferramentas",
+    "ru": "Карточки инструментов",
+    "tr": "Araç kartları",
+    "zh-Hans": "工具卡片",
+    "zh-Hant": "工具卡片"
   },
   "Tools": {
     "de": "Tools",

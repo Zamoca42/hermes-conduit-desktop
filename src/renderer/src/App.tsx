@@ -44,6 +44,7 @@ import { useAgents } from './state/useAgents'
 import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
 import { NewBot } from './components/NewBot'
+import { useChatDisplay } from './state/display'
 import { ConfigPage } from './components/ConfigPage'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
@@ -193,6 +194,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }, [transcript.running, chat.storedId])
 
   const roster = useBots(connected)
+  // Thinking and Tool cards as the profile's settings say; read again after a visit to Settings.
+  const chatDisplay = useChatDisplay(selected.profile, connected, section === 'chats')
   const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
   // A quote lands in the composer it was made for, not again on the way back to Chats.
@@ -687,6 +690,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 author={botTitle}
                 onQuote={setQuote}
                 onCommand={text => void onSend(text)}
+                display={chatDisplay}
               />
               </FileLinks.Provider>
               {contextOpen && chat.liveId ? (
