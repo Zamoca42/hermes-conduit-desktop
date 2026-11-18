@@ -6906,3 +6906,18 @@ button.cap-row-text {
 .voice-mode-settings .segmented button {
   white-space: nowrap;
 }
+.local-live-agent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.local-live-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.local-live-buttons {
+  display: flex;
+  gap: 8px;
+}

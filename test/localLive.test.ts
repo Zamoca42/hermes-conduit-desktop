@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   SpokenSplitter,
+  agentConfigure,
+  agentFrame,
+  frontModel,
+  lateResultText,
+  toolResult,
   agentSetupText,
   deltaChunks,
   heldFrom,
@@ -169,6 +174,46 @@ describe('spoken answers', () => {
     )
     expect(spokenQuestion({ qid: 'q', question: 'Why?', choices: [], multiSelect: false }, true)).toBe(
       'Hermes asks: Why?\nAnswer in your own words. Or say skip to leave it blank.'
+    )
+  })
+})
+
+describe('Local Live agent mode', () => {
+  it('reads the host fast model', () => {
+    expect(frontModel({ front_model: { configured: true, available: true, base_url: 'http://h/v1', model: 'm', has_key: false } })).toEqual({
+      configured: true,
+      available: true,
+      baseUrl: 'http://h/v1',
+      model: 'm',
+      hasKey: false,
+      reason: null
+    })
+    expect(frontModel({})).toBeNull()
+  })
+
+  it('configures the plugin and answers its tool calls', () => {
+    expect(agentConfigure('be brief', [{ type: 'function', name: 'ask_thread' }])).toEqual({
+      type: 'conduit.agent',
+      instructions: 'be brief',
+      tools: [{ type: 'function', name: 'ask_thread' }]
+    })
+    expect(toolResult('c1', { status: 'sent', message: 'ok' })).toEqual({
+      type: 'conduit.tool.result',
+      call_id: 'c1',
+      output: '{"message":"ok","status":"sent"}',
+      speak: false
+    })
+    expect(agentFrame('{"type":"conduit.tool.call","call_id":"c1","name":"ask_thread","arguments":"{\\"request\\":\\"check mail\\"}"}')).toEqual({
+      type: 'toolCall',
+      id: 'c1',
+      name: 'ask_thread',
+      args: { request: 'check mail' }
+    })
+    expect(agentFrame('{"type":"conduit.tool.call","call_id":"c2","name":"x","arguments":"nope"}')).toMatchObject({ args: { invalid_arguments: 'true' } })
+    expect(agentFrame('{"type":"conduit.tool.late","call_id":"c1"}')).toEqual({ type: 'late', id: 'c1' })
+    expect(agentFrame('{"type":"conduit.turn","turn_id":"t"}')).toBeNull()
+    expect(lateResultText('answer_approval', { status: 'sent', message: 'Allowed' })).toBe(
+      'Update from answer_approval, which answered late:\nmessage: Allowed\nstatus: sent\nTell the user what matters from it, briefly.'
     )
   })
 })

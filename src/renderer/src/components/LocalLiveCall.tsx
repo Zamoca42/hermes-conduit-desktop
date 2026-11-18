@@ -1,9 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
-import { t } from '@shared/i18n'
+import { language, t } from '@shared/i18n'
 import type { PendingRequest } from '@shared/ipc'
 import { stopReading } from '../state/readAloud'
 import type { TranscriptItem } from '../state/transcript'
-import { audioAppend, decode, pcmSamples } from '../state/grokLive'
+import { gateway } from '../gateway'
+import { PERSONALITY_PATH, NO_REPLY, personaText, replyPrompt, withProfile } from '../state/gptLive'
+import { FUNCTION_TOOLS, audioAppend, decode, pcmSamples, responseCreate, textTurn } from '../state/grokLive'
+import {
+  ASK_THREAD,
+  BAD_ARGUMENTS,
+  END_CONVERSATION,
+  NOTHING_TO_READ,
+  NO_REQUEST,
+  QUEUED,
+  READ_LAST_REPLY,
+  SENT,
+  UNKNOWN_TOOL,
+  chatContext,
+  clockInstructions,
+  liveInstructions,
+  readReply
+} from '../state/liveCall'
 import {
   ANSWERED_WITHOUT_HERMES,
   BUSY_LINE,
@@ -31,9 +48,20 @@ import {
   turnDelta,
   turnDone,
   turnFrame,
-  correctTurn
+  correctTurn,
+  AGENT_INSTRUCTIONS,
+  AGENT_LOOKUPS,
+  STATUS_PATH,
+  agentConfigure,
+  agentFrame,
+  frontModel,
+  lateResultText,
+  localLiveAgent,
+  localLivePersona,
+  toolResult,
+  type AgentFrame
 } from '../state/localLive'
-import { answerApproval, answerQuestion, openQuestion } from '../state/liveRequests'
+import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, openQuestion, requestUpdate } from '../state/liveRequests'
 import { approvalView, clarifyQuestions } from '../state/needsYou'
 import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import { Icon } from './icons'
@@ -77,6 +105,11 @@ const SEND_STALL_MS = 20_000
 /** The microphone stays closed this long after the server's audio ends, so its tail isn't heard back. */
 const ECHO_TAIL_MS = 300
 const SILENCE = new Float32Array(Math.round(SAMPLE_RATE * 0.8))
+/** Agent mode: Conduit's own updates wait this long after the user last spoke. */
+const USER_QUIET_MS = 2000
+/** Saying goodbye: the call closes once the audio has played out, or after this at most. */
+const END_GRACE_MS = 1000
+const END_TIMEOUT_MS = 8000
 
 /** The reply the call follows, from its send until its turn ends. */
 interface Follow {
@@ -121,6 +154,19 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   const follow = useRef<Follow | null>(null)
   const splitter = useRef(new SpokenSplitter())
   const told = useRef(new Set<string>())
+  // Agent mode: the fast model's instructions, and the conversation's state for when Conduit may speak up.
+  const agent = useRef<string | null>(null)
+  const ending = useRef(false)
+  const responding = useRef(false)
+  const wantsResponse = useRef(false)
+  const userSpeaking = useRef(false)
+  const userSpokeAt = useRef(0)
+  const updates = useRef<string[]>([])
+  const queue = useRef<string[]>([])
+  const active = useRef<{ from: number; at: number; started: boolean } | null>(null)
+  const answered = useRef(new Set<string>())
+  // Answers the fast model may have stopped waiting for, by call: said as an update when the plugin says so.
+  const answers = useRef(new Map<string, { name: string; result: Record<string, string> }>())
   const live = useRef({ items, running, turnsDone, lastReply, onSay, onCorrected, chatId, requests, liveId })
   live.current = { items, running, turnsDone, lastReply, onSay, onCorrected, chatId, requests, liveId }
   // The call's finished turns, kept with the chat when it ends.
@@ -221,6 +267,87 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
       if (whole && current.at(-1)?.who === 'assistant' && current.at(-1)?.text === text) return current
       return [...current, { id: ++lineId.current, who: 'assistant' as const, text, open: !whole }].slice(-8)
     })
+
+  // MARK: Agent mode
+
+  // A response waits while one is running: it goes once that one is done.
+  const respond = () => {
+    if (responding.current) wantsResponse.current = true
+    else {
+      responding.current = true
+      send(responseCreate())
+    }
+  }
+
+  // Closes once the goodbye has played out, or at the timeout.
+  const endCall = () => {
+    if (ending.current) return
+    ending.current = true
+    const started = Date.now()
+    const check = () => {
+      if (ended.current) return
+      if (Date.now() - started > END_TIMEOUT_MS || (!playing() && !responding.current)) {
+        window.setTimeout(() => !ended.current && finish(), END_GRACE_MS)
+        return
+      }
+      window.setTimeout(check, 250)
+    }
+    window.setTimeout(check, 250)
+  }
+
+  // The next request goes to the chat once it's free.
+  const pump = () => {
+    if (active.current || live.current.running || ending.current) return
+    const next = queue.current.shift()
+    if (!next) return
+    active.current = { from: live.current.turnsDone, at: Date.now(), started: false }
+    live.current.onSay(next)
+  }
+
+  const answer = (id: string, name: string, result: Record<string, string>, speak = false) => {
+    if (speak) answers.current.set(id, { name, result })
+    send(toolResult(id, result, speak))
+  }
+
+  const toolCall = (event: Extract<AgentFrame, { type: 'toolCall' }>) => {
+    if (answered.current.has(event.id)) return
+    answered.current.add(event.id)
+    if (event.args.invalid_arguments) return answer(event.id, event.name, BAD_ARGUMENTS)
+    switch (event.name) {
+      case ASK_THREAD: {
+        const request = (event.args.request ?? '').trim()
+        if (!request) return answer(event.id, event.name, NO_REQUEST)
+        const waits = !!active.current || live.current.running
+        queue.current.push(request)
+        pump()
+        return answer(event.id, event.name, waits ? QUEUED : SENT)
+      }
+      case READ_LAST_REPLY: {
+        const reply = live.current.lastReply?.trim()
+        return answer(event.id, event.name, reply ? readReply(reply) : NOTHING_TO_READ)
+      }
+      case ANSWER_APPROVAL:
+        void answerApproval(live.current.requests, event.args.choice ?? '').then(result => !ended.current && answer(event.id, event.name, result, true))
+        return
+      case ANSWER_QUESTION:
+        void answerQuestion(live.current.requests, event.args.answer ?? '').then(result => !ended.current && answer(event.id, event.name, result, true))
+        return
+      case END_CONVERSATION:
+        answer(event.id, event.name, { status: 'ending' })
+        return endCall()
+      default:
+        return answer(event.id, event.name, UNKNOWN_TOOL)
+    }
+  }
+
+  const onAgentFrame = (frame: AgentFrame) => {
+    if (frame.type === 'toolCall') return toolCall(frame)
+    // The fast model stopped waiting: its answer is said as an update.
+    const kept = answers.current.get(frame.id)
+    if (!kept) return
+    answers.current.delete(frame.id)
+    updates.current.push(lateResultText(kept.name, kept.result))
+  }
 
   // MARK: Turns
 
@@ -378,6 +505,8 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   // MARK: The server's frames
 
   const onFrame = (text: string) => {
+    const tool = agent.current ? agentFrame(text) : null
+    if (tool) return onAgentFrame(tool)
     const frame = turnFrame(text)
     if (frame) {
       if (frame.type === 'turn') onTurn(frame.id, frame.text)
@@ -402,17 +531,33 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
           becomeReady()
         }
         return
+      case 'responseStarted':
+        if (!checking.current) responding.current = true
+        return
       case 'responseDone':
         if (checking.current) {
           checking.current = false
           // The check's response ended without its ask reaching this call: the server's model isn't Hermes here.
           if (!ready.current) fail(ANSWERED_WITHOUT_HERMES())
+          return
+        }
+        responding.current = false
+        if (wantsResponse.current) {
+          wantsResponse.current = false
+          respond()
         }
         return
       case 'speechStarted':
+        userSpeaking.current = true
+        userSpokeAt.current = Date.now()
         stopPlayback()
         return
+      case 'speechStopped':
+        userSpeaking.current = false
+        userSpokeAt.current = Date.now()
+        return
       case 'input':
+        userSpokeAt.current = Date.now()
         userLine(event.itemId, event.text, event.final)
         if (event.final) keep('user', event.text)
         return
@@ -436,7 +581,14 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   useEffect(() => {
     const timer = window.setInterval(() => {
       if (ended.current || !ready.current) return
-      setPhase(current => (current === 'failed' ? current : playing() ? 'speaking' : 'listening'))
+      const speaking = playing()
+      setPhase(current => (current === 'failed' ? current : speaking ? 'speaking' : 'listening'))
+      // Agent mode: Hermes' replies and what it waits on go to the fast model once the conversation is quiet.
+      const quiet = !responding.current && !speaking && !userSpeaking.current && Date.now() - userSpokeAt.current > USER_QUIET_MS
+      if (agent.current && quiet && !ending.current && !turn.current && updates.current.length) {
+        send(textTurn(updates.current.shift()!))
+        respond()
+      }
     }, 200)
     return () => window.clearInterval(timer)
   }, [])
@@ -448,8 +600,10 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
     let keepalive = 0
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
-      if (event.type === 'open') send(sessionUpdate())
-      else if (event.type === 'message') onFrame(event.data)
+      if (event.type === 'open') {
+        if (agent.current) send(agentConfigure(agent.current, FUNCTION_TOOLS))
+        send(sessionUpdate())
+      } else if (event.type === 'message') onFrame(event.data)
       else if (event.type === 'close') {
         socket.current = null
         if (ended.current) return
@@ -465,6 +619,26 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
         mic.current = stream
         const ctx = new AudioContext({ sampleRate: SAMPLE_RATE })
         context.current = ctx
+        if (localLiveAgent()) {
+          // Agent mode when the host has a fast model; without one, Hermes answers each turn.
+          const status = await gateway.http('GET', withProfile(STATUS_PATH, profile), undefined, 30_000).catch(() => null)
+          if (frontModel(status)?.available) {
+            const persona = localLivePersona() ? await gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : ''
+            const turns = live.current.items.flatMap((item): { role: 'user' | 'assistant'; text: string }[] =>
+              item.kind === 'user' || item.kind === 'assistant' ? [{ role: item.kind, text: item.text }] : []
+            )
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+            agent.current = liveInstructions({
+              lookups: AGENT_LOOKUPS,
+              announces: false,
+              extra: AGENT_INSTRUCTIONS + clockInstructions(new Date(), timeZone),
+              language: language(),
+              persona,
+              chat: chatContext(turns)
+            })
+          }
+          if (ended.current) return
+        }
         const opened = await window.conduit.liveOpen(SOCKET_PATH, profile && profile !== 'default' ? { profile } : {})
         if (!opened.ok) return fail(/\b404\b/.test(opened.error) ? PLUGIN_MISSING() : t('Could not open the Local Live connection.'))
         if (ended.current) return window.conduit.liveClose(opened.id)
@@ -538,13 +712,41 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
     return () => window.clearTimeout(timer)
   }, [items, running, turnsDone, lastReply])
 
-  // What Hermes waits on: said in the open turn, and answered by the user's next words.
+  // Agent mode: a request's reply is told once its turn ends, then the next request goes.
+  useEffect(() => {
+    const current = active.current
+    if (!current || ended.current) return
+    if (running) {
+      current.started = true
+      return
+    }
+    if (turnsDone !== current.from) {
+      active.current = null
+      updates.current.push(lastReply?.trim() ? replyPrompt(lastReply) : NO_REPLY)
+      pump()
+      return
+    }
+    const timer = window.setTimeout(() => {
+      if (active.current === current && !current.started) {
+        active.current = null
+        updates.current.push(NO_REPLY)
+        pump()
+      }
+    }, SEND_STALL_MS)
+    return () => window.clearTimeout(timer)
+  }, [running, turnsDone, lastReply])
+
+  // What Hermes waits on: said in the open turn and answered by the user's next words, or in agent mode told to the fast model.
   useEffect(() => {
     for (const request of requests) {
       if (told.current.has(request.id)) continue
       told.current.add(request.id)
       const current = turn.current
-      if (!current) continue
+      if (!current) {
+        const update = agent.current ? requestUpdate(request) : null
+        if (update) updates.current.push(update)
+        continue
+      }
       if (request.method === 'approval') {
         const view = approvalView(request.params)
         say(current.id, approvalLine(view.description || view.command || ''))

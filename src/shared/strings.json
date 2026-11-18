@@ -1214,6 +1214,21 @@
     "zh-Hans": "正在根据此聊天的快照作答。回答将显示在这里。",
     "zh-Hant": "正在根據此聊天的快照作答。回答將顯示在這裡。"
   },
+  "Any OpenAI-compatible server works, on your network (llama.cpp, Ollama, vLLM, LM Studio) or a hosted one. A small, quick model is best: it only talks and hands the work to Hermes.": {
+    "de": "Jeder OpenAI-kompatible Server funktioniert, in deinem Netzwerk (llama.cpp, Ollama, vLLM, LM Studio) oder gehostet. Am besten ein kleines, schnelles Modell: Es redet nur und übergibt die Arbeit an Hermes.",
+    "es": "Sirve cualquier servidor compatible con OpenAI, en tu red (llama.cpp, Ollama, vLLM, LM Studio) o alojado. Lo mejor es un modelo pequeño y rápido: solo habla y pasa el trabajo a Hermes.",
+    "fr": "Tout serveur compatible OpenAI convient, sur votre réseau (llama.cpp, Ollama, vLLM, LM Studio) ou hébergé. Un petit modèle rapide est idéal : il ne fait que parler et confie le travail à Hermes.",
+    "id": "Server apa pun yang kompatibel dengan OpenAI bisa dipakai, di jaringan Anda (llama.cpp, Ollama, vLLM, LM Studio) atau yang di-hosting. Model kecil yang cepat paling baik: ia hanya berbicara dan menyerahkan pekerjaan ke Hermes.",
+    "it": "Va bene qualsiasi server compatibile con OpenAI, nella tua rete (llama.cpp, Ollama, vLLM, LM Studio) o in hosting. Meglio un modello piccolo e veloce: parla soltanto e passa il lavoro a Hermes.",
+    "ja": "OpenAI 互換のサーバーなら、ネットワーク内（llama.cpp、Ollama、vLLM、LM Studio）でもホスト型でも使えます。小さく速いモデルがおすすめです。会話だけを担当し、作業は Hermes に任せます。",
+    "ko": "OpenAI 호환 서버라면 네트워크 안(llama.cpp, Ollama, vLLM, LM Studio)이든 호스팅이든 사용할 수 있습니다. 작고 빠른 모델이 가장 좋습니다. 대화만 하고 작업은 Hermes에 넘기기 때문입니다.",
+    "pl": "Działa każdy serwer zgodny z OpenAI, w Twojej sieci (llama.cpp, Ollama, vLLM, LM Studio) lub hostowany. Najlepszy jest mały, szybki model: tylko rozmawia i przekazuje pracę Hermesowi.",
+    "pt-BR": "Qualquer servidor compatível com OpenAI funciona, na sua rede (llama.cpp, Ollama, vLLM, LM Studio) ou hospedado. Um modelo pequeno e rápido é o ideal: ele só conversa e passa o trabalho para o Hermes.",
+    "ru": "Подойдёт любой сервер, совместимый с OpenAI, в вашей сети (llama.cpp, Ollama, vLLM, LM Studio) или облачный. Лучше всего маленькая быстрая модель: она только разговаривает и передаёт работу Hermes.",
+    "tr": "OpenAI uyumlu her sunucu çalışır; ağınızda (llama.cpp, Ollama, vLLM, LM Studio) ya da barındırılan. En iyisi küçük ve hızlı bir modeldir: yalnızca konuşur ve işi Hermes’e devreder.",
+    "zh-Hans": "任何兼容 OpenAI 的服务器都可以，可以在你的网络中（llama.cpp、Ollama、vLLM、LM Studio），也可以是托管服务。小而快的模型最好：它只负责交谈，把工作交给 Hermes。",
+    "zh-Hant": "任何相容 OpenAI 的伺服器都可以，可以在你的網路中（llama.cpp、Ollama、vLLM、LM Studio），也可以是託管服務。小而快的模型最好：它只負責交談，把工作交給 Hermes。"
+  },
   "Any OpenAI-compatible server, such as vLLM, LM Studio or Ollama": {
     "de": "Jeder OpenAI-kompatible Server, etwa vLLM, LM Studio oder Ollama",
     "es": "Cualquier servidor compatible con OpenAI, como vLLM, LM Studio u Ollama",
@@ -2653,6 +2668,21 @@
     "tr": "Takvim",
     "zh-Hans": "日历",
     "zh-Hant": "行事曆"
+  },
+  "Calls answer with {model} and hand the work to Hermes.": {
+    "de": "Anrufe antworten mit {model} und übergeben die Arbeit an Hermes.",
+    "es": "Las llamadas responden con {model} y pasan el trabajo a Hermes.",
+    "fr": "Les appels répondent avec {model} et confient le travail à Hermes.",
+    "id": "Panggilan dijawab dengan {model} dan pekerjaannya diserahkan ke Hermes.",
+    "it": "Le chiamate rispondono con {model} e passano il lavoro a Hermes.",
+    "ja": "通話は {model} が応答し、作業は Hermes に任せます。",
+    "ko": "통화는 {model}이(가) 응답하고 작업은 Hermes에 넘깁니다.",
+    "pl": "Rozmowy odpowiada {model}, a pracę przekazuje Hermesowi.",
+    "pt-BR": "As chamadas respondem com {model} e passam o trabalho para o Hermes.",
+    "ru": "Звонки отвечает {model}, а работу передаёт Hermes.",
+    "tr": "Aramaları {model} yanıtlar ve işi Hermes’e devreder.",
+    "zh-Hans": "通话由 {model} 应答，工作交给 Hermes。",
+    "zh-Hant": "通話由 {model} 應答，工作交給 Hermes。"
   },
   "Calls from Hermes": {
     "de": "Anrufe von Hermes",
@@ -7423,6 +7453,21 @@
     "tr": "Hızlı mod",
     "zh-Hans": "快速模式",
     "zh-Hant": "快速模式"
+  },
+  "Fast model": {
+    "de": "Schnelles Modell",
+    "es": "Modelo rápido",
+    "fr": "Modèle rapide",
+    "id": "Model cepat",
+    "it": "Modello veloce",
+    "ja": "高速モデル",
+    "ko": "빠른 모델",
+    "pl": "Szybki model",
+    "pt-BR": "Modelo rápido",
+    "ru": "Быстрая модель",
+    "tr": "Hızlı model",
+    "zh-Hans": "快速模型",
+    "zh-Hant": "快速模型"
   },
   "Featured": {
     "de": "Empfohlen",
@@ -13289,6 +13334,21 @@
     "zh-Hans": "还没有备用模型。",
     "zh-Hant": "尚無備用模型。"
   },
+  "No fast model is set, so Hermes answers each turn itself, which is slower to start talking.": {
+    "de": "Kein schnelles Modell eingerichtet, daher beantwortet Hermes jeden Zug selbst und fängt langsamer an zu sprechen.",
+    "es": "No hay un modelo rápido configurado, así que Hermes responde cada turno por sí mismo y tarda más en empezar a hablar.",
+    "fr": "Aucun modèle rapide n’est défini : Hermes répond lui-même à chaque tour et met plus de temps à commencer à parler.",
+    "id": "Belum ada model cepat, jadi Hermes menjawab setiap giliran sendiri dan lebih lambat mulai berbicara.",
+    "it": "Nessun modello veloce impostato, quindi Hermes risponde da sé a ogni turno e inizia a parlare più lentamente.",
+    "ja": "高速モデルが設定されていないため、Hermes が各ターンに自分で答えます。話し始めるまでに時間がかかります。",
+    "ko": "빠른 모델이 설정되지 않아 Hermes가 매 턴을 직접 답하므로 말을 시작하기까지 더 오래 걸립니다.",
+    "pl": "Nie ustawiono szybkiego modelu, więc Hermes sam odpowiada na każdą turę i później zaczyna mówić.",
+    "pt-BR": "Nenhum modelo rápido definido, então o Hermes responde cada turno sozinho e demora mais para começar a falar.",
+    "ru": "Быстрая модель не задана, поэтому Hermes сам отвечает на каждый ход и начинает говорить медленнее.",
+    "tr": "Hızlı model ayarlanmadı, bu yüzden Hermes her turu kendisi yanıtlar ve konuşmaya daha geç başlar.",
+    "zh-Hans": "尚未设置快速模型，因此 Hermes 会自己回答每一轮，开口会更慢。",
+    "zh-Hant": "尚未設定快速模型，因此 Hermes 會自己回答每一輪，開口會比較慢。"
+  },
   "No key yet": {
     "de": "Noch kein Schlüssel",
     "es": "Aún no hay clave",
@@ -14623,6 +14683,21 @@
     "tr": "Bir sayfa açılıyor",
     "zh-Hans": "正在打开网页",
     "zh-Hant": "正在打開網頁"
+  },
+  "Optional, for a hosted model": {
+    "de": "Optional, für ein gehostetes Modell",
+    "es": "Opcional, para un modelo alojado",
+    "fr": "Facultatif, pour un modèle hébergé",
+    "id": "Opsional, untuk model yang di-hosting",
+    "it": "Facoltativo, per un modello in hosting",
+    "ja": "任意、ホスト型モデル用",
+    "ko": "선택 사항, 호스팅 모델용",
+    "pl": "Opcjonalnie, dla modelu hostowanego",
+    "pt-BR": "Opcional, para um modelo hospedado",
+    "ru": "Необязательно, для облачной модели",
+    "tr": "İsteğe bağlı, barındırılan model için",
+    "zh-Hans": "可选，用于托管模型",
+    "zh-Hant": "選用，適用於託管模型"
   },
   "Optional. Leave empty to start from a short identity built from the name and description.": {
     "de": "Optional. Lass das Feld leer, um mit einer kurzen Identität aus Name und Beschreibung zu beginnen.",
@@ -19033,6 +19108,21 @@
     "tr": "Serif",
     "zh-Hans": "衬线",
     "zh-Hant": "襯線"
+  },
+  "Server address": {
+    "de": "Serveradresse",
+    "es": "Dirección del servidor",
+    "fr": "Adresse du serveur",
+    "id": "Alamat server",
+    "it": "Indirizzo del server",
+    "ja": "サーバーアドレス",
+    "ko": "서버 주소",
+    "pl": "Adres serwera",
+    "pt-BR": "Endereço do servidor",
+    "ru": "Адрес сервера",
+    "tr": "Sunucu adresi",
+    "zh-Hans": "服务器地址",
+    "zh-Hant": "伺服器位址"
   },
   "Server default": {
     "de": "Serverstandard",
@@ -24074,6 +24164,21 @@
     "zh-Hans": "请更新 Hermes 主机上的 Conduit 插件以使用 Local Live。",
     "zh-Hant": "請更新 Hermes 主機上的 Conduit 外掛程式以使用 Local Live。"
   },
+  "Update the Conduit plugin on your Hermes host to use a fast model.": {
+    "de": "Aktualisiere das Conduit-Plugin auf deinem Hermes-Host, um ein schnelles Modell zu nutzen.",
+    "es": "Actualiza el plugin de Conduit en tu host de Hermes para usar un modelo rápido.",
+    "fr": "Mettez à jour le plugin Conduit sur votre hôte Hermes pour utiliser un modèle rapide.",
+    "id": "Perbarui plugin Conduit di host Hermes Anda untuk memakai model cepat.",
+    "it": "Aggiorna il plugin Conduit sul tuo host Hermes per usare un modello veloce.",
+    "ja": "高速モデルを使うには、Hermes ホストの Conduit プラグインを更新してください。",
+    "ko": "빠른 모델을 사용하려면 Hermes 호스트의 Conduit 플러그인을 업데이트하세요.",
+    "pl": "Zaktualizuj wtyczkę Conduit na hoście Hermes, aby używać szybkiego modelu.",
+    "pt-BR": "Atualize o plugin do Conduit no seu host do Hermes para usar um modelo rápido.",
+    "ru": "Обновите плагин Conduit на хосте Hermes, чтобы использовать быструю модель.",
+    "tr": "Hızlı model kullanmak için Hermes sunucunuzdaki Conduit eklentisini güncelleyin.",
+    "zh-Hans": "请更新 Hermes 主机上的 Conduit 插件以使用快速模型。",
+    "zh-Hant": "請更新 Hermes 主機上的 Conduit 外掛以使用快速模型。"
+  },
   "Update the Conduit plugin?": {
     "de": "Conduit-Plugin aktualisieren?",
     "es": "¿Actualizar el plugin de Conduit?",
@@ -26068,6 +26173,51 @@
     "tr": "Metnin açık ve koyu modda okunabilir kalması için renginiz gerektiğinde ayarlanır.",
     "zh-Hans": "必要时会调整你的颜色，确保文字在浅色和深色模式下都清晰可读。",
     "zh-Hant": "必要時會調整你的顏色，確保文字在淺色和深色模式下都清楚易讀。"
+  },
+  "Your fast model answers first": {
+    "de": "Dein schnelles Modell antwortet zuerst",
+    "es": "Tu modelo rápido responde primero",
+    "fr": "Votre modèle rapide répond en premier",
+    "id": "Model cepat Anda menjawab lebih dulu",
+    "it": "Il tuo modello veloce risponde per primo",
+    "ja": "高速モデルが先に答える",
+    "ko": "빠른 모델이 먼저 답변",
+    "pl": "Twój szybki model odpowiada pierwszy",
+    "pt-BR": "Seu modelo rápido responde primeiro",
+    "ru": "Сначала отвечает ваша быстрая модель",
+    "tr": "Önce hızlı modeliniz yanıtlar",
+    "zh-Hans": "由你的快速模型先回答",
+    "zh-Hant": "由你的快速模型先回答"
+  },
+  "Your fast model answers right away and sends real work to Hermes as the chat's next message. Off, Hermes answers each turn itself.": {
+    "de": "Dein schnelles Modell antwortet sofort und schickt echte Arbeit als nächste Nachricht im Chat an Hermes. Aus: Hermes beantwortet jede Runde selbst.",
+    "es": "Tu modelo rápido responde enseguida y envía el trabajo real a Hermes como el siguiente mensaje del chat. Desactivado, Hermes responde cada turno.",
+    "fr": "Votre modèle rapide répond tout de suite et envoie le vrai travail à Hermes comme prochain message de la discussion. Désactivé, Hermes répond lui-même à chaque tour.",
+    "id": "Model cepat Anda langsung menjawab dan mengirim pekerjaan sebenarnya ke Hermes sebagai pesan berikutnya di obrolan. Jika nonaktif, Hermes menjawab setiap giliran sendiri.",
+    "it": "Il tuo modello veloce risponde subito e invia il lavoro vero a Hermes come prossimo messaggio della chat. Disattivato, Hermes risponde a ogni turno.",
+    "ja": "高速モデルがすぐに答え、実際の作業はチャットの次のメッセージとして Hermes に送ります。オフにすると、Hermes が毎回自分で答えます。",
+    "ko": "빠른 모델이 바로 답하고 실제 작업은 채팅의 다음 메시지로 Hermes에 보냅니다. 끄면 Hermes가 매번 직접 답합니다.",
+    "pl": "Twój szybki model odpowiada od razu, a prawdziwą pracę wysyła do Hermesa jako następną wiadomość w czacie. Wyłączone: Hermes sam odpowiada w każdej turze.",
+    "pt-BR": "Seu modelo rápido responde na hora e envia o trabalho de verdade ao Hermes como a próxima mensagem da conversa. Desativado, o Hermes responde cada turno.",
+    "ru": "Быстрая модель отвечает сразу, а настоящую работу отправляет Hermes следующим сообщением в чате. Если выключено, Hermes отвечает на каждый ход сам.",
+    "tr": "Hızlı modeliniz hemen yanıt verir ve asıl işi sohbetin sonraki mesajı olarak Hermes'e gönderir. Kapalıyken her turu Hermes kendisi yanıtlar.",
+    "zh-Hans": "你的快速模型会立即回答，并把实际工作作为聊天的下一条消息发给 Hermes。关闭时，由 Hermes 自己回答每一轮。",
+    "zh-Hant": "你的快速模型會立即回答，並把實際工作作為聊天的下一則訊息傳給 Hermes。關閉時，由 Hermes 自己回答每一輪。"
+  },
+  "Your fast model talks with the personality in this profile's SOUL.md, without reading out actions or emoji. SOUL.md is sent to your fast model's server with the conversation, and a long one can slow a small model's first words. Applies to the next call.": {
+    "de": "Dein schnelles Modell spricht mit der Persönlichkeit aus der SOUL.md dieses Profils, ohne Aktionen oder Emoji vorzulesen. SOUL.md wird mit der Unterhaltung an den Server deines schnellen Modells gesendet, und eine lange SOUL.md kann die ersten Worte eines kleinen Modells verzögern. Gilt ab dem nächsten Anruf.",
+    "es": "Tu modelo rápido habla con la personalidad del SOUL.md de este perfil, sin leer en voz alta acciones ni emojis. SOUL.md se envía al servidor de tu modelo rápido con la conversación, y uno largo puede retrasar las primeras palabras de un modelo pequeño. Se aplica a la próxima llamada.",
+    "fr": "Votre modèle rapide parle avec la personnalité du SOUL.md de ce profil, sans lire à voix haute les actions ni les emoji. SOUL.md est envoyé au serveur de votre modèle rapide avec la conversation, et un fichier long peut retarder les premiers mots d'un petit modèle. S'applique au prochain appel.",
+    "id": "Model cepat Anda berbicara dengan kepribadian di SOUL.md profil ini, tanpa membacakan tindakan atau emoji. SOUL.md dikirim ke server model cepat Anda bersama percakapan, dan SOUL.md yang panjang dapat memperlambat kata-kata pertama model kecil. Berlaku mulai panggilan berikutnya.",
+    "it": "Il tuo modello veloce parla con la personalità del SOUL.md di questo profilo, senza leggere ad alta voce azioni o emoji. SOUL.md viene inviato al server del tuo modello veloce con la conversazione, e uno lungo può rallentare le prime parole di un modello piccolo. Vale dalla prossima chiamata.",
+    "ja": "高速モデルは、このプロファイルのSOUL.mdにあるパーソナリティで話します。動作の描写や絵文字は読み上げません。SOUL.mdは会話とともに高速モデルのサーバーに送信されます。長いSOUL.mdは小さなモデルの話し始めを遅らせることがあります。次の通話から適用されます。",
+    "ko": "빠른 모델이 이 프로필의 SOUL.md에 있는 성격으로 말하며, 행동 묘사나 이모지는 읽지 않아요. SOUL.md는 대화와 함께 빠른 모델의 서버로 전송되며, 길면 작은 모델이 말을 시작하는 데 시간이 더 걸릴 수 있어요. 다음 통화부터 적용돼요.",
+    "pl": "Twój szybki model mówi z osobowością z pliku SOUL.md tego profilu, bez odczytywania opisów działań ani emoji. SOUL.md jest wysyłany razem z rozmową na serwer twojego szybkiego modelu, a długi plik może opóźnić pierwsze słowa małego modelu. Obowiązuje od następnego połączenia.",
+    "pt-BR": "Seu modelo rápido fala com a personalidade do SOUL.md deste perfil, sem ler em voz alta ações ou emojis. O SOUL.md é enviado ao servidor do seu modelo rápido com a conversa, e um SOUL.md longo pode atrasar as primeiras palavras de um modelo pequeno. Vale a partir da próxima chamada.",
+    "ru": "Ваша быстрая модель говорит с личностью из SOUL.md этого профиля, не зачитывая действия и эмодзи. SOUL.md отправляется на сервер быстрой модели вместе с разговором, а длинный файл может задержать первые слова небольшой модели. Действует со следующего звонка.",
+    "tr": "Hızlı modeliniz, eylemleri veya emojileri sesli okumadan bu profilin SOUL.md dosyasındaki kişilikle konuşur. SOUL.md konuşmayla birlikte hızlı modelinizin sunucusuna gönderilir ve uzun bir dosya küçük bir modelin ilk sözlerini geciktirebilir. Sonraki aramada geçerli olur.",
+    "zh-Hans": "你的快速模型会以此配置文件 SOUL.md 中的性格说话，但不会读出动作描写或表情符号。SOUL.md 会随对话发送到快速模型的服务器，较长的 SOUL.md 可能让小模型开口更慢。下次通话生效。",
+    "zh-Hant": "你的快速模型會以此設定檔 SOUL.md 中的個性說話，但不會唸出動作描述或表情符號。SOUL.md 會隨對話傳送到快速模型的伺服器，較長的 SOUL.md 可能讓小模型較慢開口。下次通話起生效。"
   },
   "Your later messages and the replies to them leave the chat, and this one goes back in the composer to change and send again.": {
     "de": "Deine späteren Nachrichten und die Antworten darauf verschwinden aus dem Chat, und diese kommt zurück ins Eingabefeld, um sie zu ändern und erneut zu senden.",

@@ -126,6 +126,8 @@ export interface LocalStatus {
   drivesTurns: boolean
   ownModel: boolean
   answersAlone: boolean
+  /** Agent mode's fast model on the host; null from a plugin without it. */
+  front: FrontModel | null
 }
 
 /** `base` (the dashboard, maybe with a path prefix) joined with the route's path. */
@@ -151,7 +153,8 @@ export function localStatus(response: unknown, dashboard: string | null | undefi
     speechServerUrl: str(server.url),
     drivesTurns: server.drive_turns === true || ownModel,
     ownModel,
-    answersAlone: r.answers_alone === true
+    answersAlone: r.answers_alone === true,
+    front: frontModel(r)
   }
 }
 
@@ -428,3 +431,133 @@ export async function correctTurn(sessionId: string, text: string, profile?: str
     return result && result.status !== 'rejected' ? 'redirected' : 'rejected'
   }
 }
+
+// MARK: Agent mode (your fast model answers first)
+
+/**
+ * After the phone's Live > Local: the plugin's fast model
+ * (voice.local_live.front_model) holds the conversation with these
+ * instructions and tools, and the tools run here, as on Grok Live. Hermes
+ * work goes to the chat with ask_thread, and Hermes' reply comes back as a
+ * typed turn the speech server asks the fast model about.
+ */
+export const FRONT_MODEL_KEYS = {
+  baseUrl: 'voice.local_live.front_model.base_url',
+  model: 'voice.local_live.front_model.model',
+  apiKey: 'voice.local_live.front_model.api_key'
+} as const
+
+export interface FrontModel {
+  configured: boolean
+  available: boolean
+  baseUrl: string | null
+  model: string | null
+  hasKey: boolean
+  reason: string | null
+}
+
+/** The status's front_model; null from a plugin without agent mode. */
+export function frontModel(response: unknown): FrontModel | null {
+  const raw = ((response ?? {}) as Row).front_model
+  if (!raw || typeof raw !== 'object') return null
+  const r = raw as Row
+  return {
+    configured: r.configured === true,
+    available: r.available === true,
+    baseUrl: str(r.base_url),
+    model: str(r.model),
+    hasKey: r.has_key === true,
+    reason: str(r.reason)
+  }
+}
+
+/** Sent before the session.update, so the plugin answers every utterance after the readiness check with the fast model. */
+export const agentConfigure = (instructions: string, tools: unknown[]): Row => ({ type: 'conduit.agent', instructions, tools })
+
+/** A tool's answer; `speak` asks for it to be said even if the fast model stopped waiting. */
+export const toolResult = (callId: string, result: Record<string, string>, speak = false): Row => ({
+  type: 'conduit.tool.result',
+  call_id: callId,
+  output: JSON.stringify(Object.fromEntries(Object.entries(result).sort(([a], [b]) => a.localeCompare(b)))),
+  speak
+})
+
+export type AgentFrame = { type: 'toolCall'; id: string; name: string; args: Record<string, string> } | { type: 'late'; id: string }
+
+/** The plugin's agent-mode frame; null for anything else. Arguments as strings, as Grok's are. */
+export function agentFrame(text: string): AgentFrame | null {
+  if (!text.includes('"conduit.tool.')) return null
+  let o: Row
+  try {
+    o = JSON.parse(text) as Row
+  } catch {
+    return null
+  }
+  const id = str(o?.call_id)
+  if (!id) return null
+  if (o.type === 'conduit.tool.late') return { type: 'late', id }
+  if (o.type !== 'conduit.tool.call') return null
+  const name = str(o.name)
+  if (!name) return null
+  let parsed: unknown = {}
+  if (o.arguments && typeof o.arguments === 'object') parsed = o.arguments
+  else if (typeof o.arguments === 'string' && o.arguments.trim()) {
+    try {
+      parsed = JSON.parse(o.arguments)
+    } catch {
+      parsed = null
+    }
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { type: 'toolCall', id, name, args: { invalid_arguments: 'true' } }
+  const args: Record<string, string> = {}
+  for (const [key, value] of Object.entries(parsed as Row)) {
+    if (value === null || value === undefined) continue
+    args[key] = typeof value === 'string' ? value : typeof value === 'object' ? JSON.stringify(value) : String(value)
+  }
+  return { type: 'toolCall', id, name, args }
+}
+
+/** A tool's answer that came after the fast model stopped waiting, as a turn it reports. */
+export function lateResultText(name: string, result: Record<string, string>): string {
+  const body = Object.entries(result)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n')
+  return `Update from ${name}, which answered late:\n${body}\nTell the user what matters from it, briefly.`
+}
+
+/** Added to the shared live instructions in agent mode (written for the model, so not translated). */
+export const AGENT_INSTRUCTIONS =
+  "\nYou answer first on this call and Hermes does the real work, but to the user you are one assistant: never call yourself a front, a relay or a go-between, and never say you're passing something on. You can't see the user's email, messages, calendar and schedule, to-dos, health, bank or other accounts, files or systems yourself; Hermes can. Whenever the user asks you to check, read, find, send or do anything there (\"what's on my plate today?\" included), call ask_thread with their request instead of saying you can't, and never answer it from guesses." +
+  "\nOn this call ask_thread answers as soon as Hermes has the request. Never say anything was started, sent or done unless a tool's result said so; if a tool returns an error, tell the user plainly. Tools are only ever function calls: never speak a tool call, its name or its arguments."
+
+/** Public facts go to Hermes: the fast model has no web of its own here. */
+export const AGENT_LOOKUPS =
+  "You can't look anything up on this call: for weather, news, sports, prices and other facts you don't know, call ask_thread and let Hermes find them."
+
+const AGENT_KEY = 'conduit.localLiveAgent'
+const PERSONA_KEY = 'conduit.localLivePersonality'
+
+function flag(key: string): boolean {
+  try {
+    return localStorage.getItem(key) === 'true'
+  } catch {
+    return false
+  }
+}
+
+function setFlag(key: string, on: boolean): void {
+  try {
+    if (on) localStorage.setItem(key, 'true')
+    else localStorage.removeItem(key)
+  } catch {
+    // Off next time.
+  }
+}
+
+/** Your fast model answers first (agent mode); off, Hermes answers each turn. */
+export const localLiveAgent = () => flag(AGENT_KEY)
+export const setLocalLiveAgent = (on: boolean) => setFlag(AGENT_KEY, on)
+/** The fast model speaks with SOUL.md, which then goes to its server. */
+export const localLivePersona = () => flag(PERSONA_KEY)
+export const setLocalLivePersona = (on: boolean) => setFlag(PERSONA_KEY, on)

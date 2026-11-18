@@ -4,6 +4,7 @@ import { GatewayError, gateway } from '../gateway'
 import { withProfile } from '../state/gptLive'
 import { KEY_PATH, PLUGIN_MISSING, STATUS_PATH, agentSetupText, localStatus, serverFlags, type LocalStatus } from '../state/localLive'
 import { relativeTime } from '../state/pulseLook'
+import { LocalLiveAgentSettings } from './LocalLiveAgentSettings'
 
 function CopyRow({ title, value }: { title: string; value: string }) {
   const [copied, setCopied] = useState(false)
@@ -125,6 +126,7 @@ export function LocalLiveSettings({ profile }: { profile?: string }) {
       {ready && (!ready.available || (!ready.modelAddress && !ready.drivesTurns)) ? (
         <p className="meta settings-caption voice-call-problem">{ready.reason ?? t("Your Hermes host didn't send a key.")}</p>
       ) : null}
+      {ready ? <LocalLiveAgentSettings profile={profile} front={ready.front} onSaved={() => setLoad(n => n + 1)} /> : null}
     </>
   )
 }
