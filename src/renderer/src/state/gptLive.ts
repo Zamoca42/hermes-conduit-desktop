@@ -298,9 +298,9 @@ const READ_BACK_RULE =
   'When the user asks to hear a reply again, word for word or in full (Hermes\' last reply in the chat), don\'t answer from memory or in your own words: delegate "Read back:". Conduit takes the reply from the chat itself: a read-back never goes to Hermes. Conduit gives you the reply, then tells you to read it: read it word for word, all of it, once. When the user asks whether Hermes replied or what it said, and you don\'t have that reply, that\'s a read-back too: delegate "Read back:" rather than asking Hermes.'
 const END_CALL_RULE =
   'When the user says goodbye to you, even at the end of a longer sentence (not a goodbye to someone or something else), or asks to end, hang up or close the call, say a short goodbye, then delegate "End call:": Conduit closes the call. Never say the marker aloud.'
-const ACKNOWLEDGEMENT =
+export const ACKNOWLEDGEMENT =
   'Keep that acknowledgement to a word or a few, in your own words and different each time; "Sure.", "On it." or "Okay, give me a moment." only show the length, so don\'t reuse them word for word. Don\'t keep saying you\'ll ask, tell or check with Hermes: say Hermes is on it at most once on a call, or when the user asks who\'s doing it. If you just told the user what you\'re about to do, that was the acknowledgement: don\'t add another.'
-const ANSWER_LENGTH =
+export const ANSWER_LENGTH =
   "Say enough to be useful. Answer a real question fully the first time: the answer, then the details that make it useful (the reasons, numbers, names, steps or options that matter, and any caveat), usually several sentences and more when the topic needs it. Don't leave the user asking follow-up questions to get the substance, and don't stop at a headline or end on an offer to say more instead of saying it. This goes for everything you say, Hermes' results included, except a read-back: when the user asks to hear a reply again or in full and Conduit gives it to you to read, read all of it word for word, however long. It is still speech: say it in natural spoken sentences, not lists, headings or Markdown, and never read out URLs. When the detail is on the user's screen, that takes the place of a long spoken answer. Keep it short only for greetings, small talk, acknowledgements and confirmations."
 
 /** The language's English name, so the model reads it whatever it was trained on most. */
@@ -369,7 +369,7 @@ Never approve, deny, or answer anything on Hermes' behalf yourself; if Hermes as
 Only say you're sending or passing something to Hermes in a turn where you delegate it: saying so sends nothing, only the delegation does.
 ${END_CALL_RULE}]`
 
-function languageRule(language?: string): string {
+export function languageRule(language?: string): string {
   const follow = 'If the user speaks to you in another language, or asks you to switch, use theirs from then on, for the rest of the call.'
   const hold =
     "This holds whatever language these instructions, Hermes' replies or Conduit's notes are in: put what they say into the call's language. The one exception is a reply you read back word for word because the user asked to hear it: read it as written."
@@ -597,11 +597,12 @@ function setFlag(key: string, on: boolean): void {
   }
 }
 const BILLING_KEY = 'conduit.gptLiveBilling'
-export type VoiceMode = 'classic' | 'gpt'
+export type VoiceMode = 'classic' | 'gpt' | 'grok'
 
 export function voiceMode(): VoiceMode {
   try {
-    return localStorage.getItem(MODE_KEY) === 'gpt' ? 'gpt' : 'classic'
+    const saved = localStorage.getItem(MODE_KEY)
+    return saved === 'gpt' || saved === 'grok' ? saved : 'classic'
   } catch {
     return 'classic'
   }

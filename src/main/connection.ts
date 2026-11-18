@@ -288,6 +288,22 @@ export class Connection {
     return parsed as T
   }
 
+  /**
+   * A plugin's socket (`/api/plugins/...`, Grok Live's relay) with this
+   * sign-in's credential: a fresh ticket for a password sign-in, as the
+   * dashboard's own sockets take it.
+   */
+  async openSocket(path: string, query: Record<string, string> = {}): Promise<WebSocketLike> {
+    const saved = this.saved
+    if (!saved) throw new Error(t('Not signed in.'))
+    if (!path.startsWith('/api/plugins/')) throw new Error('Only plugin sockets can be opened.')
+    const url = new URL(await this.socketUrl(saved, path))
+    for (const [name, value] of Object.entries(query)) url.searchParams.set(name, value)
+    const headers: Record<string, string> = { [CONDUIT_CLIENT_HEADER]: 'conduit' }
+    if (saved.method === 'password' && saved.cookies) headers.Cookie = cookieHeader(saved.cookies)
+    return this.deps.createSocket(url.toString(), withProxyHeaders(headers, url.toString(), saved.url, saved.headers))
+  }
+
   private identity(): ConnectionStatus {
     const saved = this.saved
     if (!saved) return { phase: 'signed-out', hosts: this.hosts() }
@@ -418,27 +434,27 @@ export class Connection {
     return proxyFetch(this.deps.fetch, saved.url, saved.headers)
   }
 
-  private async socketUrl(saved: SavedConnection): Promise<string> {
+  private async socketUrl(saved: SavedConnection, path?: string): Promise<string> {
     switch (saved.method) {
       case 'open':
         this.openToken = await readOpenSessionToken(saved.url, this.fetchFor(saved))
-        return webSocketUrl(saved.url, { token: this.openToken })
+        return webSocketUrl(saved.url, { token: this.openToken }, path)
       case 'token':
-        return webSocketUrl(saved.url, { token: saved.token ?? '' })
+        return webSocketUrl(saved.url, { token: saved.token ?? '' }, path)
       case 'password': {
         let jar = saved.cookies ?? {}
         try {
           const minted = await mintTicket(saved.url, jar, this.fetchFor(saved))
           jar = minted.jar
           this.keepCookies(saved, jar)
-          return webSocketUrl(saved.url, { ticket: minted.ticket })
+          return webSocketUrl(saved.url, { ticket: minted.ticket }, path)
         } catch (error) {
           if (!(error instanceof AuthError && error.signedOut) || !saved.username || !saved.password) throw error
           // The session ran out: sign in again with the saved password.
           jar = await passwordLogin(saved.url, saved.username, saved.password, this.fetchFor(saved))
           const minted = await mintTicket(saved.url, jar, this.fetchFor(saved))
           this.keepCookies(saved, minted.jar)
-          return webSocketUrl(saved.url, { ticket: minted.ticket })
+          return webSocketUrl(saved.url, { ticket: minted.ticket }, path)
         }
       }
     }

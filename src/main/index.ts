@@ -21,6 +21,7 @@ import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
 import { chooseLanguage, chooseTheme, languageChoice, resolvedLanguage, themeChoice } from './settings'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
+import type { LiveSocketEvent } from '../shared/ipc'
 import { setLanguage, t } from '../shared/i18n'
 
 const isMac = process.platform === 'darwin'
@@ -200,6 +201,50 @@ function registerIpc(): void {
     }
   })
   ipcMain.handle(IPC.pluginRelease, () => pluginRelease())
+  // Live calls' sockets (Grok Live's relay): opened here, where the sign-in and a proxy's headers are.
+  const liveSockets = new Map<string, WebSocketLike>()
+  let liveCount = 0
+  ipcMain.handle(IPC.liveOpen, async (event, path: unknown, query: unknown) => {
+    if (typeof path !== 'string') return { ok: false, error: 'No socket path.' }
+    const params: Record<string, string> = {}
+    if (query && typeof query === 'object') for (const [name, value] of Object.entries(query)) if (typeof value === 'string') params[name] = value
+    let socket: WebSocketLike
+    try {
+      socket = await connection.openSocket(path, params)
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
+    const id = `live-${++liveCount}`
+    liveSockets.set(id, socket)
+    const sender = event.sender
+    const report = (payload: LiveSocketEvent) => {
+      if (!sender.isDestroyed()) sender.send(IPC.liveEvent, payload)
+    }
+    socket.onopen = () => report({ id, type: 'open' })
+    socket.onmessage = message => report({ id, type: 'message', data: typeof message.data === 'string' ? message.data : String(message.data) })
+    socket.onerror = error => report({ id, type: 'error', message: (error as { message?: string }).message ?? 'Socket error' })
+    socket.onclose = close => {
+      liveSockets.delete(id)
+      report({ id, type: 'close', code: close.code, reason: close.reason })
+    }
+    // A window that goes away takes its call with it.
+    sender.once('destroyed', () => liveSockets.get(id)?.close())
+    return { ok: true, id }
+  })
+  ipcMain.on(IPC.liveSend, (_event, id: unknown, text: unknown) => {
+    const socket = typeof id === 'string' ? liveSockets.get(id) : undefined
+    if (socket && typeof text === 'string' && socket.readyState === 1) socket.send(text)
+  })
+  ipcMain.on(IPC.liveClose, (_event, id: unknown, code: unknown) => {
+    const socket = typeof id === 'string' ? liveSockets.get(id) : undefined
+    if (!socket) return
+    liveSockets.delete(id as string)
+    try {
+      socket.close(typeof code === 'number' ? code : 1000)
+    } catch {
+      socket.close()
+    }
+  })
   ipcMain.on(IPC.windowMinimize, event => BrowserWindow.fromWebContents(event.sender)?.minimize())
   ipcMain.on(IPC.windowToggleMaximize, event => {
     const window = BrowserWindow.fromWebContents(event.sender)

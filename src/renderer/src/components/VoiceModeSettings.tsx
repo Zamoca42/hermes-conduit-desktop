@@ -26,6 +26,16 @@ import {
   type Billing,
   type VoiceMode
 } from '../state/gptLive'
+import {
+  STATUS_PATH as GROK_STATUS_PATH,
+  availability as grokAvailability,
+  grokSendsMemory,
+  grokSendsPersona,
+  setGrokSendsMemory,
+  setGrokSendsPersona,
+  via,
+  type Availability as GrokAvailability
+} from '../state/grokLive'
 
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
@@ -36,6 +46,25 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [memory, setMemory] = useState(sendsMemory)
   const [persona, setPersona] = useState(sendsPersona)
   const [status, setStatus] = useState<Availability | 'checking' | 'missing' | null>(null)
+  const [grokMemory, setGrokMemory] = useState(grokSendsMemory)
+  const [grokPersona, setGrokPersona] = useState(grokSendsPersona)
+  const [grokStatus, setGrokStatus] = useState<GrokAvailability | 'checking' | 'missing' | null>(null)
+
+  useEffect(() => {
+    if (mode !== 'grok') return setGrokStatus(null)
+    let live = true
+    setGrokStatus('checking')
+    gateway
+      .http('GET', withProfile(GROK_STATUS_PATH, profile), undefined, 30_000)
+      .then(body => live && setGrokStatus(grokAvailability(body)))
+      .catch((e: unknown) => {
+        if (!live) return
+        setGrokStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
+      })
+    return () => {
+      live = false
+    }
+  }, [mode, profile])
 
   useEffect(() => {
     if (mode !== 'gpt') return setStatus(null)
@@ -81,7 +110,64 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
         <button aria-pressed={mode === 'gpt'} onClick={() => choose('gpt')}>
           {t('GPT-Live')}
         </button>
+        <button aria-pressed={mode === 'grok'} onClick={() => choose('grok')}>
+          {t('Grok Live')}
+        </button>
       </div>
+      {mode === 'grok' ? (
+        <>
+          <p
+            className={`meta settings-caption${grokStatus && grokStatus !== 'checking' && (grokStatus === 'missing' || !grokStatus.ok) ? ' voice-call-problem' : ''}`}
+          >
+            {grokStatus === 'checking'
+              ? t('Checking…')
+              : grokStatus === 'missing'
+                ? t('Install or update the Hermes notifier plugin on your Hermes server.')
+                : grokStatus?.ok
+                  ? grokStatus.voice
+                    ? t('Available ({model}, voice {voice}, via {via})', { model: grokStatus.model, voice: grokStatus.voice, via: via(grokStatus.auth) })
+                    : t('Available ({model}, via {via})', { model: grokStatus.model, via: via(grokStatus.auth) })
+                  : grokStatus
+                    ? grokStatus.reason
+                      ? t('Grok Live is not available on this Hermes server: {reason}', { reason: grokStatus.reason })
+                      : t('Grok Live is not available on this Hermes server.')
+                    : null}
+          </p>
+          <p className="meta settings-caption">{t("The voice and model are set on your Hermes server (voice.grok_live in the profile's config).")}</p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={grokMemory}
+              onChange={e => {
+                setGrokMemory(e.target.checked)
+                setGrokSendsMemory(e.target.checked)
+              }}
+            />
+            {t('Use Hermes memory')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              'Grok Live gets what your Hermes agent remembers about you. That memory is sent to xAI with the conversation. Applies to the next conversation.'
+            )}
+          </p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={grokPersona}
+              onChange={e => {
+                setGrokPersona(e.target.checked)
+                setGrokSendsPersona(e.target.checked)
+              }}
+            />
+            {t('Use Hermes personality')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              "Grok Live talks with the personality in this profile's SOUL.md. SOUL.md is sent to xAI with the conversation. Applies to the next conversation."
+            )}
+          </p>
+        </>
+      ) : null}
       {mode === 'gpt' ? (
         <>
           <span className="meta">{t('Billing')}</span>

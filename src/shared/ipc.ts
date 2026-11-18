@@ -153,6 +153,14 @@ export interface ConduitApi {
   http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T>
   /** The Conduit plugin's newest version and changelog on its main branch, read by the main process (the window can't reach GitHub). */
   pluginRelease(): Promise<PluginRelease>
+  /**
+   * A live call's socket to a plugin route (`/api/plugins/...`), opened by the
+   * main process with this sign-in's credential; its events come on `onLive`.
+   */
+  liveOpen(path: string, query?: Record<string, string>): Promise<{ ok: true; id: string } | { ok: false; error: string }>
+  liveSend(id: string, text: string): void
+  liveClose(id: string, code?: number): void
+  onLive(listener: (event: LiveSocketEvent) => void): () => void
   onStatus(listener: (status: ConnectionStatus) => void): () => void
   onEvent(listener: (event: GatewayEventMessage) => void): () => void
   /** The questions Hermes is waiting on, now and whenever they change. */
@@ -247,5 +255,16 @@ export const IPC = {
   setLanguage: 'conduit:set-language',
   theme: 'conduit:theme',
   setTheme: 'conduit:set-theme',
-  pluginRelease: 'conduit:plugin-release'
+  pluginRelease: 'conduit:plugin-release',
+  liveOpen: 'conduit:live-open',
+  liveSend: 'conduit:live-send',
+  liveClose: 'conduit:live-close',
+  liveEvent: 'conduit:live-event'
 } as const
+
+/** What a live call's socket (opened by the main process) reports. */
+export type LiveSocketEvent =
+  | { id: string; type: 'open' }
+  | { id: string; type: 'message'; data: string }
+  | { id: string; type: 'close'; code: number; reason: string }
+  | { id: string; type: 'error'; message: string }
