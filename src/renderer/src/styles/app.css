@@ -4818,11 +4818,15 @@ code.file-link:hover {
   border-top: 1px solid var(--accent-line);
 }
 
-.voice-call-lines li.user {
+.voice-call-line {
+  text-align: left;
+}
+
+.voice-call-line.said {
   color: var(--text-2);
 }
 
-.voice-call-lines li.user::before {
+.voice-call-line.said::before {
   content: '› ';
   color: var(--accent);
 }

@@ -400,7 +400,7 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
       {lines.length ? (
         <ol className="voice-call-lines" aria-live="polite">
           {lines.map(line => (
-            <li key={line.id} className={line.who}>
+            <li key={line.id} className={line.who === 'user' ? 'voice-call-line said' : 'voice-call-line'}>
               {line.text}
             </li>
           ))}
