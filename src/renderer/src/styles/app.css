@@ -6382,3 +6382,21 @@ button.cap-row-text {
 .step-run-body > .review-card {
   border-color: transparent;
 }
+.step-run-summary {
+  margin: -4px 14px 10px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-2);
+  user-select: text;
+}
+.step-run-summary.looking {
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.step-run-explain {
+  align-self: flex-start;
+  margin: 2px 6px 0;
+  font-size: 13px;
+}

@@ -16,6 +16,7 @@ import { DEFAULT_DISPLAY, type ChatDisplay } from '../state/display'
 import { readAloud, stopReading, useReadingKey } from '../state/readAloud'
 import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
 import { foldRuns, span, spanText, type Row } from '../state/runs'
+import { useStepSummaries, type StepSummaries } from '../state/useStepSummaries'
 
 export interface MessageMenuItem {
   label: string
@@ -491,13 +492,18 @@ function StepRun({
   row,
   live,
   expandTools,
+  summaries,
   children
 }: {
   row: Extract<Row, { type: 'steps' }>
   live: boolean
   expandTools: boolean
+  summaries: StepSummaries
   children: React.ReactNode
 }) {
+  const summary = summaries.summary(row.items)
+  const lookingBack = summaries.lookingBack(row.items)
+  const explain = live ? undefined : summaries.explain(row.items)
   const [choice, setChoice] = useState<boolean | null>(null)
   const open = choice ?? (live || expandTools)
   const count = t('{count} steps', { count: String(row.items.length) })
@@ -514,7 +520,22 @@ function StepRun({
         <span className="step-run-title">{time ? `${count} · ${time}` : count}</span>
         <Icon name="chevron" className="step-run-chevron" />
       </button>
-      {open ? <div className="step-run-body">{children}</div> : null}
+      {summary ? <p className="step-run-summary">{summary}</p> : null}
+      {lookingBack ? (
+        <p className="step-run-summary looking">
+          <span className="running" /> {t('Hermes is looking back…')}
+        </p>
+      ) : null}
+      {open ? (
+        <div className="step-run-body">
+          {children}
+          {explain && !lookingBack ? (
+            <button className="link step-run-explain" onClick={explain}>
+              {summary ? t('Explain again') : t('Explain these steps')}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -542,7 +563,8 @@ export function Transcript({
   author = 'Hermes',
   onQuote,
   onCommand,
-  display = DEFAULT_DISPLAY
+  display = DEFAULT_DISPLAY,
+  sessionId
 }: {
   state: TranscriptState
   loading: boolean
@@ -559,6 +581,8 @@ export function Transcript({
   onCommand?: (command: string) => void
   /** The profile's Thinking and Tool cards settings. */
   display?: ChatDisplay
+  /** The chat's runtime session, which step summaries ask about. */
+  sessionId?: string
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -574,6 +598,7 @@ export function Transcript({
     [state.items, showsThinking, display.toolCards, display.showReviews]
   )
   const rows = useMemo(() => foldRuns(shown), [shown])
+  const summaries = useStepSummaries(state, sessionId, profile)
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
 
@@ -676,7 +701,7 @@ export function Transcript({
           ) : null}
           {rows.map(row =>
             row.type === 'steps' ? (
-              <StepRun key={row.id} row={row} live={row.trailing && state.running} expandTools={display.expandTools}>
+              <StepRun key={row.id} row={row} live={row.trailing && state.running} expandTools={display.expandTools} summaries={summaries}>
                 {row.items.map(renderItem)}
               </StepRun>
             ) : row.type === 'reviews' ? (

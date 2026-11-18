@@ -27,6 +27,8 @@ interface Props {
   bots: { name: string; title: string }[]
   profile: string
   onBack: () => void
+  /** Sections kept on this computer, under the profile's. */
+  children?: React.ReactNode
 }
 
 /**
@@ -34,7 +36,7 @@ interface Props {
  * (Workspace & safety, Advanced): each row saves as it changes, in turn with
  * every other config save, and a row Hermes' schema doesn't list isn't shown.
  */
-export function ConfigPage({ title, subtitle, sections, bots, profile: initialProfile, onBack }: Props) {
+export function ConfigPage({ title, subtitle, sections, bots, profile: initialProfile, onBack, children }: Props) {
   const [profile, setProfile] = useState(initialProfile)
   const [config, setConfig] = useState<Record<string, unknown> | null>(null)
   const [schema, setSchema] = useState<Set<string> | null>(null)
@@ -123,6 +125,7 @@ export function ConfigPage({ title, subtitle, sections, bots, profile: initialPr
           )
         })
       )}
+      {children}
     </div>
   )
 }
