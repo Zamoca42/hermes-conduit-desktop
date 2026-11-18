@@ -66,6 +66,9 @@ import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
 import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
+import { GptLiveCall } from './components/GptLiveCall'
+import { VoiceModeSettings } from './components/VoiceModeSettings'
+import { voiceMode, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
@@ -256,6 +259,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // Each reply's end reads the open folders again: the agent may have changed files.
   const [turnsDone, setTurnsDone] = useState(0)
   const [calling, setCalling] = useState(false)
+  // The call's mode, read as it starts: Settings > Voice, or Classic after a GPT-Live call failed.
+  const [callMode, setCallMode] = useState<VoiceMode>('classic')
+  useEffect(() => {
+    if (calling) setCallMode(voiceMode())
+  }, [calling])
   /** Edit Bot, open over Bots home. */
   const [editingBot, setEditingBot] = useState<Bot | null>(null)
   const [newBot, setNewBot] = useState(false)
@@ -749,7 +757,18 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   setYolo={setYolo}
                 />
               ) : null}
-              {calling ? (
+              {calling && callMode === 'gpt' ? (
+                <GptLiveCall
+                  profile={selected.profile}
+                  items={transcript.items}
+                  onSay={words => void onSend(words)}
+                  running={transcript.running}
+                  turnsDone={turnsDone}
+                  lastReply={lastReply}
+                  onEnd={() => setCalling(false)}
+                  onClassic={() => setCallMode('classic')}
+                />
+              ) : calling ? (
                 <VoiceCall
                   profile={selected.profile}
                   onSay={words => void onSend(words)}
@@ -1158,6 +1177,7 @@ function Settings({
           <p className="meta settings-caption">
             {t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}
           </p>
+          <VoiceModeSettings profile={profile} />
         </dd>
         <dt>{t('Appearance')}</dt>
         <dd>
