@@ -329,6 +329,21 @@
     "zh-Hans": "添加到消息",
     "zh-Hant": "加入訊息"
   },
+  "After a Restart": {
+    "de": "Nach einem Neustart",
+    "es": "Tras un reinicio",
+    "fr": "Après un redémarrage",
+    "id": "Setelah Mulai Ulang",
+    "it": "Dopo un riavvio",
+    "ja": "再起動後",
+    "ko": "재시작 후",
+    "pl": "Po ponownym uruchomieniu",
+    "pt-BR": "Depois de reiniciar",
+    "ru": "После перезапуска",
+    "tr": "Yeniden Başlatmadan Sonra",
+    "zh-Hans": "重启后",
+    "zh-Hant": "重新啟動後"
+  },
   "After thumbs down": {
     "de": "Nach Daumen runter",
     "es": "Tras pulgares abajo",
@@ -554,6 +569,51 @@
     "zh-Hans": "Hermes 在所有聊天中等待的批准和问题。",
     "zh-Hant": "Hermes 在所有聊天中等待的核准和問題。"
   },
+  "Approvals are off for this bot in Hermes, so its chats and workstreams run without asking.": {
+    "de": "Freigaben sind für diesen Bot in Hermes aus, daher laufen seine Chats und Workstreams ohne Nachfrage.",
+    "es": "Las aprobaciones están desactivadas para este bot en Hermes, así que sus chats y flujos de trabajo se ejecutan sin preguntar.",
+    "fr": "Les approbations sont désactivées pour ce bot dans Hermes, donc ses discussions et flux de travail s’exécutent sans demander.",
+    "id": "Persetujuan dimatikan untuk bot ini di Hermes, jadi obrolan dan alur kerjanya berjalan tanpa bertanya.",
+    "it": "Le approvazioni sono disattivate per questo bot in Hermes, quindi le sue chat e i flussi di lavoro procedono senza chiedere.",
+    "ja": "Hermesでこのボットの承認はオフなので、チャットもワークストリームも確認せずに実行します。",
+    "ko": "Hermes에서 이 봇의 승인이 꺼져 있어서 채팅과 작업 스트림이 묻지 않고 실행돼요.",
+    "pl": "Zatwierdzenia są wyłączone dla tego bota w Hermesie, więc jego czaty i wątki pracy działają bez pytania.",
+    "pt-BR": "As aprovações estão desativadas para este bot no Hermes, então os chats e fluxos de trabalho dele rodam sem perguntar.",
+    "ru": "Подтверждения для этого бота в Hermes выключены, поэтому его чаты и рабочие потоки работают без вопросов.",
+    "tr": "Bu bot için Hermes’te onaylar kapalı, bu yüzden sohbetleri ve iş akışları sormadan çalışır.",
+    "zh-Hans": "这个机器人在 Hermes 中关闭了审批，因此它的聊天和工作流都会直接运行，不再询问。",
+    "zh-Hant": "這個機器人在 Hermes 中關閉了核准，因此它的聊天和工作流程都會直接執行，不再詢問。"
+  },
+  "Approvals are off for this bot in Hermes, so no approval card comes. Its workstreams are told to wait for your own go-ahead before a step that can’t be undone.": {
+    "de": "Freigaben sind für diesen Bot in Hermes aus, daher kommt keine Freigabekarte. Seine Workstreams sollen vor einem Schritt, der sich nicht rückgängig machen lässt, auf dein eigenes Okay warten.",
+    "es": "Las aprobaciones están desactivadas para este bot en Hermes, así que no llega ninguna tarjeta de aprobación. Se indica a sus flujos de trabajo que esperen tu propio visto bueno antes de un paso que no se puede deshacer.",
+    "fr": "Les approbations sont désactivées pour ce bot dans Hermes, donc aucune carte d’approbation n’apparaît. Ses flux de travail ont pour consigne d’attendre votre propre accord avant une étape irréversible.",
+    "id": "Persetujuan dimatikan untuk bot ini di Hermes, jadi tidak ada kartu persetujuan. Alur kerjanya diminta menunggu persetujuan Anda sendiri sebelum langkah yang tidak bisa dibatalkan.",
+    "it": "Le approvazioni sono disattivate per questo bot in Hermes, quindi non arriva nessuna scheda di approvazione. Ai suoi flussi di lavoro viene detto di aspettare il tuo via libera prima di un passaggio irreversibile.",
+    "ja": "Hermesでこのボットの承認はオフなので、承認カードは表示されません。ワークストリームには、取り消せないステップの前にあなた自身の了承を待つよう指示します。",
+    "ko": "Hermes에서 이 봇의 승인이 꺼져 있어서 승인 카드가 오지 않아요. 작업 스트림은 되돌릴 수 없는 단계 전에 사용자의 직접적인 동의를 기다리도록 안내받아요.",
+    "pl": "Zatwierdzenia są wyłączone dla tego bota w Hermesie, więc nie pojawi się karta zatwierdzenia. Jego wątki pracy mają czekać na Twoją własną zgodę przed krokiem, którego nie da się cofnąć.",
+    "pt-BR": "As aprovações estão desativadas para este bot no Hermes, então nenhum cartão de aprovação aparece. Os fluxos de trabalho dele são instruídos a esperar seu próprio sinal verde antes de uma etapa que não pode ser desfeita.",
+    "ru": "Подтверждения для этого бота в Hermes выключены, поэтому карточка подтверждения не придёт. Его рабочим потокам велено ждать вашего собственного согласия перед шагом, который нельзя отменить.",
+    "tr": "Bu bot için Hermes’te onaylar kapalı, bu yüzden onay kartı gelmez. İş akışlarına, geri alınamayan bir adımdan önce sizin onayınızı beklemeleri söylenir.",
+    "zh-Hans": "这个机器人在 Hermes 中关闭了审批，因此不会出现审批卡片。它的工作流会被要求在无法撤销的步骤前等待你本人的许可。",
+    "zh-Hant": "這個機器人在 Hermes 中關閉了核准，因此不會出現核准卡片。它的工作流程會被要求在無法復原的步驟前等待你本人的同意。"
+  },
+  "Approvals in Workstreams": {
+    "de": "Freigaben in Workstreams",
+    "es": "Aprobaciones en flujos de trabajo",
+    "fr": "Approbations dans les flux de travail",
+    "id": "Persetujuan di Alur Kerja",
+    "it": "Approvazioni nei flussi di lavoro",
+    "ja": "ワークストリームでの承認",
+    "ko": "작업 스트림의 승인",
+    "pl": "Zatwierdzenia w wątkach pracy",
+    "pt-BR": "Aprovações nos fluxos de trabalho",
+    "ru": "Подтверждения в рабочих потоках",
+    "tr": "İş Akışlarında Onaylar",
+    "zh-Hans": "工作流中的审批",
+    "zh-Hant": "工作流程中的核准"
+  },
   "Approve": {
     "de": "Freigeben",
     "es": "Aprobar",
@@ -628,6 +688,21 @@
     "tr": "Hermes’e bir şey sorun…",
     "zh-Hans": "问 Hermes 任何问题…",
     "zh-Hant": "問 Hermes 任何問題…"
+  },
+  "Ask Me First": {
+    "de": "Erst mich fragen",
+    "es": "Preguntarme antes",
+    "fr": "Me demander d’abord",
+    "id": "Tanya Saya Dulu",
+    "it": "Chiedimi prima",
+    "ja": "先に確認する",
+    "ko": "먼저 물어보기",
+    "pl": "Najpierw mnie zapytaj",
+    "pt-BR": "Perguntar antes",
+    "ru": "Сначала спросить меня",
+    "tr": "Önce Bana Sor",
+    "zh-Hans": "先问我",
+    "zh-Hant": "先問我"
   },
   "Ask a side question about this chat": {
     "de": "Eine Nebenfrage zu diesem Chat stellen",
@@ -824,6 +899,21 @@
     "zh-Hans": "附件发送失败：{reason}",
     "zh-Hant": "附加失敗：{reason}"
   },
+  "Automatic": {
+    "de": "Automatisch",
+    "es": "Automático",
+    "fr": "Automatique",
+    "id": "Otomatis",
+    "it": "Automatico",
+    "ja": "自動",
+    "ko": "자동",
+    "pl": "Automatycznie",
+    "pt-BR": "Automático",
+    "ru": "Автоматически",
+    "tr": "Otomatik",
+    "zh-Hans": "自动",
+    "zh-Hant": "自動"
+  },
   "Back": {
     "de": "Zurück",
     "es": "Atrás",
@@ -974,6 +1064,21 @@
     "zh-Hans": "Pulse 在给你写消息前，可以查看你的日历、提醒事项、联系人和闹钟，在地图中查找地点，并在跟进某个承诺时搜索网络。它从不更改你手机上的任何内容。",
     "zh-Hant": "Pulse 在寫訊息給你之前，可以查看你的行事曆、提醒事項、聯絡人和鬧鐘，在地圖中查詢地點，並在追蹤某個承諾時搜尋網路。它從不更改你手機上的任何內容。"
   },
+  "Before a step that can’t be undone, workstreams wait for your own go-ahead, never {bot}’s alone.": {
+    "de": "Vor einem Schritt, der sich nicht rückgängig machen lässt, warten Workstreams auf dein eigenes Okay, nie nur auf das von {bot}.",
+    "es": "Antes de un paso que no se puede deshacer, los flujos de trabajo esperan tu propio visto bueno, nunca solo el de {bot}.",
+    "fr": "Avant une étape irréversible, les flux de travail attendent votre propre accord, jamais celui de {bot} seul.",
+    "id": "Sebelum langkah yang tidak bisa dibatalkan, alur kerja menunggu persetujuan Anda sendiri, bukan hanya dari {bot}.",
+    "it": "Prima di un passaggio irreversibile, i flussi di lavoro aspettano il tuo via libera, mai solo quello di {bot}.",
+    "ja": "取り消せないステップの前には、ワークストリームは{bot}だけでなく、あなた自身の了承を待ちます。",
+    "ko": "되돌릴 수 없는 단계 전에는 작업 스트림이 {bot}만이 아니라 사용자의 직접적인 동의를 기다려요.",
+    "pl": "Przed krokiem, którego nie da się cofnąć, wątki pracy czekają na Twoją własną zgodę, nigdy tylko na zgodę {bot}.",
+    "pt-BR": "Antes de uma etapa que não pode ser desfeita, os fluxos de trabalho esperam seu próprio sinal verde, nunca só o de {bot}.",
+    "ru": "Перед шагом, который нельзя отменить, рабочие потоки ждут вашего собственного согласия, а не только согласия {bot}.",
+    "tr": "Geri alınamayan bir adımdan önce iş akışları yalnızca {bot} değil, sizin onayınızı bekler.",
+    "zh-Hans": "在无法撤销的步骤前，工作流会等待你本人的许可，而不只是 {bot} 的。",
+    "zh-Hant": "在無法復原的步驟前，工作流程會等待你本人的同意，而不只是 {bot} 的。"
+  },
   "Before writing this, Pulse looked at {list}.": {
     "de": "Vor dem Schreiben hat Pulse Folgendes geprüft: {list}.",
     "es": "Antes de escribir esto, Pulse consultó {list}.",
@@ -1018,6 +1123,21 @@
     "tr": "Perde arkası",
     "zh-Hans": "幕后",
     "zh-Hant": "幕後"
+  },
+  "Between Workstreams": {
+    "de": "Zwischen Workstreams",
+    "es": "Entre flujos de trabajo",
+    "fr": "Entre les flux de travail",
+    "id": "Antar Alur Kerja",
+    "it": "Tra i flussi di lavoro",
+    "ja": "ワークストリーム間",
+    "ko": "작업 스트림 간",
+    "pl": "Między wątkami pracy",
+    "pt-BR": "Entre fluxos de trabalho",
+    "ru": "Между рабочими потоками",
+    "tr": "İş Akışları Arasında",
+    "zh-Hans": "工作流之间",
+    "zh-Hant": "工作流程之間"
   },
   "Blocked": {
     "de": "Blockiert",
@@ -1874,6 +1994,51 @@
     "zh-Hans": "继续",
     "zh-Hant": "繼續"
   },
+  "Continue Safe Work": {
+    "de": "Sichere Arbeit fortsetzen",
+    "es": "Continuar el trabajo seguro",
+    "fr": "Reprendre le travail sans risque",
+    "id": "Lanjutkan Pekerjaan yang Aman",
+    "it": "Continua il lavoro sicuro",
+    "ja": "安全な作業は続ける",
+    "ko": "안전한 작업은 계속",
+    "pl": "Kontynuuj bezpieczną pracę",
+    "pt-BR": "Continuar o trabalho seguro",
+    "ru": "Продолжать безопасную работу",
+    "tr": "Güvenli İşe Devam Et",
+    "zh-Hans": "继续安全的工作",
+    "zh-Hant": "繼續安全的工作"
+  },
+  "Coordinate Work": {
+    "de": "Arbeit koordinieren",
+    "es": "Coordinar el trabajo",
+    "fr": "Coordonner le travail",
+    "id": "Koordinasikan Pekerjaan",
+    "it": "Coordina il lavoro",
+    "ja": "作業をまとめる",
+    "ko": "작업 조율",
+    "pl": "Koordynuj pracę",
+    "pt-BR": "Coordenar trabalho",
+    "ru": "Координировать работу",
+    "tr": "İşi Koordine Et",
+    "zh-Hans": "协调工作",
+    "zh-Hant": "協調工作"
+  },
+  "Coordination": {
+    "de": "Koordination",
+    "es": "Coordinación",
+    "fr": "Coordination",
+    "id": "Koordinasi",
+    "it": "Coordinamento",
+    "ja": "連携",
+    "ko": "조율",
+    "pl": "Koordynacja",
+    "pt-BR": "Coordenação",
+    "ru": "Координация",
+    "tr": "Koordinasyon",
+    "zh-Hans": "协调",
+    "zh-Hant": "協調"
+  },
   "Copied": {
     "de": "Kopiert",
     "es": "Copiado",
@@ -2249,6 +2414,21 @@
     "zh-Hans": "无法加载看板：{reason}",
     "zh-Hant": "無法載入看板：{reason}"
   },
+  "Couldn’t load the work settings.": {
+    "de": "Die Arbeitseinstellungen konnten nicht geladen werden.",
+    "es": "No se pudieron cargar los ajustes de trabajo.",
+    "fr": "Impossible de charger les réglages de travail.",
+    "id": "Tidak dapat memuat pengaturan kerja.",
+    "it": "Impossibile caricare le impostazioni del lavoro.",
+    "ja": "作業の設定を読み込めませんでした。",
+    "ko": "작업 설정을 불러올 수 없어요.",
+    "pl": "Nie udało się wczytać ustawień pracy.",
+    "pt-BR": "Não foi possível carregar os ajustes de trabalho.",
+    "ru": "Не удалось загрузить настройки работы.",
+    "tr": "Çalışma ayarları yüklenemedi.",
+    "zh-Hans": "无法载入工作设置。",
+    "zh-Hant": "無法載入工作設定。"
+  },
   "Couldn’t load this task: {reason}": {
     "de": "Diese Aufgabe konnte nicht geladen werden: {reason}",
     "es": "No se pudo cargar esta tarea: {reason}",
@@ -2368,6 +2548,21 @@
     "tr": "{host} adresine ulaşılamadı.",
     "zh-Hans": "无法连接 {host}。",
     "zh-Hant": "無法連線 {host}。"
+  },
+  "Couldn’t save that change. Try again.": {
+    "de": "Die Änderung konnte nicht gespeichert werden. Versuche es noch einmal.",
+    "es": "No se pudo guardar el cambio. Inténtalo de nuevo.",
+    "fr": "Impossible d’enregistrer cette modification. Réessayez.",
+    "id": "Tidak dapat menyimpan perubahan itu. Coba lagi.",
+    "it": "Impossibile salvare la modifica. Riprova.",
+    "ja": "変更を保存できませんでした。もう一度お試しください。",
+    "ko": "변경 사항을 저장할 수 없어요. 다시 시도하세요.",
+    "pl": "Nie udało się zapisać tej zmiany. Spróbuj ponownie.",
+    "pt-BR": "Não foi possível salvar a alteração. Tente de novo.",
+    "ru": "Не удалось сохранить изменение. Попробуйте ещё раз.",
+    "tr": "Bu değişiklik kaydedilemedi. Yeniden deneyin.",
+    "zh-Hans": "无法保存这项更改。请重试。",
+    "zh-Hant": "無法儲存這項變更。請再試一次。"
   },
   "Create": {
     "de": "Erstellen",
@@ -2878,6 +3073,21 @@
     "tr": "Bitti, sohbette görüldü",
     "zh-Hans": "已完成，在聊天中看到",
     "zh-Hant": "已完成，在聊天中看到"
+  },
+  "Don’t Ask": {
+    "de": "Nicht fragen",
+    "es": "No preguntar",
+    "fr": "Ne pas demander",
+    "id": "Jangan Tanya",
+    "it": "Non chiedere",
+    "ja": "確認しない",
+    "ko": "묻지 않기",
+    "pl": "Nie pytaj",
+    "pt-BR": "Não perguntar",
+    "ru": "Не спрашивать",
+    "tr": "Sorma",
+    "zh-Hans": "不询问",
+    "zh-Hant": "不詢問"
   },
   "Drag one bot onto another to start a group chat.": {
     "de": "Zieh einen Bot auf einen anderen, um einen Gruppenchat zu starten.",
@@ -3448,6 +3658,36 @@
     "tr": "Buradaki herkes gönderdiklerinizi okur. Yalnızca bir bota sormak için @ ile ondan bahsedin.",
     "zh-Hans": "这里的每个人都能看到你发的内容。用 @ 提及机器人，只问它。",
     "zh-Hant": "這裡的每個人都能看到你傳的內容。用 @ 提及機器人，只問它。"
+  },
+  "Everything Here": {
+    "de": "Alles hier",
+    "es": "Todo aquí",
+    "fr": "Tout ici",
+    "id": "Semuanya di sini",
+    "it": "Tutto qui",
+    "ja": "すべてここで",
+    "ko": "모두 여기서",
+    "pl": "Wszystko tutaj",
+    "pt-BR": "Tudo aqui",
+    "ru": "Всё здесь",
+    "tr": "Her şey burada",
+    "zh-Hans": "全部在这里做",
+    "zh-Hant": "全部在這裡做"
+  },
+  "Everything but cards, maps, notifications, memories and its questions to you runs in the background, so its Bot Chat is always free to talk.": {
+    "de": "Alles außer Karten, Landkarten, Mitteilungen, Erinnerungen und seinen Fragen an dich läuft im Hintergrund, damit der Bot-Chat immer frei zum Reden bleibt.",
+    "es": "Todo salvo las tarjetas, los mapas, las notificaciones, los recuerdos y sus preguntas para ti se ejecuta en segundo plano, así su chat del bot siempre está libre para hablar.",
+    "fr": "Tout sauf les cartes, les plans, les notifications, les souvenirs et ses questions pour toi s’exécute en arrière-plan, pour que sa discussion du bot reste toujours libre pour parler.",
+    "id": "Semua kecuali kartu, peta, notifikasi, ingatan, dan pertanyaannya untukmu berjalan di latar belakang, jadi Obrolan Bot-nya selalu bebas untuk mengobrol.",
+    "it": "Tutto tranne le schede, le mappe, le notifiche, i ricordi e le sue domande per te va in background, così la sua chat del bot è sempre libera per parlare.",
+    "ja": "カード、地図、通知、記憶、あなたへの質問以外はすべてバックグラウンドで行うので、ボットチャットはいつでも話せる状態のままです。",
+    "ko": "카드, 지도, 알림, 기억, 사용자에게 하는 질문을 뺀 모든 일은 백그라운드에서 실행되므로 봇 채팅은 언제나 대화할 수 있습니다.",
+    "pl": "Wszystko poza kartami, mapami, powiadomieniami, wspomnieniami i pytaniami do ciebie działa w tle, więc czat bota jest zawsze wolny do rozmowy.",
+    "pt-BR": "Tudo, menos cartões, mapas, notificações, memórias e as perguntas para você, roda em segundo plano, então o chat do bot fica sempre livre para conversar.",
+    "ru": "Всё, кроме карточек, карт, уведомлений, воспоминаний и вопросов к вам, выполняется в фоне, поэтому чат бота всегда свободен для разговора.",
+    "tr": "Kartlar, haritalar, bildirimler, anılar ve sana soruları dışında her şey arka planda çalışır, böylece bot sohbeti konuşmak için hep boş kalır.",
+    "zh-Hans": "除了卡片、地图、通知、记忆和问你的问题，其余都在后台进行，所以机器人聊天始终可以随时交谈。",
+    "zh-Hant": "除了卡片、地圖、通知、記憶和問你的問題，其餘都在背景進行，所以機器人聊天始終可以隨時交談。"
   },
   "Every…": {
     "de": "Alle …",
@@ -5729,6 +5969,21 @@
     "zh-Hans": "新建任务",
     "zh-Hant": "新增任務"
   },
+  "New workstreams start on this model. Work that’s already running keeps its own.": {
+    "de": "Neue Workstreams starten mit diesem Modell. Laufende Arbeit behält ihr eigenes.",
+    "es": "Los nuevos flujos de trabajo empiezan con este modelo. El trabajo que ya está en marcha conserva el suyo.",
+    "fr": "Les nouvelles tâches de fond démarrent avec ce modèle. Le travail déjà en cours garde le sien.",
+    "id": "Workstream baru dimulai dengan model ini. Pekerjaan yang sudah berjalan tetap memakai modelnya sendiri.",
+    "it": "I nuovi flussi di lavoro partono con questo modello. Il lavoro già in corso mantiene il suo.",
+    "ja": "新しいワークストリームはこのモデルで始まります。実行中の作業は元のモデルのままです。",
+    "ko": "새 워크스트림은 이 모델로 시작합니다. 이미 실행 중인 작업은 기존 모델을 유지합니다.",
+    "pl": "Nowe wątki pracy startują na tym modelu. Praca, która już trwa, zachowuje swój.",
+    "pt-BR": "Novos fluxos de trabalho começam com este modelo. O trabalho que já está em andamento mantém o seu.",
+    "ru": "Новые рабочие потоки запускаются на этой модели. Уже идущая работа сохраняет свою.",
+    "tr": "Yeni iş akışları bu modelle başlar. Zaten çalışan işler kendi modelini korur.",
+    "zh-Hans": "新的工作流将使用此模型启动。已在运行的工作保留其原有模型。",
+    "zh-Hant": "新的工作流將使用此模型啟動。已在執行的工作保留其原有模型。"
+  },
   "Next look": {
     "de": "Nächste Durchsicht",
     "es": "Próxima revisión",
@@ -6598,6 +6853,21 @@
     "tr": "Bir kez, {date}",
     "zh-Hans": "仅一次，{date}",
     "zh-Hant": "僅一次，{date}"
+  },
+  "Only Coordinates": {
+    "de": "Nur koordinieren",
+    "es": "Solo coordina",
+    "fr": "Coordonne seulement",
+    "id": "Hanya Mengoordinasikan",
+    "it": "Solo coordinamento",
+    "ja": "まとめ役に徹する",
+    "ko": "조율만 하기",
+    "pl": "Tylko koordynuje",
+    "pt-BR": "Só coordena",
+    "ru": "Только координирует",
+    "tr": "Yalnızca Koordine Eder",
+    "zh-Hans": "只负责协调",
+    "zh-Hant": "只負責協調"
   },
   "Only the start of this file is shown.": {
     "de": "Nur der Anfang dieser Datei wird angezeigt.",
@@ -7754,6 +8024,21 @@
     "zh-Hans": "快速提问",
     "zh-Hant": "快速提問"
   },
+  "Quick Things Here": {
+    "de": "Schnelles hier",
+    "es": "Lo rápido aquí",
+    "fr": "Le rapide ici",
+    "id": "Yang cepat di sini",
+    "it": "Le cose rapide qui",
+    "ja": "簡単なことはここで",
+    "ko": "간단한 일은 여기서",
+    "pl": "Szybkie sprawy tutaj",
+    "pt-BR": "O rápido aqui",
+    "ru": "Быстрое здесь",
+    "tr": "Hızlı işler burada",
+    "zh-Hans": "简单的事在这里做",
+    "zh-Hant": "簡單的事在這裡做"
+  },
   "Quick ask": {
     "de": "Schnellfrage",
     "es": "Pregunta rápida",
@@ -8714,6 +8999,21 @@
     "zh-Hans": "正在运行命令",
     "zh-Hant": "正在執行指令"
   },
+  "Running at Once": {
+    "de": "Gleichzeitig aktiv",
+    "es": "A la vez",
+    "fr": "En même temps",
+    "id": "Berjalan Bersamaan",
+    "it": "In contemporanea",
+    "ja": "同時に実行",
+    "ko": "동시에 실행",
+    "pl": "Jednocześnie",
+    "pt-BR": "Ao mesmo tempo",
+    "ru": "Одновременно",
+    "tr": "Aynı Anda",
+    "zh-Hans": "同时运行",
+    "zh-Hant": "同時執行"
+  },
   "Running code": {
     "de": "Führt Code aus",
     "es": "Ejecutando código",
@@ -8743,6 +9043,51 @@
     "tr": "Çalışma zamanı",
     "zh-Hans": "运行时间",
     "zh-Hant": "執行時間"
+  },
+  "Safety": {
+    "de": "Sicherheit",
+    "es": "Seguridad",
+    "fr": "Sécurité",
+    "id": "Keamanan",
+    "it": "Sicurezza",
+    "ja": "安全",
+    "ko": "안전",
+    "pl": "Bezpieczeństwo",
+    "pt-BR": "Segurança",
+    "ru": "Безопасность",
+    "tr": "Güvenlik",
+    "zh-Hans": "安全",
+    "zh-Hant": "安全"
+  },
+  "Same as Bot Chat": {
+    "de": "Wie im Bot-Chat",
+    "es": "Igual que el chat del bot",
+    "fr": "Comme le chat du bot",
+    "id": "Sama dengan Bot Chat",
+    "it": "Come la chat del bot",
+    "ja": "ボットチャットと同じ",
+    "ko": "봇 채팅과 동일",
+    "pl": "Jak w czacie bota",
+    "pt-BR": "Igual ao chat do bot",
+    "ru": "Как в чате бота",
+    "tr": "Bot Sohbetiyle Aynı",
+    "zh-Hans": "与机器人聊天相同",
+    "zh-Hant": "與機器人聊天相同"
+  },
+  "Same as Chats": {
+    "de": "Wie in Chats",
+    "es": "Igual que en los chats",
+    "fr": "Comme dans les discussions",
+    "id": "Sama seperti Obrolan",
+    "it": "Come nelle chat",
+    "ja": "チャットと同じ",
+    "ko": "채팅과 같게",
+    "pl": "Jak w czatach",
+    "pt-BR": "Igual aos chats",
+    "ru": "Как в чатах",
+    "tr": "Sohbetlerdeki Gibi",
+    "zh-Hans": "与聊天相同",
+    "zh-Hant": "與聊天相同"
   },
   "Same as this computer": {
     "de": "Wie dieser Computer",
@@ -9809,6 +10154,21 @@
     "zh-Hans": "引导当前运行",
     "zh-Hant": "引導目前的執行"
   },
+  "Steps in One Turn": {
+    "de": "Schritte pro Antwort",
+    "es": "Pasos por turno",
+    "fr": "Étapes par tour",
+    "id": "Langkah dalam Satu Giliran",
+    "it": "Passaggi per turno",
+    "ja": "1ターンのステップ数",
+    "ko": "한 턴의 단계 수",
+    "pl": "Kroki w jednej turze",
+    "pt-BR": "Passos por turno",
+    "ru": "Шагов за один ход",
+    "tr": "Bir Turdaki Adım Sayısı",
+    "zh-Hans": "每轮步骤数",
+    "zh-Hant": "每輪步驟數"
+  },
   "Steps ran for this reply, and retrying runs them again.": {
     "de": "Für diese Antwort liefen Schritte, und Wiederholen führt sie erneut aus.",
     "es": "Esta respuesta ejecutó pasos, y reintentar los vuelve a ejecutar.",
@@ -10663,6 +11023,21 @@
     "tr": "Bu pano Cloudflare Access’in arkasında. Hizmet belirtecini Proxy girişi altında ekleyin.",
     "zh-Hans": "此控制台位于 Cloudflare Access 后面。请在“代理登录”中添加其服务令牌。",
     "zh-Hant": "此控制台位於 Cloudflare Access 後面。請在「代理伺服器登入」中加入其服務權杖。"
+  },
+  "This doesn’t change what workstreams may do: their approvals stay as set under Safety.": {
+    "de": "Das ändert nicht, was Workstreams tun dürfen: Ihre Freigaben bleiben so, wie unter Sicherheit eingestellt.",
+    "es": "Esto no cambia lo que pueden hacer los flujos de trabajo: sus aprobaciones siguen como están en Seguridad.",
+    "fr": "Cela ne change pas ce que les flux de travail peuvent faire : leurs approbations restent telles que réglées dans Sécurité.",
+    "id": "Ini tidak mengubah apa yang boleh dilakukan alur kerja: persetujuannya tetap seperti yang diatur di Keamanan.",
+    "it": "Questo non cambia ciò che i flussi di lavoro possono fare: le loro approvazioni restano come impostate in Sicurezza.",
+    "ja": "ワークストリームに許可されている操作は変わりません。承認は「安全」での設定のままです。",
+    "ko": "작업 스트림이 할 수 있는 일은 바뀌지 않아요. 승인은 안전에서 설정한 그대로예요.",
+    "pl": "To nie zmienia tego, co mogą robić wątki pracy: ich zatwierdzenia pozostają takie, jak ustawiono w sekcji Bezpieczeństwo.",
+    "pt-BR": "Isso não muda o que os fluxos de trabalho podem fazer: as aprovações deles continuam como definidas em Segurança.",
+    "ru": "Это не меняет того, что разрешено рабочим потокам: их подтверждения остаются такими, как задано в разделе «Безопасность».",
+    "tr": "Bu, iş akışlarının yapabileceklerini değiştirmez: onayları Güvenlik altında ayarlandığı gibi kalır.",
+    "zh-Hans": "这不会改变工作流可以做的事：它们的审批仍按“安全”中的设置。",
+    "zh-Hant": "這不會改變工作流程可以做的事：它們的核准仍依「安全」中的設定。"
   },
   "This file isn't text, so it can't be shown here.": {
     "de": "Diese Datei ist kein Text und kann hier nicht angezeigt werden.",
@@ -11969,6 +12344,21 @@
     "zh-Hans": "每次希望 Hermes 做什么",
     "zh-Hant": "每次希望 Hermes 做什麼"
   },
+  "What It Does Itself": {
+    "de": "Was er selbst macht",
+    "es": "Lo que hace por sí mismo",
+    "fr": "Ce qu’il fait lui-même",
+    "id": "Yang Dikerjakan Sendiri",
+    "it": "Cosa fa da sé",
+    "ja": "自分で行うこと",
+    "ko": "직접 하는 일",
+    "pl": "Co robi sam",
+    "pt-BR": "O que faz sozinho",
+    "ru": "Что он делает сам",
+    "tr": "Kendi Yaptıkları",
+    "zh-Hans": "它亲自做的事",
+    "zh-Hant": "它自己做的事"
+  },
   "What Pulse learned": {
     "de": "Was Pulse gelernt hat",
     "es": "Lo que aprendió Pulse",
@@ -12179,6 +12569,21 @@
     "zh-Hans": "当你没在看的聊天中回复完成或有事需要你处理时",
     "zh-Hant": "當你沒在看的聊天中回覆完成或有事需要你處理時"
   },
+  "When this many are running, {bot} waits for one to finish or sends new work to one that’s already on it.": {
+    "de": "Laufen so viele, wartet {bot}, bis einer fertig ist, oder gibt neue Arbeit an einen, der schon daran sitzt.",
+    "es": "Cuando hay tantos en marcha, {bot} espera a que termine uno o manda el trabajo nuevo a uno que ya se ocupa de ello.",
+    "fr": "Quand il y en a autant en cours, {bot} attend qu’un se termine ou confie le nouveau travail à celui qui s’en occupe déjà.",
+    "id": "Saat sebanyak ini berjalan, {bot} menunggu salah satunya selesai atau mengirim pekerjaan baru ke yang sudah menanganinya.",
+    "it": "Quando ne sono in corso così tanti, {bot} aspetta che uno finisca o affida il nuovo lavoro a uno che se ne sta già occupando.",
+    "ja": "この数が実行中のとき、{bot}は1つが終わるのを待つか、すでに担当しているものに新しい作業を送ります。",
+    "ko": "이만큼 실행 중이면 {bot}이(가) 하나가 끝나길 기다리거나, 이미 맡고 있는 곳에 새 작업을 보내요.",
+    "pl": "Gdy tyle już działa, {bot} czeka, aż jeden się skończy, albo przekazuje nową pracę temu, który już się nią zajmuje.",
+    "pt-BR": "Quando há tantos em andamento, {bot} espera um terminar ou manda o trabalho novo para um que já cuida disso.",
+    "ru": "Когда их столько запущено, {bot} ждёт, пока один закончит, или отдаёт новую работу тому, кто уже ею занят.",
+    "tr": "Bu kadarı çalışırken {bot} birinin bitmesini bekler ya da yeni işi zaten onunla uğraşana gönderir.",
+    "zh-Hans": "运行数达到这个值时，{bot} 会等其中一个完成，或把新工作交给已在处理的那个。",
+    "zh-Hant": "執行數達到這個值時，{bot} 會等其中一個完成，或把新工作交給已在處理的那一個。"
+  },
   "Why?": {
     "de": "Warum?",
     "es": "¿Por qué?",
@@ -12284,6 +12689,21 @@
     "zh-Hans": "工作与职业",
     "zh-Hant": "工作與職業"
   },
+  "Work cut off during a step that can change things always waits for you. This is for the rest.": {
+    "de": "Arbeit, die mitten in einem Schritt abbrach, der etwas ändern kann, wartet immer auf dich. Das hier gilt für den Rest.",
+    "es": "El trabajo cortado en un paso que puede cambiar cosas siempre te espera. Esto es para el resto.",
+    "fr": "Un travail interrompu pendant une étape qui peut changer des choses vous attend toujours. Ce réglage vaut pour le reste.",
+    "id": "Pekerjaan yang terputus saat langkah yang bisa mengubah sesuatu selalu menunggu Anda. Ini untuk sisanya.",
+    "it": "Il lavoro interrotto durante un passaggio che può cambiare le cose aspetta sempre te. Questo vale per il resto.",
+    "ja": "何かを変更しうるステップの途中で止まった作業は、必ずあなたの判断を待ちます。これはそれ以外の作業の設定です。",
+    "ko": "무언가를 바꿀 수 있는 단계 도중에 끊긴 작업은 항상 사용자를 기다려요. 이 설정은 나머지에 적용돼요.",
+    "pl": "Praca przerwana w kroku, który może coś zmienić, zawsze czeka na Ciebie. To ustawienie dotyczy reszty.",
+    "pt-BR": "Trabalho interrompido durante uma etapa que pode mudar algo sempre espera por você. Isto vale para o resto.",
+    "ru": "Работа, прерванная на шаге, который может что-то изменить, всегда ждёт вас. Эта настройка — для остальной.",
+    "tr": "Bir şeyleri değiştirebilecek bir adımda kesilen iş her zaman sizi bekler. Bu ayar geri kalanı içindir.",
+    "zh-Hans": "在可能改变内容的步骤中途被打断的工作总会等你决定。此设置适用于其余工作。",
+    "zh-Hant": "在可能改變內容的步驟中途被中斷的工作一定會等你決定。此設定適用於其餘工作。"
+  },
   "Working": {
     "de": "In Arbeit",
     "es": "Trabajando",
@@ -12328,6 +12748,66 @@
     "tr": "Çalışıyor…",
     "zh-Hans": "处理中…",
     "zh-Hant": "處理中…"
+  },
+  "Workstream Model": {
+    "de": "Modell für Workstreams",
+    "es": "Modelo de los flujos de trabajo",
+    "fr": "Modèle des tâches de fond",
+    "id": "Model Workstream",
+    "it": "Modello dei flussi di lavoro",
+    "ja": "ワークストリームのモデル",
+    "ko": "워크스트림 모델",
+    "pl": "Model wątków pracy",
+    "pt-BR": "Modelo dos fluxos de trabalho",
+    "ru": "Модель для рабочих потоков",
+    "tr": "İş Akışı Modeli",
+    "zh-Hans": "工作流模型",
+    "zh-Hant": "工作流模型"
+  },
+  "Workstreams ask for approval as this bot’s chats do in Hermes.": {
+    "de": "Workstreams fragen nach Freigaben wie die Chats dieses Bots in Hermes.",
+    "es": "Los flujos de trabajo piden aprobación como los chats de este bot en Hermes.",
+    "fr": "Les flux de travail demandent une approbation comme les discussions de ce bot dans Hermes.",
+    "id": "Alur kerja meminta persetujuan seperti obrolan bot ini di Hermes.",
+    "it": "I flussi di lavoro chiedono l’approvazione come le chat di questo bot in Hermes.",
+    "ja": "ワークストリームは、Hermesでのこのボットのチャットと同じように承認を求めます。",
+    "ko": "작업 스트림은 Hermes에서 이 봇의 채팅과 같은 방식으로 승인을 요청해요.",
+    "pl": "Wątki pracy proszą o zatwierdzenie tak jak czaty tego bota w Hermesie.",
+    "pt-BR": "Os fluxos de trabalho pedem aprovação como os chats deste bot no Hermes.",
+    "ru": "Рабочие потоки запрашивают подтверждение так же, как чаты этого бота в Hermes.",
+    "tr": "İş akışları, bu botun Hermes’teki sohbetleri gibi onay ister.",
+    "zh-Hans": "工作流会像这个机器人在 Hermes 中的聊天一样请求审批。",
+    "zh-Hant": "工作流程會像這個機器人在 Hermes 中的聊天一樣要求核准。"
+  },
+  "Workstreams can’t run on this Hermes.": {
+    "de": "Workstreams können auf diesem Hermes nicht laufen.",
+    "es": "Los flujos de trabajo no pueden ejecutarse en este Hermes.",
+    "fr": "Les flux de travail ne peuvent pas s’exécuter sur ce Hermes.",
+    "id": "Alur kerja tidak bisa berjalan di Hermes ini.",
+    "it": "I flussi di lavoro non possono essere eseguiti su questo Hermes.",
+    "ja": "このHermesではワークストリームを実行できません。",
+    "ko": "이 Hermes에서는 작업 스트림을 실행할 수 없어요.",
+    "pl": "Wątki pracy nie mogą działać na tym Hermesie.",
+    "pt-BR": "Os fluxos de trabalho não podem ser executados neste Hermes.",
+    "ru": "Рабочие потоки не могут работать на этом Hermes.",
+    "tr": "İş akışları bu Hermes’te çalışamaz.",
+    "zh-Hans": "工作流无法在这个 Hermes 上运行。",
+    "zh-Hant": "工作流程無法在這個 Hermes 上執行。"
+  },
+  "Workstreams run commands without asking for approval. Commands Hermes never runs stay blocked.": {
+    "de": "Workstreams führen Befehle ohne Freigabe aus. Befehle, die Hermes nie ausführt, bleiben gesperrt.",
+    "es": "Los flujos de trabajo ejecutan comandos sin pedir aprobación. Los comandos que Hermes nunca ejecuta siguen bloqueados.",
+    "fr": "Les flux de travail exécutent les commandes sans demander d’approbation. Les commandes que Hermes n’exécute jamais restent bloquées.",
+    "id": "Alur kerja menjalankan perintah tanpa meminta persetujuan. Perintah yang tidak pernah dijalankan Hermes tetap diblokir.",
+    "it": "I flussi di lavoro eseguono i comandi senza chiedere approvazione. I comandi che Hermes non esegue mai restano bloccati.",
+    "ja": "ワークストリームは承認を求めずにコマンドを実行します。Hermesが決して実行しないコマンドは引き続きブロックされます。",
+    "ko": "작업 스트림이 승인을 요청하지 않고 명령을 실행해요. Hermes가 절대 실행하지 않는 명령은 계속 차단돼요.",
+    "pl": "Wątki pracy wykonują polecenia bez proszenia o zatwierdzenie. Polecenia, których Hermes nigdy nie wykonuje, pozostają zablokowane.",
+    "pt-BR": "Os fluxos de trabalho executam comandos sem pedir aprovação. Comandos que o Hermes nunca executa continuam bloqueados.",
+    "ru": "Рабочие потоки выполняют команды без запроса подтверждения. Команды, которые Hermes никогда не выполняет, остаются заблокированы.",
+    "tr": "İş akışları komutları onay istemeden çalıştırır. Hermes’in asla çalıştırmadığı komutlar engelli kalır.",
+    "zh-Hans": "工作流运行命令时不请求审批。Hermes 从不运行的命令仍会被阻止。",
+    "zh-Hant": "工作流程執行命令時不要求核准。Hermes 從不執行的命令仍會被封鎖。"
   },
   "Worth knowing": {
     "de": "Gut zu wissen",
@@ -12854,6 +13334,21 @@
     "zh-Hans": "{bot} 已回答",
     "zh-Hant": "{bot} 已回答"
   },
+  "{bot} answers and does quick things in its Bot Chat. Anything that takes longer runs in the background, and you’re told there when it’s done.": {
+    "de": "{bot} beantwortet und erledigt Schnelles im Bot-Chat. Alles, was länger dauert, läuft im Hintergrund, und du erfährst dort, wenn es fertig ist.",
+    "es": "{bot} responde y hace las cosas rápidas en su chat del bot. Lo que lleva más tiempo se ejecuta en segundo plano, y allí te avisa cuando termina.",
+    "fr": "{bot} répond et fait les choses rapides dans sa discussion du bot. Ce qui prend plus de temps s’exécute en arrière-plan, et tu y es prévenu quand c’est fini.",
+    "id": "{bot} menjawab dan mengerjakan hal-hal cepat di Obrolan Bot-nya. Apa pun yang lebih lama berjalan di latar belakang, dan kamu diberi tahu di sana saat selesai.",
+    "it": "{bot} risponde e fa le cose rapide nella sua chat del bot. Ciò che richiede più tempo va in background, e lì ti avvisa quando è finito.",
+    "ja": "{bot} は簡単な質問や作業をボットチャットでそのまま行います。時間がかかるものはバックグラウンドで進み、終わるとそこで知らせます。",
+    "ko": "{bot}은(는) 간단한 질문과 작업을 봇 채팅에서 바로 처리합니다. 오래 걸리는 일은 백그라운드에서 실행되고, 끝나면 그곳에서 알려 드립니다.",
+    "pl": "{bot} odpowiada i załatwia szybkie sprawy w swoim czacie bota. Wszystko, co trwa dłużej, działa w tle, a gdy się skończy, dowiesz się o tym tam.",
+    "pt-BR": "{bot} responde e faz as coisas rápidas no chat do bot. O que leva mais tempo roda em segundo plano, e você fica sabendo ali quando terminar.",
+    "ru": "{bot} отвечает и делает быстрые дела прямо в чате бота. Всё, что дольше, выполняется в фоне, а когда будет готово, вам скажут там же.",
+    "tr": "{bot} hızlı işleri bot sohbetinde kendisi yapar ve yanıtlar. Daha uzun sürenler arka planda çalışır ve bittiğinde orada haber verilir.",
+    "zh-Hans": "{bot} 会在机器人聊天里直接回答并做完简单的事。耗时更久的事在后台进行，完成后会在那里告诉你。",
+    "zh-Hant": "{bot} 會在機器人聊天裡直接回答並做完簡單的事。耗時更久的事在背景進行，完成後會在那裡告訴你。"
+  },
   "{bot} asks": {
     "de": "{bot} fragt",
     "es": "{bot} pregunta",
@@ -12913,6 +13408,96 @@
     "tr": "{bot} her şeyi Bot Sohbeti’nde kendisi yapar. Zaten çalışan işler sürer.",
     "zh-Hans": "{bot} 会在其 Bot Chat 中亲自完成所有事。已经在进行的工作会继续。",
     "zh-Hant": "{bot} 會在機器人聊天中自己完成所有事。已在進行的工作會繼續。"
+  },
+  "{bot} does everything in its Bot Chat, and runs work in the background only when you ask or it’s clearly long. The chat is busy while it works.": {
+    "de": "{bot} erledigt alles im Bot-Chat und lässt Arbeit nur im Hintergrund laufen, wenn du darum bittest oder sie eindeutig lange dauert. Während es arbeitet, ist der Chat beschäftigt.",
+    "es": "{bot} lo hace todo en su chat del bot y solo ejecuta trabajo en segundo plano cuando se lo pides o cuando claramente va para largo. El chat está ocupado mientras trabaja.",
+    "fr": "{bot} fait tout dans sa discussion du bot et ne lance du travail en arrière-plan que si tu le demandes ou s’il est clairement long. La discussion est occupée pendant qu’il travaille.",
+    "id": "{bot} mengerjakan semuanya di Obrolan Bot-nya, dan menjalankan pekerjaan di latar belakang hanya jika kamu memintanya atau jelas akan lama. Obrolan sibuk selama ia bekerja.",
+    "it": "{bot} fa tutto nella sua chat del bot e manda il lavoro in background solo quando lo chiedi o quando è chiaramente lungo. La chat resta occupata mentre lavora.",
+    "ja": "{bot} はすべてをボットチャットで行い、頼まれたときや明らかに時間がかかるときだけバックグラウンドで作業します。作業中はチャットがふさがります。",
+    "ko": "{bot}은(는) 모든 일을 봇 채팅에서 하고, 요청하거나 분명히 오래 걸릴 때만 백그라운드에서 작업합니다. 작업하는 동안 채팅은 사용 중입니다.",
+    "pl": "{bot} robi wszystko w swoim czacie bota, a pracę w tle uruchamia tylko na twoją prośbę albo gdy wyraźnie potrwa długo. Czat jest zajęty, gdy pracuje.",
+    "pt-BR": "{bot} faz tudo no chat do bot e só roda trabalho em segundo plano quando você pede ou quando claramente vai demorar. O chat fica ocupado enquanto trabalha.",
+    "ru": "{bot} делает всё в чате бота и запускает работу в фоне, только если вы попросите или она явно надолго. Пока идёт работа, чат занят.",
+    "tr": "{bot} her şeyi bot sohbetinde yapar; işi yalnızca sen istediğinde ya da açıkça uzun sürecekse arka planda çalıştırır. Çalışırken sohbet meşgul olur.",
+    "zh-Hans": "{bot} 会在机器人聊天里做完所有事，只有在你要求或明显耗时很久时才放到后台。它工作时聊天会被占用。",
+    "zh-Hant": "{bot} 會在機器人聊天裡做完所有事，只有在你要求或明顯耗時很久時才放到背景。它工作時聊天會被佔用。"
+  },
+  "{bot} does up to {steps} steps of a task in its Bot Chat. A task that needs more carries on in the background.": {
+    "de": "{bot} erledigt bis zu {steps} Schritte einer Aufgabe im Bot-Chat. Braucht eine Aufgabe mehr, läuft sie im Hintergrund weiter.",
+    "es": "{bot} hace hasta {steps} pasos de una tarea en su chat del bot. Si la tarea necesita más, sigue en segundo plano.",
+    "fr": "{bot} effectue jusqu’à {steps} étapes d’une tâche dans sa discussion du bot. Si la tâche en demande plus, elle se poursuit en arrière-plan.",
+    "id": "{bot} mengerjakan hingga {steps} langkah tugas di Obrolan Bot-nya. Tugas yang butuh lebih banyak dilanjutkan di latar belakang.",
+    "it": "{bot} esegue fino a {steps} passaggi di un’attività nella sua chat del bot. Se l’attività ne richiede di più, prosegue in background.",
+    "ja": "{bot} はボットチャット内でタスクを最大 {steps} ステップまで進めます。それ以上かかるタスクはバックグラウンドで続きます。",
+    "ko": "{bot}은(는) 봇 채팅에서 작업을 최대 {steps}단계까지 직접 합니다. 더 필요한 작업은 백그라운드에서 이어집니다.",
+    "pl": "{bot} wykonuje do {steps} kroków zadania w swoim czacie bota. Zadanie, które wymaga więcej, jest kontynuowane w tle.",
+    "pt-BR": "{bot} faz até {steps} passos de uma tarefa no chat do bot. Se a tarefa precisar de mais, continua em segundo plano.",
+    "ru": "{bot} выполняет до {steps} шагов задачи в своём чате бота. Если задаче нужно больше, она продолжается в фоне.",
+    "tr": "{bot}, bir görevin en fazla {steps} adımını bot sohbetinde yapar. Daha fazlası gereken görev arka planda sürer.",
+    "zh-Hans": "{bot} 会在机器人聊天中完成一项任务的最多 {steps} 个步骤。需要更多步骤的任务会在后台继续。",
+    "zh-Hant": "{bot} 會在機器人聊天中完成一項任務的最多 {steps} 個步驟。需要更多步驟的任務會在背景繼續。"
+  },
+  "{bot} follows what each workstream finds and changes. When one affects another, it tells you what it recommends and asks before it starts, stops or redirects work.": {
+    "de": "{bot} verfolgt, was jeder Workstream herausfindet und ändert. Wirkt sich einer auf einen anderen aus, sagt dir der Bot, was er empfiehlt, und fragt, bevor er Arbeit startet, stoppt oder umlenkt.",
+    "es": "{bot} sigue lo que cada flujo de trabajo descubre y cambia. Cuando uno afecta a otro, te dice qué recomienda y pregunta antes de iniciar, detener o redirigir trabajo.",
+    "fr": "{bot} suit ce que chaque flux de travail découvre et modifie. Quand l’un en affecte un autre, le bot vous dit ce qu’il recommande et demande avant de lancer, d’arrêter ou de réorienter un travail.",
+    "id": "{bot} mengikuti apa yang ditemukan dan diubah tiap alur kerja. Saat satu alur memengaruhi yang lain, bot memberi tahu rekomendasinya dan bertanya sebelum memulai, menghentikan, atau mengalihkan pekerjaan.",
+    "it": "{bot} segue ciò che ogni flusso di lavoro scopre e modifica. Quando uno influisce su un altro, ti dice cosa consiglia e chiede prima di avviare, fermare o reindirizzare il lavoro.",
+    "ja": "{bot}は各ワークストリームが見つけたことや変更したことを追います。あるワークストリームが別のものに影響するときは、おすすめの対応を伝え、作業を開始、停止、方向転換する前に確認します。",
+    "ko": "{bot}이(가) 각 작업 스트림이 알아낸 것과 바꾼 것을 지켜봐요. 한 작업이 다른 작업에 영향을 주면 권장 사항을 알려 주고, 작업을 시작하거나 중지하거나 방향을 바꾸기 전에 물어봐요.",
+    "pl": "{bot} śledzi, co każdy wątek pracy ustala i zmienia. Gdy jeden wpływa na inny, bot mówi, co zaleca, i pyta, zanim rozpocznie, zatrzyma lub przekieruje pracę.",
+    "pt-BR": "{bot} acompanha o que cada fluxo de trabalho descobre e altera. Quando um afeta outro, o bot diz o que recomenda e pergunta antes de iniciar, parar ou redirecionar trabalho.",
+    "ru": "{bot} следит за тем, что выясняет и меняет каждый рабочий поток. Когда один влияет на другой, бот сообщает, что рекомендует, и спрашивает, прежде чем запускать, останавливать или перенаправлять работу.",
+    "tr": "{bot} her iş akışının bulduklarını ve değiştirdiklerini izler. Biri diğerini etkilediğinde ne önerdiğini söyler ve bir işi başlatmadan, durdurmadan veya yönlendirmeden önce sorar.",
+    "zh-Hans": "{bot} 会关注每个工作流的发现和改动。当一个工作流影响到另一个时，它会告诉你它的建议，并在启动、停止或调整工作方向前先询问你。",
+    "zh-Hant": "{bot} 會留意每個工作流程的發現和變更。當一個工作流程影響到另一個時，它會告訴你它的建議，並在啟動、停止或調整工作方向前先詢問你。"
+  },
+  "{bot} keeps its workstreams in step on its own. When one affects another, it can start, stop or redirect work, and tells you in a line when it did.": {
+    "de": "{bot} stimmt seine Workstreams selbst aufeinander ab. Wirkt sich einer auf einen anderen aus, kann der Bot Arbeit starten, stoppen oder umlenken und sagt dir in einer Zeile, wenn er es getan hat.",
+    "es": "{bot} mantiene coordinados sus flujos de trabajo por su cuenta. Cuando uno afecta a otro, puede iniciar, detener o redirigir trabajo, y te lo dice en una línea cuando lo hace.",
+    "fr": "{bot} coordonne ses flux de travail de lui-même. Quand l’un en affecte un autre, le bot peut lancer, arrêter ou réorienter un travail, et vous le dit en une ligne quand il l’a fait.",
+    "id": "{bot} menjaga alur kerjanya tetap selaras sendiri. Saat satu alur memengaruhi yang lain, bot bisa memulai, menghentikan, atau mengalihkan pekerjaan, lalu memberi tahu Anda dalam satu baris.",
+    "it": "{bot} tiene allineati i suoi flussi di lavoro da solo. Quando uno influisce su un altro, può avviare, fermare o reindirizzare il lavoro, e te lo dice in una riga quando lo fa.",
+    "ja": "{bot}は自分でワークストリーム同士の足並みをそろえます。あるワークストリームが別のものに影響するときは、作業を開始、停止、方向転換でき、そうしたときは一言で知らせます。",
+    "ko": "{bot}이(가) 작업 스트림들을 스스로 맞춰 가요. 한 작업이 다른 작업에 영향을 주면 작업을 시작하거나 중지하거나 방향을 바꿀 수 있고, 그렇게 했을 때 한 줄로 알려 줘요.",
+    "pl": "{bot} sam uzgadnia swoje wątki pracy. Gdy jeden wpływa na inny, bot może rozpocząć, zatrzymać lub przekierować pracę i informuje o tym w jednym zdaniu.",
+    "pt-BR": "{bot} mantém seus fluxos de trabalho alinhados por conta própria. Quando um afeta outro, o bot pode iniciar, parar ou redirecionar trabalho, e avisa você em uma linha quando faz isso.",
+    "ru": "{bot} сам согласует свои рабочие потоки. Когда один влияет на другой, бот может запускать, останавливать или перенаправлять работу и сообщает об этом одной строкой.",
+    "tr": "{bot} iş akışlarını kendi başına uyum içinde tutar. Biri diğerini etkilediğinde iş başlatabilir, durdurabilir veya yönlendirebilir ve bunu yaptığında size bir satırla bildirir.",
+    "zh-Hans": "{bot} 会自行让各个工作流保持一致。当一个工作流影响到另一个时，它可以启动、停止或调整工作方向，并在这样做后用一句话告诉你。",
+    "zh-Hant": "{bot} 會自行讓各個工作流程保持一致。當一個工作流程影響到另一個時，它可以啟動、停止或調整工作方向，並在這樣做後用一句話告訴你。"
+  },
+  "{bot} only passes on what its workstreams report.": {
+    "de": "{bot} gibt nur weiter, was seine Workstreams melden.",
+    "es": "{bot} solo transmite lo que informan sus flujos de trabajo.",
+    "fr": "{bot} transmet seulement ce que ses flux de travail rapportent.",
+    "id": "{bot} hanya meneruskan apa yang dilaporkan alur kerjanya.",
+    "it": "{bot} riferisce soltanto ciò che i suoi flussi di lavoro riportano.",
+    "ja": "{bot}はワークストリームからの報告を伝えるだけです。",
+    "ko": "{bot}은(는) 작업 스트림이 보고한 내용만 전달해요.",
+    "pl": "{bot} tylko przekazuje to, co zgłaszają jego wątki pracy.",
+    "pt-BR": "{bot} só repassa o que seus fluxos de trabalho informam.",
+    "ru": "{bot} только передаёт то, что сообщают его рабочие потоки.",
+    "tr": "{bot} yalnızca iş akışlarının bildirdiklerini iletir.",
+    "zh-Hans": "{bot} 只转达其工作流的报告。",
+    "zh-Hant": "{bot} 只轉達其工作流程的回報。"
+  },
+  "{bot} starts a chat of its own for longer tasks, works on them in the background, and tells you in its Bot Chat when they’re done.": {
+    "de": "{bot} startet für längere Aufgaben einen eigenen Chat, arbeitet im Hintergrund daran und sagt dir im Bot-Chat, wenn sie fertig sind.",
+    "es": "{bot} abre un chat propio para las tareas más largas, trabaja en ellas en segundo plano y te avisa en su chat de bot cuando terminan.",
+    "fr": "{bot} ouvre une discussion à part pour les tâches plus longues, y travaille en arrière-plan et vous prévient dans sa discussion de bot quand c’est fini.",
+    "id": "{bot} memulai obrolan sendiri untuk tugas yang lebih panjang, mengerjakannya di latar belakang, dan memberi tahu Anda di Obrolan Bot-nya saat selesai.",
+    "it": "{bot} apre una chat a parte per le attività più lunghe, ci lavora in background e ti avvisa nella sua chat del bot quando ha finito.",
+    "ja": "{bot}は時間のかかるタスクには専用のチャットを開いてバックグラウンドで作業し、終わるとボットチャットで知らせます。",
+    "ko": "{bot}이(가) 오래 걸리는 작업은 별도의 채팅을 열어 백그라운드에서 처리하고, 끝나면 봇 채팅에서 알려 줘요.",
+    "pl": "{bot} zaczyna osobny czat dla dłuższych zadań, pracuje nad nimi w tle i daje znać w czacie z botem, gdy skończy.",
+    "pt-BR": "{bot} abre um chat próprio para tarefas mais longas, trabalha nelas em segundo plano e avisa no Chat de Bot quando terminam.",
+    "ru": "{bot} открывает отдельный чат для задач подольше, работает над ними в фоне и сообщает в чате с ботом, когда всё готово.",
+    "tr": "{bot} uzun görevler için kendi sohbetini açar, arka planda üzerinde çalışır ve bitince Bot Sohbeti’nde size söyler.",
+    "zh-Hans": "{bot} 会为较长的任务单独开一个聊天，在后台处理，完成后在其 Bot Chat 中告诉你。",
+    "zh-Hant": "{bot} 會為較長的任務另開一個聊天，在背景處理，完成後在機器人聊天中告訴你。"
   },
   "{bot}’s work": {
     "de": "Arbeit von {bot}",
