@@ -1,0 +1,35 @@
+# Packaging. Windows ships through the Microsoft Store (appx, signed by the
+# Store) and as an unsigned installer for testing; the Mac as a dmg, notarized
+# once the Apple ID secrets are in the repo's Actions secrets.
+appId: dev.conduit.desktop
+productName: Conduit
+copyright: Copyright © 2026 kaishi00
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - package.json
+asarUnpack: []
+mac:
+  category: public.app-category.productivity
+  target:
+    - target: dmg
+      arch: [universal]
+  hardenedRuntime: true
+  # Signing and notarizing come with the Developer ID secrets.
+  identity: null
+win:
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+nsis:
+  oneClick: true
+  perMachine: false
+appx:
+  identityName: Conduit
+  displayName: Conduit
+  publisherDisplayName: kaishi00
+linux:
+  target: [AppImage]
+  category: Utility

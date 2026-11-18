@@ -1,0 +1,343 @@
+/**
+ * The one connection to a Hermes dashboard: signs in, opens the gateway
+ * socket with the vendored Hermes client, redials with backoff when it drops,
+ * and passes events on to the window.
+ */
+import type { ConnectionStatus, GatewayEventMessage, SignInMethod, SignInRequest } from '../shared/ipc'
+import { JsonRpcGatewayClient, type WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
+import { reconnectBackoffDelayMs, isStableOpen } from '../vendor/hermes-shared/reconnect-backoff'
+import {
+  AuthError,
+  CONDUIT_CLIENT_HEADER,
+  SESSION_TOKEN_HEADER,
+  type CookieJar,
+  endpoint,
+  type Fetch,
+  cookieHeader,
+  mintTicket,
+  normalizeBaseUrl,
+  passwordLogin,
+  readOpenSessionToken,
+  webSocketUrl
+} from './auth'
+
+/** What we keep between launches. Secrets are encrypted by the store. */
+export interface SavedConnection {
+  url: string
+  method: SignInMethod
+  username?: string
+  password?: string
+  token?: string
+  cookies?: CookieJar
+}
+
+export interface ConnectionStore {
+  load(): SavedConnection | null
+  save(connection: SavedConnection): void
+  clear(): void
+}
+
+export type SocketFactory = (url: string, headers: Record<string, string>) => WebSocketLike
+
+export interface ConnectionDeps {
+  fetch: Fetch
+  store: ConnectionStore
+  createSocket: SocketFactory
+  onStatus: (status: ConnectionStatus) => void
+  onEvent: (event: GatewayEventMessage) => void
+  /** Timers, replaceable in tests. */
+  setTimeout?: (fn: () => void, ms: number) => unknown
+  clearTimeout?: (handle: unknown) => void
+}
+
+export class Connection {
+  private saved: SavedConnection | null = null
+  private client: JsonRpcGatewayClient | null = null
+  private status: ConnectionStatus = { phase: 'signed-out' }
+  private attempt = 0
+  private openedAt: number | null = null
+  private retryTimer: unknown = null
+  /** An ungated dashboard's session token, read from its page at each dial. */
+  private openToken: string | null = null
+  /** Bumped on every sign-in and sign-out, so a late dial from an earlier one is dropped. */
+  private generation = 0
+  private readonly setTimer: (fn: () => void, ms: number) => unknown
+  private readonly clearTimer: (handle: unknown) => void
+
+  constructor(private readonly deps: ConnectionDeps) {
+    this.setTimer = deps.setTimeout ?? ((fn, ms) => setTimeout(fn, ms))
+    this.clearTimer = deps.clearTimeout ?? (handle => clearTimeout(handle as ReturnType<typeof setTimeout>))
+  }
+
+  current(): ConnectionStatus {
+    return this.status
+  }
+
+  /** Reconnects with what was saved last time, if anything. */
+  async restore(): Promise<void> {
+    const saved = this.deps.store.load()
+    if (!saved) return
+    this.saved = saved
+    const generation = ++this.generation
+    this.setStatus({ ...this.identity(), phase: 'connecting' })
+    await this.dial(generation)
+  }
+
+  async signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }> {
+    const generation = ++this.generation
+    this.teardown()
+    let url: string
+    try {
+      url = normalizeBaseUrl(request.url)
+    } catch (error) {
+      return { ok: false, error: (error as Error).message }
+    }
+    const saved: SavedConnection = { url, method: request.method }
+    try {
+      if (request.method === 'password') {
+        const username = request.username?.trim() ?? ''
+        if (!username || !request.password) return { ok: false, error: 'Enter your user name and password.' }
+        saved.username = username
+        saved.password = request.password
+        saved.cookies = await passwordLogin(url, username, request.password, this.deps.fetch)
+      } else if (request.method === 'token') {
+        const token = request.token?.trim() ?? ''
+        if (!token) return { ok: false, error: 'Paste the dashboard’s session token.' }
+        saved.token = token
+      }
+    } catch (error) {
+      return { ok: false, error: (error as Error).message }
+    }
+    if (generation !== this.generation) return { ok: false, error: 'Cancelled.' }
+    this.saved = saved
+    this.setStatus({ ...this.identity(), phase: 'connecting' })
+    const error = await this.dial(generation)
+    if (error) {
+      this.saved = null
+      this.teardown()
+      this.setStatus({ phase: 'signed-out' })
+      return { ok: false, error }
+    }
+    this.deps.store.save(saved)
+    return { ok: true }
+  }
+
+  signOut(): void {
+    this.generation++
+    this.teardown()
+    this.saved = null
+    this.openToken = null
+    this.deps.store.clear()
+    this.setStatus({ phase: 'signed-out' })
+  }
+
+  /** Dials now instead of waiting for the next retry. */
+  reconnectNow(): void {
+    if (!this.saved || this.status.phase === 'open' || this.status.phase === 'connecting') return
+    this.attempt = 0
+    const generation = ++this.generation
+    this.teardown()
+    this.setStatus({ ...this.identity(), phase: 'connecting' })
+    void this.dial(generation)
+  }
+
+  async rpc<T>(method: string, params: Record<string, unknown> = {}): Promise<T> {
+    if (!this.client || this.status.phase !== 'open') throw new Error('Not connected to Hermes.')
+    return this.client.request<T>(method, params)
+  }
+
+  /**
+   * A dashboard REST call (`/api/...`) with this sign-in's credential. A
+   * password sign-in whose session ran out signs in again once.
+   */
+  async http<T>(method: string, path: string, body?: unknown): Promise<T> {
+    const saved = this.saved
+    if (!saved) throw new Error('Not signed in.')
+    if (!path.startsWith('/api/')) throw new Error('Only dashboard API paths can be called.')
+    const send = async (): Promise<Response> => {
+      const headers: Record<string, string> = { Accept: 'application/json', [CONDUIT_CLIENT_HEADER]: 'conduit' }
+      if (body !== undefined) headers['Content-Type'] = 'application/json'
+      if (saved.method === 'password' && saved.cookies) headers.Cookie = cookieHeader(saved.cookies)
+      if (saved.method === 'token' && saved.token) headers[SESSION_TOKEN_HEADER] = saved.token
+      if (saved.method === 'open') {
+        this.openToken ??= await readOpenSessionToken(saved.url, this.deps.fetch)
+        headers[SESSION_TOKEN_HEADER] = this.openToken
+      }
+      return this.deps.fetch(endpoint(saved.url, path), {
+        method,
+        headers,
+        body: body === undefined ? undefined : JSON.stringify(body),
+        signal: AbortSignal.timeout(30_000)
+      })
+    }
+    let response = await send()
+    if (response.status === 401 && saved.method === 'password' && saved.username && saved.password) {
+      this.keepCookies(saved, await passwordLogin(saved.url, saved.username, saved.password, this.deps.fetch))
+      response = await send()
+    } else if (response.status === 401 && saved.method === 'open') {
+      this.openToken = null
+      response = await send()
+    }
+    const text = await response.text()
+    let parsed: unknown = null
+    try {
+      parsed = text ? JSON.parse(text) : null
+    } catch {
+      parsed = text
+    }
+    if (!response.ok) {
+      const detail = (parsed as { detail?: unknown } | null)?.detail
+      throw new Error(typeof detail === 'string' ? detail : `HTTP ${response.status}`)
+    }
+    return parsed as T
+  }
+
+  private identity(): ConnectionStatus {
+    const saved = this.saved
+    if (!saved) return { phase: 'signed-out' }
+    return {
+      phase: this.status.phase,
+      url: saved.url,
+      hostLabel: new URL(saved.url).hostname,
+      username: saved.username,
+      method: saved.method,
+      sessionAuthority: this.status.sessionAuthority
+    }
+  }
+
+  /** Opens one socket. Returns an error message when it couldn't, after scheduling a retry. */
+  private async dial(generation: number): Promise<string | null> {
+    const saved = this.saved
+    if (!saved) return 'Not signed in.'
+    let wsUrl: string
+    try {
+      wsUrl = await this.socketUrl(saved)
+    } catch (error) {
+      if (generation !== this.generation) return 'Cancelled.'
+      return this.failed(generation, error)
+    }
+    if (generation !== this.generation) return 'Cancelled.'
+
+    const headers: Record<string, string> = { [CONDUIT_CLIENT_HEADER]: 'conduit' }
+    if (saved.method === 'password' && saved.cookies) headers.Cookie = cookieHeader(saved.cookies)
+    const client = new JsonRpcGatewayClient({
+      socketFactory: url => this.deps.createSocket(url, headers),
+      requestIdPrefix: 'c'
+    })
+    this.client = client
+    client.onAny(event => {
+      if (this.client !== client) return
+      if (event.type === 'gateway.ready') {
+        const ready = event.payload as { session_authority?: boolean | null } | undefined
+        this.setStatus({ ...this.status, sessionAuthority: ready?.session_authority === true })
+      }
+      this.deps.onEvent({
+        type: event.type,
+        session_id: event.session_id,
+        payload: event.payload,
+        seq: event.seq,
+        replayed: event.replayed
+      })
+    })
+    // Approvals and questions are answered on the phone for now. Leaving a
+    // request unanswered keeps it open for the clients that can; a backend
+    // that counts declines hears that this window doesn't show the chat.
+    client.onRequest(request => {
+      request.decline?.('Conduit desktop doesn’t answer this yet')
+      return true
+    })
+    client.onState(state => {
+      if (this.client !== client) return
+      if (state === 'open') {
+        this.openedAt = Date.now()
+        this.setStatus({ ...this.identity(), phase: 'open', sessionAuthority: this.status.sessionAuthority })
+      } else if ((state === 'closed' || state === 'error') && this.status.phase === 'open') {
+        if (isStableOpen(this.openedAt)) this.attempt = 0
+        this.openedAt = null
+        this.scheduleRetry(generation, 'The connection to Hermes dropped.')
+      }
+    })
+    try {
+      await client.connect(wsUrl)
+      if (generation !== this.generation) return 'Cancelled.'
+      return null
+    } catch (error) {
+      if (generation !== this.generation) return 'Cancelled.'
+      return this.failed(generation, error)
+    }
+  }
+
+  private failed(generation: number, error: unknown): string {
+    const message = error instanceof Error ? error.message : String(error)
+    if (error instanceof AuthError && error.signedOut && this.saved?.method !== 'password') {
+      // A token that stopped working won't start again: ask to sign in.
+      this.teardown()
+      this.setStatus({ ...this.identity(), phase: 'failed', error: 'Hermes signed this computer out. Sign in again.' })
+      return message
+    }
+    this.scheduleRetry(generation, message)
+    return message
+  }
+
+  private scheduleRetry(generation: number, error: string): void {
+    if (generation !== this.generation) return
+    this.client?.close()
+    this.client = null
+    const delay = reconnectBackoffDelayMs(this.attempt++, { baseDelayMs: 1_000, capMs: 30_000 })
+    this.setStatus({ ...this.identity(), phase: 'reconnecting', error, retryInSeconds: Math.ceil(delay / 1000) })
+    if (this.retryTimer) this.clearTimer(this.retryTimer)
+    this.retryTimer = this.setTimer(() => {
+      this.retryTimer = null
+      if (generation !== this.generation) return
+      this.setStatus({ ...this.identity(), phase: 'connecting' })
+      void this.dial(generation)
+    }, delay)
+  }
+
+  /** The socket address with a fresh credential: a ticket per socket for a password sign-in. */
+  private async socketUrl(saved: SavedConnection): Promise<string> {
+    switch (saved.method) {
+      case 'open':
+        this.openToken = await readOpenSessionToken(saved.url, this.deps.fetch)
+        return webSocketUrl(saved.url, { token: this.openToken })
+      case 'token':
+        return webSocketUrl(saved.url, { token: saved.token ?? '' })
+      case 'password': {
+        let jar = saved.cookies ?? {}
+        try {
+          const minted = await mintTicket(saved.url, jar, this.deps.fetch)
+          jar = minted.jar
+          this.keepCookies(saved, jar)
+          return webSocketUrl(saved.url, { ticket: minted.ticket })
+        } catch (error) {
+          if (!(error instanceof AuthError && error.signedOut) || !saved.username || !saved.password) throw error
+          // The session ran out: sign in again with the saved password.
+          jar = await passwordLogin(saved.url, saved.username, saved.password, this.deps.fetch)
+          const minted = await mintTicket(saved.url, jar, this.deps.fetch)
+          this.keepCookies(saved, minted.jar)
+          return webSocketUrl(saved.url, { ticket: minted.ticket })
+        }
+      }
+    }
+  }
+
+  private keepCookies(saved: SavedConnection, jar: CookieJar): void {
+    if (cookieHeader(jar) === cookieHeader(saved.cookies ?? {})) return
+    saved.cookies = jar
+    if (this.saved === saved && this.deps.store.load()) this.deps.store.save(saved)
+  }
+
+  private teardown(): void {
+    if (this.retryTimer) this.clearTimer(this.retryTimer)
+    this.retryTimer = null
+    const client = this.client
+    this.client = null
+    client?.close()
+    this.openedAt = null
+  }
+
+  private setStatus(status: ConnectionStatus): void {
+    this.status = status
+    this.deps.onStatus(status)
+  }
+}

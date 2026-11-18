@@ -1,0 +1,277 @@
+/**
+ * Signing in to a Hermes dashboard, the way the phone app does it.
+ *
+ * - `open`: a dashboard without its sign-in gate (on the same machine or a
+ *   trusted network) prints its session token into `/`; the socket takes it as
+ *   `?token=`.
+ * - `password`: `POST /auth/password-login` sets session cookies, which mint a
+ *   single-use ticket (`POST /api/auth/ws-ticket`) for each socket.
+ * - `token`: a gated dashboard that takes Hermes' session token as a sign-in
+ *   (`HERMES_DASHBOARD_SESSION_TOKEN`); the socket takes it as `?token=`.
+ *
+ * Everything here takes its `fetch` as an argument so the tests can stand in
+ * for a dashboard.
+ */
+import type { HostProbe, SignInMethod } from '../shared/ipc'
+
+export type Fetch = typeof fetch
+
+/** The header that tells the Conduit plugin a socket is Conduit's, not Hermes Desktop's (notifier #454). */
+export const CONDUIT_CLIENT_HEADER = 'X-Conduit-Client'
+
+/** How REST calls carry Hermes' session token. */
+export const SESSION_TOKEN_HEADER = 'X-Hermes-Session-Token'
+
+const SESSION_TOKEN_PROVIDER = 'session-token'
+const PASSWORD_PROVIDER = 'basic'
+const REQUEST_TIMEOUT_MS = 15_000
+const MAX_REDIRECTS = 5
+
+export class AuthError extends Error {
+  constructor(
+    message: string,
+    readonly status?: number
+  ) {
+    super(message)
+    this.name = 'AuthError'
+  }
+
+  /** The dashboard says we're signed out: the cookies or token stopped working. */
+  get signedOut(): boolean {
+    return this.status === 401 || this.status === 403
+  }
+}
+
+/**
+ * Turns what someone typed into a dashboard base address: a scheme (http for
+ * this machine and private addresses, https otherwise), no trailing slash,
+ * query or fragment. A path prefix (a reverse proxy's `/hermes`) is kept.
+ */
+export function normalizeBaseUrl(input: string): string {
+  let text = input.trim()
+  if (!text) throw new AuthError('Enter your dashboard address.')
+  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(text)) {
+    const host = text.split(/[/:]/)[0]?.toLowerCase() ?? ''
+    text = `${isLocalHost(host) ? 'http' : 'https'}://${text}`
+  }
+  let url: URL
+  try {
+    url = new URL(text)
+  } catch {
+    throw new AuthError('That doesn’t look like a web address.')
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    throw new AuthError('Use an http or https address.')
+  }
+  url.hash = ''
+  url.search = ''
+  url.username = ''
+  url.password = ''
+  return url.toString().replace(/\/+$/, '')
+}
+
+function isLocalHost(host: string): boolean {
+  return (
+    host === 'localhost' ||
+    host.endsWith('.local') ||
+    /^127\./.test(host) ||
+    /^10\./.test(host) ||
+    /^192\.168\./.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(host) ||
+    /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./.test(host) // Tailscale
+  )
+}
+
+export function endpoint(baseUrl: string, path: string): string {
+  return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`
+}
+
+export function webSocketUrl(baseUrl: string, query: Record<string, string>): string {
+  const url = new URL(endpoint(baseUrl, '/api/ws'))
+  url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+  for (const [name, value] of Object.entries(query)) url.searchParams.set(name, value)
+  return url.toString()
+}
+
+async function timedFetch(fetchImpl: Fetch, url: string, init: RequestInit = {}): Promise<Response> {
+  try {
+    return await fetchImpl(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
+  } catch (error) {
+    const reason = error instanceof Error ? (error.cause instanceof Error ? error.cause.message : error.message) : ''
+    throw new AuthError(`Couldn’t reach ${new URL(url).host}${reason ? ` (${reason})` : ''}.`)
+  }
+}
+
+async function errorDetail(response: Response): Promise<string> {
+  try {
+    const body = (await response.json()) as { detail?: unknown; error?: unknown; message?: unknown }
+    const detail = body.detail ?? body.error ?? body.message
+    if (typeof detail === 'string' && detail) return detail
+  } catch {
+    // Not JSON.
+  }
+  return `HTTP ${response.status}`
+}
+
+/** Reads `/api/status` and says which sign-in methods the dashboard offers. */
+export async function probeHost(input: string, fetchImpl: Fetch): Promise<HostProbe> {
+  let url: string
+  try {
+    url = normalizeBaseUrl(input)
+  } catch (error) {
+    return { ok: false, error: (error as Error).message }
+  }
+  try {
+    const response = await timedFetch(fetchImpl, endpoint(url, '/api/status'), {
+      headers: { Accept: 'application/json' }
+    })
+    if (!response.ok) {
+      return { ok: false, error: `This isn’t answering like a Hermes dashboard (${await errorDetail(response)}).` }
+    }
+    const body = (await response.json().catch(() => null)) as Record<string, unknown> | null
+    if (!body || typeof body !== 'object') {
+      return { ok: false, error: 'This isn’t answering like a Hermes dashboard.' }
+    }
+    return { ok: true, url, methods: signInMethods(body), version: typeof body.version === 'string' ? body.version : undefined }
+  } catch (error) {
+    return { ok: false, error: (error as Error).message }
+  }
+}
+
+export function signInMethods(status: Record<string, unknown>): SignInMethod[] {
+  if (status.auth_required !== true) return ['open']
+  const providers = Array.isArray(status.auth_providers)
+    ? status.auth_providers.filter((p): p is string => typeof p === 'string')
+    : []
+  const methods: SignInMethod[] = []
+  if (providers.includes(PASSWORD_PROVIDER)) methods.push('password')
+  if (providers.includes(SESSION_TOKEN_PROVIDER)) methods.push('token')
+  // A gated dashboard that names neither still has the password page.
+  if (methods.length === 0) methods.push('password')
+  return methods
+}
+
+/** The session token an ungated dashboard prints into its page. */
+export async function readOpenSessionToken(baseUrl: string, fetchImpl: Fetch): Promise<string> {
+  const response = await timedFetch(fetchImpl, endpoint(baseUrl, '/'), { headers: { Accept: 'text/html' } })
+  if (!response.ok) throw new AuthError(`The dashboard page didn’t load (${await errorDetail(response)}).`, response.status)
+  const html = await response.text()
+  const match = /__HERMES_SESSION_TOKEN__\s*=\s*["']([^"']+)["']/.exec(html)
+  if (!match?.[1]) {
+    throw new AuthError('This dashboard asks for a sign-in. Try again with your user name and password.')
+  }
+  return match[1]
+}
+
+/** Cookies as `name → value`, from one host. */
+export type CookieJar = Record<string, string>
+
+export function cookieHeader(jar: CookieJar): string {
+  return Object.entries(jar)
+    .map(([name, value]) => `${name}=${value}`)
+    .join('; ')
+}
+
+/** Takes in a response's `Set-Cookie` headers; an expired or emptied cookie leaves the jar. */
+export function absorbCookies(jar: CookieJar, response: Response): CookieJar {
+  const next = { ...jar }
+  const lines = typeof response.headers.getSetCookie === 'function' ? response.headers.getSetCookie() : []
+  for (const line of lines) {
+    const [pair, ...attributes] = line.split(';')
+    const eq = pair?.indexOf('=') ?? -1
+    if (!pair || eq <= 0) continue
+    const name = pair.slice(0, eq).trim()
+    const value = pair.slice(eq + 1).trim()
+    const expired = attributes.some(attr => {
+      const [key, raw] = attr.split('=').map(s => s.trim())
+      if (key?.toLowerCase() === 'max-age') return Number(raw) <= 0
+      if (key?.toLowerCase() === 'expires') return Date.parse(raw ?? '') <= Date.now()
+      return false
+    })
+    if (expired || value === '') delete next[name]
+    else next[name] = value
+  }
+  return next
+}
+
+/**
+ * Follows redirects ourselves, within the dashboard's own origin, so a
+ * cookie set on a redirect isn't lost.
+ */
+async function fetchKeepingCookies(
+  fetchImpl: Fetch,
+  url: string,
+  init: RequestInit,
+  jar: CookieJar
+): Promise<{ response: Response; jar: CookieJar }> {
+  let current = url
+  let cookies = jar
+  let request = init
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const headers = new Headers(request.headers)
+    const header = cookieHeader(cookies)
+    if (header) headers.set('Cookie', header)
+    const response = await timedFetch(fetchImpl, current, { ...request, headers, redirect: 'manual' })
+    cookies = absorbCookies(cookies, response)
+    const location = response.headers.get('location')
+    if (response.status < 300 || response.status >= 400 || !location) return { response, jar: cookies }
+    const next = new URL(location, current)
+    if (next.origin !== new URL(url).origin) return { response, jar: cookies }
+    current = next.toString()
+    if (response.status === 303 || ((response.status === 301 || response.status === 302) && request.method === 'POST')) {
+      request = { method: 'GET', headers: request.headers }
+    }
+  }
+  throw new AuthError('The dashboard redirected too many times.')
+}
+
+export async function passwordLogin(
+  baseUrl: string,
+  username: string,
+  password: string,
+  fetchImpl: Fetch
+): Promise<CookieJar> {
+  const { response, jar } = await fetchKeepingCookies(
+    fetchImpl,
+    endpoint(baseUrl, '/auth/password-login'),
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ provider: PASSWORD_PROVIDER, username, password })
+    },
+    {}
+  )
+  if (!response.ok) {
+    const detail = await errorDetail(response)
+    throw new AuthError(
+      response.status === 401 ? 'That user name and password didn’t work.' : `Sign-in failed (${detail}).`,
+      response.status
+    )
+  }
+  if (Object.keys(jar).length === 0) {
+    throw new AuthError('Signed in, but the dashboard sent no session cookie. Check its address and any proxy in front of it.')
+  }
+  return jar
+}
+
+/** A single-use socket ticket for the signed-in session, and the cookies as they stand after it. */
+export async function mintTicket(
+  baseUrl: string,
+  jar: CookieJar,
+  fetchImpl: Fetch
+): Promise<{ ticket: string; jar: CookieJar }> {
+  const { response, jar: next } = await fetchKeepingCookies(
+    fetchImpl,
+    endpoint(baseUrl, '/api/auth/ws-ticket'),
+    { method: 'POST', headers: { Accept: 'application/json' } },
+    jar
+  )
+  if (!response.ok) {
+    throw new AuthError(`Couldn’t open a connection (${await errorDetail(response)}).`, response.status)
+  }
+  const body = (await response.json().catch(() => null)) as { ticket?: unknown } | null
+  if (typeof body?.ticket !== 'string' || !body.ticket.trim()) {
+    throw new AuthError('The dashboard sent no connection ticket.')
+  }
+  return { ticket: body.ticket, jar: next }
+}

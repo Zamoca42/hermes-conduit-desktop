@@ -1,0 +1,4 @@
+# Electron downloads its binary on first run, so no install script needs to
+# run. electron-winstaller's (Squirrel) is unused: Windows ships as MSIX.
+ignoredBuiltDependencies:
+  - electron-winstaller
