@@ -273,9 +273,10 @@ function confirmPending(items: TranscriptItem[]): TranscriptItem[] {
   return items.map(item => (item.kind === 'user' && item.pending ? { ...item, pending: false } : item))
 }
 
-export function addPendingUser(state: TranscriptState, text: string): TranscriptState {
-  const item = userItem(nextKey('u'), text, Date.now()) ?? { kind: 'user' as const, key: nextKey('u'), text, at: Date.now() }
-  return { ...state, items: [...state.items, { ...item, pending: true }] }
+export function addPendingUser(state: TranscriptState, text: string, attachments: Attachment[] = []): TranscriptState {
+  const item: UserItem = userItem(nextKey('u'), text, Date.now()) ?? { kind: 'user' as const, key: nextKey('u'), text, at: Date.now() }
+  const all = [...attachments, ...(item.attachments ?? [])]
+  return { ...state, items: [...state.items, { ...item, ...(all.length ? { attachments: all } : {}), pending: true }] }
 }
 
 /** A send that failed: its bubble goes, with the reason in its place. */

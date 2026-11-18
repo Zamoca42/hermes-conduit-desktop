@@ -240,7 +240,7 @@ export class Connection {
 
   async rpc<T>(method: string, params: Record<string, unknown> = {}): Promise<T> {
     if (!this.client || this.status.phase !== 'open') throw new Error(t('Not connected to Hermes.'))
-    return this.client.request<T>(method, params)
+    return this.client.request<T>(method, params, uploadTimeoutMs(params))
   }
 
   /**
@@ -466,4 +466,17 @@ export class Connection {
     this.status = status
     this.deps.onStatus(status)
   }
+}
+
+/**
+ * A request's budget: two minutes, or for an upload about 1 s for every 64 KB
+ * it carries if that is longer (about 0.5 Mbit/s), as on the phone.
+ */
+export function uploadTimeoutMs(params: Record<string, unknown>): number {
+  let characters = 0
+  for (const key of ['content_base64', 'data_url', 'data']) {
+    const value = params[key]
+    if (typeof value === 'string') characters += value.length
+  }
+  return Math.max(120_000, Math.ceil(characters / 64))
 }
