@@ -449,6 +449,21 @@
     "zh-Hans": "始终允许",
     "zh-Hant": "一律允許"
   },
+  "Another bot": {
+    "de": "Ein anderer Bot",
+    "es": "Otro bot",
+    "fr": "Un autre bot",
+    "id": "Bot lain",
+    "it": "Un altro bot",
+    "ja": "別のボット",
+    "ko": "다른 봇",
+    "pl": "Inny bot",
+    "pt-BR": "Outro bot",
+    "ru": "Другой бот",
+    "tr": "Başka bir bot",
+    "zh-Hans": "另一个机器人",
+    "zh-Hant": "另一個機器人"
+  },
   "Answer": {
     "de": "Antworten",
     "es": "Responder",
@@ -478,6 +493,21 @@
     "tr": "Soruyu yanıtlayın, sonra engeli kaldırın",
     "zh-Hans": "回答问题，然后解除阻塞",
     "zh-Hant": "回答問題，然後解除封鎖"
+  },
+  "Answered": {
+    "de": "Beantwortet",
+    "es": "Respondida",
+    "fr": "Répondue",
+    "id": "Dijawab",
+    "it": "Risposto",
+    "ja": "回答済み",
+    "ko": "답변함",
+    "pl": "Odpowiedziano",
+    "pt-BR": "Respondida",
+    "ru": "Отвечено",
+    "tr": "Yanıtlandı",
+    "zh-Hans": "已回答",
+    "zh-Hant": "已回答"
   },
   "Answering from a snapshot of this chat. The answer will appear here.": {
     "de": "Antwort anhand eines Schnappschusses dieses Chats. Sie erscheint hier.",
@@ -523,6 +553,21 @@
     "tr": "Hermes’in tüm sohbetlerde beklediği onaylar ve sorular.",
     "zh-Hans": "Hermes 在所有聊天中等待的批准和问题。",
     "zh-Hant": "Hermes 在所有聊天中等待的核准和問題。"
+  },
+  "Approve": {
+    "de": "Freigeben",
+    "es": "Aprobar",
+    "fr": "Approuver",
+    "id": "Setujui",
+    "it": "Approva",
+    "ja": "承認",
+    "ko": "승인",
+    "pl": "Zatwierdź",
+    "pt-BR": "Aprovar",
+    "ru": "Подтвердить",
+    "tr": "Onayla",
+    "zh-Hans": "批准",
+    "zh-Hant": "核准"
   },
   "Archive": {
     "de": "Archivieren",
@@ -854,6 +899,21 @@
     "zh-Hans": "{day}回来",
     "zh-Hant": "{day}回來"
   },
+  "Back to {bot}": {
+    "de": "Zurück zu {bot}",
+    "es": "Volver a {bot}",
+    "fr": "Retour à {bot}",
+    "id": "Kembali ke {bot}",
+    "it": "Torna a {bot}",
+    "ja": "{bot}に戻る",
+    "ko": "{bot}(으)로 돌아가기",
+    "pl": "Wróć do {bot}",
+    "pt-BR": "Voltar para {bot}",
+    "ru": "Назад к {bot}",
+    "tr": "{bot} adlı bota dön",
+    "zh-Hans": "返回 {bot}",
+    "zh-Hant": "返回 {bot}"
+  },
   "Back tomorrow": {
     "de": "Zurück morgen",
     "es": "Vuelve mañana",
@@ -1063,6 +1123,21 @@
     "tr": "Botlar",
     "zh-Hans": "机器人",
     "zh-Hant": "機器人"
+  },
+  "Branch {name}": {
+    "de": "Branch {name}",
+    "es": "Rama {name}",
+    "fr": "Branche {name}",
+    "id": "Cabang {name}",
+    "it": "Ramo {name}",
+    "ja": "ブランチ {name}",
+    "ko": "브랜치 {name}",
+    "pl": "Gałąź {name}",
+    "pt-BR": "Branch {name}",
+    "ru": "Ветка {name}",
+    "tr": "Dal {name}",
+    "zh-Hans": "分支 {name}",
+    "zh-Hant": "分支 {name}"
   },
   "Breakdown": {
     "de": "Aufschlüsselung",
@@ -1333,6 +1408,21 @@
     "tr": "Burada açmadığınız sohbetler, sunucunuzdaki Conduit eklentisi güncellendiğinde görünür.",
     "zh-Hans": "你在这里没打开过的聊天，会在主机上的 Conduit 插件更新后显示。",
     "zh-Hant": "你在這裡沒打開過的聊天，會在主機上的 Conduit 外掛更新後顯示。"
+  },
+  "Check first": {
+    "de": "Erst prüfen",
+    "es": "Comprobar primero",
+    "fr": "Vérifier d’abord",
+    "id": "Periksa dulu",
+    "it": "Prima verifica",
+    "ja": "まず確認",
+    "ko": "먼저 확인",
+    "pl": "Najpierw sprawdź",
+    "pt-BR": "Verificar primeiro",
+    "ru": "Сначала проверить",
+    "tr": "Önce kontrol et",
+    "zh-Hans": "先检查",
+    "zh-Hant": "先檢查"
   },
   "Check on promises sooner": {
     "de": "Versprechen früher prüfen",
@@ -1814,6 +1904,21 @@
     "zh-Hans": "拷贝",
     "zh-Hant": "拷貝"
   },
+  "Copy Branch": {
+    "de": "Branch kopieren",
+    "es": "Copiar rama",
+    "fr": "Copier la branche",
+    "id": "Salin Cabang",
+    "it": "Copia ramo",
+    "ja": "ブランチをコピー",
+    "ko": "브랜치 복사",
+    "pl": "Kopiuj gałąź",
+    "pt-BR": "Copiar branch",
+    "ru": "Скопировать ветку",
+    "tr": "Dalı Kopyala",
+    "zh-Hans": "拷贝分支",
+    "zh-Hant": "拷貝分支"
+  },
   "Copy Path": {
     "de": "Pfad kopieren",
     "es": "Copiar ruta",
@@ -2053,6 +2158,21 @@
     "tr": "Bu dosya açılamadı",
     "zh-Hans": "无法打开此文件",
     "zh-Hant": "無法打開此檔案"
+  },
+  "Couldn't reach this bot's work. Try again in a moment.": {
+    "de": "Die Arbeit dieses Bots ist gerade nicht erreichbar. Versuch es gleich noch einmal.",
+    "es": "No se pudo acceder al trabajo de este bot. Inténtalo de nuevo en un momento.",
+    "fr": "Impossible d’accéder au travail de ce bot. Réessaie dans un instant.",
+    "id": "Tidak dapat menjangkau pekerjaan bot ini. Coba lagi sebentar lagi.",
+    "it": "Impossibile raggiungere il lavoro di questo bot. Riprova tra un attimo.",
+    "ja": "このボットの作業に接続できませんでした。少ししてからもう一度お試しください。",
+    "ko": "이 봇의 작업에 연결할 수 없습니다. 잠시 후 다시 시도하세요.",
+    "pl": "Nie można połączyć się z pracą tego bota. Spróbuj ponownie za chwilę.",
+    "pt-BR": "Não foi possível acessar o trabalho deste bot. Tente de novo em instantes.",
+    "ru": "Не удалось связаться с работой этого бота. Попробуйте ещё раз через минуту.",
+    "tr": "Bu botun işlerine ulaşılamadı. Biraz sonra yeniden dene.",
+    "zh-Hans": "无法连接到此机器人的工作。请稍后再试。",
+    "zh-Hant": "無法連線到此機器人的工作。請稍後再試。"
   },
   "Couldn't read Pulse": {
     "de": "Pulse konnte nicht gelesen werden",
@@ -2443,6 +2563,21 @@
     "tr": "Son tarihler",
     "zh-Hans": "截止日期",
     "zh-Hant": "截止日期"
+  },
+  "Default": {
+    "de": "Standard",
+    "es": "Predeterminado",
+    "fr": "Par défaut",
+    "id": "Default",
+    "it": "Predefinito",
+    "ja": "デフォルト",
+    "ko": "기본",
+    "pl": "Domyślnie",
+    "pt-BR": "Padrão",
+    "ru": "По умолчанию",
+    "tr": "Varsayılan",
+    "zh-Hans": "默认",
+    "zh-Hant": "預設"
   },
   "Default ({name})": {
     "de": "Standard ({name})",
@@ -3388,6 +3523,21 @@
     "tr": "Bilgiler",
     "zh-Hans": "事实",
     "zh-Hant": "事實"
+  },
+  "Failed": {
+    "de": "Fehlgeschlagen",
+    "es": "Fallido",
+    "fr": "Échec",
+    "id": "Gagal",
+    "it": "Non riuscito",
+    "ja": "失敗",
+    "ko": "실패",
+    "pl": "Nieudane",
+    "pt-BR": "Falhou",
+    "ru": "Ошибка",
+    "tr": "Başarısız",
+    "zh-Hans": "失败",
+    "zh-Hant": "失敗"
   },
   "Fast": {
     "de": "Schnell",
@@ -4544,6 +4694,21 @@
     "zh-Hans": "从你的评分中学到的",
     "zh-Hant": "從你的評分中學到的"
   },
+  "Leave Alone": {
+    "de": "In Ruhe lassen",
+    "es": "Dejar en paz",
+    "fr": "Laisser tranquille",
+    "id": "Biarkan Saja",
+    "it": "Lascia stare",
+    "ja": "そのままにする",
+    "ko": "그대로 두기",
+    "pl": "Zostaw w spokoju",
+    "pt-BR": "Deixar em paz",
+    "ru": "Не трогать",
+    "tr": "Kendi Haline Bırak",
+    "zh-Hans": "不要干预",
+    "zh-Hant": "不要干預"
+  },
   "Left out of the look ahead": {
     "de": "In der Vorausschau ausgelassen",
     "es": "Fuera de la previsión",
@@ -4573,6 +4738,21 @@
     "tr": "Rapora girmeyenler",
     "zh-Hans": "未写进报告",
     "zh-Hant": "未寫進報告"
+  },
+  "Let {bot} Coordinate It": {
+    "de": "Von {bot} koordinieren lassen",
+    "es": "Dejar que {bot} lo coordine",
+    "fr": "Laisser {bot} le coordonner",
+    "id": "Biarkan {bot} Mengoordinasikannya",
+    "it": "Lascia che {bot} lo coordini",
+    "ja": "{bot}に連携させる",
+    "ko": "{bot}이(가) 조율하게 하기",
+    "pl": "Pozwól {bot} to koordynować",
+    "pt-BR": "Deixar {bot} coordenar",
+    "ru": "Разрешить {bot} координировать",
+    "tr": "{bot} Koordine Etsin",
+    "zh-Hans": "让 {bot} 协调它",
+    "zh-Hant": "讓 {bot} 協調它"
   },
   "Lime": {
     "de": "Limette",
@@ -5879,6 +6059,21 @@
     "zh-Hans": "此期间没有用量。",
     "zh-Hant": "此期間沒有用量。"
   },
+  "No work yet": {
+    "de": "Noch keine Arbeit",
+    "es": "Aún no hay trabajo",
+    "fr": "Aucun travail pour l’instant",
+    "id": "Belum ada pekerjaan",
+    "it": "Ancora nessun lavoro",
+    "ja": "まだ作業はありません",
+    "ko": "아직 작업이 없습니다",
+    "pl": "Brak pracy",
+    "pt-BR": "Nenhum trabalho ainda",
+    "ru": "Пока нет работы",
+    "tr": "Henüz iş yok",
+    "zh-Hans": "还没有工作",
+    "zh-Hant": "還沒有工作"
+  },
   "Normal": {
     "de": "Normal",
     "es": "Normal",
@@ -6194,6 +6389,21 @@
     "zh-Hans": "没有与“{query}”匹配的内容。",
     "zh-Hant": "沒有與「{query}」相符的內容。"
   },
+  "Nothing resolved yet.": {
+    "de": "Noch nichts erledigt.",
+    "es": "Aún no hay nada resuelto.",
+    "fr": "Rien de résolu pour l’instant.",
+    "id": "Belum ada yang diselesaikan.",
+    "it": "Ancora niente di risolto.",
+    "ja": "解決済みはまだありません。",
+    "ko": "아직 해결된 항목이 없습니다.",
+    "pl": "Nic jeszcze nie rozwiązano.",
+    "pt-BR": "Nada resolvido ainda.",
+    "ru": "Пока ничего не решено.",
+    "tr": "Henüz çözülen bir şey yok.",
+    "zh-Hans": "还没有已解决的工作。",
+    "zh-Hant": "還沒有已解決的工作。"
+  },
   "Nothing stands out yet. The more you use thumbs, Do it and Done, the more Pulse learns what to bring up.": {
     "de": "Noch sticht nichts heraus. Je mehr du Daumen, „Erledigen“ und „Fertig“ nutzt, desto besser lernt Pulse, was es ansprechen soll.",
     "es": "Aún no destaca nada. Cuanto más uses los pulgares, Hacerlo y Hecho, más aprenderá Pulse qué mencionar.",
@@ -6478,6 +6688,21 @@
     "tr": "{name} aç",
     "zh-Hans": "打开 {name}",
     "zh-Hant": "打開 {name}"
+  },
+  "Open {ref}’s chat": {
+    "de": "Chat von {ref} öffnen",
+    "es": "Abrir el chat de {ref}",
+    "fr": "Ouvrir le chat de {ref}",
+    "id": "Buka obrolan {ref}",
+    "it": "Apri la chat di {ref}",
+    "ja": "{ref}のチャットを開く",
+    "ko": "{ref} 채팅 열기",
+    "pl": "Otwórz czat {ref}",
+    "pt-BR": "Abrir o chat de {ref}",
+    "ru": "Открыть чат {ref}",
+    "tr": "{ref} sohbetini aç",
+    "zh-Hans": "打开 {ref} 的聊天",
+    "zh-Hant": "打開 {ref} 的聊天"
   },
   "Opened a page": {
     "de": "Seite geöffnet",
@@ -7799,6 +8024,21 @@
     "zh-Hans": "思考强度",
     "zh-Hant": "推理"
   },
+  "Recent": {
+    "de": "Letzte",
+    "es": "Recientes",
+    "fr": "Récents",
+    "id": "Terbaru",
+    "it": "Recenti",
+    "ja": "最近",
+    "ko": "최근",
+    "pl": "Ostatnie",
+    "pt-BR": "Recentes",
+    "ru": "Недавние",
+    "tr": "Son Kullanılanlar",
+    "zh-Hans": "最近",
+    "zh-Hant": "最近"
+  },
   "Record": {
     "de": "Aufnehmen",
     "es": "Grabar",
@@ -7979,6 +8219,21 @@
     "zh-Hans": "已重命名为 {name}",
     "zh-Hant": "已重新命名為 {name}"
   },
+  "Reopen": {
+    "de": "Wieder öffnen",
+    "es": "Reabrir",
+    "fr": "Rouvrir",
+    "id": "Buka lagi",
+    "it": "Riapri",
+    "ja": "再開",
+    "ko": "다시 열기",
+    "pl": "Otwórz ponownie",
+    "pt-BR": "Reabrir",
+    "ru": "Открыть снова",
+    "tr": "Yeniden aç",
+    "zh-Hans": "重新打开",
+    "zh-Hant": "重新打開"
+  },
   "Repeats": {
     "de": "Wiederholung",
     "es": "Repetición",
@@ -8038,6 +8293,21 @@
     "tr": "Yanıtla ve engeli kaldır",
     "zh-Hans": "回复并解除阻塞",
     "zh-Hant": "回覆並解除封鎖"
+  },
+  "Reply to {ref}…": {
+    "de": "{ref} antworten…",
+    "es": "Responder a {ref}…",
+    "fr": "Répondre à {ref}…",
+    "id": "Balas ke {ref}…",
+    "it": "Rispondi a {ref}…",
+    "ja": "{ref}に返信…",
+    "ko": "{ref}에 답장…",
+    "pl": "Odpowiedz {ref}…",
+    "pt-BR": "Responder a {ref}…",
+    "ru": "Ответить {ref}…",
+    "tr": "{ref} yanıtla…",
+    "zh-Hans": "回复 {ref}…",
+    "zh-Hant": "回覆 {ref}…"
   },
   "Replying to {name}": {
     "de": "Antwort auf {name}",
@@ -8173,6 +8443,36 @@
     "tr": "{time} sıfırlanır",
     "zh-Hans": "{time}重置",
     "zh-Hant": "{time}重置"
+  },
+  "Resolve": {
+    "de": "Erledigen",
+    "es": "Resolver",
+    "fr": "Résoudre",
+    "id": "Selesaikan",
+    "it": "Risolvi",
+    "ja": "解決",
+    "ko": "해결",
+    "pl": "Rozwiąż",
+    "pt-BR": "Resolver",
+    "ru": "Решено",
+    "tr": "Çöz",
+    "zh-Hans": "解决",
+    "zh-Hant": "解決"
+  },
+  "Resolved": {
+    "de": "Erledigt",
+    "es": "Resueltos",
+    "fr": "Résolus",
+    "id": "Selesai",
+    "it": "Risolti",
+    "ja": "解決済み",
+    "ko": "해결됨",
+    "pl": "Rozwiązane",
+    "pt-BR": "Resolvidos",
+    "ru": "Решённые",
+    "tr": "Çözülenler",
+    "zh-Hans": "已解决",
+    "zh-Hant": "已解決"
   },
   "Resting after you said Not now": {
     "de": "Pausiert, nachdem du „Nicht jetzt“ gesagt hast",
@@ -8744,6 +9044,21 @@
     "zh-Hans": "发送",
     "zh-Hant": "傳送"
   },
+  "Send to {ref}": {
+    "de": "An {ref} senden",
+    "es": "Enviar a {ref}",
+    "fr": "Envoyer à {ref}",
+    "id": "Kirim ke {ref}",
+    "it": "Invia a {ref}",
+    "ja": "{ref}に送信",
+    "ko": "{ref}에 보내기",
+    "pl": "Wyślij do {ref}",
+    "pt-BR": "Enviar para {ref}",
+    "ru": "Отправить в {ref}",
+    "tr": "{ref} öğesine gönder",
+    "zh-Hans": "发送给 {ref}",
+    "zh-Hant": "傳送給 {ref}"
+  },
   "Send voice message": {
     "de": "Sprachnachricht senden",
     "es": "Enviar mensaje de voz",
@@ -8834,6 +9149,21 @@
     "zh-Hans": "显示",
     "zh-Hant": "顯示"
   },
+  "Show all {count}": {
+    "de": "Alle {count} anzeigen",
+    "es": "Ver los {count}",
+    "fr": "Tout afficher ({count})",
+    "id": "Tampilkan semua {count}",
+    "it": "Mostra tutti e {count}",
+    "ja": "{count}件すべて表示",
+    "ko": "{count}개 모두 보기",
+    "pl": "Pokaż wszystkie ({count})",
+    "pt-BR": "Ver todos os {count}",
+    "ru": "Показать все ({count})",
+    "tr": "{count} öğenin tümünü göster",
+    "zh-Hans": "显示全部 {count} 项",
+    "zh-Hant": "顯示全部 {count} 項"
+  },
   "Show available slash commands": {
     "de": "Verfügbare Slash-Befehle anzeigen",
     "es": "Mostrar los comandos de barra disponibles",
@@ -8863,6 +9193,21 @@
     "tr": "Geçerli oturum durumunu göster",
     "zh-Hans": "显示当前会话状态",
     "zh-Hant": "顯示目前工作階段的狀態"
+  },
+  "Show less": {
+    "de": "Weniger anzeigen",
+    "es": "Ver menos",
+    "fr": "Afficher moins",
+    "id": "Tampilkan lebih sedikit",
+    "it": "Mostra meno",
+    "ja": "表示を減らす",
+    "ko": "간단히 보기",
+    "pl": "Pokaż mniej",
+    "pt-BR": "Ver menos",
+    "ru": "Показать меньше",
+    "tr": "Daha az göster",
+    "zh-Hans": "收起",
+    "zh-Hant": "收起"
   },
   "Show the Hermes Agent version": {
     "de": "Version von Hermes Agent anzeigen",
@@ -8938,6 +9283,21 @@
     "tr": "Botun bir resmi olana kadar gösterilir. Rengi, botun Conduit'teki rengidir.",
     "zh-Hans": "在机器人有头像之前显示。它的颜色就是机器人在 Conduit 中的颜色。",
     "zh-Hant": "在機器人有圖片之前顯示。它的顏色就是機器人在 Conduit 中的顏色。"
+  },
+  "Shows this bot’s work": {
+    "de": "Zeigt die Arbeit dieses Bots",
+    "es": "Muestra el trabajo de este bot",
+    "fr": "Affiche le travail de ce bot",
+    "id": "Menampilkan pekerjaan bot ini",
+    "it": "Mostra il lavoro di questo bot",
+    "ja": "このボットの作業を表示",
+    "ko": "이 봇의 작업 표시",
+    "pl": "Pokazuje pracę tego bota",
+    "pt-BR": "Mostra o trabalho deste bot",
+    "ru": "Показывает работу этого бота",
+    "tr": "Bu botun işini gösterir",
+    "zh-Hans": "显示此机器人的工作",
+    "zh-Hant": "顯示此機器人的工作"
   },
   "Sign in": {
     "de": "Anmelden",
@@ -9388,6 +9748,21 @@
     "tr": "Arka planda başlatıldı. Yanıt burada görünecek.",
     "zh-Hans": "已在后台开始。回答将显示在这里。",
     "zh-Hant": "已在背景開始。回答將顯示在這裡。"
+  },
+  "Starting": {
+    "de": "Wird gestartet",
+    "es": "Iniciando",
+    "fr": "Démarrage",
+    "id": "Memulai",
+    "it": "Avvio",
+    "ja": "開始中",
+    "ko": "시작 중",
+    "pl": "Uruchamianie",
+    "pt-BR": "Iniciando",
+    "ru": "Запуск",
+    "tr": "Başlatılıyor",
+    "zh-Hans": "正在启动",
+    "zh-Hant": "正在開始"
   },
   "Starts in": {
     "de": "Startet in",
@@ -10228,6 +10603,21 @@
     "tr": "Bu Hermes'te görev panosu yok.",
     "zh-Hans": "此 Hermes 没有任务看板。",
     "zh-Hant": "此 Hermes 沒有任務看板。"
+  },
+  "This card can’t show all of it. Approve it in its chat, or deny it here.": {
+    "de": "Diese Karte kann nicht alles zeigen. Genehmige es im Chat oder lehne es hier ab.",
+    "es": "Esta tarjeta no puede mostrarlo entero. Apruébalo en su chat o recházalo aquí.",
+    "fr": "Cette carte ne peut pas tout afficher. Approuvez-le dans son chat ou refusez-le ici.",
+    "id": "Kartu ini tidak bisa menampilkan semuanya. Setujui di chat-nya, atau tolak di sini.",
+    "it": "Questa scheda non può mostrarlo tutto. Approvalo nella sua chat o rifiutalo qui.",
+    "ja": "このカードでは全体を表示できません。チャットで承認するか、ここで拒否してください。",
+    "ko": "이 카드에는 전부 표시할 수 없습니다. 해당 채팅에서 승인하거나 여기서 거부하세요.",
+    "pl": "Ta karta nie może pokazać całości. Zatwierdź to w jego czacie albo odrzuć tutaj.",
+    "pt-BR": "Este cartão não consegue mostrar tudo. Aprove no chat dele ou recuse aqui.",
+    "ru": "Эта карточка не может показать всё. Одобрите это в его чате или отклоните здесь.",
+    "tr": "Bu kart tamamını gösteremiyor. Sohbetinde onaylayın ya da burada reddedin.",
+    "zh-Hans": "此卡片无法显示全部内容。请在其聊天中批准，或在此拒绝。",
+    "zh-Hant": "此卡片無法顯示全部內容。請在其聊天中核准，或在此拒絕。"
   },
   "This dashboard asks for a sign-in. Try again with your user name and password.": {
     "de": "Dieses Dashboard verlangt eine Anmeldung. Versuche es erneut mit Benutzername und Passwort.",
@@ -11444,6 +11834,51 @@
     "zh-Hans": "回复结束后会发送语音消息。",
     "zh-Hant": "回覆結束後會傳送語音訊息。"
   },
+  "Waiting": {
+    "de": "Wartet",
+    "es": "Esperando",
+    "fr": "En attente",
+    "id": "Menunggu",
+    "it": "In attesa",
+    "ja": "待機中",
+    "ko": "대기 중",
+    "pl": "Oczekuje",
+    "pt-BR": "Aguardando",
+    "ru": "Ожидание",
+    "tr": "Bekliyor",
+    "zh-Hans": "等待中",
+    "zh-Hant": "等待中"
+  },
+  "Waiting for {count} background agents": {
+    "de": "Wartet auf {count} Hintergrundagenten",
+    "es": "Esperando a {count} agentes en segundo plano",
+    "fr": "En attente de {count} agents en arrière-plan",
+    "id": "Menunggu {count} agen latar",
+    "it": "In attesa di {count} agenti in background",
+    "ja": "{count}件のバックグラウンドエージェントを待機中",
+    "ko": "백그라운드 에이전트 {count}개를 기다리는 중",
+    "pl": "Czeka na {count} agenta w tle",
+    "pt-BR": "Aguardando {count} agentes em segundo plano",
+    "ru": "Ожидание {count} фонового агента",
+    "tr": "{count} arka plan ajanı bekleniyor",
+    "zh-Hans": "正在等待 {count} 个后台智能体",
+    "zh-Hant": "正在等待 {count} 個背景代理程式"
+  },
+  "Waiting on {bot}": {
+    "de": "Wartet auf {bot}",
+    "es": "Esperando a {bot}",
+    "fr": "En attente de {bot}",
+    "id": "Menunggu {bot}",
+    "it": "In attesa di {bot}",
+    "ja": "{bot}を待っています",
+    "ko": "{bot} 대기 중",
+    "pl": "Czeka na {bot}",
+    "pt-BR": "Aguardando {bot}",
+    "ru": "Ждёт {bot}",
+    "tr": "{bot} bekleniyor",
+    "zh-Hans": "等待 {bot}",
+    "zh-Hant": "等待 {bot}"
+  },
   "Watching": {
     "de": "Im Blick",
     "es": "Vigilando",
@@ -11818,6 +12253,21 @@
     "tr": "Karşılaştırılacak kelimeler",
     "zh-Hans": "用于核对的单词",
     "zh-Hant": "用於核對的單字"
+  },
+  "Work": {
+    "de": "Arbeit",
+    "es": "Trabajo",
+    "fr": "Travail",
+    "id": "Kantor",
+    "it": "Lavoro",
+    "ja": "職場",
+    "ko": "직장",
+    "pl": "Praca",
+    "pt-BR": "Trabalho",
+    "ru": "Работа",
+    "tr": "İş",
+    "zh-Hans": "工作",
+    "zh-Hant": "公司"
   },
   "Work and career": {
     "de": "Arbeit und Karriere",
@@ -12389,6 +12839,36 @@
     "zh-Hans": "{a} 和 {b}",
     "zh-Hant": "{a} 和 {b}"
   },
+  "{bot} answered": {
+    "de": "{bot} hat geantwortet",
+    "es": "{bot} respondió",
+    "fr": "{bot} a répondu",
+    "id": "{bot} menjawab",
+    "it": "{bot} ha risposto",
+    "ja": "{bot}が回答しました",
+    "ko": "{bot}님이 답변함",
+    "pl": "{bot} odpowiedział(a)",
+    "pt-BR": "{bot} respondeu",
+    "ru": "{bot} ответил(а)",
+    "tr": "{bot} yanıtladı",
+    "zh-Hans": "{bot} 已回答",
+    "zh-Hant": "{bot} 已回答"
+  },
+  "{bot} asks": {
+    "de": "{bot} fragt",
+    "es": "{bot} pregunta",
+    "fr": "{bot} demande",
+    "id": "{bot} bertanya",
+    "it": "{bot} chiede",
+    "ja": "{bot}からの質問",
+    "ko": "{bot}님의 질문",
+    "pl": "{bot} pyta",
+    "pt-BR": "{bot} pergunta",
+    "ru": "{bot} спрашивает",
+    "tr": "{bot} soruyor",
+    "zh-Hans": "{bot} 提问",
+    "zh-Hant": "{bot} 提問"
+  },
   "{bot} couldn’t answer.": {
     "de": "{bot} konnte nicht antworten.",
     "es": "{bot} no pudo responder.",
@@ -12418,6 +12898,51 @@
     "tr": "{bot} yanıt veremedi: {reason}",
     "zh-Hans": "{bot} 无法回答：{reason}",
     "zh-Hant": "{bot} 無法回答：{reason}"
+  },
+  "{bot} does everything in its Bot Chat itself. Work that’s already running carries on.": {
+    "de": "{bot} erledigt alles selbst im Bot-Chat. Arbeit, die schon läuft, geht weiter.",
+    "es": "{bot} lo hace todo en su chat de bot. El trabajo que ya está en marcha continúa.",
+    "fr": "{bot} fait tout lui-même dans sa discussion de bot. Le travail déjà en cours continue.",
+    "id": "{bot} mengerjakan semuanya sendiri di Obrolan Bot-nya. Pekerjaan yang sudah berjalan tetap berlanjut.",
+    "it": "{bot} fa tutto da sé nella sua chat del bot. Il lavoro già in corso continua.",
+    "ja": "{bot}はすべてをボットチャット内で自分で行います。実行中の作業はそのまま続きます。",
+    "ko": "{bot}이(가) 모든 일을 봇 채팅에서 직접 해요. 이미 진행 중인 작업은 계속돼요.",
+    "pl": "{bot} robi wszystko sam w czacie z botem. Praca, która już trwa, toczy się dalej.",
+    "pt-BR": "{bot} faz tudo sozinho no Chat de Bot. O trabalho que já está em andamento continua.",
+    "ru": "{bot} делает всё сам в чате с ботом. Работа, которая уже идёт, продолжается.",
+    "tr": "{bot} her şeyi Bot Sohbeti’nde kendisi yapar. Zaten çalışan işler sürer.",
+    "zh-Hans": "{bot} 会在其 Bot Chat 中亲自完成所有事。已经在进行的工作会继续。",
+    "zh-Hant": "{bot} 會在機器人聊天中自己完成所有事。已在進行的工作會繼續。"
+  },
+  "{bot}’s work": {
+    "de": "Arbeit von {bot}",
+    "es": "Trabajo de {bot}",
+    "fr": "Travail de {bot}",
+    "id": "Pekerjaan {bot}",
+    "it": "Lavoro di {bot}",
+    "ja": "{bot}の作業",
+    "ko": "{bot}의 작업",
+    "pl": "Praca: {bot}",
+    "pt-BR": "Trabalho de {bot}",
+    "ru": "Работа: {bot}",
+    "tr": "{bot} adlı botun işi",
+    "zh-Hans": "{bot} 的工作",
+    "zh-Hant": "{bot} 的工作"
+  },
+  "{bot}’s work · {ref} · {status}": {
+    "de": "Arbeit von {bot} · {ref} · {status}",
+    "es": "Trabajo de {bot} · {ref} · {status}",
+    "fr": "Travail de {bot} · {ref} · {status}",
+    "id": "Pekerjaan {bot} · {ref} · {status}",
+    "it": "Lavoro di {bot} · {ref} · {status}",
+    "ja": "{bot}の作業 · {ref} · {status}",
+    "ko": "{bot}의 작업 · {ref} · {status}",
+    "pl": "Praca: {bot} · {ref} · {status}",
+    "pt-BR": "Trabalho de {bot} · {ref} · {status}",
+    "ru": "Работа: {bot} · {ref} · {status}",
+    "tr": "{bot} adlı botun işi · {ref} · {status}",
+    "zh-Hans": "{bot} 的工作 · {ref} · {status}",
+    "zh-Hant": "{bot} 的工作 · {ref} · {status}"
   },
   "{count} bytes": {
     "de": "{count} Byte",
@@ -12479,6 +13004,21 @@
     "zh-Hans": "{count} 分钟",
     "zh-Hant": "{count} 分鐘"
   },
+  "{count} needs you": {
+    "de": "{count} brauchen dich",
+    "es": "{count} te necesitan",
+    "fr": "{count} attendent ta réponse",
+    "id": "{count} perlu kamu",
+    "it": "{count} hanno bisogno di te",
+    "ja": "{count}件 対応が必要",
+    "ko": "{count}개 확인 필요",
+    "pl": "{count} czeka na ciebie",
+    "pt-BR": "{count} precisam de você",
+    "ru": "{count} ждут вас",
+    "tr": "{count} seni bekliyor",
+    "zh-Hans": "{count} 项需要你处理",
+    "zh-Hant": "{count} 項需要你處理"
+  },
   "{count} new since you last looked": {
     "de": "{count} neu seit deinem letzten Blick",
     "es": "{count} nuevas desde la última vez",
@@ -12524,6 +13064,21 @@
     "zh-Hans": "{count} 个问题：{summary}",
     "zh-Hant": "{count} 個問題：{summary}"
   },
+  "{count} ready": {
+    "de": "{count} fertig",
+    "es": "{count} listos",
+    "fr": "{count} prêts",
+    "id": "{count} siap",
+    "it": "{count} pronti",
+    "ja": "{count}件 準備完了",
+    "ko": "{count}개 준비됨",
+    "pl": "{count} gotowych",
+    "pt-BR": "{count} prontos",
+    "ru": "{count} готово",
+    "tr": "{count} hazır",
+    "zh-Hans": "{count} 项已就绪",
+    "zh-Hant": "{count} 項已就緒"
+  },
   "{count} s": {
     "de": "{count} s",
     "es": "{count} s",
@@ -12553,6 +13108,36 @@
     "tr": "{count} token",
     "zh-Hans": "{count} 个令牌",
     "zh-Hant": "{count} 個 token"
+  },
+  "{count} working": {
+    "de": "{count} in Arbeit",
+    "es": "{count} en curso",
+    "fr": "{count} en cours",
+    "id": "{count} berjalan",
+    "it": "{count} in corso",
+    "ja": "{count}件 作業中",
+    "ko": "{count}개 작업 중",
+    "pl": "{count} w toku",
+    "pt-BR": "{count} em andamento",
+    "ru": "{count} в работе",
+    "tr": "{count} çalışıyor",
+    "zh-Hans": "{count} 项进行中",
+    "zh-Hant": "{count} 項進行中"
+  },
+  "{done} of {all}": {
+    "de": "{done} von {all}",
+    "es": "{done} de {all}",
+    "fr": "{done} sur {all}",
+    "id": "{done} dari {all}",
+    "it": "{done} di {all}",
+    "ja": "{done} / {all}",
+    "ko": "{done} / {all}",
+    "pl": "{done} z {all}",
+    "pt-BR": "{done} de {all}",
+    "ru": "{done} из {all}",
+    "tr": "{done} / {all}",
+    "zh-Hans": "{done} / {all}",
+    "zh-Hant": "{done} / {all}"
   },
   "{input} in · {output} out": {
     "de": "{input} Eingabe · {output} Ausgabe",
@@ -12853,20 +13438,5 @@
     "tr": "“{kind}” kartları",
     "zh-Hans": "“{kind}”卡片",
     "zh-Hant": "「{kind}」卡片"
-  },
-  "Default": {
-    "de": "Standard",
-    "es": "Predeterminado",
-    "fr": "Par défaut",
-    "id": "Default",
-    "it": "Predefinito",
-    "ja": "デフォルト",
-    "ko": "기본",
-    "pl": "Domyślnie",
-    "pt-BR": "Padrão",
-    "ru": "По умолчанию",
-    "tr": "Varsayılan",
-    "zh-Hans": "默认",
-    "zh-Hant": "預設"
   }
 }
