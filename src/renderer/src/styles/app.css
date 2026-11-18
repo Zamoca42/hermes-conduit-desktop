@@ -5710,3 +5710,137 @@ button.cap-row-text {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Settings > Models' Providers. */
+.provider-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.provider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 4px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.provider-row:hover {
+  background: var(--surface-hover);
+}
+
+.provider-row .meta {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 55%;
+}
+
+.provider-row .ico {
+  color: var(--text-3);
+  flex: none;
+}
+
+.provider-row .spacer,
+.provider-actions .spacer,
+.provider-head .spacer {
+  flex: 1;
+}
+
+.provider-head {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.provider-head h2 {
+  margin: 0;
+}
+
+.provider-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.provider-block h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.provider-key input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+}
+
+.provider-key {
+  gap: 8px;
+}
+
+.provider-actions {
+  gap: 14px;
+  justify-content: flex-start;
+}
+
+.provider-code {
+  font-size: 22px;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.provider-command {
+  font-size: 13px;
+  user-select: all;
+}
+
+.provider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.provider-field input {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+}
+
+.provider-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 14px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.provider-facts dt {
+  color: var(--text-3);
+}
+
+.provider-facts dd {
+  margin: 0;
+  word-break: break-all;
+}
