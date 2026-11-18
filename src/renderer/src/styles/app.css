@@ -5397,3 +5397,316 @@ button.cap-row-text {
   max-width: 100%;
   overflow-x: auto;
 }
+
+/* The agent's plan above the composer: a line that opens into the list. */
+.plan-dock {
+  margin: 0 auto 6px;
+  width: min(100%, 760px);
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+.plan-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 2px 4px 2px 0;
+}
+.plan-dock.open .plan-line {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.plan-toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+.plan-toggle .ico {
+  transform: rotate(-90deg);
+  transition: transform 0.15s;
+}
+.plan-dock.open .plan-toggle .ico {
+  transform: rotate(90deg);
+}
+.plan-meter {
+  width: 60px;
+  flex: none;
+}
+.plan-now {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--muted, inherit);
+}
+.plan-items {
+  list-style: none;
+  margin: 0;
+  padding: 6px 4px;
+  max-height: 40vh;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  background: var(--surface);
+  font-size: 13px;
+}
+.plan-item {
+  display: flex;
+  gap: 8px;
+  padding: 3px 8px;
+}
+.plan-mark {
+  width: 14px;
+  flex: none;
+  text-align: center;
+}
+.plan-item.status-completed .plan-text,
+.plan-item.status-cancelled .plan-text {
+  color: var(--muted, inherit);
+  opacity: 0.7;
+}
+.plan-item.status-cancelled .plan-text {
+  text-decoration: line-through;
+}
+.plan-item.now .plan-text {
+  font-weight: 600;
+}
+.plan-item.status-in_progress .plan-mark {
+  color: var(--accent);
+}
+.agents-dock .spinner {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  flex: none;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.agent-cards {
+  padding: 4px;
+}
+.agent-card {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.agent-card:last-child {
+  border-bottom: none;
+}
+.agent-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.agent-line {
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+.agent-output {
+  max-height: 180px;
+  overflow: auto;
+  margin: 6px 0 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--line);
+  font-size: 11px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.agent-steer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.agent-steer input {
+  flex: 1;
+  min-width: 140px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: inherit;
+}
+.agent-steer .secondary {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+.agent-caption { padding: 4px 10px 6px; }
+
+/* The chat's goal, loop and heartbeat above the composer. */
+.control-dock {
+  margin: 0 auto 6px;
+  width: min(100%, 760px);
+  padding: 0 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.control-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.control-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-wrap: anywhere;
+}
+.control-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: none;
+  max-width: 45%;
+}
+.control-criteria {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.control-criteria li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.control-criteria li::before {
+  content: '·';
+  margin-right: 4px;
+}
+.control-note {
+  padding: 0 12px;
+}
+
+/* The chat's text size: ⌘+ ⌘− ⌘0. */
+.transcript-inner {
+  zoom: var(--chat-scale, 1);
+}
+
+.shortcuts-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.shortcuts-sheet {
+  width: min(440px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  background: var(--composer);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  padding: 14px 18px 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.shortcuts-sheet header {
+  display: flex;
+  align-items: center;
+}
+
+.shortcuts-sheet h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.shortcuts-sheet h3 {
+  margin: 14px 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.shortcuts-sheet ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.shortcuts-sheet li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.shortcuts-sheet li:last-child {
+  border-bottom: none;
+}
+
+.shortcuts-sheet kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--field);
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  padding: 2px 6px;
+}
+
+.text-size-slider {
+  width: 180px;
+  vertical-align: middle;
+  margin-right: 8px;
+  accent-color: var(--accent);
+}
+
+.shortcuts-sheet .spacer {
+  flex: 1;
+}
+
+.agent-section {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  padding: 8px 2px 0;
+}
+
+.process-command {
+  font-size: 13px;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.process-subtitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

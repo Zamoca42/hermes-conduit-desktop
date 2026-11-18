@@ -1,6 +1,7 @@
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { contextFromUsage, parseBreakdown, type ContextWindow } from './context'
+import { parsePlan } from './plan'
 import {
   addNotice,
   addOutput,
@@ -67,6 +68,8 @@ interface ResumeResult {
   running?: boolean | null
   inflight?: { assistant?: string; streaming?: boolean } | null
   info?: ChatInfo
+  /** The agent's plan (Hermes 0.21+), for a chat whose last plan is older than the loaded page. */
+  todo_state?: unknown
 }
 
 interface CreateResult {
@@ -183,7 +186,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           title: result.info?.title,
           ...chatSettings(result.info)
         })
-        let state: TranscriptState = { items: fromHistory(result.messages ?? []), running: result.running === true }
+        let state: TranscriptState = { items: fromHistory(result.messages ?? []), running: result.running === true, plan: parsePlan(result.todo_state) }
         if (result.running && result.inflight?.assistant) {
           state = applyEvent(state, { type: 'message.delta', payload: { text: result.inflight.assistant } })
         }
@@ -263,7 +266,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       if (ticket !== request.current) return
       liveId.current = result.session_id
       setChat(c => ({ ...c, liveId: result.session_id, title: result.info?.title ?? c.title }))
-      const state = { items: fromHistory(result.messages ?? []), running: result.running === true }
+      const state = { items: fromHistory(result.messages ?? []), running: result.running === true, plan: parsePlan(result.todo_state) }
       dispatch({ type: 'reset', state })
       void loadBoards(state, result.stored_session_id ?? stored, profile, () => ticket === request.current, dispatch)
     } catch {

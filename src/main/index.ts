@@ -115,7 +115,8 @@ function createWindow(): void {
 }
 
 function registerIpc(): void {
-  if (process.platform === 'darwin') Menu.setApplicationMenu(macMenu())
+  // Elsewhere Electron's default menu would take Ctrl+0 and Ctrl+Plus for zoom: the window reads them for the chat's text size.
+  Menu.setApplicationMenu(process.platform === 'darwin' ? macMenu() : null)
   ipcMain.handle(IPC.requests, () => connection.requests())
   ipcMain.on(IPC.setWaiting, (_event, count: number) => tray.setWaiting(Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0))
   ipcMain.on(IPC.windowShow, () => showWindow())
@@ -217,21 +218,63 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 /**
- * The Mac's menu bar: the standard app, Edit, View and Window menus, and
- * File > New Chat on ⌘N. Windows has no menu bar (the title bar is ours),
- * so the window takes Ctrl+N itself there.
+ * The Mac's menu bar, after the phone's: Settings on ⌘,, File > New Chat
+ * and Search, View with the chat's text size and ⌘1 to ⌘5, Chat > Stop, and
+ * Help > Keyboard Shortcuts on ⌘/. Windows has no menu bar (the title bar
+ * is ours), so the window takes Ctrl and the same keys itself there.
  */
 function macMenu(): Menu {
   const command = (action: MenuAction) => () => {
     showWindow()
     sendCommand(action)
   }
+  const go = [t('Bots'), t('Chats'), t('Tasks'), t('Pulse'), t('Needs you')].map((label, i) => ({
+    label,
+    accelerator: `Cmd+${i + 1}`,
+    click: command(`go-${i + 1}` as MenuAction)
+  }))
   const template: MenuItemConstructorOptions[] = [
-    { role: 'appMenu' },
-    { label: t('File'), submenu: [{ label: t('New Chat'), accelerator: 'Cmd+N', click: command('new-chat') }, { type: 'separator' }, { role: 'close' }] },
+    {
+      role: 'appMenu',
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { label: t('Settings'), accelerator: 'Cmd+,', click: command('settings') },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideOthers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    },
+    {
+      label: t('File'),
+      submenu: [
+        { label: t('New Chat'), accelerator: 'Cmd+N', click: command('new-chat') },
+        { label: t('Search'), accelerator: 'Cmd+F', click: command('search') },
+        { type: 'separator' },
+        { role: 'close' }
+      ]
+    },
     { role: 'editMenu' },
-    { role: 'viewMenu' },
-    { role: 'windowMenu' }
+    {
+      label: t('View'),
+      submenu: [
+        { label: t('Make Text Bigger'), accelerator: 'Cmd+Plus', click: command('text-bigger') },
+        { label: t('Make Text Smaller'), accelerator: 'Cmd+-', click: command('text-smaller') },
+        { label: t('Make Text Normal Size'), accelerator: 'Cmd+0', click: command('text-normal') },
+        { type: 'separator' },
+        ...go,
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+    },
+    { label: t('Chat'), submenu: [{ label: t('Stop'), accelerator: 'Cmd+.', click: command('stop') }] },
+    { role: 'windowMenu' },
+    { role: 'help', submenu: [{ label: t('Keyboard Shortcuts'), accelerator: 'Cmd+/', click: command('shortcuts') }] }
   ]
   return Menu.buildFromTemplate(template)
 }

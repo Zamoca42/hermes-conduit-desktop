@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { gateway } from './gateway'
-import type { ConnectionStatus, LanguageChoice } from '@shared/ipc'
+import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
@@ -36,6 +36,11 @@ import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
+import { PlanDock } from './components/PlanDock'
+import { AgentsDock } from './components/AgentsDock'
+import { ControlDock } from './components/ControlDock'
+import { useAgents } from './state/useAgents'
+import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
@@ -45,6 +50,8 @@ import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/read
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
+import { GO_TO, SCALES, applyScale, nextScale, readScale, shortcutFor } from './state/shortcuts'
+import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -122,12 +129,33 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setSelected({ id: null, profile: chatProfileRef.current ?? undefined })
   }, [])
 
-  // ⌘N comes from the Mac's menu bar (so Ctrl+N stays the text field's next line there); Ctrl+N elsewhere.
+  // The Mac's menu bar sends its shortcuts; elsewhere the window reads Ctrl and the same key.
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
+  const closeShortcuts = useCallback(() => setShortcutsOpen(false), [])
+  const [chatScale, setChatScale] = useState(readScale)
+  useEffect(() => applyScale(chatScale), [chatScale])
+  const runShortcut = useRef<(action: MenuAction) => void>(() => {})
+  runShortcut.current = action => {
+    if (action === 'new-chat') newChat()
+    else if (action === 'needs-you') setSection('needs')
+    else if (action === 'settings') setSection('settings')
+    else if (action === 'shortcuts') setShortcutsOpen(open => !open)
+    else if (action === 'text-bigger') setChatScale(s => nextScale(s, 1))
+    else if (action === 'text-smaller') setChatScale(s => nextScale(s, -1))
+    else if (action === 'text-normal') setChatScale(1)
+    else if (action === 'stop') {
+      if (section === 'chats' && transcript.running) void stop()
+    } else if (action === 'search') {
+      setSection('chats')
+      // The list mounts with Chats.
+      setTimeout(() => document.querySelector<HTMLInputElement>('.chatlist-search input')?.focus(), 0)
+    } else if (action.startsWith('go-')) {
+      const target = GO_TO[Number(action.slice(3)) - 1]
+      if (target) setSection(target)
+    }
+  }
   useEffect(() => {
-    const offMenu = window.conduit.onMenu(action => {
-      if (action === 'new-chat') newChat()
-      else if (action === 'needs-you') setSection('needs')
-    })
+    const offMenu = window.conduit.onMenu(action => runShortcut.current(action))
     const offOpen = window.conduit.onOpenChat(ref => {
       setSelected({ id: ref.storedId, profile: ref.profile, title: ref.title })
       setSection('chats')
@@ -139,10 +167,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       }
     }
     const onKey = (event: KeyboardEvent) => {
-      if (event.ctrlKey && !event.altKey && !event.metaKey && event.key.toLowerCase() === 'n') {
-        event.preventDefault()
-        newChat()
-      }
+      const action = shortcutFor(event, false)
+      if (!action) return
+      event.preventDefault()
+      runShortcut.current(action)
     }
     window.addEventListener('keydown', onKey)
     return () => {
@@ -150,7 +178,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       offOpen()
       window.removeEventListener('keydown', onKey)
     }
-  }, [newChat])
+  }, [])
 
   const runningIds = useMemo(() => {
     const ids = new Set<string>()
@@ -245,6 +273,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined
   const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || !!openBotChat || workSessions.has(selected.id ?? '')))
   const workItem: WorkItem | undefined = selected.id ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined
+  // A workstream's checklist is its chat's plan, ahead of Hermes' own todo list there.
+  const workChecklist = workItem?.checklist
+  const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
+  const delegates = useAgents(chat.liveId, connected, transcript.running)
+  // Hermes may have changed the goal, loop or heartbeat: a turn ended or a command answered.
+  const outputs = useMemo(() => transcript.items.filter(item => item.kind === 'output').length, [transcript.items])
+  const controlPulse = turnsDone + outputs
   const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
   const showWork = workOpen && (!!openBotChat || !!workItem)
   const [modelOpen, setModelOpen] = useState(false)
@@ -643,6 +678,18 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                 />
               ) : null}
+              <ControlDock liveId={chat.liveId} profile={selected.profile} connected={connected} pulse={controlPulse} />
+              <AgentsDock
+                agents={delegates.agents}
+                running={transcript.running}
+                chatKey={selected.id ?? 'new'}
+                steer={delegates.steer}
+                stop={delegates.stop}
+                tail={delegates.tail}
+                processes={delegates.processes}
+                kill={delegates.kill}
+              />
+              <PlanDock plan={shownPlan} running={transcript.running} chatKey={selected.id ?? 'new'} />
               <Composer
                 placeholder={t('Message {name}…', { name: botTitle })}
                 quote={quote}
@@ -763,9 +810,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onAddHost={onAddHost}
             bots={(roster.bots ?? []).map(bot => ({ name: bot.name, title: bot.title }))}
             profile={selected.profile ?? 'default'}
+            chatScale={chatScale}
+            setChatScale={setChatScale}
+            onShortcuts={() => setShortcutsOpen(true)}
           />
         )}
       </div>
+      {shortcutsOpen ? <ShortcutsSheet onClose={closeShortcuts} /> : null}
     </>
   )
 }
@@ -774,12 +825,18 @@ function Settings({
   status,
   onAddHost,
   bots,
-  profile
+  profile,
+  chatScale,
+  setChatScale,
+  onShortcuts
 }: {
   status: ConnectionStatus
   onAddHost: () => void
   bots: { name: string; title: string }[]
   profile: string
+  chatScale: number
+  setChatScale: (scale: number) => void
+  onShortcuts: () => void
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
@@ -893,6 +950,26 @@ function Settings({
             {t('Read replies aloud')}
           </label>
           <p className="meta settings-caption">{t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}</p>
+        </dd>
+        <dt>{t('Chat text size')}</dt>
+        <dd>
+          <input
+            className="text-size-slider"
+            type="range"
+            min={0}
+            max={SCALES.length - 1}
+            step={1}
+            value={Math.max(0, SCALES.indexOf(chatScale))}
+            onChange={e => setChatScale(SCALES[Number(e.target.value)] ?? 1)}
+            aria-label={t('Chat text size')}
+          />
+          <span className="meta">{Math.round(chatScale * 100)}%</span>
+        </dd>
+        <dt>{t('Keyboard')}</dt>
+        <dd>
+          <button className="link" onClick={onShortcuts}>
+            {t('Keyboard Shortcuts')}
+          </button>
         </dd>
         <dt>{t('Language')}</dt>
         <dd>
