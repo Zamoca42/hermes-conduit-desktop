@@ -5084,6 +5084,21 @@
     "zh-Hans": "复制",
     "zh-Hant": "複製"
   },
+  "During a response": {
+    "de": "Während einer Antwort",
+    "es": "Durante una respuesta",
+    "fr": "Pendant une réponse",
+    "id": "Selama respons",
+    "it": "Durante una risposta",
+    "ja": "応答中",
+    "ko": "응답 중",
+    "pl": "Podczas odpowiedzi",
+    "pt-BR": "Durante uma resposta",
+    "ru": "Во время ответа",
+    "tr": "Yanıt sırasında",
+    "zh-Hans": "回复期间",
+    "zh-Hant": "回覆期間"
+  },
   "Each look that finds something sends one notification. The morning brief comes every day at its time with what's still open, today's calendar and reminders, and anything you've asked to hear less often.": {
     "de": "Jede Durchsicht, die etwas findet, sendet eine Mitteilung. Das Morgenbriefing kommt jeden Tag zu seiner Zeit, mit allem, was noch offen ist, dem heutigen Kalender und den Erinnerungen und allem, was du seltener hören wolltest.",
     "es": "Cada revisión que encuentra algo envía una notificación. El resumen matutino llega cada día a su hora con lo que sigue pendiente, el calendario y los recordatorios de hoy, y lo que pediste oír con menos frecuencia.",
@@ -12944,6 +12959,21 @@
     "zh-Hans": "问题：{summary}",
     "zh-Hant": "問題：{summary}"
   },
+  "Queue": {
+    "de": "Einreihen",
+    "es": "En cola",
+    "fr": "File d'attente",
+    "id": "Antrean",
+    "it": "In coda",
+    "ja": "キュー",
+    "ko": "대기열",
+    "pl": "Kolejka",
+    "pt-BR": "Fila",
+    "ru": "Очередь",
+    "tr": "Sıraya al",
+    "zh-Hans": "排队",
+    "zh-Hant": "排隊"
+  },
   "Queue a prompt for the next turn": {
     "de": "Einen Prompt für den nächsten Durchgang einreihen",
     "es": "Poner en cola una instrucción para el siguiente turno",
@@ -16438,6 +16468,21 @@
     "tr": "Yönlendir",
     "zh-Hans": "引导",
     "zh-Hant": "引導"
+  },
+  "Steer adds guidance to the active turn. Queue sends the message once it finishes. Interrupt stops it before handling the new message.": {
+    "de": "„Nachsteuern“ ergänzt den aktiven Durchgang um Hinweise. „Einreihen“ sendet die Nachricht, sobald er fertig ist. „Unterbrechen“ stoppt ihn, bevor die neue Nachricht verarbeitet wird.",
+    "es": "Guiar añade indicaciones al turno activo. En cola envía el mensaje cuando termina. Interrumpir lo detiene antes de procesar el nuevo mensaje.",
+    "fr": "Réorienter ajoute des indications au tour en cours. File d'attente envoie le message une fois le tour terminé. Interrompre l'arrête avant de traiter le nouveau message.",
+    "id": "Arahkan menambahkan panduan ke giliran aktif. Antrean mengirim pesan setelah giliran selesai. Interupsi menghentikannya sebelum menangani pesan baru.",
+    "it": "Reindirizza aggiunge indicazioni al turno attivo. In coda invia il messaggio quando il turno finisce. Interrompi lo ferma prima di gestire il nuovo messaggio.",
+    "ja": "「軌道修正」は実行中のターンに指示を追加します。「キュー」はターンが終わってからメッセージを送信します。「中断」は新しいメッセージを処理する前にそのターンを停止します。",
+    "ko": "‘방향 조정’은 진행 중인 턴에 지침을 추가해요. ‘대기열’은 턴이 끝나면 메시지를 보내요. ‘중단’은 새 메시지를 처리하기 전에 턴을 멈춰요.",
+    "pl": "„Pokieruj” dodaje wskazówki do bieżącej odpowiedzi. „Kolejka” wysyła wiadomość, gdy odpowiedź się skończy. „Przerwij” zatrzymuje ją przed obsłużeniem nowej wiadomości.",
+    "pt-BR": "Orientar acrescenta instruções ao turno ativo. Fila envia a mensagem quando ele terminar. Interromper o encerra antes de tratar a nova mensagem.",
+    "ru": "«Скорректировать» добавляет указания к текущему ответу. «Очередь» отправляет сообщение, когда ответ завершится. «Прервать» останавливает его, прежде чем обработать новое сообщение.",
+    "tr": "Yönlendir, etkin tura yönlendirme ekler. Sıraya al, mesajı tur bitince gönderir. Yarıda Kes, yeni mesajı işlemeden önce turu durdurur.",
+    "zh-Hans": "引导会为当前回合追加指引。排队会在当前回合结束后发送消息。中断则会在处理新消息前停止当前回合。",
+    "zh-Hant": "「引導」會為進行中的回合加入指引。「排隊」會在回合結束後傳送訊息。「中斷」會先停止該回合，再處理新訊息。"
   },
   "Steer the current run": {
     "de": "Die laufende Ausführung nachsteuern",

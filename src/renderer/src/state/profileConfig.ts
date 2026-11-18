@@ -115,6 +115,20 @@ export function chatSections(config: Row): Section[] {
           }
         },
         {
+          key: 'display.busy_input_mode',
+          label: t('During a response'),
+          help: t('Steer adds guidance to the active turn. Queue sends the message once it finishes. Interrupt stops it before handling the new message.'),
+          control: {
+            kind: 'options',
+            options: opts([
+              ['steer', t('Steer')],
+              ['queue', t('Queue')],
+              ['interrupt', t('Interrupt')]
+            ]),
+            defaultValue: 'interrupt'
+          }
+        },
+        {
           key: 'display.tool_progress',
           label: t('Tool cards'),
           help: t('Show tool calls and expandable details in conversations.'),
