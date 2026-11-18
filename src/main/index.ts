@@ -22,7 +22,8 @@ const connection = new Connection({
   // Browsers' WebSocket can't set headers; `ws` can, and has the same shape.
   createSocket: (url, headers) => new WebSocket(url, { headers }) as unknown as WebSocketLike,
   onStatus: status => send(IPC.statusChanged, status),
-  onEvent: (event: GatewayEventMessage) => send(IPC.event, event)
+  onEvent: (event: GatewayEventMessage) => send(IPC.event, event),
+  onRequests: requests => send(IPC.requestsChanged, requests)
 })
 
 function createWindow(): void {
@@ -70,6 +71,9 @@ function createWindow(): void {
 
 function registerIpc(): void {
   if (process.platform === 'darwin') Menu.setApplicationMenu(macMenu())
+  ipcMain.handle(IPC.requests, () => connection.requests())
+  ipcMain.handle(IPC.answerRequest, (_event, id: string, result: Record<string, unknown>) => connection.answerRequest(id, result))
+  ipcMain.handle(IPC.dismissRequest, (_event, id: string) => connection.dropRequest(id))
   ipcMain.handle(IPC.probe, (_event, url: string) => probeHost(url, globalThis.fetch.bind(globalThis)))
   ipcMain.handle(IPC.signIn, (_event, request: SignInRequest) => connection.signIn(request))
   ipcMain.handle(IPC.signOut, () => connection.signOut())

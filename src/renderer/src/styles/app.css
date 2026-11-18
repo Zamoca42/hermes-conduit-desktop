@@ -1112,3 +1112,329 @@ a:hover {
   height: 14px;
   flex: none;
 }
+
+/* Needs you: the rail badge, the page, and the cards that answer. */
+.railbtn {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 3px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent-fill);
+  color: var(--accent-ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+}
+
+.needs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 24px 48px;
+}
+
+.needs-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.needs h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.needs-sub {
+  margin: 0 0 8px;
+  color: var(--text-3);
+  font-size: 14px;
+}
+
+.needs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 16px;
+  color: var(--text-2);
+  text-align: center;
+}
+
+.needs-empty .ico {
+  width: 28px;
+  height: 28px;
+  color: var(--success);
+}
+
+.needs-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.needs-item .ask {
+  align-self: stretch;
+}
+
+.link {
+  border: 0;
+  background: none;
+  padding: 2px 4px;
+  color: var(--accent);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.needs-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.needs-row:hover {
+  background: var(--surface-hover);
+}
+
+.needs-kind {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.needs-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.needs-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.needs-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ask {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.ask-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ask-icon {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  color: var(--accent-ink);
+}
+
+.ask-icon .ico {
+  width: 16px;
+  height: 16px;
+}
+
+.ask-title {
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ask-chat {
+  font-weight: 400;
+  color: var(--text-3);
+}
+
+.ask-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.ask-command {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--code-bg);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.ask-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ask-actions.end {
+  justify-content: flex-end;
+}
+
+.ask-btn {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ask-btn:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.ask-btn.primary {
+  border-color: transparent;
+  background: var(--accent-fill);
+  color: var(--accent-ink);
+}
+
+.ask-btn.danger {
+  color: var(--danger);
+}
+
+.ask-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.ask-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.ask-q {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.ask-q:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ask-locked {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+.ask-locked .ico {
+  width: 15px;
+  height: 15px;
+  color: var(--success);
+}
+
+.ask-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ask-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ask-choice:hover,
+.ask-choice.on {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.ask-choice input {
+  accent-color: var(--accent);
+}
+
+.ask-own {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ask-own input {
+  flex: 1;
+  min-width: 180px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}

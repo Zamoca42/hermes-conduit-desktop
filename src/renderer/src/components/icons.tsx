@@ -30,6 +30,7 @@ const paths = {
   send: <path d="M12 19V5M6 11l6-6 6 6" />,
   stop: <rect x="7" y="7" width="10" height="10" rx="2" />,
   code: <path d="M8 8l-4 4 4 4M16 8l4 4-4 4" />,
+  bell: <path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15zM10 20a2 2 0 004 0" />,
   file: <path d="M7 3h7l4 4v14H7zM14 3v4h4" />,
   audio: <path d="M9 18V6l10-2v12M9 18a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM19 16a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />,
   image: (
