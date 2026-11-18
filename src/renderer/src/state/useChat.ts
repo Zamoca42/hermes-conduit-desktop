@@ -1,4 +1,6 @@
+import { gateway } from '../gateway'
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { contextFromUsage, parseBreakdown, type ContextWindow } from './context'
 import {
   addNotice,
   addOutput,
@@ -81,6 +83,8 @@ export interface OpenChat {
   reasoning?: string
   speed?: 'normal' | 'fast' | 'ultrafast'
   yolo?: boolean
+  /** How full the context window is, once Hermes says. */
+  context?: ContextWindow
 }
 
 /** The chat's settings from a session info Hermes sent (resume, create, `session.info`, a `config.set`). */
@@ -150,7 +154,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     if (profile) params.profile = profile
     // The transcript without every stored picture's bytes; the session authority refuses the flag.
     if (!sessionAuthority) params.inline_images = false
-    window.conduit
+    gateway
       .rpc<ResumeResult>('session.resume', params)
       .then(result => {
         if (ticket !== request.current) return
@@ -166,6 +170,17 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           state = applyEvent(state, { type: 'message.delta', payload: { text: result.inflight.assistant } })
         }
         dispatch({ type: 'reset', state })
+        // How full the window is, before the first reply ticks it.
+        gateway
+          .rpc('session.usage', { session_id: result.session_id })
+          .then(usage => contextFromUsage(usage))
+          .catch(() => null)
+          // Before the first call Hermes may not know the window yet; its breakdown does.
+          .then(async context => context ?? parseBreakdown(await gateway.rpc('session.context_breakdown', { session_id: result.session_id })).window)
+          .then(context => {
+            if (context && ticket === request.current) setChat(c => ({ ...c, context }))
+          })
+          .catch(() => undefined)
       })
       .catch(e => {
         if (ticket !== request.current) return
@@ -187,6 +202,11 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           setChat(c => ({ ...c, ...settings }))
           return
         }
+        if (event.type === 'session.usage' || event.type === 'message.complete') {
+          const context = contextFromUsage((event.payload as { usage?: unknown } | undefined)?.usage)
+          if (context) setChat(c => ({ ...c, context }))
+          if (event.type === 'session.usage') return
+        }
         if (event.type === 'session.title') {
           const title = (event.payload as { title?: unknown } | undefined)?.title
           if (typeof title === 'string') setChat(c => ({ ...c, title }))
@@ -201,7 +221,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   const createSession = useCallback(async (): Promise<{ sid: string; storedId: string | null }> => {
     const params: Record<string, unknown> = sessionAuthority ? { source: 'gui' } : { cols: 96, source: 'desktop' }
     if (profile) params.profile = profile
-    const made = await window.conduit.rpc<CreateResult>('session.create', params)
+    const made = await gateway.rpc<CreateResult>('session.create', params)
     const sid = made.session_id
     const storedId = made.stored_session_id ?? null
     liveId.current = sid
@@ -220,7 +240,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     if (profile) params.profile = profile
     if (!sessionAuthority) params.inline_images = false
     try {
-      const result = await window.conduit.rpc<ResumeResult>('session.resume', params)
+      const result = await gateway.rpc<ResumeResult>('session.resume', params)
       if (ticket !== request.current) return
       liveId.current = result.session_id
       setChat(c => ({ ...c, liveId: result.session_id, title: result.info?.title ?? c.title }))
@@ -248,7 +268,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           createdStoredId = made.storedId
         }
         const uploaded = attachments.length
-          ? await uploadAttachments((method, params) => window.conduit.rpc(method, params), sid, profile, sessionAuthority, attachments).catch(e => {
+          ? await uploadAttachments((method, params) => gateway.rpc(method, params), sid, profile, sessionAuthority, attachments).catch(e => {
               throw new Error(t('Attachment failed: {reason}', { reason: e instanceof Error ? e.message : String(e) }))
             })
           : null
@@ -260,17 +280,17 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         const preview = titlePreview(attachments)
         if (preview) params.title_preview = preview
         try {
-          await window.conduit.rpc('prompt.submit', params)
+          await gateway.rpc('prompt.submit', params)
         } catch (e) {
           // A Hermes that doesn't know the title preview gets the message without it.
           if (!preview || !String(e instanceof Error ? e.message : e).includes('title_preview')) throw e
           delete params.title_preview
-          await window.conduit.rpc('prompt.submit', params)
+          await gateway.rpc('prompt.submit', params)
         }
         return createdStoredId
       } catch (e) {
         // Pictures held for this message would ride on the next one.
-        if (sid && held.length) await releaseHeldImages((method, params) => window.conduit.rpc(method, params), sid, profile, held)
+        if (sid && held.length) await releaseHeldImages((method, params) => gateway.rpc(method, params), sid, profile, held)
         dispatch({ type: 'failed', error: e instanceof Error ? e.message : String(e) })
         return null
       }
@@ -284,7 +304,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     const params: Record<string, unknown> = { session_id: sid }
     if (profile) params.profile = profile
     try {
-      await window.conduit.rpc('session.interrupt', params)
+      await gateway.rpc('session.interrupt', params)
     } catch (e) {
       dispatch({ type: 'event', event: { type: 'error', payload: { message: e instanceof Error ? e.message : String(e) } } })
     }
@@ -319,7 +339,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
             lines.push(t('Stopped the reply.'))
           }
           try {
-            const result = await window.conduit.rpc<{ killed?: number }>('process.stop', profile ? { session_id: sid, profile } : { session_id: sid })
+            const result = await gateway.rpc<{ killed?: number }>('process.stop', profile ? { session_id: sid, profile } : { session_id: sid })
             if ((result.killed ?? 0) > 0) lines.push(t('Background processes stopped: {count}', { count: result.killed ?? 0 }))
           } catch (e) {
             if (!/method not found|unknown method|-32601/i.test(message(e))) lines.push(t('Command failed: {reason}', { reason: message(e) }))
@@ -349,7 +369,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       // Side agents answer on the chat as an event; through slash.exec the answer would be lost.
       if ((name === 'btw' || name === 'background' || name === 'bg') && arg) {
         try {
-          await window.conduit.rpc(name === 'btw' ? 'prompt.btw' : 'prompt.background', scoped({ session_id: sid, text: arg }))
+          await gateway.rpc(name === 'btw' ? 'prompt.btw' : 'prompt.background', scoped({ session_id: sid, text: arg }))
           output(name === 'btw' ? t('Answering from a snapshot of this chat. The answer will appear here.') : t('Started in the background. The answer will appear here.'), 'markdown')
           return done
         } catch (e) {
@@ -367,10 +387,10 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           const parsed = parseSlashCommand(current)
           let raw: unknown
           try {
-            raw = await window.conduit.rpc('slash.exec', scoped({ session_id: sid, command: current }))
+            raw = await gateway.rpc('slash.exec', scoped({ session_id: sid, command: current }))
           } catch (e) {
             if (!wantsDispatch(e)) throw e
-            raw = await window.conduit.rpc('command.dispatch', scoped({ session_id: sid, name: parsed.name, arg: parsed.arg }))
+            raw = await gateway.rpc('command.dispatch', scoped({ session_id: sid, name: parsed.name, arg: parsed.arg }))
           }
           result = parseSlashResult(raw)
         } catch (e) {
@@ -411,7 +431,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       if (!sid) throw new Error(t('Not connected.'))
       const params: Record<string, unknown> = { key, value, session_id: sid, ...extra }
       if (profile) params.profile = profile
-      const result = await window.conduit.rpc<{ info?: ChatInfo | null; confirm_required?: boolean | null; confirm_message?: string | null; deferred?: boolean | null; value?: unknown }>('config.set', params)
+      const result = await gateway.rpc<{ info?: ChatInfo | null; confirm_required?: boolean | null; confirm_message?: string | null; deferred?: boolean | null; value?: unknown }>('config.set', params)
       if (result.info) setChat(c => ({ ...c, ...chatSettings(result.info) }))
       return result
     },

@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice } from '@shared/ipc'
 import { BotsHome } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
+import { ContextPanel } from './components/ContextPanel'
 import { RoomView } from './components/RoomView'
 import { Tasks } from './components/Tasks'
 import { Icon } from './components/icons'
@@ -145,14 +147,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
-  useEffect(() => setModelOpen(false), [selected.id])
+  const [contextOpen, setContextOpen] = useState(false)
+  const closeContext = useCallback(() => setContextOpen(false), [])
+  useEffect(() => {
+    setModelOpen(false)
+    setContextOpen(false)
+  }, [selected.id])
   /** A row's Pin, Rename or Delete: shown at once, put back with the reason when Hermes refuses it. */
   const chatAction = useCallback(
     async (row: ChatRow, patch: { pinned?: boolean; title?: string } | null) => {
       list.patchRow(row.id, patch)
       if (patch === null && (selected.id === row.id || chat.storedId === row.id)) newChat()
       try {
-        await mutateSession(window.conduit.http, row.id, row.profile, patch)
+        await mutateSession(gateway.http, row.id, row.profile, patch)
       } catch (e) {
         window.alert(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: e instanceof Error ? e.message : String(e) }))
       }
@@ -412,6 +419,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onQuote={setQuote}
                 onCommand={text => void onSend(text)}
               />
+              {contextOpen && chat.liveId ? (
+                <ContextPanel chat={chat} profile={selected.profile} running={transcript.running} onClose={closeContext} onCompress={() => void onSend('/compress')} />
+              ) : null}
               {modelOpen && chat.liveId ? (
                 <ModelPicker
                   chat={chat}
@@ -427,7 +437,23 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 placeholder={t('Message {name}…', { name: botTitle })}
                 quote={quote}
                 commands={commands}
-                onModel={chat.liveId ? () => setModelOpen(open => !open) : undefined}
+                onModel={
+                  chat.liveId
+                    ? () => {
+                        setContextOpen(false)
+                        setModelOpen(open => !open)
+                      }
+                    : undefined
+                }
+                context={chat.context}
+                onContext={
+                  chat.liveId
+                    ? () => {
+                        setModelOpen(false)
+                        setContextOpen(open => !open)
+                      }
+                    : undefined
+                }
                 running={transcript.running}
                 disabled={!connected}
                 model={chat.model}

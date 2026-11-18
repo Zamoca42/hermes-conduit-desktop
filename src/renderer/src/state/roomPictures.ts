@@ -6,6 +6,7 @@
  * (its name shows instead) and isn't asked for again, as on the phone; a
  * read that fails may load when the message is shown again.
  */
+import { gateway } from '../gateway'
 import { pictureType } from './attachments'
 
 const MAX_BYTES = 16 * 1024 * 1024
@@ -30,7 +31,7 @@ export function readRoomPicture(roomId: string, eventId: string, attachmentId: s
   if (keptPictures.has(attachmentId)) return Promise.resolve(keptPictures.get(attachmentId) ?? null)
   let read = reading.get(attachmentId)
   if (!read) {
-    read = window.conduit
+    read = gateway
       .rpc('groups.attachment.download', { room_id: roomId, event_id: eventId, attachment_id: attachmentId })
       .then(
         result => {

@@ -134,6 +134,21 @@
     "zh-Hans": "一旦就绪，就会有工作者接手。",
     "zh-Hant": "一旦就緒，就會有工作者接手。"
   },
+  "API calls": {
+    "de": "API-Aufrufe",
+    "es": "Llamadas a la API",
+    "fr": "Appels API",
+    "id": "Panggilan API",
+    "it": "Chiamate API",
+    "ja": "API 呼び出し",
+    "ko": "API 호출",
+    "pl": "Wywołania API",
+    "pt-BR": "Chamadas de API",
+    "ru": "Вызовы API",
+    "tr": "API çağrıları",
+    "zh-Hans": "API 调用",
+    "zh-Hant": "API 呼叫"
+  },
   "Active": {
     "de": "Aktiv",
     "es": "Activo",
@@ -494,6 +509,21 @@
     "zh-Hans": "定时",
     "zh-Hant": "定時"
   },
+  "At least {amount}": {
+    "de": "Mindestens {amount}",
+    "es": "Al menos {amount}",
+    "fr": "Au moins {amount}",
+    "id": "Setidaknya {amount}",
+    "it": "Almeno {amount}",
+    "ja": "{amount} 以上",
+    "ko": "최소 {amount}",
+    "pl": "Co najmniej {amount}",
+    "pt-BR": "Pelo menos {amount}",
+    "ru": "Не менее {amount}",
+    "tr": "En az {amount}",
+    "zh-Hans": "至少 {amount}",
+    "zh-Hant": "至少 {amount}"
+  },
   "Attach": {
     "de": "Anhängen",
     "es": "Adjuntar",
@@ -659,6 +689,36 @@
     "zh-Hans": "机器人",
     "zh-Hant": "機器人"
   },
+  "Breakdown": {
+    "de": "Aufschlüsselung",
+    "es": "Desglose",
+    "fr": "Répartition",
+    "id": "Rincian",
+    "it": "Ripartizione",
+    "ja": "内訳",
+    "ko": "세부 내역",
+    "pl": "Podział",
+    "pt-BR": "Detalhamento",
+    "ru": "Разбивка",
+    "tr": "Dağılım",
+    "zh-Hans": "用量分布",
+    "zh-Hant": "明細"
+  },
+  "Cache reads": {
+    "de": "Cache-Lesevorgänge",
+    "es": "Lecturas de caché",
+    "fr": "Lectures du cache",
+    "id": "Baca cache",
+    "it": "Letture cache",
+    "ja": "キャッシュ読み取り",
+    "ko": "캐시 읽기",
+    "pl": "Odczyty z pamięci podręcznej",
+    "pt-BR": "Leituras de cache",
+    "ru": "Чтения из кэша",
+    "tr": "Önbellek okumaları",
+    "zh-Hans": "缓存读取",
+    "zh-Hant": "快取讀取"
+  },
   "Cancel": {
     "de": "Abbrechen",
     "es": "Cancelar",
@@ -688,6 +748,21 @@
     "tr": "İptal edildi.",
     "zh-Hans": "已取消。",
     "zh-Hant": "已取消。"
+  },
+  "Capacity": {
+    "de": "Kapazität",
+    "es": "Capacidad",
+    "fr": "Capacité",
+    "id": "Kapasitas",
+    "it": "Capacità",
+    "ja": "容量",
+    "ko": "용량",
+    "pl": "Pojemność",
+    "pt-BR": "Capacidade",
+    "ru": "Объём",
+    "tr": "Kapasite",
+    "zh-Hans": "容量",
+    "zh-Hant": "容量"
   },
   "Chats": {
     "de": "Chats",
@@ -869,6 +944,21 @@
     "zh-Hans": "评论",
     "zh-Hant": "留言"
   },
+  "Compress Now": {
+    "de": "Jetzt komprimieren",
+    "es": "Comprimir ahora",
+    "fr": "Compresser maintenant",
+    "id": "Kompres sekarang",
+    "it": "Comprimi ora",
+    "ja": "今すぐ圧縮",
+    "ko": "지금 압축",
+    "pl": "Kompresuj teraz",
+    "pt-BR": "Comprimir agora",
+    "ru": "Сжать сейчас",
+    "tr": "Şimdi sıkıştır",
+    "zh-Hans": "立即压缩",
+    "zh-Hant": "立即壓縮"
+  },
   "Compress this conversation context": {
     "de": "Kontext dieser Unterhaltung komprimieren",
     "es": "Comprimir el contexto de esta conversación",
@@ -1019,6 +1109,36 @@
     "zh-Hans": "连接",
     "zh-Hant": "連線"
   },
+  "Context": {
+    "de": "Kontext",
+    "es": "Contexto",
+    "fr": "Contexte",
+    "id": "Konteks",
+    "it": "Contesto",
+    "ja": "コンテキスト",
+    "ko": "컨텍스트",
+    "pl": "Kontekst",
+    "pt-BR": "Contexto",
+    "ru": "Контекст",
+    "tr": "Bağlam",
+    "zh-Hans": "上下文",
+    "zh-Hant": "上下文"
+  },
+  "Context: {percent}% full": {
+    "de": "Kontext: {percent} % voll",
+    "es": "Contexto: {percent} % lleno",
+    "fr": "Contexte : {percent} % utilisé",
+    "id": "Konteks: {percent}% penuh",
+    "it": "Contesto: {percent}% pieno",
+    "ja": "コンテキスト：{percent}% 使用",
+    "ko": "컨텍스트: {percent}% 사용",
+    "pl": "Kontekst: {percent}% zapełnienia",
+    "pt-BR": "Contexto: {percent}% cheio",
+    "ru": "Контекст: заполнен на {percent}%",
+    "tr": "Bağlam: %{percent} dolu",
+    "zh-Hans": "上下文：已用 {percent}%",
+    "zh-Hant": "上下文：已用 {percent}%"
+  },
   "Continue": {
     "de": "Weiter",
     "es": "Continuar",
@@ -1063,6 +1183,21 @@
     "tr": "Kopyala",
     "zh-Hans": "拷贝",
     "zh-Hant": "拷貝"
+  },
+  "Cost": {
+    "de": "Kosten",
+    "es": "Coste",
+    "fr": "Coût",
+    "id": "Biaya",
+    "it": "Costo",
+    "ja": "費用",
+    "ko": "비용",
+    "pl": "Koszt",
+    "pt-BR": "Custo",
+    "ru": "Стоимость",
+    "tr": "Maliyet",
+    "zh-Hans": "费用",
+    "zh-Hant": "費用"
   },
   "Could not delete scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht gelöscht werden: {reason}",
@@ -1168,6 +1303,21 @@
     "tr": "Zamanlanmış iş çalıştırılamadı: {reason}",
     "zh-Hans": "无法运行定时任务：{reason}",
     "zh-Hant": "無法執行排程工作：{reason}"
+  },
+  "Couldn't load this chat's usage.": {
+    "de": "Die Nutzung dieses Chats konnte nicht geladen werden.",
+    "es": "No se pudo cargar el uso de este chat.",
+    "fr": "Impossible de charger l’utilisation de cette discussion.",
+    "id": "Tidak dapat memuat penggunaan obrolan ini.",
+    "it": "Impossibile caricare l’utilizzo di questa chat.",
+    "ja": "このチャットの使用状況を読み込めませんでした。",
+    "ko": "이 채팅의 사용량을 불러올 수 없습니다.",
+    "pl": "Nie udało się wczytać użycia tego czatu.",
+    "pt-BR": "Não foi possível carregar o uso deste chat.",
+    "ru": "Не удалось загрузить использование этого чата.",
+    "tr": "Bu sohbetin kullanımı yüklenemedi.",
+    "zh-Hans": "无法加载此聊天的用量。",
+    "zh-Hant": "無法載入此聊天的用量。"
   },
   "Couldn't read {names}.": {
     "de": "{names} konnte nicht gelesen werden.",
@@ -1904,6 +2054,21 @@
     "zh-Hans": "Esc 停止",
     "zh-Hant": "Esc 停止"
   },
+  "Estimated cost": {
+    "de": "Geschätzte Kosten",
+    "es": "Coste estimado",
+    "fr": "Coût estimé",
+    "id": "Perkiraan biaya",
+    "it": "Costo stimato",
+    "ja": "見積もり費用",
+    "ko": "예상 비용",
+    "pl": "Szacowany koszt",
+    "pt-BR": "Custo estimado",
+    "ru": "Оценка стоимости",
+    "tr": "Tahmini maliyet",
+    "zh-Hans": "估算费用",
+    "zh-Hant": "估算費用"
+  },
   "Every day": {
     "de": "Jeden Tag",
     "es": "Cada día",
@@ -2459,6 +2624,51 @@
     "zh-Hans": "使用中",
     "zh-Hant": "使用中"
   },
+  "Included in your plan": {
+    "de": "In deinem Tarif enthalten",
+    "es": "Incluido en tu plan",
+    "fr": "Inclus dans votre forfait",
+    "id": "Termasuk dalam paket Anda",
+    "it": "Incluso nel tuo piano",
+    "ja": "プランに含まれています",
+    "ko": "요금제에 포함됨",
+    "pl": "W ramach Twojego planu",
+    "pt-BR": "Incluído no seu plano",
+    "ru": "Входит в ваш тариф",
+    "tr": "Planınıza dahil",
+    "zh-Hans": "包含在你的套餐中",
+    "zh-Hant": "包含在你的方案中"
+  },
+  "Includes the chat's compressions and the agents it started.": {
+    "de": "Enthält die Komprimierungen des Chats und die Agenten, die er gestartet hat.",
+    "es": "Incluye las compresiones del chat y los agentes que inició.",
+    "fr": "Inclut les compressions de la discussion et les agents qu’elle a lancés.",
+    "id": "Termasuk kompresi obrolan dan agen yang dimulainya.",
+    "it": "Include le compressioni della chat e gli agenti che ha avviato.",
+    "ja": "チャットの圧縮と、チャットが開始したエージェントを含みます。",
+    "ko": "채팅의 압축과 채팅이 시작한 에이전트를 포함합니다.",
+    "pl": "Obejmuje kompresje czatu i agentów, których uruchomił.",
+    "pt-BR": "Inclui as compressões do chat e os agentes que ele iniciou.",
+    "ru": "Включает сжатия чата и запущенных им агентов.",
+    "tr": "Sohbetin sıkıştırmalarını ve başlattığı ajanları içerir.",
+    "zh-Hans": "包括此聊天的压缩及其启动的智能体。",
+    "zh-Hant": "包括此聊天的壓縮及其啟動的代理程式。"
+  },
+  "Input": {
+    "de": "Eingabe",
+    "es": "Entrada",
+    "fr": "Entrée",
+    "id": "Input",
+    "it": "Input",
+    "ja": "入力",
+    "ko": "입력",
+    "pl": "Wejście",
+    "pt-BR": "Entrada",
+    "ru": "Ввод",
+    "tr": "Girdi",
+    "zh-Hans": "输入",
+    "zh-Hant": "輸入"
+  },
   "It sent a sign-in for {host}.": {
     "de": "Es hat eine Anmeldung für {host} gesendet.",
     "es": "Envió un inicio de sesión para {host}.",
@@ -2671,18 +2881,18 @@
   },
   "Mark done": {
     "de": "Als erledigt markieren",
-    "es": "Marcar como hecha",
-    "fr": "Marquer comme terminée",
+    "es": "Marcar como completado",
+    "fr": "Marquer comme terminé",
     "id": "Tandai selesai",
-    "it": "Segna come completata",
+    "it": "Segna come completato",
     "ja": "完了にする",
     "ko": "완료로 표시",
-    "pl": "Oznacz jako zrobione",
-    "pt-BR": "Marcar como concluída",
-    "ru": "Отметить выполненной",
+    "pl": "Oznacz jako wykonane",
+    "pt-BR": "Marcar como concluído",
+    "ru": "Отметить как выполненное",
     "tr": "Tamamlandı olarak işaretle",
-    "zh-Hans": "标记为完成",
-    "zh-Hant": "標記為完成"
+    "zh-Hans": "标记为已完成",
+    "zh-Hant": "標示為已完成"
   },
   "Max": {
     "de": "Maximal",
@@ -3314,6 +3524,21 @@
     "zh-Hans": "未连接。",
     "zh-Hant": "未連線。"
   },
+  "Not reported by this host": {
+    "de": "Von diesem Host nicht gemeldet",
+    "es": "Este host no lo informa",
+    "fr": "Non indiqué par cet hôte",
+    "id": "Tidak dilaporkan oleh host ini",
+    "it": "Non indicato da questo host",
+    "ja": "このホストからは報告されていません",
+    "ko": "이 호스트에서 보고하지 않음",
+    "pl": "Ten host tego nie podaje",
+    "pt-BR": "Não informado por este host",
+    "ru": "Этот хост не сообщает",
+    "tr": "Bu ana bilgisayar bildirmiyor",
+    "zh-Hans": "此主机未报告",
+    "zh-Hant": "此主機未回報"
+  },
   "Not sent: {reason}": {
     "de": "Nicht gesendet: {reason}",
     "es": "No enviado: {reason}",
@@ -3343,6 +3568,21 @@
     "tr": "Giriş yapılmadı.",
     "zh-Hans": "未登录。",
     "zh-Hant": "未登入。"
+  },
+  "Nothing has run in this chat yet.": {
+    "de": "In diesem Chat ist noch nichts gelaufen.",
+    "es": "Todavía no se ha ejecutado nada en este chat.",
+    "fr": "Rien n’a encore été exécuté dans cette discussion.",
+    "id": "Belum ada yang berjalan di obrolan ini.",
+    "it": "In questa chat non è ancora stato eseguito nulla.",
+    "ja": "このチャットではまだ何も実行されていません。",
+    "ko": "이 채팅에서는 아직 실행된 것이 없습니다.",
+    "pl": "W tym czacie nic jeszcze nie zostało uruchomione.",
+    "pt-BR": "Nada foi executado neste chat ainda.",
+    "ru": "В этом чате ещё ничего не выполнялось.",
+    "tr": "Bu sohbette henüz hiçbir şey çalışmadı.",
+    "zh-Hans": "此聊天尚未运行任何内容。",
+    "zh-Hant": "此聊天尚未執行任何內容。"
   },
   "Nothing is waiting on you.": {
     "de": "Nichts wartet auf dich.",
@@ -3598,6 +3838,21 @@
     "tr": "Diğer üst bilgiler",
     "zh-Hans": "其他请求头",
     "zh-Hant": "其他標頭"
+  },
+  "Output": {
+    "de": "Ausgabe",
+    "es": "Salida",
+    "fr": "Sortie",
+    "id": "Output",
+    "it": "Output",
+    "ja": "出力",
+    "ko": "출력",
+    "pl": "Wyjście",
+    "pt-BR": "Saída",
+    "ru": "Вывод",
+    "tr": "Çıktı",
+    "zh-Hans": "输出",
+    "zh-Hant": "輸出"
   },
   "Pair with your iPhone": {
     "de": "Mit deinem iPhone koppeln",
@@ -5219,6 +5474,21 @@
     "zh-Hans": "已停止回复。",
     "zh-Hant": "已停止回覆。"
   },
+  "Summarizes older messages so the chat has room again. The chat and its memory stay.": {
+    "de": "Fasst ältere Nachrichten zusammen, damit der Chat wieder Platz hat. Der Chat und sein Gedächtnis bleiben erhalten.",
+    "es": "Resume los mensajes antiguos para que el chat vuelva a tener espacio. El chat y su memoria se mantienen.",
+    "fr": "Résume les anciens messages pour libérer de la place. La discussion et sa mémoire sont conservées.",
+    "id": "Meringkas pesan lama agar obrolan punya ruang lagi. Obrolan dan memorinya tetap ada.",
+    "it": "Riassume i messaggi meno recenti per liberare spazio nella chat. La chat e la sua memoria restano.",
+    "ja": "古いメッセージを要約して、チャットに再び余裕を作ります。チャットとそのメモリはそのまま残ります。",
+    "ko": "이전 메시지를 요약해 채팅에 다시 여유를 만듭니다. 채팅과 메모리는 그대로 유지됩니다.",
+    "pl": "Podsumowuje starsze wiadomości, by czat znów miał miejsce. Czat i jego pamięć zostają.",
+    "pt-BR": "Resume as mensagens mais antigas para o chat ter espaço de novo. O chat e a memória dele continuam.",
+    "ru": "Кратко пересказывает старые сообщения, чтобы в чате снова было место. Чат и его память сохраняются.",
+    "tr": "Sohbette yeniden yer açmak için eski mesajları özetler. Sohbet ve belleği korunur.",
+    "zh-Hans": "总结较早的消息，让聊天重新腾出空间。聊天及其记忆都会保留。",
+    "zh-Hant": "摘要較早的訊息，讓聊天重新騰出空間。聊天及其記憶都會保留。"
+  },
   "Switch": {
     "de": "Wechseln",
     "es": "Cambiar",
@@ -6029,6 +6299,21 @@
     "zh-Hans": "无标题聊天",
     "zh-Hant": "無標題聊天"
   },
+  "Update the Conduit plugin on this host to see this chat's tokens and cost.": {
+    "de": "Aktualisiere das Conduit-Plugin auf diesem Host, um die Tokens und Kosten dieses Chats zu sehen.",
+    "es": "Actualiza el plugin de Conduit en este host para ver los tokens y el coste de este chat.",
+    "fr": "Mettez à jour le plugin Conduit sur cet hôte pour voir les jetons et le coût de cette discussion.",
+    "id": "Perbarui plugin Conduit di host ini untuk melihat token dan biaya obrolan ini.",
+    "it": "Aggiorna il plugin Conduit su questo host per vedere i token e il costo di questa chat.",
+    "ja": "このチャットのトークンとコストを見るには、このホストの Conduit プラグインをアップデートしてください。",
+    "ko": "이 채팅의 토큰과 비용을 보려면 이 호스트의 Conduit 플러그인을 업데이트하세요.",
+    "pl": "Zaktualizuj wtyczkę Conduit na tym hoście, aby zobaczyć tokeny i koszt tego czatu.",
+    "pt-BR": "Atualize o plugin do Conduit neste host para ver os tokens e o custo deste chat.",
+    "ru": "Обновите плагин Conduit на этом хосте, чтобы видеть токены и стоимость этого чата.",
+    "tr": "Bu sohbetin token ve maliyetini görmek için bu ana bilgisayardaki Conduit eklentisini güncelleyin.",
+    "zh-Hans": "更新此主机上的 Conduit 插件，即可查看此聊天的 token 和费用。",
+    "zh-Hant": "更新此主機上的 Conduit 外掛程式，即可查看此聊天的 token 與費用。"
+  },
   "Updated memory": {
     "de": "Erinnerung aktualisiert",
     "es": "Actualizó la memoria",
@@ -6104,6 +6389,21 @@
     "zh-Hans": "紧急",
     "zh-Hant": "緊急"
   },
+  "Usage": {
+    "de": "Nutzung",
+    "es": "Uso",
+    "fr": "Utilisation",
+    "id": "Penggunaan",
+    "it": "Utilizzo",
+    "ja": "使用状況",
+    "ko": "사용량",
+    "pl": "Użycie",
+    "pt-BR": "Uso",
+    "ru": "Использование",
+    "tr": "Kullanım",
+    "zh-Hans": "用量",
+    "zh-Hant": "用量"
+  },
   "Use a different address": {
     "de": "Andere Adresse verwenden",
     "es": "Usar otra dirección",
@@ -6133,6 +6433,21 @@
     "tr": "http veya https adresi kullanın.",
     "zh-Hans": "请使用 http 或 https 地址。",
     "zh-Hant": "請使用 http 或 https 位址。"
+  },
+  "Used": {
+    "de": "Belegt",
+    "es": "Usado",
+    "fr": "Utilisé",
+    "id": "Terpakai",
+    "it": "Utilizzato",
+    "ja": "使用済み",
+    "ko": "사용됨",
+    "pl": "Wykorzystane",
+    "pt-BR": "Usado",
+    "ru": "Использовано",
+    "tr": "Kullanılan",
+    "zh-Hans": "已用",
+    "zh-Hant": "已使用"
   },
   "User name": {
     "de": "Benutzername",
@@ -6268,6 +6583,21 @@
     "tr": "Bakmadığınız bir sohbette yanıt bittiğinde veya bir şey sizi beklediğinde",
     "zh-Hans": "当你没在看的聊天中回复完成或有事需要你处理时",
     "zh-Hant": "當你沒在看的聊天中回覆完成或有事需要你處理時"
+  },
+  "Window usage": {
+    "de": "Fensternutzung",
+    "es": "Uso de la ventana",
+    "fr": "Utilisation de la fenêtre",
+    "id": "Penggunaan jendela",
+    "it": "Uso della finestra",
+    "ja": "ウィンドウ使用量",
+    "ko": "창 사용량",
+    "pl": "Wykorzystanie okna",
+    "pt-BR": "Uso da janela",
+    "ru": "Использование окна",
+    "tr": "Pencere kullanımı",
+    "zh-Hans": "窗口占用",
+    "zh-Hant": "視窗使用量"
   },
   "Words to compare": {
     "de": "Wörter zum Vergleichen",
@@ -6628,6 +6958,21 @@
     "tr": "{count} soru: {summary}",
     "zh-Hans": "{count} 个问题：{summary}",
     "zh-Hant": "{count} 個問題：{summary}"
+  },
+  "{count} tokens": {
+    "de": "{count} Token",
+    "es": "{count} tokens",
+    "fr": "{count} jetons",
+    "id": "{count} token",
+    "it": "{count} token",
+    "ja": "{count}トークン",
+    "ko": "{count} 토큰",
+    "pl": "{count} tokena",
+    "pt-BR": "{count} tokens",
+    "ru": "{count} токена",
+    "tr": "{count} token",
+    "zh-Hans": "{count} 个令牌",
+    "zh-Hant": "{count} 個 token"
   },
   "{names} are answering…": {
     "de": "{names} antworten…",

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { gateway } from '../gateway'
 import type { PendingRequest } from '../../../shared/ipc'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 
@@ -31,7 +32,7 @@ export function useWaiting(connected: boolean, profiles: readonly string[]) {
     await Promise.all(
       names.map(async name => {
         try {
-          const body = await window.conduit.http('GET', waitingPath(name || undefined))
+          const body = await gateway.http('GET', waitingPath(name || undefined))
           byProfile.current.set(name, waitingFromResponse(body, name || undefined))
         } catch (e) {
           const message = e instanceof Error ? e.message : String(e)

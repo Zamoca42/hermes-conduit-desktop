@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { gateway } from '../gateway'
 import { t } from '../../../shared/i18n'
 import { cronPath, parseDeliveryTargets, parseJob, parseJobs, parseRuns, type CronJob, type CronRun, type DeliveryTarget } from './cron'
 
@@ -21,7 +22,7 @@ export function useCron(profile: string | null, connected: boolean) {
   const load = useCallback(async () => {
     const mine = ++generation.current
     try {
-      const raw = await window.conduit.http('GET', cronPath('/api/cron/jobs', profile ?? 'all'))
+      const raw = await gateway.http('GET', cronPath('/api/cron/jobs', profile ?? 'all'))
       if (mine !== generation.current) return
       setJobs(parseJobs(raw))
       setError(null)
@@ -55,7 +56,7 @@ export function useCron(profile: string | null, connected: boolean) {
       setBusy(job.id)
       const owner = job.profile ?? profile ?? undefined
       try {
-        await window.conduit.http('POST', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}/${action}`, owner), owner ? { profile: owner } : {})
+        await gateway.http('POST', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}/${action}`, owner), owner ? { profile: owner } : {})
         if (action !== 'trigger') {
           setJobs(list => list?.map(row => (row.id === job.id && row.profile === job.profile ? { ...row, enabled: action === 'resume' } : row)) ?? list)
         }
@@ -79,7 +80,7 @@ export function useCron(profile: string | null, connected: boolean) {
     async (job: CronJob): Promise<string | null> => {
       setBusy(job.id)
       try {
-        await window.conduit.http('DELETE', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}`, job.profile ?? profile ?? undefined))
+        await gateway.http('DELETE', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}`, job.profile ?? profile ?? undefined))
         setJobs(list => list?.filter(row => !(row.id === job.id && row.profile === job.profile)) ?? list)
         void load()
         return null
@@ -95,7 +96,7 @@ export function useCron(profile: string | null, connected: boolean) {
   /** A new job in `owner`; the job Hermes made, when it says. */
   const create = useCallback(
     async (body: Record<string, unknown>, owner: string | undefined): Promise<CronJob | null> => {
-      const raw = (await window.conduit.http('POST', cronPath('/api/cron/jobs', owner), body)) as Record<string, unknown> | null
+      const raw = (await gateway.http('POST', cronPath('/api/cron/jobs', owner), body)) as Record<string, unknown> | null
       void load()
       const job = parseJob(raw?.job ?? raw)
       return job ? { ...job, profile: job.profile ?? owner } : null
@@ -106,7 +107,7 @@ export function useCron(profile: string | null, connected: boolean) {
   const update = useCallback(
     async (job: CronJob, updates: Record<string, unknown>): Promise<void> => {
       if (!Object.keys(updates).length) return
-      await window.conduit.http('PUT', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}`, job.profile ?? profile ?? undefined), { updates })
+      await gateway.http('PUT', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}`, job.profile ?? profile ?? undefined), { updates })
       void load()
     },
     [load, profile]
@@ -114,7 +115,7 @@ export function useCron(profile: string | null, connected: boolean) {
 
   const runs = useCallback(
     async (job: CronJob): Promise<CronRun[]> => {
-      const raw = await window.conduit.http('GET', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}/runs?limit=20`, job.profile ?? profile ?? undefined))
+      const raw = await gateway.http('GET', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}/runs?limit=20`, job.profile ?? profile ?? undefined))
       return parseRuns(raw)
     },
     [profile]
@@ -122,7 +123,7 @@ export function useCron(profile: string | null, connected: boolean) {
 
   const deliveryTargets = useCallback(async (owner: string | undefined): Promise<DeliveryTarget[]> => {
     try {
-      return parseDeliveryTargets(await window.conduit.http('GET', cronPath('/api/cron/delivery-targets', owner)))
+      return parseDeliveryTargets(await gateway.http('GET', cronPath('/api/cron/delivery-targets', owner)))
     } catch {
       return []
     }
