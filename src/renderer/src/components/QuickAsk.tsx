@@ -5,6 +5,7 @@ import { useRequests } from '../state/useNeedsYou'
 import { Composer } from './Composer'
 import { Transcript } from './Transcript'
 import { t } from '@shared/i18n'
+import type { QuoteRequest } from '../state/quote'
 
 /**
  * The quick ask window: one field to ask Hermes something from anywhere,
@@ -64,6 +65,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
   const started = transcript.items.length > 0
   // Staged files need the taller window too.
   const [staged, setStaged] = useState(false)
+  const [quote, setQuote] = useState<QuoteRequest | null>(null)
   // Before a reply, staged files grow the window only as far as the field
   // needs, so no empty space sits above them.
   const [fieldHeight, setFieldHeight] = useState(0)
@@ -97,7 +99,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
           </>
         ) : null}
       </div>
-      {started ? <Transcript state={transcript} loading={loading} error={error} requests={openRequests} /> : null}
+      {started ? <Transcript state={transcript} loading={loading} error={error} requests={openRequests} onQuote={setQuote} /> : null}
       <Composer
         placeholder={t('Ask Hermes anything…')}
         running={transcript.running}
@@ -110,6 +112,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
         canAttach
         dropZone={pane}
         onStagedChange={setStaged}
+        quote={quote}
       />
     </div>
   )

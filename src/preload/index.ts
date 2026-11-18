@@ -49,6 +49,7 @@ const api: ConduitApi = {
   openChat: chat => ipcRenderer.send(IPC.openChat, chat),
   onOpenChat: listener => listen<OpenChatRequest>(IPC.openChat, listener),
   hideQuickAsk: () => ipcRenderer.send(IPC.hideQuickAsk),
+  copyText: text => ipcRenderer.send(IPC.copyText, text),
   setQuickAskExpanded: expanded => ipcRenderer.send(IPC.quickAskExpanded, expanded),
   onQuickAskShown: listener => listen<void>(IPC.quickAskShown, () => listener()),
   quickAskShortcut: () => ipcRenderer.invoke(IPC.quickAskShortcut),

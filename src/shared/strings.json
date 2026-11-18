@@ -689,6 +689,36 @@
     "zh-Hans": "继续",
     "zh-Hant": "繼續"
   },
+  "Copied": {
+    "de": "Kopiert",
+    "es": "Copiado",
+    "fr": "Copié",
+    "id": "Disalin",
+    "it": "Copiato",
+    "ja": "コピーしました",
+    "ko": "복사됨",
+    "pl": "Skopiowano",
+    "pt-BR": "Copiado",
+    "ru": "Скопировано",
+    "tr": "Kopyalandı",
+    "zh-Hans": "已复制",
+    "zh-Hant": "已拷貝"
+  },
+  "Copy": {
+    "de": "Kopieren",
+    "es": "Copiar",
+    "fr": "Copier",
+    "id": "Salin",
+    "it": "Copia",
+    "ja": "コピー",
+    "ko": "복사",
+    "pl": "Kopiuj",
+    "pt-BR": "Copiar",
+    "ru": "Скопировать",
+    "tr": "Kopyala",
+    "zh-Hans": "拷贝",
+    "zh-Hant": "拷貝"
+  },
   "Couldn't read {names}.": {
     "de": "{names} konnte nicht gelesen werden.",
     "es": "No se pudo leer {names}.",
@@ -1529,6 +1559,21 @@
     "zh-Hans": "模型",
     "zh-Hant": "模型"
   },
+  "More": {
+    "de": "Mehr",
+    "es": "Más",
+    "fr": "Plus",
+    "id": "Lainnya",
+    "it": "Altro",
+    "ja": "その他",
+    "ko": "더 보기",
+    "pl": "Więcej",
+    "pt-BR": "Mais",
+    "ru": "Ещё",
+    "tr": "Daha Fazla",
+    "zh-Hans": "更多",
+    "zh-Hant": "更多"
+  },
   "Needs You": {
     "de": "Braucht dich",
     "es": "Te necesita",
@@ -2204,6 +2249,21 @@
     "zh-Hans": "退出 Conduit",
     "zh-Hant": "結束 Conduit"
   },
+  "Quote": {
+    "de": "Zitieren",
+    "es": "Citar",
+    "fr": "Citer",
+    "id": "Kutip",
+    "it": "Cita",
+    "ja": "引用",
+    "ko": "인용",
+    "pl": "Cytuj",
+    "pt-BR": "Citar",
+    "ru": "Цитировать",
+    "tr": "Alıntıla",
+    "zh-Hans": "引用",
+    "zh-Hant": "引用"
+  },
   "Ran a command": {
     "de": "Hat einen Befehl ausgeführt",
     "es": "Ejecutó un comando",
@@ -2294,6 +2354,21 @@
     "zh-Hans": "正在读取网页",
     "zh-Hant": "正在讀取網頁"
   },
+  "Remove the reply": {
+    "de": "Antwort entfernen",
+    "es": "Quitar la respuesta",
+    "fr": "Retirer la réponse",
+    "id": "Hapus balasan",
+    "it": "Rimuovi la risposta",
+    "ja": "返信を外す",
+    "ko": "답장 제거",
+    "pl": "Usuń odpowiedź",
+    "pt-BR": "Remover a resposta",
+    "ru": "Убрать ответ",
+    "tr": "Yanıtı kaldır",
+    "zh-Hans": "移除回复",
+    "zh-Hant": "移除回覆"
+  },
   "Remove {name}": {
     "de": "{name} entfernen",
     "es": "Eliminar {name}",
@@ -2338,6 +2413,21 @@
     "tr": "Yanıtlandı.",
     "zh-Hans": "已回答。",
     "zh-Hant": "已回答。"
+  },
+  "Replying to {name}": {
+    "de": "Antwort auf {name}",
+    "es": "Respondiendo a {name}",
+    "fr": "En réponse à {name}",
+    "id": "Membalas {name}",
+    "it": "In risposta a {name}",
+    "ja": "{name}に返信",
+    "ko": "{name}에 답장",
+    "pl": "Odpowiedź na: {name}",
+    "pt-BR": "Respondendo a {name}",
+    "ru": "Ответ на: {name}",
+    "tr": "Yanıtlanan: {name}",
+    "zh-Hans": "回复 {name}",
+    "zh-Hant": "正在回覆 {name}"
   },
   "Room name": {
     "de": "Raumname",
@@ -2578,6 +2668,21 @@
     "tr": "Göster",
     "zh-Hans": "显示",
     "zh-Hant": "顯示"
+  },
+  "Show the message": {
+    "de": "Nachricht anzeigen",
+    "es": "Mostrar el mensaje",
+    "fr": "Afficher le message",
+    "id": "Tampilkan pesan",
+    "it": "Mostra il messaggio",
+    "ja": "メッセージを表示",
+    "ko": "메시지 보기",
+    "pl": "Pokaż wiadomość",
+    "pt-BR": "Mostrar a mensagem",
+    "ru": "Показать сообщение",
+    "tr": "Mesajı göster",
+    "zh-Hans": "显示该消息",
+    "zh-Hant": "顯示該訊息"
   },
   "Sign in": {
     "de": "Anmelden",

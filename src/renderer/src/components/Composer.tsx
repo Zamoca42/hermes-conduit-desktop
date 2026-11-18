@@ -10,6 +10,7 @@ import {
   type StagedAttachment
 } from '../state/attachments'
 import { stageFile } from '../state/picture'
+import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
 /** The last folder of a path, the way the phone's chip shows it. */
 function folderName(path: string): string {
@@ -41,15 +42,22 @@ interface Props {
   onStagedChange?: (staged: boolean) => void
   /** Why the staged files can't go with this message, checked on Send, or null. */
   checkAttachments?: (attachments: StagedAttachment[]) => string | null
+  /** A quote from the transcript: words go in the draft, a whole message becomes the "Replying to" chip. */
+  quote?: QuoteRequest | null
+  /** The text sent for a draft replying to a message. Defaults to a chat's reply envelope. */
+  wrapReply?: (reply: ReplyReference, draft: string) => string
 }
 
+const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
+
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments }: Props) {
+export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [staging, setStaging] = useState(0)
   const [dragging, setDragging] = useState(false)
+  const [replyTo, setReplyTo] = useState<ReplyReference | null>(null)
   const area = useRef<HTMLTextAreaElement>(null)
   const picker = useRef<HTMLInputElement>(null)
 
@@ -61,7 +69,21 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
   useEffect(() => {
     setAttachments([])
     setNotice(null)
+    setReplyTo(null)
   }, [draftKey ?? focusKey])
+
+  // A quote lands once per request.
+  const quoted = useRef<number | null>(null)
+  useEffect(() => {
+    if (!quote || quote.id === quoted.current) return
+    quoted.current = quote.id
+    if ('reply' in quote) setReplyTo(quote.reply)
+    else setText(current => insertQuote(quote.text, current))
+    const el = area.current
+    if (!el) return
+    el.focus()
+    requestAnimationFrame(() => el.setSelectionRange(el.value.length, el.value.length))
+  }, [quote])
 
   useEffect(() => {
     const el = area.current
@@ -188,10 +210,13 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
       setNotice(problem)
       return
     }
-    onSend(text, attachments)
+    const replying = replyTo && carriesReply(text, attachments.length > 0)
+    onSend(replying ? wrapReply(replyTo, text.trim()) : text, attachments)
     setText('')
     setAttachments([])
     setNotice(null)
+    // A slash command leaves the reply attached for the next message.
+    if (replying) setReplyTo(null)
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -235,6 +260,17 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
               </span>
             ))}
             {staging ? <span className="staged-chip busy">{t('Attaching…')}</span> : null}
+          </div>
+        ) : null}
+        {replyTo ? (
+          <div className="reply-chip" title={replyTo.text}>
+            <span className="reply-chip-body">
+              <span className="reply-chip-name">{t('Replying to {name}', { name: replyTo.author })}</span>
+              <span className="reply-chip-text">{excerpt(replyTo.text)}</span>
+            </span>
+            <button className="staged-remove" aria-label={t('Remove the reply')} onClick={() => setReplyTo(null)}>
+              <Icon name="close" />
+            </button>
           </div>
         ) : null}
         {notice ? <div className="composer-notice">{notice}</div> : null}
