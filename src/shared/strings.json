@@ -1,4 +1,34 @@
 {
+  "(invalid item)": {
+    "de": "(ungültiger Eintrag)",
+    "es": "(elemento no válido)",
+    "fr": "(élément non valide)",
+    "id": "(item tidak valid)",
+    "it": "(elemento non valido)",
+    "ja": "(無効な項目)",
+    "ko": "(잘못된 항목)",
+    "pl": "(nieprawidłowy element)",
+    "pt-BR": "(item inválido)",
+    "ru": "(недопустимый пункт)",
+    "tr": "(geçersiz öğe)",
+    "zh-Hans": "（无效项目）",
+    "zh-Hant": "（無效項目）"
+  },
+  "(no description)": {
+    "de": "(keine Beschreibung)",
+    "es": "(sin descripción)",
+    "fr": "(sans description)",
+    "id": "(tanpa deskripsi)",
+    "it": "(nessuna descrizione)",
+    "ja": "(説明なし)",
+    "ko": "(설명 없음)",
+    "pl": "(brak opisu)",
+    "pt-BR": "(sem descrição)",
+    "ru": "(без описания)",
+    "tr": "(açıklama yok)",
+    "zh-Hans": "（无描述）",
+    "zh-Hant": "（無描述）"
+  },
   "0 9 * * 1 or every monday 9am": {
     "de": "0 9 * * 1 oder every monday 9am",
     "es": "0 9 * * 1 o every monday 9am",
@@ -5233,6 +5263,21 @@
     "tr": "Hermes'in notları",
     "zh-Hans": "Hermes 的笔记",
     "zh-Hant": "Hermes 的筆記"
+  },
+  "Hide": {
+    "de": "Ausblenden",
+    "es": "Ocultar",
+    "fr": "Masquer",
+    "id": "Sembunyikan",
+    "it": "Nascondi",
+    "ja": "非表示",
+    "ko": "숨기기",
+    "pl": "Ukryj",
+    "pt-BR": "Ocultar",
+    "ru": "Скрыть",
+    "tr": "Gizle",
+    "zh-Hans": "隐藏",
+    "zh-Hant": "隱藏"
   },
   "Hide private reminders on the Lock Screen": {
     "de": "Private Erinnerungen auf dem Sperrbildschirm ausblenden",

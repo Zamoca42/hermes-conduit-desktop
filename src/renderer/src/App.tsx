@@ -36,6 +36,8 @@ import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
+import { PlanDock } from './components/PlanDock'
+import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
@@ -245,6 +247,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined
   const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || !!openBotChat || workSessions.has(selected.id ?? '')))
   const workItem: WorkItem | undefined = selected.id ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined
+  // A workstream's checklist is its chat's plan, ahead of Hermes' own todo list there.
+  const workChecklist = workItem?.checklist
+  const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
   const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
   const showWork = workOpen && (!!openBotChat || !!workItem)
   const [modelOpen, setModelOpen] = useState(false)
@@ -643,6 +648,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                 />
               ) : null}
+              <PlanDock plan={shownPlan} running={transcript.running} chatKey={selected.id ?? 'new'} />
               <Composer
                 placeholder={t('Message {name}…', { name: botTitle })}
                 quote={quote}

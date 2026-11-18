@@ -4,6 +4,7 @@
  * Pure functions, so the tests can play a turn's events through them.
  */
 import { cleanUserText, type Attachment } from './text'
+import { isPlanTool, parsePlan, type Plan } from './plan'
 import { t } from '../../../shared/i18n'
 import { sideAgentNote } from './slash'
 import { SHOW_TOOL, boardFrom, type Board } from './boards'
@@ -73,6 +74,8 @@ export interface TranscriptState {
   running: boolean
   /** The running turn's latest status line (`status.update`). */
   status?: string
+  /** The agent's plan: the newest `todo` result, or `todo_state` from the resume. */
+  plan?: Plan | null
 }
 
 export const emptyTranscript: TranscriptState = { items: [], running: false }
@@ -230,6 +233,8 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     }
     case 'tool.complete': {
       const toolId = str(payload.tool_id)
+      const started = state.items.find((item): item is ToolItem => item.kind === 'tool' && item.toolId === toolId)
+      const plan = isPlanTool(str(payload.name) ?? started?.name) ? parsePlan(payload.result) : null
       const items = state.items.map(item =>
         item.kind === 'tool' && item.toolId === toolId
           ? {
@@ -241,7 +246,7 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
             }
           : item
       )
-      return { ...state, items }
+      return plan ? { ...state, items, plan } : { ...state, items }
     }
     case 'status.update': {
       const text = str(payload.text)
@@ -264,7 +269,7 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
       } else if (status === 'interrupted') {
         items = [...items, { kind: 'notice', key: nextKey('n'), text: t('Stopped'), tone: 'info' }]
       }
-      return { items, running: false, status: undefined }
+      return { ...state, items, running: false, status: undefined }
     }
     case 'user.message': {
       // Sent from another client of this chat (the phone).
