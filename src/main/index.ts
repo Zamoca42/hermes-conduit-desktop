@@ -4,6 +4,7 @@ import WebSocket from 'ws'
 import { IPC, type GatewayEventMessage, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
 import { probeHost } from './auth'
 import { Connection } from './connection'
+import { Pairing } from './pairing'
 import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
@@ -52,6 +53,14 @@ const connection = new Connection({
   onStatus: status => send(IPC.statusChanged, status),
   onEvent: (event: GatewayEventMessage) => send(IPC.event, event),
   onRequests: requests => send(IPC.requestsChanged, requests)
+})
+
+const pairing = new Pairing({
+  fetch: globalThis.fetch.bind(globalThis),
+  mailbox: process.env.CONDUIT_PAIR_MAILBOX || undefined,
+  onEvent: event => send(IPC.pairEvent, event),
+  signIn: request => connection.signIn(request),
+  switchHost: url => connection.switchHost(url)
 })
 
 function createWindow(): void {
@@ -120,6 +129,9 @@ function registerIpc(): void {
   ipcMain.handle(IPC.probe, (_event, url: string) => probeHost(url, globalThis.fetch.bind(globalThis)))
   ipcMain.handle(IPC.signIn, (_event, request: SignInRequest) => connection.signIn(request))
   ipcMain.handle(IPC.signOut, () => connection.signOut())
+  ipcMain.handle(IPC.pairStart, () => pairing.start())
+  ipcMain.handle(IPC.pairConfirm, () => pairing.confirm())
+  ipcMain.handle(IPC.pairCancel, () => pairing.cancel())
   ipcMain.handle(IPC.switchHost, (_e, url: unknown) => typeof url === 'string' && connection.switchHost(url))
   ipcMain.handle(IPC.removeHost, (_e, url: unknown) => {
     if (typeof url === 'string') connection.removeHost(url)

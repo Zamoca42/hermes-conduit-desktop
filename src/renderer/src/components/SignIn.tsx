@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { SignInMethod } from '@shared/ipc'
+import { PairWithPhone } from './PairWithPhone'
 
 const methodLabels: Record<SignInMethod, string> = {
   password: 'User name and password',
@@ -19,6 +20,7 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
   const [token, setToken] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(notice ?? null)
+  const [pairing, setPairing] = useState(false)
 
   async function findHost(event: FormEvent) {
     event.preventDefault()
@@ -52,6 +54,14 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
     if (url) void signIn(url, method)
   }
 
+  if (pairing) {
+    return (
+      <div className="signin">
+        <PairWithPhone onBack={() => setPairing(false)} />
+      </div>
+    )
+  }
+
   return (
     <div className="signin">
       {url === null ? (
@@ -72,6 +82,10 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
           {error ? <div className="error-text" role="alert">{error}</div> : null}
           <button className="primary" type="submit" disabled={busy || !address.trim()}>
             {busy ? 'Connecting…' : 'Continue'}
+          </button>
+          <div className="or-line">or</div>
+          <button className="secondary pair-button" type="button" onClick={() => setPairing(true)}>
+            Pair with your iPhone
           </button>
           {onCancel ? (
             <button className="link-button" type="button" onClick={onCancel}>

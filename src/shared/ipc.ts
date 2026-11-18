@@ -47,6 +47,24 @@ export interface ConnectionStatus {
   hosts?: HostSummary[]
 }
 
+/** A host the phone sent while pairing, shown before signing in. */
+export interface PairHost {
+  url: string
+  method: SignInMethod
+  username?: string
+  /** What the phone calls it. */
+  name?: string
+}
+
+/** How pairing from the phone is going. */
+export interface PairEvent {
+  phase: 'received' | 'signing-in' | 'done' | 'failed' | 'expired'
+  /** The four words both screens show. */
+  words?: string[]
+  hosts?: PairHost[]
+  error?: string
+}
+
 /** A signed-in Hermes host, without its secrets. */
 export interface HostSummary {
   url: string
@@ -92,6 +110,11 @@ export interface ConduitApi {
   /** Forgets a signed-in host (the open one signs out). */
   removeHost(url: string): Promise<void>
   status(): Promise<ConnectionStatus>
+  /** Pairing from the phone: the QR code's link, then events as the phone answers. */
+  pairStart(): Promise<{ ok: true; link: string; expires: number } | { ok: false; error: string }>
+  pairConfirm(): Promise<void>
+  pairCancel(): Promise<void>
+  onPair(listener: (event: PairEvent) => void): () => void
   /** Retry now, while reconnecting or failed. */
   reconnect(): Promise<void>
   rpc<T = unknown>(method: string, params?: Record<string, unknown>): Promise<T>
@@ -156,6 +179,10 @@ export const IPC = {
   signIn: 'conduit:sign-in',
   signOut: 'conduit:sign-out',
   switchHost: 'conduit:switch-host',
+  pairStart: 'conduit:pair-start',
+  pairConfirm: 'conduit:pair-confirm',
+  pairCancel: 'conduit:pair-cancel',
+  pairEvent: 'conduit:pair-event',
   removeHost: 'conduit:remove-host',
   status: 'conduit:status',
   reconnect: 'conduit:reconnect',

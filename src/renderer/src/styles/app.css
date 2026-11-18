@@ -2127,3 +2127,46 @@ html[data-window='quick'] body {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
+
+/* Pairing from the phone */
+.or-line {
+  align-self: center;
+  font-size: 12px;
+  color: var(--text-4);
+}
+
+.pair-button {
+  align-self: stretch;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.pair-qr {
+  align-self: center;
+  width: 260px;
+  height: 260px;
+  border-radius: 16px;
+  background: #fff;
+  padding: 8px;
+  image-rendering: pixelated;
+}
+
+.pair-note {
+  font-size: 12px !important;
+}
+
+.pair-words {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.pair-words span {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
