@@ -3,6 +3,7 @@ import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
+import { BotScreen } from './components/BotScreen'
 import { ChatList, type MoveTarget } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
@@ -370,6 +371,23 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const controlPulse = turnsDone + outputs
   const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
   const showWork = workOpen && (!!openBotChat || !!workItem)
+  // The bot's screen (Hermes' Bot Screen), offered only where the host can have one, as the phone checks.
+  const screenProfile = selected.profile ?? 'default'
+  const [screenOpen, setScreenOpen] = useState(false)
+  const [screenHosts, setScreenHosts] = useState<Record<string, boolean>>({})
+  useEffect(() => setScreenHosts({}), [status.url])
+  useEffect(() => {
+    if (!connected || screenHosts[screenProfile] !== undefined) return
+    let live = true
+    gateway
+      .rpc<{ supported?: unknown }>('display.status', { profile: screenProfile })
+      .then(answer => live && setScreenHosts(all => ({ ...all, [screenProfile]: answer?.supported === true })))
+      .catch(() => live && setScreenHosts(all => ({ ...all, [screenProfile]: false })))
+    return () => {
+      live = false
+    }
+  }, [connected, screenProfile, screenHosts])
+  useEffect(() => setScreenOpen(false), [screenProfile])
   // The chat's artifacts beside it, after the phone's In This Chat sheet.
   const [artifactsOpen, setArtifactsOpen] = useState(false)
   // An artifact's Show in Chat: the message it came from, once its chat's transcript has it (after the phone's ArtifactReveal).
@@ -857,8 +875,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                       <Icon name="folder" />
                     </button>
                   ) : null}
+                  {screenHosts[screenProfile] ? (
+                    <button
+                      className={`chat-head-button${screenOpen ? ' active' : ''}`}
+                      aria-label={t("Bot's Screen")}
+                      aria-pressed={screenOpen}
+                      title={t("Bot's Screen")}
+                      onClick={() => setScreenOpen(!screenOpen)}
+                    >
+                      <Icon name="screen" />
+                    </button>
+                  ) : null}
                 </div>
               </div>
+              {screenOpen ? <BotScreen profile={screenProfile} botName={botTitle} onClose={() => setScreenOpen(false)} /> : null}
               <FileLinks.Provider value={openPath}>
                 <Transcript
                   state={transcript}

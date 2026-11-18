@@ -134,6 +134,21 @@
     "zh-Hans": "一个机器人",
     "zh-Hant": "一個機器人"
   },
+  "A bot's screen needs Hermes on a Linux host and a recent Hermes.": {
+    "de": "Ein Bot-Bildschirm braucht Hermes auf einem Linux-Host und eine aktuelle Hermes-Version.",
+    "es": "La pantalla de un bot necesita Hermes en un host Linux y una versión reciente de Hermes.",
+    "fr": "L’écran d’un bot nécessite Hermes sur un hôte Linux, dans une version récente.",
+    "id": "Layar bot memerlukan Hermes di host Linux dan Hermes versi terbaru.",
+    "it": "Lo schermo di un bot richiede Hermes su un host Linux e una versione recente di Hermes.",
+    "ja": "ボットの画面には、Linuxホスト上の最新のHermesが必要です。",
+    "ko": "봇 화면을 사용하려면 Linux 호스트에서 최신 Hermes가 실행되어야 합니다.",
+    "pl": "Ekran bota wymaga Hermesa na hoście z Linuksem, w nowej wersji.",
+    "pt-BR": "A tela de um bot precisa do Hermes em um host Linux e de uma versão recente do Hermes.",
+    "ru": "Для экрана бота нужен Hermes свежей версии на хосте с Linux.",
+    "tr": "Bot ekranı için Linux bir sunucuda güncel bir Hermes gerekir.",
+    "zh-Hans": "机器人的屏幕需要在 Linux 主机上运行较新版本的 Hermes。",
+    "zh-Hant": "機器人的螢幕需要在 Linux 主機上執行較新版本的 Hermes。"
+  },
   "A cron expression, or a phrase Hermes reads, like every 2h or weekdays at 9am.": {
     "de": "Ein Cron-Ausdruck oder eine Angabe, die Hermes versteht, etwa every 2h oder weekdays at 9am.",
     "es": "Una expresión cron o una frase que Hermes entienda, como every 2h o weekdays at 9am.",
@@ -2414,6 +2429,21 @@
     "zh-Hans": "机器人",
     "zh-Hant": "機器人"
   },
+  "Bot's Screen": {
+    "de": "Bildschirm des Bots",
+    "es": "Pantalla del bot",
+    "fr": "Écran du bot",
+    "id": "Layar Bot",
+    "it": "Schermo del bot",
+    "ja": "ボットの画面",
+    "ko": "봇 화면",
+    "pl": "Ekran bota",
+    "pt-BR": "Tela do bot",
+    "ru": "Экран бота",
+    "tr": "Bot Ekranı",
+    "zh-Hans": "机器人屏幕",
+    "zh-Hant": "機器人螢幕"
+  },
   "Bots": {
     "de": "Bots",
     "es": "Bots",
@@ -2773,6 +2803,21 @@
     "tr": "Vazgeç",
     "zh-Hans": "取消",
     "zh-Hant": "取消"
+  },
+  "Cancel Install": {
+    "de": "Installation abbrechen",
+    "es": "Cancelar instalación",
+    "fr": "Annuler l’installation",
+    "id": "Batalkan Instalasi",
+    "it": "Annulla installazione",
+    "ja": "インストールをキャンセル",
+    "ko": "설치 취소",
+    "pl": "Anuluj instalację",
+    "pt-BR": "Cancelar instalação",
+    "ru": "Отменить установку",
+    "tr": "Kurulumu İptal Et",
+    "zh-Hans": "取消安装",
+    "zh-Hant": "取消安裝"
   },
   "Cancelled.": {
     "de": "Abgebrochen.",
@@ -4319,6 +4364,21 @@
     "zh-Hans": "拷贝分支",
     "zh-Hant": "拷貝分支"
   },
+  "Copy Command": {
+    "de": "Befehl kopieren",
+    "es": "Copiar comando",
+    "fr": "Copier la commande",
+    "id": "Salin Perintah",
+    "it": "Copia comando",
+    "ja": "コマンドをコピー",
+    "ko": "명령 복사",
+    "pl": "Kopiuj polecenie",
+    "pt-BR": "Copiar comando",
+    "ru": "Скопировать команду",
+    "tr": "Komutu Kopyala",
+    "zh-Hans": "复制命令",
+    "zh-Hant": "拷貝指令"
+  },
   "Copy Link": {
     "de": "Link kopieren",
     "es": "Copiar enlace",
@@ -5053,6 +5113,21 @@
     "tr": "Pulse ayarları okunamadı.",
     "zh-Hans": "无法读取 Pulse 的设置。",
     "zh-Hant": "無法讀取 Pulse 的設定。"
+  },
+  "Couldn't read the screen": {
+    "de": "Bildschirm konnte nicht gelesen werden",
+    "es": "No se pudo leer la pantalla",
+    "fr": "Impossible de lire l’écran",
+    "id": "Tidak dapat membaca layar",
+    "it": "Impossibile leggere lo schermo",
+    "ja": "画面を読み込めませんでした",
+    "ko": "화면을 읽을 수 없음",
+    "pl": "Nie udało się odczytać ekranu",
+    "pt-BR": "Não foi possível ler a tela",
+    "ru": "Не удалось получить экран",
+    "tr": "Ekran okunamadı",
+    "zh-Hans": "无法读取屏幕",
+    "zh-Hant": "無法讀取螢幕"
   },
   "Couldn't read {names}.": {
     "de": "{names} konnte nicht gelesen werden.",
@@ -7469,6 +7544,21 @@
     "zh-Hans": "兴奋",
     "zh-Hant": "興奮"
   },
+  "Exit Full Screen": {
+    "de": "Vollbild beenden",
+    "es": "Salir de pantalla completa",
+    "fr": "Quitter le plein écran",
+    "id": "Keluar dari Layar Penuh",
+    "it": "Esci da schermo intero",
+    "ja": "フルスクリーンを終了",
+    "ko": "전체 화면 종료",
+    "pl": "Zamknij pełny ekran",
+    "pt-BR": "Sair da tela cheia",
+    "ru": "Выйти из полноэкранного режима",
+    "tr": "Tam Ekrandan Çık",
+    "zh-Hans": "退出全屏",
+    "zh-Hant": "結束全螢幕"
+  },
   "Exited": {
     "de": "Beendet",
     "es": "Finalizado",
@@ -8384,6 +8474,21 @@
     "zh-Hans": "来自你的评分、“去做”和“完成”",
     "zh-Hant": "來自你的評分、「去做」和「完成」"
   },
+  "Full Screen": {
+    "de": "Vollbild",
+    "es": "Pantalla completa",
+    "fr": "Plein écran",
+    "id": "Layar Penuh",
+    "it": "Schermo intero",
+    "ja": "フルスクリーン",
+    "ko": "전체 화면",
+    "pl": "Pełny ekran",
+    "pt-BR": "Tela cheia",
+    "ru": "Во весь экран",
+    "tr": "Tam Ekran",
+    "zh-Hans": "全屏",
+    "zh-Hant": "全螢幕"
+  },
   "GPT-Live": {
     "de": "GPT-Live",
     "es": "GPT-Live",
@@ -9029,6 +9134,36 @@
     "zh-Hans": "群聊",
     "zh-Hant": "群組聊天"
   },
+  "Hand Back": {
+    "de": "Zurückgeben",
+    "es": "Devolver",
+    "fr": "Rendre la main",
+    "id": "Kembalikan",
+    "it": "Restituisci",
+    "ja": "返す",
+    "ko": "돌려주기",
+    "pl": "Oddaj",
+    "pt-BR": "Devolver",
+    "ru": "Вернуть",
+    "tr": "Geri Ver",
+    "zh-Hans": "交还",
+    "zh-Hant": "交還"
+  },
+  "Hand Back for Them": {
+    "de": "Für sie zurückgeben",
+    "es": "Devolver por esa persona",
+    "fr": "Rendre la main à sa place",
+    "id": "Kembalikan atas nama mereka",
+    "it": "Restituisci al posto suo",
+    "ja": "代わりに返す",
+    "ko": "대신 돌려주기",
+    "pl": "Oddaj w jej imieniu",
+    "pt-BR": "Devolver por essa pessoa",
+    "ru": "Вернуть за них",
+    "tr": "Onun Yerine Geri Ver",
+    "zh-Hans": "代为交还",
+    "zh-Hant": "代為交還"
+  },
   "Handed off a task": {
     "de": "Aufgabe übergeben",
     "es": "Delegó una tarea",
@@ -9673,6 +9808,21 @@
     "tr": "Hermes'in devam edebilmesi için sohbette yanıtınıza ihtiyacı var.",
     "zh-Hans": "Hermes 需要你在聊天中回答后才能继续。",
     "zh-Hant": "Hermes 需要你在聊天中回答後才能繼續。"
+  },
+  "Hermes needs your sudo password": {
+    "de": "Hermes benötigt dein sudo-Passwort",
+    "es": "Hermes necesita tu contraseña de sudo",
+    "fr": "Hermes a besoin de votre mot de passe sudo",
+    "id": "Hermes memerlukan kata sandi sudo Anda",
+    "it": "Hermes ha bisogno della tua password sudo",
+    "ja": "Hermesがsudoパスワードを求めています",
+    "ko": "Hermes에 sudo 암호가 필요해요",
+    "pl": "Hermes potrzebuje Twojego hasła sudo",
+    "pt-BR": "O Hermes precisa da sua senha do sudo",
+    "ru": "Hermes нужен ваш пароль sudo",
+    "tr": "Hermes'in sudo parolanıza ihtiyacı var",
+    "zh-Hans": "Hermes 需要你的 sudo 密码",
+    "zh-Hant": "Hermes 需要你的 sudo 密碼"
   },
   "Hermes picks up a password manager installed on its computer. It asks you to unlock one the first time it needs a login from it; only the manager's session stays in Hermes' memory, never your master password.": {
     "de": "Hermes erkennt einen auf seinem Computer installierten Passwortmanager. Es bittet dich ums Entsperren, wenn es zum ersten Mal ein Login daraus braucht; nur die Sitzung des Managers bleibt in Hermes' Speicher, nie dein Master-Passwort.",
@@ -10724,6 +10874,36 @@
     "zh-Hans": "安装",
     "zh-Hant": "安裝"
   },
+  "Install finished": {
+    "de": "Installation abgeschlossen",
+    "es": "Instalación terminada",
+    "fr": "Installation terminée",
+    "id": "Instalasi selesai",
+    "it": "Installazione completata",
+    "ja": "インストール完了",
+    "ko": "설치 완료",
+    "pl": "Instalacja zakończona",
+    "pt-BR": "Instalação concluída",
+    "ru": "Установка завершена",
+    "tr": "Kurulum tamamlandı",
+    "zh-Hans": "安装完成",
+    "zh-Hant": "安裝完成"
+  },
+  "Install on Host": {
+    "de": "Auf dem Host installieren",
+    "es": "Instalar en el host",
+    "fr": "Installer sur l’hôte",
+    "id": "Instal di Host",
+    "it": "Installa sull’host",
+    "ja": "ホストにインストール",
+    "ko": "호스트에 설치",
+    "pl": "Zainstaluj na hoście",
+    "pt-BR": "Instalar no host",
+    "ru": "Установить на хост",
+    "tr": "Sunucuya Kur",
+    "zh-Hans": "安装到主机",
+    "zh-Hant": "安裝到主機"
+  },
   "Install or update the Hermes notifier plugin on your Hermes server.": {
     "de": "Installiere oder aktualisiere das Hermes-Notifier-Plug-in auf deinem Hermes-Server.",
     "es": "Instala o actualiza el plugin de notificaciones de Hermes en tu servidor Hermes.",
@@ -10828,6 +11008,36 @@
     "tr": "Yüklü bağlam yönetimi motoru.",
     "zh-Hans": "已安装的上下文管理引擎。",
     "zh-Hant": "已安裝的上下文管理引擎。"
+  },
+  "Installing adds a small desktop and its packages on the Hermes host (about 1 GB of disk). Hermes asks for the host's password if it needs one.": {
+    "de": "Die Installation fügt dem Hermes-Host einen kleinen Desktop und seine Pakete hinzu (etwa 1 GB Speicher). Hermes fragt nach dem Passwort des Hosts, falls es eins braucht.",
+    "es": "La instalación añade un pequeño escritorio y sus paquetes al host de Hermes (alrededor de 1 GB de disco). Hermes pide la contraseña del host si la necesita.",
+    "fr": "L’installation ajoute un petit bureau et ses paquets sur l’hôte Hermes (environ 1 Go de disque). Hermes demande le mot de passe de l’hôte s’il en a besoin.",
+    "id": "Instalasi menambahkan desktop kecil beserta paketnya di host Hermes (sekitar 1 GB disk). Hermes akan meminta kata sandi host jika diperlukan.",
+    "it": "L’installazione aggiunge un piccolo desktop e i suoi pacchetti sull’host Hermes (circa 1 GB di disco). Hermes chiede la password dell’host se serve.",
+    "ja": "インストールすると、Hermesホストに小さなデスクトップとそのパッケージが追加されます（ディスク約1 GB）。必要な場合、Hermesがホストのパスワードを尋ねます。",
+    "ko": "설치하면 Hermes 호스트에 작은 데스크톱과 패키지가 추가됩니다(디스크 약 1GB). 필요하면 Hermes가 호스트 암호를 묻습니다.",
+    "pl": "Instalacja dodaje na hoście Hermesa mały pulpit i jego pakiety (około 1 GB miejsca). Hermes poprosi o hasło hosta, jeśli będzie potrzebne.",
+    "pt-BR": "A instalação adiciona uma pequena área de trabalho e seus pacotes ao host do Hermes (cerca de 1 GB de disco). O Hermes pede a senha do host se precisar.",
+    "ru": "Установка добавит на хост Hermes небольшой рабочий стол и его пакеты (около 1 ГБ на диске). Если нужно, Hermes спросит пароль хоста.",
+    "tr": "Kurulum, Hermes sunucusuna küçük bir masaüstü ve paketlerini ekler (yaklaşık 1 GB disk). Gerekirse Hermes sunucunun parolasını sorar.",
+    "zh-Hans": "安装会在 Hermes 主机上添加一个小型桌面及其软件包（约 1 GB 磁盘空间）。如有需要，Hermes 会询问主机密码。",
+    "zh-Hant": "安裝會在 Hermes 主機上加入一個小型桌面及其套件（約 1 GB 磁碟空間）。如有需要，Hermes 會詢問主機密碼。"
+  },
+  "Installing on the host…": {
+    "de": "Wird auf dem Host installiert…",
+    "es": "Instalando en el host…",
+    "fr": "Installation sur l’hôte…",
+    "id": "Menginstal di host…",
+    "it": "Installazione sull’host…",
+    "ja": "ホストにインストール中…",
+    "ko": "호스트에 설치하는 중…",
+    "pl": "Instalowanie na hoście…",
+    "pt-BR": "Instalando no host…",
+    "ru": "Установка на хост…",
+    "tr": "Sunucuya kuruluyor…",
+    "zh-Hans": "正在安装到主机…",
+    "zh-Hant": "正在安裝到主機…"
   },
   "Installing…": {
     "de": "Wird installiert…",
@@ -10949,6 +11159,21 @@
     "zh-Hans": "Qwen Live 凭证无效。",
     "zh-Hant": "Qwen Live 憑證無效。"
   },
+  "It goes to the Hermes host only, for this install, and isn't kept.": {
+    "de": "Es geht nur an den Hermes-Host, nur für diese Installation, und wird nicht gespeichert.",
+    "es": "Solo se envía al host de Hermes, para esta instalación, y no se guarda.",
+    "fr": "Il n’est envoyé qu’à l’hôte Hermes, pour cette installation, et n’est pas conservé.",
+    "id": "Hanya dikirim ke host Hermes, untuk instalasi ini saja, dan tidak disimpan.",
+    "it": "Va solo all’host Hermes, per questa installazione, e non viene conservata.",
+    "ja": "Hermesホストにのみ、このインストールのためだけに送られ、保存されません。",
+    "ko": "이 설치에만 Hermes 호스트로 전송되며 저장되지 않습니다.",
+    "pl": "Trafia tylko do hosta Hermesa, na potrzeby tej instalacji, i nie jest przechowywane.",
+    "pt-BR": "Vai apenas para o host do Hermes, para esta instalação, e não é guardada.",
+    "ru": "Он передаётся только хосту Hermes, для этой установки, и не сохраняется.",
+    "tr": "Yalnızca bu kurulum için Hermes sunucusuna gider ve saklanmaz.",
+    "zh-Hans": "它只会发送到 Hermes 主机，仅用于此次安装，不会被保存。",
+    "zh-Hant": "它只會傳送到 Hermes 主機，僅用於這次安裝，不會被保存。"
+  },
   "It may still be finishing running tasks. Run hermes gateway status on the host to check.": {
     "de": "Vielleicht schließt es noch laufende Aufgaben ab. Führe hermes gateway status auf dem Host aus, um nachzusehen.",
     "es": "Puede que aún esté terminando tareas en curso. Ejecuta hermes gateway status en el host para comprobarlo.",
@@ -10994,6 +11219,21 @@
     "zh-Hans": "它发送了 {count} 个主机的登录信息：{hosts}。",
     "zh-Hant": "它傳送了 {count} 個主機的登入資訊：{hosts}。"
   },
+  "It starts when you start it here, and stops after a while nobody uses it.": {
+    "de": "Er startet, wenn du ihn hier startest, und stoppt, wenn ihn eine Weile niemand nutzt.",
+    "es": "Se inicia cuando la inicias aquí y se detiene tras un rato sin que nadie la use.",
+    "fr": "Il démarre quand vous le lancez ici et s’arrête après un moment sans utilisation.",
+    "id": "Layar mulai saat Anda memulainya di sini, dan berhenti setelah beberapa saat tidak dipakai.",
+    "it": "Si avvia quando lo avvii qui e si ferma dopo un po’ che nessuno lo usa.",
+    "ja": "ここで開始すると起動し、しばらく誰も使わないと停止します。",
+    "ko": "여기서 시작하면 켜지고, 한동안 아무도 사용하지 않으면 멈춥니다.",
+    "pl": "Uruchamia się, gdy włączysz go tutaj, i zatrzymuje po chwili bez używania.",
+    "pt-BR": "Ela inicia quando você a inicia aqui e para depois de um tempo sem uso.",
+    "ru": "Он запускается, когда вы запускаете его здесь, и останавливается, если им какое-то время никто не пользуется.",
+    "tr": "Buradan başlattığınızda başlar, bir süre kimse kullanmazsa durur.",
+    "zh-Hans": "在这里启动后它就会运行，一段时间没人使用就会停止。",
+    "zh-Hant": "在這裡啟動後它就會執行，一段時間沒人使用就會停止。"
+  },
   "Its folders, files and chats stay where they are.": {
     "de": "Seine Ordner, Dateien und Chats bleiben, wo sie sind.",
     "es": "Sus carpetas, archivos y chats se quedan donde están.",
@@ -11008,6 +11248,21 @@
     "tr": "Klasörleri, dosyaları ve sohbetleri olduğu yerde kalır.",
     "zh-Hans": "其文件夹、文件和聊天都会保留原样。",
     "zh-Hant": "其資料夾、檔案和聊天都會保留原樣。"
+  },
+  "Its sandbox runs {current}. The screen needs {target}. Switching keeps its files; packages installed inside it come back on use.": {
+    "de": "Seine Sandbox nutzt {current}. Der Bildschirm braucht {target}. Beim Wechsel bleiben seine Dateien erhalten; darin installierte Pakete kommen bei Bedarf zurück.",
+    "es": "Su sandbox usa {current}. La pantalla necesita {target}. Al cambiar se conservan sus archivos; los paquetes instalados dentro vuelven al usarse.",
+    "fr": "Son bac à sable utilise {current}. L’écran nécessite {target}. Le changement conserve ses fichiers ; les paquets installés dedans reviennent à l’usage.",
+    "id": "Sandbox-nya memakai {current}. Layar memerlukan {target}. Beralih tetap menyimpan filenya; paket yang terpasang di dalamnya kembali saat dipakai.",
+    "it": "La sua sandbox usa {current}. Lo schermo richiede {target}. Il cambio mantiene i suoi file; i pacchetti installati al suo interno tornano all’uso.",
+    "ja": "サンドボックスは{current}で動作しています。画面には{target}が必要です。切り替えてもファイルは残り、中にインストールしたパッケージは使うときに戻ります。",
+    "ko": "샌드박스가 {current}(으)로 실행 중입니다. 화면에는 {target}이(가) 필요합니다. 전환해도 파일은 유지되며, 안에 설치한 패키지는 사용할 때 다시 설치됩니다.",
+    "pl": "Jego piaskownica działa na {current}. Ekran wymaga {target}. Zmiana zachowuje pliki; zainstalowane w niej pakiety wrócą przy użyciu.",
+    "pt-BR": "O sandbox dele usa {current}. A tela precisa de {target}. A troca mantém os arquivos; pacotes instalados dentro dele voltam quando usados.",
+    "ru": "Его песочница работает на {current}. Экрану нужен {target}. При переключении файлы сохраняются, а установленные внутри пакеты вернутся при использовании.",
+    "tr": "Korumalı alanı {current} çalıştırıyor. Ekran için {target} gerekir. Geçiş dosyalarını korur; içine kurulan paketler kullanıldığında geri gelir.",
+    "zh-Hans": "它的沙盒运行 {current}。屏幕需要 {target}。切换会保留文件；沙盒内安装的软件包会在使用时恢复。",
+    "zh-Hant": "它的沙盒執行 {current}。螢幕需要 {target}。切換會保留檔案；沙盒內安裝的套件會在使用時恢復。"
   },
   "Jobs": {
     "de": "Jobs",
@@ -11098,6 +11353,21 @@
     "tr": "Kawaii",
     "zh-Hans": "卡哇伊",
     "zh-Hant": "卡哇伊"
+  },
+  "Keep Current Image": {
+    "de": "Aktuelles Image behalten",
+    "es": "Mantener imagen actual",
+    "fr": "Garder l’image actuelle",
+    "id": "Pertahankan Image Saat Ini",
+    "it": "Mantieni immagine attuale",
+    "ja": "現在のイメージを維持",
+    "ko": "현재 이미지 유지",
+    "pl": "Zachowaj obecny obraz",
+    "pt-BR": "Manter imagem atual",
+    "ru": "Оставить текущий образ",
+    "tr": "Mevcut İmajı Koru",
+    "zh-Hans": "保留当前镜像",
+    "zh-Hant": "保留目前映像"
   },
   "Keep Photo": {
     "de": "Foto behalten",
@@ -14234,6 +14504,21 @@
     "zh-Hans": "还没有定时任务。用 + 按钮创建一个，或让 Hermes 按计划运行某件事。",
     "zh-Hant": "還沒有排程工作。用 + 按鈕建立一個，或請 Hermes 依排程執行某件事。"
   },
+  "No screen on this host": {
+    "de": "Kein Bildschirm auf diesem Host",
+    "es": "No hay pantalla en este host",
+    "fr": "Pas d’écran sur cet hôte",
+    "id": "Tidak ada layar di host ini",
+    "it": "Nessuno schermo su questo host",
+    "ja": "このホストには画面がありません",
+    "ko": "이 호스트에는 화면이 없음",
+    "pl": "Brak ekranu na tym hoście",
+    "pt-BR": "Sem tela neste host",
+    "ru": "На этом хосте нет экрана",
+    "tr": "Bu sunucuda ekran yok",
+    "zh-Hans": "此主机没有屏幕",
+    "zh-Hant": "此主機沒有螢幕"
+  },
   "No sign-in": {
     "de": "Keine Anmeldung",
     "es": "Sin inicio de sesión",
@@ -15478,6 +15763,21 @@
     "tr": "İsteğe bağlı. Ad ve açıklamadan oluşturulan kısa bir kimlikle başlamak için boş bırakın.",
     "zh-Hans": "可选。留空则根据名称和描述生成一段简短的身份设定。",
     "zh-Hant": "選用。留空即可從依名稱和描述產生的簡短身分設定開始。"
+  },
+  "Or run this on the host:": {
+    "de": "Oder führe dies auf dem Host aus:",
+    "es": "O ejecuta esto en el host:",
+    "fr": "Ou exécutez ceci sur l’hôte :",
+    "id": "Atau jalankan ini di host:",
+    "it": "Oppure esegui questo sull’host:",
+    "ja": "またはホストで次を実行：",
+    "ko": "또는 호스트에서 다음을 실행하세요:",
+    "pl": "Lub uruchom to na hoście:",
+    "pt-BR": "Ou execute isto no host:",
+    "ru": "Или выполните это на хосте:",
+    "tr": "Ya da bunu sunucuda çalıştırın:",
+    "zh-Hans": "或在主机上运行：",
+    "zh-Hant": "或在主機上執行："
   },
   "Or say skip to leave it blank.": {
     "de": "Oder sag „überspringen“, um sie leer zu lassen.",
@@ -17638,6 +17938,21 @@
     "tr": "Sıkıştırmanın dokunmadan bıraktığı son mesajlar.",
     "zh-Hans": "压缩时保持原样的近期消息。",
     "zh-Hant": "壓縮時保持原樣的近期訊息。"
+  },
+  "Reconnect": {
+    "de": "Neu verbinden",
+    "es": "Reconectar",
+    "fr": "Se reconnecter",
+    "id": "Hubungkan Ulang",
+    "it": "Riconnetti",
+    "ja": "再接続",
+    "ko": "다시 연결",
+    "pl": "Połącz ponownie",
+    "pt-BR": "Reconectar",
+    "ru": "Переподключиться",
+    "tr": "Yeniden Bağlan",
+    "zh-Hans": "重新连接",
+    "zh-Hant": "重新連線"
   },
   "Record": {
     "de": "Aufnehmen",
@@ -21299,6 +21614,36 @@
     "zh-Hans": "轻柔",
     "zh-Hant": "輕柔"
   },
+  "Someone else is in control": {
+    "de": "Jemand anderes hat die Kontrolle",
+    "es": "Otra persona tiene el control",
+    "fr": "Quelqu’un d’autre a le contrôle",
+    "id": "Orang lain sedang mengendalikan",
+    "it": "Qualcun altro ha il controllo",
+    "ja": "他の人が操作中",
+    "ko": "다른 사람이 제어 중",
+    "pl": "Ktoś inny ma kontrolę",
+    "pt-BR": "Outra pessoa está no controle",
+    "ru": "Управляет кто-то другой",
+    "tr": "Kontrol başka birinde",
+    "zh-Hans": "其他人正在控制",
+    "zh-Hant": "其他人正在控制"
+  },
+  "Someone else took control of the screen.": {
+    "de": "Jemand anderes hat die Kontrolle über den Bildschirm übernommen.",
+    "es": "Otra persona tomó el control de la pantalla.",
+    "fr": "Quelqu’un d’autre a pris le contrôle de l’écran.",
+    "id": "Orang lain mengambil alih kendali layar.",
+    "it": "Qualcun altro ha preso il controllo dello schermo.",
+    "ja": "他の人が画面の操作を引き継ぎました。",
+    "ko": "다른 사람이 화면 제어를 가져갔습니다.",
+    "pl": "Ktoś inny przejął kontrolę nad ekranem.",
+    "pt-BR": "Outra pessoa assumiu o controle da tela.",
+    "ru": "Кто-то другой взял управление экраном.",
+    "tr": "Ekranın kontrolünü başka biri aldı.",
+    "zh-Hans": "其他人接管了屏幕控制。",
+    "zh-Hant": "其他人接管了螢幕控制。"
+  },
   "Source": {
     "de": "Quelle",
     "es": "Fuente",
@@ -21388,6 +21733,21 @@
     "tr": "Başlangıç",
     "zh-Hans": "起始于",
     "zh-Hant": "起始於"
+  },
+  "Start Screen": {
+    "de": "Bildschirm starten",
+    "es": "Iniciar pantalla",
+    "fr": "Démarrer l’écran",
+    "id": "Mulai Layar",
+    "it": "Avvia schermo",
+    "ja": "画面を開始",
+    "ko": "화면 시작",
+    "pl": "Uruchom ekran",
+    "pt-BR": "Iniciar tela",
+    "ru": "Запустить экран",
+    "tr": "Ekranı Başlat",
+    "zh-Hans": "启动屏幕",
+    "zh-Hant": "啟動螢幕"
   },
   "Start a new conversation": {
     "de": "Neue Unterhaltung beginnen",
@@ -21764,6 +22124,21 @@
     "zh-Hans": "停止循环",
     "zh-Hant": "停止循環"
   },
+  "Stop Screen": {
+    "de": "Bildschirm stoppen",
+    "es": "Detener pantalla",
+    "fr": "Arrêter l’écran",
+    "id": "Hentikan Layar",
+    "it": "Ferma schermo",
+    "ja": "画面を停止",
+    "ko": "화면 중지",
+    "pl": "Zatrzymaj ekran",
+    "pt-BR": "Parar tela",
+    "ru": "Остановить экран",
+    "tr": "Ekranı Durdur",
+    "zh-Hans": "停止屏幕",
+    "zh-Hant": "停止螢幕"
+  },
   "Stop agent": {
     "de": "Agent stoppen",
     "es": "Detener agente",
@@ -21823,6 +22198,21 @@
     "tr": "Yanıtı ve arka plan işlemlerini durdur",
     "zh-Hans": "停止回复和后台进程",
     "zh-Hant": "停止回覆和背景程序"
+  },
+  "Stop the screen?": {
+    "de": "Bildschirm stoppen?",
+    "es": "¿Detener la pantalla?",
+    "fr": "Arrêter l’écran ?",
+    "id": "Hentikan layar?",
+    "it": "Fermare lo schermo?",
+    "ja": "画面を停止しますか？",
+    "ko": "화면을 중지할까요?",
+    "pl": "Zatrzymać ekran?",
+    "pt-BR": "Parar a tela?",
+    "ru": "Остановить экран?",
+    "tr": "Ekran durdurulsun mu?",
+    "zh-Hans": "要停止屏幕吗？",
+    "zh-Hant": "要停止螢幕嗎？"
   },
   "Stop this loop?": {
     "de": "Diese Schleife stoppen?",
@@ -22064,6 +22454,21 @@
     "zh-Hans": "切换 Hermes",
     "zh-Hant": "切換 Hermes"
   },
+  "Switch Image": {
+    "de": "Image wechseln",
+    "es": "Cambiar imagen",
+    "fr": "Changer d’image",
+    "id": "Ganti Image",
+    "it": "Cambia immagine",
+    "ja": "イメージを切り替え",
+    "ko": "이미지 전환",
+    "pl": "Zmień obraz",
+    "pt-BR": "Trocar imagem",
+    "ru": "Сменить образ",
+    "tr": "İmajı Değiştir",
+    "zh-Hans": "切换镜像",
+    "zh-Hant": "切換映像"
+  },
   "Switches to {model} when this reply finishes.": {
     "de": "Wechselt zu {model}, sobald diese Antwort fertig ist.",
     "es": "Cambia a {model} cuando termine esta respuesta.",
@@ -22108,6 +22513,21 @@
     "tr": "Sistem bildirimi",
     "zh-Hans": "系统通知",
     "zh-Hant": "系統通知"
+  },
+  "Take Over": {
+    "de": "Übernehmen",
+    "es": "Tomar el control",
+    "fr": "Prendre la main",
+    "id": "Ambil Alih",
+    "it": "Prendi il controllo",
+    "ja": "操作を引き継ぐ",
+    "ko": "제어 가져오기",
+    "pl": "Przejmij",
+    "pt-BR": "Assumir",
+    "ru": "Взять управление",
+    "tr": "Kontrolü Al",
+    "zh-Hans": "接管",
+    "zh-Hant": "接管"
   },
   "Take back": {
     "de": "Zurücknehmen",
@@ -22559,6 +22979,36 @@
     "zh-Hans": "机器人已创建，但其头像或外观未保存。请编辑机器人后重试。",
     "zh-Hant": "機器人已建立，但其圖片或外觀未儲存。請編輯機器人再試一次。"
   },
+  "The bot's open windows close. It starts again the next time it's needed.": {
+    "de": "Die offenen Fenster des Bots werden geschlossen. Er startet wieder, wenn er das nächste Mal gebraucht wird.",
+    "es": "Se cierran las ventanas abiertas del bot. Vuelve a iniciarse la próxima vez que haga falta.",
+    "fr": "Les fenêtres ouvertes du bot se ferment. Il redémarre la prochaine fois qu’il est nécessaire.",
+    "id": "Jendela bot yang terbuka akan ditutup. Layar mulai lagi saat dibutuhkan berikutnya.",
+    "it": "Le finestre aperte del bot si chiudono. Si riavvia la prossima volta che serve.",
+    "ja": "ボットの開いているウインドウが閉じます。次に必要になったときに再び起動します。",
+    "ko": "봇의 열린 창이 닫힙니다. 다음에 필요할 때 다시 시작됩니다.",
+    "pl": "Otwarte okna bota zostaną zamknięte. Uruchomi się ponownie, gdy będzie potrzebny.",
+    "pt-BR": "As janelas abertas do bot fecham. Ela inicia de novo na próxima vez que for necessária.",
+    "ru": "Открытые окна бота закроются. Экран запустится снова, когда понадобится.",
+    "tr": "Botun açık pencereleri kapanır. Bir dahaki gerektiğinde yeniden başlar.",
+    "zh-Hans": "机器人打开的窗口会关闭。下次需要时会再次启动。",
+    "zh-Hant": "機器人開啟的視窗會關閉。下次需要時會再次啟動。"
+  },
+  "The bot's sandbox needs the desktop image": {
+    "de": "Die Sandbox des Bots braucht das Desktop-Image",
+    "es": "El sandbox del bot necesita la imagen de escritorio",
+    "fr": "Le bac à sable du bot nécessite l’image de bureau",
+    "id": "Sandbox bot memerlukan image desktop",
+    "it": "La sandbox del bot richiede l’immagine desktop",
+    "ja": "ボットのサンドボックスにはデスクトップイメージが必要です",
+    "ko": "봇 샌드박스에 데스크톱 이미지가 필요함",
+    "pl": "Piaskownica bota wymaga obrazu z pulpitem",
+    "pt-BR": "O sandbox do bot precisa da imagem de desktop",
+    "ru": "Песочнице бота нужен образ с рабочим столом",
+    "tr": "Botun korumalı alanı masaüstü imajını gerektiriyor",
+    "zh-Hans": "机器人的沙盒需要桌面镜像",
+    "zh-Hant": "機器人的沙盒需要桌面映像"
+  },
   "The code expired. Start again.": {
     "de": "Der Code ist abgelaufen. Fang neu an.",
     "es": "El código caducó. Empieza de nuevo.",
@@ -22784,6 +23234,21 @@
     "zh-Hans": "目标的条件已更改。请重新选择要移除的条件。",
     "zh-Hant": "目標的條件已變更。請重新選擇要移除的條件。"
   },
+  "The host's sudo password": {
+    "de": "Das sudo-Passwort des Hosts",
+    "es": "La contraseña sudo del host",
+    "fr": "Le mot de passe sudo de l’hôte",
+    "id": "Kata sandi sudo host",
+    "it": "La password sudo dell’host",
+    "ja": "ホストのsudoパスワード",
+    "ko": "호스트의 sudo 암호",
+    "pl": "Hasło sudo hosta",
+    "pt-BR": "A senha sudo do host",
+    "ru": "Пароль sudo хоста",
+    "tr": "Sunucunun sudo parolası",
+    "zh-Hans": "主机的 sudo 密码",
+    "zh-Hant": "主機的 sudo 密碼"
+  },
   "The install didn't finish.": {
     "de": "Die Installation wurde nicht abgeschlossen.",
     "es": "La instalación no terminó.",
@@ -22798,6 +23263,21 @@
     "tr": "Yükleme tamamlanmadı.",
     "zh-Hans": "安装没有完成。",
     "zh-Hant": "安裝沒有完成。"
+  },
+  "The install didn't finish. Its log is below.": {
+    "de": "Die Installation wurde nicht abgeschlossen. Das Protokoll steht unten.",
+    "es": "La instalación no terminó. Su registro está abajo.",
+    "fr": "L’installation n’a pas abouti. Son journal est ci-dessous.",
+    "id": "Instalasi tidak selesai. Log-nya ada di bawah.",
+    "it": "L’installazione non è terminata. Il registro è qui sotto.",
+    "ja": "インストールが完了しませんでした。ログは下にあります。",
+    "ko": "설치가 완료되지 않았습니다. 로그는 아래에 있습니다.",
+    "pl": "Instalacja się nie zakończyła. Dziennik jest poniżej.",
+    "pt-BR": "A instalação não terminou. O registro está abaixo.",
+    "ru": "Установка не завершилась. Журнал ниже.",
+    "tr": "Kurulum tamamlanmadı. Günlüğü aşağıda.",
+    "zh-Hans": "安装未完成。日志如下。",
+    "zh-Hant": "安裝未完成。記錄如下。"
   },
   "The look ahead passed over it": {
     "de": "Die Vorausschau hat es übergangen",
@@ -23068,6 +23548,51 @@
     "tr": "Gerisi ekranınızda.",
     "zh-Hans": "其余内容在你的屏幕上。",
     "zh-Hant": "其餘內容在你的螢幕上。"
+  },
+  "The screen is off": {
+    "de": "Der Bildschirm ist aus",
+    "es": "La pantalla está apagada",
+    "fr": "L’écran est arrêté",
+    "id": "Layar mati",
+    "it": "Lo schermo è spento",
+    "ja": "画面はオフです",
+    "ko": "화면이 꺼져 있음",
+    "pl": "Ekran jest wyłączony",
+    "pt-BR": "A tela está desligada",
+    "ru": "Экран выключен",
+    "tr": "Ekran kapalı",
+    "zh-Hans": "屏幕已关闭",
+    "zh-Hant": "螢幕已關閉"
+  },
+  "The screen isn't set up on this host yet": {
+    "de": "Der Bildschirm ist auf diesem Host noch nicht eingerichtet",
+    "es": "La pantalla aún no está configurada en este host",
+    "fr": "L’écran n’est pas encore configuré sur cet hôte",
+    "id": "Layar belum disiapkan di host ini",
+    "it": "Lo schermo non è ancora configurato su questo host",
+    "ja": "このホストでは画面がまだ設定されていません",
+    "ko": "이 호스트에 아직 화면이 설정되지 않음",
+    "pl": "Ekran nie jest jeszcze skonfigurowany na tym hoście",
+    "pt-BR": "A tela ainda não está configurada neste host",
+    "ru": "Экран на этом хосте ещё не настроен",
+    "tr": "Ekran bu sunucuda henüz kurulmadı",
+    "zh-Hans": "此主机尚未设置屏幕",
+    "zh-Hant": "此主機尚未設定螢幕"
+  },
+  "The screen's stream was lost.": {
+    "de": "Die Verbindung zum Bildschirm ist abgebrochen.",
+    "es": "Se perdió la transmisión de la pantalla.",
+    "fr": "Le flux de l’écran a été perdu.",
+    "id": "Aliran layar terputus.",
+    "it": "Il flusso dello schermo si è interrotto.",
+    "ja": "画面のストリームが途切れました。",
+    "ko": "화면 스트림이 끊겼습니다.",
+    "pl": "Utracono strumień ekranu.",
+    "pt-BR": "A transmissão da tela foi perdida.",
+    "ru": "Поток экрана прервался.",
+    "tr": "Ekran akışı koptu.",
+    "zh-Hans": "屏幕的画面流中断了。",
+    "zh-Hant": "螢幕的畫面串流中斷了。"
   },
   "The search didn't finish": {
     "de": "Die Suche wurde nicht abgeschlossen",
@@ -23788,6 +24313,21 @@
     "tr": "Bu grup sohbeti dağıtıldı.",
     "zh-Hans": "此群聊已解散。",
     "zh-Hant": "此群組聊天已解散。"
+  },
+  "This host has no sudo. Run the install command on the host yourself.": {
+    "de": "Dieser Host hat kein sudo. Führe den Installationsbefehl selbst auf dem Host aus.",
+    "es": "Este host no tiene sudo. Ejecuta tú el comando de instalación en el host.",
+    "fr": "Cet hôte n’a pas sudo. Exécutez vous-même la commande d’installation sur l’hôte.",
+    "id": "Host ini tidak punya sudo. Jalankan sendiri perintah instalasi di host.",
+    "it": "Questo host non ha sudo. Esegui tu il comando di installazione sull’host.",
+    "ja": "このホストにはsudoがありません。ホストで自分でインストールコマンドを実行してください。",
+    "ko": "이 호스트에는 sudo가 없습니다. 호스트에서 설치 명령을 직접 실행하세요.",
+    "pl": "Ten host nie ma sudo. Uruchom polecenie instalacji na hoście samodzielnie.",
+    "pt-BR": "Este host não tem sudo. Execute você mesmo o comando de instalação no host.",
+    "ru": "На этом хосте нет sudo. Выполните команду установки на хосте сами.",
+    "tr": "Bu sunucuda sudo yok. Kurulum komutunu sunucuda kendiniz çalıştırın.",
+    "zh-Hans": "此主机没有 sudo。请自行在主机上运行安装命令。",
+    "zh-Hant": "此主機沒有 sudo。請自行在主機上執行安裝指令。"
   },
   "This host is newer than the {release} release; updating moves it back to that release.": {
     "de": "Dieser Host ist neuer als die Version {release}; das Update setzt ihn auf diese Version zurück.",
@@ -24733,6 +25273,21 @@
     "tr": "Bunun yerine adres yazın",
     "zh-Hans": "改为输入地址",
     "zh-Hant": "改為輸入位址"
+  },
+  "Type on the screen": {
+    "de": "Auf dem Bildschirm tippen",
+    "es": "Escribir en la pantalla",
+    "fr": "Taper sur l’écran",
+    "id": "Ketik di layar",
+    "it": "Scrivi sullo schermo",
+    "ja": "画面に入力",
+    "ko": "화면에 입력",
+    "pl": "Pisz na ekranie",
+    "pt-BR": "Digitar na tela",
+    "ru": "Ввод на экране",
+    "tr": "Ekrana yaz",
+    "zh-Hans": "在屏幕上输入",
+    "zh-Hant": "在螢幕上輸入"
   },
   "Type out what you said": {
     "de": "Das Gesagte als Text eingeben",
@@ -27344,6 +27899,21 @@
     "zh-Hans": "你已全部看完",
     "zh-Hant": "你已全部看完"
   },
+  "You're in control": {
+    "de": "Du hast die Kontrolle",
+    "es": "Tienes el control",
+    "fr": "Vous avez le contrôle",
+    "id": "Anda yang mengendalikan",
+    "it": "Hai il controllo",
+    "ja": "あなたが操作中",
+    "ko": "내가 제어 중",
+    "pl": "Masz kontrolę",
+    "pt-BR": "Você está no controle",
+    "ru": "Управляете вы",
+    "tr": "Kontrol sizde",
+    "zh-Hans": "你正在控制",
+    "zh-Hant": "你正在控制"
+  },
   "Your Hermes host didn't send a key.": {
     "de": "Dein Hermes-Host hat keinen Schlüssel gesendet.",
     "es": "Tu host de Hermes no envió ninguna clave.",
@@ -28544,6 +29114,21 @@
     "zh-Hans": "{name} 正在回答…",
     "zh-Hant": "{name} 正在回答…"
   },
+  "{name} is in control": {
+    "de": "{name} hat die Kontrolle",
+    "es": "{name} tiene el control",
+    "fr": "{name} a le contrôle",
+    "id": "{name} sedang mengendalikan",
+    "it": "{name} ha il controllo",
+    "ja": "{name}が操作中",
+    "ko": "{name} 님이 제어 중",
+    "pl": "{name} ma kontrolę",
+    "pt-BR": "{name} está no controle",
+    "ru": "Управляет {name}",
+    "tr": "Kontrol {name} kişisinde",
+    "zh-Hans": "{name} 正在控制",
+    "zh-Hant": "{name} 正在控制"
+  },
   "{name} is installed.": {
     "de": "{name} ist installiert.",
     "es": "{name} está instalado.",
@@ -28648,6 +29233,21 @@
     "tr": "{name} eklentiyi güncel tutar.",
     "zh-Hans": "{name} 会保持插件为最新版本。",
     "zh-Hant": "{name} 會讓外掛保持最新版本。"
+  },
+  "{name}'s Screen": {
+    "de": "Bildschirm von {name}",
+    "es": "Pantalla de {name}",
+    "fr": "Écran de {name}",
+    "id": "Layar {name}",
+    "it": "Schermo di {name}",
+    "ja": "{name}の画面",
+    "ko": "{name}의 화면",
+    "pl": "Ekran {name}",
+    "pt-BR": "Tela de {name}",
+    "ru": "Экран {name}",
+    "tr": "{name} ekranı",
+    "zh-Hans": "{name} 的屏幕",
+    "zh-Hant": "{name} 的螢幕"
   },
   "{on} of {all} on": {
     "de": "{on} von {all} an",

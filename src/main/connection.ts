@@ -58,6 +58,9 @@ export interface ConnectionStore {
   remove?(url: string): void
 }
 
+/** Hermes' Bot Screen stream (RFB), admitted by a `display.observe` ticket. */
+export const DISPLAY_SOCKET_PATH = '/api/display/ws'
+
 export type SocketFactory = (url: string, headers: Record<string, string>) => WebSocketLike
 
 export interface ConnectionDeps {
@@ -296,7 +299,8 @@ export class Connection {
   async openSocket(path: string, query: Record<string, string> = {}): Promise<WebSocketLike> {
     const saved = this.saved
     if (!saved) throw new Error(t('Not signed in.'))
-    if (!path.startsWith('/api/plugins/')) throw new Error('Only plugin sockets can be opened.')
+    // Plugin routes, and a bot's screen stream (Hermes' Bot Screen), which a single-use ticket admits.
+    if (!path.startsWith('/api/plugins/') && path !== DISPLAY_SOCKET_PATH) throw new Error('Only plugin sockets can be opened.')
     const url = new URL(await this.socketUrl(saved, path))
     for (const [name, value] of Object.entries(query)) url.searchParams.set(name, value)
     const headers: Record<string, string> = { [CONDUIT_CLIENT_HEADER]: 'conduit' }

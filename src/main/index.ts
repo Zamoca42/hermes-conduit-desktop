@@ -15,7 +15,7 @@ import { probeHost } from './auth'
 import { isPageUrl, pageUrl, registerPageScheme, servePages } from './pages'
 import { pluginRelease } from './pluginRelease'
 import { cleanHeaders } from './proxyHeaders'
-import { Connection } from './connection'
+import { Connection, DISPLAY_SOCKET_PATH } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
@@ -211,15 +211,27 @@ function registerIpc(): void {
   // Live calls' sockets: opened here, where the sign-in and a proxy's headers are (Grok Live's relay),
   // or with a single-use token the host minted that never reaches the window (Gemini Live).
   const liveSockets = new Map<string, WebSocketLike>()
+  // The ws library hands over a Buffer, an ArrayBuffer or a list of Buffers.
+  const binaryFrame = (data: unknown): Uint8Array =>
+    Array.isArray(data)
+      ? new Uint8Array(Buffer.concat(data as Buffer[]))
+      : data instanceof ArrayBuffer
+        ? new Uint8Array(data)
+        : new Uint8Array((data as Buffer).buffer, (data as Buffer).byteOffset, (data as Buffer).byteLength)
   let liveCount = 0
-  const keepLive = (sender: Electron.WebContents, socket: WebSocketLike): string => {
+  const keepLive = (sender: Electron.WebContents, socket: WebSocketLike, binary = false): string => {
     const id = `live-${++liveCount}`
     liveSockets.set(id, socket)
     const report = (payload: LiveSocketEvent) => {
       if (!sender.isDestroyed()) sender.send(IPC.liveEvent, payload)
     }
     socket.onopen = () => report({ id, type: 'open' })
-    socket.onmessage = message => report({ id, type: 'message', data: typeof message.data === 'string' ? message.data : String(message.data) })
+    socket.onmessage = message =>
+      report(
+        binary && typeof message.data !== 'string'
+          ? { id, type: 'binary', data: binaryFrame(message.data) }
+          : { id, type: 'message', data: typeof message.data === 'string' ? message.data : String(message.data) }
+      )
     socket.onerror = error => report({ id, type: 'error', message: (error as { message?: string }).message ?? 'Socket error' })
     socket.onclose = close => {
       liveSockets.delete(id)
@@ -253,9 +265,22 @@ function registerIpc(): void {
       return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }
     }
   })
-  ipcMain.on(IPC.liveSend, (_event, id: unknown, text: unknown) => {
+  ipcMain.on(IPC.liveSend, (_event, id: unknown, data: unknown) => {
     const socket = typeof id === 'string' ? liveSockets.get(id) : undefined
-    if (socket && typeof text === 'string' && socket.readyState === 1) socket.send(text)
+    if (!socket || socket.readyState !== 1) return
+    if (typeof data === 'string') socket.send(data)
+    else if (data instanceof Uint8Array) socket.send(Uint8Array.from(data))
+  })
+  // A bot's screen: its RFB stream, binary both ways.
+  ipcMain.handle(IPC.screenOpen, async (event, path: unknown, ticket: unknown) => {
+    if (path !== DISPLAY_SOCKET_PATH || typeof ticket !== 'string' || !ticket) return { ok: false, error: 'Not a screen stream.' }
+    try {
+      const socket = await connection.openSocket(path, { display_ticket: ticket })
+      socket.binaryType = 'arraybuffer'
+      return { ok: true, id: keepLive(event.sender, socket, true) }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
   })
   ipcMain.on(IPC.liveClose, (_event, id: unknown, code: unknown) => {
     const socket = typeof id === 'string' ? liveSockets.get(id) : undefined

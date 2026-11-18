@@ -84,10 +84,13 @@ export interface GatewayEventMessage {
   replayed?: boolean
 }
 
-/** Server→client requests the window answers: Needs you. */
-export type AnsweredRequestMethod = 'approval' | 'clarify'
+/** Server→client requests the window answers: Needs you's, and a bot's screen install asking for the host's sudo password. */
+export type AnsweredRequestMethod = 'approval' | 'clarify' | 'display.install.sudo'
 
-export const ANSWERED_REQUEST_METHODS: readonly AnsweredRequestMethod[] = ['approval', 'clarify']
+export const ANSWERED_REQUEST_METHODS: readonly AnsweredRequestMethod[] = ['approval', 'clarify', 'display.install.sudo']
+
+/** Needs you's: the rest are answered where they're asked (the screen's install). */
+export const isNeedsYouRequest = (request: { method: string }) => request.method === 'approval' || request.method === 'clarify'
 
 /** A question Hermes is waiting on: a command to approve, or questions to answer. */
 export interface PendingRequest {
@@ -162,7 +165,9 @@ export interface ConduitApi {
   /** A page Hermes drew, served on its own scheme for a sandboxed frame; null when it's too large. */
   pageUrl(html: string): Promise<string | null>
   liveOpenMinted(path: string): Promise<{ ok: true; id: string; model: string | null; voice: string | null } | { ok: false; error: string; code?: number }>
-  liveSend(id: string, text: string): void
+  liveSend(id: string, data: string | Uint8Array): void
+  /** A bot's screen stream (`/api/display/ws`) on this sign-in, admitted by its `display.observe` ticket; its frames come binary on `onLive`. */
+  screenOpen(path: string, ticket: string): Promise<{ ok: true; id: string } | { ok: false; error: string }>
   liveClose(id: string, code?: number): void
   onLive(listener: (event: LiveSocketEvent) => void): () => void
   onStatus(listener: (status: ConnectionStatus) => void): () => void
@@ -264,6 +269,7 @@ export const IPC = {
   liveOpenMinted: 'conduit:live-open-minted',
   pageUrl: 'conduit:page-url',
   liveSend: 'conduit:live-send',
+  screenOpen: 'conduit:screen-open',
   liveClose: 'conduit:live-close',
   liveEvent: 'conduit:live-event'
 } as const
@@ -272,6 +278,8 @@ export const IPC = {
 export type LiveSocketEvent =
   | { id: string; type: 'open' }
   | { id: string; type: 'message'; data: string }
+  /** A binary socket's frame (a bot's screen stream). */
+  | { id: string; type: 'binary'; data: Uint8Array }
   | { id: string; type: 'close'; code: number; reason: string }
   | { id: string; type: 'error'; message: string }
 
