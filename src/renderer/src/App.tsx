@@ -804,6 +804,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   lastReply={lastReply}
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
+                  requests={openRequests}
                 />
               ) : calling && (callMode === 'gemini' || callMode === 'qwen') ? (
                 <GeminiLiveCall
@@ -817,6 +818,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   lastReply={lastReply}
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
+                  requests={openRequests}
                 />
               ) : calling && callMode === 'grok' ? (
                 <GrokLiveCall
@@ -829,6 +831,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   lastReply={lastReply}
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
+                  requests={openRequests}
                 />
               ) : calling ? (
                 <VoiceCall
