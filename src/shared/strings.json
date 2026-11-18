@@ -884,6 +884,21 @@
     "zh-Hans": "全部使用聊天模型",
     "zh-Hant": "全部使用聊天模型"
   },
+  "Allow": {
+    "de": "Erlauben",
+    "es": "Permitir",
+    "fr": "Autoriser",
+    "id": "Izinkan",
+    "it": "Consenti",
+    "ja": "許可",
+    "ko": "허용",
+    "pl": "Zezwól",
+    "pt-BR": "Permitir",
+    "ru": "Разрешить",
+    "tr": "İzin Ver",
+    "zh-Hans": "允许",
+    "zh-Hant": "允許"
+  },
   "Allow Hermes to maintain user preferences.": {
     "de": "Erlaubt Hermes, Nutzervorlieben zu pflegen.",
     "es": "Permitir que Hermes mantenga las preferencias del usuario.",
@@ -958,6 +973,21 @@
     "tr": "Özel URL'lere izin ver",
     "zh-Hans": "允许私有 URL",
     "zh-Hant": "允許私人 URL"
+  },
+  "Allowed": {
+    "de": "Erlaubt",
+    "es": "Permitido",
+    "fr": "Autorisé",
+    "id": "Diizinkan",
+    "it": "Consentito",
+    "ja": "許可済み",
+    "ko": "허용됨",
+    "pl": "Zezwolono",
+    "pt-BR": "Permitido",
+    "ru": "Разрешено",
+    "tr": "İzin verildi",
+    "zh-Hans": "已允许",
+    "zh-Hant": "已允許"
   },
   "Already done": {
     "de": "Schon erledigt",
@@ -1528,6 +1558,21 @@
     "tr": "Hermes'ten güncellemesi isteniyor…",
     "zh-Hans": "正在请求 Hermes 更新…",
     "zh-Hant": "正在請求 Hermes 更新…"
+  },
+  "Asks before the first call": {
+    "de": "Fragt vor dem ersten Anruf",
+    "es": "Pregunta antes de la primera llamada",
+    "fr": "Demande avant le premier appel",
+    "id": "Bertanya sebelum panggilan pertama",
+    "it": "Chiede prima della prima chiamata",
+    "ja": "最初の通話の前に確認します",
+    "ko": "첫 통화 전에 물어봐요",
+    "pl": "Pyta przed pierwszą rozmową",
+    "pt-BR": "Pergunta antes da primeira chamada",
+    "ru": "Спросит перед первым звонком",
+    "tr": "İlk aramadan önce sorar",
+    "zh-Hans": "首次通话前会询问",
+    "zh-Hant": "首次通話前會詢問"
   },
   "Assigned to": {
     "de": "Zugewiesen an",
@@ -3703,6 +3748,21 @@
     "tr": "Eş zamanlı devredilen ajanlar",
     "zh-Hans": "并发委派代理数",
     "zh-Hant": "同時執行的委派代理程式數量"
+  },
+  "Conduit asks once for each provider. You can take it back in Settings > Voice.": {
+    "de": "Conduit fragt einmal pro Anbieter. Du kannst es unter „Einstellungen“ > „Sprachmodus“ zurücknehmen.",
+    "es": "Conduit pregunta una vez por cada proveedor. Puedes retirarlo en Ajustes > Voz.",
+    "fr": "Conduit demande une fois par fournisseur. Vous pouvez retirer votre accord dans Réglages > Voix.",
+    "id": "Conduit bertanya sekali untuk setiap penyedia. Anda dapat menariknya kembali di Pengaturan > Suara.",
+    "it": "Conduit chiede una volta per ogni provider. Puoi revocarlo in Impostazioni > Voce.",
+    "ja": "Conduitはプロバイダごとに一度だけ確認します。「設定」>「音声」でいつでも取り消せます。",
+    "ko": "Conduit은 제공자마다 한 번만 물어봐요. ‘설정’ > ‘음성’에서 철회할 수 있어요.",
+    "pl": "Conduit pyta raz dla każdego dostawcy. Zgodę możesz wycofać w sekcji Ustawienia > Głos.",
+    "pt-BR": "O Conduit pergunta uma vez para cada provedor. Você pode retirar a permissão em Ajustes > Voz.",
+    "ru": "Conduit спрашивает один раз для каждого провайдера. Отозвать согласие можно в разделе «Настройки › Голос».",
+    "tr": "Conduit her sağlayıcı için bir kez sorar. İzni Ayarlar > Ses bölümünden geri alabilirsiniz.",
+    "zh-Hans": "Conduit 对每个服务商只询问一次。你可以在「设置」>「语音」中撤回。",
+    "zh-Hant": "Conduit 對每個供應商只詢問一次。你可以在「設定」>「語音」中撤回。"
   },
   "Conduit can't use the microphone. Allow it for Conduit in your computer's privacy settings, then try again.": {
     "de": "Conduit kann das Mikrofon nicht verwenden. Erlaube es für Conduit in den Datenschutzeinstellungen deines Computers und versuche es dann erneut.",
@@ -6163,6 +6223,21 @@
     "tr": "Yanıt sırasında",
     "zh-Hans": "回复期间",
     "zh-Hant": "回覆期間"
+  },
+  "During a {mode} call, Conduit sends your microphone audio, the transcript, and the context and tool results Hermes adds to {company}. Their terms and privacy policy apply.": {
+    "de": "Während eines {mode}-Anrufs sendet Conduit dein Mikrofon-Audio, das Transkript sowie den Kontext und die Tool-Ergebnisse, die Hermes hinzufügt, an {company}. Es gelten deren Nutzungsbedingungen und Datenschutzrichtlinie.",
+    "es": "Durante una llamada de {mode}, Conduit envía a {company} el audio de tu micrófono, la transcripción y el contexto y los resultados de herramientas que añade Hermes. Se aplican sus condiciones y su política de privacidad.",
+    "fr": "Pendant un appel {mode}, Conduit envoie à {company} l’audio de votre micro, la transcription, ainsi que le contexte et les résultats d’outils ajoutés par Hermes. Leurs conditions et leur politique de confidentialité s’appliquent.",
+    "id": "Selama panggilan {mode}, Conduit mengirim audio mikrofon Anda, transkrip, serta konteks dan hasil alat yang ditambahkan Hermes ke {company}. Ketentuan dan kebijakan privasi mereka berlaku.",
+    "it": "Durante una chiamata {mode}, Conduit invia a {company} l’audio del microfono, la trascrizione e il contesto e i risultati degli strumenti aggiunti da Hermes. Si applicano i loro termini e la loro informativa sulla privacy.",
+    "ja": "{mode}の通話中、Conduitはマイクの音声、文字起こし、Hermesが追加するコンテキストとツールの結果を{company}に送信します。同社の利用規約とプライバシーポリシーが適用されます。",
+    "ko": "{mode} 통화 중에 Conduit은 마이크 오디오, 대화 기록, 그리고 Hermes가 추가하는 맥락과 도구 결과를 {company}에 보내요. 해당 회사의 약관과 개인정보 처리방침이 적용돼요.",
+    "pl": "Podczas rozmowy {mode} Conduit wysyła do {company} dźwięk z mikrofonu, transkrypcję oraz kontekst i wyniki narzędzi dodane przez Hermesa. Obowiązują ich warunki i polityka prywatności.",
+    "pt-BR": "Durante uma chamada do {mode}, o Conduit envia para a {company} o áudio do seu microfone, a transcrição e o contexto e os resultados de ferramentas que o Hermes adiciona. Os termos e a política de privacidade deles se aplicam.",
+    "ru": "Во время звонка {mode} Conduit отправляет в {company} звук с микрофона, расшифровку, а также контекст и результаты инструментов, которые добавляет Hermes. Действуют их условия и политика конфиденциальности.",
+    "tr": "{mode} araması sırasında Conduit mikrofon sesinizi, dökümü ve Hermes’in eklediği bağlamı ve araç sonuçlarını {company} şirketine gönderir. Onların koşulları ve gizlilik politikası geçerlidir.",
+    "zh-Hans": "在 {mode} 通话期间，Conduit 会将你的麦克风音频、转写文字，以及 Hermes 添加的上下文和工具结果发送给 {company}。其服务条款和隐私政策适用。",
+    "zh-Hant": "在 {mode} 通話期間，Conduit 會將你的麥克風音訊、逐字稿，以及 Hermes 加入的情境和工具結果傳送給 {company}。其服務條款和隱私權政策適用。"
   },
   "Each call's transcript is saved to your Hermes server's history and shows under Voice in Sessions, where you can read it or resume the call. Needs an up-to-date Hermes notifier plugin. Shared by every live voice mode. Applies to the next conversation.": {
     "de": "Das Transkript jedes Anrufs wird im Verlauf deines Hermes-Servers gespeichert und erscheint in „Sitzungen“ unter „Sprachmodus“, wo du es lesen oder den Anruf fortsetzen kannst. Erfordert ein aktuelles Hermes-Notifier-Plug-in. Gilt gemeinsam für alle Live-Sprachmodi. Gilt ab der nächsten Unterhaltung.",
@@ -13334,6 +13409,21 @@
     "zh-Hans": "普通",
     "zh-Hant": "一般"
   },
+  "Not Now": {
+    "de": "Nicht jetzt",
+    "es": "Ahora no",
+    "fr": "Plus tard",
+    "id": "Nanti Saja",
+    "it": "Non ora",
+    "ja": "後で",
+    "ko": "나중에",
+    "pl": "Nie teraz",
+    "pt-BR": "Agora Não",
+    "ru": "Не сейчас",
+    "tr": "Şimdi Değil",
+    "zh-Hans": "以后再说",
+    "zh-Hant": "稍後再說"
+  },
   "Not a schedule yet.": {
     "de": "Noch kein Zeitplan.",
     "es": "Todavía no es una programación.",
@@ -18539,6 +18629,21 @@
     "zh-Hans": "发送语音消息",
     "zh-Hant": "傳送語音訊息"
   },
+  "Send your voice to {company}?": {
+    "de": "Deine Stimme an {company} senden?",
+    "es": "¿Enviar tu voz a {company}?",
+    "fr": "Envoyer votre voix à {company} ?",
+    "id": "Kirim suara Anda ke {company}?",
+    "it": "Inviare la tua voce a {company}?",
+    "ja": "音声を{company}に送信しますか？",
+    "ko": "음성을 {company}에 보낼까요?",
+    "pl": "Wysłać Twój głos do {company}?",
+    "pt-BR": "Enviar sua voz para a {company}?",
+    "ru": "Отправлять ваш голос в {company}?",
+    "tr": "Sesiniz {company} şirketine gönderilsin mi?",
+    "zh-Hans": "将你的语音发送给 {company}？",
+    "zh-Hant": "將你的語音傳送給 {company}？"
+  },
   "Sending…": {
     "de": "Wird gesendet …",
     "es": "Enviando…",
@@ -20503,6 +20608,21 @@
     "tr": "Sistem bildirimi",
     "zh-Hans": "系统通知",
     "zh-Hant": "系統通知"
+  },
+  "Take back": {
+    "de": "Zurücknehmen",
+    "es": "Retirar",
+    "fr": "Retirer",
+    "id": "Tarik kembali",
+    "it": "Revoca",
+    "ja": "取り消す",
+    "ko": "철회",
+    "pl": "Wycofaj",
+    "pt-BR": "Retirar",
+    "ru": "Отозвать",
+    "tr": "Geri al",
+    "zh-Hans": "撤回",
+    "zh-Hant": "撤回"
   },
   "Take turns": {
     "de": "Abwechselnd",
@@ -25603,6 +25723,21 @@
     "tr": "Raporların, sabah özetin ve Hermes'in kontrol etmeye söz verdiği şeylerle ilgili haberler burada.",
     "zh-Hans": "你的报告、晨间简报，以及 Hermes 答应查看之事的进展都会出现在这里。",
     "zh-Hant": "你的報告、晨間簡報，以及 Hermes 答應查看之事的進展都會出現在這裡。"
+  },
+  "Your voice goes to {company}": {
+    "de": "Deine Stimme geht an {company}",
+    "es": "Tu voz va a {company}",
+    "fr": "Votre voix va à {company}",
+    "id": "Suara Anda dikirim ke {company}",
+    "it": "La tua voce va a {company}",
+    "ja": "音声の送信先：{company}",
+    "ko": "음성이 {company}에 전송됨",
+    "pl": "Twój głos trafia do {company}",
+    "pt-BR": "Sua voz vai para a {company}",
+    "ru": "Ваш голос уходит в {company}",
+    "tr": "Sesiniz {company} şirketine gider",
+    "zh-Hans": "你的语音将发送给 {company}",
+    "zh-Hant": "你的語音將傳送給 {company}"
   },
   "Youthful": {
     "de": "Jugendlich",

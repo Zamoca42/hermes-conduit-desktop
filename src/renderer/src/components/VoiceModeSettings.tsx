@@ -37,6 +37,8 @@ import {
   type Availability as GrokAvailability
 } from '../state/grokLive'
 import { savesCalls, setSavesCalls } from '../state/voiceSave'
+import { isLive } from '../state/consent'
+import { ProviderConsentRow } from './ProviderConsent'
 import {
   DEFAULT_VOICE as QWEN_DEFAULT_VOICE,
   STATUS_PATH as QWEN_STATUS_PATH,
@@ -504,6 +506,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           </p>
         </>
       ) : null}
+      {isLive(mode) ? <ProviderConsentRow mode={mode} /> : null}
       {mode !== 'classic' ? (
         <>
           <label className="toggle">
