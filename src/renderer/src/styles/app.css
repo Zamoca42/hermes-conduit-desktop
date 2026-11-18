@@ -5887,3 +5887,44 @@ button.cap-row-text {
   height: 18px;
   accent-color: var(--accent);
 }
+
+/* Bots home: New Bot by the title, the Hidden list. */
+.bots-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bots-head h1 {
+  flex: 1;
+}
+.bots-head .secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bots-head .secondary svg {
+  width: 14px;
+  height: 14px;
+}
+.bots-notice .link {
+  margin-left: 6px;
+}
+.bots-hidden-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.bots-hidden-list .pset-row {
+  gap: 10px;
+}
+.bots-hidden-list .spacer {
+  flex: 1;
+}
+.bots-hidden {
+  text-align: left;
+}
+.bots-hidden > .link {
+  padding-left: 0;
+  font-size: 15px;
+  font-weight: 600;
+}

@@ -149,6 +149,36 @@
     "zh-Hans": "即使工具集被缩小，委派代理仍会保留你连接器中的工具。",
     "zh-Hant": "即使工具集被縮小，委派代理程式仍會保留你連接器中的工具。"
   },
+  "A fresh profile starts with Hermes' bundled skills and default tools. Edit the bot afterwards to change them.": {
+    "de": "Ein neues Profil startet mit den mitgelieferten Skills und Standard-Tools von Hermes. Bearbeite den Bot danach, um sie zu ändern.",
+    "es": "Un perfil nuevo empieza con las habilidades incluidas y las herramientas predeterminadas de Hermes. Edita el bot después para cambiarlas.",
+    "fr": "Un nouveau profil démarre avec les compétences fournies et les outils par défaut de Hermes. Modifiez le bot ensuite pour les changer.",
+    "id": "Profil baru dimulai dengan skill bawaan dan alat default Hermes. Edit bot setelahnya untuk mengubahnya.",
+    "it": "Un profilo nuovo parte con le skill incluse e gli strumenti predefiniti di Hermes. Modifica il bot in seguito per cambiarli.",
+    "ja": "新しいプロファイルは Hermes の同梱スキルと既定のツールで始まります。変更するには、あとでボットを編集してください。",
+    "ko": "새 프로필은 Hermes 기본 제공 스킬과 기본 도구로 시작합니다. 바꾸려면 나중에 봇을 편집하세요.",
+    "pl": "Nowy profil zaczyna z umiejętnościami dołączonymi do Hermesa i domyślnymi narzędziami. Aby je zmienić, edytuj potem bota.",
+    "pt-BR": "Um perfil novo começa com as habilidades incluídas e as ferramentas padrão do Hermes. Edite o bot depois para mudá-las.",
+    "ru": "Новый профиль начинает со встроенными навыками и инструментами Hermes по умолчанию. Чтобы изменить их, потом отредактируйте бота.",
+    "tr": "Yeni bir profil Hermes'in paketli becerileri ve varsayılan araçlarıyla başlar. Değiştirmek için botu daha sonra düzenle.",
+    "zh-Hans": "新配置文件以 Hermes 内置技能和默认工具开始。之后可编辑机器人来更改。",
+    "zh-Hant": "新設定檔以 Hermes 內建技能和預設工具開始。之後可編輯機器人來更改。"
+  },
+  "A fresh profile starts with Hermes' default tools. Edit the bot afterwards to change them.": {
+    "de": "Ein neues Profil startet mit den Standard-Tools von Hermes. Bearbeite den Bot danach, um sie zu ändern.",
+    "es": "Un perfil nuevo empieza con las herramientas predeterminadas de Hermes. Edita el bot después para cambiarlas.",
+    "fr": "Un nouveau profil démarre avec les outils par défaut de Hermes. Modifiez le bot ensuite pour les changer.",
+    "id": "Profil baru dimulai dengan alat default Hermes. Edit bot setelahnya untuk mengubahnya.",
+    "it": "Un profilo nuovo parte con gli strumenti predefiniti di Hermes. Modifica il bot in seguito per cambiarli.",
+    "ja": "新しいプロファイルは Hermes の既定のツールで始まります。変更するには、あとでボットを編集してください。",
+    "ko": "새 프로필은 Hermes 기본 도구로 시작합니다. 바꾸려면 나중에 봇을 편집하세요.",
+    "pl": "Nowy profil zaczyna z domyślnymi narzędziami Hermesa. Aby je zmienić, edytuj potem bota.",
+    "pt-BR": "Um perfil novo começa com as ferramentas padrão do Hermes. Edite o bot depois para mudá-las.",
+    "ru": "Новый профиль начинает с инструментами Hermes по умолчанию. Чтобы изменить их, потом отредактируйте бота.",
+    "tr": "Yeni bir profil Hermes'in varsayılan araçlarıyla başlar. Değiştirmek için botu daha sonra düzenle.",
+    "zh-Hans": "新配置文件以 Hermes 默认工具开始。之后可编辑机器人来更改。",
+    "zh-Hant": "新設定檔以 Hermes 預設工具開始。之後可編輯機器人來更改。"
+  },
   "A group chat can’t take {names}.": {
     "de": "Ein Gruppenchat kann {names} nicht annehmen.",
     "es": "Un chat grupal no puede recibir {names}.",
@@ -208,6 +238,21 @@
     "tr": "Açık kalan veya vadesi yaklaşan şeyler için haber: günde üç hatırlatma.",
     "zh-Hans": "提醒未完成或快到期的事：每天三条提醒。",
     "zh-Hant": "提醒未完成或快到期的事：每天三則提醒。"
+  },
+  "A profile named {name} already exists.": {
+    "de": "Ein Profil namens {name} existiert bereits.",
+    "es": "Ya existe un perfil llamado {name}.",
+    "fr": "Un profil nommé {name} existe déjà.",
+    "id": "Profil bernama {name} sudah ada.",
+    "it": "Esiste già un profilo chiamato {name}.",
+    "ja": "「{name}」という名前のプロファイルはすでに存在します。",
+    "ko": "이름이 {name}인 프로필이 이미 있어요.",
+    "pl": "Profil o nazwie „{name}” już istnieje.",
+    "pt-BR": "Já existe um perfil chamado {name}.",
+    "ru": "Профиль с именем {name} уже существует.",
+    "tr": "{name} adlı bir profil zaten var.",
+    "zh-Hans": "名为 {name} 的配置已存在。",
+    "zh-Hant": "名為「{name}」的設定檔已存在。"
   },
   "A question": {
     "de": "Eine Frage",
@@ -448,6 +493,21 @@
     "tr": "Adres",
     "zh-Hans": "地址",
     "zh-Hant": "位址"
+  },
+  "Advanced": {
+    "de": "Erweitert",
+    "es": "Avanzado",
+    "fr": "Avancé",
+    "id": "Lanjutan",
+    "it": "Avanzate",
+    "ja": "詳細設定",
+    "ko": "고급",
+    "pl": "Zaawansowane",
+    "pt-BR": "Avançado",
+    "ru": "Дополнительно",
+    "tr": "Gelişmiş",
+    "zh-Hans": "高级",
+    "zh-Hant": "進階"
   },
   "After a Restart": {
     "de": "Nach einem Neustart",
@@ -3014,6 +3074,21 @@
     "zh-Hans": "无法更改委派暂停设置。",
     "zh-Hant": "無法變更委派暫停設定。"
   },
+  "Could not create the bot: {error}": {
+    "de": "Der Bot konnte nicht erstellt werden: {error}",
+    "es": "No se pudo crear el bot: {error}",
+    "fr": "Impossible de créer le bot : {error}",
+    "id": "Tidak dapat membuat bot: {error}",
+    "it": "Impossibile creare il bot: {error}",
+    "ja": "ボットを作成できませんでした：{error}",
+    "ko": "봇을 만들 수 없어요: {error}",
+    "pl": "Nie udało się utworzyć bota: {error}",
+    "pt-BR": "Não foi possível criar o bot: {error}",
+    "ru": "Не удалось создать бота: {error}",
+    "tr": "Bot oluşturulamadı: {error}",
+    "zh-Hans": "无法创建机器人：{error}",
+    "zh-Hant": "無法建立機器人：{error}"
+  },
   "Could not delete scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht gelöscht werden: {reason}",
     "es": "No se pudo eliminar el trabajo programado: {reason}",
@@ -4079,6 +4154,21 @@
     "zh-Hans": "删除",
     "zh-Hant": "刪除"
   },
+  "Delete Bot": {
+    "de": "Bot löschen",
+    "es": "Eliminar bot",
+    "fr": "Supprimer le bot",
+    "id": "Hapus Bot",
+    "it": "Elimina bot",
+    "ja": "ボットを削除",
+    "ko": "봇 삭제",
+    "pl": "Usuń bota",
+    "pt-BR": "Apagar Bot",
+    "ru": "Удалить бота",
+    "tr": "Botu Sil",
+    "zh-Hans": "删除机器人",
+    "zh-Hant": "刪除機器人"
+  },
   "Delete conversation?": {
     "de": "Unterhaltung löschen?",
     "es": "¿Eliminar conversación?",
@@ -4138,6 +4228,21 @@
     "tr": "Görev silinsin mi?",
     "zh-Hans": "删除任务？",
     "zh-Hant": "刪除任務？"
+  },
+  "Delete {name}?": {
+    "de": "{name} löschen?",
+    "es": "¿Eliminar {name}?",
+    "fr": "Supprimer {name} ?",
+    "id": "Hapus {name}?",
+    "it": "Eliminare {name}?",
+    "ja": "「{name}」を削除しますか？",
+    "ko": "{name}을(를) 삭제할까요?",
+    "pl": "Usunąć bota {name}?",
+    "pt-BR": "Apagar {name}?",
+    "ru": "Удалить {name}?",
+    "tr": "{name} silinsin mi?",
+    "zh-Hans": "删除 {name}？",
+    "zh-Hant": "要刪除「{name}」嗎？"
   },
   "Delete “{name}”? This can’t be undone.": {
     "de": "„{name}“ löschen? Das kann nicht rückgängig gemacht werden.",
@@ -5504,6 +5609,21 @@
     "zh-Hans": "压缩后保留的比例。",
     "zh-Hant": "壓縮後保留的比例。"
   },
+  "Fresh Profile": {
+    "de": "Neues Profil",
+    "es": "Perfil nuevo",
+    "fr": "Nouveau profil",
+    "id": "Profil baru",
+    "it": "Profilo nuovo",
+    "ja": "新規プロファイル",
+    "ko": "새 프로필",
+    "pl": "Nowy profil",
+    "pt-BR": "Perfil novo",
+    "ru": "Новый профиль",
+    "tr": "Yeni profil",
+    "zh-Hans": "全新配置文件",
+    "zh-Hant": "全新設定檔"
+  },
   "Friends and family": {
     "de": "Freunde und Familie",
     "es": "Amigos y familia",
@@ -6448,6 +6568,36 @@
     "tr": "Hermes'in notları",
     "zh-Hans": "Hermes 的笔记",
     "zh-Hant": "Hermes 的筆記"
+  },
+  "Hey, tell me about yourself!": {
+    "de": "Hallo, erzähl mir etwas über dich!",
+    "es": "¡Hola, cuéntame sobre ti!",
+    "fr": "Salut, parle-moi de toi !",
+    "id": "Hai, ceritakan tentang dirimu!",
+    "it": "Ciao, parlami di te!",
+    "ja": "こんにちは、自己紹介をしてください！",
+    "ko": "안녕, 너에 대해 알려줘!",
+    "pl": "Cześć, opowiedz mi o sobie!",
+    "pt-BR": "Oi, me fale sobre você!",
+    "ru": "Привет, расскажи о себе!",
+    "tr": "Merhaba, bana kendinden bahset!",
+    "zh-Hans": "你好，介绍一下你自己吧！",
+    "zh-Hant": "你好，介紹一下你自己吧！"
+  },
+  "Hidden": {
+    "de": "Ausgeblendet",
+    "es": "Oculto",
+    "fr": "Masqué",
+    "id": "Disembunyikan",
+    "it": "Nascosto",
+    "ja": "非表示",
+    "ko": "가려짐",
+    "pl": "Ukryte",
+    "pt-BR": "Oculto",
+    "ru": "Скрыто",
+    "tr": "Gizli",
+    "zh-Hans": "已隐藏",
+    "zh-Hant": "已隱藏"
   },
   "Hide": {
     "de": "Ausblenden",
@@ -7754,6 +7904,21 @@
     "zh-Hans": "品红色",
     "zh-Hant": "洋紅色"
   },
+  "Main Profile": {
+    "de": "Hauptprofil",
+    "es": "Perfil principal",
+    "fr": "Profil principal",
+    "id": "Profil utama",
+    "it": "Profilo principale",
+    "ja": "メインプロファイル",
+    "ko": "기본 프로필",
+    "pl": "Profil główny",
+    "pt-BR": "Perfil principal",
+    "ru": "Основной профиль",
+    "tr": "Ana profil",
+    "zh-Hans": "主配置文件",
+    "zh-Hant": "主設定檔"
+  },
   "Make Text Bigger": {
     "de": "Text vergrößern",
     "es": "Aumentar texto",
@@ -8489,6 +8654,21 @@
     "zh-Hans": "新的",
     "zh-Hant": "新的"
   },
+  "New Bot": {
+    "de": "Neuer Bot",
+    "es": "Nuevo bot",
+    "fr": "Nouveau bot",
+    "id": "Bot Baru",
+    "it": "Nuovo bot",
+    "ja": "新規ボット",
+    "ko": "새 봇",
+    "pl": "Nowy bot",
+    "pt-BR": "Novo Bot",
+    "ru": "Новый бот",
+    "tr": "Yeni Bot",
+    "zh-Hans": "新建机器人",
+    "zh-Hant": "新增機器人"
+  },
   "New Chat": {
     "de": "Neuer Chat",
     "es": "Nuevo chat",
@@ -9028,6 +9208,21 @@
     "tr": "Mikrofon bulunamadı.",
     "zh-Hans": "未找到麦克风。",
     "zh-Hant": "找不到麥克風。"
+  },
+  "No model is ready for this bot yet, so it skipped its introduction. Edit the bot and pick a model.": {
+    "de": "Für diesen Bot ist noch kein Modell bereit, daher hat er sich nicht vorgestellt. Bearbeite den Bot und wähle ein Modell.",
+    "es": "Este bot aún no tiene un modelo listo, así que no se ha presentado. Edita el bot y elige un modelo.",
+    "fr": "Aucun modèle n’est encore prêt pour ce bot, il ne s’est donc pas présenté. Modifiez le bot et choisissez un modèle.",
+    "id": "Belum ada model yang siap untuk bot ini, jadi bot ini melewatkan perkenalannya. Edit bot dan pilih model.",
+    "it": "Nessun modello è ancora pronto per questo bot, quindi non si è presentato. Modifica il bot e scegli un modello.",
+    "ja": "このボットで使えるモデルがまだないため、自己紹介をスキップしました。ボットを編集してモデルを選んでください。",
+    "ko": "이 봇에 사용할 수 있는 모델이 아직 없어 자기소개를 건너뛰었습니다. 봇을 편집하여 모델을 선택하세요.",
+    "pl": "Ten bot nie ma jeszcze gotowego modelu, więc pominął przedstawienie się. Edytuj bota i wybierz model.",
+    "pt-BR": "Ainda não há um modelo pronto para este bot, então ele pulou a apresentação. Edite o bot e escolha um modelo.",
+    "ru": "Для этого бота ещё нет готовой модели, поэтому он не представился. Измените бота и выберите модель.",
+    "tr": "Bu bot için henüz hazır bir model yok, bu yüzden kendini tanıtmadı. Botu düzenleyip bir model seç.",
+    "zh-Hans": "此机器人还没有可用的模型，因此跳过了自我介绍。请编辑机器人并选择一个模型。",
+    "zh-Hant": "此機器人還沒有可用的模型，因此跳過了自我介紹。請編輯機器人並選擇一個模型。"
   },
   "No problems found": {
     "de": "Keine Probleme gefunden",
@@ -9734,6 +9929,21 @@
     "zh-Hans": "通知",
     "zh-Hant": "通知"
   },
+  "OK": {
+    "de": "OK",
+    "es": "OK",
+    "fr": "OK",
+    "id": "OK",
+    "it": "OK",
+    "ja": "OK",
+    "ko": "확인",
+    "pl": "OK",
+    "pt-BR": "OK",
+    "ru": "OK",
+    "tr": "Tamam",
+    "zh-Hans": "好",
+    "zh-Hant": "好"
+  },
   "Off": {
     "de": "Aus",
     "es": "Desactivado",
@@ -10048,6 +10258,21 @@
     "tr": "Bir sayfa açılıyor",
     "zh-Hans": "正在打开网页",
     "zh-Hant": "正在打開網頁"
+  },
+  "Optional. Leave empty to start from a short identity built from the name and description.": {
+    "de": "Optional. Lass das Feld leer, um mit einer kurzen Identität aus Name und Beschreibung zu beginnen.",
+    "es": "Opcional. Déjalo vacío para empezar con una identidad breve creada a partir del nombre y la descripción.",
+    "fr": "Facultatif. Laissez vide pour partir d'une courte identité créée à partir du nom et de la description.",
+    "id": "Opsional. Biarkan kosong untuk memulai dari identitas singkat yang dibuat dari nama dan deskripsi.",
+    "it": "Facoltativo. Lascia vuoto per partire da una breve identità creata dal nome e dalla descrizione.",
+    "ja": "省略可。空欄の場合は、名前と説明から作成した短いアイデンティティで始まります。",
+    "ko": "선택 사항이에요. 비워 두면 이름과 설명으로 만든 짧은 정체성 설명으로 시작해요.",
+    "pl": "Opcjonalne. Pozostaw puste, aby zacząć od krótkiego opisu tożsamości utworzonego na podstawie nazwy i opisu.",
+    "pt-BR": "Opcional. Deixe vazio para começar com uma identidade curta criada a partir do nome e da descrição.",
+    "ru": "Необязательно. Оставьте пустым, чтобы начать с краткого описания личности, составленного из имени и описания.",
+    "tr": "İsteğe bağlı. Ad ve açıklamadan oluşturulan kısa bir kimlikle başlamak için boş bırakın.",
+    "zh-Hans": "可选。留空则根据名称和描述生成一段简短的身份设定。",
+    "zh-Hant": "選用。留空即可從依名稱和描述產生的簡短身分設定開始。"
   },
   "Or type your own answer": {
     "de": "Oder gib eine eigene Antwort ein",
@@ -13484,6 +13709,21 @@
     "zh-Hans": "设置已保存，尚无密钥",
     "zh-Hant": "設定已儲存，尚無金鑰"
   },
+  "Share Keys and Accounts": {
+    "de": "Schlüssel und Konten teilen",
+    "es": "Compartir claves y cuentas",
+    "fr": "Partager clés et comptes",
+    "id": "Bagikan kunci dan akun",
+    "it": "Condividi chiavi e account",
+    "ja": "キーとアカウントを共有",
+    "ko": "키와 계정 공유",
+    "pl": "Udostępniaj klucze i konta",
+    "pt-BR": "Compartilhar chaves e contas",
+    "ru": "Общие ключи и аккаунты",
+    "tr": "Anahtarları ve hesapları paylaş",
+    "zh-Hans": "共享密钥和账户",
+    "zh-Hant": "共享金鑰和帳號"
+  },
   "Share a key with every profile, or save one only this profile uses.": {
     "de": "Teile einen Schlüssel mit allen Profilen oder speichere einen nur für dieses Profil.",
     "es": "Comparte una clave con todos los perfiles o guarda una que use solo este.",
@@ -13513,6 +13753,21 @@
     "tr": "Paylaşılan anahtar",
     "zh-Hans": "共享密钥",
     "zh-Hant": "共用金鑰"
+  },
+  "Shared keys and accounts stay one set with the main profile, so a sign-in refresh in one never signs the other out. Turn it off for a separate copy.": {
+    "de": "Geteilte Schlüssel und Konten bleiben ein gemeinsamer Satz mit dem Hauptprofil, sodass eine erneuerte Anmeldung im einen Profil das andere nie abmeldet. Schalte es aus, um eine eigene Kopie zu erhalten.",
+    "es": "Las claves y cuentas compartidas son un solo conjunto con el perfil principal, así que renovar una sesión en uno nunca cierra la del otro. Desactívalo para tener una copia aparte.",
+    "fr": "Les clés et comptes partagés restent un seul ensemble avec le profil principal : un renouvellement de connexion dans l’un ne déconnecte jamais l’autre. Désactivez pour une copie séparée.",
+    "id": "Kunci dan akun yang dibagikan tetap satu set dengan profil utama, jadi penyegaran login di satu profil tidak pernah mengeluarkan yang lain. Matikan untuk salinan terpisah.",
+    "it": "Chiavi e account condivisi restano un unico insieme con il profilo principale, così il rinnovo dell’accesso in uno non disconnette mai l’altro. Disattiva per una copia separata.",
+    "ja": "共有したキーとアカウントはメインプロファイルと同じものを使うため、片方でサインインを更新してももう片方がサインアウトされることはありません。別のコピーにするにはオフにします。",
+    "ko": "공유된 키와 계정은 기본 프로필과 한 세트로 유지되므로 한쪽에서 로그인을 갱신해도 다른 쪽이 로그아웃되지 않습니다. 별도 사본을 쓰려면 끄세요.",
+    "pl": "Udostępniane klucze i konta pozostają jednym zestawem z profilem głównym, więc odświeżenie logowania w jednym nigdy nie wyloguje drugiego. Wyłącz, aby mieć osobną kopię.",
+    "pt-BR": "Chaves e contas compartilhadas ficam como um só conjunto com o perfil principal, então renovar o login em um nunca desconecta o outro. Desative para ter uma cópia separada.",
+    "ru": "Общие ключи и аккаунты остаются одним набором с основным профилем, поэтому обновление входа в одном никогда не выходит из другого. Выключите, чтобы получить отдельную копию.",
+    "tr": "Paylaşılan anahtarlar ve hesaplar ana profille tek bir set olarak kalır, böylece birinde oturum yenilemek diğerinin oturumunu asla kapatmaz. Ayrı bir kopya için kapat.",
+    "zh-Hans": "共享的密钥和账户与主配置文件保持同一套，因此在其中一个刷新登录不会让另一个退出登录。关闭后将使用单独的副本。",
+    "zh-Hant": "共享的金鑰和帳號與主設定檔保持同一套，因此在其中一個重新整理登入不會讓另一個登出。關閉後將使用單獨的副本。"
   },
   "Shortcuts inbox": {
     "de": "Kurzbefehle-Eingang",
@@ -14039,6 +14294,21 @@
     "zh-Hans": "跳过",
     "zh-Hant": "略過"
   },
+  "Skip Bundled Skills": {
+    "de": "Mitgelieferte Skills überspringen",
+    "es": "Omitir habilidades incluidas",
+    "fr": "Ignorer les compétences fournies",
+    "id": "Lewati skill bawaan",
+    "it": "Salta le skill incluse",
+    "ja": "同梱スキルを省略",
+    "ko": "기본 제공 스킬 건너뛰기",
+    "pl": "Pomiń dołączone umiejętności",
+    "pt-BR": "Pular habilidades incluídas",
+    "ru": "Без встроенных навыков",
+    "tr": "Paketli becerileri atla",
+    "zh-Hans": "跳过内置技能",
+    "zh-Hant": "略過內建技能"
+  },
   "Skip all": {
     "de": "Alle überspringen",
     "es": "Omitir todo",
@@ -14233,6 +14503,21 @@
     "tr": "Yıldızlı",
     "zh-Hans": "星标",
     "zh-Hant": "已加星號"
+  },
+  "Start From": {
+    "de": "Ausgehend von",
+    "es": "Empezar desde",
+    "fr": "Partir de",
+    "id": "Mulai dari",
+    "it": "Parti da",
+    "ja": "作成元",
+    "ko": "시작 기준",
+    "pl": "Zacznij od",
+    "pt-BR": "Começar de",
+    "ru": "Начать с",
+    "tr": "Başlangıç",
+    "zh-Hans": "起始于",
+    "zh-Hant": "起始於"
   },
   "Start a new conversation": {
     "de": "Neue Unterhaltung beginnen",
@@ -14923,6 +15208,36 @@
     "tr": "Pano, Hermes'in Kanban eklentisiyle gelir. Görevleri burada görmek için Hermes panosunda açın.",
     "zh-Hans": "看板来自 Hermes 的 Kanban 插件。在 Hermes 仪表盘中启用它，即可在这里看到任务。",
     "zh-Hant": "看板來自 Hermes 的 Kanban 外掛。在 Hermes 儀表板中啟用它，即可在這裡看到任務。"
+  },
+  "The bot gets its own Hermes profile, chat, memory and skills.": {
+    "de": "Der Bot erhält ein eigenes Hermes-Profil mit eigenem Chat, Gedächtnis und eigenen Skills.",
+    "es": "El bot tiene su propio perfil de Hermes, chat, memoria y habilidades.",
+    "fr": "Le bot a ses propres profil, discussion, mémoire et compétences Hermes.",
+    "id": "Bot mendapatkan profil, obrolan, memori, dan skill Hermes miliknya sendiri.",
+    "it": "Il bot ha un proprio profilo Hermes, con chat, memoria e skill.",
+    "ja": "ボットには専用のHermesプロファイル、チャット、メモリ、スキルが用意されます。",
+    "ko": "봇에는 전용 Hermes 프로필, 채팅, 메모리, 스킬이 생겨요.",
+    "pl": "Bot otrzymuje własny profil Hermes, czat, pamięć i umiejętności.",
+    "pt-BR": "O bot ganha o próprio perfil do Hermes, chat, memória e habilidades.",
+    "ru": "Бот получает собственный профиль Hermes, чат, память и навыки.",
+    "tr": "Bot kendi Hermes profilini, sohbetini, belleğini ve becerilerini alır.",
+    "zh-Hans": "机器人将拥有自己的 Hermes 配置、聊天、记忆和技能。",
+    "zh-Hant": "機器人會擁有自己的 Hermes 設定檔、聊天、記憶和技能。"
+  },
+  "The bot was created, but its picture or look was not saved. Edit the bot to try again.": {
+    "de": "Der Bot wurde erstellt, aber sein Bild oder Erscheinungsbild wurde nicht gespeichert. Bearbeite den Bot, um es erneut zu versuchen.",
+    "es": "El bot se creó, pero su imagen o su aspecto no se guardaron. Edita el bot para volver a intentarlo.",
+    "fr": "Le bot a été créé, mais son image ou son apparence n'a pas été enregistrée. Modifiez le bot pour réessayer.",
+    "id": "Bot telah dibuat, tetapi gambar atau tampilannya tidak disimpan. Edit bot untuk mencoba lagi.",
+    "it": "Il bot è stato creato, ma l'immagine o l'aspetto non sono stati salvati. Modifica il bot per riprovare.",
+    "ja": "ボットは作成されましたが、写真または外観が保存されませんでした。ボットを編集してもう一度お試しください。",
+    "ko": "봇을 만들었지만 사진이나 표시 스타일은 저장되지 않았어요. 다시 시도하려면 봇을 편집하세요.",
+    "pl": "Bot został utworzony, ale jego obraz lub wygląd nie został zapisany. Edytuj bota, aby spróbować ponownie.",
+    "pt-BR": "O bot foi criado, mas a imagem ou a aparência dele não foi salva. Edite o bot para tentar de novo.",
+    "ru": "Бот создан, но его изображение или оформление не сохранено. Измените бота, чтобы повторить попытку.",
+    "tr": "Bot oluşturuldu ancak resmi veya görünümü kaydedilmedi. Yeniden denemek için botu düzenleyin.",
+    "zh-Hans": "机器人已创建，但其头像或外观未保存。请编辑机器人后重试。",
+    "zh-Hant": "機器人已建立，但其圖片或外觀未儲存。請編輯機器人再試一次。"
   },
   "The code expired. Start again.": {
     "de": "Der Code ist abgelaufen. Fang neu an.",
@@ -15914,6 +16229,21 @@
     "zh-Hans": "此操作将永久删除该对话，且无法撤销。",
     "zh-Hant": "這會永久刪除對話，且無法還原。"
   },
+  "This permanently removes the bot's profile, chats, memory and skills from the gateway.": {
+    "de": "Dadurch werden Profil, Chats, Gedächtnis und Skills des Bots dauerhaft vom Gateway entfernt.",
+    "es": "Esto elimina permanentemente de la pasarela el perfil, los chats, la memoria y las habilidades del bot.",
+    "fr": "Cette action supprime définitivement de la passerelle le profil, les discussions, la mémoire et les compétences du bot.",
+    "id": "Tindakan ini menghapus profil, obrolan, memori, dan skill bot dari gateway secara permanen.",
+    "it": "Questa azione rimuove definitivamente dal gateway il profilo, le chat, la memoria e le skill del bot.",
+    "ja": "ボットのプロファイル、チャット、メモリ、スキルがゲートウェイから完全に削除されます。",
+    "ko": "봇의 프로필, 채팅, 메모리, 스킬이 게이트웨이에서 영구적으로 삭제돼요.",
+    "pl": "Spowoduje to trwałe usunięcie profilu, czatów, pamięci i umiejętności bota z bramy.",
+    "pt-BR": "Isso remove permanentemente do gateway o perfil, os chats, a memória e as habilidades do bot.",
+    "ru": "Профиль бота, его чаты, память и навыки будут безвозвратно удалены со шлюза.",
+    "tr": "Bu işlem botun profilini, sohbetlerini, belleğini ve becerilerini ağ geçidinden kalıcı olarak kaldırır.",
+    "zh-Hans": "这会从网关永久删除该机器人的配置、聊天、记忆和技能。",
+    "zh-Hant": "這會從閘道永久移除機器人的設定檔、聊天、記憶和技能。"
+  },
   "This platform has no home channel yet. Set one in Hermes, or the run is only saved.": {
     "de": "Diese Plattform hat noch keinen Heimkanal. Lege einen in Hermes fest, sonst wird der Lauf nur gespeichert.",
     "es": "Esta plataforma aún no tiene canal principal. Configúralo en Hermes o la ejecución solo se guardará.",
@@ -16694,6 +17024,21 @@
     "zh-Hans": "撤销：{lesson}",
     "zh-Hant": "還原：{lesson}"
   },
+  "Unhide": {
+    "de": "Einblenden",
+    "es": "Mostrar",
+    "fr": "Afficher",
+    "id": "Tampilkan",
+    "it": "Mostra",
+    "ja": "表示",
+    "ko": "숨김 해제",
+    "pl": "Pokaż",
+    "pt-BR": "Mostrar",
+    "ru": "Показать",
+    "tr": "Göster",
+    "zh-Hans": "取消隐藏",
+    "zh-Hant": "取消隱藏"
+  },
   "Unit": {
     "de": "Einheit",
     "es": "Unidad",
@@ -17098,6 +17443,21 @@
     "tr": "Varsayılan model olarak kullan",
     "zh-Hans": "用作默认模型",
     "zh-Hant": "用作預設模型"
+  },
+  "Use at least one letter or number.": {
+    "de": "Verwende mindestens einen Buchstaben oder eine Zahl.",
+    "es": "Usa al menos una letra o un número.",
+    "fr": "Utilisez au moins une lettre ou un chiffre.",
+    "id": "Gunakan setidaknya satu huruf atau angka.",
+    "it": "Usa almeno una lettera o un numero.",
+    "ja": "文字または数字を1つ以上使用してください。",
+    "ko": "문자나 숫자를 하나 이상 사용하세요.",
+    "pl": "Użyj co najmniej jednej litery lub cyfry.",
+    "pt-BR": "Use pelo menos uma letra ou um número.",
+    "ru": "Используйте хотя бы одну букву или цифру.",
+    "tr": "En az bir harf veya rakam kullanın.",
+    "zh-Hans": "请至少使用一个字母或数字。",
+    "zh-Hant": "請至少使用一個字母或數字。"
   },
   "Use for": {
     "de": "Verwenden für",
