@@ -2842,6 +2842,51 @@ html[data-window='quick'] body {
   color: var(--text-3);
 }
 
+.row-star {
+  color: var(--warning);
+  fill: currentColor;
+}
+
+.unread-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 1px;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 4px;
+  padding: 0 12px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: none;
+}
+
+.filter-chips button {
+  flex: none;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.filter-chips button:hover {
+  background: var(--surface-hover);
+}
+
+.filter-chips button.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .row-rename {
   width: 100%;
   height: 40px;

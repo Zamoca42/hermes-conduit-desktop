@@ -29,6 +29,7 @@ import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
+import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -166,6 +167,37 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       list.refresh()
     },
     [list, selected.id, chat.storedId, newChat]
+  )
+  // Stars and read state: on this computer, per host. Hermes' own unread flag is cleared too.
+  const markHost = status.url ?? ''
+  const [marks, setMarks] = useState<ChatMarks>(() => loadMarks(markHost))
+  useEffect(() => setMarks(loadMarks(markHost)), [markHost])
+  const updateMarks = useCallback(
+    (change: (current: ChatMarks) => ChatMarks) =>
+      setMarks(current => {
+        const next = change(current)
+        if (next !== current) saveMarks(markHost, next)
+        return next
+      }),
+    [markHost]
+  )
+  const writeUnread = useCallback((row: ChatRow, unread: boolean) => {
+    void mutateSession(gateway.http, row.id, row.profile, { unread }).catch(() => undefined)
+  }, [])
+  const openId = chat.storedId ?? selected.id
+  const openRow = openId ? list.rows?.find(row => row.id === openId) : undefined
+  useEffect(() => {
+    if (!openRow) return
+    updateMarks(current => markRead(current, openRow))
+    if (openRow.unread) writeUnread(openRow, false)
+  }, [openRow?.id, openRow?.activeAt, openRow?.unread, updateMarks, writeUnread])
+  const toggleRead = useCallback(
+    (row: ChatRow) => {
+      const unread = isUnread(marks, row)
+      updateMarks(current => (unread ? markRead(current, row) : markUnread(current, row)))
+      if (unread ? row.unread : !row.unread) writeUnread(row, !unread)
+    },
+    [marks, updateMarks, writeUnread]
   )
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
@@ -403,6 +435,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               onProfile={chooseProfile}
               onPin={row => void chatAction(row, { pinned: !row.pinned })}
               onRename={(row, title) => void chatAction(row, { title })}
+              marks={marks}
+              onStar={row => updateMarks(current => toggleStar(current, row))}
+              onToggleRead={toggleRead}
               onDelete={row => {
                 if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`)) void chatAction(row, null)
               }}

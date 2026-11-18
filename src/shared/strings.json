@@ -2294,6 +2294,21 @@
     "zh-Hans": "文件",
     "zh-Hant": "檔案"
   },
+  "Filter": {
+    "de": "Filter",
+    "es": "Filtro",
+    "fr": "Filtre",
+    "id": "Filter",
+    "it": "Filtro",
+    "ja": "フィルタ",
+    "ko": "필터",
+    "pl": "Filtr",
+    "pt-BR": "Filtro",
+    "ru": "Фильтр",
+    "tr": "Filtre",
+    "zh-Hans": "筛选",
+    "zh-Hant": "篩選"
+  },
   "Finished": {
     "de": "Abgeschlossen",
     "es": "Terminado",
@@ -2879,6 +2894,36 @@
     "zh-Hans": "正在生成二维码…",
     "zh-Hant": "正在產生條碼…"
   },
+  "Mark as read": {
+    "de": "Als gelesen markieren",
+    "es": "Marcar como leído",
+    "fr": "Marquer comme lu",
+    "id": "Tandai sudah dibaca",
+    "it": "Segna come letto",
+    "ja": "既読にする",
+    "ko": "읽음으로 표시",
+    "pl": "Oznacz jako przeczytane",
+    "pt-BR": "Marcar como lido",
+    "ru": "Пометить как прочитанное",
+    "tr": "Okundu olarak işaretle",
+    "zh-Hans": "标记为已读",
+    "zh-Hant": "標示為已讀"
+  },
+  "Mark as unread": {
+    "de": "Als ungelesen markieren",
+    "es": "Marcar como no leído",
+    "fr": "Marquer comme non lu",
+    "id": "Tandai belum dibaca",
+    "it": "Segna come non letto",
+    "ja": "未読にする",
+    "ko": "읽지 않음으로 표시",
+    "pl": "Oznacz jako nieprzeczytane",
+    "pt-BR": "Marcar como não lido",
+    "ru": "Пометить как непрочитанное",
+    "tr": "Okunmadı olarak işaretle",
+    "zh-Hans": "标记为未读",
+    "zh-Hant": "標示為未讀"
+  },
   "Mark done": {
     "de": "Als erledigt markieren",
     "es": "Marcar como completado",
@@ -3434,6 +3479,21 @@
     "zh-Hans": "无需登录",
     "zh-Hant": "無需登入"
   },
+  "No starred chats. Star one from its menu to keep it here.": {
+    "de": "Keine markierten Chats. Markiere einen über sein Menü, um ihn hier zu behalten.",
+    "es": "No hay chats destacados. Destaca uno desde su menú para tenerlo aquí.",
+    "fr": "Aucune discussion favorite. Ajoutez-en une aux favoris depuis son menu pour la garder ici.",
+    "id": "Tidak ada obrolan berbintang. Beri bintang dari menunya agar tetap di sini.",
+    "it": "Nessuna chat con stella. Aggiungine una dal suo menu per tenerla qui.",
+    "ja": "スター付きのチャットはありません。メニューからスターを付けるとここに表示されます。",
+    "ko": "별표한 채팅이 없습니다. 메뉴에서 별표하면 여기에 표시됩니다.",
+    "pl": "Brak oznaczonych czatów. Oznacz czat gwiazdką w jego menu, aby był tutaj.",
+    "pt-BR": "Nenhuma conversa com estrela. Marque uma pelo menu dela para mantê-la aqui.",
+    "ru": "Нет избранных чатов. Отметьте чат звёздочкой в его меню, чтобы он был здесь.",
+    "tr": "Yıldızlı sohbet yok. Burada tutmak için menüsünden birine yıldız ekleyin.",
+    "zh-Hans": "没有星标聊天。从聊天菜单加星标即可在此保留。",
+    "zh-Hant": "沒有星號聊天。從聊天選單加上星號即可保留在此。"
+  },
   "No tasks": {
     "de": "Keine Aufgaben",
     "es": "Sin tareas",
@@ -3448,6 +3508,21 @@
     "tr": "Görev yok",
     "zh-Hans": "没有任务",
     "zh-Hant": "沒有任務"
+  },
+  "No unread chats.": {
+    "de": "Keine ungelesenen Chats.",
+    "es": "No hay chats sin leer.",
+    "fr": "Aucune discussion non lue.",
+    "id": "Tidak ada obrolan belum dibaca.",
+    "it": "Nessuna chat da leggere.",
+    "ja": "未読のチャットはありません。",
+    "ko": "읽지 않은 채팅이 없습니다.",
+    "pl": "Brak nieprzeczytanych czatów.",
+    "pt-BR": "Nenhuma conversa não lida.",
+    "ru": "Нет непрочитанных чатов.",
+    "tr": "Okunmamış sohbet yok.",
+    "zh-Hans": "没有未读聊天。",
+    "zh-Hant": "沒有未讀聊天。"
   },
   "Normal": {
     "de": "Normal",
@@ -3583,6 +3658,21 @@
     "tr": "Bu sohbette henüz hiçbir şey çalışmadı.",
     "zh-Hans": "此聊天尚未运行任何内容。",
     "zh-Hant": "此聊天尚未執行任何內容。"
+  },
+  "Nothing is running.": {
+    "de": "Nichts läuft gerade.",
+    "es": "No hay nada en ejecución.",
+    "fr": "Rien n'est en cours.",
+    "id": "Tidak ada yang berjalan.",
+    "it": "Niente in esecuzione.",
+    "ja": "実行中のものはありません。",
+    "ko": "실행 중인 항목이 없습니다.",
+    "pl": "Nic nie jest uruchomione.",
+    "pt-BR": "Nada em execução.",
+    "ru": "Ничего не выполняется.",
+    "tr": "Çalışan bir şey yok.",
+    "zh-Hans": "没有正在运行的内容。",
+    "zh-Hant": "沒有正在執行的項目。"
   },
   "Nothing is waiting on you.": {
     "de": "Nichts wartet auf dich.",
@@ -5309,6 +5399,36 @@
     "zh-Hans": "斜杠命令",
     "zh-Hant": "斜線指令"
   },
+  "Star": {
+    "de": "Stern setzen",
+    "es": "Destacar",
+    "fr": "Ajouter une étoile",
+    "id": "Bintangi",
+    "it": "Aggiungi stella",
+    "ja": "スター",
+    "ko": "별표",
+    "pl": "Oznacz gwiazdką",
+    "pt-BR": "Favoritar",
+    "ru": "Отметить",
+    "tr": "Yıldızla",
+    "zh-Hans": "星标",
+    "zh-Hant": "星號"
+  },
+  "Starred": {
+    "de": "Mit Stern",
+    "es": "Destacados",
+    "fr": "Avec étoile",
+    "id": "Berbintang",
+    "it": "Con stella",
+    "ja": "スター付き",
+    "ko": "별표",
+    "pl": "Z gwiazdką",
+    "pt-BR": "Favoritos",
+    "ru": "Отмеченные",
+    "tr": "Yıldızlı",
+    "zh-Hans": "星标",
+    "zh-Hant": "已加星號"
+  },
   "Start a new conversation": {
     "de": "Neue Unterhaltung beginnen",
     "es": "Inicia una conversación nueva",
@@ -6283,6 +6403,36 @@
     "tr": "Sabitlemeyi Kaldır",
     "zh-Hans": "取消置顶",
     "zh-Hant": "取消釘選"
+  },
+  "Unread": {
+    "de": "Ungelesen",
+    "es": "Sin leer",
+    "fr": "Non lues",
+    "id": "Belum Dibaca",
+    "it": "Non letti",
+    "ja": "未読",
+    "ko": "읽지 않음",
+    "pl": "Nieprzeczytane",
+    "pt-BR": "Não lido",
+    "ru": "Непрочитанные",
+    "tr": "Okunmamış",
+    "zh-Hans": "未读",
+    "zh-Hant": "未讀"
+  },
+  "Unstar": {
+    "de": "Stern entfernen",
+    "es": "Quitar destacado",
+    "fr": "Retirer l'étoile",
+    "id": "Hapus bintang",
+    "it": "Rimuovi stella",
+    "ja": "スターを外す",
+    "ko": "별표 해제",
+    "pl": "Usuń gwiazdkę",
+    "pt-BR": "Desfavoritar",
+    "ru": "Снять отметку",
+    "tr": "Yıldızı kaldır",
+    "zh-Hans": "取消星标",
+    "zh-Hant": "取消星號"
   },
   "Untitled chat": {
     "de": "Chat ohne Titel",
