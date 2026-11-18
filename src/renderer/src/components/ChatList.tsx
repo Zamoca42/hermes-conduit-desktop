@@ -34,11 +34,31 @@ interface Props {
   marks?: ChatMarks
   onStar?: (row: ChatRow) => void
   onToggleRead?: (row: ChatRow) => void
+  /** Opens Projects, the phone's Chats › Projects. */
+  onProjects?: () => void
 }
 
 const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
 
-export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat, bots, profile = null, onProfile, onPin, onRename, onDelete, marks, onStar, onToggleRead }: Props) {
+export function ChatList({
+  rows,
+  error,
+  selectedId,
+  runningIds,
+  runningStatus,
+  onSelect,
+  onNewChat,
+  bots,
+  profile = null,
+  onProfile,
+  onPin,
+  onRename,
+  onDelete,
+  marks,
+  onStar,
+  onToggleRead,
+  onProjects
+}: Props) {
   const [query, setQuery] = useState('')
   const [menu, setMenu] = useState<{ row: ChatRow; x: number; y: number } | null>(null)
   const [renaming, setRenaming] = useState<{ id: string; title: string } | null>(null)
@@ -94,7 +114,17 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
     <section className="chatlist" aria-label={t('Chats')}>
       <div className="chatlist-head">
         <h1>{t('Chats')}</h1>
-        <button className="round" aria-label={t('New chat')} title={window.conduit.platform === 'darwin' ? t('New chat (⌘N)') : t('New chat (Ctrl+N)')} onClick={onNewChat}>
+        {onProjects ? (
+          <button className="round" aria-label={t('Projects')} title={t('Projects')} onClick={onProjects}>
+            <Icon name="folder" />
+          </button>
+        ) : null}
+        <button
+          className="round"
+          aria-label={t('New chat')}
+          title={window.conduit.platform === 'darwin' ? t('New chat (⌘N)') : t('New chat (Ctrl+N)')}
+          onClick={onNewChat}
+        >
           <Icon name="plus" />
         </button>
       </div>
@@ -170,7 +200,10 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
                         <span className="meta row-time">{timeLabel(row.activeAt)}</span>
                       </span>
                       {running ? (
-                        <span className="running">{t('Running')}{runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}</span>
+                        <span className="running">
+                          {t('Running')}
+                          {runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}
+                        </span>
                       ) : row.preview || botName(row) ? (
                         <span className="meta">
                           {botName(row) ? `${botName(row)} · ` : ''}
@@ -201,7 +234,11 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
         ))}
       </div>
       {menu ? (
-        <div className="host-menu row-menu" role="menu" style={{ left: Math.min(menu.x, window.innerWidth - 200), top: Math.min(menu.y, window.innerHeight - 140) }}>
+        <div
+          className="host-menu row-menu"
+          role="menu"
+          style={{ left: Math.min(menu.x, window.innerWidth - 200), top: Math.min(menu.y, window.innerHeight - 140) }}
+        >
           {onPin ? (
             <button role="menuitem" onClick={() => onPin(menu.row)}>
               {menu.row.pinned ? t('Unpin') : t('Pin')}

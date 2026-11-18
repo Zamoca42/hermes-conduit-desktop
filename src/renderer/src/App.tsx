@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
+import { ProjectsPane } from './components/ProjectsPane'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
@@ -148,14 +149,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   useState(forgetAvatars)
   const connected = status.phase === 'open'
   const [section, setSection] = useState<Section>(reopenedSection)
-  const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
+  // `folder`: a new chat started in a project works there.
+  const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean; folder?: string }>({ id: null })
+  const [projectsOpen, setProjectsOpen] = useState(false)
   const list = useChatList(connected)
   const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection } = useChat(
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
     connected,
-    selected.botChat === true
+    selected.botChat === true,
+    selected.id ? undefined : selected.folder
   )
 
   // The chat list's profile: a new chat starts in it.
@@ -716,27 +720,39 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         </nav>
         {section === 'chats' ? (
           <>
-            <ChatList
-              rows={listedRows}
-              error={list.error}
-              selectedId={chat.storedId ?? selected.id}
-              runningIds={runningIds}
-              runningStatus={transcript.status}
-              onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
-              onNewChat={newChat}
-              bots={roster.bots}
-              profile={chatProfile}
-              onProfile={chooseProfile}
-              onPin={row => void chatAction(row, { pinned: !row.pinned })}
-              onRename={(row, title) => void chatAction(row, { title })}
-              marks={marks}
-              onStar={row => updateMarks(current => toggleStar(current, row))}
-              onToggleRead={toggleRead}
-              onDelete={row => {
-                if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`))
-                  void chatAction(row, null)
-              }}
-            />
+            {projectsOpen ? (
+              <ProjectsPane
+                profile={chatProfile}
+                connected={connected}
+                selectedId={chat.storedId ?? selected.id}
+                onSelect={item => setSelected({ id: item.id, profile: item.profile ?? chatProfile ?? undefined, title: item.title })}
+                onNewChat={folder => setSelected({ id: null, profile: chatProfile ?? undefined, folder })}
+                onClose={() => setProjectsOpen(false)}
+              />
+            ) : (
+              <ChatList
+                rows={listedRows}
+                error={list.error}
+                selectedId={chat.storedId ?? selected.id}
+                runningIds={runningIds}
+                runningStatus={transcript.status}
+                onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
+                onNewChat={newChat}
+                bots={roster.bots}
+                profile={chatProfile}
+                onProfile={chooseProfile}
+                onPin={row => void chatAction(row, { pinned: !row.pinned })}
+                onRename={(row, title) => void chatAction(row, { title })}
+                marks={marks}
+                onStar={row => updateMarks(current => toggleStar(current, row))}
+                onToggleRead={toggleRead}
+                onDelete={row => {
+                  if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`))
+                    void chatAction(row, null)
+                }}
+                onProjects={() => setProjectsOpen(true)}
+              />
+            )}
             <main className="chat" ref={chatPane}>
               <div className="chat-head">
                 <div className="chat-titles">

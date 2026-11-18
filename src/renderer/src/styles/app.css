@@ -5320,7 +5320,7 @@ code.file-link:hover {
   color: #d9822b;
 }
 .host-status.tone-bad .host-status-mark {
-  color: var(--danger, #d33);
+  color: var(--danger);
 }
 .host-status-text {
   flex: 1;
@@ -7215,4 +7215,89 @@ button.cap-row-text {
 
 .artifacts-page .ws-viewer .page-frame {
   min-height: 70vh;
+}
+
+/* Projects, the phone's Chats › Projects. */
+.chatlist-head h1 {
+  flex: 1;
+  min-width: 0;
+}
+.chatlist-head {
+  gap: 6px;
+}
+.projects .chatlist-head h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-rename {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.project-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px 6px;
+}
+.project-meta .project-path {
+  flex: 1;
+  min-width: 0;
+}
+.project-actions {
+  display: flex;
+  gap: 10px;
+  flex: none;
+}
+.project-lane {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.project-lane span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-lane svg {
+  width: 12px;
+  height: 12px;
+}
+.project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 16px 10px;
+}
+.project-form input {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--field);
+}
+.project-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.project-error {
+  color: var(--danger);
+}
+.project-form-actions button {
+  height: 34px;
+  padding: 0 14px;
 }

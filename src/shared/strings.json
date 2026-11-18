@@ -5099,6 +5099,21 @@
     "zh-Hans": "无法更新 Conduit 插件",
     "zh-Hant": "無法更新 Conduit 外掛程式"
   },
+  "Couldn’t Load Projects": {
+    "de": "Projekte konnten nicht geladen werden",
+    "es": "No se pudieron cargar los proyectos",
+    "fr": "Impossible de charger les projets",
+    "id": "Tidak Dapat Memuat Proyek",
+    "it": "Impossibile caricare i progetti",
+    "ja": "プロジェクトを読み込めません",
+    "ko": "프로젝트를 불러올 수 없음",
+    "pl": "Nie można wczytać projektów",
+    "pt-BR": "Não foi possível carregar os projetos",
+    "ru": "Не удалось загрузить проекты",
+    "tr": "Projeler Yüklenemedi",
+    "zh-Hans": "无法载入项目",
+    "zh-Hant": "無法載入專案"
+  },
   "Couldn’t change “{title}”: {reason}": {
     "de": "„{title}“ konnte nicht geändert werden: {reason}",
     "es": "No se pudo cambiar «{title}»: {reason}",
@@ -5113,6 +5128,21 @@
     "tr": "“{title}” değiştirilemedi: {reason}",
     "zh-Hans": "无法更改“{title}”：{reason}",
     "zh-Hant": "無法更改「{title}」：{reason}"
+  },
+  "Couldn’t delete the project: {reason}": {
+    "de": "Das Projekt konnte nicht gelöscht werden: {reason}",
+    "es": "No se pudo eliminar el proyecto: {reason}",
+    "fr": "Impossible de supprimer le projet : {reason}",
+    "id": "Tidak dapat menghapus proyek: {reason}",
+    "it": "Impossibile eliminare il progetto: {reason}",
+    "ja": "プロジェクトを削除できませんでした: {reason}",
+    "ko": "프로젝트를 삭제하지 못했습니다: {reason}",
+    "pl": "Nie udało się usunąć projektu: {reason}",
+    "pt-BR": "Não foi possível apagar o projeto: {reason}",
+    "ru": "Не удалось удалить проект: {reason}",
+    "tr": "Proje silinemedi: {reason}",
+    "zh-Hans": "无法删除项目：{reason}",
+    "zh-Hant": "無法刪除專案：{reason}"
   },
   "Couldn’t load the board: {reason}": {
     "de": "Das Board konnte nicht geladen werden: {reason}",
@@ -5263,6 +5293,21 @@
     "tr": "{host} adresine ulaşılamadı.",
     "zh-Hans": "无法连接 {host}。",
     "zh-Hant": "無法連線 {host}。"
+  },
+  "Couldn’t rename the project: {reason}": {
+    "de": "Das Projekt konnte nicht umbenannt werden: {reason}",
+    "es": "No se pudo cambiar el nombre del proyecto: {reason}",
+    "fr": "Impossible de renommer le projet : {reason}",
+    "id": "Tidak dapat mengganti nama proyek: {reason}",
+    "it": "Impossibile rinominare il progetto: {reason}",
+    "ja": "プロジェクトの名前を変更できませんでした: {reason}",
+    "ko": "프로젝트 이름을 바꾸지 못했습니다: {reason}",
+    "pl": "Nie udało się zmienić nazwy projektu: {reason}",
+    "pt-BR": "Não foi possível renomear o projeto: {reason}",
+    "ru": "Не удалось переименовать проект: {reason}",
+    "tr": "Proje yeniden adlandırılamadı: {reason}",
+    "zh-Hans": "无法重命名项目：{reason}",
+    "zh-Hant": "無法重新命名專案：{reason}"
   },
   "Couldn’t save that change. Try again.": {
     "de": "Die Änderung konnte nicht gespeichert werden. Versuche es noch einmal.",
@@ -5998,6 +6043,21 @@
     "tr": "İşi sil",
     "zh-Hans": "删除任务",
     "zh-Hant": "刪除工作"
+  },
+  "Delete project?": {
+    "de": "Projekt löschen?",
+    "es": "¿Eliminar proyecto?",
+    "fr": "Supprimer le projet ?",
+    "id": "Hapus proyek?",
+    "it": "Eliminare il progetto?",
+    "ja": "プロジェクトを削除しますか？",
+    "ko": "프로젝트를 삭제할까요?",
+    "pl": "Usunąć projekt?",
+    "pt-BR": "Apagar projeto?",
+    "ru": "Удалить проект?",
+    "tr": "Proje silinsin mi?",
+    "zh-Hans": "删除项目？",
+    "zh-Hant": "要刪除專案嗎？"
   },
   "Delete scheduled job?": {
     "de": "Geplanten Job löschen?",
@@ -7918,6 +7978,21 @@
     "tr": "speech-to-speech bayrakları",
     "zh-Hans": "speech-to-speech 的参数",
     "zh-Hant": "speech-to-speech 的參數"
+  },
+  "Folder on the Hermes host": {
+    "de": "Ordner auf dem Hermes-Host",
+    "es": "Carpeta en el host de Hermes",
+    "fr": "Dossier sur l’hôte Hermes",
+    "id": "Folder di host Hermes",
+    "it": "Cartella sull’host Hermes",
+    "ja": "Hermes ホスト上のフォルダ",
+    "ko": "Hermes 호스트의 폴더",
+    "pl": "Folder na hoście Hermes",
+    "pt-BR": "Pasta no host do Hermes",
+    "ru": "Папка на хосте Hermes",
+    "tr": "Hermes sunucusundaki klasör",
+    "zh-Hans": "Hermes 主机上的文件夹",
+    "zh-Hant": "Hermes 主機上的資料夾"
   },
   "Follow-up": {
     "de": "Nachfassen",
@@ -10799,6 +10874,21 @@
     "zh-Hans": "它发送了 {count} 个主机的登录信息：{hosts}。",
     "zh-Hant": "它傳送了 {count} 個主機的登入資訊：{hosts}。"
   },
+  "Its folders, files and chats stay where they are.": {
+    "de": "Seine Ordner, Dateien und Chats bleiben, wo sie sind.",
+    "es": "Sus carpetas, archivos y chats se quedan donde están.",
+    "fr": "Ses dossiers, fichiers et discussions restent où ils sont.",
+    "id": "Folder, file, dan obrolannya tetap di tempatnya.",
+    "it": "Le sue cartelle, i file e le chat restano dove sono.",
+    "ja": "フォルダ、ファイル、チャットはそのまま残ります。",
+    "ko": "폴더, 파일, 채팅은 그대로 남습니다.",
+    "pl": "Jego foldery, pliki i czaty zostają na miejscu.",
+    "pt-BR": "Suas pastas, arquivos e conversas continuam onde estão.",
+    "ru": "Его папки, файлы и чаты останутся на месте.",
+    "tr": "Klasörleri, dosyaları ve sohbetleri olduğu yerde kalır.",
+    "zh-Hans": "其文件夹、文件和聊天都会保留原样。",
+    "zh-Hant": "其資料夾、檔案和聊天都會保留原樣。"
+  },
   "Jobs": {
     "de": "Jobs",
     "es": "Trabajos",
@@ -11608,6 +11698,21 @@
     "tr": "Sohbetler yükleniyor…",
     "zh-Hans": "正在载入聊天…",
     "zh-Hant": "正在載入聊天…"
+  },
+  "Loading projects…": {
+    "de": "Projekte werden geladen …",
+    "es": "Cargando proyectos…",
+    "fr": "Chargement des projets…",
+    "id": "Memuat proyek…",
+    "it": "Caricamento progetti…",
+    "ja": "プロジェクトを読み込み中…",
+    "ko": "프로젝트 불러오는 중…",
+    "pl": "Wczytywanie projektów…",
+    "pt-BR": "Carregando projetos…",
+    "ru": "Загрузка проектов…",
+    "tr": "Projeler yükleniyor…",
+    "zh-Hans": "正在加载项目…",
+    "zh-Hant": "正在載入專案…"
   },
   "Loading your bots…": {
     "de": "Deine Bots werden geladen…",
@@ -13214,6 +13319,21 @@
     "zh-Hans": "新建文件夹",
     "zh-Hant": "新增檔案夾"
   },
+  "New Project": {
+    "de": "Neues Projekt",
+    "es": "Nuevo proyecto",
+    "fr": "Nouveau projet",
+    "id": "Proyek Baru",
+    "it": "Nuovo progetto",
+    "ja": "新規プロジェクト",
+    "ko": "새 프로젝트",
+    "pl": "Nowy projekt",
+    "pt-BR": "Novo Projeto",
+    "ru": "Новый проект",
+    "tr": "Yeni Proje",
+    "zh-Hans": "新建项目",
+    "zh-Hant": "新增專案"
+  },
   "New and improved": {
     "de": "Neu und verbessert",
     "es": "Novedades y mejoras",
@@ -13273,6 +13393,21 @@
     "tr": "Yeni sohbet (⌘N)",
     "zh-Hans": "新聊天（⌘N）",
     "zh-Hant": "新聊天（⌘N）"
+  },
+  "New chat in this project": {
+    "de": "Neuer Chat in diesem Projekt",
+    "es": "Nuevo chat en este proyecto",
+    "fr": "Nouvelle discussion dans ce projet",
+    "id": "Obrolan baru di proyek ini",
+    "it": "Nuova chat in questo progetto",
+    "ja": "このプロジェクトで新しいチャット",
+    "ko": "이 프로젝트에서 새 채팅",
+    "pl": "Nowy czat w tym projekcie",
+    "pt-BR": "Nova conversa neste projeto",
+    "ru": "Новый чат в этом проекте",
+    "tr": "Bu projede yeni sohbet",
+    "zh-Hans": "在此项目中新建聊天",
+    "zh-Hant": "在此專案中新增聊天"
   },
   "New chats": {
     "de": "Neue Chats",
@@ -16063,6 +16198,51 @@
     "tr": "Proje",
     "zh-Hans": "项目",
     "zh-Hant": "專案"
+  },
+  "Project name": {
+    "de": "Projektname",
+    "es": "Nombre del proyecto",
+    "fr": "Nom du projet",
+    "id": "Nama proyek",
+    "it": "Nome del progetto",
+    "ja": "プロジェクト名",
+    "ko": "프로젝트 이름",
+    "pl": "Nazwa projektu",
+    "pt-BR": "Nome do projeto",
+    "ru": "Название проекта",
+    "tr": "Proje adı",
+    "zh-Hans": "项目名称",
+    "zh-Hant": "專案名稱"
+  },
+  "Projects": {
+    "de": "Projekte",
+    "es": "Proyectos",
+    "fr": "Projets",
+    "id": "Proyek",
+    "it": "Progetti",
+    "ja": "プロジェクト",
+    "ko": "프로젝트",
+    "pl": "Projekty",
+    "pt-BR": "Projetos",
+    "ru": "Проекты",
+    "tr": "Projeler",
+    "zh-Hans": "项目",
+    "zh-Hant": "專案"
+  },
+  "Projects you make here or in Hermes Desktop show here.": {
+    "de": "Projekte, die du hier oder in Hermes Desktop erstellst, erscheinen hier.",
+    "es": "Los proyectos que crees aquí o en Hermes Desktop aparecen aquí.",
+    "fr": "Les projets que vous créez ici ou dans Hermes Desktop apparaissent ici.",
+    "id": "Proyek yang kamu buat di sini atau di Hermes Desktop muncul di sini.",
+    "it": "I progetti che crei qui o in Hermes Desktop appaiono qui.",
+    "ja": "ここまたは Hermes Desktop で作成したプロジェクトがここに表示されます。",
+    "ko": "여기나 Hermes Desktop에서 만든 프로젝트가 여기에 표시돼요.",
+    "pl": "Tutaj pojawiają się projekty utworzone tutaj lub w Hermes Desktop.",
+    "pt-BR": "Os projetos que você criar aqui ou no Hermes Desktop aparecem aqui.",
+    "ru": "Здесь появляются проекты, созданные здесь или в Hermes Desktop.",
+    "tr": "Burada veya Hermes Desktop'ta oluşturduğun projeler burada görünür.",
+    "zh-Hans": "在此处或 Hermes Desktop 中创建的项目会显示在这里。",
+    "zh-Hant": "在此處或 Hermes Desktop 中建立的專案會顯示在這裡。"
   },
   "Promise": {
     "de": "Versprechen",
@@ -19663,6 +19843,21 @@
     "tr": "Oturum belirteci",
     "zh-Hans": "会话令牌",
     "zh-Hant": "工作階段權杖"
+  },
+  "Sessions": {
+    "de": "Sitzungen",
+    "es": "Sesiones",
+    "fr": "Sessions",
+    "id": "Sesi",
+    "it": "Sessioni",
+    "ja": "セッション",
+    "ko": "세션",
+    "pl": "Sesje",
+    "pt-BR": "Sessões",
+    "ru": "Сеансы",
+    "tr": "Oturumlar",
+    "zh-Hans": "会话",
+    "zh-Hant": "工作階段"
   },
   "Set": {
     "de": "Stellen",
@@ -23489,6 +23684,21 @@
     "zh-Hans": "此配置自己的密钥",
     "zh-Hant": "此設定檔自己的金鑰"
   },
+  "This project does not have any conversations yet.": {
+    "de": "Dieses Projekt hat noch keine Unterhaltungen.",
+    "es": "Este proyecto aún no tiene conversaciones.",
+    "fr": "Ce projet ne contient encore aucune conversation.",
+    "id": "Proyek ini belum memiliki percakapan.",
+    "it": "Questo progetto non contiene ancora conversazioni.",
+    "ja": "このプロジェクトにはまだチャットがありません。",
+    "ko": "이 프로젝트에는 아직 대화가 없어요.",
+    "pl": "W tym projekcie nie ma jeszcze żadnych rozmów.",
+    "pt-BR": "Este projeto ainda não tem conversas.",
+    "ru": "В этом проекте пока нет чатов.",
+    "tr": "Bu projede henüz hiç konuşma yok.",
+    "zh-Hans": "此项目还没有任何对话。",
+    "zh-Hant": "此專案尚無任何對話。"
+  },
   "This provider needs no key here. Hermes reaches it with these settings for this profile.": {
     "de": "Dieser Anbieter braucht hier keinen Schlüssel. Hermes erreicht ihn für dieses Profil mit diesen Einstellungen.",
     "es": "Este proveedor no necesita clave aquí. Hermes lo alcanza con estos ajustes para este perfil.",
@@ -24493,6 +24703,21 @@
     "tr": "Başlıksız sohbet",
     "zh-Hans": "无标题聊天",
     "zh-Hant": "無標題聊天"
+  },
+  "Untitled project": {
+    "de": "Unbenanntes Projekt",
+    "es": "Proyecto sin título",
+    "fr": "Projet sans titre",
+    "id": "Proyek tanpa judul",
+    "it": "Progetto senza titolo",
+    "ja": "無題のプロジェクト",
+    "ko": "제목 없는 프로젝트",
+    "pl": "Projekt bez nazwy",
+    "pt-BR": "Projeto sem título",
+    "ru": "Проект без названия",
+    "tr": "Başlıksız proje",
+    "zh-Hans": "无标题项目",
+    "zh-Hant": "未命名的專案"
   },
   "Up to date on this dashboard's host": {
     "de": "Aktuell auf dem Host dieses Dashboards",

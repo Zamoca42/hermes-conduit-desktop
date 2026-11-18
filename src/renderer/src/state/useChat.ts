@@ -145,8 +145,11 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
  * One open chat: resumes it, folds its live events into the transcript,
  * sends and stops. `storedId` null is a new chat, created on the first send.
  */
-/** `botChat`: a new chat is the bot's one Bot Chat, made hidden and titled "Bot Chat" as the phone makes it. */
-export function useChat(storedId: string | null, profile: string | undefined, sessionAuthority: boolean, connected: boolean, botChat = false) {
+/**
+ * `botChat`: a new chat is the bot's one Bot Chat, made hidden and titled "Bot Chat" as the phone makes it.
+ * `folder`: where a new chat works, a project's folder (the phone's New Chat in a project).
+ */
+export function useChat(storedId: string | null, profile: string | undefined, sessionAuthority: boolean, connected: boolean, botChat = false, folder?: string) {
   const [transcript, dispatch] = useReducer(reducer, emptyTranscript)
   const [chat, setChat] = useState<OpenChat>({ storedId, liveId: null })
   const [loading, setLoading] = useState(false)
@@ -166,7 +169,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     created.current = null
     const ticket = ++request.current
     liveId.current = null
-    setChat({ storedId, liveId: null })
+    setChat(storedId || !folder ? { storedId, liveId: null } : { storedId, liveId: null, cwd: folder })
     setError(null)
     if (!storedId) {
       dispatch({ type: 'reset', state: emptyTranscript })
@@ -215,7 +218,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       .finally(() => {
         if (ticket === request.current) setLoading(false)
       })
-  }, [storedId, profile, sessionAuthority, connected])
+  }, [storedId, profile, sessionAuthority, connected, folder])
 
   // Live events for this chat.
   useEffect(
@@ -247,6 +250,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     const params: Record<string, unknown> = sessionAuthority ? { source: 'gui' } : { cols: 96, source: 'desktop' }
     if (profile) params.profile = profile
     if (botChat) Object.assign(params, { title: 'Bot Chat', hidden: true, follow_profile_config: true })
+    else if (folder) params.cwd = folder
     const made = await gateway.rpc<CreateResult>('session.create', params)
     const sid = made.session_id
     const storedId = made.stored_session_id ?? null
@@ -255,7 +259,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     request.current++ // a resume still in flight is stale now
     setChat(c => ({ ...c, liveId: sid, storedId: storedId ?? c.storedId, ...chatSettings(made.info) }))
     return { sid, storedId }
-  }, [profile, sessionAuthority, botChat])
+  }, [profile, sessionAuthority, botChat, folder])
 
   /** The chat's history read again, after a command changed it (/undo, /retry, /compress). */
   const reloadHistory = useCallback(async () => {
