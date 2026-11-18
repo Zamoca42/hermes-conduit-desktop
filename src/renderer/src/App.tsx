@@ -59,7 +59,16 @@ function Shell({ status }: { status: ConnectionStatus }) {
       if (action === 'new-chat') newChat()
       else if (action === 'needs-you') setSection('needs')
     })
-    if (window.conduit.platform === 'darwin') return offMenu
+    const offOpen = window.conduit.onOpenChat(ref => {
+      setSelected({ id: ref.storedId, profile: ref.profile, title: ref.title })
+      setSection('chats')
+    })
+    if (window.conduit.platform === 'darwin') {
+      return () => {
+        offMenu()
+        offOpen()
+      }
+    }
     const onKey = (event: KeyboardEvent) => {
       if (event.ctrlKey && !event.altKey && !event.metaKey && event.key.toLowerCase() === 'n') {
         event.preventDefault()
@@ -69,6 +78,7 @@ function Shell({ status }: { status: ConnectionStatus }) {
     window.addEventListener('keydown', onKey)
     return () => {
       offMenu()
+      offOpen()
       window.removeEventListener('keydown', onKey)
     }
   }, [newChat])

@@ -12,6 +12,7 @@ export interface TrayDeps {
   showWindow: () => void
   command: (action: MenuAction) => void
   quit: () => void
+  quickAsk: () => void
 }
 
 export function trayIconPath(file: string): string {
@@ -72,6 +73,7 @@ export class ConduitTray {
             this.deps.command('new-chat')
           }
         },
+        { label: 'Quick Ask', accelerator: 'Alt+Space', click: () => this.deps.quickAsk() },
         {
           label: 'Needs You',
           enabled: this.waiting > 0,

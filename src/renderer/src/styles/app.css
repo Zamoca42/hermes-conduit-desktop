@@ -1450,3 +1450,76 @@ a:hover {
   margin-top: 3px;
   accent-color: var(--accent);
 }
+
+/* Quick ask: a small window over everything. */
+html[data-window='quick'],
+html[data-window='quick'] body {
+  background: transparent;
+}
+
+.quick {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.quick.started {
+  justify-content: stretch;
+  background: var(--backdrop);
+  background-image: var(--canvas);
+  border-radius: 18px;
+  border: 1px solid var(--line-strong);
+}
+
+.quick-head {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 8px;
+  -webkit-app-region: drag;
+}
+
+.quick.started .quick-head {
+  display: flex;
+}
+
+.quick-head .link {
+  -webkit-app-region: no-drag;
+}
+
+.quick-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quick .transcript {
+  flex: 1;
+  min-height: 0;
+}
+
+.quick .transcript-inner {
+  padding: 8px 12px 16px;
+}
+
+.quick .composer {
+  margin: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.quick-empty {
+  margin: auto;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: var(--composer);
+  color: var(--text-2);
+}
