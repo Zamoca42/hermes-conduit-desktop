@@ -22,7 +22,7 @@ export function usePulse(connected: boolean, shown: boolean) {
   const load = useCallback(async () => {
     const mine = ++generation.current
     try {
-      const [raw, state] = await Promise.all([gateway.http('GET', `${PULSE}/feed?looks=1`), gateway.http('GET', PULSE).catch(() => null)])
+      const [raw, state] = await Promise.all([gateway.http('GET', `${PULSE}/feed?looks=1&proposals=1`), gateway.http('GET', PULSE).catch(() => null)])
       if (mine !== generation.current) return
       setFeed(parseFeed(raw))
       setError(null)
@@ -49,13 +49,16 @@ export function usePulse(connected: boolean, shown: boolean) {
     return () => clearInterval(timer)
   }, [connected, shown, load])
 
-  const post = useCallback(async (path: string, body: Record<string, unknown>) => {
-    try {
-      return (await gateway.http('POST', `${PULSE}${path}`, body)) as Record<string, unknown> | null
-    } finally {
-      void load()
-    }
-  }, [load])
+  const post = useCallback(
+    async (path: string, body: Record<string, unknown>) => {
+      try {
+        return (await gateway.http('POST', `${PULSE}${path}`, body)) as Record<string, unknown> | null
+      } finally {
+        void load()
+      }
+    },
+    [load]
+  )
 
   return {
     feed,
@@ -63,7 +66,9 @@ export function usePulse(connected: boolean, shown: boolean) {
     availability,
     reload: load,
     /** Every card the screen shows, seen. */
-    markSeen: useCallback(() => post('/feed/seen', { ids: null }), [post]),
+    markSeen: useCallback(() => post('/feed/seen', { ids: null, proposals: true }), [post]),
+    /** A suggestion's Add, Not now or Undo. */
+    proposal: useCallback((id: number, action: 'add' | 'dismiss' | 'undo') => post(`/proposals/${id}/${action}`, {}), [post]),
     rate: useCallback((card: number, rating: 'up' | 'down', reason?: DownReason) => post('/rate', { card, rating, ...(reason ? { reason } : {}) }), [post]),
     done: useCallback((card: number, done: boolean) => post('/done', { card, done }), [post]),
     dismiss: useCallback((card: number, dismissed: boolean, until?: Rest) => post('/dismiss', { card, dismissed, ...(until ? { until } : {}) }), [post]),

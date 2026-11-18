@@ -434,6 +434,21 @@
     "zh-Hans": "启用中",
     "zh-Hant": "啟用中"
   },
+  "Add": {
+    "de": "Hinzufügen",
+    "es": "Añadir",
+    "fr": "Ajouter",
+    "id": "Tambah",
+    "it": "Aggiungi",
+    "ja": "追加",
+    "ko": "추가",
+    "pl": "Dodaj",
+    "pt-BR": "Adicionar",
+    "ru": "Добавить",
+    "tr": "Ekle",
+    "zh-Hans": "添加",
+    "zh-Hant": "加入"
+  },
   "Add a comment, or a note on what was done": {
     "de": "Kommentar oder Notiz zum Erledigten hinzufügen",
     "es": "Añade un comentario o una nota sobre lo que se hizo",
@@ -584,6 +599,36 @@
     "zh-Hans": "添加到保险库",
     "zh-Hant": "新增到保險庫"
   },
+  "Added to your calendar": {
+    "de": "Zu deinem Kalender hinzugefügt",
+    "es": "Añadido a tu calendario",
+    "fr": "Ajouté à votre calendrier",
+    "id": "Ditambahkan ke kalender Anda",
+    "it": "Aggiunto al tuo calendario",
+    "ja": "カレンダーに追加しました",
+    "ko": "캘린더에 추가됨",
+    "pl": "Dodano do kalendarza",
+    "pt-BR": "Adicionado ao seu calendário",
+    "ru": "Добавлено в календарь",
+    "tr": "Takviminize eklendi",
+    "zh-Hans": "已添加到你的日历",
+    "zh-Hant": "已加入你的行事曆"
+  },
+  "Added to your reminders": {
+    "de": "Zu deinen Erinnerungen hinzugefügt",
+    "es": "Añadido a tus recordatorios",
+    "fr": "Ajouté à vos rappels",
+    "id": "Ditambahkan ke pengingat Anda",
+    "it": "Aggiunto ai tuoi promemoria",
+    "ja": "リマインダーに追加しました",
+    "ko": "미리 알림에 추가됨",
+    "pl": "Dodano do przypomnień",
+    "pt-BR": "Adicionado aos seus lembretes",
+    "ru": "Добавлено в напоминания",
+    "tr": "Anımsatıcılarınıza eklendi",
+    "zh-Hans": "已添加到你的提醒事项",
+    "zh-Hant": "已加入你的提醒事項"
+  },
   "Added {date}": {
     "de": "Hinzugefügt am {date}",
     "es": "Añadido el {date}",
@@ -598,6 +643,36 @@
     "tr": "{date} tarihinde eklendi",
     "zh-Hans": "添加于 {date}",
     "zh-Hant": "新增於 {date}"
+  },
+  "Added, then changed on your phone": {
+    "de": "Hinzugefügt, dann auf deinem iPhone geändert",
+    "es": "Añadido y luego cambiado en tu teléfono",
+    "fr": "Ajouté, puis modifié sur votre téléphone",
+    "id": "Ditambahkan, lalu diubah di ponsel Anda",
+    "it": "Aggiunto, poi modificato sul telefono",
+    "ja": "追加後、iPhoneで変更されました",
+    "ko": "추가된 뒤 iPhone에서 변경됨",
+    "pl": "Dodano, a potem zmieniono na telefonie",
+    "pt-BR": "Adicionado e depois alterado no seu telefone",
+    "ru": "Добавлено, затем изменено на телефоне",
+    "tr": "Eklendi, ardından telefonunuzda değiştirildi",
+    "zh-Hans": "已添加，之后在手机上被更改",
+    "zh-Hant": "已加入，之後在手機上被更改"
+  },
+  "Adding…": {
+    "de": "Wird hinzugefügt …",
+    "es": "Añadiendo…",
+    "fr": "Ajout…",
+    "id": "Menambahkan…",
+    "it": "Aggiunta…",
+    "ja": "追加中…",
+    "ko": "추가 중…",
+    "pl": "Dodawanie…",
+    "pt-BR": "Adicionando…",
+    "ru": "Добавление…",
+    "tr": "Ekleniyor…",
+    "zh-Hans": "正在添加…",
+    "zh-Hant": "正在加入…"
   },
   "Address": {
     "de": "Adresse",
@@ -4094,6 +4169,21 @@
     "zh-Hans": "无法保存密钥顺序。",
     "zh-Hant": "無法儲存金鑰順序。"
   },
+  "Couldn't add it": {
+    "de": "Konnte nicht hinzugefügt werden",
+    "es": "No se pudo añadir",
+    "fr": "Impossible de l'ajouter",
+    "id": "Tidak dapat ditambahkan",
+    "it": "Impossibile aggiungerlo",
+    "ja": "追加できませんでした",
+    "ko": "추가하지 못했어요",
+    "pl": "Nie udało się dodać",
+    "pt-BR": "Não foi possível adicionar",
+    "ru": "Не удалось добавить",
+    "tr": "Eklenemedi",
+    "zh-Hans": "无法添加",
+    "zh-Hant": "無法加入"
+  },
   "Couldn't check for updates": {
     "de": "Updates konnten nicht geprüft werden",
     "es": "No se pudieron buscar actualizaciones",
@@ -6448,6 +6538,21 @@
     "tr": "Çıktı",
     "zh-Hans": "已退出",
     "zh-Hant": "已結束"
+  },
+  "Expired": {
+    "de": "Abgelaufen",
+    "es": "Caducada",
+    "fr": "Expirée",
+    "id": "Kedaluwarsa",
+    "it": "Scaduto",
+    "ja": "期限切れ",
+    "ko": "만료됨",
+    "pl": "Wygasła",
+    "pt-BR": "Expirada",
+    "ru": "Срок истёк",
+    "tr": "Süresi doldu",
+    "zh-Hans": "已过期",
+    "zh-Hant": "已過期"
   },
   "Explain again": {
     "de": "Erneut erklären",
@@ -12194,6 +12299,21 @@
     "zh-Hans": "还不是有效的计划。",
     "zh-Hant": "還不是有效的排程。"
   },
+  "Not added": {
+    "de": "Nicht hinzugefügt",
+    "es": "No se añadió",
+    "fr": "Pas ajouté",
+    "id": "Tidak ditambahkan",
+    "it": "Non aggiunto",
+    "ja": "追加されていません",
+    "ko": "추가 안 됨",
+    "pl": "Nie dodano",
+    "pt-BR": "Não adicionado",
+    "ru": "Не добавлено",
+    "tr": "Eklenmedi",
+    "zh-Hans": "未添加",
+    "zh-Hant": "未加入"
+  },
   "Not connected": {
     "de": "Nicht verbunden",
     "es": "No conectado",
@@ -14444,6 +14564,21 @@
     "zh-Hans": "Pulse 很快会报告。它注意到的内容会以卡片显示。",
     "zh-Hant": "Pulse 很快會報告。它注意到的內容會以卡片顯示。"
   },
+  "Pulse won't add it": {
+    "de": "Pulse fügt es nicht hinzu",
+    "es": "Pulse no lo añadirá",
+    "fr": "Pulse ne l'ajoutera pas",
+    "id": "Pulse tidak akan menambahkannya",
+    "it": "Pulse non lo aggiungerà",
+    "ja": "Pulseは追加しません",
+    "ko": "Pulse가 추가하지 않습니다",
+    "pl": "Pulse tego nie doda",
+    "pt-BR": "O Pulse não vai adicionar",
+    "ru": "Pulse не добавит это",
+    "tr": "Pulse bunu eklemez",
+    "zh-Hans": "Pulse 不会添加它",
+    "zh-Hant": "Pulse 不會加入它"
+  },
   "Pulse's cards in general": {
     "de": "Pulse-Karten allgemein",
     "es": "Las tarjetas de Pulse en general",
@@ -15194,6 +15329,36 @@
     "zh-Hans": "移除所有条件？",
     "zh-Hant": "移除所有條件？"
   },
+  "Remove it from your calendar?": {
+    "de": "Aus deinem Kalender entfernen?",
+    "es": "¿Quitarlo de tu calendario?",
+    "fr": "Le retirer de votre calendrier ?",
+    "id": "Hapus dari kalender Anda?",
+    "it": "Rimuoverlo dal tuo calendario?",
+    "ja": "カレンダーから削除しますか？",
+    "ko": "캘린더에서 제거할까요?",
+    "pl": "Usunąć to z kalendarza?",
+    "pt-BR": "Remover do seu calendário?",
+    "ru": "Удалить из календаря?",
+    "tr": "Takviminizden kaldırılsın mı?",
+    "zh-Hans": "要从你的日历中移除吗？",
+    "zh-Hant": "要從你的行事曆中移除嗎？"
+  },
+  "Remove it from your reminders?": {
+    "de": "Aus deinen Erinnerungen entfernen?",
+    "es": "¿Quitarlo de tus recordatorios?",
+    "fr": "Le retirer de vos rappels ?",
+    "id": "Hapus dari pengingat Anda?",
+    "it": "Rimuoverlo dai tuoi promemoria?",
+    "ja": "リマインダーから削除しますか？",
+    "ko": "미리 알림에서 제거할까요?",
+    "pl": "Usunąć to z przypomnień?",
+    "pt-BR": "Remover dos seus lembretes?",
+    "ru": "Удалить из напоминаний?",
+    "tr": "Anımsatıcılarınızdan kaldırılsın mı?",
+    "zh-Hans": "要从你的提醒事项中移除吗？",
+    "zh-Hant": "要從你的提醒事項中移除嗎？"
+  },
   "Remove key": {
     "de": "Schlüssel entfernen",
     "es": "Quitar clave",
@@ -15343,6 +15508,36 @@
     "tr": "{name} kaldırılsın mı?",
     "zh-Hans": "移除 {name}？",
     "zh-Hant": "移除 {name}？"
+  },
+  "Removed from your calendar": {
+    "de": "Aus deinem Kalender entfernt",
+    "es": "Quitado de tu calendario",
+    "fr": "Retiré de votre calendrier",
+    "id": "Dihapus dari kalender Anda",
+    "it": "Rimosso dal tuo calendario",
+    "ja": "カレンダーから削除しました",
+    "ko": "캘린더에서 제거됨",
+    "pl": "Usunięto z kalendarza",
+    "pt-BR": "Removido do seu calendário",
+    "ru": "Удалено из календаря",
+    "tr": "Takviminizden kaldırıldı",
+    "zh-Hans": "已从你的日历中移除",
+    "zh-Hant": "已從你的行事曆中移除"
+  },
+  "Removed from your reminders": {
+    "de": "Aus deinen Erinnerungen entfernt",
+    "es": "Quitado de tus recordatorios",
+    "fr": "Retiré de vos rappels",
+    "id": "Dihapus dari pengingat Anda",
+    "it": "Rimosso dai tuoi promemoria",
+    "ja": "リマインダーから削除しました",
+    "ko": "미리 알림에서 제거됨",
+    "pl": "Usunięto z przypomnień",
+    "pt-BR": "Removido dos seus lembretes",
+    "ru": "Удалено из напоминаний",
+    "tr": "Anımsatıcılarınızdan kaldırıldı",
+    "zh-Hans": "已从你的提醒事项中移除",
+    "zh-Hant": "已從你的提醒事項中移除"
   },
   "Removing…": {
     "de": "Wird entfernt …",
@@ -18913,6 +19108,21 @@
     "tr": "Predictive hızlı modeli kullandığında Conduit'teki önerilen yanıtlar ve taslak tahminleri.",
     "zh-Hans": "Predictive 使用快速模型时，Conduit 中的建议回复和草稿推测。",
     "zh-Hant": "Predictive 使用快速模型時，Conduit 中的建議回覆和草稿推測。"
+  },
+  "Suggestion": {
+    "de": "Vorschlag",
+    "es": "Sugerencia",
+    "fr": "Suggestion",
+    "id": "Saran",
+    "it": "Suggerimento",
+    "ja": "提案",
+    "ko": "제안",
+    "pl": "Propozycja",
+    "pt-BR": "Sugestão",
+    "ru": "Предложение",
+    "tr": "Öneri",
+    "zh-Hans": "建议",
+    "zh-Hant": "建議"
   },
   "Summarizes a long chat so it still fits the model's context.": {
     "de": "Fasst einen langen Chat zusammen, damit er weiter in den Kontext des Modells passt.",

@@ -24,6 +24,9 @@ import {
   stamp,
   tint,
   wasUpdated,
+  proposalCanUndo,
+  proposalInFlight,
+  proposalStateText,
   type PulseCard
 } from '../state/pulse'
 import { askAction, drawsBody, extraActions, lookStyle, type LookAction } from '../state/pulseLook'
@@ -168,7 +171,14 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
           <PulseBriefParts summary={brief.summary} today={brief.today} open={brief.open} held={brief.held} />
         ) : (
           <div className={`pulse-news${card.doneAt ? ' done' : ''}${look?.line ? ' headline' : ''}${place === 'lead' ? ' quiet' : ''}`}>
-            {card.kind === 'followup' ? <p>{look?.line || card.news || card.title}</p> : <Markdown text={look?.line || card.news || card.title} />}
+            {card.kind === 'proposal' ? (
+              // What Add puts on the phone, in the plugin's words from the change itself.
+              <p>{card.proposal?.line || card.title}</p>
+            ) : card.kind === 'followup' ? (
+              <p>{look?.line || card.news || card.title}</p>
+            ) : (
+              <Markdown text={look?.line || card.news || card.title} />
+            )}
           </div>
         )}
         {look?.detail ? <div className="pulse-detail">{card.kind === 'followup' ? <p>{look.detail}</p> : <Markdown text={look.detail} />}</div> : null}
@@ -200,7 +210,9 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
             {looked ? <p>{looked}</p> : null}
           </div>
         ) : null}
-        {cleared ? (
+        {card.kind === 'proposal' ? (
+          proposalRow(card)
+        ) : cleared ? (
           <div className="pulse-actions">
             <span className={`pulse-cleared${isResting(card) ? '' : ' done'}`}>
               <Icon name={isResting(card) ? 'clock' : 'check'} />
@@ -277,6 +289,50 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
       <div key={card.id} className={`pulse-card-row${cleared ? ' cleared' : ''}`} style={{ '--look': style!.tint } as React.CSSProperties}>
         <PulseDateColumn day={look.body.day} />
         {article}
+      </div>
+    )
+  }
+
+  // A suggestion's Add and Not now while it waits, then where it stands, with Undo once added.
+  const proposalRow = (card: PulseCard) => {
+    const proposal = card.proposal
+    if (!proposal) return null
+    const isBusy = busy.has(card.id)
+    if (proposal.state === 'waiting')
+      return (
+        <div className="pulse-actions">
+          <button className="primary" disabled={isBusy} onClick={() => void act(card, () => pulse.proposal(proposal.id, 'add'))}>
+            {t('Add')}
+          </button>
+          <button
+            className="secondary"
+            disabled={isBusy}
+            title={t("Pulse won't add it")}
+            onClick={() => void act(card, () => pulse.proposal(proposal.id, 'dismiss'))}
+          >
+            {t('Not now')}
+          </button>
+        </div>
+      )
+    const undo = () => {
+      const question = proposal.kind === 'add_event' ? t('Remove it from your calendar?') : t('Remove it from your reminders?')
+      if (window.confirm(`${question}\n\n${proposal.line || card.title}`)) void act(card, () => pulse.proposal(proposal.id, 'undo'))
+    }
+    return (
+      <div className="pulse-proposal-state">
+        <div className="pulse-actions">
+          <span className={`pulse-cleared${proposalCanUndo(proposal) ? ' done' : ''}`}>
+            {proposalInFlight(proposal) ? <span className="running" /> : <Icon name={proposalCanUndo(proposal) ? 'check' : 'clock'} />}
+            {proposalStateText(proposal)}
+          </span>
+          <span className="spacer" />
+          {proposalCanUndo(proposal) ? (
+            <button className="link-button" disabled={isBusy} onClick={undo}>
+              {t('Undo')}
+            </button>
+          ) : null}
+        </div>
+        {proposal.note && (proposal.state === 'failed' || proposal.state === 'changed') ? <p className="meta">{proposal.note}</p> : null}
       </div>
     )
   }
