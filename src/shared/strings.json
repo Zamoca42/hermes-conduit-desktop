@@ -4889,6 +4889,36 @@
     "zh-Hans": "无法连接到 Qwen Live：{reason}",
     "zh-Hant": "無法連線到 Qwen Live：{reason}"
   },
+  "Couldn't load agent plugins": {
+    "de": "Agent-Plugins konnten nicht geladen werden",
+    "es": "No se pudieron cargar los plugins del agente",
+    "fr": "Impossible de charger les plugins de l'agent",
+    "id": "Tidak dapat memuat plugin agen",
+    "it": "Impossibile caricare i plugin dell'agente",
+    "ja": "エージェントのプラグインを読み込めませんでした",
+    "ko": "에이전트 플러그인을 불러올 수 없습니다",
+    "pl": "Nie udało się wczytać wtyczek agenta",
+    "pt-BR": "Não foi possível carregar os plugins do agente",
+    "ru": "Не удалось загрузить плагины агента",
+    "tr": "Ajan eklentileri yüklenemedi",
+    "zh-Hans": "无法加载智能体插件",
+    "zh-Hant": "無法載入代理程式外掛"
+  },
+  "Couldn't load the catalog.": {
+    "de": "Der Katalog konnte nicht geladen werden.",
+    "es": "No se pudo cargar el catálogo.",
+    "fr": "Impossible de charger le catalogue.",
+    "id": "Katalog tidak dapat dimuat.",
+    "it": "Impossibile caricare il catalogo.",
+    "ja": "カタログを読み込めませんでした。",
+    "ko": "카탈로그를 불러오지 못했습니다.",
+    "pl": "Nie udało się wczytać katalogu.",
+    "pt-BR": "Não foi possível carregar o catálogo.",
+    "ru": "Не удалось загрузить каталог.",
+    "tr": "Katalog yüklenemedi.",
+    "zh-Hans": "无法加载目录。",
+    "zh-Hant": "無法載入目錄。"
+  },
   "Couldn't load this chat's usage.": {
     "de": "Die Nutzung dieses Chats konnte nicht geladen werden.",
     "es": "No se pudo cargar el uso de este chat.",
@@ -6371,6 +6401,21 @@
     "pt-BR": "Documento",
     "ru": "Документ",
     "tr": "Belge",
+    "zh-Hans": "文档",
+    "zh-Hant": "文件"
+  },
+  "Documentation": {
+    "de": "Dokumentation",
+    "es": "Documentación",
+    "fr": "Documentation",
+    "id": "Dokumentasi",
+    "it": "Documentazione",
+    "ja": "ドキュメント",
+    "ko": "문서",
+    "pl": "Dokumentacja",
+    "pt-BR": "Documentação",
+    "ru": "Документация",
+    "tr": "Belgeler",
     "zh-Hans": "文档",
     "zh-Hant": "文件"
   },
@@ -9464,6 +9509,21 @@
     "zh-Hans": "Hermes 有个问题。",
     "zh-Hant": "Hermes 有個問題。"
   },
+  "Hermes installs plugins for the host's default profile. Switch to it to change them.": {
+    "de": "Hermes installiert Plugins für das Standardprofil des Hosts. Wechsle dorthin, um sie zu ändern.",
+    "es": "Hermes instala los plugins para el perfil predeterminado del host. Cambia a él para modificarlos.",
+    "fr": "Hermes installe les plugins pour le profil par défaut de l'hôte. Passez-y pour les modifier.",
+    "id": "Hermes memasang plugin untuk profil default host. Beralih ke profil itu untuk mengubahnya.",
+    "it": "Hermes installa i plugin per il profilo predefinito dell'host. Passa a quel profilo per modificarli.",
+    "ja": "Hermes はホストのデフォルトプロファイルにプラグインをインストールします。変更するにはそのプロファイルに切り替えてください。",
+    "ko": "Hermes는 호스트의 기본 프로필에 플러그인을 설치합니다. 변경하려면 기본 프로필로 전환하세요.",
+    "pl": "Hermes instaluje wtyczki dla domyślnego profilu hosta. Przełącz się na niego, aby je zmienić.",
+    "pt-BR": "O Hermes instala plugins para o perfil padrão do host. Mude para ele para alterá-los.",
+    "ru": "Hermes устанавливает плагины для профиля хоста по умолчанию. Переключитесь на него, чтобы изменить их.",
+    "tr": "Hermes eklentileri ana makinenin varsayılan profiline yükler. Değiştirmek için o profile geçin.",
+    "zh-Hans": "Hermes 会为主机的默认档案安装插件。切换到默认档案即可更改。",
+    "zh-Hant": "Hermes 會為主機的預設設定檔安裝外掛。切換到預設設定檔即可更改。"
+  },
   "Hermes is looking back…": {
     "de": "Hermes blickt zurück…",
     "es": "Hermes está repasando…",
@@ -10109,6 +10169,21 @@
     "zh-Hans": "主频道",
     "zh-Hant": "主頻道"
   },
+  "Hooks": {
+    "de": "Hooks",
+    "es": "Hooks",
+    "fr": "Hooks",
+    "id": "Hook",
+    "it": "Hook",
+    "ja": "フック",
+    "ko": "훅",
+    "pl": "Hooki",
+    "pt-BR": "Hooks",
+    "ru": "Хуки",
+    "tr": "Kancalar",
+    "zh-Hans": "钩子",
+    "zh-Hant": "掛鉤"
+  },
   "Hours": {
     "de": "Stunden",
     "es": "Horas",
@@ -10694,6 +10769,21 @@
     "zh-Hans": "安装需等待 Hermes 的安全扫描。",
     "zh-Hant": "安裝需等待 Hermes 的安全掃描。"
   },
+  "Install {name}?": {
+    "de": "{name} installieren?",
+    "es": "¿Instalar {name}?",
+    "fr": "Installer {name} ?",
+    "id": "Pasang {name}?",
+    "it": "Installare {name}?",
+    "ja": "{name} をインストールしますか？",
+    "ko": "{name}을(를) 설치할까요?",
+    "pl": "Zainstalować {name}?",
+    "pt-BR": "Instalar {name}?",
+    "ru": "Установить {name}?",
+    "tr": "{name} yüklensin mi?",
+    "zh-Hans": "安装 {name}？",
+    "zh-Hant": "安裝 {name}？"
+  },
   "Installed": {
     "de": "Installiert",
     "es": "Instalado",
@@ -10708,6 +10798,21 @@
     "tr": "Yüklü",
     "zh-Hans": "已安装",
     "zh-Hant": "已安裝"
+  },
+  "Installed but not running": {
+    "de": "Installiert, aber nicht aktiv",
+    "es": "Instalado, pero no se está ejecutando",
+    "fr": "Installé, mais pas en cours d’exécution",
+    "id": "Terpasang, tetapi tidak berjalan",
+    "it": "Installato, ma non in esecuzione",
+    "ja": "インストール済みですが実行されていません",
+    "ko": "설치되었지만 실행 중이 아님",
+    "pl": "Zainstalowano, ale nie działa",
+    "pt-BR": "Instalado, mas não está em execução",
+    "ru": "Установлен, но не запущен",
+    "tr": "Yüklü ama çalışmıyor",
+    "zh-Hans": "已安装，但未运行",
+    "zh-Hant": "已安裝，但未執行"
   },
   "Installed context-management engine.": {
     "de": "Installierte Engine für das Kontextmanagement.",
@@ -11159,6 +11264,21 @@
     "zh-Hans": "键盘快捷键",
     "zh-Hant": "鍵盤快速鍵"
   },
+  "Keys it needs": {
+    "de": "Benötigte Schlüssel",
+    "es": "Claves que necesita",
+    "fr": "Clés requises",
+    "id": "Kunci yang dibutuhkan",
+    "it": "Chiavi richieste",
+    "ja": "必要なキー",
+    "ko": "필요한 키",
+    "pl": "Wymagane klucze",
+    "pt-BR": "Chaves necessárias",
+    "ru": "Нужные ключи",
+    "tr": "Gereken anahtarlar",
+    "zh-Hans": "需要的密钥",
+    "zh-Hant": "需要的金鑰"
+  },
   "Kind": {
     "de": "Art",
     "es": "Tipo",
@@ -11188,6 +11308,21 @@
     "tr": "Bilgili",
     "zh-Hans": "博学",
     "zh-Hant": "博學"
+  },
+  "Known issues": {
+    "de": "Bekannte Probleme",
+    "es": "Problemas conocidos",
+    "fr": "Problèmes connus",
+    "id": "Masalah yang diketahui",
+    "it": "Problemi noti",
+    "ja": "既知の問題",
+    "ko": "알려진 문제",
+    "pl": "Znane problemy",
+    "pt-BR": "Problemas conhecidos",
+    "ru": "Известные проблемы",
+    "tr": "Bilinen sorunlar",
+    "zh-Hans": "已知问题",
+    "zh-Hant": "已知問題"
   },
   "Korean": {
     "de": "Koreanisch",
@@ -12584,6 +12719,21 @@
     "zh-Hans": "麦克风输入电平",
     "zh-Hant": "麥克風輸入音量"
   },
+  "Middleware": {
+    "de": "Middleware",
+    "es": "Middleware",
+    "fr": "Middleware",
+    "id": "Middleware",
+    "it": "Middleware",
+    "ja": "ミドルウェア",
+    "ko": "미들웨어",
+    "pl": "Middleware",
+    "pt-BR": "Middleware",
+    "ru": "Промежуточное ПО",
+    "tr": "Ara katman",
+    "zh-Hans": "中间件",
+    "zh-Hant": "中介軟體"
+  },
   "Minimal": {
     "de": "Minimal",
     "es": "Mínimo",
@@ -13769,6 +13919,21 @@
     "zh-Hans": "无结果",
     "zh-Hant": "無結果"
   },
+  "No agent plugins installed for this profile.": {
+    "de": "Für dieses Profil sind keine Agent-Plugins installiert.",
+    "es": "No hay plugins del agente instalados para este perfil.",
+    "fr": "Aucun plugin d'agent n'est installé pour ce profil.",
+    "id": "Tidak ada plugin agen yang terpasang untuk profil ini.",
+    "it": "Nessun plugin dell'agente installato per questo profilo.",
+    "ja": "このプロファイルにはエージェントのプラグインがインストールされていません。",
+    "ko": "이 프로필에 설치된 에이전트 플러그인이 없습니다.",
+    "pl": "Dla tego profilu nie zainstalowano wtyczek agenta.",
+    "pt-BR": "Nenhum plugin do agente instalado para este perfil.",
+    "ru": "Для этого профиля не установлены плагины агента.",
+    "tr": "Bu profil için yüklü ajan eklentisi yok.",
+    "zh-Hans": "此档案未安装任何智能体插件。",
+    "zh-Hant": "此設定檔未安裝任何代理程式外掛。"
+  },
   "No chats yet": {
     "de": "Noch keine Chats",
     "es": "Aún no hay chats",
@@ -13933,6 +14098,21 @@
     "tr": "Eşleşen bağlayıcı yok",
     "zh-Hans": "没有匹配的连接器",
     "zh-Hant": "沒有符合的連接器"
+  },
+  "No matching plugins": {
+    "de": "Keine passenden Plugins",
+    "es": "No hay plugins que coincidan",
+    "fr": "Aucun plugin correspondant",
+    "id": "Tidak ada plugin yang cocok",
+    "it": "Nessun plugin corrispondente",
+    "ja": "一致するプラグインはありません",
+    "ko": "일치하는 플러그인 없음",
+    "pl": "Brak pasujących wtyczek",
+    "pt-BR": "Nenhum plugin correspondente",
+    "ru": "Нет подходящих плагинов",
+    "tr": "Eşleşen eklenti yok",
+    "zh-Hans": "没有匹配的插件",
+    "zh-Hant": "沒有符合的外掛"
   },
   "No matching skills": {
     "de": "Keine passenden Skills",
@@ -16063,6 +16243,66 @@
     "tr": "Eklenti",
     "zh-Hans": "插件",
     "zh-Hant": "外掛"
+  },
+  "Plugin catalog": {
+    "de": "Plugin-Katalog",
+    "es": "Catálogo de plugins",
+    "fr": "Catalogue de plugins",
+    "id": "Katalog plugin",
+    "it": "Catalogo plugin",
+    "ja": "プラグインカタログ",
+    "ko": "플러그인 카탈로그",
+    "pl": "Katalog wtyczek",
+    "pt-BR": "Catálogo de plugins",
+    "ru": "Каталог плагинов",
+    "tr": "Eklenti kataloğu",
+    "zh-Hans": "插件目录",
+    "zh-Hant": "外掛目錄"
+  },
+  "Plugin requires approval for {name}": {
+    "de": "Ein Plug-in verlangt eine Freigabe für {name}",
+    "es": "Un plugin requiere aprobación para {name}",
+    "fr": "Un plug-in demande une approbation pour {name}",
+    "id": "Plugin memerlukan persetujuan untuk {name}",
+    "it": "Un plugin richiede l'approvazione per {name}",
+    "ja": "プラグインが {name} の承認を求めています",
+    "ko": "플러그인이 {name}에 대한 승인을 요청해요",
+    "pl": "Wtyczka wymaga zatwierdzenia dla {name}",
+    "pt-BR": "Um plugin exige aprovação para {name}",
+    "ru": "Плагин требует разрешения для {name}",
+    "tr": "Bir eklenti {name} için onay istiyor",
+    "zh-Hans": "插件要求批准 {name}",
+    "zh-Hant": "外掛程式要求核准 {name}"
+  },
+  "Plugins": {
+    "de": "Plugins",
+    "es": "Plugins",
+    "fr": "Plugins",
+    "id": "Plugin",
+    "it": "Plugin",
+    "ja": "プラグイン",
+    "ko": "플러그인",
+    "pl": "Wtyczki",
+    "pt-BR": "Plugins",
+    "ru": "Плагины",
+    "tr": "Eklentiler",
+    "zh-Hans": "插件",
+    "zh-Hant": "外掛"
+  },
+  "Plugins extend the agent with tools, hooks and providers.": {
+    "de": "Plugins erweitern den Agenten um Tools, Hooks und Anbieter.",
+    "es": "Los plugins amplían el agente con herramientas, hooks y proveedores.",
+    "fr": "Les plugins étendent l'agent avec des outils, des hooks et des fournisseurs.",
+    "id": "Plugin memperluas agen dengan alat, hook, dan penyedia.",
+    "it": "I plugin estendono l'agente con strumenti, hook e provider.",
+    "ja": "プラグインはツール、フック、プロバイダでエージェントを拡張します。",
+    "ko": "플러그인은 도구, 훅, 공급자로 에이전트를 확장합니다.",
+    "pl": "Wtyczki rozszerzają agenta o narzędzia, hooki i dostawców.",
+    "pt-BR": "Plugins ampliam o agente com ferramentas, hooks e provedores.",
+    "ru": "Плагины расширяют агента инструментами, хуками и провайдерами.",
+    "tr": "Eklentiler ajanı araçlar, kancalar ve sağlayıcılarla genişletir.",
+    "zh-Hans": "插件为智能体添加工具、钩子和提供方。",
+    "zh-Hant": "外掛為代理程式加入工具、掛鉤和提供者。"
   },
   "Popular skills from the Hermes Index. Hermes scans each skill before it installs.": {
     "de": "Beliebte Skills aus dem Hermes Index. Hermes prüft jeden Skill vor der Installation.",
@@ -18224,6 +18464,21 @@
     "zh-Hans": "重启网关",
     "zh-Hant": "重新啟動閘道"
   },
+  "Restart the gateway to apply plugin changes.": {
+    "de": "Starte das Gateway neu, um Plugin-Änderungen anzuwenden.",
+    "es": "Reinicia la pasarela para aplicar los cambios de plugins.",
+    "fr": "Redémarrez la passerelle pour appliquer les modifications des plugins.",
+    "id": "Mulai ulang gateway untuk menerapkan perubahan plugin.",
+    "it": "Riavvia il gateway per applicare le modifiche ai plugin.",
+    "ja": "プラグインの変更を適用するにはゲートウェイを再起動してください。",
+    "ko": "플러그인 변경 사항을 적용하려면 게이트웨이를 재시작하세요.",
+    "pl": "Uruchom bramę ponownie, aby zastosować zmiany wtyczek.",
+    "pt-BR": "Reinicie o gateway para aplicar as alterações dos plugins.",
+    "ru": "Перезапустите шлюз, чтобы применить изменения плагинов.",
+    "tr": "Eklenti değişikliklerini uygulamak için ağ geçidini yeniden başlatın.",
+    "zh-Hans": "重启网关以应用插件更改。",
+    "zh-Hant": "重新啟動閘道以套用外掛變更。"
+  },
   "Restart the gateway?": {
     "de": "Gateway neu starten?",
     "es": "¿Reiniciar la pasarela?",
@@ -18478,6 +18733,21 @@
     "tr": "İnceleme",
     "zh-Hans": "评审",
     "zh-Hant": "檢閱"
+  },
+  "Reviewed plugins from Hermes' catalog.": {
+    "de": "Geprüfte Plugins aus dem Hermes-Katalog.",
+    "es": "Plugins revisados del catálogo de Hermes.",
+    "fr": "Plugins vérifiés du catalogue de Hermes.",
+    "id": "Plugin yang sudah ditinjau dari katalog Hermes.",
+    "it": "Plugin verificati dal catalogo di Hermes.",
+    "ja": "Hermes のカタログにある審査済みプラグイン。",
+    "ko": "Hermes 카탈로그의 검토된 플러그인입니다.",
+    "pl": "Sprawdzone wtyczki z katalogu Hermesa.",
+    "pt-BR": "Plugins revisados do catálogo do Hermes.",
+    "ru": "Проверенные плагины из каталога Hermes.",
+    "tr": "Hermes kataloğundan incelenmiş eklentiler.",
+    "zh-Hans": "来自 Hermes 目录的已审核插件。",
+    "zh-Hant": "來自 Hermes 目錄的已審核外掛。"
   },
   "Reviews how skills are used and suggests improvements.": {
     "de": "Prüft, wie Skills genutzt werden, und schlägt Verbesserungen vor.",
@@ -19363,6 +19633,21 @@
     "tr": "Adlarda ve sohbetlerde ara",
     "zh-Hans": "搜索名称和聊天",
     "zh-Hant": "搜尋名稱和聊天"
+  },
+  "Search plugins": {
+    "de": "Plugins durchsuchen",
+    "es": "Buscar plugins",
+    "fr": "Rechercher des plugins",
+    "id": "Cari plugin",
+    "it": "Cerca plugin",
+    "ja": "プラグインを検索",
+    "ko": "플러그인 검색",
+    "pl": "Szukaj wtyczek",
+    "pt-BR": "Buscar plugins",
+    "ru": "Поиск плагинов",
+    "tr": "Eklentilerde ara",
+    "zh-Hans": "搜索插件",
+    "zh-Hant": "搜尋外掛"
   },
   "Search providers": {
     "de": "Anbieter suchen",
@@ -20369,6 +20654,21 @@
     "zh-Hans": "登录",
     "zh-Hant": "登入"
   },
+  "Sign in on the host with": {
+    "de": "Auf dem Host anmelden mit",
+    "es": "Inicia sesión en el host con",
+    "fr": "Connectez-vous sur l’hôte avec",
+    "id": "Masuk di host dengan",
+    "it": "Accedi sull’host con",
+    "ja": "ホストでサインインするコマンド:",
+    "ko": "호스트에서 로그인하는 명령:",
+    "pl": "Zaloguj się na hoście poleceniem",
+    "pt-BR": "Entre no host com",
+    "ru": "Войдите на хосте командой",
+    "tr": "Sunucuda şununla oturum açın:",
+    "zh-Hans": "在主机上登录：",
+    "zh-Hant": "在主機上登入："
+  },
   "Sign in to Hermes in the Conduit window first.": {
     "de": "Melde dich zuerst im Conduit-Fenster bei Hermes an.",
     "es": "Primero inicia sesión en Hermes en la ventana de Conduit.",
@@ -20773,6 +21073,21 @@
     "tr": "Beceriler, araçlar ve bağlayıcılar",
     "zh-Hans": "技能、工具和连接器",
     "zh-Hant": "技能、工具和連接器"
+  },
+  "Skills, tools, connectors, and plugins": {
+    "de": "Skills, Tools, Konnektoren und Plugins",
+    "es": "Habilidades, herramientas, conectores y plugins",
+    "fr": "Compétences, outils, connecteurs et plugins",
+    "id": "Skill, alat, konektor, dan plugin",
+    "it": "Skill, strumenti, connettori e plugin",
+    "ja": "スキル、ツール、コネクタ、プラグイン",
+    "ko": "스킬, 도구, 커넥터, 플러그인",
+    "pl": "Umiejętności, narzędzia, łączniki i wtyczki",
+    "pt-BR": "Habilidades, ferramentas, conectores e plugins",
+    "ru": "Навыки, инструменты, коннекторы и плагины",
+    "tr": "Beceriler, araçlar, bağlayıcılar ve eklentiler",
+    "zh-Hans": "技能、工具、连接器和插件",
+    "zh-Hant": "技能、工具、連接器和外掛"
   },
   "Skip": {
     "de": "Überspringen",
@@ -24794,6 +25109,21 @@
     "zh-Hans": "欢快",
     "zh-Hant": "歡快"
   },
+  "Update": {
+    "de": "Aktualisieren",
+    "es": "Actualizar",
+    "fr": "Mettre à jour",
+    "id": "Perbarui",
+    "it": "Aggiorna",
+    "ja": "アップデート",
+    "ko": "업데이트",
+    "pl": "Aktualizuj",
+    "pt-BR": "Atualizar",
+    "ru": "Обновить",
+    "tr": "Güncelle",
+    "zh-Hans": "更新",
+    "zh-Hant": "更新"
+  },
   "Update Hermes": {
     "de": "Hermes aktualisieren",
     "es": "Actualizar Hermes",
@@ -24913,6 +25243,21 @@
     "tr": "Güncelle ve Hermes’i Yeniden Başlat",
     "zh-Hans": "更新并重启 Hermes",
     "zh-Hant": "更新並重新啟動 Hermes"
+  },
+  "Update available": {
+    "de": "Update verfügbar",
+    "es": "Actualización disponible",
+    "fr": "Mise à jour disponible",
+    "id": "Pembaruan tersedia",
+    "it": "Aggiornamento disponibile",
+    "ja": "アップデートあり",
+    "ko": "업데이트 있음",
+    "pl": "Dostępna aktualizacja",
+    "pt-BR": "Atualização disponível",
+    "ru": "Доступно обновление",
+    "tr": "Güncelleme var",
+    "zh-Hans": "有可用更新",
+    "zh-Hant": "有可用更新"
   },
   "Update needed": {
     "de": "Update erforderlich",
@@ -25588,6 +25933,21 @@
     "tr": "Tatil",
     "zh-Hans": "休假",
     "zh-Hant": "休假"
+  },
+  "Verified": {
+    "de": "Verifiziert",
+    "es": "Verificado",
+    "fr": "Vérifié",
+    "id": "Terverifikasi",
+    "it": "Verificato",
+    "ja": "確認済み",
+    "ko": "확인됨",
+    "pl": "Zweryfikowane",
+    "pt-BR": "Verificado",
+    "ru": "Проверено",
+    "tr": "Doğrulanmış",
+    "zh-Hans": "已验证",
+    "zh-Hant": "已驗證"
   },
   "Version": {
     "de": "Version",
@@ -28199,6 +28559,36 @@
     "zh-Hans": "{name} 正在回答…",
     "zh-Hant": "{name} 正在回答…"
   },
+  "{name} is installed.": {
+    "de": "{name} ist installiert.",
+    "es": "{name} está instalado.",
+    "fr": "{name} est installé.",
+    "id": "{name} sudah terpasang.",
+    "it": "{name} è installato.",
+    "ja": "{name} をインストールしました。",
+    "ko": "{name}을(를) 설치했습니다.",
+    "pl": "Zainstalowano {name}.",
+    "pt-BR": "{name} está instalado.",
+    "ru": "{name} установлен.",
+    "tr": "{name} yüklendi.",
+    "zh-Hans": "已安装 {name}。",
+    "zh-Hant": "已安裝 {name}。"
+  },
+  "{name} is installed. It needs {keys} set before it works.": {
+    "de": "{name} ist installiert. Es braucht {keys}, bevor es funktioniert.",
+    "es": "{name} está instalado. Necesita {keys} para funcionar.",
+    "fr": "{name} est installé. Il lui faut {keys} pour fonctionner.",
+    "id": "{name} sudah terpasang. Atur {keys} dulu agar bisa berfungsi.",
+    "it": "{name} è installato. Serve impostare {keys} perché funzioni.",
+    "ja": "{name} をインストールしました。動かすには {keys} の設定が必要です。",
+    "ko": "{name}을(를) 설치했습니다. 작동하려면 {keys}을(를) 설정해야 합니다.",
+    "pl": "Zainstalowano {name}. Do działania potrzebuje ustawienia {keys}.",
+    "pt-BR": "{name} está instalado. Ele precisa de {keys} para funcionar.",
+    "ru": "{name} установлен. Для работы нужно задать {keys}.",
+    "tr": "{name} yüklendi. Çalışması için {keys} ayarlanmalı.",
+    "zh-Hans": "已安装 {name}。需要先设置 {keys} 才能使用。",
+    "zh-Hant": "已安裝 {name}。需要先設定 {keys} 才能使用。"
+  },
   "{name} is larger than the {limit} MB attachment limit.": {
     "de": "{name} überschreitet das Anhanglimit von {limit} MB.",
     "es": "{name} supera el límite de {limit} MB para archivos adjuntos.",
@@ -28243,6 +28633,21 @@
     "tr": "{name} çalışıyor. Çalışma birazdan geçmişinde görünecek.",
     "zh-Hans": "{name} 正在运行，稍后会显示在运行记录中。",
     "zh-Hant": "{name} 正在執行，稍後會顯示在執行紀錄中。"
+  },
+  "{name} is up to date.": {
+    "de": "{name} ist aktuell.",
+    "es": "{name} está actualizado.",
+    "fr": "{name} est à jour.",
+    "id": "{name} sudah versi terbaru.",
+    "it": "{name} è aggiornato.",
+    "ja": "{name} は最新です。",
+    "ko": "{name}은(는) 최신 상태입니다.",
+    "pl": "{name} jest aktualny.",
+    "pt-BR": "{name} está atualizado.",
+    "ru": "{name} обновлён до последней версии.",
+    "tr": "{name} güncel.",
+    "zh-Hans": "{name} 已是最新版本。",
+    "zh-Hant": "{name} 已是最新版本。"
   },
   "{name} keeps the plugin up to date.": {
     "de": "{name} hält das Plugin aktuell.",
