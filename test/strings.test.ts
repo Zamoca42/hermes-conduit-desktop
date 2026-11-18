@@ -22,7 +22,7 @@ function keysInCode(): Map<string, string> {
     const text = readFileSync(file, 'utf8')
     for (const match of text.matchAll(call)) {
       if (match[1] === '`' && match[2]!.includes('${')) throw new Error(`${file}: t() takes a fixed key, with {placeholders}: ${match[2]}`)
-      keys.set(match[2]!.replace(/\\(['"`\\])/g, '$1'), file)
+      keys.set(match[2]!.replace(/\\n/g, '\n').replace(/\\(['"`\\])/g, '$1'), file)
     }
   }
   return keys
