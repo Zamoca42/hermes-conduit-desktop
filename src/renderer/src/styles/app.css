@@ -1527,6 +1527,14 @@ html[data-window='quick'] body {
 /* Bots home */
 .bots {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.bots-scroll {
+  flex: 1;
   overflow-y: auto;
   padding: 28px 24px 48px;
 }
@@ -1830,11 +1838,9 @@ html[data-window='quick'] body {
 }
 
 .room-draft {
-  position: sticky;
-  bottom: 0;
-  margin: 24px auto 0;
-  width: min(640px, 100%);
-  z-index: 5;
+  flex: none;
+  margin: 0 auto 20px;
+  width: min(640px, calc(100% - 48px));
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1976,4 +1982,12 @@ html[data-window='quick'] body {
 
 .user.failed .time {
   color: var(--danger);
+}
+
+.day-line {
+  align-self: center;
+  margin: 8px 0 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
 }

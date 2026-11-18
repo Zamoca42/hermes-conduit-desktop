@@ -112,3 +112,16 @@ describe('starting a room', () => {
     expect(addToDraft(['1', '2', '3', '4', '5', '6'], '7')).toHaveLength(6)
   })
 })
+
+describe('day lines', () => {
+  it('goes above the first message and each new day', async () => {
+    const { startsNewDay, dayLabel } = await import('../src/renderer/src/state/groups')
+    const nov13 = new Date(2026, 10, 13, 21, 10).getTime()
+    expect(startsNewDay(undefined, nov13)).toBe(true)
+    expect(startsNewDay(nov13, nov13 + 60_000)).toBe(false)
+    expect(startsNewDay(nov13, new Date(2026, 10, 14, 7, 46).getTime())).toBe(true)
+    expect(startsNewDay(nov13, undefined)).toBe(false)
+    expect(dayLabel(nov13, new Date(2026, 10, 13, 23, 0).getTime())).toBe('Today')
+    expect(dayLabel(nov13, new Date(2026, 10, 14, 9, 0).getTime())).toBe('Yesterday')
+  })
+})

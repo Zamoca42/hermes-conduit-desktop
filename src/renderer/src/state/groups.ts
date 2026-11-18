@@ -210,3 +210,23 @@ export function addToDraft(draft: readonly string[], ...names: string[]): string
   }
   return next
 }
+
+/** The day line above a message whose day differs from the one before it (Today, Yesterday, else the date). */
+export function dayLabel(at: number, now = Date.now()): string {
+  const day = new Date(at)
+  const today = new Date(now)
+  const start = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+  const days = Math.round((start(today) - start(day)) / 86_400_000)
+  if (days === 0) return 'Today'
+  if (days === 1) return 'Yesterday'
+  return day.toLocaleDateString(undefined, { weekday: days < 7 ? 'long' : undefined, month: 'short', day: 'numeric', year: day.getFullYear() === today.getFullYear() ? undefined : 'numeric' })
+}
+
+/** Whether a day line goes above the message at `at`, after one at `previous`. */
+export function startsNewDay(previous: number | undefined, at: number | undefined): boolean {
+  if (at === undefined) return false
+  if (previous === undefined) return true
+  const a = new Date(previous)
+  const b = new Date(at)
+  return a.getFullYear() !== b.getFullYear() || a.getMonth() !== b.getMonth() || a.getDate() !== b.getDate()
+}
