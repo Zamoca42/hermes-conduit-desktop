@@ -4,6 +4,7 @@ import { baseName, type Attachment } from '../state/text'
 import { displayName } from '../state/attachments'
 import type { PendingRequest } from '@shared/ipc'
 import type { TranscriptItem, TranscriptState } from '../state/transcript'
+import type { DelegationEntry } from '../state/timeline'
 import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
@@ -14,6 +15,7 @@ import { BoardView } from './BoardView'
 import { DEFAULT_DISPLAY, type ChatDisplay } from '../state/display'
 import { readAloud, stopReading, useReadingKey } from '../state/readAloud'
 import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
+import { foldRuns, span, spanText, type Row } from '../state/runs'
 
 export interface MessageMenuItem {
   label: string
@@ -239,9 +241,85 @@ interface ItemProps {
   onFollowUp?: (text: string) => void
   /** ⋯'s Show thinking or Hide thinking, on a reply while Thinking is On request. */
   thinkingToggle?: { label: string; onSelect: () => void }
+  /** Settings > Chat > Keep tool cards expanded. */
+  expandTools?: boolean
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
+const outcomeLabel = (outcome: DelegationEntry['outcome']) =>
+  outcome === 'completed' ? t('Completed') : outcome === 'incomplete' ? t('Incomplete') : outcome === 'stopped' ? t('Interrupted') : t('Failed')
+const outcomeMark = { completed: '✓', incomplete: '⚠', stopped: '■', failed: '✕' }
+
+/** Background agents finished, after the phone's DelegationReportCard: each agent's goal and how it ended; Show all opens their results. */
+function DelegationCard({ title, entries, at }: { title: string; entries: DelegationEntry[]; at?: number }) {
+  const [open, setOpen] = useState(false)
+  const shown = open ? entries : entries.slice(0, 6)
+  return (
+    <div className="delegation-card">
+      <div className="delegation-head">
+        <span className="review-label">{t('System')}</span>
+        <span className="spacer" />
+        {at ? <span className="meta">{clock(at)}</span> : null}
+      </div>
+      <div className="delegation-title">
+        <strong>{title}</strong>
+        <span className="spacer" />
+        <button className="link" aria-expanded={open} onClick={() => setOpen(o => !o)}>
+          {open ? t('Show less') : t('Show all')}
+        </button>
+      </div>
+      <ul>
+        {shown.map(entry => {
+          const time = entry.duration != null ? `${entry.duration < 10 ? entry.duration.toFixed(1) : Math.round(entry.duration)}s` : null
+          const caption =
+            entry.outcome === 'completed' ? (time ?? outcomeLabel(entry.outcome)) : [outcomeLabel(entry.outcome), time].filter(Boolean).join(' · ')
+          return (
+            <li key={entry.number} className={`delegation-entry ${entry.outcome}`}>
+              <div className="delegation-line">
+                <span className="delegation-mark" aria-hidden="true">
+                  {outcomeMark[entry.outcome]}
+                </span>
+                <span className={open ? 'delegation-goal' : 'delegation-goal folded'}>{entry.goal || t('Delegate agent')}</span>
+                <span className="meta">{caption}</span>
+              </div>
+              {open && entry.result ? (
+                <div className="delegation-result">
+                  <Markdown text={entry.result} />
+                </div>
+              ) : null}
+            </li>
+          )
+        })}
+      </ul>
+      {!open && entries.length > 6 ? <span className="meta">{t('{count} more', { count: String(entries.length - 6) })}</span> : null}
+    </div>
+  )
+}
+
+/** A scheduled job's report the bot was only shown, after the phone's CronReportCard: folded to a preview, Show all opens it. */
+function CronReportCard({ job, report, at }: { job: string; report: string; at?: number }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="cron-report">
+      <div className="cron-report-head">
+        <Icon name="clock" />
+        <strong>{job}</strong>
+        <span className="spacer" />
+        {report ? (
+          <button className="link" aria-expanded={open} onClick={() => setOpen(o => !o)}>
+            {open ? t('Show less') : t('Show all')}
+          </button>
+        ) : null}
+      </div>
+      {report ? <div className={open ? 'cron-report-body' : 'cron-report-body folded'}>{open ? <Markdown text={report} /> : report}</div> : null}
+      <span className="meta">
+        {t('Scheduled job report')}
+        {at ? ` · ${clock(at)}` : ''}
+      </span>
+    </div>
+  )
+}
+
 function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: string; menu: MessageMenuItem[] }) {
   const reading = useReadingKey() === messageKey
   const profile = useContext(PictureProfile)
@@ -266,7 +344,7 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   )
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -333,31 +411,126 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
     case 'tool': {
       const done = item.status === 'done'
       if (item.board) return <BoardView board={item.board} onFollowUp={onFollowUp} />
-      return (
-        <div className="card">
+      const head = (
+        <>
           <span className={`card-icon${done ? '' : ' running'}`}>
             <Icon name={done ? 'code' : 'spinner'} style={done ? undefined : { animation: 'spin 1s linear infinite' }} />
           </span>
           <span className="card-body">
             <span className="card-title">
-              {toolTitle(item.name, done)}{' '}
-              {item.durationS != null ? <span className="time">{item.durationS.toFixed(1)}s</span> : null}
+              {toolTitle(item.name, done)} {item.durationS != null ? <span className="time">{item.durationS.toFixed(1)}s</span> : null}
             </span>
             {item.context || item.summary ? <span className="card-detail">{item.summary || item.context}</span> : null}
           </span>
-        </div>
+        </>
+      )
+      // A finished call's arguments and result open under it, kept open by Settings > Chat.
+      if (!done || (!item.args && !item.result)) return <div className="card">{head}</div>
+      return (
+        <details className="card-details" open={expandTools}>
+          <summary className="card">{head}</summary>
+          {item.args ? (
+            <div className="card-section">
+              <span className="meta">{t('Input')}</span>
+              <pre>{item.args}</pre>
+            </div>
+          ) : null}
+          {item.result ? (
+            <div className="card-section">
+              <span className="meta">{t('Output')}</span>
+              <pre>{item.result}</pre>
+            </div>
+          ) : null}
+        </details>
       )
     }
+    case 'delegation':
+      return <DelegationCard title={item.title} entries={item.entries} at={item.at} />
+    case 'cron':
+      return <CronReportCard job={item.job} report={item.report} at={item.at} />
+    case 'review':
+      return (
+        <details className="review-card" data-key={item.key}>
+          <summary>
+            <span className="review-label">{t('SELF-IMPROVEMENT REVIEW')}</span>
+            <span className="review-summary">{item.summary}</span>
+          </summary>
+          {item.details.length ? (
+            <ul>
+              {item.details.map(detail => (
+                <li key={detail}>{detail}</li>
+              ))}
+            </ul>
+          ) : null}
+        </details>
+      )
     case 'notice':
       return <div className={`notice${item.tone === 'error' ? ' error' : ''}`}>{item.text}</div>
     case 'output':
       return (
         <div className="command-output" data-key={item.key}>
           {item.command ? <div className="command-name">{item.command}</div> : null}
-          {item.format === 'plain' ? <pre>{item.text}</pre> : <div className="assistant"><Markdown text={item.text} /></div>}
+          {item.format === 'plain' ? (
+            <pre>{item.text}</pre>
+          ) : (
+            <div className="assistant">
+              <Markdown text={item.text} />
+            </div>
+          )}
         </div>
       )
   }
+}
+
+/**
+ * A turn's run of steps as one card, after the phone's ChatStepGroupHeader:
+ * "4 steps · 12s", folded once the turn is done unless Keep tool cards
+ * expanded is on, open while it runs; the reader's choice holds after.
+ */
+function StepRun({
+  row,
+  live,
+  expandTools,
+  children
+}: {
+  row: Extract<Row, { type: 'steps' }>
+  live: boolean
+  expandTools: boolean
+  children: React.ReactNode
+}) {
+  const [choice, setChoice] = useState<boolean | null>(null)
+  const open = choice ?? (live || expandTools)
+  const count = t('{count} steps', { count: String(row.items.length) })
+  const time = live ? null : spanText(span(row.items), locale())
+  const thoughts = row.items.some(i => i.kind === 'thinking')
+  const tools = row.items.some(i => i.kind === 'tool')
+  return (
+    <div className={open ? 'step-run open' : 'step-run'} data-key={row.id}>
+      <button className="step-run-head" aria-expanded={open} onClick={() => setChoice(!open)}>
+        <span className="step-run-icons" aria-hidden>
+          {thoughts ? <Icon name="chats" /> : null}
+          {tools ? <Icon name="code" /> : null}
+        </span>
+        <span className="step-run-title">{time ? `${count} · ${time}` : count}</span>
+        <Icon name="chevron" className="step-run-chevron" />
+      </button>
+      {open ? <div className="step-run-body">{children}</div> : null}
+    </div>
+  )
+}
+
+/** Consecutive self-improvement reviews as one line, after the phone's ChatReviewRun: folded until opened. */
+function ReviewRun({ count, children }: { count: number; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className={open ? 'review-run open' : 'review-run'}>
+      <button className="step-run-head" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <span className="step-run-title">{t('{count} self-improvement reviews', { count: String(count) })}</span>
+        <Icon name="chevron" className="step-run-chevron" />
+      </button>
+      {open ? <div className="step-run-body">{children}</div> : null}
+    </div>
+  )
 }
 
 export function Transcript({
@@ -394,9 +567,13 @@ export function Transcript({
     ? { label: thinkingShown ? t('Hide thinking') : t('Show thinking'), onSelect: () => setThinkingShown(shown => !shown) }
     : undefined
   const shown = useMemo(
-    () => state.items.filter(item => (item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : true)),
-    [state.items, showsThinking, display.toolCards]
+    () =>
+      state.items.filter(item =>
+        item.kind === 'thinking' ? showsThinking : item.kind === 'tool' && !item.board ? display.toolCards : item.kind === 'review' ? display.showReviews : true
+      ),
+    [state.items, showsThinking, display.toolCards, display.showReviews]
   )
+  const rows = useMemo(() => foldRuns(shown), [shown])
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
 
@@ -470,42 +647,57 @@ export function Transcript({
     if (el && pinned.current) el.scrollTop = el.scrollHeight
   }, [state, requests])
 
+  const renderItem = (item: TranscriptItem) => (
+    <Item
+      key={item.key}
+      item={item}
+      author={author}
+      onQuote={onQuote}
+      jump={jump}
+      onRetry={actions.retryKey.has(item.key) ? retry : undefined}
+      onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
+      onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
+      thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
+      expandTools={display.expandTools}
+    />
+  )
+
   return (
     <PictureProfile.Provider value={profile}>
-    <div className="transcript" ref={scroller} aria-live="polite">
-      <div className="transcript-inner">
-        {loading ? <div className="notice">{t('Loading…')}</div> : null}
-        {error ? <div className="notice error">{error}</div> : null}
-        {!loading && !error && state.items.length === 0 ? (
-          <div className="welcome">
-            <h2>{t('What can Hermes do for you?')}</h2>
-            <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
-          </div>
-        ) : null}
-        {shown.map(item => (
-          <Item
-            key={item.key}
-            item={item}
-            author={author}
-            onQuote={onQuote}
-            jump={jump}
-            onRetry={actions.retryKey.has(item.key) ? retry : undefined}
-            onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
-            onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
-            thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
-          />
-        ))}
-        {requests.map(request => (
-          <RequestCard key={request.id} request={request} />
-        ))}
-        {state.running && state.status ? (
-          <div className="status-line">
-            <span className="running" />
-            {state.status}
-          </div>
-        ) : null}
+      <div className="transcript" ref={scroller} aria-live="polite">
+        <div className="transcript-inner">
+          {loading ? <div className="notice">{t('Loading…')}</div> : null}
+          {error ? <div className="notice error">{error}</div> : null}
+          {!loading && !error && state.items.length === 0 ? (
+            <div className="welcome">
+              <h2>{t('What can Hermes do for you?')}</h2>
+              <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
+            </div>
+          ) : null}
+          {rows.map(row =>
+            row.type === 'steps' ? (
+              <StepRun key={row.id} row={row} live={row.trailing && state.running} expandTools={display.expandTools}>
+                {row.items.map(renderItem)}
+              </StepRun>
+            ) : row.type === 'reviews' ? (
+              <ReviewRun key={row.id} count={row.items.length}>
+                {row.items.map(renderItem)}
+              </ReviewRun>
+            ) : (
+              renderItem(row.item)
+            )
+          )}
+          {requests.map(request => (
+            <RequestCard key={request.id} request={request} />
+          ))}
+          {state.running && state.status ? (
+            <div className="status-line">
+              <span className="running" />
+              {state.status}
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
     </PictureProfile.Provider>
   )
 }

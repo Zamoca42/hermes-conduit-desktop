@@ -1,15 +1,25 @@
 import { BrowserWindow, Menu, app, clipboard, globalShortcut, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
 import { join } from 'node:path'
 import WebSocket from 'ws'
-import { IPC, type GatewayEventMessage, type LanguageChoice, type MenuAction, type OpenChatRequest, type RpcOutcome, type SignInRequest } from '../shared/ipc'
+import {
+  IPC,
+  type GatewayEventMessage,
+  type LanguageChoice,
+  type MenuAction,
+  type OpenChatRequest,
+  type RpcOutcome,
+  type SignInRequest,
+  type ThemeChoice
+} from '../shared/ipc'
 import { probeHost } from './auth'
+import { pluginRelease } from './pluginRelease'
 import { cleanHeaders } from './proxyHeaders'
 import { Connection } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
-import { chooseLanguage, languageChoice, resolvedLanguage } from './settings'
+import { chooseLanguage, chooseTheme, languageChoice, resolvedLanguage, themeChoice } from './settings'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
 import { setLanguage, t } from '../shared/i18n'
 
@@ -132,6 +142,15 @@ function registerIpc(): void {
       if (!window.isDestroyed()) window.webContents.reload()
     }
   })
+  ipcMain.on(IPC.theme, event => {
+    event.returnValue = themeChoice()
+  })
+  ipcMain.on(IPC.setTheme, (_event, choice: ThemeChoice) => {
+    chooseTheme(choice)
+    for (const window of BrowserWindow.getAllWindows()) {
+      if (!window.isDestroyed()) window.setBackgroundColor(nativeTheme.shouldUseDarkColors ? '#0b0d12' : '#f5f5f7')
+    }
+  })
   ipcMain.on(IPC.openChat, (_event, chat: OpenChatRequest) => {
     quickAsk.hide()
     showWindow()
@@ -141,9 +160,7 @@ function registerIpc(): void {
   ipcMain.on(IPC.copyText, (_event, text: unknown) => {
     if (typeof text === 'string') clipboard.writeText(text)
   })
-  ipcMain.on(IPC.quickAskExpanded, (_event, expanded: unknown) =>
-    quickAsk.setExpanded(typeof expanded === 'number' ? expanded : expanded === true)
-  )
+  ipcMain.on(IPC.quickAskExpanded, (_event, expanded: unknown) => quickAsk.setExpanded(typeof expanded === 'number' ? expanded : expanded === true))
   ipcMain.handle(IPC.quickAskShortcut, () => ({ accelerator: QUICK_ASK_ACCELERATOR, registered: quickAsk.registered }))
   ipcMain.handle(IPC.answerRequest, (_event, id: string, result: Record<string, unknown>) => connection.answerRequest(id, result))
   ipcMain.handle(IPC.dismissRequest, (_event, id: string) => connection.dropRequest(id))
@@ -181,6 +198,7 @@ function registerIpc(): void {
       return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }
     }
   })
+  ipcMain.handle(IPC.pluginRelease, () => pluginRelease())
   ipcMain.on(IPC.windowMinimize, event => BrowserWindow.fromWebContents(event.sender)?.minimize())
   ipcMain.on(IPC.windowToggleMaximize, event => {
     const window = BrowserWindow.fromWebContents(event.sender)
@@ -203,6 +221,7 @@ if (!app.requestSingleInstanceLock()) {
   app.setAppUserModelId('dev.conduit.desktop')
   void app.whenReady().then(() => {
     setLanguage(resolvedLanguage())
+    chooseTheme(themeChoice(), false)
     registerIpc()
     createWindow()
     tray.create()

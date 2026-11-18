@@ -1,5 +1,16 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
-import { IPC, type ConduitApi, type ConnectionStatus, type GatewayEventMessage, type MenuAction, type OpenChatRequest, type PairEvent, type PendingRequest, type Platform, type RpcOutcome } from '../shared/ipc'
+import {
+  IPC,
+  type ConduitApi,
+  type ConnectionStatus,
+  type GatewayEventMessage,
+  type MenuAction,
+  type OpenChatRequest,
+  type PairEvent,
+  type PendingRequest,
+  type Platform,
+  type RpcOutcome
+} from '../shared/ipc'
 
 function listen<T>(channel: string, listener: (value: T) => void): () => void {
   const handler = (_event: IpcRendererEvent, value: T) => listener(value)
@@ -8,7 +19,10 @@ function listen<T>(channel: string, listener: (value: T) => void): () => void {
 }
 
 class RpcError extends Error {
-  constructor(message: string, readonly code?: number) {
+  constructor(
+    message: string,
+    readonly code?: number
+  ) {
     super(message)
     this.name = 'RpcError'
   }
@@ -18,6 +32,8 @@ const api: ConduitApi = {
   platform: process.platform as Platform,
   language: ipcRenderer.sendSync(IPC.language) as ConduitApi['language'],
   setLanguage: choice => ipcRenderer.send(IPC.setLanguage, choice),
+  theme: ipcRenderer.sendSync(IPC.theme) as ConduitApi['theme'],
+  setTheme: choice => ipcRenderer.send(IPC.setTheme, choice),
   probe: (url, headers) => ipcRenderer.invoke(IPC.probe, url, headers),
   signIn: request => ipcRenderer.invoke(IPC.signIn, request),
   signOut: () => ipcRenderer.invoke(IPC.signOut),
@@ -37,6 +53,7 @@ const api: ConduitApi = {
   },
   rpcOutcome: (method, params) => ipcRenderer.invoke(IPC.rpc, method, params),
   httpOutcome: (method, path, body, timeoutMs) => ipcRenderer.invoke(IPC.http, method, path, body, timeoutMs),
+  pluginRelease: () => ipcRenderer.invoke(IPC.pluginRelease),
   pairStart: () => ipcRenderer.invoke(IPC.pairStart),
   pairConfirm: () => ipcRenderer.invoke(IPC.pairConfirm),
   pairCancel: () => ipcRenderer.invoke(IPC.pairCancel),

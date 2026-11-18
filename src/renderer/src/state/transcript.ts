@@ -8,6 +8,7 @@ import { isPlanTool, parsePlan, type Plan } from './plan'
 import { t } from '../../../shared/i18n'
 import { sideAgentNote } from './slash'
 import { SHOW_TOOL, boardFrom, type Board } from './boards'
+import { TIMELINE_KINDS, delegationReport, timelineNotice, type DelegationEntry } from './timeline'
 
 export interface UserItem {
   kind: 'user'
@@ -47,6 +48,32 @@ export interface ToolItem {
   at?: number
   /** What a finished conduit_show call showed. */
   board?: Board
+  /** The call's arguments and result, cut to a readable length, for the card's details. */
+  args?: string
+  result?: string
+}
+
+/** A tool's arguments or result as the card's details show them: JSON indented, long text cut. */
+export function toolDetail(value: unknown, limit = 4000): string | undefined {
+  if (value == null) return undefined
+  let text: string
+  if (typeof value === 'string') {
+    text = value.trim()
+    try {
+      const parsed = JSON.parse(text)
+      if (parsed && typeof parsed === 'object') text = JSON.stringify(parsed, null, 2)
+    } catch {
+      // Plain text stays as it is.
+    }
+  } else {
+    try {
+      text = JSON.stringify(value, null, 2) ?? ''
+    } catch {
+      text = String(value)
+    }
+  }
+  if (!text || text === '{}' || text === '[]') return undefined
+  return text.length > limit ? `${text.slice(0, limit)}…` : text
 }
 
 export interface NoticeItem {
@@ -67,7 +94,86 @@ export interface OutputItem {
   format: 'plain' | 'markdown'
 }
 
-export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem
+/** A self-improvement review Hermes ran after a turn: what it saved to memory or skills. */
+export interface ReviewItem {
+  kind: 'review'
+  key: string
+  summary: string
+  details: string[]
+  at?: number
+}
+
+/** A scheduled job's report a Bot Chat was only shown (the plugin's cron_bot_chat note), not a message of yours. */
+export interface CronReportItem {
+  kind: 'cron'
+  key: string
+  job: string
+  report: string
+  at?: number
+}
+
+/** Background agents finished: each one's goal, outcome and result, from the report Hermes wrote for the model. */
+export interface DelegationItem {
+  kind: 'delegation'
+  key: string
+  title: string
+  entries: DelegationEntry[]
+  at?: number
+}
+
+export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem | CronReportItem | DelegationItem
+
+const CRON_PREFIX = '[Cron job "'
+const CRON_SUFFIX = '" report: shown in the chat, no reply asked for]'
+
+/** The note's job and report, as the phone reads it (CronBotChatReport.parse). */
+export function cronReport(raw: string): { job: string; report: string } | null {
+  if (!raw.startsWith(CRON_PREFIX)) return null
+  const text = raw.replace(/\r\n/g, '\n')
+  const first = text.split('\n', 1)[0]!
+  if (!first.endsWith(CRON_SUFFIX) || first.length <= CRON_PREFIX.length + CRON_SUFFIX.length) return null
+  return { job: first.slice(CRON_PREFIX.length, -CRON_SUFFIX.length), report: text.slice(first.length).trim() }
+}
+
+/** A user row: a cron report's note, or a message of yours. */
+function userRow(key: string, raw: string, at?: number): UserItem | CronReportItem | null {
+  const cron = cronReport(raw)
+  return cron ? { kind: 'cron', key, ...cron, at } : userItem(key, raw, at)
+}
+
+const REVIEW_PREFIX = '💾 self-improvement review:'
+
+/**
+ * A review from its text, as the phone reads it (MessageNormalizer.reviewActivity):
+ * `💾 Self-improvement review: Memory ➕ … · Skill ✏️ …`, each change a detail.
+ * `unprefixed` takes a bare summary, as the live `review.summary` event sends.
+ */
+export function reviewFromText(raw: string, unprefixed = false): { summary: string; details: string[] } | null {
+  const text = raw.trim()
+  let body: string
+  if (text.toLowerCase().startsWith(REVIEW_PREFIX)) body = text.slice(REVIEW_PREFIX.length).trim()
+  else if (unprefixed) body = text.replace(/^[^\p{L}\p{N}]+/u, '').trim()
+  else return null
+  if (!body) return null
+  const details = body
+    .split(' · ')
+    .map(part => part.trim())
+    .filter(part => ['➕', '✏️', '➖'].some(mark => part.includes(mark)))
+  if (!details.length) return { summary: body, details: [] }
+  const labels = new Set(
+    details.flatMap(detail => {
+      const lower = detail.toLowerCase()
+      return lower.startsWith('user profile') ? [t('User profile')] : lower.startsWith('memory') ? [t('Memory')] : lower.startsWith('skill') ? [t('Skill')] : []
+    })
+  )
+  const summary =
+    labels.size === 1
+      ? t('{label} updated', { label: [...labels][0]! })
+      : labels.size > 1
+        ? t('Memory and skills updated')
+        : t('Self-improvement updates saved')
+  return { summary, details }
+}
 
 export interface TranscriptState {
   items: TranscriptItem[]
@@ -126,11 +232,22 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
   const items: TranscriptItem[] = []
   for (const row of rows) {
     if (row.display_kind === 'hidden') continue
+    if (row.display_kind && TIMELINE_KINDS.has(row.display_kind)) {
+      // A timeline event, its text written for the model: the notice, or the agents' report.
+      const at = toMillis(row.timestamp)
+      const key = row.row_id != null ? `row-${row.row_id}` : nextKey('h')
+      const raw = rowText(row)
+      const projected = typeof row.display_content === 'string' ? row.display_content : null
+      const title = timelineNotice(row.display_kind, raw, row.display_metadata, projected)!
+      const entries = row.display_kind === 'async_delegation_complete' && projected === null ? delegationReport(raw) : null
+      items.push(entries ? { kind: 'delegation', key, title, entries, at } : { kind: 'notice', key, text: title, tone: 'info' })
+      continue
+    }
     const at = toMillis(row.timestamp)
     const key = row.row_id != null ? `row-${row.row_id}` : nextKey('h')
     switch (row.role) {
       case 'user': {
-        const item = userItem(key, rowText(row), at)
+        const item = userRow(key, rowText(row), at)
         if (item) items.push(item)
         break
       }
@@ -142,6 +259,11 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
         if (text) items.push({ kind: 'assistant', key, text, at, streaming: false })
         break
       }
+      case 'system': {
+        const review = row.display_kind ? null : reviewFromText(rowText(row))
+        if (review) items.push({ kind: 'review', key, ...review, at })
+        break
+      }
       case 'tool':
         items.push({
           kind: 'tool',
@@ -151,7 +273,9 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
           context: row.context ?? undefined,
           status: 'done',
           at,
-          board: boardFrom(row.name ?? '', rowText(row), undefined) ?? undefined
+          board: boardFrom(row.name ?? '', rowText(row), undefined) ?? undefined,
+          args: toolDetail(row.args),
+          result: toolDetail(rowText(row))
         })
         break
       default:
@@ -242,6 +366,8 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
               status: 'done' as const,
               summary: str(payload.summary) ?? item.summary,
               board: boardFrom(item.name, payload.result, payload.args) ?? item.board,
+              args: toolDetail(payload.args) ?? item.args,
+              result: toolDetail(payload.result) ?? item.result,
               durationS: typeof payload.duration_s === 'number' ? payload.duration_s : item.durationS
             }
           : item
@@ -273,9 +399,16 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     }
     case 'user.message': {
       // Sent from another client of this chat (the phone).
-      const item = userItem(nextKey('u'), str(payload.text) ?? '', Date.now())
+      const item = userRow(nextKey('u'), str(payload.text) ?? '', Date.now())
       if (!item) return state
       return { ...state, items: [...seal(state.items), item] }
+    }
+    case 'review.summary': {
+      const review = reviewFromText(str(payload.text) ?? str(payload.content) ?? '', true)
+      if (!review) return state
+      const details = Array.isArray(payload.details) ? payload.details.filter((d): d is string => typeof d === 'string' && !!d.trim()) : []
+      const all = [...new Set([...review.details, ...details])]
+      return { ...state, items: [...seal(state.items), { kind: 'review', key: nextKey('rv'), summary: review.summary, details: all, at: Date.now() }] }
     }
     case 'btw.complete':
     case 'background.complete': {
@@ -332,18 +465,41 @@ export function missingBoards(state: TranscriptState): string[] {
   return state.items.flatMap(item => (item.kind === 'tool' && !item.board && item.name.toLowerCase() === SHOW_TOOL ? [item.toolId] : []))
 }
 
-/** The boards of conduit_show rows, from their answers by tool call id (the REST transcript has them). */
-export function attachBoards(state: TranscriptState, answers: Map<string, string>): TranscriptState {
+/** History rows without the call's details (session.resume leaves them out), or a board to draw. */
+export function missingDetails(state: TranscriptState): boolean {
+  return missingBoards(state).length > 0 || state.items.some(item => item.kind === 'tool' && item.status === 'done' && !item.result && !item.board)
+}
+
+/**
+ * The boards of conduit_show rows and every row's arguments and result, from
+ * their answers by tool call id (the REST transcript has them).
+ */
+export function attachBoards(state: TranscriptState, answers: Map<string, string>, args: Map<string, string> = new Map()): TranscriptState {
   let changed = false
   const items = state.items.map(item => {
-    if (item.kind !== 'tool' || item.board) return item
+    if (item.kind !== 'tool') return item
     const answer = answers.get(item.toolId)
-    const board = answer === undefined ? null : boardFrom(item.name, answer, undefined)
-    if (!board) return item
+    const board = item.board ?? (answer === undefined ? null : boardFrom(item.name, answer, undefined))
+    const result = item.result ?? (answer === undefined ? undefined : toolDetail(answer))
+    const given = item.args ?? (args.has(item.toolId) ? toolDetail(args.get(item.toolId)) : undefined)
+    if (board === (item.board ?? null) && result === item.result && given === item.args) return item
     changed = true
-    return { ...item, board }
+    return { ...item, ...(board ? { board } : {}), result, args: given }
   })
   return changed ? { ...state, items } : state
+}
+
+/** Each call's arguments in a page of `/api/sessions/{id}/messages`, from the assistant rows' tool_calls, by call id. */
+export function toolArgs(raw: unknown): Map<string, string> {
+  const args = new Map<string, string>()
+  const messages = (raw as { messages?: unknown } | null)?.messages
+  for (const row of Array.isArray(messages) ? (messages as { role?: string; tool_calls?: unknown }[]) : []) {
+    if (row.role !== 'assistant' || !Array.isArray(row.tool_calls)) continue
+    for (const call of row.tool_calls as { id?: unknown; function?: { arguments?: unknown } }[]) {
+      if (typeof call?.id === 'string' && typeof call.function?.arguments === 'string') args.set(call.id, call.function.arguments)
+    }
+  }
+  return args
 }
 
 /** Each tool row's answer in a page of `/api/sessions/{id}/messages`, by tool call id. */

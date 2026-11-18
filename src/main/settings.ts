@@ -1,19 +1,19 @@
 /**
  * The app's own settings, in the data folder beside connection.json. For
- * now that's the language: "system" follows the computer's, or one of
- * Conduit's languages.
+ * now that's the language ("system" follows the computer's, or one of
+ * Conduit's languages) and the theme ("system", dark or light).
  */
-import { app } from 'electron'
+import { app, nativeTheme } from 'electron'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { LANGUAGES, pickLanguage, setLanguage, type Language } from '../shared/i18n'
-import type { LanguageChoice } from '../shared/ipc'
+import type { LanguageChoice, ThemeChoice } from '../shared/ipc'
 
 const path = () => join(app.getPath('userData'), 'settings.json')
 
-function read(): { language?: unknown } {
+function read(): { language?: unknown; theme?: unknown } {
   try {
-    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown }
+    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown }
   } catch {
     return {}
   }
@@ -40,4 +40,25 @@ export function chooseLanguage(choice: LanguageChoice): Language {
   const language = resolvedLanguage(valid)
   setLanguage(language)
   return language
+}
+
+const THEMES: readonly ThemeChoice[] = ['system', 'dark', 'light']
+
+export function themeChoice(): ThemeChoice {
+  const stored = read().theme
+  return THEMES.includes(stored as ThemeChoice) ? (stored as ThemeChoice) : 'system'
+}
+
+/** Saves the choice and gives it to Chromium, so the window's `prefers-color-scheme` and Electron's own UI follow it. */
+export function chooseTheme(choice: ThemeChoice = themeChoice(), save = true): ThemeChoice {
+  const valid: ThemeChoice = THEMES.includes(choice) ? choice : 'system'
+  if (save) {
+    try {
+      writeFileSync(path(), JSON.stringify({ ...read(), theme: valid }, null, 2))
+    } catch {
+      // Not saved: it still applies until Conduit quits.
+    }
+  }
+  nativeTheme.themeSource = valid
+  return valid
 }
