@@ -5,6 +5,9 @@
  */
 import type { PendingRequest } from '../../../shared/ipc'
 import { approvalView, clarifyQuestions } from './needsYou'
+import { plainLine } from './text'
+
+export { plainLine }
 
 export interface ChatRef {
   storedId: string | null
@@ -37,20 +40,6 @@ export function setNotificationsEnabled(on: boolean): void {
   }
 }
 
-/** Markdown down to a line a notification can show. */
-export function plainLine(text: string, max = 180): string {
-  const plain = text
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/^\s*(?:MEDIA:|\[\[(?:audio_as_voice|as_document)\]\]).*$/gim, ' ')
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*$/gm, ' ')
-    .replace(/[*_`]+/g, '')
-    .replace(/^\s*[>#]+/gm, ' ')
-    .replace(/\|/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-  return plain.length > max ? `${plain.slice(0, max - 1).trimEnd()}…` : plain
-}
 
 /** A finished turn's notification, or none (a stop needs no telling). */
 export function turnNotification(sessionId: string, payload: unknown, chat: ChatRef | undefined): NotificationSpec | null {

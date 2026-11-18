@@ -114,3 +114,21 @@ export function cleanTitle(title: string): string {
   const stripped = title.replace(/\s*\[Recent voice\b[^\]]*$/i, '').replace(VOICE_CONTEXT, '').replace(VOICE_JOB_PREFIX, '')
   return plainReferences(stripped, true).trim()
 }
+
+/** Markdown down to a line a notification can show. */
+export function plainLine(text: string, max = 180): string {
+  const plain = text
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/^\s*(?:MEDIA:|\[\[(?:audio_as_voice|as_document)\]\]).*$/gim, ' ')
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*$/gm, ' ')
+    .replace(/[*`]+/g, '')
+    // Emphasis underscores, not the ones inside a word (iq3_xs, snake_case).
+    .replace(/(^|[\s(])_+(?=\S)/g, '$1')
+    .replace(/(\S)_+(?=[\s.,!?;:)]|$)/g, '$1')
+    .replace(/^\s*[>#]+/gm, ' ')
+    .replace(/\|/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return plain.length > max ? `${plain.slice(0, max - 1).trimEnd()}…` : plain
+}
