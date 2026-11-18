@@ -33,6 +33,7 @@ import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { VoiceCall } from './components/VoiceCall'
+import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
@@ -195,6 +196,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     if (was !== null && was !== selected.id) setCalling(false)
   }, [selected.id])
   useEffect(() => setCalling(false), [selected.profile, section])
+  // Read replies aloud: the open chat's reply, as its turn ends, unless a call speaks it.
+  const readTurn = useRef(turnsDone)
+  useEffect(() => {
+    if (readTurn.current === turnsDone) return
+    readTurn.current = turnsDone
+    if (!calling && readsRepliesAloud() && lastReplyRef.current && document.hasFocus())
+      void readAloud(`turn-${turnsDone}`, lastReplyRef.current, selected.profile).catch(() => undefined)
+  }, [turnsDone])
+  const lastReplyRef = useRef<string | null>(null)
   const lastReply = useMemo(() => {
     for (let i = transcript.items.length - 1; i >= 0; i--) {
       const item = transcript.items[i]!
@@ -203,6 +213,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     }
     return null
   }, [transcript.items])
+  lastReplyRef.current = lastReply
   const wasRunning = useRef(false)
   useEffect(() => {
     if (wasRunning.current && !transcript.running) setTurnsDone(n => n + 1)
@@ -677,6 +688,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
 
 function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
+  const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
   return (
     <main className="settings">
@@ -734,6 +746,21 @@ function Settings({ status, onAddHost }: { status: ConnectionStatus; onAddHost: 
             />
             {t('When a reply finishes or something needs you in a chat you’re not looking at')}
           </label>
+        </dd>
+        <dt>{t('Voice')}</dt>
+        <dd>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={readAloudOn}
+              onChange={e => {
+                setReadsRepliesAloud(e.target.checked)
+                setReadAloudOn(e.target.checked)
+              }}
+            />
+            {t('Read replies aloud')}
+          </label>
+          <p className="meta settings-caption">{t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}</p>
         </dd>
         <dt>{t('Language')}</dt>
         <dd>

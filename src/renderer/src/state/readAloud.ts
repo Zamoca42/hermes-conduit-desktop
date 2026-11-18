@@ -48,3 +48,23 @@ export async function readAloud(key: string, text: string, profile?: string): Pr
     throw e
   }
 }
+
+const AUTO_KEY = 'conduit.readRepliesAloud'
+
+/** Settings > Read replies aloud: each reply in the open chat is read as its turn ends. Off by default, as on the phone. */
+export function readsRepliesAloud(): boolean {
+  try {
+    return localStorage.getItem(AUTO_KEY) === 'on'
+  } catch {
+    return false
+  }
+}
+
+export function setReadsRepliesAloud(on: boolean): void {
+  try {
+    localStorage.setItem(AUTO_KEY, on ? 'on' : 'off')
+  } catch {
+    // Private storage: off stands.
+  }
+  if (!on) stopReading()
+}

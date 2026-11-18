@@ -4783,3 +4783,8 @@ code.file-link:hover {
   border-color: transparent;
   color: #fff;
 }
+
+.settings-caption {
+  margin: 4px 0 0 24px;
+  white-space: normal;
+}

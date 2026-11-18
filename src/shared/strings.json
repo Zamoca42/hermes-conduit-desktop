@@ -2609,6 +2609,21 @@
     "zh-Hans": "每次查看有发现时会发送一条通知。晨间简报每天按时送达，包含仍未完成的事项、今天的日历和提醒，以及你要求少提醒的事项。",
     "zh-Hant": "每次查看有發現時會傳送一則通知。晨間簡報每天準時送達，包含仍未完成的事項、今天的行事曆和提醒，以及你要求少提醒的事項。"
   },
+  "Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.": {
+    "de": "Jede Antwort im geöffneten Chat wird mit der Stimme von Hermes vorgelesen, sobald sie fertig ist. Anrufe sprechen ihre eigenen Antworten.",
+    "es": "Cada respuesta del chat abierto se lee en voz alta con la voz de Hermes al terminar. Las llamadas dicen sus propias respuestas.",
+    "fr": "Chaque réponse de la discussion ouverte est lue à voix haute avec la voix de Hermes dès qu’elle est terminée. Les appels disent leurs propres réponses.",
+    "id": "Setiap balasan di obrolan yang terbuka dibacakan dengan suara Hermes saat selesai. Panggilan mengucapkan balasannya sendiri.",
+    "it": "Ogni risposta nella chat aperta viene letta ad alta voce con la voce di Hermes appena finisce. Le chiamate pronunciano le proprie risposte.",
+    "ja": "開いているチャットの返信は、完了するとHermesの音声で読み上げられます。通話では通話自身が返信を話します。",
+    "ko": "열린 채팅의 각 답장은 완료되면 Hermes의 목소리로 읽어 줍니다. 통화는 자체 답장을 말합니다.",
+    "pl": "Każda odpowiedź w otwartym czacie jest czytana na głos głosem Hermesa, gdy się skończy. Połączenia wypowiadają własne odpowiedzi.",
+    "pt-BR": "Cada resposta do chat aberto é lida em voz alta com a voz do Hermes quando termina. As chamadas falam suas próprias respostas.",
+    "ru": "Каждый ответ в открытом чате читается вслух голосом Hermes, когда он готов. Звонки озвучивают свои ответы сами.",
+    "tr": "Açık sohbetteki her yanıt bittiğinde Hermes’in sesiyle sesli okunur. Aramalar kendi yanıtlarını söyler.",
+    "zh-Hans": "打开的聊天中的每条回复完成后，都会用 Hermes 的声音朗读。通话会自己说出回复。",
+    "zh-Hant": "開啟的聊天中的每則回覆完成後，都會用 Hermes 的聲音朗讀。通話會自己說出回覆。"
+  },
   "Each run is also saved as its own conversation.": {
     "de": "Jeder Lauf wird außerdem als eigene Unterhaltung gespeichert.",
     "es": "Cada ejecución también se guarda como su propia conversación.",
@@ -7169,6 +7184,21 @@
     "zh-Hans": "读取了网页",
     "zh-Hant": "讀取了網頁"
   },
+  "Read replies aloud": {
+    "de": "Antworten vorlesen",
+    "es": "Leer las respuestas en voz alta",
+    "fr": "Lire les réponses à voix haute",
+    "id": "Bacakan balasan",
+    "it": "Leggi le risposte ad alta voce",
+    "ja": "返信を読み上げる",
+    "ko": "답장 소리 내어 읽기",
+    "pl": "Czytaj odpowiedzi na głos",
+    "pt-BR": "Ler respostas em voz alta",
+    "ru": "Читать ответы вслух",
+    "tr": "Yanıtları sesli oku",
+    "zh-Hans": "朗读回复",
+    "zh-Hant": "朗讀回覆"
+  },
   "Reading a file": {
     "de": "Liest eine Datei",
     "es": "Leyendo un archivo",
@@ -10423,6 +10453,21 @@
     "tr": "Tatil",
     "zh-Hans": "休假",
     "zh-Hant": "休假"
+  },
+  "Voice": {
+    "de": "Sprachmodus",
+    "es": "Voz",
+    "fr": "Voix",
+    "id": "Suara",
+    "it": "Voce",
+    "ja": "音声",
+    "ko": "음성",
+    "pl": "Głos",
+    "pt-BR": "Voz",
+    "ru": "Голос",
+    "tr": "Ses",
+    "zh-Hans": "语音",
+    "zh-Hant": "語音"
   },
   "Voice call": {
     "de": "Sprachanruf",
