@@ -35,6 +35,8 @@ const api: ConduitApi = {
     if (!outcome.ok) throw new RpcError(outcome.error, outcome.code)
     return outcome.result
   },
+  rpcOutcome: (method, params) => ipcRenderer.invoke(IPC.rpc, method, params),
+  httpOutcome: (method, path, body) => ipcRenderer.invoke(IPC.http, method, path, body),
   pairStart: () => ipcRenderer.invoke(IPC.pairStart),
   pairConfirm: () => ipcRenderer.invoke(IPC.pairConfirm),
   pairCancel: () => ipcRenderer.invoke(IPC.pairCancel),

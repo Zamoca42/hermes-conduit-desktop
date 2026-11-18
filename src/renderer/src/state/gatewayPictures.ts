@@ -6,6 +6,7 @@
  * asked for again while the window is open; a read that fails (no
  * connection) may load the next time it's shown.
  */
+import { gateway } from '../gateway'
 const MAX_DATA_URL = Math.ceil((16 * 1024 * 1024) / 3) * 4 + 64
 const kept = new Map<string, string | null>()
 const reading = new Map<string, Promise<string | null>>()
@@ -38,7 +39,7 @@ export function readGatewayPicture(path: string, profile?: string): Promise<stri
   if (kept.has(key)) return Promise.resolve(kept.get(key) ?? null)
   let read = reading.get(key)
   if (!read) {
-    read = window.conduit
+    read = gateway
       .http('GET', readDataUrlPath(path, profile))
       .then(
         result => {

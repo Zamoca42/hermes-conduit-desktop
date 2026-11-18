@@ -14,6 +14,8 @@ export interface ChatRow {
   activeAt?: number
   profile?: string
   pinned: boolean
+  /** Hermes' shared read flag (Hermes Desktop's Mark as unread sets it). */
+  unread?: boolean
   source?: string
   messageCount?: number
 }
@@ -103,6 +105,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
       activeAt,
       profile: typeof obj.profile === 'string' ? obj.profile : undefined,
       pinned: obj.pinned === true || obj.pinned === 1,
+      unread: obj.unread === true || obj.unread === 1 || undefined,
       source,
       messageCount: typeof obj.message_count === 'number' ? obj.message_count : undefined
     })

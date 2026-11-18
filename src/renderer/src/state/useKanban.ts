@@ -1,3 +1,4 @@
+import { gateway } from '../gateway'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { boardPath, defaultAssignee, parseBoard, parseBoards, parseTask, parseTaskDetail, type KanbanBoard, type KanbanBoardRow, type KanbanTask, type KanbanTaskDetail } from './kanban'
 
@@ -33,7 +34,7 @@ export function useKanban(connected: boolean, shown: boolean) {
   const load = useCallback(async () => {
     const mine = ++generation.current
     try {
-      const raw = await window.conduit.http('GET', boardPath('/board', slug))
+      const raw = await gateway.http('GET', boardPath('/board', slug))
       if (mine !== generation.current) return
       setBoard(parseBoard(raw))
       setError(null)
@@ -47,7 +48,7 @@ export function useKanban(connected: boolean, shown: boolean) {
 
   const loadBoards = useCallback(async () => {
     try {
-      const list = parseBoards(await window.conduit.http('GET', boardPath('/boards', null)))
+      const list = parseBoards(await gateway.http('GET', boardPath('/boards', null)))
       setBoards(list)
       // A saved board that's gone falls back to the server's current one.
       if (slug && !list.some(row => row.slug === slug)) setSlug(null)
@@ -55,7 +56,7 @@ export function useKanban(connected: boolean, shown: boolean) {
       setBoards(list => list ?? [])
     }
     try {
-      setAssignee(defaultAssignee(await window.conduit.http('GET', boardPath('/orchestration', null))))
+      setAssignee(defaultAssignee(await gateway.http('GET', boardPath('/orchestration', null))))
     } catch {
       // An older plugin: the default profile.
     }
@@ -102,7 +103,7 @@ export function useKanban(connected: boolean, shown: boolean) {
         )
       }
       try {
-        const raw = (await window.conduit.http('PATCH', boardPath(`/tasks/${encodeURIComponent(task.id)}`, slug), fields)) as { task?: unknown } | null
+        const raw = (await gateway.http('PATCH', boardPath(`/tasks/${encodeURIComponent(task.id)}`, slug), fields)) as { task?: unknown } | null
         return parseTask(raw?.task)
       } finally {
         void load()
@@ -113,7 +114,7 @@ export function useKanban(connected: boolean, shown: boolean) {
 
   const create = useCallback(
     async (body: Record<string, unknown>): Promise<{ task: KanbanTask | null; warning?: string }> => {
-      const raw = (await window.conduit.http('POST', boardPath('/tasks', slug), body)) as { task?: unknown; warning?: unknown } | null
+      const raw = (await gateway.http('POST', boardPath('/tasks', slug), body)) as { task?: unknown; warning?: unknown } | null
       void load()
       return { task: parseTask(raw?.task), warning: typeof raw?.warning === 'string' ? raw.warning : undefined }
     },
@@ -122,7 +123,7 @@ export function useKanban(connected: boolean, shown: boolean) {
 
   const remove = useCallback(
     async (task: KanbanTask): Promise<void> => {
-      await window.conduit.http('DELETE', boardPath(`/tasks/${encodeURIComponent(task.id)}`, slug))
+      await gateway.http('DELETE', boardPath(`/tasks/${encodeURIComponent(task.id)}`, slug))
       void load()
     },
     [slug, load]
@@ -130,13 +131,13 @@ export function useKanban(connected: boolean, shown: boolean) {
 
   const comment = useCallback(
     async (task: KanbanTask, body: string): Promise<void> => {
-      await window.conduit.http('POST', boardPath(`/tasks/${encodeURIComponent(task.id)}/comments`, slug), { body })
+      await gateway.http('POST', boardPath(`/tasks/${encodeURIComponent(task.id)}/comments`, slug), { body })
     },
     [slug]
   )
 
   const detail = useCallback(
-    async (id: string): Promise<KanbanTaskDetail | null> => parseTaskDetail(await window.conduit.http('GET', boardPath(`/tasks/${encodeURIComponent(id)}`, slug))),
+    async (id: string): Promise<KanbanTaskDetail | null> => parseTaskDetail(await gateway.http('GET', boardPath(`/tasks/${encodeURIComponent(id)}`, slug))),
     [slug]
   )
 

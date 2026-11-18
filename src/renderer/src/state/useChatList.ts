@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { gateway } from '../gateway'
 import { CHAT_LIST_MAX_PAGES, CHAT_LIST_PAGE, chatListPath, mergeRows, refreshFirstPage, responseCount, rowsFromResponse, type ChatRow } from './chats'
 
 /** The chat list, read when the connection opens and again when Hermes says the sessions changed. */
@@ -23,13 +24,13 @@ export function useChatList(connected: boolean) {
       let body: unknown
       if (dashboardList.current) {
         try {
-          body = await window.conduit.http('GET', chatListPath(0))
+          body = await gateway.http('GET', chatListPath(0))
         } catch {
           // An older dashboard without the every-profile list: the gateway's own.
           dashboardList.current = false
         }
       }
-      if (!dashboardList.current) body = await window.conduit.rpc('session.list', { limit: CHAT_LIST_PAGE })
+      if (!dashboardList.current) body = await gateway.rpc('session.list', { limit: CHAT_LIST_PAGE })
       if (ticket !== generation.current) return
       const first = rowsFromResponse(body)
       const pageWasFull = dashboardList.current && responseCount(body) >= CHAT_LIST_PAGE
@@ -40,7 +41,7 @@ export function useChatList(connected: boolean) {
       shown = true
       if (!full || !dashboardList.current) return
       for (let page = 1; page < CHAT_LIST_MAX_PAGES && responseCount(body) >= CHAT_LIST_PAGE; page++) {
-        body = await window.conduit.http('GET', chatListPath(page * CHAT_LIST_PAGE))
+        body = await gateway.http('GET', chatListPath(page * CHAT_LIST_PAGE))
         if (ticket !== generation.current) return
         all = mergeRows(all, rowsFromResponse(body))
         rowsRef.current = all

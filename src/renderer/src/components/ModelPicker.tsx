@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { gateway } from '../gateway'
 import { t } from '@shared/i18n'
 import type { ModelSwitch, OpenChat } from '../state/useChat'
 import { REASONING_LEVELS, groupModels, reasoningTitle, type ModelProviderRow } from '../state/models'
@@ -33,7 +34,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
     const params: Record<string, unknown> = { explicit_only: true }
     if (chat.liveId) params.session_id = chat.liveId
     if (profile) params.profile = profile
-    window.conduit
+    gateway
       .rpc<{ providers?: ModelProviderRow[] }>('model.options', params)
       .then(result => live && setProviders(result.providers ?? []))
       .catch(e => live && setLoadError(e instanceof Error ? e.message : String(e)))

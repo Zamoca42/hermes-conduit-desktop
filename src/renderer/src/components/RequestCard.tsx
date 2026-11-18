@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { gateway } from '../gateway'
 import type { PendingRequest } from '@shared/ipc'
 import { approvalView, clarifyQuestions, lockedAnswers, type ClarifyQuestion } from '../state/needsYou'
 import { Icon } from './icons'
@@ -58,7 +59,7 @@ function ClarifyCard({ request, chatTitle }: { request: PendingRequest; chatTitl
   const lock = async (question: ClarifyQuestion, answer: string | string[] | null) => {
     setError(null)
     try {
-      const result = await window.conduit.rpc<{ status?: string; remaining?: unknown }>('clarify.lock', {
+      const result = await gateway.rpc<{ status?: string; remaining?: unknown }>('clarify.lock', {
         request_id: request.id,
         question_id: question.qid,
         answer

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { gateway } from '../gateway'
 import { uploadRoomAttachments, type StagedAttachment } from './attachments'
 import {
   ROOM_POLL_MS,
@@ -28,13 +29,13 @@ export function useRooms(connected: boolean) {
 
   const load = useCallback(async () => {
     try {
-      const caps = roomCapabilities(await window.conduit.rpc('groups.capabilities'))
+      const caps = roomCapabilities(await gateway.rpc('groups.capabilities'))
       setCapabilities(caps)
       if (!caps.supported) {
         setRooms([])
         return
       }
-      setRooms(roomsFromList(await window.conduit.rpc('groups.list', { include_disbanded: false })))
+      setRooms(roomsFromList(await gateway.rpc('groups.list', { include_disbanded: false })))
       setError(null)
     } catch (e) {
       // A gateway without the method has no rooms; anything else is worth saying.
@@ -58,7 +59,7 @@ export function useRooms(connected: boolean) {
     async (roomId: string, name: string, bots: Bot[]): Promise<Room> => {
       const members = roomMembers(bots)
       if (!members) throw new Error(t('Two of these bots would have the same @handle. Rename one, then try again.'))
-      const result = await window.conduit.rpc<{ room?: unknown }>('groups.create', { room_id: roomId, name, members })
+      const result = await gateway.rpc<{ room?: unknown }>('groups.create', { room_id: roomId, name, members })
       const room = roomFromWire(result?.room)
       if (!room) throw new Error(t('Hermes didn’t say what room it made.'))
       setRooms(current => [room, ...(current ?? []).filter(r => r.roomId !== room.roomId)])
@@ -93,7 +94,7 @@ export function useRoom(room: Room | null, connected: boolean) {
     let more = true
     let fresh: RoomEvent[] = []
     while (more && mine === ticket.current) {
-      const page = logPage(await window.conduit.rpc('groups.log', { room_id: id, since_seq: cursor.current, limit: 200 }))
+      const page = logPage(await gateway.rpc('groups.log', { room_id: id, since_seq: cursor.current, limit: 200 }))
       if (!page || mine !== ticket.current) return
       fresh = fresh.concat(page.events)
       if (page.events.length) cursor.current = Math.max(cursor.current, page.cursor)
@@ -108,7 +109,7 @@ export function useRoom(room: Room | null, connected: boolean) {
   }, [])
 
   const readState = useCallback(async (id: string, mine: number) => {
-    const next = driverStatus(await window.conduit.rpc('groups.state', { room_id: id, include_disbanded: true }))
+    const next = driverStatus(await gateway.rpc('groups.state', { room_id: id, include_disbanded: true }))
     if (mine === ticket.current) setStatus(current => (current.working === next.working && current.disbanded === next.disbanded && current.busy.join() === next.busy.join() ? current : next))
   }, [])
 
@@ -144,8 +145,8 @@ export function useRoom(room: Room | null, connected: boolean) {
       setPending(current => [...current.filter(p => p.eventId !== eventId), { eventId, text: trimmed, attachments }])
       try {
         const payload: Record<string, unknown> = { text: trimmed, thread_id: eventId }
-        if (attachments.length) payload.attachments = await uploadRoomAttachments((method, params) => window.conduit.rpc(method, params), roomId, attachments)
-        await window.conduit.rpc('groups.send', { room_id: roomId, event_id: eventId, payload })
+        if (attachments.length) payload.attachments = await uploadRoomAttachments((method, params) => gateway.rpc(method, params), roomId, attachments)
+        await gateway.rpc('groups.send', { room_id: roomId, event_id: eventId, payload })
         setStatus(current => ({ ...current, working: true }))
         await readLog(roomId, ticket.current)
       } catch (e) {
@@ -158,7 +159,7 @@ export function useRoom(room: Room | null, connected: boolean) {
   const stop = useCallback(async () => {
     if (!roomId) return
     try {
-      await window.conduit.rpc('groups.stop', { room_id: roomId })
+      await gateway.rpc('groups.stop', { room_id: roomId })
       await readState(roomId, ticket.current)
     } catch (e) {
       setError(message(e))

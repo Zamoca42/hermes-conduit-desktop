@@ -1,3 +1,4 @@
+import { gateway } from '../gateway'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { avatarUrl, botsFromProfiles, type Bot } from './bots'
 
@@ -9,7 +10,7 @@ export function useBots(connected: boolean) {
 
   const load = useCallback(async () => {
     try {
-      const body = await window.conduit.rpc('profiles.list', { include_sessions: true })
+      const body = await gateway.rpc('profiles.list', { include_sessions: true })
       setBots(botsFromProfiles(body))
       setError(null)
     } catch (e) {
@@ -53,7 +54,7 @@ export function useAvatar(name: string, hasAvatar: boolean): string | null {
     let live = true
     let pending = avatarCache.get(name)
     if (!pending) {
-      pending = window.conduit
+      pending = gateway
         .rpc('profiles.get_asset', { name, asset: 'avatar' })
         .then(avatarUrl)
         .catch(() => null)

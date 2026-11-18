@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent, type RefObject } from 'react'
+import type { ContextWindow } from '../state/context'
 import { Icon } from './icons'
 import { t } from '@shared/i18n'
 import {
@@ -47,6 +48,9 @@ interface Props {
   quote?: QuoteRequest | null
   /** The model chip's click: the Model panel. Without it the chip only shows the model. */
   onModel?: () => void
+  /** How full the chat's context window is; the ring opens the Context panel. */
+  context?: ContextWindow
+  onContext?: () => void
   /** The slash commands this chat takes, suggested as a `/` is typed. None in a room. */
   commands?: SlashCommand[]
   /** The text sent for a draft replying to a message. Defaults to a chat's reply envelope. */
@@ -56,7 +60,7 @@ interface Props {
 const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands, onModel }: Props) {
+export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands, onModel, context, onContext }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
@@ -374,6 +378,19 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
               {model}
             </span>
           ) : null}
+          {context && onContext ? (
+            <button
+              className="chip chip-button context-chip"
+              title={t('Context: {percent}% full', { percent: Math.round(context.percent) })}
+              aria-label={t('Context: {percent}% full', { percent: Math.round(context.percent) })}
+              aria-haspopup="dialog"
+              disabled={disabled}
+              onClick={onContext}
+            >
+              <ContextRing percent={context.percent} />
+              {Math.round(context.percent)}%
+            </button>
+          ) : null}
           {cwd ? (
             <span className="chip" title={t('Working folder: {folder}', { folder: cwd })}>
               {folderName(cwd)}
@@ -392,5 +409,25 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
         </div>
       </div>
     </div>
+  )
+}
+
+/** The window's fullness as a small ring, amber, then orange past 80%. */
+export function ContextRing({ percent, size = 14 }: { percent: number; size?: number }) {
+  const radius = (size - 3) / 2
+  const length = 2 * Math.PI * radius
+  const shown = Math.min(100, Math.max(0, percent))
+  return (
+    <svg className={`context-ring${shown >= 80 ? ' full' : ''}`} width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+      <circle cx={size / 2} cy={size / 2} r={radius} className="track" />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        className="fill"
+        strokeDasharray={`${(shown / 100) * length} ${length}`}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+      />
+    </svg>
   )
 }

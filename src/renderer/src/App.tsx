@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice } from '@shared/ipc'
 import { BotsHome } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
+import { ContextPanel } from './components/ContextPanel'
 import { RoomView } from './components/RoomView'
 import { Tasks } from './components/Tasks'
 import { Icon } from './components/icons'
@@ -27,6 +29,7 @@ import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { useCommands } from './state/useCommands'
 import { mutateSession } from './state/chatActions'
+import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -145,20 +148,56 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
-  useEffect(() => setModelOpen(false), [selected.id])
+  const [contextOpen, setContextOpen] = useState(false)
+  const closeContext = useCallback(() => setContextOpen(false), [])
+  useEffect(() => {
+    setModelOpen(false)
+    setContextOpen(false)
+  }, [selected.id])
   /** A row's Pin, Rename or Delete: shown at once, put back with the reason when Hermes refuses it. */
   const chatAction = useCallback(
     async (row: ChatRow, patch: { pinned?: boolean; title?: string } | null) => {
       list.patchRow(row.id, patch)
       if (patch === null && (selected.id === row.id || chat.storedId === row.id)) newChat()
       try {
-        await mutateSession(window.conduit.http, row.id, row.profile, patch)
+        await mutateSession(gateway.http, row.id, row.profile, patch)
       } catch (e) {
         window.alert(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: e instanceof Error ? e.message : String(e) }))
       }
       list.refresh()
     },
     [list, selected.id, chat.storedId, newChat]
+  )
+  // Stars and read state: on this computer, per host. Hermes' own unread flag is cleared too.
+  const markHost = status.url ?? ''
+  const [marks, setMarks] = useState<ChatMarks>(() => loadMarks(markHost))
+  useEffect(() => setMarks(loadMarks(markHost)), [markHost])
+  const updateMarks = useCallback(
+    (change: (current: ChatMarks) => ChatMarks) =>
+      setMarks(current => {
+        const next = change(current)
+        if (next !== current) saveMarks(markHost, next)
+        return next
+      }),
+    [markHost]
+  )
+  const writeUnread = useCallback((row: ChatRow, unread: boolean) => {
+    void mutateSession(gateway.http, row.id, row.profile, { unread }).catch(() => undefined)
+  }, [])
+  const openId = chat.storedId ?? selected.id
+  const openRow = openId ? list.rows?.find(row => row.id === openId) : undefined
+  useEffect(() => {
+    if (!openRow) return
+    updateMarks(current => markRead(current, openRow))
+    if (openRow.unread) writeUnread(openRow, false)
+  }, [openRow?.id, openRow?.activeAt, openRow?.unread, updateMarks, writeUnread])
+  const toggleRead = useCallback(
+    (row: ChatRow) => {
+      const unread = isUnread(marks, row)
+      updateMarks(current => (unread ? markRead(current, row) : markUnread(current, row)))
+      if (unread ? row.unread : !row.unread) writeUnread(row, !unread)
+    },
+    [marks, updateMarks, writeUnread]
   )
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
@@ -396,6 +435,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               onProfile={chooseProfile}
               onPin={row => void chatAction(row, { pinned: !row.pinned })}
               onRename={(row, title) => void chatAction(row, { title })}
+              marks={marks}
+              onStar={row => updateMarks(current => toggleStar(current, row))}
+              onToggleRead={toggleRead}
               onDelete={row => {
                 if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`)) void chatAction(row, null)
               }}
@@ -412,6 +454,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onQuote={setQuote}
                 onCommand={text => void onSend(text)}
               />
+              {contextOpen && chat.liveId ? (
+                <ContextPanel chat={chat} profile={selected.profile} running={transcript.running} onClose={closeContext} onCompress={() => void onSend('/compress')} />
+              ) : null}
               {modelOpen && chat.liveId ? (
                 <ModelPicker
                   chat={chat}
@@ -427,7 +472,23 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 placeholder={t('Message {name}…', { name: botTitle })}
                 quote={quote}
                 commands={commands}
-                onModel={chat.liveId ? () => setModelOpen(open => !open) : undefined}
+                onModel={
+                  chat.liveId
+                    ? () => {
+                        setContextOpen(false)
+                        setModelOpen(open => !open)
+                      }
+                    : undefined
+                }
+                context={chat.context}
+                onContext={
+                  chat.liveId
+                    ? () => {
+                        setModelOpen(false)
+                        setContextOpen(open => !open)
+                      }
+                    : undefined
+                }
                 running={transcript.running}
                 disabled={!connected}
                 model={chat.model}

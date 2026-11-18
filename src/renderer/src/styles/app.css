@@ -2842,6 +2842,51 @@ html[data-window='quick'] body {
   color: var(--text-3);
 }
 
+.row-star {
+  color: var(--warning);
+  fill: currentColor;
+}
+
+.unread-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 1px;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 4px;
+  padding: 0 12px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: none;
+}
+
+.filter-chips button {
+  flex: none;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.filter-chips button:hover {
+  background: var(--surface-hover);
+}
+
+.filter-chips button.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .row-rename {
   width: 100%;
   height: 40px;
@@ -3474,4 +3519,94 @@ html[data-window='quick'] body {
 .job-pane .needs-empty .ico,
 .board .needs-empty .ico {
   color: var(--accent);
+}
+
+/* The context ring and panel ------------------------------------------ */
+
+.context-chip {
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.context-ring {
+  flex: none;
+}
+
+.context-ring circle {
+  fill: none;
+  stroke-width: 2.5;
+}
+
+.context-ring .track {
+  stroke: var(--line-strong);
+}
+
+.context-ring .fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+}
+
+.context-ring.full .fill {
+  stroke: var(--warning);
+}
+
+.context-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 16px 16px;
+  overflow-y: auto;
+}
+
+.context-panel .job-facts {
+  grid-template-columns: 110px 1fr;
+  font-size: 13px;
+}
+
+.context-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.context-meter-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.context-bar {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-hover);
+}
+
+.context-bar span {
+  display: block;
+  height: 100%;
+}
+
+.context-compress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.context-row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.context-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
 }

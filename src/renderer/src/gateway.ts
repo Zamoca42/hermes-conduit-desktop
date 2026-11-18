@@ -1,0 +1,32 @@
+/**
+ * Gateway and dashboard calls from the window. They go through the
+ * preload's outcome calls, because an error thrown across Electron's
+ * context bridge arrives with only its message: this one carries the code
+ * as well (an HTTP status, or a JSON-RPC error code), which the window reads
+ * to tell a missing route from a conflict from a failure.
+ */
+import type { RpcOutcome } from '../../shared/ipc'
+
+export class GatewayError extends Error {
+  constructor(
+    message: string,
+    readonly code?: number
+  ) {
+    super(message)
+    this.name = 'GatewayError'
+  }
+}
+
+function settled<T>(outcome: RpcOutcome<T>): T {
+  if (!outcome.ok) throw new GatewayError(outcome.error, outcome.code)
+  return outcome.result
+}
+
+export const gateway = {
+  async rpc<T = unknown>(method: string, params?: Record<string, unknown>): Promise<T> {
+    return settled(await window.conduit.rpcOutcome<T>(method, params))
+  },
+  async http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T> {
+    return settled(await window.conduit.httpOutcome<T>(method, path, body))
+  }
+}

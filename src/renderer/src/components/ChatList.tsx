@@ -4,6 +4,14 @@ import type { Bot } from '../state/bots'
 import { BotAvatar } from './BotsHome'
 import { t } from '@shared/i18n'
 import { Icon } from './icons'
+import { filterRows, isStarred, isUnread, type ChatFilter, type ChatMarks } from '../state/chatMarks'
+
+const FILTERS: { value: ChatFilter; label: () => string }[] = [
+  { value: 'all', label: () => t('All') },
+  { value: 'starred', label: () => t('Starred') },
+  { value: 'unread', label: () => t('Unread') },
+  { value: 'running', label: () => t('Running') }
+]
 
 interface Props {
   rows: ChatRow[] | null
@@ -22,15 +30,20 @@ interface Props {
   onPin?: (row: ChatRow) => void
   onRename?: (row: ChatRow, title: string) => void
   onDelete?: (row: ChatRow) => void
+  /** Stars and read state, kept on this computer; the filter chips use them. */
+  marks?: ChatMarks
+  onStar?: (row: ChatRow) => void
+  onToggleRead?: (row: ChatRow) => void
 }
 
 const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
 
-export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat, bots, profile = null, onProfile, onPin, onRename, onDelete }: Props) {
+export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat, bots, profile = null, onProfile, onPin, onRename, onDelete, marks, onStar, onToggleRead }: Props) {
   const [query, setQuery] = useState('')
   const [menu, setMenu] = useState<{ row: ChatRow; x: number; y: number } | null>(null)
   const [renaming, setRenaming] = useState<{ id: string; title: string } | null>(null)
-  const hasActions = !!(onPin || onRename || onDelete)
+  const hasActions = !!(onPin || onRename || onDelete || onStar)
+  const [filter, setFilter] = useState<ChatFilter>('all')
 
   useEffect(() => {
     if (!menu) return
@@ -56,9 +69,10 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
   const sections = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
-    const filtered = q ? inProfile.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : inProfile
+    const marked = marks ? filterRows(inProfile, filter, marks, runningIds) : inProfile
+    const filtered = q ? marked.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : marked
     return sectionRows(filtered)
-  }, [rows, query, profile])
+  }, [rows, query, profile, marks, filter, runningIds])
   const showStrip = !!onProfile && (bots?.length ?? 0) > 1
   const botName = (row: ChatRow) => {
     if (!row.profile || row.profile === 'default' || profile) return null
@@ -90,10 +104,29 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t('Search chats')} />
       </label>
       {showStrip ? <ProfileStrip bots={bots!} profile={profile} onProfile={onProfile!} /> : null}
+      {marks ? (
+        <div className="filter-chips" role="tablist" aria-label={t('Filter')}>
+          {FILTERS.map(({ value, label }) => (
+            <button key={value} role="tab" aria-selected={filter === value} className={filter === value ? 'on' : undefined} onClick={() => setFilter(value)}>
+              {label()}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="chatlist-scroll" ref={scroller}>
         {rows === null && !error ? <div className="empty">{t('Loading chats…')}</div> : null}
         {error ? <div className="empty">{t('Couldn’t load your chats: {error}', { error })}</div> : null}
-        {rows && sections.length === 0 && !query.trim() ? <div className="empty">{t('No chats yet. Start one with the + button.')}</div> : null}
+        {rows && sections.length === 0 && !query.trim() ? (
+          <div className="empty">
+            {filter === 'starred'
+              ? t('No starred chats. Star one from its menu to keep it here.')
+              : filter === 'unread'
+                ? t('No unread chats.')
+                : filter === 'running'
+                  ? t('Nothing is running.')
+                  : t('No chats yet. Start one with the + button.')}
+          </div>
+        ) : null}
         {sections.map(section => (
           <div key={section.title} role="group" aria-label={section.title}>
             <div className="sect">{section.title}</div>
@@ -129,7 +162,9 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
                     <button className="row" aria-current={row.id === selectedId ? 'true' : undefined} onClick={() => onSelect(row)}>
                       <span className="row-top">
                         <span className="row-title">
+                          {marks && isUnread(marks, row) && row.id !== selectedId ? <span className="unread-dot" role="img" aria-label={t('Unread')} /> : null}
                           {row.pinned ? <Icon name="pin" className="row-pin" /> : null}
+                          {marks && isStarred(marks, row) ? <Icon name="star" className="row-pin row-star" /> : null}
                           {row.title}
                         </span>
                         <span className="meta row-time">{timeLabel(row.activeAt)}</span>
@@ -170,6 +205,16 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
           {onPin ? (
             <button role="menuitem" onClick={() => onPin(menu.row)}>
               {menu.row.pinned ? t('Unpin') : t('Pin')}
+            </button>
+          ) : null}
+          {onStar && marks ? (
+            <button role="menuitem" onClick={() => onStar(menu.row)}>
+              {isStarred(marks, menu.row) ? t('Unstar') : t('Star')}
+            </button>
+          ) : null}
+          {onToggleRead && marks && menu.row.id !== selectedId ? (
+            <button role="menuitem" onClick={() => onToggleRead(menu.row)}>
+              {isUnread(marks, menu.row) ? t('Mark as read') : t('Mark as unread')}
             </button>
           ) : null}
           {onRename ? (
