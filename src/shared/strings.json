@@ -24074,6 +24074,36 @@
     "zh-Hans": "{count} 秒",
     "zh-Hant": "{count} 秒"
   },
+  "{count} self-improvement reviews": {
+    "de": "{count} Prüfungen zur Selbstverbesserung",
+    "es": "{count} revisiones de automejora",
+    "fr": "{count} bilans d'auto-amélioration",
+    "id": "{count} tinjauan perbaikan diri",
+    "it": "{count} revisioni di automiglioramento",
+    "ja": "自己改善レビュー {count} 件",
+    "ko": "자기 개선 검토 {count}건",
+    "pl": "{count} przeglądu samodoskonalenia",
+    "pt-BR": "{count} revisões de autoaprimoramento",
+    "ru": "{count} обзора самоулучшений",
+    "tr": "{count} kendini geliştirme incelemesi",
+    "zh-Hans": "{count} 条自我改进审核",
+    "zh-Hant": "{count} 則自我改進檢閱"
+  },
+  "{count} steps": {
+    "de": "{count} Schritte",
+    "es": "{count} pasos",
+    "fr": "{count} étapes",
+    "id": "{count} langkah",
+    "it": "{count} passaggi",
+    "ja": "{count}ステップ",
+    "ko": "{count}단계",
+    "pl": "{count} kroku",
+    "pt-BR": "{count} etapas",
+    "ru": "{count} шага",
+    "tr": "{count} adım",
+    "zh-Hans": "{count} 个步骤",
+    "zh-Hant": "{count} 個步驟"
+  },
   "{count} tokens": {
     "de": "{count} Token",
     "es": "{count} tokens",

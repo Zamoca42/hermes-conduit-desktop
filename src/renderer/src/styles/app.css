@@ -6331,3 +6331,54 @@ button.cap-row-text {
   background: var(--surface);
   font-size: 15px;
 }
+/* Runs of steps and of reviews, folded to one line. */
+.step-run,
+.review-run {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.step-run-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 14px;
+  text-align: left;
+}
+.step-run-icons {
+  display: flex;
+  gap: 4px;
+  color: var(--text-3);
+}
+.step-run-title {
+  flex: 1;
+  font-weight: 500;
+}
+.step-run-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  transition: transform 0.15s ease;
+}
+.step-run.open .step-run-chevron,
+.review-run.open .step-run-chevron {
+  transform: rotate(90deg);
+}
+.step-run-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 8px 8px;
+}
+.step-run-body > .card,
+.step-run-body > .card-details > .card,
+.step-run-body > .thinking,
+.step-run-body > .review-card {
+  border-color: transparent;
+}

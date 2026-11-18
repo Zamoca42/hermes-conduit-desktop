@@ -15,6 +15,7 @@ import { BoardView } from './BoardView'
 import { DEFAULT_DISPLAY, type ChatDisplay } from '../state/display'
 import { readAloud, stopReading, useReadingKey } from '../state/readAloud'
 import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
+import { foldRuns, span, spanText, type Row } from '../state/runs'
 
 export interface MessageMenuItem {
   label: string
@@ -481,6 +482,57 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
   }
 }
 
+/**
+ * A turn's run of steps as one card, after the phone's ChatStepGroupHeader:
+ * "4 steps · 12s", folded once the turn is done unless Keep tool cards
+ * expanded is on, open while it runs; the reader's choice holds after.
+ */
+function StepRun({
+  row,
+  live,
+  expandTools,
+  children
+}: {
+  row: Extract<Row, { type: 'steps' }>
+  live: boolean
+  expandTools: boolean
+  children: React.ReactNode
+}) {
+  const [choice, setChoice] = useState<boolean | null>(null)
+  const open = choice ?? (live || expandTools)
+  const count = t('{count} steps', { count: String(row.items.length) })
+  const time = live ? null : spanText(span(row.items), locale())
+  const thoughts = row.items.some(i => i.kind === 'thinking')
+  const tools = row.items.some(i => i.kind === 'tool')
+  return (
+    <div className={open ? 'step-run open' : 'step-run'} data-key={row.id}>
+      <button className="step-run-head" aria-expanded={open} onClick={() => setChoice(!open)}>
+        <span className="step-run-icons" aria-hidden>
+          {thoughts ? <Icon name="chats" /> : null}
+          {tools ? <Icon name="code" /> : null}
+        </span>
+        <span className="step-run-title">{time ? `${count} · ${time}` : count}</span>
+        <Icon name="chevron" className="step-run-chevron" />
+      </button>
+      {open ? <div className="step-run-body">{children}</div> : null}
+    </div>
+  )
+}
+
+/** Consecutive self-improvement reviews as one line, after the phone's ChatReviewRun: folded until opened. */
+function ReviewRun({ count, children }: { count: number; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className={open ? 'review-run open' : 'review-run'}>
+      <button className="step-run-head" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <span className="step-run-title">{t('{count} self-improvement reviews', { count: String(count) })}</span>
+        <Icon name="chevron" className="step-run-chevron" />
+      </button>
+      {open ? <div className="step-run-body">{children}</div> : null}
+    </div>
+  )
+}
+
 export function Transcript({
   state,
   loading,
@@ -521,6 +573,7 @@ export function Transcript({
       ),
     [state.items, showsThinking, display.toolCards, display.showReviews]
   )
+  const rows = useMemo(() => foldRuns(shown), [shown])
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
 
@@ -594,6 +647,21 @@ export function Transcript({
     if (el && pinned.current) el.scrollTop = el.scrollHeight
   }, [state, requests])
 
+  const renderItem = (item: TranscriptItem) => (
+    <Item
+      key={item.key}
+      item={item}
+      author={author}
+      onQuote={onQuote}
+      jump={jump}
+      onRetry={actions.retryKey.has(item.key) ? retry : undefined}
+      onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
+      onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
+      thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
+      expandTools={display.expandTools}
+    />
+  )
+
   return (
     <PictureProfile.Provider value={profile}>
       <div className="transcript" ref={scroller} aria-live="polite">
@@ -606,20 +674,19 @@ export function Transcript({
               <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
             </div>
           ) : null}
-          {shown.map(item => (
-            <Item
-              key={item.key}
-              item={item}
-              author={author}
-              onQuote={onQuote}
-              jump={jump}
-              onRetry={actions.retryKey.has(item.key) ? retry : undefined}
-              onEdit={actions.editTurns.has(item.key) ? () => edit(actions.editTurns.get(item.key)!) : undefined}
-              onFollowUp={actions.followUpKey === item.key ? onCommand : undefined}
-              thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
-              expandTools={display.expandTools}
-            />
-          ))}
+          {rows.map(row =>
+            row.type === 'steps' ? (
+              <StepRun key={row.id} row={row} live={row.trailing && state.running} expandTools={display.expandTools}>
+                {row.items.map(renderItem)}
+              </StepRun>
+            ) : row.type === 'reviews' ? (
+              <ReviewRun key={row.id} count={row.items.length}>
+                {row.items.map(renderItem)}
+              </ReviewRun>
+            ) : (
+              renderItem(row.item)
+            )
+          )}
           {requests.map(request => (
             <RequestCard key={request.id} request={request} />
           ))}
