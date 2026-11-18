@@ -9,7 +9,10 @@ import {
   stagePaste,
   titlePreview,
   tooLargeMessage,
+  roomUploadKind,
+  roomUploadProblem,
   uploadAttachments,
+  uploadRoomAttachments,
   type StagedAttachment
 } from '../src/renderer/src/state/attachments'
 import { uploadTimeoutMs } from '../src/main/connection'
@@ -127,5 +130,54 @@ describe('a sent message’s files', () => {
   it('show on its bubble while it is on its way', () => {
     const state = addPendingUser(emptyTranscript, '', [{ kind: 'image', value: 'cat.png' }])
     expect(state.items.at(-1)).toMatchObject({ kind: 'user', text: '', pending: true, attachments: [{ kind: 'image', value: 'cat.png' }] })
+  })
+})
+
+const b64 = (bytes: number[] | string) => btoa(typeof bytes === 'string' ? bytes : String.fromCharCode(...bytes))
+const staged = (name: string, mime: string, base64: string, size = 10): StagedAttachment => ({ id: `id-${name}`, name, kind: 'file', mime, size, base64 })
+
+describe('a room’s files', () => {
+  it('go as the kind Hermes tells from their bytes', () => {
+    expect(roomUploadKind(staged('a.png', 'image/png', b64([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0])))).toEqual({ kind: 'image', mime: 'image/png' })
+    expect(roomUploadKind(staged('a.jpg', 'image/png', b64([0xff, 0xd8, 0xff, 0xe0])))).toEqual({ kind: 'image', mime: 'image/jpeg' })
+    expect(roomUploadKind(staged('d.pdf', '', b64('%PDF-1.7 body')))).toEqual({ kind: 'pdf', mime: 'application/pdf' })
+    expect(roomUploadKind(staged('n.txt', 'text/plain', b64('hello'))) ).toEqual({ kind: 'file', mime: 'text/plain' })
+    expect(roomUploadKind(staged('x.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', b64('PK\x03\x04')))).toEqual({
+      kind: 'file',
+      mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    })
+  })
+
+  it('leave out what Hermes takes as nothing', () => {
+    expect(roomUploadKind(staged('p.heic', 'image/heic', b64('ftypheic')))).toBeNull()
+    expect(roomUploadKind(staged('bin.txt', 'text/plain', b64([0x61, 0, 0x62])))).toBeNull()
+    expect(roomUploadKind(staged('big.zip', 'application/zip', b64('PK'), 15_000_001))).toBeNull()
+    expect(roomUploadProblem([staged('p.heic', 'image/heic', b64('ftypheic'))])).toBe('A group chat can’t take p.heic.')
+    expect(roomUploadProblem(Array.from({ length: 9 }, (_, i) => staged(`${i}.txt`, 'text/plain', b64('hi'))))).toBe('A group chat message takes up to 8 files.')
+    expect(roomUploadProblem([staged('a.zip', 'application/zip', b64('PK'), 14_000_000), staged('b.zip', 'application/zip', b64('PK'), 14_000_000)])).toBe(
+      'A group chat message takes up to 25 MB of files.'
+    )
+    expect(roomUploadProblem([staged('n.txt', 'text/plain', b64('hello'))])).toBeNull()
+  })
+
+  it('upload with a retry key made of the staged file and its bytes', async () => {
+    const { rpc, calls } = gateway({
+      'groups.attachment.upload': p => ({ attachment_id: `att-${p.name}`, kind: p.kind, name: p.name, size: 5, mime: p.mime, state: 'uploaded' })
+    })
+    const file = staged('n.txt', 'text/plain', b64('hello'), 5)
+    const manifests = await uploadRoomAttachments(rpc, 'r1', [file])
+    expect(manifests).toEqual([{ attachment_id: 'att-n.txt', kind: 'file', name: 'n.txt', size: 5, mime: 'text/plain' }])
+    expect(calls[0].params).toMatchObject({ room_id: 'r1', kind: 'file', name: 'n.txt', mime: 'text/plain', data_base64: file.base64 })
+    // sha256("hello") starts 2cf24dba5fb0a30e26e83b2a.
+    expect(calls[0].params.upload_id).toBe('conduit-id-ntxt-2cf24dba5fb0a30e26e83b2a')
+    await expect(uploadRoomAttachments(rpc, 'r1', [staged('p.heic', 'image/heic', b64('x'))])).rejects.toThrow('can’t take')
+    expect(calls).toHaveLength(1)
+  })
+})
+
+describe('a room upload’s budget', () => {
+  it('has a three-minute floor', () => {
+    expect(uploadTimeoutMs({ data_base64: 'x' })).toBe(180_000)
+    expect(uploadTimeoutMs({ data_base64: 'x'.repeat(64_000 * 400) })).toBe(400_000)
   })
 })

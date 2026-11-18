@@ -39,10 +39,12 @@ interface Props {
   dropZone?: RefObject<HTMLElement | null>
   /** Told whether files are staged (or staging), so a small window can make room for them. */
   onStagedChange?: (staged: boolean) => void
+  /** Why the staged files can't go with this message, checked on Send, or null. */
+  checkAttachments?: (attachments: StagedAttachment[]) => string | null
 }
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange }: Props) {
+export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
@@ -181,6 +183,11 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
 
   function send() {
     if (!canSend) return
+    const problem = attachments.length ? (checkAttachments?.(attachments) ?? null) : null
+    if (problem) {
+      setNotice(problem)
+      return
+    }
     onSend(text, attachments)
     setText('')
     setAttachments([])

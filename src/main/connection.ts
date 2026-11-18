@@ -469,14 +469,17 @@ export class Connection {
 }
 
 /**
- * A request's budget: two minutes, or for an upload about 1 s for every 64 KB
- * it carries if that is longer (about 0.5 Mbit/s), as on the phone.
+ * A request's budget: two minutes (three for a room's upload), or for an
+ * upload about 1 s for every 64 KB it carries if that is longer (about
+ * 0.5 Mbit/s), as on the phone.
  */
 export function uploadTimeoutMs(params: Record<string, unknown>): number {
   let characters = 0
-  for (const key of ['content_base64', 'data_url', 'data']) {
+  for (const key of ['content_base64', 'data_url', 'data', 'data_base64']) {
     const value = params[key]
     if (typeof value === 'string') characters += value.length
   }
-  return Math.max(120_000, Math.ceil(characters / 64))
+  // A group room's upload has a three-minute floor.
+  const floor = typeof params.data_base64 === 'string' ? 180_000 : 120_000
+  return Math.max(floor, Math.ceil(characters / 64))
 }

@@ -381,7 +381,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onCreateRoom={groupRooms.create}
           />
         ) : section === 'room' && openRoom ? (
-          <RoomView key={openRoom.roomId} room={openRoom} bots={roster.bots ?? []} connected={connected} canStop={groupRooms.capabilities?.canStop === true} />
+          <RoomView key={openRoom.roomId} room={openRoom} bots={roster.bots ?? []} connected={connected} canStop={groupRooms.capabilities?.canStop === true} canAttach={groupRooms.capabilities?.attachments === true} />
         ) : section === 'needs' ? (
           <NeedsYou
             requests={requests}

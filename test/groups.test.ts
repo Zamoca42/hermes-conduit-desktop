@@ -20,7 +20,8 @@ const room: Room = {
     { memberId: 'default', profile: 'default', handle: 'hermes', displayName: 'Hermes' },
     { memberId: 'furina', profile: 'furina', handle: 'furina', displayName: 'Furina' }
   ],
-  disbanded: false
+  disbanded: false,
+  linked: false
 }
 
 const wire = (seq: number, kind: string, payload: Record<string, unknown>, actor: Record<string, unknown> = { kind: 'user', id: 'desktop' }) => ({
@@ -38,8 +39,10 @@ describe('rooms', () => {
     expect(roomCapabilities({ methods: ['groups.list', 'groups.create', 'groups.state', 'groups.send', 'groups.log', 'groups.stop'], max_log_limit: 500 })).toEqual({
       supported: true,
       canStop: true,
+      attachments: false,
       maxLogLimit: 500
     })
+    expect(roomCapabilities({ methods: ['groups.list', 'groups.attachment.upload'] }).attachments).toBe(true)
     expect(roomCapabilities({ methods: ['groups.list'] }).supported).toBe(false)
     expect(roomCapabilities(null).supported).toBe(false)
   })
@@ -123,5 +126,34 @@ describe('day lines', () => {
     expect(startsNewDay(nov13, undefined)).toBe(false)
     expect(dayLabel(nov13, new Date(2026, 10, 13, 23, 0).getTime())).toBe('Today')
     expect(dayLabel(nov13, new Date(2026, 10, 14, 9, 0).getTime())).toBe('Yesterday')
+  })
+})
+
+describe('room files', () => {
+  it('knows a room with another person’s agent in it', () => {
+    const linked = roomsFromList({ rooms: [{ room_id: 'l', members: [{ member_id: 'a', profile: 'a' }, { member_id: 'p', target: { kind: 'peer' } }] }] })
+    expect(linked[0]!.linked).toBe(true)
+    expect(roomsFromList({ rooms: [{ room_id: 'h', members: [{ member_id: 'a', profile: 'a' }] }] })[0]!.linked).toBe(false)
+  })
+
+  it('shows a message’s files, a message of files alone too', () => {
+    const events = logPage({
+      events: [wire(1, 'message.user', { text: '', attachments: [{ attachment_id: 'att1', kind: 'image', name: 'cat.png', size: 3, mime: 'image/png' }, { kind: 'file' }] })],
+      latest_seq: 1
+    })!.events
+    expect(roomItems(room, events)).toEqual([
+      { kind: 'user', key: 'e1', text: '', files: [{ attachmentId: 'att1', kind: 'image', name: 'cat.png', mime: 'image/png' }], at: expect.any(Number) }
+    ])
+  })
+})
+
+describe('room pictures', () => {
+  it('read back as pictures, and anything else as gone', async () => {
+    const { pictureFromDownload } = await import('../src/renderer/src/state/roomPictures')
+    const png = btoa(String.fromCharCode(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3))
+    expect(pictureFromDownload({ data_base64: png })).toBe(`data:image/png;base64,${png}`)
+    expect(pictureFromDownload({ data_base64: btoa('not a picture') })).toBeNull()
+    expect(pictureFromDownload({ data_base64: 'x'.repeat(23_000_000) })).toBeNull()
+    expect(pictureFromDownload(null)).toBeNull()
   })
 })
