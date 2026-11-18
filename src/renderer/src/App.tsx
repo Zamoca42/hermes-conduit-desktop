@@ -9,6 +9,7 @@ import { Transcript } from './components/Transcript'
 import type { ChatRow } from './state/chats'
 import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
+import { cleanTitle } from './state/text'
 
 export function App() {
   const [status, setStatus] = useState<ConnectionStatus | null>(null)
@@ -76,7 +77,7 @@ function Shell({ status }: { status: ConnectionStatus }) {
     [send, list]
   )
 
-  const title = chat.title || selected.title || (selected.id ? '' : 'New chat')
+  const title = cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : 'New chat')
   return (
     <>
       {status.phase !== 'open' ? (

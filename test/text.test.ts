@@ -77,3 +77,40 @@ describe('folded previews', () => {
     expect(state.items[0]).toMatchObject({ text: 'hello', pending: true, attachments: [{ kind: 'file', value: '/tmp/a.md' }] })
   })
 })
+
+describe('the second Asuka round', () => {
+  it('reads a reference mid-sentence as its value', () => {
+    expect(cleanUserText('can we update the plugin with main + @url:`https://github.com/a/b/pull/1`?').text).toBe(
+      'can we update the plugin with main + https://github.com/a/b/pull/1?'
+    )
+    expect(previewText('how can we adapt this skill? @url:`https://github.com/Leonxl/skills/tree/main/x')).toBe(
+      'how can we adapt this skill? github.com/Leonxl/skills/tree/main/x'
+    )
+  })
+
+  it('leaves no footer stub in a preview cut inside the marker', () => {
+    expect(previewText('@url:`https://example.com/a` --- Attached Co')).toBe('example.com/a')
+    expect(previewText('Relay update @url:`https://x.dev/y` --- Attached Context --- lots')).toBe('Relay update x.dev/y')
+  })
+
+  it('takes a reference cut off inside its quotes as the whole preview', () => {
+    expect(previewText('@url:`https://github.com/kaishi00/hermes-conduit-notifier/pull/86')).toBe(
+      'github.com/kaishi00/hermes-conduit-notifier/pull/86'
+    )
+  })
+
+  it('cuts the recent voice conversation a delegation appends', () => {
+    const raw =
+      'Where am I\n\n[Recent voice conversation, for context only. Do just the request above: earlier requests marked "handled separately" were passed on before.]\nAssistant: Hi\nUser: Where am I'
+    expect(cleanUserText(raw).text).toBe('Where am I')
+    expect(previewText(raw.replace(/\n+/g, ' ').slice(0, 60))).toBe('Where am I')
+  })
+})
+
+describe('cleanTitle', () => {
+  it('cuts a voice delegation’s conversation from a title', async () => {
+    const { cleanTitle } = await import('../src/renderer/src/state/text')
+    expect(cleanTitle('Where am I [Recent voice conv')).toBe('Where am I')
+    expect(cleanTitle('Relay/Plugin Update')).toBe('Relay/Plugin Update')
+  })
+})

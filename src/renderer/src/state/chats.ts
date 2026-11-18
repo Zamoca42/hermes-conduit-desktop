@@ -3,7 +3,7 @@
  * profile, newest activity first), with the gateway's `session.list` as the
  * fallback an older dashboard needs, grouped the way the phone groups them.
  */
-import { previewText } from './text'
+import { cleanTitle, previewText } from './text'
 
 export interface ChatRow {
   id: string
@@ -88,7 +88,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
     seen.add(id)
     const source = typeof obj.source === 'string' ? obj.source : undefined
     if (source && CHAT_LIST_EXCLUDED_SOURCES.split(',').includes(source.toLowerCase())) continue
-    const title = typeof obj.title === 'string' ? obj.title.trim() : ''
+    const title = typeof obj.title === 'string' ? cleanTitle(obj.title) : ''
     const preview = typeof obj.preview === 'string' ? previewText(obj.preview) : ''
     let activeAt: number | undefined
     for (const key of ACTIVITY_KEYS) {
