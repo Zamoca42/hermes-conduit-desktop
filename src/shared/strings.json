@@ -794,6 +794,21 @@
     "zh-Hans": "拷贝",
     "zh-Hant": "拷貝"
   },
+  "Could not load models.": {
+    "de": "Modelle konnten nicht geladen werden.",
+    "es": "No se pudieron cargar los modelos.",
+    "fr": "Impossible de charger les modèles.",
+    "id": "Tidak dapat memuat model.",
+    "it": "Impossibile caricare i modelli.",
+    "ja": "モデルを読み込めませんでした。",
+    "ko": "모델을 불러올 수 없습니다.",
+    "pl": "Nie udało się wczytać modeli.",
+    "pt-BR": "Não foi possível carregar os modelos.",
+    "ru": "Не удалось загрузить модели.",
+    "tr": "Modeller yüklenemedi.",
+    "zh-Hans": "无法加载模型。",
+    "zh-Hant": "無法載入模型。"
+  },
   "Couldn't read {names}.": {
     "de": "{names} konnte nicht gelesen werden.",
     "es": "No se pudo leer {names}.",
@@ -1184,6 +1199,21 @@
     "zh-Hans": "这里的每个人都能看到你发的内容。用 @ 提及机器人，只问它。",
     "zh-Hant": "這裡的每個人都能看到你傳的內容。用 @ 提及機器人，只問它。"
   },
+  "Extra High": {
+    "de": "Sehr hoch",
+    "es": "Muy alto",
+    "fr": "Très élevé",
+    "id": "Sangat Tinggi",
+    "it": "Molto alta",
+    "ja": "非常に高い",
+    "ko": "매우 높음",
+    "pl": "Bardzo wysoki",
+    "pt-BR": "Muito Alto",
+    "ru": "Очень высокий",
+    "tr": "Çok Yüksek",
+    "zh-Hans": "极高",
+    "zh-Hant": "極高"
+  },
   "Extra headers are only sent over HTTPS. Enter an https:// server address first.": {
     "de": "Zusätzliche Header werden nur über HTTPS gesendet. Gib zuerst eine https://-Serveradresse ein.",
     "es": "Los encabezados adicionales solo se envían por HTTPS. Escribe primero una dirección de servidor https://.",
@@ -1198,6 +1228,36 @@
     "tr": "Ek üstbilgiler yalnızca HTTPS üzerinden gönderilir. Önce bir https:// sunucu adresi girin.",
     "zh-Hans": "额外请求头仅通过 HTTPS 发送。请先输入 https:// 服务器地址。",
     "zh-Hant": "額外標頭只會透過 HTTPS 傳送。請先輸入 https:// 伺服器位址。"
+  },
+  "Fast": {
+    "de": "Schnell",
+    "es": "Rápido",
+    "fr": "Rapide",
+    "id": "Cepat",
+    "it": "Veloce",
+    "ja": "高速",
+    "ko": "빠름",
+    "pl": "Szybki",
+    "pt-BR": "Rápido",
+    "ru": "Быстро",
+    "tr": "Hızlı",
+    "zh-Hans": "快速",
+    "zh-Hant": "快速"
+  },
+  "Fast mode": {
+    "de": "Schnellmodus",
+    "es": "Modo rápido",
+    "fr": "Mode rapide",
+    "id": "Mode cepat",
+    "it": "Modalità rapida",
+    "ja": "高速モード",
+    "ko": "빠른 모드",
+    "pl": "Tryb szybki",
+    "pt-BR": "Modo rápido",
+    "ru": "Быстрый режим",
+    "tr": "Hızlı mod",
+    "zh-Hans": "快速模式",
+    "zh-Hant": "快速模式"
   },
   "File": {
     "de": "Datei",
@@ -1334,6 +1394,21 @@
     "zh-Hans": "请求头的值不能包含换行。",
     "zh-Hant": "標頭的值不能包含換行。"
   },
+  "Hermes did not accept the model switch.": {
+    "de": "Hermes hat den Modellwechsel nicht angenommen.",
+    "es": "Hermes no aceptó el cambio de modelo.",
+    "fr": "Hermes n'a pas accepté le changement de modèle.",
+    "id": "Hermes tidak menerima peralihan model.",
+    "it": "Hermes non ha accettato il cambio di modello.",
+    "ja": "Hermesはモデルの切り替えを受け付けませんでした。",
+    "ko": "Hermes가 모델 전환을 받아들이지 않았어요.",
+    "pl": "Hermes nie zaakceptował zmiany modelu.",
+    "pt-BR": "O Hermes não aceitou a troca de modelo.",
+    "ru": "Hermes не принял смену модели.",
+    "tr": "Hermes model değişikliğini kabul etmedi.",
+    "zh-Hans": "Hermes 未接受模型切换。",
+    "zh-Hant": "Hermes 未接受模型切換。"
+  },
   "Hermes didn’t keep {name}.": {
     "de": "Hermes hat {name} nicht gespeichert.",
     "es": "Hermes no guardó {name}.",
@@ -1423,6 +1498,21 @@
     "tr": "Hermes bir komut çalıştırmak istiyor.",
     "zh-Hans": "Hermes 想运行一条命令。",
     "zh-Hant": "Hermes 想執行一條指令。"
+  },
+  "High": {
+    "de": "Hoch",
+    "es": "Alto",
+    "fr": "Élevé",
+    "id": "Tinggi",
+    "it": "Alta",
+    "ja": "高",
+    "ko": "높음",
+    "pl": "Wysoki",
+    "pt-BR": "Alto",
+    "ru": "Высокий",
+    "tr": "Yüksek",
+    "zh-Hans": "高",
+    "zh-Hant": "高"
   },
   "In Conduit on your iPhone, open Settings, then Connection, then Pair a Computer, and scan this code.": {
     "de": "Öffne in Conduit auf deinem iPhone Einstellungen, dann Verbindung, dann „Computer koppeln“, und scanne diesen Code.",
@@ -1559,6 +1649,21 @@
     "zh-Hans": "与配对信箱的连接中断：{reason}",
     "zh-Hant": "與配對信箱的連線中斷：{reason}"
   },
+  "Low": {
+    "de": "Niedrig",
+    "es": "Bajo",
+    "fr": "Faible",
+    "id": "Rendah",
+    "it": "Bassa",
+    "ja": "低",
+    "ko": "낮음",
+    "pl": "Niski",
+    "pt-BR": "Baixo",
+    "ru": "Низкий",
+    "tr": "Düşük",
+    "zh-Hans": "低",
+    "zh-Hant": "低"
+  },
   "Make a new code": {
     "de": "Neuen Code erstellen",
     "es": "Crear un código nuevo",
@@ -1589,6 +1694,21 @@
     "zh-Hans": "正在生成二维码…",
     "zh-Hant": "正在產生條碼…"
   },
+  "Max": {
+    "de": "Maximal",
+    "es": "Máximo",
+    "fr": "Maximal",
+    "id": "Maks",
+    "it": "Massima",
+    "ja": "最大",
+    "ko": "최대",
+    "pl": "Maksymalny",
+    "pt-BR": "Máximo",
+    "ru": "Максимальный",
+    "tr": "Maksimum",
+    "zh-Hans": "最高",
+    "zh-Hant": "最大"
+  },
   "Maximize": {
     "de": "Maximieren",
     "es": "Maximizar",
@@ -1603,6 +1723,21 @@
     "tr": "Ekranı kapla",
     "zh-Hans": "最大化",
     "zh-Hant": "最大化"
+  },
+  "Medium": {
+    "de": "Mittel",
+    "es": "Medio",
+    "fr": "Moyen",
+    "id": "Sedang",
+    "it": "Media",
+    "ja": "中",
+    "ko": "보통",
+    "pl": "Średni",
+    "pt-BR": "Médio",
+    "ru": "Средний",
+    "tr": "Orta",
+    "zh-Hans": "中",
+    "zh-Hant": "中"
   },
   "Message": {
     "de": "Nachricht",
@@ -1633,6 +1768,21 @@
     "tr": "{name} adlı bota mesaj…",
     "zh-Hans": "给 {name} 发消息…",
     "zh-Hant": "傳訊息給 {name}…"
+  },
+  "Minimal": {
+    "de": "Minimal",
+    "es": "Mínimo",
+    "fr": "Minimal",
+    "id": "Minimal",
+    "it": "Minima",
+    "ja": "最小",
+    "ko": "최소",
+    "pl": "Minimalny",
+    "pt-BR": "Mínimo",
+    "ru": "Минимальный",
+    "tr": "Minimal",
+    "zh-Hans": "最小",
+    "zh-Hant": "極低"
   },
   "Minimize": {
     "de": "Minimieren",
@@ -1994,6 +2144,21 @@
     "zh-Hans": "没有需要你处理的事项。",
     "zh-Hant": "沒有需要你處理的事項。"
   },
+  "Nothing matches “{query}”.": {
+    "de": "Nichts passt zu „{query}“.",
+    "es": "Nada coincide con «{query}».",
+    "fr": "Aucun résultat pour « {query} ».",
+    "id": "Tidak ada yang cocok dengan “{query}”.",
+    "it": "Nessun risultato per “{query}”.",
+    "ja": "「{query}」に一致するものはありません。",
+    "ko": "“{query}”와(과) 일치하는 항목이 없습니다.",
+    "pl": "Nic nie pasuje do „{query}”.",
+    "pt-BR": "Nada corresponde a “{query}”.",
+    "ru": "Ничего не найдено по запросу «{query}».",
+    "tr": "“{query}” ile eşleşen bir şey yok.",
+    "zh-Hans": "没有与“{query}”匹配的内容。",
+    "zh-Hant": "沒有與「{query}」相符的內容。"
+  },
   "Nothing to sign in to.": {
     "de": "Nichts zum Anmelden.",
     "es": "No hay nada en lo que iniciar sesión.",
@@ -2038,6 +2203,21 @@
     "tr": "Bildirimler",
     "zh-Hans": "通知",
     "zh-Hant": "通知"
+  },
+  "Off": {
+    "de": "Aus",
+    "es": "Desactivado",
+    "fr": "Désactivé",
+    "id": "Mati",
+    "it": "Disattivato",
+    "ja": "オフ",
+    "ko": "끔",
+    "pl": "Wyłączone",
+    "pt-BR": "Desativado",
+    "ru": "Выкл.",
+    "tr": "Kapalı",
+    "zh-Hans": "关闭",
+    "zh-Hant": "關閉"
   },
   "Older": {
     "de": "Älter",
@@ -2489,6 +2669,21 @@
     "zh-Hans": "正在读取网页",
     "zh-Hant": "正在讀取網頁"
   },
+  "Reasoning": {
+    "de": "Reasoning",
+    "es": "Razonamiento",
+    "fr": "Raisonnement",
+    "id": "Penalaran",
+    "it": "Ragionamento",
+    "ja": "推論",
+    "ko": "추론",
+    "pl": "Rozumowanie",
+    "pt-BR": "Raciocínio",
+    "ru": "Рассуждения",
+    "tr": "Akıl yürütme",
+    "zh-Hans": "思考强度",
+    "zh-Hant": "推理"
+  },
   "Remove the last user and assistant exchange": {
     "de": "Den letzten Austausch zwischen Nutzer und Assistent entfernen",
     "es": "Eliminar el último intercambio entre el usuario y el asistente",
@@ -2728,6 +2923,21 @@
     "tr": "Sohbetlerde ara",
     "zh-Hans": "搜索聊天",
     "zh-Hant": "搜尋聊天"
+  },
+  "Search providers or models": {
+    "de": "Anbieter oder Modelle suchen",
+    "es": "Buscar proveedores o modelos",
+    "fr": "Rechercher fournisseurs ou modèles",
+    "id": "Cari penyedia atau model",
+    "it": "Cerca provider o modelli",
+    "ja": "プロバイダまたはモデルを検索",
+    "ko": "제공자 또는 모델 검색",
+    "pl": "Szukaj dostawców lub modeli",
+    "pt-BR": "Buscar provedores ou modelos",
+    "ru": "Поиск провайдеров или моделей",
+    "tr": "Sağlayıcı veya model ara",
+    "zh-Hans": "搜索提供方或模型",
+    "zh-Hant": "搜尋供應商或模型"
   },
   "Searched files": {
     "de": "Dateien durchsucht",
@@ -3359,6 +3569,21 @@
     "zh-Hans": "切换 Hermes",
     "zh-Hant": "切換 Hermes"
   },
+  "Switches to {model} when this reply finishes.": {
+    "de": "Wechselt zu {model}, sobald diese Antwort fertig ist.",
+    "es": "Cambia a {model} cuando termine esta respuesta.",
+    "fr": "Passe à {model} à la fin de cette réponse.",
+    "id": "Beralih ke {model} setelah balasan ini selesai.",
+    "it": "Passa a {model} quando questa risposta finisce.",
+    "ja": "この返信が終わると{model}に切り替わります。",
+    "ko": "이 답변이 끝나면 {model} 모델로 전환돼요.",
+    "pl": "Przełączy na {model}, gdy ta odpowiedź się skończy.",
+    "pt-BR": "Troca para {model} quando esta resposta terminar.",
+    "ru": "Переключится на {model}, когда этот ответ закончится.",
+    "tr": "Bu yanıt bitince {model} modeline geçer.",
+    "zh-Hans": "这条回复结束后切换到 {model}。",
+    "zh-Hant": "這則回覆結束後切換到 {model}。"
+  },
   "Take {name} out": {
     "de": "{name} herausnehmen",
     "es": "Quitar a {name}",
@@ -3794,6 +4019,36 @@
     "zh-Hans": "输入你的回答",
     "zh-Hant": "輸入你的回答"
   },
+  "Ultra": {
+    "de": "Ultra",
+    "es": "Ultra",
+    "fr": "Ultra",
+    "id": "Ultra",
+    "it": "Ultra",
+    "ja": "ウルトラ",
+    "ko": "울트라",
+    "pl": "Ultra",
+    "pt-BR": "Ultra",
+    "ru": "Ультра",
+    "tr": "Ultra",
+    "zh-Hans": "超高",
+    "zh-Hant": "極致"
+  },
+  "Ultrafast": {
+    "de": "Ultraschnell",
+    "es": "Ultrarrápido",
+    "fr": "Ultrarapide",
+    "id": "Ultracepat",
+    "it": "Ultraveloce",
+    "ja": "超高速",
+    "ko": "초고속",
+    "pl": "Ultraszybki",
+    "pt-BR": "Ultrarrápido",
+    "ru": "Сверхбыстро",
+    "tr": "Ultra hızlı",
+    "zh-Hans": "超快",
+    "zh-Hant": "超快"
+  },
   "Untitled chat": {
     "de": "Chat ohne Titel",
     "es": "Chat sin título",
@@ -4063,6 +4318,36 @@
     "tr": "Bir dosya yazıldı",
     "zh-Hans": "写入了文件",
     "zh-Hant": "寫入了檔案"
+  },
+  "YOLO automatically approves tool actions for this conversation only. Set the profile default in Workspace & safety.": {
+    "de": "YOLO gibt Tool-Aktionen nur für diese Unterhaltung automatisch frei. Den Standard des Profils legst du unter „Arbeitsbereich & Sicherheit“ fest.",
+    "es": "YOLO aprueba automáticamente las acciones de herramientas solo en esta conversación. Define el valor predeterminado del perfil en Espacio de trabajo y seguridad.",
+    "fr": "YOLO approuve automatiquement les actions d'outils pour cette conversation uniquement. Définissez la valeur par défaut du profil dans Espace de travail et sécurité.",
+    "id": "YOLO menyetujui tindakan alat secara otomatis hanya untuk percakapan ini. Atur default profil di Ruang kerja & keamanan.",
+    "it": "YOLO approva automaticamente le azioni degli strumenti solo per questa conversazione. Imposta il valore predefinito del profilo in Spazio di lavoro e sicurezza.",
+    "ja": "YOLOは、このチャットに限りツールの操作を自動承認します。プロファイルのデフォルトは「ワークスペースと安全性」で設定してください。",
+    "ko": "YOLO는 이 대화에서만 도구 작업을 자동 승인해요. 프로필 기본값은 ‘작업 공간 및 안전’에서 설정하세요.",
+    "pl": "YOLO automatycznie zatwierdza działania narzędzi tylko w tej rozmowie. Domyślne ustawienie profilu zmienisz w sekcji Obszar roboczy i bezpieczeństwo.",
+    "pt-BR": "O YOLO aprova automaticamente as ações de ferramentas somente nesta conversa. Defina o padrão do perfil em Espaço de trabalho e segurança.",
+    "ru": "YOLO автоматически разрешает действия инструментов только в этом чате. Значение по умолчанию для профиля задаётся в разделе «Рабочее пространство и безопасность».",
+    "tr": "YOLO, araç eylemlerini yalnızca bu konuşma için otomatik olarak onaylar. Profil varsayılanını Çalışma alanı ve güvenlik bölümünde ayarlayın.",
+    "zh-Hans": "YOLO 仅为此对话自动批准工具操作。请在“工作区与安全”中设置档案默认值。",
+    "zh-Hant": "YOLO 只會為此對話自動核准工具動作。請在「工作區與安全性」中設定設定檔的預設值。"
+  },
+  "YOLO mode": {
+    "de": "YOLO-Modus",
+    "es": "Modo YOLO",
+    "fr": "Mode YOLO",
+    "id": "Mode YOLO",
+    "it": "Modalità YOLO",
+    "ja": "YOLOモード",
+    "ko": "YOLO 모드",
+    "pl": "Tryb YOLO",
+    "pt-BR": "Modo YOLO",
+    "ru": "Режим YOLO",
+    "tr": "YOLO modu",
+    "zh-Hans": "YOLO 模式",
+    "zh-Hant": "YOLO 模式"
   },
   "Yesterday": {
     "de": "Gestern",

@@ -3,6 +3,7 @@ import type { ConnectionStatus, LanguageChoice } from '@shared/ipc'
 import { BotsHome } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
+import { ModelPicker } from './components/ModelPicker'
 import { RoomView } from './components/RoomView'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
@@ -84,7 +85,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [section, setSection] = useState<Section>(reopenedSection)
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean }>({ id: null })
   const list = useChatList(connected)
-  const { transcript, chat, loading, error, send, stop, command } = useChat(
+  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo } = useChat(
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
@@ -140,6 +141,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const roster = useBots(connected)
   const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
+  const [modelOpen, setModelOpen] = useState(false)
+  const closeModel = useCallback(() => setModelOpen(false), [])
+  useEffect(() => setModelOpen(false), [selected.id])
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
     async (text: string, attachments: StagedAttachment[] = []) => {
@@ -147,6 +151,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       if (looksLikeSlashCommand(text) && !attachments.length) {
         const outcome = await command(text, commands)
         if (outcome.kind === 'new') return newChat()
+        if (outcome.kind === 'model') setModelOpen(true)
         if (outcome.kind === 'prefill') setQuote(prefillRequest(outcome.text, botTitle))
         created = outcome.created
       } else {
@@ -377,10 +382,22 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onQuote={setQuote}
                 onCommand={text => void onSend(text)}
               />
+              {modelOpen && chat.liveId ? (
+                <ModelPicker
+                  chat={chat}
+                  profile={selected.profile}
+                  onClose={closeModel}
+                  setModel={setModel}
+                  setReasoning={setReasoning}
+                  setSpeed={setSpeed}
+                  setYolo={setYolo}
+                />
+              ) : null}
               <Composer
                 placeholder={t('Message {name}…', { name: botTitle })}
                 quote={quote}
                 commands={commands}
+                onModel={chat.liveId ? () => setModelOpen(open => !open) : undefined}
                 running={transcript.running}
                 disabled={!connected}
                 model={chat.model}
