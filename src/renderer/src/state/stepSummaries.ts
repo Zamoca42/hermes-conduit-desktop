@@ -4,8 +4,9 @@
  * or asked from a run (Explain these steps). Conduit asks Hermes a side
  * question through the plugin's `POST /side-question` (plugin 0.137.4+), which
  * answers this device only from a copy of the chat that can't call tools or
- * change it. Summaries stay on this computer, by profile and the run's first
- * tool call.
+ * change it, or as a hidden /btw where the plugin has no such route. Summaries stay on this computer, by profile and the run's first
+ * tool call. Signing out of a host forgets its summaries, as the phone's
+ * do with their dashboard.
  */
 import type { ToolItem } from './transcript'
 import type { StepItem } from './runs'
@@ -105,6 +106,40 @@ function body(language: string, count: number): string {
   )
 }
 
+/**
+ * Whether a /btw asked exactly this, or a run's explanation, in whichever
+ * language and word count it names, or the one-sentence question an earlier
+ * Conduit asked: its answer (this computer's, late, or the phone's) is never
+ * shown as a note.
+ */
+export function isQuestion(text: string | null | undefined): boolean {
+  if (!text) return false
+  // From the end: an explanation's listed calls come first and may say anything.
+  const tell = text.lastIndexOf(', tell the user, looking back')
+  if (tell >= 0) {
+    const lead = text.lastIndexOf('In ', tell)
+    const count = text.slice(tell).match(/at most (\d+) words/)
+    if (lead < 0 || !count) return false
+    const told = body(text.slice(lead + 3, tell), Number(count[1]))
+    if (text.startsWith(QUESTION_HEAD)) return text === `${QUESTION_HEAD}. ${QUESTION_SCOPE} ${told}`
+    if (text.startsWith(`${EXPLAIN_HEAD}:\n`)) return text.endsWith(`\n${EXPLAIN_SCOPE} ${told}`)
+    return false
+  }
+  // The question until 2.2.1.
+  const old = text.match(/^Describe in one short sentence[\s\S]*?Write it in ([\s\S]*?), in the past tense/)
+  return (
+    !!old &&
+    text ===
+      'Describe in one short sentence (at most 15 words) what you did in the tool calls just before your last reply. ' +
+        "It labels those steps, folded, in the user's chat app. " +
+        `Write it in ${old[1]}, in the past tense, like "Searched three sites and compared their prices". ` +
+        'Reply with the sentence only.'
+  )
+}
+
+/** How long a question waits for its answer before its run can be asked again. */
+export const ANSWER_WAIT_MS = 120_000
+
 /** The phone's own question for the last run, word for word, so its answer is never shown as a note there. */
 export const question = (language: string, count: number) => `${QUESTION_HEAD}. ${QUESTION_SCOPE} ${body(language, count)}`
 
@@ -200,6 +235,25 @@ function entries(): Entry[] {
 
 export function savedSummary(scope: string, toolId: string): string | null {
   return entries().find(e => e[0] === scope && e[1] === toolId)?.[2] ?? null
+}
+
+/** A summary's scope: the host and the profile, so a host's go when it's signed out. */
+export const summaryScope = (host: string, profile: string | undefined) => `${host}\t${profile || 'default'}`
+
+/** Forgets the summaries of every host not in `hosts` (signed out or removed), and those kept before they were by host. */
+export function forgetSummaries(hosts: string[]): void {
+  const all = entries()
+  const kept = all.filter(e => {
+    const tab = e[0].indexOf('\t')
+    return tab > 0 && hosts.includes(e[0].slice(0, tab))
+  })
+  if (kept.length === all.length) return
+  try {
+    if (kept.length) localStorage.setItem(SAVED_KEY, JSON.stringify(kept))
+    else localStorage.removeItem(SAVED_KEY)
+  } catch {
+    // Tried again on the next change of hosts.
+  }
 }
 
 /** Adds one, oldest first in storage so the limit drops the oldest. */

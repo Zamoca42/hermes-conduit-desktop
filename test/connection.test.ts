@@ -179,7 +179,7 @@ describe('the connection', () => {
     h.connection.signOut()
     expect(h.sockets[0]!.readyState).toBe(3)
     expect(h.saved()).toBeNull()
-    expect(h.connection.current()).toEqual({ phase: 'signed-out' })
+    expect(h.connection.current()).toEqual({ phase: 'signed-out', hosts: [] })
     await expect(h.connection.rpc('session.list')).rejects.toThrow('Not connected')
   })
 
@@ -268,7 +268,7 @@ describe('more than one Hermes', () => {
     await tick()
     expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://two', hosts: [{ url: 'https://two' }] })
     h.connection.signOut()
-    expect(h.connection.current()).toEqual({ phase: 'signed-out' })
+    expect(h.connection.current()).toEqual({ phase: 'signed-out', hosts: [] })
   })
 
   it('a failed sign-in to another host goes back to the open one', async () => {

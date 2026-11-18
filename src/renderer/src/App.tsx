@@ -18,6 +18,8 @@ import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar, hostName } from './components/TitleBar'
 import { Transcript, prefillRequest, quoteRequest } from './components/Transcript'
+import { forgetSummaries } from './state/stepSummaries'
+import { SummaryHost } from './state/useStepSummaries'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
 import { forgetAvatars, useBots } from './state/useBots'
@@ -85,6 +87,11 @@ export function App() {
   // A new host signed in (or the sign-in screen otherwise left): back to the app.
   const url = status?.url
   useEffect(() => setAdding(false), [url])
+  // A host signed out or removed takes the summaries of its runs of steps with it.
+  const hostList = status?.hosts?.map(h => h.url).join('\n')
+  useEffect(() => {
+    if (hostList !== undefined) forgetSummaries(hostList ? hostList.split('\n') : [])
+  }, [hostList])
 
   if (!status) return <div className="app" />
   const signedOut = status.phase === 'signed-out' || (status.phase === 'failed' && !status.url)
@@ -102,7 +109,9 @@ export function App() {
         <SignIn notice={status.error} />
       ) : (
         // Each host gets a fresh window state: its chats, bots and rooms are its own.
-        <Shell key={status.url} status={status} onAddHost={() => setAdding(true)} />
+        <SummaryHost.Provider value={status.url ?? ''}>
+          <Shell key={status.url} status={status} onAddHost={() => setAdding(true)} />
+        </SummaryHost.Provider>
       )}
     </div>
   )
