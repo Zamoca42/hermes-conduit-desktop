@@ -25,6 +25,7 @@ import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { looksLikeSlashCommand } from './state/slash'
 import { useCommands } from './state/useCommands'
+import { mutateSession } from './state/chatActions'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -144,6 +145,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
   useEffect(() => setModelOpen(false), [selected.id])
+  /** A row's Pin, Rename or Delete: shown at once, put back with the reason when Hermes refuses it. */
+  const chatAction = useCallback(
+    async (row: ChatRow, patch: { pinned?: boolean; title?: string } | null) => {
+      list.patchRow(row.id, patch)
+      if (patch === null && (selected.id === row.id || chat.storedId === row.id)) newChat()
+      try {
+        await mutateSession(window.conduit.http, row.id, row.profile, patch)
+      } catch (e) {
+        window.alert(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: e instanceof Error ? e.message : String(e) }))
+      }
+      list.refresh()
+    },
+    [list, selected.id, chat.storedId, newChat]
+  )
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
     async (text: string, attachments: StagedAttachment[] = []) => {
@@ -369,6 +384,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               bots={roster.bots}
               profile={chatProfile}
               onProfile={chooseProfile}
+              onPin={row => void chatAction(row, { pinned: !row.pinned })}
+              onRename={(row, title) => void chatAction(row, { title })}
+              onDelete={row => {
+                if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`)) void chatAction(row, null)
+              }}
             />
             <main className="chat" ref={chatPane}>
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>

@@ -174,7 +174,8 @@ function registerIpc(): void {
     try {
       return { ok: true, result: await connection.http(method, path, body) }
     } catch (error) {
-      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+      const code = (error as { code?: unknown }).code
+      return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }
     }
   })
   ipcMain.on(IPC.windowMinimize, event => BrowserWindow.fromWebContents(event.sender)?.minimize())

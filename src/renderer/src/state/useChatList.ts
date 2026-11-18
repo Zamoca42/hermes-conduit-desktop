@@ -72,5 +72,14 @@ export function useChatList(connected: boolean) {
     }
   }, [connected, load, refreshSoon])
 
-  return { rows, error, refresh: refreshSoon }
+  /** Shows a row's change at once (a pin, a rename), ahead of the list Hermes sends next. */
+  const patchRow = useCallback((id: string, patch: Partial<ChatRow> | null) => {
+    const current = rowsRef.current
+    if (!current) return
+    const next = patch === null ? current.filter(r => r.id !== id) : current.map(r => (r.id === id ? { ...r, ...patch } : r))
+    rowsRef.current = next
+    setRows(next)
+  }, [])
+
+  return { rows, error, refresh: refreshSoon, patchRow }
 }

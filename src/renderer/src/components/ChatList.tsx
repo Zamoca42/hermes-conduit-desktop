@@ -18,12 +18,41 @@ interface Props {
   /** The profile the list shows (null: every one). */
   profile?: string | null
   onProfile?: (profile: string | null) => void
+  /** A row's menu (right-click or ⋯): Pin or Unpin, Rename, Delete. */
+  onPin?: (row: ChatRow) => void
+  onRename?: (row: ChatRow, title: string) => void
+  onDelete?: (row: ChatRow) => void
 }
 
 const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
 
-export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat, bots, profile = null, onProfile }: Props) {
+export function ChatList({ rows, error, selectedId, runningIds, runningStatus, onSelect, onNewChat, bots, profile = null, onProfile, onPin, onRename, onDelete }: Props) {
   const [query, setQuery] = useState('')
+  const [menu, setMenu] = useState<{ row: ChatRow; x: number; y: number } | null>(null)
+  const [renaming, setRenaming] = useState<{ id: string; title: string } | null>(null)
+  const hasActions = !!(onPin || onRename || onDelete)
+
+  useEffect(() => {
+    if (!menu) return
+    const close = () => setMenu(null)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
+    window.addEventListener('click', close)
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('blur', close)
+    return () => {
+      window.removeEventListener('click', close)
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('blur', close)
+    }
+  }, [menu])
+
+  function finishRename(save: boolean) {
+    if (!renaming) return
+    const row = rows?.find(r => r.id === renaming.id)
+    const title = renaming.title.trim()
+    setRenaming(null)
+    if (save && row && title && title !== row.title) onRename?.(row, title)
+  }
   const sections = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
@@ -100,30 +129,90 @@ export function ChatList({ rows, error, selectedId, runningIds, runningStatus, o
             {section.rows.map(row => {
               const running = runningIds.has(row.id)
               return (
-                <button
+                <div
                   key={row.id}
-                  className="row"
-                  aria-current={row.id === selectedId ? 'true' : undefined}
-                  onClick={() => onSelect(row)}
+                  className="row-wrap"
+                  onContextMenu={
+                    hasActions
+                      ? e => {
+                          e.preventDefault()
+                          setMenu({ row, x: e.clientX, y: e.clientY })
+                        }
+                      : undefined
+                  }
                 >
-                  <span className="row-top">
-                    <span className="row-title">{row.title}</span>
-                    <span className="meta row-time">{timeLabel(row.activeAt)}</span>
-                  </span>
-                  {running ? (
-                    <span className="running">{t('Running')}{runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}</span>
-                  ) : row.preview || botName(row) ? (
-                    <span className="meta">
-                      {botName(row) ? `${botName(row)} · ` : ''}
-                      {row.preview ?? ''}
-                    </span>
+                  {renaming?.id === row.id ? (
+                    <input
+                      className="row-rename"
+                      aria-label={t('Rename')}
+                      autoFocus
+                      value={renaming.title}
+                      onChange={e => setRenaming({ id: row.id, title: e.target.value })}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') finishRename(true)
+                        else if (e.key === 'Escape') finishRename(false)
+                      }}
+                      onBlur={() => finishRename(true)}
+                    />
+                  ) : (
+                    <button className="row" aria-current={row.id === selectedId ? 'true' : undefined} onClick={() => onSelect(row)}>
+                      <span className="row-top">
+                        <span className="row-title">
+                          {row.pinned ? <Icon name="pin" className="row-pin" /> : null}
+                          {row.title}
+                        </span>
+                        <span className="meta row-time">{timeLabel(row.activeAt)}</span>
+                      </span>
+                      {running ? (
+                        <span className="running">{t('Running')}{runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}</span>
+                      ) : row.preview || botName(row) ? (
+                        <span className="meta">
+                          {botName(row) ? `${botName(row)} · ` : ''}
+                          {row.preview ?? ''}
+                        </span>
+                      ) : null}
+                    </button>
+                  )}
+                  {hasActions && renaming?.id !== row.id ? (
+                    <button
+                      className="row-more"
+                      aria-label={t('More')}
+                      title={t('More')}
+                      aria-haspopup="menu"
+                      onClick={e => {
+                        e.stopPropagation()
+                        const box = e.currentTarget.getBoundingClientRect()
+                        setMenu(m => (m?.row.id === row.id ? null : { row, x: box.right, y: box.bottom }))
+                      }}
+                    >
+                      <Icon name="more" />
+                    </button>
                   ) : null}
-                </button>
+                </div>
               )
             })}
           </div>
         ))}
       </div>
+      {menu ? (
+        <div className="host-menu row-menu" role="menu" style={{ left: Math.min(menu.x, window.innerWidth - 200), top: Math.min(menu.y, window.innerHeight - 140) }}>
+          {onPin ? (
+            <button role="menuitem" onClick={() => onPin(menu.row)}>
+              {menu.row.pinned ? t('Unpin') : t('Pin')}
+            </button>
+          ) : null}
+          {onRename ? (
+            <button role="menuitem" onClick={() => setRenaming({ id: menu.row.id, title: menu.row.title })}>
+              {t('Rename')}
+            </button>
+          ) : null}
+          {onDelete ? (
+            <button role="menuitem" className="danger" onClick={() => onDelete(menu.row)}>
+              {t('Delete')}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   )
 }

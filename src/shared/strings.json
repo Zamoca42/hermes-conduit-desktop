@@ -824,6 +824,21 @@
     "zh-Hans": "无法读取 {names}。",
     "zh-Hant": "無法讀取 {names}。"
   },
+  "Couldn’t change “{title}”: {reason}": {
+    "de": "„{title}“ konnte nicht geändert werden: {reason}",
+    "es": "No se pudo cambiar «{title}»: {reason}",
+    "fr": "Impossible de modifier « {title} » : {reason}",
+    "id": "Tidak dapat mengubah “{title}”: {reason}",
+    "it": "Impossibile modificare “{title}”: {reason}",
+    "ja": "「{title}」を変更できませんでした: {reason}",
+    "ko": "“{title}”을(를) 변경할 수 없습니다: {reason}",
+    "pl": "Nie udało się zmienić „{title}”: {reason}",
+    "pt-BR": "Não foi possível alterar “{title}”: {reason}",
+    "ru": "Не удалось изменить «{title}»: {reason}",
+    "tr": "“{title}” değiştirilemedi: {reason}",
+    "zh-Hans": "无法更改“{title}”：{reason}",
+    "zh-Hant": "無法更改「{title}」：{reason}"
+  },
   "Couldn’t load your bots: {error}": {
     "de": "Deine Bots konnten nicht geladen werden: {error}",
     "es": "No se pudieron cargar tus bots: {error}",
@@ -973,6 +988,36 @@
     "tr": "Panel adresi",
     "zh-Hans": "仪表盘地址",
     "zh-Hant": "儀表板位址"
+  },
+  "Delete": {
+    "de": "Löschen",
+    "es": "Eliminar",
+    "fr": "Supprimer",
+    "id": "Hapus",
+    "it": "Elimina",
+    "ja": "削除",
+    "ko": "삭제",
+    "pl": "Usuń",
+    "pt-BR": "Apagar",
+    "ru": "Удалить",
+    "tr": "Sil",
+    "zh-Hans": "删除",
+    "zh-Hant": "刪除"
+  },
+  "Delete conversation?": {
+    "de": "Unterhaltung löschen?",
+    "es": "¿Eliminar conversación?",
+    "fr": "Supprimer la conversation ?",
+    "id": "Hapus percakapan?",
+    "it": "Eliminare la conversazione?",
+    "ja": "チャットを削除しますか？",
+    "ko": "대화를 삭제할까요?",
+    "pl": "Usunąć rozmowę?",
+    "pt-BR": "Apagar conversa?",
+    "ru": "Удалить чат?",
+    "tr": "Konuşma silinsin mi?",
+    "zh-Hans": "删除会话",
+    "zh-Hant": "要刪除對話嗎？"
   },
   "Deny": {
     "de": "Ablehnen",
@@ -2429,6 +2474,21 @@
     "zh-Hans": "粘贴的文本",
     "zh-Hant": "貼上的文字"
   },
+  "Pin": {
+    "de": "Anheften",
+    "es": "Fijar",
+    "fr": "Épingler",
+    "id": "Sematkan",
+    "it": "Fissa",
+    "ja": "ピンで固定",
+    "ko": "고정",
+    "pl": "Przypnij",
+    "pt-BR": "Fixar",
+    "ru": "Закрепить",
+    "tr": "Sabitle",
+    "zh-Hans": "置顶",
+    "zh-Hant": "釘選"
+  },
   "Pinned": {
     "de": "Angeheftet",
     "es": "Fijados",
@@ -2728,6 +2788,21 @@
     "tr": "{name} öğesini kaldır",
     "zh-Hans": "移除 {name}",
     "zh-Hant": "移除 {name}"
+  },
+  "Rename": {
+    "de": "Umbenennen",
+    "es": "Cambiar nombre",
+    "fr": "Renommer",
+    "id": "Ganti Nama",
+    "it": "Rinomina",
+    "ja": "名前を変更",
+    "ko": "이름 변경",
+    "pl": "Zmień nazwę",
+    "pt-BR": "Renomear",
+    "ru": "Переименовать",
+    "tr": "Yeniden Adlandır",
+    "zh-Hans": "重命名…",
+    "zh-Hant": "重新命名"
   },
   "Renamed to {name}": {
     "de": "Umbenannt in {name}",
@@ -3884,6 +3959,21 @@
     "zh-Hans": "这不像 Hermes 控制台的响应。",
     "zh-Hant": "這不像 Hermes 控制台的回應。"
   },
+  "This permanently deletes the conversation and cannot be undone.": {
+    "de": "Dadurch wird die Unterhaltung endgültig gelöscht. Dies kann nicht widerrufen werden.",
+    "es": "Esto elimina la conversación permanentemente y no se puede deshacer.",
+    "fr": "Cette action supprime définitivement la conversation et est irréversible.",
+    "id": "Tindakan ini menghapus percakapan secara permanen dan tidak dapat diurungkan.",
+    "it": "Questa azione elimina definitivamente la conversazione e non può essere annullata.",
+    "ja": "このチャットは完全に削除され、元に戻すことはできません。",
+    "ko": "대화가 영구적으로 삭제되며 되돌릴 수 없어요.",
+    "pl": "Spowoduje to trwałe usunięcie rozmowy. Tej operacji nie można cofnąć.",
+    "pt-BR": "Isso apaga a conversa permanentemente e não pode ser desfeito.",
+    "ru": "Чат будет удалён навсегда. Это действие нельзя отменить.",
+    "tr": "Bu işlem konuşmayı kalıcı olarak siler ve geri alınamaz.",
+    "zh-Hans": "此操作将永久删除该对话，且无法撤销。",
+    "zh-Hant": "這會永久刪除對話，且無法還原。"
+  },
   "This was already answered somewhere else.": {
     "de": "Das wurde schon woanders beantwortet.",
     "es": "Esto ya se respondió en otro lugar.",
@@ -4048,6 +4138,21 @@
     "tr": "Ultra hızlı",
     "zh-Hans": "超快",
     "zh-Hant": "超快"
+  },
+  "Unpin": {
+    "de": "Lösen",
+    "es": "Dejar de fijar",
+    "fr": "Désépingler",
+    "id": "Lepas Sematan",
+    "it": "Non fissare",
+    "ja": "ピンを外す",
+    "ko": "고정 해제",
+    "pl": "Odepnij",
+    "pt-BR": "Desafixar",
+    "ru": "Открепить",
+    "tr": "Sabitlemeyi Kaldır",
+    "zh-Hans": "取消置顶",
+    "zh-Hant": "取消釘選"
   },
   "Untitled chat": {
     "de": "Chat ohne Titel",
