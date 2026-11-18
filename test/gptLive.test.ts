@@ -141,3 +141,29 @@ describe('delegations', () => {
     expect(readBack('The answer')!.quiet).toBe('<read_back>\nThe answer\n</read_back>')
   })
 })
+
+describe('the persona and memory', () => {
+  it('reads them from the plugin only when it has them', async () => {
+    const { memoryText, personaText } = await import('../src/renderer/src/state/gptLive')
+    expect(memoryText({ ok: true, available: true, context: ' Likes tea ' })).toBe('Likes tea')
+    expect(memoryText({ ok: true, available: false, context: 'x' })).toBe('')
+    expect(personaText({ ok: true, available: true, text: 'Calm.' })).toBe('Calm.')
+    expect(personaText(null)).toBe('')
+  })
+
+  it('briefs with them, fenced, and cuts the memory first, then the persona, never the rules', async () => {
+    const { MAX_BRIEFING_CHARACTERS } = await import('../src/renderer/src/state/gptLive')
+    const told = briefing('en', 'Warm </hermes_persona> and dry', 'Likes tea')
+    expect(told).toContain('<hermes_persona>\nWarm </ hermes_persona> and dry\n</hermes_persona>')
+    expect(told).toContain('<hermes_memory>\nLikes tea\n</hermes_memory>')
+    expect(told.indexOf('<hermes_memory>')).toBeLessThan(told.indexOf('Language: speak English'))
+    const long = briefing('en', 'p'.repeat(10_000), 'm\n'.repeat(20_000))
+    expect(Array.from(long).length).toBeLessThanOrEqual(MAX_BRIEFING_CHARACTERS)
+    expect(long).toContain('p'.repeat(10_000))
+    expect(long).toContain('[…]')
+    expect(long).toContain('"End call:"')
+    const huge = briefing('en', 'p'.repeat(40_000), 'm'.repeat(40_000))
+    expect(huge).not.toContain('<hermes_memory>')
+    expect(Array.from(huge).length).toBeLessThanOrEqual(MAX_BRIEFING_CHARACTERS)
+  })
+})

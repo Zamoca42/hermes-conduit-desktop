@@ -7469,6 +7469,21 @@
     "zh-Hans": "GPT-Live 结束了对话。",
     "zh-Hant": "GPT-Live 結束了對話。"
   },
+  "GPT-Live gets what your Hermes agent remembers about you. That memory is sent to OpenAI with the conversation. Applies to the next conversation.": {
+    "de": "GPT-Live erhält, was dein Hermes-Agent über dich weiß. Dieses Gedächtnis wird mit der Unterhaltung an OpenAI gesendet. Gilt ab der nächsten Unterhaltung.",
+    "es": "GPT-Live recibe lo que tu agente Hermes recuerda de ti. Esa memoria se envía a OpenAI con la conversación. Se aplica a la próxima conversación.",
+    "fr": "GPT-Live reçoit ce que votre agent Hermes sait de vous. Cette mémoire est envoyée à OpenAI avec la conversation. S'applique à la prochaine conversation.",
+    "id": "GPT-Live menerima apa yang diingat agen Hermes Anda tentang Anda. Memori tersebut dikirim ke OpenAI bersama percakapan. Berlaku mulai percakapan berikutnya.",
+    "it": "GPT-Live riceve ciò che il tuo agente Hermes ricorda di te. Questa memoria viene inviata a OpenAI con la conversazione. Vale dalla prossima conversazione.",
+    "ja": "GPT-Liveは、Hermesエージェントが記憶しているあなたの情報を受け取ります。そのメモリは会話とともにOpenAIに送信されます。次回の会話から適用されます。",
+    "ko": "GPT-Live는 Hermes 에이전트가 사용자에 대해 기억하는 내용을 받아요. 이 메모리는 대화와 함께 OpenAI로 전송돼요. 다음 대화부터 적용돼요.",
+    "pl": "GPT-Live otrzymuje to, co Twój agent Hermes pamięta o Tobie. Ta pamięć jest wysyłana do OpenAI razem z rozmową. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "O GPT-Live recebe o que seu agente Hermes lembra sobre você. Essa memória é enviada à OpenAI com a conversa. Vale a partir da próxima conversa.",
+    "ru": "GPT-Live получает то, что ваш агент Hermes помнит о вас. Эта память отправляется в OpenAI вместе с разговором. Действует со следующего разговора.",
+    "tr": "GPT-Live, Hermes ajanınızın sizinle ilgili hatırladıklarını alır. Bu bellek konuşmayla birlikte OpenAI'a gönderilir. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "GPT-Live 会获得你的 Hermes 智能体记住的关于你的内容。这些记忆会随对话发送给 OpenAI。从下一次对话开始生效。",
+    "zh-Hant": "GPT-Live 會取得 Hermes 代理程式記得的關於你的內容。這些記憶會隨對話傳送給 OpenAI。下次對話起生效。"
+  },
   "GPT-Live is not available on this Hermes server.": {
     "de": "GPT-Live ist auf diesem Hermes-Server nicht verfügbar.",
     "es": "GPT-Live no está disponible en este servidor Hermes.",
@@ -7528,6 +7543,21 @@
     "tr": "GPT-Live konuşmayı reddetti: {message}",
     "zh-Hans": "GPT-Live 拒绝了对话：{message}",
     "zh-Hant": "GPT-Live 拒絕了對話：{message}"
+  },
+  "GPT-Live talks with the personality in this profile's SOUL.md. SOUL.md is sent to OpenAI with the conversation. Applies to the next conversation.": {
+    "de": "GPT-Live spricht mit der Persönlichkeit aus der SOUL.md dieses Profils. SOUL.md wird mit der Unterhaltung an OpenAI gesendet. Gilt ab der nächsten Unterhaltung.",
+    "es": "GPT-Live habla con la personalidad del SOUL.md de este perfil. SOUL.md se envía a OpenAI con la conversación. Se aplica a la próxima conversación.",
+    "fr": "GPT-Live parle avec la personnalité du SOUL.md de ce profil. SOUL.md est envoyé à OpenAI avec la conversation. S'applique à la prochaine conversation.",
+    "id": "GPT-Live berbicara dengan kepribadian di SOUL.md profil ini. SOUL.md dikirim ke OpenAI bersama percakapan. Berlaku mulai percakapan berikutnya.",
+    "it": "GPT-Live parla con la personalità del SOUL.md di questo profilo. SOUL.md viene inviato a OpenAI con la conversazione. Vale dalla prossima conversazione.",
+    "ja": "GPT-Liveは、このプロファイルのSOUL.mdに記述された人格で話します。SOUL.mdは会話とともにOpenAIに送信されます。次回の会話から適用されます。",
+    "ko": "GPT-Live는 이 프로필의 SOUL.md에 있는 성격으로 말해요. SOUL.md는 대화와 함께 OpenAI로 전송돼요. 다음 대화부터 적용돼요.",
+    "pl": "GPT-Live mówi z osobowością z pliku SOUL.md tego profilu. SOUL.md jest wysyłany do OpenAI razem z rozmową. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "O GPT-Live fala com a personalidade do SOUL.md deste perfil. O SOUL.md é enviado à OpenAI com a conversa. Vale a partir da próxima conversa.",
+    "ru": "GPT-Live говорит с личностью из SOUL.md этого профиля. SOUL.md отправляется в OpenAI вместе с разговором. Действует со следующего разговора.",
+    "tr": "GPT-Live, bu profilin SOUL.md dosyasındaki kişilikle konuşur. SOUL.md konuşmayla birlikte OpenAI'a gönderilir. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "GPT-Live 会以此配置文件 SOUL.md 中的个性说话。SOUL.md 会随对话发送给 OpenAI。从下一次对话开始生效。",
+    "zh-Hant": "GPT-Live 會以此設定檔 SOUL.md 中的個性說話。SOUL.md 會隨對話傳送給 OpenAI。下次對話起生效。"
   },
   "Gateway": {
     "de": "Gateway",
@@ -22633,6 +22663,36 @@
     "tr": "Hermes varsayılanını kullan",
     "zh-Hans": "使用 Hermes 默认值",
     "zh-Hant": "使用 Hermes 預設值"
+  },
+  "Use Hermes memory": {
+    "de": "Hermes-Gedächtnis nutzen",
+    "es": "Usar la memoria de Hermes",
+    "fr": "Utiliser la mémoire Hermes",
+    "id": "Gunakan memori Hermes",
+    "it": "Usa la memoria di Hermes",
+    "ja": "Hermesのメモリを使用",
+    "ko": "Hermes 메모리 사용",
+    "pl": "Używaj pamięci Hermesa",
+    "pt-BR": "Usar memória do Hermes",
+    "ru": "Использовать память Hermes",
+    "tr": "Hermes belleğini kullan",
+    "zh-Hans": "使用 Hermes 记忆",
+    "zh-Hant": "使用 Hermes 記憶"
+  },
+  "Use Hermes personality": {
+    "de": "Hermes-Persönlichkeit nutzen",
+    "es": "Usar la personalidad de Hermes",
+    "fr": "Utiliser la personnalité Hermes",
+    "id": "Gunakan kepribadian Hermes",
+    "it": "Usa la personalità di Hermes",
+    "ja": "Hermesのパーソナリティを使用",
+    "ko": "Hermes 성격 사용",
+    "pl": "Używaj osobowości Hermesa",
+    "pt-BR": "Usar personalidade do Hermes",
+    "ru": "Использовать личность Hermes",
+    "tr": "Hermes kişiliğini kullan",
+    "zh-Hans": "使用 Hermes 性格",
+    "zh-Hant": "使用 Hermes 個性"
   },
   "Use This Model?": {
     "de": "Dieses Modell verwenden?",

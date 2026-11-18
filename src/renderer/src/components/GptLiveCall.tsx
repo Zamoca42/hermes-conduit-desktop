@@ -22,6 +22,12 @@ import {
   history,
   isEndCall,
   isReadBack,
+  MEMORY_PATH,
+  PERSONALITY_PATH,
+  memoryText,
+  personaText,
+  sendsMemory,
+  sendsPersona,
   readBack,
   replyPrompt,
   requestWords,
@@ -304,7 +310,13 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
             item.kind === 'user' || item.kind === 'assistant' ? [{ role: item.kind, text: item.text }] : []
           )
         )
-        const told = briefing(language())
+        // The persona and memory only when switched on; a host without them starts the call without.
+        const [persona, memory] = await Promise.all([
+          sendsPersona() ? gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : '',
+          sendsMemory() ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(memoryText, () => '') : ''
+        ])
+        if (ended.current) return
+        const told = briefing(language(), persona, memory)
         const body: Record<string, unknown> = { sdp: peer.localDescription?.sdp ?? '', billing, briefing: told }
         if (seed.length) body.history = seed
         const answer = sessionAnswer(await gateway.http('POST', withProfile(SESSION_PATH, profile), body, SESSION_TIMEOUT_MS), billing)

@@ -6,7 +6,11 @@ import {
   availability,
   gptLiveBilling,
   setGptLiveBilling,
+  setSendsMemory,
+  setSendsPersona,
   setVoiceMode,
+  sendsMemory,
+  sendsPersona,
   voiceMode,
   withProfile,
   type Availability,
@@ -18,6 +22,8 @@ import {
 export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [mode, setMode] = useState<VoiceMode>(voiceMode)
   const [billing, setBilling] = useState<Billing>(gptLiveBilling)
+  const [memory, setMemory] = useState(sendsMemory)
+  const [persona, setPersona] = useState(sendsPersona)
   const [status, setStatus] = useState<Availability | 'checking' | 'missing' | null>(null)
 
   useEffect(() => {
@@ -94,6 +100,38 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
                       ? t('GPT-Live is not available on this Hermes server: {reason}', { reason: status.reason })
                       : t('GPT-Live is not available on this Hermes server.')
                     : null}
+          </p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={memory}
+              onChange={e => {
+                setMemory(e.target.checked)
+                setSendsMemory(e.target.checked)
+              }}
+            />
+            {t('Use Hermes memory')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              'GPT-Live gets what your Hermes agent remembers about you. That memory is sent to OpenAI with the conversation. Applies to the next conversation.'
+            )}
+          </p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={persona}
+              onChange={e => {
+                setPersona(e.target.checked)
+                setSendsPersona(e.target.checked)
+              }}
+            />
+            {t('Use Hermes personality')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              "GPT-Live talks with the personality in this profile's SOUL.md. SOUL.md is sent to OpenAI with the conversation. Applies to the next conversation."
+            )}
           </p>
         </>
       ) : null}
