@@ -17,7 +17,7 @@ import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar, hostName } from './components/TitleBar'
-import { Transcript, prefillRequest, quoteRequest } from './components/Transcript'
+import { Transcript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { forgetSummaries } from './state/stepSummaries'
 import { SummaryHost } from './state/useStepSummaries'
 import type { Bot } from './state/bots'
@@ -367,6 +367,24 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const showWork = workOpen && (!!openBotChat || !!workItem)
   // The chat's artifacts beside it, after the phone's In This Chat sheet.
   const [artifactsOpen, setArtifactsOpen] = useState(false)
+  // An artifact's Show in Chat: the message it came from, once its chat's transcript has it (after the phone's ArtifactReveal).
+  const [revealRow, setRevealRow] = useState<{ sessionId: string; messageId: number; until: number } | null>(null)
+  useEffect(() => {
+    if (!revealRow || selected.id !== revealRow.sessionId) return
+    if (Date.now() > revealRow.until) return setRevealRow(null)
+    // The message itself, else the last one before it: a tool call keeps no row of its own.
+    let best: { key: string; row: number } | null = null
+    for (const item of transcript.items) {
+      const row = /^row-(\d+)$/.exec(item.key)?.[1]
+      if (row === undefined) continue
+      const n = Number(row)
+      if (n <= revealRow.messageId && (!best || n >= best.row)) best = { key: item.key, row: n }
+    }
+    if (!best) return
+    const key = best.key
+    setRevealRow(null)
+    requestAnimationFrame(() => revealMessage(chatPane.current, key))
+  }, [revealRow, selected.id, transcript.items])
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
   const [contextOpen, setContextOpen] = useState(false)
@@ -966,6 +984,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   setArtifactsOpen(false)
                   openPath?.(path)
                 }}
+                onOpenChat={item => setRevealRow({ sessionId: item.sessionId, messageId: item.messageId, until: Date.now() + 20_000 })}
                 onClose={() => setArtifactsOpen(false)}
               />
             ) : showWork ? (
@@ -1055,6 +1074,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onOpenChat={item => {
                   setSelected({ id: item.sessionId, profile: chatProfile ?? undefined, title: item.sessionTitle })
                   setSection('chats')
+                  setRevealRow({ sessionId: item.sessionId, messageId: item.messageId, until: Date.now() + 20_000 })
                 }}
               />
             </div>
