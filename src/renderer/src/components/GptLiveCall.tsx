@@ -42,10 +42,13 @@ import {
   type Dialect,
   type ServerEvent
 } from '../state/gptLive'
+import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import { Icon } from './icons'
 
 interface Props {
   profile?: string
+  /** The chat's saved session, which keeps the call's transcript when it ends. */
+  chatId?: string | null
   /** The chat's turns so far, which the call starts knowing. */
   items: TranscriptItem[]
   /** Sends a request as the chat's next message. */
@@ -83,7 +86,7 @@ const GOODBYE =
  * you talk with GPT-Live, and what you ask it to do goes to Hermes as the chat's
  * next message, with Hermes' reply told back to you in the call.
  */
-export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastReply, onEnd, onClassic }: Props) {
+export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -108,8 +111,18 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
   const queue = useRef<{ id: string; request: string }[]>([])
   const active = useRef<{ id: string; from: number; at: number; started: boolean } | null>(null)
   // The latest props, for the data channel's handlers.
-  const live = useRef({ running, turnsDone, lastReply, onSay })
-  live.current = { running, turnsDone, lastReply, onSay }
+  const live = useRef({ running, turnsDone, lastReply, onSay, chatId })
+  live.current = { running, turnsDone, lastReply, onSay, chatId }
+  // The call's finished turns, kept with the chat when it ends.
+  const record = useRef<CallTurn[]>([])
+  const callId = useRef(newCallId())
+  const saved = useRef(false)
+  const keep = (role: CallTurn['role'], text: string) => text.trim() && record.current.push({ role, text: text.trim(), at: Date.now() / 1000 })
+  const save = () => {
+    if (saved.current) return
+    saved.current = true
+    void saveCall(profile, callId.current, 'gpt-live', record.current, live.current.chatId)
+  }
 
   const append = (text: string, channelName: Channel, delegationId: string | null) => {
     const dc = channel.current
@@ -119,6 +132,7 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
   }
 
   const teardown = () => {
+    save()
     if (quiet.current) window.clearTimeout(quiet.current)
     try {
       if (channel.current?.readyState === 'open') channel.current.send(JSON.stringify(closeMessage()))
@@ -246,8 +260,10 @@ export function GptLiveCall({ profile, items, onSay, running, turnsDone, lastRep
           const text = event.transcript.trim() || words.current.open.trim()
           words.current = { done: [words.current.done, text].filter(Boolean).join(' '), open: '' }
           closeLine('user', event.transcript)
+          keep('user', text)
         } else if (event.role === 'assistant') {
           closeLine('assistant', event.transcript)
+          keep('assistant', event.transcript)
           if (ending.current) endSoon(END_GRACE_MS)
           else setPhase('listening')
         }

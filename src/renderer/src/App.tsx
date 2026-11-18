@@ -761,6 +761,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               {calling && callMode === 'gpt' ? (
                 <GptLiveCall
                   profile={selected.profile}
+                  chatId={selected.id}
                   items={transcript.items}
                   onSay={words => void onSend(words)}
                   running={transcript.running}
@@ -772,6 +773,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               ) : calling && callMode === 'grok' ? (
                 <GrokLiveCall
                   profile={selected.profile}
+                  chatId={selected.id}
                   items={transcript.items}
                   onSay={words => void onSend(words)}
                   running={transcript.running}

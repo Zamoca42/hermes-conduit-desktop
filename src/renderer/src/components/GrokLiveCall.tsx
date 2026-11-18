@@ -32,10 +32,13 @@ import {
   toolOutput,
   type ServerEvent
 } from '../state/grokLive'
+import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import { Icon } from './icons'
 
 interface Props {
   profile?: string
+  /** The chat's saved session, which keeps the call's transcript when it ends. */
+  chatId?: string | null
   /** The chat's turns so far, which the call starts knowing. */
   items: TranscriptItem[]
   /** Sends a request as the chat's next message. */
@@ -79,7 +82,7 @@ const SILENCE = new Float32Array(Math.round(SAMPLE_RATE * 0.8))
  * goes to Hermes as the chat's next message, with Hermes' reply told back to
  * you in the call. Audio goes both ways as 24 kHz PCM over the plugin's relay.
  */
-export function GrokLiveCall({ profile, items, onSay, running, turnsDone, lastReply, onEnd, onClassic }: Props) {
+export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -102,14 +105,25 @@ export function GrokLiveCall({ profile, items, onSay, running, turnsDone, lastRe
   const userSpeaking = useRef(false)
   const userSpokeAt = useRef(0)
   const answered = useRef(new Set<string>())
+  const spoken = useRef('')
   // Updates for the model (Hermes' replies), sent once the conversation is quiet.
   const updates = useRef<string[]>([])
   // Requests for Hermes, one at a time in the chat.
   const queue = useRef<string[]>([])
   const active = useRef<{ from: number; at: number; started: boolean } | null>(null)
   // The latest props, for the socket's handlers.
-  const live = useRef({ running, turnsDone, lastReply, onSay })
-  live.current = { running, turnsDone, lastReply, onSay }
+  const live = useRef({ running, turnsDone, lastReply, onSay, chatId })
+  live.current = { running, turnsDone, lastReply, onSay, chatId }
+  // The call's finished turns, kept with the chat when it ends.
+  const record = useRef<CallTurn[]>([])
+  const callId = useRef(newCallId())
+  const saved = useRef(false)
+  const keep = (role: CallTurn['role'], text: string) => text.trim() && record.current.push({ role, text: text.trim(), at: Date.now() / 1000 })
+  const save = () => {
+    if (saved.current) return
+    saved.current = true
+    void saveCall(profile, callId.current, 'grok-live', record.current, live.current.chatId)
+  }
 
   const send = (message: Record<string, unknown>) => {
     if (socket.current) window.conduit.liveSend(socket.current, JSON.stringify(message))
@@ -156,6 +170,7 @@ export function GrokLiveCall({ profile, items, onSay, running, turnsDone, lastRe
   }
 
   const teardown = () => {
+    save()
     if (socket.current) window.conduit.liveClose(socket.current)
     socket.current = null
     processor.current?.disconnect()
@@ -278,6 +293,9 @@ export function GrokLiveCall({ profile, items, onSay, running, turnsDone, lastRe
         return
       case 'responseDone':
         responding.current = false
+        // A response cut off before its whole transcript keeps what was said of it.
+        keep('assistant', spoken.current)
+        spoken.current = ''
         if (wantsResponse.current) {
           wantsResponse.current = false
           respond()
@@ -297,15 +315,19 @@ export function GrokLiveCall({ profile, items, onSay, running, turnsDone, lastRe
       case 'input':
         userSpokeAt.current = Date.now()
         userLine(event.itemId, event.text, event.final)
+        if (event.final) keep('user', event.text)
         return
       case 'audio':
         if (ended.current) return
         play(event.pcm)
         return
       case 'output':
+        spoken.current += event.text
         assistantLine(event.text)
         return
       case 'outputDone':
+        spoken.current = ''
+        keep('assistant', event.text)
         assistantLine(event.text, true)
         return
       case 'toolCall':

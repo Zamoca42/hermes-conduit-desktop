@@ -5999,6 +5999,21 @@
     "zh-Hans": "回复期间",
     "zh-Hant": "回覆期間"
   },
+  "Each call's transcript is saved to your Hermes server's history and shows under Voice in Sessions, where you can read it or resume the call. Needs an up-to-date Hermes notifier plugin. Shared by every live voice mode. Applies to the next conversation.": {
+    "de": "Das Transkript jedes Anrufs wird im Verlauf deines Hermes-Servers gespeichert und erscheint in „Sitzungen“ unter „Sprachmodus“, wo du es lesen oder den Anruf fortsetzen kannst. Erfordert ein aktuelles Hermes-Notifier-Plug-in. Gilt gemeinsam für alle Live-Sprachmodi. Gilt ab der nächsten Unterhaltung.",
+    "es": "La transcripción de cada llamada se guarda en el historial de tu servidor Hermes y aparece en Voz, dentro de Sesiones, donde puedes leerla o reanudar la llamada. Requiere un plugin de notificaciones de Hermes actualizado. Se comparte con todos los modos de voz en vivo. Se aplica a la próxima conversación.",
+    "fr": "La transcription de chaque appel est enregistrée dans l'historique de votre serveur Hermes et s'affiche sous Voix dans Sessions, où vous pouvez la lire ou reprendre l'appel. Nécessite un plugin de notification Hermes à jour. Partagé par tous les modes vocaux en direct. S'applique à la prochaine conversation.",
+    "id": "Transkrip setiap panggilan disimpan ke riwayat server Hermes Anda dan muncul di bawah Suara di Sesi, tempat Anda dapat membacanya atau melanjutkan panggilan. Memerlukan plugin notifier Hermes versi terbaru. Digunakan bersama oleh semua mode Live Voice. Berlaku mulai percakapan berikutnya.",
+    "it": "La trascrizione di ogni chiamata viene salvata nella cronologia del tuo server Hermes e appare in Voce, in Sessioni, dove puoi leggerla o riprendere la chiamata. Richiede un plugin di notifica di Hermes aggiornato. Impostazione condivisa da tutte le modalità Voce live. Vale dalla prossima conversazione.",
+    "ja": "各通話の文字起こしはHermesサーバの履歴に保存され、「セッション」の「音声」に表示されます。そこで内容を読んだり、通話を再開したりできます。最新のHermes通知プラグインが必要です。すべてのライブ音声モードで共通の設定です。次回の会話から適用されます。",
+    "ko": "각 통화의 대화 내용은 Hermes 서버의 기록에 저장되고 ‘세션’의 ‘음성’ 아래에 표시돼요. 거기서 내용을 읽거나 통화를 재개할 수 있어요. 최신 Hermes 알림 플러그인이 필요해요. 모든 라이브 음성 모드에 공통으로 적용돼요. 다음 대화부터 적용돼요.",
+    "pl": "Transkrypcja każdego połączenia jest zapisywana w historii Twojego serwera Hermes i pojawia się w sekcji Głos w Sesjach, gdzie możesz ją przeczytać lub wznowić połączenie. Wymaga aktualnej wtyczki powiadomień Hermes. Wspólne dla wszystkich trybów głosowych Live. Obowiązuje od następnej rozmowy.",
+    "pt-BR": "A transcrição de cada chamada é salva no histórico do seu servidor Hermes e aparece em Voz, nas Sessões, onde você pode lê-la ou retomar a chamada. Requer um plugin notificador do Hermes atualizado. Compartilhado por todos os modos de voz ao vivo. Vale a partir da próxima conversa.",
+    "ru": "Расшифровка каждого звонка сохраняется в истории вашего сервера Hermes и отображается в разделе «Голос» в «Сеансах», где её можно прочитать или продолжить звонок. Нужна актуальная версия плагина уведомлений Hermes. Общая настройка для всех Live-режимов. Действует со следующего разговора.",
+    "tr": "Her aramanın transkripti Hermes sunucunuzun geçmişine kaydedilir ve Oturumlar'da Ses altında görünür; orada okuyabilir veya aramayı sürdürebilirsiniz. Güncel bir Hermes bildirim eklentisi gerekir. Tüm canlı ses modları için ortaktır. Sonraki konuşmada geçerli olur.",
+    "zh-Hans": "每次通话的转写会保存到你的 Hermes 服务器历史记录中，并显示在“会话”的“语音”下，你可以在那里阅读或继续通话。需要最新的 Hermes 通知插件。所有实时语音模式共用此设置。将在下一次对话中生效。",
+    "zh-Hant": "每次通話的逐字稿都會儲存到你 Hermes 伺服器的記錄中，並顯示在「工作階段」的「語音」下，你可以在那裡閱讀或繼續通話。需要最新的 Hermes 通知外掛程式。所有即時語音模式共用此設定。下次對話起生效。"
+  },
   "Each look that finds something sends one notification. The morning brief comes every day at its time with what's still open, today's calendar and reminders, and anything you've asked to hear less often.": {
     "de": "Jede Durchsicht, die etwas findet, sendet eine Mitteilung. Das Morgenbriefing kommt jeden Tag zu seiner Zeit, mit allem, was noch offen ist, dem heutigen Kalender und den Erinnerungen und allem, was du seltener hören wolltest.",
     "es": "Cada revisión que encuentra algo envía una notificación. El resumen matutino llega cada día a su hora con lo que sigue pendiente, el calendario y los recordatorios de hoy, y lo que pediste oír con menos frecuencia.",
@@ -17233,6 +17248,21 @@
     "tr": "Kaydet",
     "zh-Hans": "保存",
     "zh-Hant": "儲存"
+  },
+  "Save calls to Sessions": {
+    "de": "Anrufe in „Sitzungen“ sichern",
+    "es": "Guardar llamadas en Sesiones",
+    "fr": "Enregistrer les appels dans Sessions",
+    "id": "Simpan panggilan ke Sesi",
+    "it": "Salva le chiamate in Sessioni",
+    "ja": "通話をセッションに保存",
+    "ko": "세션에 통화 저장",
+    "pl": "Zapisuj połączenia w Sesjach",
+    "pt-BR": "Salvar chamadas em Sessões",
+    "ru": "Сохранять звонки в «Сеансы»",
+    "tr": "Aramaları Oturumlar'a kaydet",
+    "zh-Hans": "将通话保存到会话",
+    "zh-Hant": "將通話儲存到「工作階段」"
   },
   "Save delegate defaults": {
     "de": "Delegierungsstandards sichern",

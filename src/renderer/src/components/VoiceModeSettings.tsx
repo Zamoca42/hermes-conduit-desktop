@@ -36,6 +36,7 @@ import {
   via,
   type Availability as GrokAvailability
 } from '../state/grokLive'
+import { savesCalls, setSavesCalls } from '../state/voiceSave'
 
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
@@ -46,6 +47,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [memory, setMemory] = useState(sendsMemory)
   const [persona, setPersona] = useState(sendsPersona)
   const [status, setStatus] = useState<Availability | 'checking' | 'missing' | null>(null)
+  const [saveCalls, setSaveCalls] = useState(savesCalls)
   const [grokMemory, setGrokMemory] = useState(grokSendsMemory)
   const [grokPersona, setGrokPersona] = useState(grokSendsPersona)
   const [grokStatus, setGrokStatus] = useState<GrokAvailability | 'checking' | 'missing' | null>(null)
@@ -285,6 +287,26 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           <p className="meta settings-caption">
             {t(
               "GPT-Live talks with the personality in this profile's SOUL.md. SOUL.md is sent to OpenAI with the conversation. Applies to the next conversation."
+            )}
+          </p>
+        </>
+      ) : null}
+      {mode !== 'classic' ? (
+        <>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={saveCalls}
+              onChange={e => {
+                setSaveCalls(e.target.checked)
+                setSavesCalls(e.target.checked)
+              }}
+            />
+            {t('Save calls to Sessions')}
+          </label>
+          <p className="meta settings-caption">
+            {t(
+              "Each call's transcript is saved to your Hermes server's history and shows under Voice in Sessions, where you can read it or resume the call. Needs an up-to-date Hermes notifier plugin. Shared by every live voice mode. Applies to the next conversation."
             )}
           </p>
         </>
