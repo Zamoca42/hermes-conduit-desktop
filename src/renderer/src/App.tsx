@@ -128,7 +128,7 @@ export function App() {
   )
 }
 
-type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'pulse' | 'needs' | 'settings'
+type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'pulse' | 'artifacts' | 'needs' | 'settings'
 
 const REOPEN_SECTION = 'conduit.reopen-section'
 
@@ -662,6 +662,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           </button>
           <button
             className="railbtn"
+            aria-label={t('Artifacts')}
+            title={t('Artifacts')}
+            aria-current={section === 'artifacts' ? 'page' : undefined}
+            onClick={() => setSection('artifacts')}
+          >
+            <Icon name="paperclip" />
+          </button>
+          <button
+            className="railbtn"
             aria-label={needsCount ? t('Needs you, {count}', { count: needsCount }) : t('Needs you')}
             title={t('Needs you')}
             aria-current={section === 'needs' ? 'page' : undefined}
@@ -1036,6 +1045,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               setSection('chats')
             }}
           />
+        ) : section === 'artifacts' ? (
+          <main className="needs artifacts-section">
+            <div className="needs-inner">
+              <ArtifactsPanel
+                page
+                profile={chatProfile ?? undefined}
+                sessionIds={[]}
+                onOpenChat={item => {
+                  setSelected({ id: item.sessionId, profile: chatProfile ?? undefined, title: item.sessionTitle })
+                  setSection('chats')
+                }}
+              />
+            </div>
+          </main>
         ) : section === 'pulse' ? (
           <PulsePage
             pulse={pulse}

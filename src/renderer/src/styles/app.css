@@ -7185,3 +7185,34 @@ button.cap-row-text {
   background: var(--backdrop);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
+
+.artifacts-page > .ws-head {
+  height: auto;
+  padding: 0 0 12px;
+}
+
+.artifacts-page > .ws-head > svg {
+  display: none;
+}
+
+.artifacts-page > .ws-head .ws-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.artifacts-page .ws-search,
+.artifacts-page .artifact-chips {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.artifacts-page .artifact-list {
+  overflow: visible;
+  padding: 0;
+}
+
+.artifacts-page .ws-viewer .page-frame {
+  min-height: 70vh;
+}
