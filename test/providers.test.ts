@@ -4,11 +4,15 @@ import {
   blocksSave,
   buildEntries,
   endpointID,
+  isBaseURL,
+  keyOrderFrom,
+  keyOrderKey,
   keyState,
   parseCheck,
   parseOutcome,
   parseSignIn,
   providerStatus,
+  showsKeyOrder,
   takenEndpointIDs,
   type Requester
 } from '../src/renderer/src/state/providers'
@@ -225,5 +229,45 @@ describe('ProviderService', () => {
       throw Object.assign(new Error('boom'), { code: 500 })
     }
     await expect(new ProviderService(failing, 'default', []).read()).rejects.toThrow('boom')
+  })
+})
+
+describe('key order', () => {
+  it('counts the keys Hermes takes turns over on each profile', () => {
+    const main = byID(buildEntries({ env, sharedPool, onMainProfile: true })).get('openrouter')!
+    // The main profile reads its whole pool, `.env` rows included.
+    expect(main.key!.keysInUse).toBe(2)
+    expect(showsKeyOrder(main)).toBe(true)
+    // Another profile on the shared key reads only the pasted rows.
+    const other = byID(buildEntries({ env, sharedPool, profilePool: { providers: [] }, onMainProfile: false })).get('openrouter')!
+    expect(other.key!.keysInUse).toBe(1)
+    expect(showsKeyOrder(other)).toBe(false)
+    const own = byID(
+      buildEntries({
+        env,
+        sharedPool,
+        profilePool: {
+          providers: [
+            {
+              provider: 'openrouter',
+              entries: [
+                { id: 'p1', index: 1, label: 'a', source: 'manual' },
+                { id: 'p2', index: 2, label: 'b', source: 'device_code', auth_type: 'oauth' }
+              ]
+            }
+          ]
+        },
+        onMainProfile: false
+      })
+    ).get('openrouter')!
+    expect([own.key!.keysInUse, own.key!.signInsInUse]).toEqual([2, 1])
+  })
+  it('reads the stored order as Hermes does', () => {
+    expect(keyOrderFrom(' Round_Robin ')).toBe('round_robin')
+    expect(keyOrderFrom('nonsense')).toBe('fill_first')
+    expect(keyOrderFrom(undefined)).toBe('fill_first')
+    expect(keyOrderKey('openrouter')).toBe('credential_pool_strategies.openrouter')
+    expect(keyOrderKey('custom:together.ai')).toBeNull()
+    expect(isBaseURL('OPENROUTER_BASE_URL')).toBe(true)
   })
 })

@@ -46,6 +46,10 @@ export interface KeyAccess {
   borrowedOnly: boolean
   /** Saved variables another provider also reads as its own key. */
   heldVars: string[]
+  /** The keys and sign-ins Hermes takes turns over on this profile. */
+  keysInUse: number
+  /** How many of `keysInUse` are sign-ins. */
+  signInsInUse: number
 }
 
 export type KeyState = 'none' | 'shared' | 'own' | 'oldCopy' | 'mainProfileOnly'
@@ -165,6 +169,18 @@ export function poolRows(answer: unknown): Map<string, PoolRow[]> {
   return out
 }
 
+/** Every credential and the sign-ins among them a pool holds, per provider. */
+function credentialCounts(answer: unknown): Map<string, { all: number; signIns: number }> {
+  const out = new Map<string, { all: number; signIns: number }>()
+  for (const provider of rows(object(answer)?.providers)) {
+    const id = text(provider.provider)
+    if (!id) continue
+    const entries = rows(provider.entries)
+    out.set(id, { all: entries.length, signIns: entries.filter(row => (text(row.auth_type) ?? 'api_key') !== 'api_key').length })
+  }
+  return out
+}
+
 /** Sign-ins (not keys) a pool holds per provider. */
 function signInCounts(answer: unknown): Map<string, number> {
   const out = new Map<string, number>()
@@ -218,7 +234,17 @@ export function buildEntries({ env, accounts, endpoints, sharedPool, profilePool
     }
     change(entry)
   }
-  const blankKey = (): KeyAccess => ({ vars: [], savedVars: [], sharedRows: [], profileRows: [], profileSignIns: 0, borrowedOnly: false, heldVars: [] })
+  const blankKey = (): KeyAccess => ({
+    vars: [],
+    savedVars: [],
+    sharedRows: [],
+    profileRows: [],
+    profileSignIns: 0,
+    borrowedOnly: false,
+    heldVars: [],
+    keysInUse: 0,
+    signInsInUse: 0
+  })
 
   for (const [variable, value] of Object.entries(object(env) ?? {})) {
     const row = object(value)
@@ -273,6 +299,19 @@ export function buildEntries({ env, accounts, endpoints, sharedPool, profilePool
       const key = byID.get(id)?.key
       if (key) key.profileSignIns = count
     }
+  }
+  // The main profile reads its whole pool, `.env` rows included; another reads its own rows
+  // (a sign-in of its own is one), or falls back to the shared ones. Sign-ins count too.
+  const sharedCounts = credentialCounts(sharedPool)
+  const ownCounts = onMainProfile ? new Map<string, { all: number; signIns: number }>() : credentialCounts(profilePool)
+  for (const entry of byID.values()) {
+    const key = entry.key
+    if (!key) continue
+    const shared = sharedCounts.get(entry.id) ?? { all: 0, signIns: 0 }
+    const own = ownCounts.get(entry.id) ?? { all: 0, signIns: 0 }
+    const usesShared = onMainProfile || own.all === 0
+    key.keysInUse = onMainProfile ? shared.all : usesShared ? key.sharedRows.length + shared.signIns : own.all
+    key.signInsInUse = usesShared ? shared.signIns : own.signIns
   }
   for (const entry of byID.values()) entry.settings.sort((a, b) => a.variable.localeCompare(b.variable))
 
@@ -627,3 +666,23 @@ export function endpointBody(draft: EndpointDraft, forCheck: boolean): Record<st
   }
   return body
 }
+
+// MARK: Key order
+
+/** How Hermes picks among a provider's keys on a profile (`credential_pool_strategies.<provider>`). */
+export const KEY_ORDERS = ['fill_first', 'round_robin', 'random', 'least_used'] as const
+export type KeyOrder = (typeof KEY_ORDERS)[number]
+
+/** The config key for `provider`, null for an id a dotted key can't name (`custom:together.ai`). */
+export const keyOrderKey = (provider: string) => (!provider || provider.includes('.') ? null : `credential_pool_strategies.${provider}`)
+
+/** Hermes' reading of a stored value: anything else is its default, the first key until it runs out. */
+export function keyOrderFrom(stored: unknown): KeyOrder {
+  const value = typeof stored === 'string' ? stored.trim().toLowerCase() : ''
+  return (KEY_ORDERS as readonly string[]).includes(value) ? (value as KeyOrder) : 'fill_first'
+}
+
+/** The Key order section shows once a profile has more than one key or sign-in for the provider. */
+export const showsKeyOrder = (entry: ProviderEntry) => (entry.key?.keysInUse ?? 0) > 1 && keyOrderKey(entry.id) !== null
+
+export const isBaseURL = (variable: string) => variable.endsWith('_BASE_URL')

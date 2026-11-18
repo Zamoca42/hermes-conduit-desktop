@@ -1,17 +1,22 @@
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { avatarUrl, botsFromProfiles, type Bot } from './bots'
+import { avatarUrl, rosterFromProfiles, type Bot } from './bots'
 
 /** The bots roster, read when the connection opens, when profiles change and when a turn ends. */
 export function useBots(connected: boolean) {
   const [bots, setBots] = useState<Bot[] | null>(null)
+  const [hidden, setHidden] = useState<Bot[]>([])
+  const [protocol, setProtocol] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const load = useCallback(async () => {
     try {
       const body = await gateway.rpc('profiles.list', { include_sessions: true })
-      setBots(botsFromProfiles(body))
+      const roster = rosterFromProfiles(body)
+      setBots(roster.bots)
+      setHidden(roster.hidden)
+      setProtocol(roster.protocol)
       setError(null)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
@@ -33,7 +38,7 @@ export function useBots(connected: boolean) {
     }
   }, [connected, load])
 
-  return { bots, error, refresh: load }
+  return { bots, hidden, protocol, error, refresh: load }
 }
 
 const avatarCache = new Map<string, Promise<string | null>>()

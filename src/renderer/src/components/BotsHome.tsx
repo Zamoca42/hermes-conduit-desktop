@@ -11,11 +11,15 @@ import {
 } from "../state/groups";
 import { starterFace } from "../state/starterFaces";
 import { useAvatar } from "../state/useBots";
+import { canDelete } from "../state/botActions";
 import { Icon } from "./icons";
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 
 const BOT_DRAG = "application/x-conduit-bot";
+
+/** What a bot's right-click menu can do, besides Edit Bot. */
+export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delete";
 
 /** A bot's picture, else its starter face (on the color Hermes keeps for it, when it has one). */
 export function BotAvatar({ bot, size }: { bot: Bot; size: number }) {
@@ -87,6 +91,13 @@ interface Props {
   work?: ReadonlyMap<string, BotWork>;
   /** The pill opens the bot's work. */
   onWork?: (bot: Bot) => void;
+  /** Bots hidden from the list, shown under Hidden with Show. */
+  hidden?: Bot[];
+  onNewBot?: () => void;
+  /** Pin, Duplicate, Hide, Show or Delete; answers what went wrong, if anything. */
+  onAction?: (kind: BotAction, bot: Bot) => Promise<string | null>;
+  notice?: string | null;
+  onDismissNotice?: () => void;
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -149,7 +160,24 @@ export function BotsHome({
   onEdit,
   work,
   onWork,
+  hidden,
+  onNewBot,
+  onAction,
+  notice,
+  onDismissNotice,
 }: Props) {
+  const [busy, setBusy] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [showHidden, setShowHidden] = useState(false);
+  const act = (kind: BotAction, bot: Bot) => {
+    if (!onAction) return;
+    setMenu(null);
+    setBusy(true);
+    setActionError(null);
+    void onAction(kind, bot)
+      .then(setActionError)
+      .finally(() => setBusy(false));
+  };
   const [menu, setMenu] = useState<{ bot: Bot; x: number; y: number } | null>(
     null,
   );
@@ -262,7 +290,24 @@ export function BotsHome({
     <main className={`bots${draft ? " drafting" : ""}`}>
       <div className="bots-scroll">
         <div className={`bots-inner ${layout}`}>
-          <h1>{t('Bots')}</h1>
+          <div className="bots-head">
+            <h1>{t('Bots')}</h1>
+            {onNewBot ? (
+              <button className="secondary" onClick={onNewBot} disabled={busy}>
+                <Icon name="plus" /> {t("New Bot")}
+              </button>
+            ) : null}
+          </div>
+          {notice || actionError ? (
+            <p className="error-text bots-notice">
+              {actionError ?? notice}{" "}
+              {!actionError && onDismissNotice ? (
+                <button className="link" onClick={onDismissNotice}>
+                  {t("OK")}
+                </button>
+              ) : null}
+            </p>
+          ) : null}
           {bots === null && !error ? (
             <div className="empty">{t('Loading your bots…')}</div>
           ) : null}
@@ -344,6 +389,29 @@ export function BotsHome({
               </div>
             </section>
           ) : null}
+          {hidden && hidden.length > 0 ? (
+            <section className="rooms bots-hidden">
+              <button className="link" aria-expanded={showHidden} onClick={() => setShowHidden(!showHidden)}>
+                {t("Hidden")} ({hidden.length})
+              </button>
+              {showHidden ? (
+                <ul className="bots-hidden-list">
+                  {hidden.map((bot) => (
+                    <li key={bot.name} className="pset-row">
+                      <BotAvatar bot={bot} size={28} />
+                      <span>{bot.title}</span>
+                      <span className="spacer" />
+                      {onAction ? (
+                        <button className="secondary" disabled={busy} onClick={() => act("show", bot)}>
+                          {t("Unhide")}
+                        </button>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          ) : null}
         </div>
       </div>
       {draft ? (
@@ -423,12 +491,30 @@ export function BotsHome({
           role="menu"
           style={{
             left: Math.min(menu.x, window.innerWidth - 200),
-            top: Math.min(menu.y, window.innerHeight - 80),
+            top: Math.min(menu.y, window.innerHeight - (onAction ? 220 : 80)),
           }}
         >
           <button role="menuitem" onClick={() => onEdit(menu.bot)}>
             {t("Edit Bot")}
           </button>
+          {onAction ? (
+            <>
+              <button role="menuitem" disabled={busy} onClick={() => act(menu.bot.pinned ? "unpin" : "pin", menu.bot)}>
+                {menu.bot.pinned ? t("Unpin") : t("Pin")}
+              </button>
+              <button role="menuitem" disabled={busy} onClick={() => act("duplicate", menu.bot)}>
+                {t("Duplicate")}
+              </button>
+              <button role="menuitem" disabled={busy} onClick={() => act("hide", menu.bot)}>
+                {t("Hide")}
+              </button>
+              {canDelete(menu.bot) ? (
+                <button role="menuitem" className="danger" disabled={busy} onClick={() => act("delete", menu.bot)}>
+                  {t("Delete Bot")}
+                </button>
+              ) : null}
+            </>
+          ) : null}
         </div>
       ) : null}
     </main>

@@ -5844,3 +5844,133 @@ button.cap-row-text {
   margin: 0;
   word-break: break-all;
 }
+
+/* Settings > Memory & delegation. */
+.mem-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+}
+
+.mem-row:first-of-type {
+  border-top: none;
+}
+
+.mem-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.mem-text .meta {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.mem-number {
+  width: 96px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  text-align: right;
+}
+
+.switch-inline input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+/* Bots home: New Bot by the title, the Hidden list. */
+.bots-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bots-head h1 {
+  flex: 1;
+}
+.bots-head .secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bots-head .secondary svg {
+  width: 14px;
+  height: 14px;
+}
+.bots-notice .link {
+  margin-left: 6px;
+}
+.bots-hidden-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.bots-hidden-list .pset-row {
+  gap: 10px;
+}
+.bots-hidden-list .spacer {
+  flex: 1;
+}
+.bots-hidden {
+  text-align: left;
+}
+.bots-hidden > .link {
+  padding-left: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Fallback models: numbered rows with move and delete. */
+.fallback-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.fallback-list .pset-row {
+  gap: 6px;
+  justify-content: flex-start;
+}
+.fallback-list select {
+  flex: 1;
+  min-width: 0;
+}
+.fallback-rank {
+  width: 18px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.provider-setting + .provider-setting {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+.provider-setting-edit {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+}
+.mem-row.wide {
+  flex-direction: column;
+  align-items: stretch;
+}
+.mem-text-input {
+  width: 100%;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 13px;
+}
+.mem-zone {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+}

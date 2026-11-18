@@ -45,8 +45,22 @@ export function botTitle(given: string | undefined, name: string, isDefault: boo
 }
 
 export function botsFromProfiles(body: unknown): Bot[] {
+  return rosterFromProfiles(body).bots
+}
+
+export interface Roster {
+  /** The bots shown, in display order. */
+  bots: Bot[]
+  /** Bots hidden from the list (ui_meta `hidden`, as Desktop hides them): they keep working. */
+  hidden: Bot[]
+  /** Hermes adds the messaging section to a bot's SOUL itself (`bot_mode_protocol`). */
+  protocol: boolean
+}
+
+export function rosterFromProfiles(body: unknown): Roster {
+  const protocol = !!body && typeof body === 'object' && (body as { bot_mode_protocol?: unknown }).bot_mode_protocol === true
   const list = body && typeof body === 'object' ? (body as { profiles?: unknown }).profiles : undefined
-  if (!Array.isArray(list)) return []
+  if (!Array.isArray(list)) return { bots: [], hidden: [], protocol }
   const bots: Bot[] = []
   const candidates: { name: string; isDefault: boolean; storedFace?: number; created?: number }[] = []
   for (const raw of list) {
@@ -86,7 +100,7 @@ export function botsFromProfiles(body: unknown): Bot[] {
   // Faces go round every bot, hidden ones too, as the phone hands them out.
   const faces = assignFaces(candidates)
   for (const bot of bots) bot.face = faces.get(bot.name) ?? 0
-  return displayOrder(bots.filter(b => !b.hidden))
+  return { bots: displayOrder(bots.filter(b => !b.hidden)), hidden: bots.filter(b => b.hidden), protocol }
 }
 
 /** Pinned first, otherwise in Hermes' own order (pinned, then recent activity), as the phone shows them until the person sets one. */

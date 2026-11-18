@@ -4,6 +4,7 @@ import { gateway } from '../gateway'
 import { hasOwnModel, helperSummary, parseModelSettings, type ModelSettings } from '../state/helperModels'
 import { groupModels, type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
+import { FallbackModels } from './FallbackModels'
 import { ProvidersSection } from './ProvidersSection'
 
 interface Props {
@@ -176,6 +177,7 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
               </div>
             ))}
           </section>
+          <FallbackModels key={`fallbacks:${profile}`} profile={profile} />
           <ProvidersSection
             profile={profile}
             profileName={bots.find(bot => bot.name === profile)?.title ?? profile}

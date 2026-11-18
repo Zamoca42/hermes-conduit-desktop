@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
-import { BotsHome } from './components/BotsHome'
+import { BotsHome, type BotAction } from './components/BotsHome'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
@@ -36,12 +36,18 @@ import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
+import { MemoryPage } from './components/MemoryPage'
 import { PlanDock } from './components/PlanDock'
 import { AgentsDock } from './components/AgentsDock'
 import { ControlDock } from './components/ControlDock'
 import { useAgents } from './state/useAgents'
 import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
+import { NewBot } from './components/NewBot'
+import { useChatDisplay } from './state/display'
+import { ConfigPage } from './components/ConfigPage'
+import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
+import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
 import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
@@ -116,7 +122,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
-    connected
+    connected,
+    selected.botChat === true
   )
 
   // The chat list's profile: a new chat starts in it.
@@ -187,6 +194,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }, [transcript.running, chat.storedId])
 
   const roster = useBots(connected)
+  // Thinking and Tool cards as the profile's settings say; read again after a visit to Settings.
+  const chatDisplay = useChatDisplay(selected.profile, connected, section === 'chats')
   const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
   // A quote lands in the composer it was made for, not again on the way back to Chats.
@@ -225,6 +234,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [calling, setCalling] = useState(false)
   /** Edit Bot, open over Bots home. */
   const [editingBot, setEditingBot] = useState<Bot | null>(null)
+  const [newBot, setNewBot] = useState(false)
+  const [botNotice, setBotNotice] = useState<string | null>(null)
   // A call is the open chat's: another chat, or another screen, ends it. A
   // new chat getting its id from the call's first message is the same chat.
   const callChat = useRef(selected.id)
@@ -361,7 +372,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
   const openBot = useCallback((bot: Bot) => {
-    setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: !!bot.botChatId })
+    setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: true })
     setSection('chats')
   }, [])
   // Picking a bot on the strip opens its newest chat (its Bot Chat, which the list leaves out, when
@@ -378,6 +389,34 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       setSelected(newest ? { id: newest.id, profile: newest.profile, title: newest.title } : { id: null, profile: next })
     },
     [selected.profile, listedRows, roster.bots, openBot]
+  )
+  // A bot row's menu: Pin, Duplicate, Hide, Show and Delete. Answers what went wrong, if anything.
+  const botAction = useCallback(
+    async (kind: BotAction, bot: Bot): Promise<string | null> => {
+      const rpc = (method: string, params?: Record<string, unknown>) => gateway.rpc(method, params)
+      try {
+        if (kind === 'pin' || kind === 'unpin') {
+          if (!(await writeMeta(rpc, bot, { pinned: kind === 'pin' ? true : undefined }))) return t('Couldn’t save that change. Try again.')
+        } else if (kind === 'hide' || kind === 'show') {
+          if (!(await writeMeta(rpc, bot, { hidden: kind === 'hide' ? true : undefined }))) return t('Couldn’t save that change. Try again.')
+        } else if (kind === 'duplicate') {
+          const taken = [...(roster.bots ?? []), ...roster.hidden].map(b => b.name)
+          const copy = await duplicateBot(rpc, bot, taken)
+          if (!copy.lookSaved) return t('The bot was created, but its picture or look was not saved. Edit the bot to try again.')
+        } else if (kind === 'delete') {
+          if (!canDelete(bot)) return null
+          if (!window.confirm(`${t('Delete {name}?', { name: bot.title })}\n\n${t("This permanently removes the bot's profile, chats, memory and skills from the gateway.")}`)) return null
+          await gateway.http('DELETE', `/api/profiles/${encodeURIComponent(bot.name)}`, undefined, 30000)
+          forgetAvatars()
+        }
+        return null
+      } catch (e) {
+        return t('Couldn’t save that change: {error}', { error: e instanceof Error ? e.message : String(e) })
+      } finally {
+        void roster.refresh()
+      }
+    },
+    [roster]
   )
   const pendingAsk = useRef<{ text: string; storedId: string | null; profile: string; resumed?: boolean } | null>(null)
   const askBot = useCallback(
@@ -651,6 +690,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 author={botTitle}
                 onQuote={setQuote}
                 onCommand={text => void onSend(text)}
+                display={chatDisplay}
               />
               </FileLinks.Provider>
               {contextOpen && chat.liveId ? (
@@ -744,6 +784,21 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               />
             ) : null}
           </>
+        ) : section === 'bots' && newBot ? (
+          <NewBot
+            bots={[...(roster.bots ?? []), ...roster.hidden]}
+            protocol={roster.protocol}
+            onClose={() => setNewBot(false)}
+            onCreated={(bot, introduce, warning) => {
+              setNewBot(false)
+              setBotNotice(warning)
+              void roster.refresh()
+              if (bot) {
+                if (introduce) askBot(bot, t('Hey, tell me about yourself!'))
+                else openBot(bot)
+              }
+            }}
+          />
         ) : section === 'bots' && editingBot ? (
           <BotEditor key={editingBot.name} bot={editingBot} onClose={() => setEditingBot(null)} onSaved={() => void roster.refresh()} />
         ) : section === 'bots' ? (
@@ -758,6 +813,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onOpenRoom={showRoom}
             onCreateRoom={groupRooms.create}
             onEdit={connected ? setEditingBot : undefined}
+            hidden={roster.hidden}
+            onNewBot={connected ? () => setNewBot(true) : undefined}
+            onAction={connected ? botAction : undefined}
+            notice={botNotice}
+            onDismissNotice={() => setBotNotice(null)}
             work={workByBot}
             onWork={bot => {
               openBot(bot)
@@ -840,7 +900,7 @@ function Settings({
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
-  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities'>('main')
+  const [page, setPage] = useState<'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat'>('main')
   if (page === 'usage')
     return (
       <main className="settings">
@@ -851,6 +911,36 @@ function Settings({
     return (
       <main className="settings">
         <ModelsPage bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'chat')
+    return (
+      <main className="settings">
+        <ConfigPage title={t('Chat')} subtitle={t('Response behavior, visibility, and timezone')} sections={chatSections} bots={bots} profile={profile} onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'workspace' || page === 'advanced')
+    return (
+      <main className="settings">
+        <ConfigPage
+          key={page}
+          title={page === 'workspace' ? t('Workspace & safety') : t('Advanced')}
+          subtitle={
+            page === 'workspace'
+              ? t('Working defaults and safeguards for this profile.')
+              : t('Limits and runtime defaults for this profile. Most profiles never need to change these.')
+          }
+          sections={page === 'workspace' ? workspaceSections : advancedSections}
+          bots={bots}
+          profile={profile}
+          onBack={() => setPage('main')}
+        />
+      </main>
+    )
+  if (page === 'memory')
+    return (
+      <main className="settings">
+        <MemoryPage bots={bots} profile={profile} onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'capabilities')
@@ -908,6 +998,30 @@ function Settings({
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
             {t('Chat model and helper models')}
+          </button>
+        </dd>
+        <dt>{t('Chat')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('chat')}>
+            {t('Response behavior, visibility, and timezone')}
+          </button>
+        </dd>
+        <dt>{t('Workspace & safety')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('workspace')}>
+            {t('Working directory, approvals, and privacy')}
+          </button>
+        </dd>
+        <dt>{t('Memory & delegation')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('memory')}>
+            {t('Memory, compression, and child agents')}
+          </button>
+        </dd>
+        <dt>{t('Advanced')}</dt>
+        <dd>
+          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('advanced')}>
+            {t('Turn limits, terminal, and tool output')}
           </button>
         </dd>
         <dt>{t('Capabilities')}</dt>
