@@ -1,0 +1,639 @@
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { t } from '@shared/i18n'
+import type { Bot } from '../state/bots'
+import { CREATABLE, MOVABLE, PRIORITIES, ageText, columnTitle, matchesTask, priorityTitle, type KanbanTask, type KanbanTaskDetail } from '../state/kanban'
+import { useKanban } from '../state/useKanban'
+import { timeLabel } from '../state/chats'
+import { Markdown } from './Markdown'
+import { Icon } from './icons'
+
+interface Props {
+  connected: boolean
+  bots: Bot[] | null
+  /** The Board | Scheduled switch, for the header. */
+  segment: ReactNode
+}
+
+const message = (error: unknown) => (error instanceof Error ? error.message : String(error))
+
+/**
+ * Tasks > Board, after the phone's Kanban: the board's lanes side by side,
+ * each card its title, who has it and how it's going. A card opens its task
+ * on the right: details, the latest summary, comments, and moving,
+ * assigning, reprioritizing or deleting it. Drag a card to a lane to move it.
+ */
+export function KanbanBoard({ connected, bots, segment }: Props) {
+  const kanban = useKanban(connected, true)
+  const [query, setQuery] = useState('')
+  const [openId, setOpenId] = useState<string | null>(null)
+  const [composing, setComposing] = useState(false)
+  const [note, setNote] = useState<{ text: string; tone: 'error' | 'info' } | null>(null)
+  const [dropTarget, setDropTarget] = useState<string | null>(null)
+  const dragged = useRef<KanbanTask | null>(null)
+
+  const botTitle = (name?: string) => (name ? bots?.find(b => b.name === name)?.title ?? name : t('Unassigned'))
+  const columns = useMemo(
+    () => (kanban.board?.columns ?? []).map(column => ({ ...column, tasks: column.tasks.filter(task => matchesTask(task, query)) })),
+    [kanban.board, query]
+  )
+  const openTask = kanban.board?.columns.flatMap(c => c.tasks).find(task => task.id === openId) ?? null
+  const assignees = useMemo(() => {
+    const names = new Set([...(kanban.board?.assignees ?? []), ...(bots ?? []).map(b => b.name)])
+    return [...names].sort((a, b) => botTitle(a).localeCompare(botTitle(b)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kanban.board, bots])
+
+  async function move(task: KanbanTask, status: string) {
+    if (task.status === status) return
+    setNote(null)
+    try {
+      await kanban.patch(task, { status })
+    } catch (e) {
+      // Hermes won't close a task without word of what was done.
+      const needsSummary = status === 'done' && /summary/i.test(message(e))
+      setNote({
+        text: needsSummary
+          ? t('Hermes needs a note on what was done before {title} can be marked done. Open the task, write it, and choose Mark done.', { title: task.title })
+          : t('Couldn’t move {title}: {reason}', { title: task.title, reason: message(e) }),
+        tone: 'error'
+      })
+    }
+  }
+
+  return (
+    <main className="board">
+      <div className="board-head">
+        {segment}
+        {kanban.boards && kanban.boards.length > 1 ? (
+          <select className="board-picker" aria-label={t('Board')} value={kanban.slug ?? kanban.boards.find(b => b.current)?.slug ?? ''} onChange={e => kanban.pickBoard(e.target.value || null)}>
+            {kanban.boards.map(row => (
+              <option key={row.slug} value={row.slug}>
+                {row.name} ({row.total})
+              </option>
+            ))}
+          </select>
+        ) : null}
+        <label className="chatlist-search board-search">
+          <Icon name="search" />
+          <span className="sr-only">{t('Search tasks')}</span>
+          <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t('Search tasks')} />
+        </label>
+        <span className="spacer" />
+        <button className="primary board-new" disabled={!connected || kanban.unavailable} onClick={() => setComposing(true)}>
+          <Icon name="plus" />
+          {t('New task')}
+        </button>
+      </div>
+      {note ? (
+        <div className={`model-note board-note${note.tone === 'error' ? ' error' : ''}`} role="status">
+          {note.text}
+          <button className="staged-remove" aria-label={t('Close')} onClick={() => setNote(null)}>
+            <Icon name="close" />
+          </button>
+        </div>
+      ) : null}
+      {kanban.unavailable ? (
+        <div className="needs-empty">
+          <Icon name="tasks" />
+          <span>{t('This Hermes has no task board.')}</span>
+          <span className="meta">{t('The board comes with Hermes’ Kanban plugin. Turn it on in the Hermes dashboard to see tasks here.')}</span>
+        </div>
+      ) : !kanban.board ? (
+        <div className="needs-empty">
+          <span>{kanban.error ? t('Couldn’t load the board: {reason}', { reason: kanban.error }) : t('Loading…')}</span>
+        </div>
+      ) : (
+        <div className="board-lanes">
+          {columns.map(column => {
+            const droppable = MOVABLE.includes(column.name)
+            return (
+              <section
+                key={column.name}
+                className={`lane${dropTarget === column.name ? ' drop' : ''}`}
+                aria-label={columnTitle(column.name)}
+                onDragOver={e => {
+                  if (!droppable || !dragged.current || dragged.current.status === column.name) return
+                  e.preventDefault()
+                  setDropTarget(column.name)
+                }}
+                onDragLeave={e => {
+                  if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDropTarget(target => (target === column.name ? null : target))
+                }}
+                onDrop={e => {
+                  e.preventDefault()
+                  setDropTarget(null)
+                  const task = dragged.current
+                  dragged.current = null
+                  if (task && droppable) void move(task, column.name)
+                }}
+              >
+                <div className="lane-head">
+                  <span className={`lane-dot ${column.name}`} />
+                  <span className="lane-title">{columnTitle(column.name)}</span>
+                  <span className="meta">{column.tasks.length}</span>
+                </div>
+                <div className="lane-cards">
+                  {column.tasks.map(task => (
+                    <button
+                      key={task.id}
+                      className="card"
+                      aria-current={task.id === openId ? 'true' : undefined}
+                      draggable
+                      onDragStart={e => {
+                        dragged.current = task
+                        e.dataTransfer.effectAllowed = 'move'
+                        e.dataTransfer.setData('text/plain', task.id)
+                      }}
+                      onDragEnd={() => {
+                        dragged.current = null
+                        setDropTarget(null)
+                      }}
+                      onClick={() => {
+                        setComposing(false)
+                        setOpenId(task.id)
+                      }}
+                    >
+                      <span className="card-title">{task.title}</span>
+                      {task.latestSummary && column.name !== 'todo' ? <span className="card-summary">{task.latestSummary}</span> : null}
+                      <span className="card-meta">
+                        <span>{botTitle(task.assignee)}</span>
+                        {task.priority > 0 ? <span className={`card-priority p${Math.min(task.priority, 3)}`}>{priorityTitle(task.priority)}</span> : null}
+                        {task.progress ? <span>{`${task.progress.done}/${task.progress.total}`}</span> : null}
+                        {task.commentCount ? (
+                          <span className="card-count">
+                            <Icon name="chats" />
+                            {task.commentCount}
+                          </span>
+                        ) : null}
+                        {task.warnings ? <span className="card-warning">⚠ {task.warnings}</span> : null}
+                        {column.name === 'running' && task.startedAt ? <span>{ageText(task.startedAt)}</span> : null}
+                      </span>
+                    </button>
+                  ))}
+                  {!column.tasks.length ? <div className="lane-empty meta">{query.trim() ? '—' : t('No tasks')}</div> : null}
+                </div>
+              </section>
+            )
+          })}
+        </div>
+      )}
+      {composing ? (
+        <TaskComposer
+          assignees={assignees}
+          defaultAssignee={kanban.defaultAssignee}
+          botTitle={botTitle}
+          onCancel={() => setComposing(false)}
+          onCreate={async body => {
+            const made = await kanban.create(body)
+            setComposing(false)
+            if (made.task) setOpenId(made.task.id)
+            if (made.warning) setNote({ text: made.warning, tone: 'info' })
+          }}
+        />
+      ) : openTask || openId ? (
+        <TaskPanel
+          key={openId!}
+          id={openId!}
+          task={openTask}
+          assignees={assignees}
+          botTitle={botTitle}
+          load={kanban.detail}
+          onClose={() => setOpenId(null)}
+          onPatch={async fields => {
+            if (!openTask) return
+            await kanban.patch(openTask, fields)
+          }}
+          onComment={async body => {
+            if (openTask) await kanban.comment(openTask, body)
+          }}
+          onDelete={async () => {
+            if (!openTask) return
+            await kanban.remove(openTask)
+            setOpenId(null)
+          }}
+        />
+      ) : null}
+    </main>
+  )
+}
+
+function TaskPanel({
+  id,
+  task,
+  assignees,
+  botTitle,
+  load,
+  onClose,
+  onPatch,
+  onComment,
+  onDelete
+}: {
+  id: string
+  task: KanbanTask | null
+  assignees: string[]
+  botTitle: (name?: string) => string
+  load: (id: string) => Promise<KanbanTaskDetail | null>
+  onClose: () => void
+  onPatch: (fields: Record<string, unknown>) => Promise<void>
+  onComment: (body: string) => Promise<void>
+  onDelete: () => Promise<void>
+}) {
+  const [detail, setDetail] = useState<KanbanTaskDetail | null>(null)
+  const [failure, setFailure] = useState<string | null>(null)
+  const [reply, setReply] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [editing, setEditing] = useState<{ title: string; body: string } | null>(null)
+  const shown = task ?? detail?.task ?? null
+
+  const refresh = () =>
+    load(id)
+      .then(next => {
+        setDetail(next)
+        setFailure(null)
+      })
+      .catch(e => setFailure(message(e)))
+
+  // Read again when the board says the task moved on.
+  useEffect(() => {
+    void refresh()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, task?.status, task?.assignee, task?.commentCount, task?.latestSummary])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !editing) onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose, editing])
+
+  async function run(work: () => Promise<void>) {
+    if (busy) return
+    setBusy(true)
+    setError(null)
+    try {
+      await work()
+      await refresh()
+    } catch (e) {
+      setError(message(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (!shown) {
+    return (
+      <aside className="task-panel" aria-label={t('Task')}>
+        <div className="task-panel-head">
+          <span className="meta">{failure ? t('Couldn’t load this task: {reason}', { reason: failure }) : t('Loading…')}</span>
+          <button className="staged-remove" aria-label={t('Close')} onClick={onClose}>
+            <Icon name="close" />
+          </button>
+        </div>
+      </aside>
+    )
+  }
+
+  const blocked = shown.status === 'blocked'
+  const movable = MOVABLE.includes(shown.status) || ['running', 'review', 'scheduled'].includes(shown.status)
+  return (
+    <aside className="task-panel" aria-label={shown.title}>
+      <div className="task-panel-head">
+        <span className={`lane-dot ${shown.status}`} />
+        <span className="meta">
+          {columnTitle(shown.status)} · {shown.id}
+        </span>
+        <span className="spacer" />
+        <button className="staged-remove" aria-label={t('Close')} onClick={onClose}>
+          <Icon name="close" />
+        </button>
+      </div>
+      <div className="task-panel-scroll">
+        {editing ? (
+          <form
+            className="task-edit"
+            onSubmit={e => {
+              e.preventDefault()
+              const fields: Record<string, unknown> = {}
+              if (editing.title.trim() && editing.title.trim() !== shown.title) fields.title = editing.title.trim()
+              if (editing.body !== (shown.body ?? '')) fields.body = editing.body
+              void run(async () => {
+                if (Object.keys(fields).length) await onPatch(fields)
+                setEditing(null)
+              })
+            }}
+          >
+            <input aria-label={t('Title')} value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value })} autoFocus />
+            <textarea aria-label={t('Description')} rows={6} value={editing.body} onChange={e => setEditing({ ...editing, body: e.target.value })} />
+            <div className="job-actions">
+              <button type="submit" className="primary" disabled={busy || !editing.title.trim()}>
+                {t('Save')}
+              </button>
+              <button type="button" className="secondary" onClick={() => setEditing(null)}>
+                {t('Cancel')}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <>
+            <h2 className="task-title">{shown.title}</h2>
+            {shown.body ? (
+              <div className="task-body">
+                <Markdown text={shown.body} />
+              </div>
+            ) : null}
+          </>
+        )}
+        <div className="task-controls">
+          <label>
+            {t('Status')}
+            <select value={shown.status} disabled={busy || !movable} onChange={e => void run(() => onPatch({ status: e.target.value }))}>
+              {[...new Set([shown.status, ...MOVABLE])].map(status => (
+                <option key={status} value={status} disabled={status !== shown.status && !MOVABLE.includes(status)}>
+                  {columnTitle(status)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {t('Assigned to')}
+            <select value={shown.assignee ?? ''} disabled={busy} onChange={e => void run(() => onPatch({ assignee: e.target.value }))}>
+              <option value="">{t("Parked (won't run)")}</option>
+              {[...new Set([...(shown.assignee ? [shown.assignee] : []), ...assignees])].map(name => (
+                <option key={name} value={name}>
+                  {botTitle(name)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {t('Priority')}
+            <select value={shown.priority} disabled={busy} onChange={e => void run(() => onPatch({ priority: Number(e.target.value) }))}>
+              {[...new Set([shown.priority, ...PRIORITIES])].sort().map(priority => (
+                <option key={priority} value={priority}>
+                  {priorityTitle(priority)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        {error ? <div className="error-text">{error}</div> : null}
+        {shown.lastFailureError ? (
+          <section className="job-section">
+            <h3>{t('Last error')}</h3>
+            <p className="error-text">{shown.lastFailureError}</p>
+          </section>
+        ) : null}
+        {detail?.task.latestSummary ?? shown.latestSummary ? (
+          <section className="job-section">
+            <h3>{t('Latest summary')}</h3>
+            <div className="task-body">
+              <Markdown text={(detail?.task.latestSummary ?? shown.latestSummary)!} />
+            </div>
+          </section>
+        ) : null}
+        {shown.result ? (
+          <section className="job-section">
+            <h3>{t('Result')}</h3>
+            <div className="task-body">
+              <Markdown text={shown.result} />
+            </div>
+          </section>
+        ) : null}
+        {detail?.parents.length ? (
+          <section className="job-section">
+            <h3>{t('Blocked by')}</h3>
+            {detail.parents.map(parent => (
+              <span key={parent.id} className="task-link">
+                <span className={`lane-dot ${parent.status}`} />
+                {parent.title}
+              </span>
+            ))}
+          </section>
+        ) : null}
+        {detail?.children.length ? (
+          <section className="job-section">
+            <h3>{t('Blocks')}</h3>
+            {detail.children.map(child => (
+              <span key={child.id} className="task-link">
+                <span className={`lane-dot ${child.status}`} />
+                {child.title}
+              </span>
+            ))}
+          </section>
+        ) : null}
+        <section className="job-section">
+          <h3>{t('Comments')}</h3>
+          {detail?.comments.length ? (
+            detail.comments.map(comment => (
+              <div key={comment.id} className="task-comment">
+                <span className="meta">
+                  {comment.author || '—'} · {timeLabel(comment.createdAt)}
+                </span>
+                <Markdown text={comment.body} />
+              </div>
+            ))
+          ) : (
+            <p className="meta">{detail ? t('No comments yet.') : t('Loading…')}</p>
+          )}
+          <form
+            className="task-reply"
+            onSubmit={e => {
+              e.preventDefault()
+              const body = reply.trim()
+              if (!body) return
+              void run(async () => {
+                await onComment(body)
+                setReply('')
+              })
+            }}
+          >
+            <textarea
+              rows={2}
+              value={reply}
+              placeholder={blocked ? t('Answer the question, then unblock') : t('Add a comment, or a note on what was done')}
+              onChange={e => setReply(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit()
+              }}
+            />
+            <div className="job-actions">
+              <button type="submit" className="secondary" disabled={busy || !reply.trim()}>
+                {t('Add comment')}
+              </button>
+              {shown.status !== 'done' && shown.status !== 'archived' ? (
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={busy}
+                  title={t('Closes the task, with the note as its summary of what was done.')}
+                  onClick={() =>
+                    void run(async () => {
+                      const summary = reply.trim()
+                      await onPatch(summary ? { status: 'done', summary } : { status: 'done' })
+                      setReply('')
+                    })
+                  }
+                >
+                  {t('Mark done')}
+                </button>
+              ) : null}
+              {blocked ? (
+                <button
+                  type="button"
+                  className="primary"
+                  disabled={busy}
+                  onClick={() =>
+                    void run(async () => {
+                      const body = reply.trim()
+                      if (body) {
+                        await onComment(body)
+                        setReply('')
+                      }
+                      try {
+                        await onPatch({ status: 'ready' })
+                      } catch (e) {
+                        throw new Error(body ? t('The reply was posted, but the task could not be unblocked. ({detail})', { detail: message(e) }) : message(e))
+                      }
+                    })
+                  }
+                >
+                  {reply.trim() ? t('Reply and unblock') : t('Unblock')}
+                </button>
+              ) : null}
+            </div>
+          </form>
+        </section>
+        <div className="job-actions task-footer">
+          <button className="secondary" disabled={busy} onClick={() => setEditing({ title: shown.title, body: shown.body ?? '' })}>
+            {t('Edit')}
+          </button>
+          {shown.status !== 'archived' ? (
+            <button className="secondary" disabled={busy} onClick={() => void run(() => onPatch({ status: 'archived' }))}>
+              {t('Archive')}
+            </button>
+          ) : null}
+          <button
+            className="secondary danger"
+            disabled={busy}
+            onClick={() => {
+              if (window.confirm(`${t('Delete task?')}\n\n${t('This removes {title} from the board for good.', { title: shown.title })}`)) void run(onDelete)
+            }}
+          >
+            {t('Delete')}
+          </button>
+          {shown.createdAt ? <span className="meta">{t('Created {time}', { time: timeLabel(shown.createdAt) })}</span> : null}
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+function TaskComposer({
+  assignees,
+  defaultAssignee,
+  botTitle,
+  onCancel,
+  onCreate
+}: {
+  assignees: string[]
+  defaultAssignee: string
+  botTitle: (name?: string) => string
+  onCancel: () => void
+  onCreate: (body: Record<string, unknown>) => Promise<void>
+}) {
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
+  const [assignee, setAssignee] = useState<string>(defaultAssignee)
+  const [priority, setPriority] = useState(0)
+  const [status, setStatus] = useState('ready')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function create() {
+    if (busy || !title.trim()) return
+    setBusy(true)
+    setError(null)
+    try {
+      const request: Record<string, unknown> = { title: title.trim(), priority, triage: status === 'triage' }
+      if (body.trim()) request.body = body.trim()
+      if (assignee) request.assignee = assignee
+      await onCreate(request)
+    } catch (e) {
+      setError(message(e))
+      setBusy(false)
+    }
+  }
+
+  return (
+    <aside className="task-panel" aria-label={t('New task')}>
+      <div className="task-panel-head">
+        <strong>{t('New task')}</strong>
+        <span className="spacer" />
+        <button className="staged-remove" aria-label={t('Close')} onClick={onCancel}>
+          <Icon name="close" />
+        </button>
+      </div>
+      <form
+        className="task-panel-scroll task-edit"
+        onSubmit={e => {
+          e.preventDefault()
+          void create()
+        }}
+      >
+        <input aria-label={t('Title')} placeholder={t('Title')} value={title} onChange={e => setTitle(e.target.value)} autoFocus />
+        <textarea aria-label={t('Description')} placeholder={t('Description')} rows={6} value={body} onChange={e => setBody(e.target.value)} />
+        <div className="task-controls">
+          <label>
+            {t('Assigned to')}
+            <select value={assignee} onChange={e => setAssignee(e.target.value)}>
+              {[...new Set([defaultAssignee, ...assignees])].map(name => (
+                <option key={name} value={name}>
+                  {name === defaultAssignee ? t('Default ({name})', { name: botTitle(name) }) : botTitle(name)}
+                </option>
+              ))}
+              <option value="">{t("Parked (won't run)")}</option>
+            </select>
+          </label>
+          <label>
+            {t('Priority')}
+            <select value={priority} onChange={e => setPriority(Number(e.target.value))}>
+              {PRIORITIES.map(value => (
+                <option key={value} value={value}>
+                  {priorityTitle(value)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {t('Starts in')}
+            <select value={status} onChange={e => setStatus(e.target.value)}>
+              {CREATABLE.filter(name => name === 'triage' || name === 'ready').map(name => (
+                <option key={name} value={name}>
+                  {columnTitle(name)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <span className="meta">
+          {status === 'triage'
+            ? t('Triage waits for an orchestrator to specify the task before anyone works on it.')
+            : assignee
+              ? t('A worker picks it up as soon as it’s ready.')
+              : t('Parked leaves the task unassigned so no worker claims it.')}
+        </span>
+        {error ? <div className="error-text">{error}</div> : null}
+        <div className="job-actions">
+          <button type="submit" className="primary" disabled={busy || !title.trim()}>
+            {busy ? t('Working…') : t('Create')}
+          </button>
+          <button type="button" className="secondary" onClick={onCancel}>
+            {t('Cancel')}
+          </button>
+        </div>
+      </form>
+    </aside>
+  )
+}

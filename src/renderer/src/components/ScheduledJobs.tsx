@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { locale, t } from '@shared/i18n'
 import type { Bot } from '../state/bots'
 import {
@@ -40,6 +40,8 @@ interface Props {
   onProfile: (profile: string | null) => void
   /** Opens a run's conversation. */
   onOpenRun: (run: CronRun, job: CronJob) => void
+  /** The Board | Scheduled switch, for the header. */
+  segment?: ReactNode
 }
 
 /** Pinned jobs, kept on this computer as "profile\tjobID" (Hermes has no pin for a job). */
@@ -62,7 +64,7 @@ type Pane = { kind: 'job'; key: string } | { kind: 'edit'; job: CronJob | null }
  * details hold Run now, its settings and its run history, each run a
  * conversation. Jobs are made and changed here or by asking Hermes.
  */
-export function ScheduledJobs({ bots, connected, profile, onProfile, onOpenRun }: Props) {
+export function ScheduledJobs({ bots, connected, profile, onProfile, onOpenRun, segment }: Props) {
   const cron = useCron(profile, connected)
   const [pins, setPins] = useState(readPins)
   const [pane, setPane] = useState<Pane>(null)
@@ -176,7 +178,7 @@ export function ScheduledJobs({ bots, connected, profile, onProfile, onOpenRun }
     <>
       <section className="chatlist" aria-label={t('Scheduled')}>
         <div className="chatlist-head">
-          <h1>{t('Scheduled')}</h1>
+          {segment ?? <h1>{t('Scheduled')}</h1>}
           <button className="round" aria-label={t('New job')} title={t('New job')} disabled={!connected} onClick={() => setPane({ kind: 'edit', job: null })}>
             <Icon name="plus" />
           </button>

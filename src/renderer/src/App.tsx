@@ -5,7 +5,7 @@ import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
 import { RoomView } from './components/RoomView'
-import { ScheduledJobs } from './components/ScheduledJobs'
+import { Tasks } from './components/Tasks'
 import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
@@ -453,7 +453,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onCreateRoom={groupRooms.create}
           />
         ) : section === 'tasks' ? (
-          <ScheduledJobs
+          <Tasks
             bots={roster.bots}
             connected={connected}
             profile={chatProfile}

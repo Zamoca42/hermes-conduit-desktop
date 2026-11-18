@@ -119,6 +119,21 @@
     "zh-Hans": "一个问题",
     "zh-Hant": "一個問題"
   },
+  "A worker picks it up as soon as it’s ready.": {
+    "de": "Ein Worker übernimmt sie, sobald sie bereit ist.",
+    "es": "Un trabajador la toma en cuanto está lista.",
+    "fr": "Un worker la prend dès qu’elle est prête.",
+    "id": "Worker mengambilnya begitu siap.",
+    "it": "Un worker la prende appena è pronta.",
+    "ja": "準備ができ次第、ワーカーが引き受けます。",
+    "ko": "준비되는 즉시 워커가 가져갑니다.",
+    "pl": "Worker podejmie je, gdy tylko będzie gotowe.",
+    "pt-BR": "Um worker pega a tarefa assim que ela estiver pronta.",
+    "ru": "Исполнитель возьмёт её, как только она будет готова.",
+    "tr": "Hazır olur olmaz bir çalışan onu alır.",
+    "zh-Hans": "一旦就绪，就会有工作者接手。",
+    "zh-Hant": "一旦就緒，就會有工作者接手。"
+  },
   "Active": {
     "de": "Aktiv",
     "es": "Activo",
@@ -133,6 +148,21 @@
     "tr": "Etkin",
     "zh-Hans": "启用中",
     "zh-Hant": "啟用中"
+  },
+  "Add a comment, or a note on what was done": {
+    "de": "Kommentar oder Notiz zum Erledigten hinzufügen",
+    "es": "Añade un comentario o una nota sobre lo que se hizo",
+    "fr": "Ajoutez un commentaire, ou une note sur ce qui a été fait",
+    "id": "Tambahkan komentar, atau catatan tentang apa yang sudah dikerjakan",
+    "it": "Aggiungi un commento o una nota su cosa è stato fatto",
+    "ja": "コメント、または何をしたかのメモを追加",
+    "ko": "댓글이나 무엇을 했는지 메모를 추가하세요",
+    "pl": "Dodaj komentarz lub notatkę o tym, co zrobiono",
+    "pt-BR": "Adicione um comentário ou uma nota sobre o que foi feito",
+    "ru": "Добавьте комментарий или заметку о том, что сделано",
+    "tr": "Bir yorum ya da ne yapıldığına dair bir not ekleyin",
+    "zh-Hans": "添加评论，或说明完成了什么",
+    "zh-Hant": "新增留言，或說明完成了什麼"
   },
   "Add another Hermes": {
     "de": "Weiteres Hermes hinzufügen",
@@ -163,6 +193,21 @@
     "tr": "Başka bir Hermes ekle…",
     "zh-Hans": "添加另一个 Hermes…",
     "zh-Hant": "新增另一個 Hermes…"
+  },
+  "Add comment": {
+    "de": "Kommentar hinzufügen",
+    "es": "Añadir comentario",
+    "fr": "Ajouter un commentaire",
+    "id": "Tambah komentar",
+    "it": "Aggiungi commento",
+    "ja": "コメントを追加",
+    "ko": "댓글 추가",
+    "pl": "Dodaj komentarz",
+    "pt-BR": "Adicionar comentário",
+    "ru": "Добавить комментарий",
+    "tr": "Yorum ekle",
+    "zh-Hans": "添加评论",
+    "zh-Hant": "新增留言"
   },
   "All": {
     "de": "Alle",
@@ -239,6 +284,21 @@
     "zh-Hans": "回答",
     "zh-Hant": "回答"
   },
+  "Answer the question, then unblock": {
+    "de": "Beantworte die Frage und gib die Aufgabe dann frei",
+    "es": "Responde la pregunta y luego desbloquea",
+    "fr": "Répondez à la question, puis débloquez",
+    "id": "Jawab pertanyaannya, lalu buka blokir",
+    "it": "Rispondi alla domanda, poi sblocca",
+    "ja": "質問に答えてからブロックを解除",
+    "ko": "질문에 답한 뒤 차단을 해제하세요",
+    "pl": "Odpowiedz na pytanie, a potem odblokuj",
+    "pt-BR": "Responda à pergunta e depois desbloqueie",
+    "ru": "Ответьте на вопрос, затем разблокируйте",
+    "tr": "Soruyu yanıtlayın, sonra engeli kaldırın",
+    "zh-Hans": "回答问题，然后解除阻塞",
+    "zh-Hant": "回答問題，然後解除封鎖"
+  },
   "Answering from a snapshot of this chat. The answer will appear here.": {
     "de": "Antwort anhand eines Schnappschusses dieses Chats. Sie erscheint hier.",
     "es": "Respondiendo a partir de una instantánea de este chat. La respuesta aparecerá aquí.",
@@ -283,6 +343,36 @@
     "tr": "Hermes’in tüm sohbetlerde beklediği onaylar ve sorular.",
     "zh-Hans": "Hermes 在所有聊天中等待的批准和问题。",
     "zh-Hant": "Hermes 在所有聊天中等待的核准和問題。"
+  },
+  "Archive": {
+    "de": "Archivieren",
+    "es": "Archivar",
+    "fr": "Archiver",
+    "id": "Arsipkan",
+    "it": "Archivia",
+    "ja": "アーカイブ",
+    "ko": "보관",
+    "pl": "Archiwizuj",
+    "pt-BR": "Arquivar",
+    "ru": "Архивировать",
+    "tr": "Arşivle",
+    "zh-Hans": "归档",
+    "zh-Hant": "封存"
+  },
+  "Archived": {
+    "de": "Archiviert",
+    "es": "Archivado",
+    "fr": "Archivé",
+    "id": "Diarsipkan",
+    "it": "Archiviato",
+    "ja": "アーカイブ済み",
+    "ko": "보관됨",
+    "pl": "Zarchiwizowane",
+    "pt-BR": "Arquivado",
+    "ru": "В архиве",
+    "tr": "Arşivlendi",
+    "zh-Hans": "已归档",
+    "zh-Hant": "已封存"
   },
   "Ask Hermes": {
     "de": "Hermes fragen",
@@ -374,6 +464,21 @@
     "zh-Hans": "问 {name}…",
     "zh-Hant": "問 {name}…"
   },
+  "Assigned to": {
+    "de": "Zugewiesen an",
+    "es": "Asignado a",
+    "fr": "Assigné à",
+    "id": "Ditugaskan ke",
+    "it": "Assegnata a",
+    "ja": "割り当て先",
+    "ko": "할당 대상",
+    "pl": "Przypisano do",
+    "pt-BR": "Atribuída a",
+    "ru": "Исполнитель",
+    "tr": "Atanan",
+    "zh-Hans": "指派给",
+    "zh-Hant": "指派給"
+  },
   "At a time": {
     "de": "Zur Uhrzeit",
     "es": "A una hora",
@@ -463,6 +568,66 @@
     "tr": "Cloudflare Access veya başka bir proxy’nin arkasında mı?",
     "zh-Hans": "在 Cloudflare Access 或其他代理后面？",
     "zh-Hant": "在 Cloudflare Access 或其他代理伺服器後面？"
+  },
+  "Blocked": {
+    "de": "Blockiert",
+    "es": "Bloqueado",
+    "fr": "Bloqué",
+    "id": "Diblokir",
+    "it": "Bloccato",
+    "ja": "ブロック中",
+    "ko": "차단됨",
+    "pl": "Zablokowane",
+    "pt-BR": "Bloqueado",
+    "ru": "Заблокировано",
+    "tr": "Engellendi",
+    "zh-Hans": "已阻塞",
+    "zh-Hant": "受阻"
+  },
+  "Blocked by": {
+    "de": "Blockiert durch",
+    "es": "Bloqueado por",
+    "fr": "Bloquée par",
+    "id": "Diblokir oleh",
+    "it": "Bloccata da",
+    "ja": "ブロック元",
+    "ko": "차단 원인",
+    "pl": "Zablokowane przez",
+    "pt-BR": "Bloqueada por",
+    "ru": "Блокируется",
+    "tr": "Engelleyen",
+    "zh-Hans": "阻塞来源",
+    "zh-Hant": "受阻於"
+  },
+  "Blocks": {
+    "de": "Blockiert",
+    "es": "Bloquea a",
+    "fr": "Bloque",
+    "id": "Memblokir",
+    "it": "Blocca",
+    "ja": "ブロック対象",
+    "ko": "차단 대상",
+    "pl": "Blokuje",
+    "pt-BR": "Bloqueia",
+    "ru": "Блокирует",
+    "tr": "Engellediği",
+    "zh-Hans": "阻塞",
+    "zh-Hant": "阻擋"
+  },
+  "Board": {
+    "de": "Board",
+    "es": "Tablero",
+    "fr": "Tableau",
+    "id": "Papan",
+    "it": "Bacheca",
+    "ja": "ボード",
+    "ko": "보드",
+    "pl": "Tablica",
+    "pt-BR": "Quadro",
+    "ru": "Доска",
+    "tr": "Pano",
+    "zh-Hans": "看板",
+    "zh-Hant": "看板"
   },
   "Bot": {
     "de": "Bot",
@@ -614,6 +779,21 @@
     "zh-Hans": "关闭",
     "zh-Hant": "關閉"
   },
+  "Closes the task, with the note as its summary of what was done.": {
+    "de": "Schließt die Aufgabe ab, mit der Notiz als Zusammenfassung des Erledigten.",
+    "es": "Cierra la tarea, con la nota como resumen de lo que se hizo.",
+    "fr": "Termine la tâche, avec la note comme résumé de ce qui a été fait.",
+    "id": "Menutup tugas, dengan catatan sebagai ringkasan apa yang sudah dikerjakan.",
+    "it": "Chiude l’attività, con la nota come riepilogo di cosa è stato fatto.",
+    "ja": "メモを作業の要約としてタスクを完了します。",
+    "ko": "메모를 한 일의 요약으로 삼아 작업을 완료합니다.",
+    "pl": "Zamyka zadanie, z notatką jako podsumowaniem tego, co zrobiono.",
+    "pt-BR": "Conclui a tarefa, com a nota como resumo do que foi feito.",
+    "ru": "Закрывает задачу, используя заметку как сводку о сделанном.",
+    "tr": "Görevi, notu yapılanların özeti olarak kullanıp kapatır.",
+    "zh-Hans": "完成任务，并以备注作为完成内容的摘要。",
+    "zh-Hant": "完成任務，並以備註作為完成內容的摘要。"
+  },
   "Cloudflare Access client ID": {
     "de": "Cloudflare-Access-Client-ID",
     "es": "ID de cliente de Cloudflare Access",
@@ -673,6 +853,21 @@
     "tr": "Komut başarısız: {reason}",
     "zh-Hans": "命令失败：{reason}",
     "zh-Hant": "指令失敗：{reason}"
+  },
+  "Comments": {
+    "de": "Kommentare",
+    "es": "Comentarios",
+    "fr": "Commentaires",
+    "id": "Komentar",
+    "it": "Commenti",
+    "ja": "コメント",
+    "ko": "댓글",
+    "pl": "Komentarze",
+    "pt-BR": "Comentários",
+    "ru": "Комментарии",
+    "tr": "Yorumlar",
+    "zh-Hans": "评论",
+    "zh-Hant": "留言"
   },
   "Compress this conversation context": {
     "de": "Kontext dieser Unterhaltung komprimieren",
@@ -1004,6 +1199,36 @@
     "zh-Hans": "无法更改“{title}”：{reason}",
     "zh-Hant": "無法更改「{title}」：{reason}"
   },
+  "Couldn’t load the board: {reason}": {
+    "de": "Das Board konnte nicht geladen werden: {reason}",
+    "es": "No se pudo cargar el tablero: {reason}",
+    "fr": "Impossible de charger le tableau : {reason}",
+    "id": "Tidak dapat memuat papan: {reason}",
+    "it": "Impossibile caricare la bacheca: {reason}",
+    "ja": "ボードを読み込めませんでした：{reason}",
+    "ko": "보드를 불러올 수 없습니다: {reason}",
+    "pl": "Nie udało się wczytać tablicy: {reason}",
+    "pt-BR": "Não foi possível carregar o quadro: {reason}",
+    "ru": "Не удалось загрузить доску: {reason}",
+    "tr": "Pano yüklenemedi: {reason}",
+    "zh-Hans": "无法加载看板：{reason}",
+    "zh-Hant": "無法載入看板：{reason}"
+  },
+  "Couldn’t load this task: {reason}": {
+    "de": "Diese Aufgabe konnte nicht geladen werden: {reason}",
+    "es": "No se pudo cargar esta tarea: {reason}",
+    "fr": "Impossible de charger cette tâche : {reason}",
+    "id": "Tidak dapat memuat tugas ini: {reason}",
+    "it": "Impossibile caricare questa attività: {reason}",
+    "ja": "このタスクを読み込めませんでした：{reason}",
+    "ko": "이 작업을 불러올 수 없습니다: {reason}",
+    "pl": "Nie udało się wczytać tego zadania: {reason}",
+    "pt-BR": "Não foi possível carregar esta tarefa: {reason}",
+    "ru": "Не удалось загрузить задачу: {reason}",
+    "tr": "Bu görev yüklenemedi: {reason}",
+    "zh-Hans": "无法加载此任务：{reason}",
+    "zh-Hant": "無法載入此任務：{reason}"
+  },
   "Couldn’t load your bots: {error}": {
     "de": "Deine Bots konnten nicht geladen werden: {error}",
     "es": "No se pudieron cargar tus bots: {error}",
@@ -1033,6 +1258,21 @@
     "tr": "Sohbetleriniz yüklenemedi: {error}",
     "zh-Hans": "无法加载你的聊天：{error}",
     "zh-Hant": "無法載入你的聊天：{error}"
+  },
+  "Couldn’t move {title}: {reason}": {
+    "de": "{title} konnte nicht verschoben werden: {reason}",
+    "es": "No se pudo mover {title}: {reason}",
+    "fr": "Impossible de déplacer {title} : {reason}",
+    "id": "Tidak dapat memindahkan {title}: {reason}",
+    "it": "Impossibile spostare {title}: {reason}",
+    "ja": "{title} を移動できませんでした：{reason}",
+    "ko": "{title}을(를) 옮길 수 없습니다: {reason}",
+    "pl": "Nie udało się przenieść {title}: {reason}",
+    "pt-BR": "Não foi possível mover {title}: {reason}",
+    "ru": "Не удалось переместить {title}: {reason}",
+    "tr": "{title} taşınamadı: {reason}",
+    "zh-Hans": "无法移动 {title}：{reason}",
+    "zh-Hant": "無法移動 {title}：{reason}"
   },
   "Couldn’t open a connection ({detail}).": {
     "de": "Verbindung konnte nicht geöffnet werden ({detail}).",
@@ -1109,6 +1349,21 @@
     "zh-Hans": "创建",
     "zh-Hant": "建立"
   },
+  "Created {time}": {
+    "de": "Erstellt {time}",
+    "es": "Creada {time}",
+    "fr": "Créée {time}",
+    "id": "Dibuat {time}",
+    "it": "Creata {time}",
+    "ja": "作成 {time}",
+    "ko": "생성 {time}",
+    "pl": "Utworzono {time}",
+    "pt-BR": "Criada {time}",
+    "ru": "Создана {time}",
+    "tr": "Oluşturuldu {time}",
+    "zh-Hans": "创建于 {time}",
+    "zh-Hant": "建立於 {time}"
+  },
   "Creating…": {
     "de": "Wird erstellt…",
     "es": "Creando…",
@@ -1123,6 +1378,21 @@
     "tr": "Oluşturuluyor…",
     "zh-Hans": "正在创建…",
     "zh-Hant": "正在建立…"
+  },
+  "Critical": {
+    "de": "Kritisch",
+    "es": "Crítica",
+    "fr": "Critique",
+    "id": "Kritis",
+    "it": "Critica",
+    "ja": "重大",
+    "ko": "최우선",
+    "pl": "Krytyczny",
+    "pt-BR": "Crítico",
+    "ru": "Критический",
+    "tr": "Kritik",
+    "zh-Hans": "严重",
+    "zh-Hant": "危急"
   },
   "Custom": {
     "de": "Eigene",
@@ -1199,6 +1469,21 @@
     "zh-Hans": "天",
     "zh-Hant": "天"
   },
+  "Default ({name})": {
+    "de": "Standard ({name})",
+    "es": "Predeterminado ({name})",
+    "fr": "Par défaut ({name})",
+    "id": "Default ({name})",
+    "it": "Predefinito ({name})",
+    "ja": "デフォルト（{name}）",
+    "ko": "기본({name})",
+    "pl": "Domyślny ({name})",
+    "pt-BR": "Padrão ({name})",
+    "ru": "По умолчанию ({name})",
+    "tr": "Varsayılan ({name})",
+    "zh-Hans": "默认（{name}）",
+    "zh-Hant": "預設（{name}）"
+  },
   "Delete": {
     "de": "Löschen",
     "es": "Eliminar",
@@ -1259,6 +1544,21 @@
     "zh-Hans": "删除定时任务？",
     "zh-Hant": "刪除排程工作？"
   },
+  "Delete task?": {
+    "de": "Aufgabe löschen?",
+    "es": "¿Eliminar tarea?",
+    "fr": "Supprimer la tâche ?",
+    "id": "Hapus tugas?",
+    "it": "Eliminare l’attività?",
+    "ja": "タスクを削除しますか？",
+    "ko": "작업을 삭제할까요?",
+    "pl": "Usunąć zadanie?",
+    "pt-BR": "Apagar tarefa?",
+    "ru": "Удалить задачу?",
+    "tr": "Görev silinsin mi?",
+    "zh-Hans": "删除任务？",
+    "zh-Hant": "刪除任務？"
+  },
   "Deliver to": {
     "de": "Senden an",
     "es": "Entregar en",
@@ -1303,6 +1603,36 @@
     "tr": "Reddet",
     "zh-Hans": "拒绝",
     "zh-Hant": "拒絕"
+  },
+  "Description": {
+    "de": "Beschreibung",
+    "es": "Descripción",
+    "fr": "Description",
+    "id": "Deskripsi",
+    "it": "Descrizione",
+    "ja": "説明",
+    "ko": "설명",
+    "pl": "Opis",
+    "pt-BR": "Descrição",
+    "ru": "Описание",
+    "tr": "Açıklama",
+    "zh-Hans": "描述",
+    "zh-Hant": "描述"
+  },
+  "Done": {
+    "de": "Fertig",
+    "es": "Hecho",
+    "fr": "Terminé",
+    "id": "Selesai",
+    "it": "Fatto",
+    "ja": "完了",
+    "ko": "완료",
+    "pl": "Gotowe",
+    "pt-BR": "Concluído",
+    "ru": "Готово",
+    "tr": "Bitti",
+    "zh-Hans": "完成",
+    "zh-Hant": "完成"
   },
   "Drag one bot onto another to start a group chat.": {
     "de": "Zieh einen Bot auf einen anderen, um einen Gruppenchat zu starten.",
@@ -1994,6 +2324,21 @@
     "zh-Hans": "Hermes 有个问题。",
     "zh-Hant": "Hermes 有個問題。"
   },
+  "Hermes needs a note on what was done before {title} can be marked done. Open the task, write it, and choose Mark done.": {
+    "de": "Hermes braucht eine Notiz dazu, was erledigt wurde, bevor {title} als erledigt markiert werden kann. Öffne die Aufgabe, schreib sie und wähle „Als erledigt markieren“.",
+    "es": "Hermes necesita una nota sobre lo que se hizo antes de marcar {title} como hecha. Abre la tarea, escríbela y elige Marcar como hecha.",
+    "fr": "Hermes a besoin d’une note sur ce qui a été fait avant de marquer {title} comme terminée. Ouvrez la tâche, écrivez-la et choisissez Marquer comme terminée.",
+    "id": "Hermes memerlukan catatan tentang apa yang sudah dikerjakan sebelum {title} bisa ditandai selesai. Buka tugasnya, tulis catatan, lalu pilih Tandai selesai.",
+    "it": "Hermes ha bisogno di una nota su cosa è stato fatto prima di segnare {title} come completata. Apri l’attività, scrivila e scegli Segna come completata.",
+    "ja": "{title} を完了にするには、何をしたかのメモが必要です。タスクを開いて書き、「完了にする」を選んでください。",
+    "ko": "{title}을(를) 완료로 표시하려면 무엇을 했는지 메모가 필요합니다. 작업을 열어 메모를 쓰고 완료로 표시를 선택하세요.",
+    "pl": "Hermes potrzebuje notatki o tym, co zrobiono, zanim {title} zostanie oznaczone jako zrobione. Otwórz zadanie, napisz ją i wybierz Oznacz jako zrobione.",
+    "pt-BR": "O Hermes precisa de uma nota sobre o que foi feito antes de marcar {title} como concluída. Abra a tarefa, escreva a nota e escolha Marcar como concluída.",
+    "ru": "Hermes нужна заметка о том, что сделано, прежде чем отметить {title} как выполненную. Откройте задачу, напишите её и выберите «Отметить выполненной».",
+    "tr": "{title} tamamlandı olarak işaretlenmeden önce Hermes'in ne yapıldığına dair bir nota ihtiyacı var. Görevi açın, notu yazın ve Tamamlandı olarak işaretle'yi seçin.",
+    "zh-Hans": "要将 {title} 标记为完成，Hermes 需要一条说明完成了什么的备注。打开任务，写下备注，然后选择“标记为完成”。",
+    "zh-Hant": "要將 {title} 標記為完成，Hermes 需要一則說明完成了什麼的備註。開啟任務，寫下備註，然後選擇「標記為完成」。"
+  },
   "Hermes signed this computer out. Sign in again.": {
     "de": "Hermes hat diesen Computer abgemeldet. Melde dich erneut an.",
     "es": "Hermes cerró la sesión en este ordenador. Vuelve a iniciar sesión.",
@@ -2204,6 +2549,21 @@
     "zh-Hans": "上次运行",
     "zh-Hant": "上次執行"
   },
+  "Latest summary": {
+    "de": "Neueste Zusammenfassung",
+    "es": "Último resumen",
+    "fr": "Dernier résumé",
+    "id": "Ringkasan terbaru",
+    "it": "Ultimo riepilogo",
+    "ja": "最新の要約",
+    "ko": "최근 요약",
+    "pl": "Najnowsze podsumowanie",
+    "pt-BR": "Resumo mais recente",
+    "ru": "Последняя сводка",
+    "tr": "Son özet",
+    "zh-Hans": "最新摘要",
+    "zh-Hant": "最新摘要"
+  },
   "Loading chats…": {
     "de": "Chats werden geladen…",
     "es": "Cargando chats…",
@@ -2308,6 +2668,21 @@
     "tr": "Kod oluşturuluyor…",
     "zh-Hans": "正在生成二维码…",
     "zh-Hant": "正在產生條碼…"
+  },
+  "Mark done": {
+    "de": "Als erledigt markieren",
+    "es": "Marcar como hecha",
+    "fr": "Marquer comme terminée",
+    "id": "Tandai selesai",
+    "it": "Segna come completata",
+    "ja": "完了にする",
+    "ko": "완료로 표시",
+    "pl": "Oznacz jako zrobione",
+    "pt-BR": "Marcar como concluída",
+    "ru": "Отметить выполненной",
+    "tr": "Tamamlandı olarak işaretle",
+    "zh-Hans": "标记为完成",
+    "zh-Hant": "標記為完成"
   },
   "Max": {
     "de": "Maximal",
@@ -2714,6 +3089,21 @@
     "zh-Hans": "新建定时任务",
     "zh-Hant": "新增排程任務"
   },
+  "New task": {
+    "de": "Neue Aufgabe",
+    "es": "Nueva tarea",
+    "fr": "Nouvelle tâche",
+    "id": "Tugas baru",
+    "it": "Nuova attività",
+    "ja": "新規タスク",
+    "ko": "새 태스크",
+    "pl": "Nowe zadanie",
+    "pt-BR": "Nova tarefa",
+    "ru": "Новая задача",
+    "tr": "Yeni görev",
+    "zh-Hans": "新建任务",
+    "zh-Hant": "新增任務"
+  },
   "Next run": {
     "de": "Nächste Ausführung",
     "es": "Próxima ejecución",
@@ -2774,6 +3164,21 @@
     "zh-Hans": "还没有聊天。点按 + 按钮开始。",
     "zh-Hant": "還沒有聊天。按一下 + 按鈕開始。"
   },
+  "No comments yet.": {
+    "de": "Noch keine Kommentare.",
+    "es": "Aún no hay comentarios.",
+    "fr": "Aucun commentaire pour l'instant.",
+    "id": "Belum ada komentar.",
+    "it": "Ancora nessun commento.",
+    "ja": "まだコメントはありません。",
+    "ko": "아직 댓글이 없어요.",
+    "pl": "Brak komentarzy.",
+    "pt-BR": "Nenhum comentário ainda.",
+    "ru": "Комментариев пока нет.",
+    "tr": "Henüz yorum yok.",
+    "zh-Hans": "暂无评论。",
+    "zh-Hant": "尚無留言。"
+  },
   "No schedule": {
     "de": "Kein Zeitplan",
     "es": "Sin programación",
@@ -2818,6 +3223,36 @@
     "tr": "Giriş yok",
     "zh-Hans": "无需登录",
     "zh-Hant": "無需登入"
+  },
+  "No tasks": {
+    "de": "Keine Aufgaben",
+    "es": "Sin tareas",
+    "fr": "Aucune tâche",
+    "id": "Tidak ada tugas",
+    "it": "Nessuna attività",
+    "ja": "タスクなし",
+    "ko": "작업 없음",
+    "pl": "Brak zadań",
+    "pt-BR": "Nenhuma tarefa",
+    "ru": "Нет задач",
+    "tr": "Görev yok",
+    "zh-Hans": "没有任务",
+    "zh-Hant": "沒有任務"
+  },
+  "Normal": {
+    "de": "Normal",
+    "es": "Normal",
+    "fr": "Normale",
+    "id": "Normal",
+    "it": "Normale",
+    "ja": "通常",
+    "ko": "보통",
+    "pl": "Normalny",
+    "pt-BR": "Normal",
+    "ru": "Обычный",
+    "tr": "Normal",
+    "zh-Hans": "普通",
+    "zh-Hant": "一般"
   },
   "Not a schedule yet.": {
     "de": "Noch kein Zeitplan.",
@@ -3134,6 +3569,21 @@
     "zh-Hans": "或输入你自己的回答",
     "zh-Hant": "或輸入你自己的回答"
   },
+  "Other": {
+    "de": "Andere",
+    "es": "Otro",
+    "fr": "Autre",
+    "id": "Lainnya",
+    "it": "Altro",
+    "ja": "その他",
+    "ko": "기타",
+    "pl": "Inne",
+    "pt-BR": "Outro",
+    "ru": "Другое",
+    "tr": "Diğer",
+    "zh-Hans": "其他",
+    "zh-Hant": "其他"
+  },
   "Other headers": {
     "de": "Weitere Header",
     "es": "Otras cabeceras",
@@ -3193,6 +3643,36 @@
     "tr": "Eşleme başarısız oldu.",
     "zh-Hans": "配对失败。",
     "zh-Hant": "配對失敗。"
+  },
+  "Parked (won't run)": {
+    "de": "Geparkt (läuft nicht)",
+    "es": "En espera (no se ejecutará)",
+    "fr": "En suspens (ne s'exécutera pas)",
+    "id": "Diparkir (tidak berjalan)",
+    "it": "In sospeso (non verrà eseguita)",
+    "ja": "保留（実行しない）",
+    "ko": "보류(실행 안 함)",
+    "pl": "Odłożone (nie zostanie uruchomione)",
+    "pt-BR": "Em espera (não será executada)",
+    "ru": "Отложено (не запускается)",
+    "tr": "Beklemede (çalışmaz)",
+    "zh-Hans": "搁置（不会运行）",
+    "zh-Hant": "擱置（不會執行）"
+  },
+  "Parked leaves the task unassigned so no worker claims it.": {
+    "de": "Geparkt lässt die Aufgabe ohne Zuweisung, sodass kein Worker sie übernimmt.",
+    "es": "Aparcada deja la tarea sin asignar para que ningún trabajador la tome.",
+    "fr": "En attente laisse la tâche non attribuée, pour qu’aucun worker ne la prenne.",
+    "id": "Diparkir membiarkan tugas tanpa penugasan sehingga tidak ada worker yang mengambilnya.",
+    "it": "In sospeso lascia l’attività non assegnata, così nessun worker la prende.",
+    "ja": "保留にすると未割り当てのままになり、ワーカーは引き受けません。",
+    "ko": "보류하면 작업이 할당되지 않아 어떤 워커도 가져가지 않습니다.",
+    "pl": "Odłożone zostawia zadanie bez przypisania, więc żaden worker go nie podejmie.",
+    "pt-BR": "Estacionada deixa a tarefa sem responsável, para que nenhum worker a pegue.",
+    "ru": "Отложенная задача остаётся без исполнителя, и никто её не возьмёт.",
+    "tr": "Park edilen görev atanmamış kalır, böylece hiçbir çalışan onu almaz.",
+    "zh-Hans": "搁置会让任务保持未分配，不会有工作者接手。",
+    "zh-Hant": "擱置會讓任務保持未指派，不會有工作者接手。"
   },
   "Password": {
     "de": "Passwort",
@@ -3343,6 +3823,21 @@
     "tr": "Önceki 7 gün",
     "zh-Hans": "过去 7 天",
     "zh-Hant": "過去 7 天"
+  },
+  "Priority": {
+    "de": "Priorität",
+    "es": "Prioridad",
+    "fr": "Priorité",
+    "id": "Prioritas",
+    "it": "Priorità",
+    "ja": "優先度",
+    "ko": "우선순위",
+    "pl": "Priorytet",
+    "pt-BR": "Prioridade",
+    "ru": "Приоритет",
+    "tr": "Öncelik",
+    "zh-Hans": "优先",
+    "zh-Hant": "優先順序"
   },
   "Prompt": {
     "de": "Prompt",
@@ -3569,6 +4064,21 @@
     "zh-Hans": "正在读取网页",
     "zh-Hant": "正在讀取網頁"
   },
+  "Ready": {
+    "de": "Bereit",
+    "es": "Listo",
+    "fr": "Prêt",
+    "id": "Siap",
+    "it": "Pronto",
+    "ja": "準備完了",
+    "ko": "준비됨",
+    "pl": "W gotowości",
+    "pt-BR": "Pronto",
+    "ru": "Готово к работе",
+    "tr": "Hazır",
+    "zh-Hans": "就绪",
+    "zh-Hant": "就緒"
+  },
   "Reasoning": {
     "de": "Reasoning",
     "es": "Razonamiento",
@@ -3689,6 +4199,21 @@
     "zh-Hans": "已回答。",
     "zh-Hant": "已回答。"
   },
+  "Reply and unblock": {
+    "de": "Antworten und freigeben",
+    "es": "Responder y desbloquear",
+    "fr": "Répondre et débloquer",
+    "id": "Balas dan buka blokir",
+    "it": "Rispondi e sblocca",
+    "ja": "返信してブロック解除",
+    "ko": "답하고 차단 해제",
+    "pl": "Odpowiedz i odblokuj",
+    "pt-BR": "Responder e desbloquear",
+    "ru": "Ответить и разблокировать",
+    "tr": "Yanıtla ve engeli kaldır",
+    "zh-Hans": "回复并解除阻塞",
+    "zh-Hant": "回覆並解除封鎖"
+  },
   "Replying to {name}": {
     "de": "Antwort auf {name}",
     "es": "Respondiendo a {name}",
@@ -3703,6 +4228,21 @@
     "tr": "Yanıtlanan: {name}",
     "zh-Hans": "回复 {name}",
     "zh-Hant": "正在回覆 {name}"
+  },
+  "Result": {
+    "de": "Ergebnis",
+    "es": "Resultado",
+    "fr": "Résultat",
+    "id": "Hasil",
+    "it": "Risultato",
+    "ja": "結果",
+    "ko": "결과",
+    "pl": "Wynik",
+    "pt-BR": "Resultado",
+    "ru": "Результат",
+    "tr": "Sonuç",
+    "zh-Hans": "结果",
+    "zh-Hant": "結果"
   },
   "Resume": {
     "de": "Fortsetzen",
@@ -3763,6 +4303,21 @@
     "tr": "Bu yanıt yeniden denensin mi?",
     "zh-Hans": "要重试这条回复吗？",
     "zh-Hant": "要重試這則回覆嗎？"
+  },
+  "Review": {
+    "de": "Überprüfung",
+    "es": "Revisión",
+    "fr": "Vérification",
+    "id": "Tinjauan",
+    "it": "Revisione",
+    "ja": "レビュー",
+    "ko": "검토",
+    "pl": "Przegląd",
+    "pt-BR": "Revisão",
+    "ru": "Проверка",
+    "tr": "İnceleme",
+    "zh-Hans": "评审",
+    "zh-Hant": "檢閱"
   },
   "Room name": {
     "de": "Raumname",
@@ -4018,6 +4573,21 @@
     "tr": "Sağlayıcı veya model ara",
     "zh-Hans": "搜索提供方或模型",
     "zh-Hant": "搜尋供應商或模型"
+  },
+  "Search tasks": {
+    "de": "Aufgaben durchsuchen",
+    "es": "Buscar tareas",
+    "fr": "Rechercher des tâches",
+    "id": "Cari tugas",
+    "it": "Cerca attività",
+    "ja": "タスクを検索",
+    "ko": "태스크 검색",
+    "pl": "Szukaj zadań",
+    "pt-BR": "Buscar tarefas",
+    "ru": "Поиск задач",
+    "tr": "Görevlerde ara",
+    "zh-Hans": "搜索任务",
+    "zh-Hant": "搜尋任務"
   },
   "Searched files": {
     "de": "Dateien durchsucht",
@@ -4514,6 +5084,36 @@
     "zh-Hans": "已在后台开始。回答将显示在这里。",
     "zh-Hant": "已在背景開始。回答將顯示在這裡。"
   },
+  "Starts in": {
+    "de": "Startet in",
+    "es": "Empieza en",
+    "fr": "Commence dans",
+    "id": "Mulai di",
+    "it": "Inizia in",
+    "ja": "開始する列",
+    "ko": "시작 위치",
+    "pl": "Zaczyna w",
+    "pt-BR": "Começa em",
+    "ru": "Начинается в",
+    "tr": "Başladığı yer",
+    "zh-Hans": "起始列",
+    "zh-Hant": "起始欄"
+  },
+  "Status": {
+    "de": "Status",
+    "es": "Estado",
+    "fr": "État",
+    "id": "Status",
+    "it": "Stato",
+    "ja": "ステータス",
+    "ko": "상태",
+    "pl": "Stan",
+    "pt-BR": "Status",
+    "ru": "Состояние",
+    "tr": "Durum",
+    "zh-Hans": "状态",
+    "zh-Hant": "狀態"
+  },
   "Steer the current run": {
     "de": "Die laufende Ausführung nachsteuern",
     "es": "Guiar la ejecución actual",
@@ -4679,6 +5279,21 @@
     "zh-Hans": "移出 {name}",
     "zh-Hant": "移出 {name}"
   },
+  "Task": {
+    "de": "Aufgabe",
+    "es": "Tarea",
+    "fr": "Tâche",
+    "id": "Tugas",
+    "it": "Attività",
+    "ja": "タスク",
+    "ko": "태스크",
+    "pl": "Zadanie",
+    "pt-BR": "Tarefa",
+    "ru": "Задача",
+    "tr": "Görev",
+    "zh-Hans": "任务",
+    "zh-Hant": "任務"
+  },
   "Tasks": {
     "de": "Aufgaben",
     "es": "Tareas",
@@ -4723,6 +5338,21 @@
     "tr": "Bu kullanıcı adı ve parola işe yaramadı.",
     "zh-Hans": "用户名或密码不正确。",
     "zh-Hant": "使用者名稱或密碼不正確。"
+  },
+  "The board comes with Hermes’ Kanban plugin. Turn it on in the Hermes dashboard to see tasks here.": {
+    "de": "Das Board gehört zum Kanban-Plugin von Hermes. Aktiviere es im Hermes-Dashboard, um Aufgaben hier zu sehen.",
+    "es": "El tablero viene con el plugin Kanban de Hermes. Actívalo en el panel de Hermes para ver las tareas aquí.",
+    "fr": "Le tableau fait partie du plugin Kanban de Hermes. Activez-le dans le tableau de bord de Hermes pour voir les tâches ici.",
+    "id": "Papan ini disertakan dengan plugin Kanban Hermes. Aktifkan di dasbor Hermes untuk melihat tugas di sini.",
+    "it": "La bacheca fa parte del plugin Kanban di Hermes. Attivalo nella dashboard di Hermes per vedere le attività qui.",
+    "ja": "ボードは Hermes の Kanban プラグインに含まれています。Hermes のダッシュボードで有効にすると、ここにタスクが表示されます。",
+    "ko": "보드는 Hermes의 Kanban 플러그인에 포함되어 있습니다. Hermes 대시보드에서 켜면 여기에 작업이 표시됩니다.",
+    "pl": "Tablica jest częścią wtyczki Kanban w Hermesie. Włącz ją w panelu Hermesa, aby zobaczyć tu zadania.",
+    "pt-BR": "O quadro vem com o plugin Kanban do Hermes. Ative-o no painel do Hermes para ver as tarefas aqui.",
+    "ru": "Доска входит в плагин Kanban для Hermes. Включите его в панели Hermes, чтобы видеть задачи здесь.",
+    "tr": "Pano, Hermes'in Kanban eklentisiyle gelir. Görevleri burada görmek için Hermes panosunda açın.",
+    "zh-Hans": "看板来自 Hermes 的 Kanban 插件。在 Hermes 仪表盘中启用它，即可在这里看到任务。",
+    "zh-Hant": "看板來自 Hermes 的 Kanban 外掛。在 Hermes 儀表板中啟用它，即可在這裡看到任務。"
   },
   "The code ran out. Make a new one to try again.": {
     "de": "Der Code ist abgelaufen. Erstelle einen neuen, um es erneut zu versuchen.",
@@ -4799,6 +5429,21 @@
     "zh-Hans": "控制台没有发送连接凭证。",
     "zh-Hant": "控制台沒有傳送連線憑證。"
   },
+  "The reply was posted, but the task could not be unblocked. ({detail})": {
+    "de": "Die Antwort wurde gepostet, aber die Aufgabe konnte nicht freigegeben werden. ({detail})",
+    "es": "La respuesta se publicó, pero no se pudo desbloquear la tarea. ({detail})",
+    "fr": "La réponse a été publiée, mais la tâche n’a pas pu être débloquée. ({detail})",
+    "id": "Balasan sudah diposting, tetapi tugas tidak dapat dibuka blokirnya. ({detail})",
+    "it": "La risposta è stata pubblicata, ma non è stato possibile sbloccare l’attività. ({detail})",
+    "ja": "返信は投稿されましたが、タスクのブロックを解除できませんでした。({detail})",
+    "ko": "답장은 게시되었지만 작업의 차단을 해제하지 못했습니다. ({detail})",
+    "pl": "Odpowiedź została opublikowana, ale nie udało się odblokować zadania. ({detail})",
+    "pt-BR": "A resposta foi publicada, mas não foi possível desbloquear a tarefa. ({detail})",
+    "ru": "Ответ опубликован, но задачу не удалось разблокировать. ({detail})",
+    "tr": "Yanıt gönderildi ancak görevin engeli kaldırılamadı. ({detail})",
+    "zh-Hans": "回复已发布，但无法解除任务阻塞。({detail})",
+    "zh-Hant": "回覆已發布，但無法解除任務受阻狀態。({detail})"
+  },
   "The turn failed.": {
     "de": "Der Durchgang ist fehlgeschlagen.",
     "es": "El turno falló.",
@@ -4873,6 +5518,21 @@
     "tr": "Düşünüyor…",
     "zh-Hans": "思考中…",
     "zh-Hant": "思考中…"
+  },
+  "This Hermes has no task board.": {
+    "de": "Dieses Hermes hat kein Aufgaben-Board.",
+    "es": "Este Hermes no tiene tablero de tareas.",
+    "fr": "Ce Hermes n’a pas de tableau de tâches.",
+    "id": "Hermes ini tidak memiliki papan tugas.",
+    "it": "Questo Hermes non ha una bacheca delle attività.",
+    "ja": "この Hermes にはタスクボードがありません。",
+    "ko": "이 Hermes에는 작업 보드가 없습니다.",
+    "pl": "Ten Hermes nie ma tablicy zadań.",
+    "pt-BR": "Este Hermes não tem quadro de tarefas.",
+    "ru": "У этого Hermes нет доски задач.",
+    "tr": "Bu Hermes'te görev panosu yok.",
+    "zh-Hans": "此 Hermes 没有任务看板。",
+    "zh-Hant": "此 Hermes 沒有任務看板。"
   },
   "This dashboard asks for a sign-in. Try again with your user name and password.": {
     "de": "Dieses Dashboard verlangt eine Anmeldung. Versuche es erneut mit Benutzername und Passwort.",
@@ -5039,6 +5699,21 @@
     "zh-Hans": "这会从 Hermes 中移除 {name}，它将不再运行。以往运行的聊天会保留。",
     "zh-Hant": "這會從 Hermes 移除 {name}，它將不再執行。以往執行的聊天會保留。"
   },
+  "This removes {title} from the board for good.": {
+    "de": "Dadurch wird {title} endgültig vom Board entfernt.",
+    "es": "Esto quita {title} del tablero para siempre.",
+    "fr": "Cela retire définitivement {title} du tableau.",
+    "id": "Ini menghapus {title} dari papan secara permanen.",
+    "it": "Questo rimuove {title} dalla bacheca per sempre.",
+    "ja": "{title} をボードから完全に削除します。",
+    "ko": "{title}을(를) 보드에서 영구히 삭제합니다.",
+    "pl": "To trwale usunie {title} z tablicy.",
+    "pt-BR": "Isso remove {title} do quadro para sempre.",
+    "ru": "{title} будет удалена с доски навсегда.",
+    "tr": "Bu, {title} görevini panodan kalıcı olarak kaldırır.",
+    "zh-Hans": "这会将 {title} 从看板中永久删除。",
+    "zh-Hant": "這會將 {title} 從看板中永久刪除。"
+  },
   "This was already answered somewhere else.": {
     "de": "Das wurde schon woanders beantwortet.",
     "es": "Esto ya se respondió en otro lugar.",
@@ -5084,6 +5759,36 @@
     "zh-Hans": "时间",
     "zh-Hant": "時間"
   },
+  "Title": {
+    "de": "Titel",
+    "es": "Título",
+    "fr": "Titre",
+    "id": "Judul",
+    "it": "Titolo",
+    "ja": "タイトル",
+    "ko": "제목",
+    "pl": "Tytuł",
+    "pt-BR": "Título",
+    "ru": "Название",
+    "tr": "Başlık",
+    "zh-Hans": "标题",
+    "zh-Hant": "標題"
+  },
+  "To Do": {
+    "de": "Zu erledigen",
+    "es": "Por hacer",
+    "fr": "À faire",
+    "id": "Akan Dikerjakan",
+    "it": "Da fare",
+    "ja": "未着手",
+    "ko": "할 일",
+    "pl": "Do zrobienia",
+    "pt-BR": "A fazer",
+    "ru": "К выполнению",
+    "tr": "Yapılacak",
+    "zh-Hans": "待办",
+    "zh-Hant": "待辦"
+  },
   "Today": {
     "de": "Heute",
     "es": "Hoy",
@@ -5098,6 +5803,36 @@
     "tr": "Bugün",
     "zh-Hans": "今天",
     "zh-Hant": "今天"
+  },
+  "Triage": {
+    "de": "Triage",
+    "es": "Clasificación",
+    "fr": "Triage",
+    "id": "Triase",
+    "it": "Triage",
+    "ja": "トリアージ",
+    "ko": "분류",
+    "pl": "Do oceny",
+    "pt-BR": "Triagem",
+    "ru": "Разбор",
+    "tr": "Triyaj",
+    "zh-Hans": "待分拣",
+    "zh-Hant": "待分類"
+  },
+  "Triage waits for an orchestrator to specify the task before anyone works on it.": {
+    "de": "Triage wartet darauf, dass ein Orchestrator die Aufgabe ausarbeitet, bevor jemand daran arbeitet.",
+    "es": "Triaje espera a que un orquestador especifique la tarea antes de que nadie trabaje en ella.",
+    "fr": "Le tri attend qu’un orchestrateur précise la tâche avant que quiconque ne s’en occupe.",
+    "id": "Triase menunggu orkestrator merinci tugas sebelum ada yang mengerjakannya.",
+    "it": "Il triage aspetta che un orchestratore specifichi l’attività prima che qualcuno ci lavori.",
+    "ja": "トリアージでは、誰かが着手する前にオーケストレーターがタスクを具体化するのを待ちます。",
+    "ko": "분류 단계에서는 누군가 작업하기 전에 오케스트레이터가 작업을 구체화할 때까지 기다립니다.",
+    "pl": "Triaż czeka, aż orkiestrator doprecyzuje zadanie, zanim ktoś się nim zajmie.",
+    "pt-BR": "A triagem espera um orquestrador especificar a tarefa antes que alguém trabalhe nela.",
+    "ru": "В разборе задача ждёт, пока оркестратор её уточнит, прежде чем кто-то возьмётся за неё.",
+    "tr": "Ön değerlendirme, kimse üzerinde çalışmadan önce bir orkestratörün görevi belirlemesini bekler.",
+    "zh-Hans": "分诊会等待编排者细化任务，然后才有人处理。",
+    "zh-Hant": "分診會等待編排者細化任務，然後才有人處理。"
   },
   "Try again": {
     "de": "Erneut versuchen",
@@ -5219,6 +5954,36 @@
     "zh-Hans": "超快",
     "zh-Hant": "超快"
   },
+  "Unassigned": {
+    "de": "Nicht zugewiesen",
+    "es": "Sin asignar",
+    "fr": "Non assigné",
+    "id": "Belum ditugaskan",
+    "it": "Nessun assegnatario",
+    "ja": "未割り当て",
+    "ko": "미할당",
+    "pl": "Nieprzypisane",
+    "pt-BR": "Sem responsável",
+    "ru": "Без исполнителя",
+    "tr": "Atanmamış",
+    "zh-Hans": "未分配",
+    "zh-Hant": "未指派"
+  },
+  "Unblock": {
+    "de": "Freigeben",
+    "es": "Desbloquear",
+    "fr": "Débloquer",
+    "id": "Buka blokir",
+    "it": "Sblocca",
+    "ja": "ブロック解除",
+    "ko": "차단 해제",
+    "pl": "Odblokuj",
+    "pt-BR": "Desbloquear",
+    "ru": "Разблокировать",
+    "tr": "Engeli kaldır",
+    "zh-Hans": "解除阻塞",
+    "zh-Hant": "解除封鎖"
+  },
   "Unit": {
     "de": "Einheit",
     "es": "Unidad",
@@ -5323,6 +6088,21 @@
     "tr": "Plan güncelleniyor",
     "zh-Hans": "正在更新计划",
     "zh-Hant": "正在更新計畫"
+  },
+  "Urgent": {
+    "de": "Dringend",
+    "es": "Urgente",
+    "fr": "Urgente",
+    "id": "Mendesak",
+    "it": "Urgente",
+    "ja": "緊急",
+    "ko": "긴급",
+    "pl": "Pilny",
+    "pt-BR": "Urgente",
+    "ru": "Срочный",
+    "tr": "Acil",
+    "zh-Hans": "紧急",
+    "zh-Hant": "緊急"
   },
   "Use a different address": {
     "de": "Andere Adresse verwenden",
@@ -5773,6 +6553,51 @@
     "tr": "{bot} yanıt veremedi: {reason}",
     "zh-Hans": "{bot} 无法回答：{reason}",
     "zh-Hant": "{bot} 無法回答：{reason}"
+  },
+  "{count} d": {
+    "de": "{count} T.",
+    "es": "{count} d",
+    "fr": "{count} j",
+    "id": "{count} h",
+    "it": "{count} g",
+    "ja": "{count}日",
+    "ko": "{count}일",
+    "pl": "{count} d.",
+    "pt-BR": "{count} d",
+    "ru": "{count} дн.",
+    "tr": "{count} g",
+    "zh-Hans": "{count} 天",
+    "zh-Hant": "{count} 天"
+  },
+  "{count} h": {
+    "de": "{count} Std.",
+    "es": "{count} h",
+    "fr": "{count} h",
+    "id": "{count} j",
+    "it": "{count} h",
+    "ja": "{count}時間",
+    "ko": "{count}시간",
+    "pl": "{count} godz.",
+    "pt-BR": "{count} h",
+    "ru": "{count} ч",
+    "tr": "{count} sa",
+    "zh-Hans": "{count} 小时",
+    "zh-Hant": "{count} 小時"
+  },
+  "{count} min": {
+    "de": "{count} Min.",
+    "es": "{count} min",
+    "fr": "{count} min",
+    "id": "{count} mnt",
+    "it": "{count} min",
+    "ja": "{count}分",
+    "ko": "{count}분",
+    "pl": "{count} min",
+    "pt-BR": "{count} min",
+    "ru": "{count} мин",
+    "tr": "{count} dk",
+    "zh-Hans": "{count} 分钟",
+    "zh-Hant": "{count} 分鐘"
   },
   "{count} questions": {
     "de": "{count} Fragen",
