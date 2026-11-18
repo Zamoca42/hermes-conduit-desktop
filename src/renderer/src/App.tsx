@@ -1,14 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ConnectionStatus } from '@shared/ipc'
 import { ChatList } from './components/ChatList'
 import { Composer } from './components/Composer'
 import { Icon } from './components/icons'
+import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar } from './components/TitleBar'
 import { Transcript } from './components/Transcript'
 import type { ChatRow } from './state/chats'
 import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
+import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
+import { useRequests, useWaiting } from './state/useNeedsYou'
 import { cleanTitle } from './state/text'
 
 export function App() {
@@ -30,7 +33,7 @@ export function App() {
   )
 }
 
-type Section = 'chats' | 'settings'
+type Section = 'chats' | 'needs' | 'settings'
 
 function Shell({ status }: { status: ConnectionStatus }) {
   const connected = status.phase === 'open'
@@ -86,6 +89,32 @@ function Shell({ status }: { status: ConnectionStatus }) {
   )
 
   const title = cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : 'New chat')
+
+  // Needs you: the requests this window holds, and every profile's waiting list.
+  const requests = useRequests()
+  const profiles = useMemo(() => [...new Set((list.rows ?? []).map(r => r.profile ?? ''))].sort(), [list.rows])
+  const waiting = useWaiting(connected, profiles)
+  const waitingRows = useMemo(() => unmatchedWaiting(waiting.rows, requests), [waiting.rows, requests])
+  const needsCount = requests.length + waitingRows.length
+  const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
+
+  /** Chat titles by live id, for a request's card outside its chat. */
+  const titles = useRef(new Map<string, string>())
+  if (chat.liveId && title) titles.current.set(chat.liveId, title)
+  const titleFor = useCallback(
+    (sessionId: string) =>
+      titles.current.get(sessionId) ?? waiting.rows.find(row => row.sessionIds.includes(sessionId))?.title,
+    [waiting.rows]
+  )
+
+  const openWaiting = useCallback(
+    (row: WaitingRow) => {
+      const known = (list.rows ?? []).find(r => row.sessionIds.includes(r.id))
+      setSelected({ id: known?.id ?? row.sessionIds[0] ?? null, profile: known?.profile ?? row.profile, title: known?.title ?? row.title })
+      setSection('chats')
+    },
+    [list.rows]
+  )
   return (
     <>
       {status.phase !== 'open' ? (
@@ -106,6 +135,16 @@ function Shell({ status }: { status: ConnectionStatus }) {
             onClick={() => setSection('chats')}
           >
             <Icon name="chats" />
+          </button>
+          <button
+            className="railbtn"
+            aria-label={needsCount ? `Needs you, ${needsCount}` : 'Needs you'}
+            title="Needs you"
+            aria-current={section === 'needs' ? 'page' : undefined}
+            onClick={() => setSection('needs')}
+          >
+            <Icon name="bell" />
+            {needsCount ? <span className="badge">{needsCount > 99 ? '99+' : needsCount}</span> : null}
           </button>
           <span className="spacer" />
           <button
@@ -136,7 +175,7 @@ function Shell({ status }: { status: ConnectionStatus }) {
             />
             <main className="chat">
               <div className="chat-head">{title ? <div className="chat-title">{title}</div> : null}</div>
-              <Transcript state={transcript} loading={loading} error={error} />
+              <Transcript state={transcript} loading={loading} error={error} requests={openRequests} />
               <Composer
                 placeholder="Message Hermes…"
                 running={transcript.running}
@@ -149,6 +188,18 @@ function Shell({ status }: { status: ConnectionStatus }) {
               />
             </main>
           </>
+        ) : section === 'needs' ? (
+          <NeedsYou
+            requests={requests}
+            waiting={waitingRows}
+            listAvailable={waiting.available}
+            titleFor={titleFor}
+            onOpen={openWaiting}
+            onOpenLive={sessionId => {
+              if (sessionId === chat.liveId) setSection('chats')
+            }}
+            openLiveId={chat.liveId}
+          />
         ) : (
           <Settings status={status} />
         )}

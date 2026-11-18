@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Connection, type SavedConnection } from '../src/main/connection'
 import type { Fetch } from '../src/main/auth'
-import type { ConnectionStatus } from '../src/shared/ipc'
+import type { ConnectionStatus, PendingRequest } from '../src/shared/ipc'
 import type { WebSocketLike } from '../src/vendor/hermes-shared/json-rpc-gateway'
 
 /** A socket that opens on the next tick and records what's sent. */
@@ -74,6 +74,7 @@ function harness(opts: { ticketsBeforeExpiry?: number } = {}) {
   const statuses: ConnectionStatus[] = []
   let saved: SavedConnection | null = null
   const timers: (() => void)[] = []
+  const requests: PendingRequest[][] = []
   const connection = new Connection({
     fetch: fetchImpl,
     store: { load: () => saved, save: s => (saved = { ...s }), clear: () => (saved = null) },
@@ -84,10 +85,11 @@ function harness(opts: { ticketsBeforeExpiry?: number } = {}) {
     },
     onStatus: s => statuses.push(s),
     onEvent: () => undefined,
+    onRequests: list => requests.push(list),
     setTimeout: fn => timers.push(fn),
     clearTimeout: () => undefined
   })
-  return { connection, sockets, statuses, log, timers, saved: () => saved }
+  return { connection, sockets, statuses, log, timers, requests, saved: () => saved }
 }
 
 describe('the connection', () => {
@@ -147,5 +149,54 @@ describe('the connection', () => {
     await h.connection.signIn({ url: 'https://h', method: 'password', username: 'eric', password: 'pw' })
     await expect(h.connection.http('GET', '/api/profiles/sessions?limit=1')).resolves.toEqual({ sessions: [] })
     await expect(h.connection.http('GET', '/auth/logout')).rejects.toThrow('Only dashboard API paths')
+  })
+})
+
+describe('Needs you requests', () => {
+  async function open() {
+    const h = harness()
+    await h.connection.signIn({ url: 'https://h', method: 'token', token: 'tok' })
+    await tick()
+    return h
+  }
+  const sentFrames = (socket: FakeSocket) => socket.sent.map(f => JSON.parse(f) as Record<string, unknown>)
+
+  it('holds an approval until it is answered, then sends the choice back', async () => {
+    const h = await open()
+    const socket = h.sockets[0]!
+    socket.serverSends({ jsonrpc: '2.0', id: 'srq-1', method: 'approval', params: { session_id: 'live-1', command: 'rm -rf build', description: 'Delete the build folder', choices: ['once', 'deny'] } })
+    expect(h.connection.requests()).toEqual([
+      expect.objectContaining({ id: 'srq-1', method: 'approval', sessionId: 'live-1', params: { command: 'rm -rf build', description: 'Delete the build folder', choices: ['once', 'deny'] } })
+    ])
+    expect(h.requests.at(-1)).toHaveLength(1)
+    expect(h.connection.answerRequest('srq-1', { choice: 'once' })).toBe(true)
+    expect(sentFrames(socket)).toContainEqual({ jsonrpc: '2.0', id: 'srq-1', result: { choice: 'once' } })
+    expect(h.connection.requests()).toEqual([])
+    expect(h.connection.answerRequest('srq-1', { choice: 'deny' })).toBe(false)
+  })
+
+  it('drops a request the gateway withdraws', async () => {
+    const h = await open()
+    const socket = h.sockets[0]!
+    socket.serverSends({ jsonrpc: '2.0', id: 'srq-2', method: 'clarify', params: { session_id: 'live-1', questions: [{ qid: 'q1', question: 'Which?', choices: ['A'], multi_select: false }] } })
+    expect(h.connection.requests()).toHaveLength(1)
+    socket.serverSends({ jsonrpc: '2.0', method: 'event', params: { type: 'request.cancel', session_id: 'live-1', payload: { id: 'srq-2', method: 'clarify', reason: 'answered elsewhere' } } })
+    expect(h.connection.requests()).toEqual([])
+  })
+
+  it('leaves other kinds of request to the clients that show them', async () => {
+    const h = await open()
+    h.sockets[0]!.serverSends({ jsonrpc: '2.0', id: 'srq-3', method: 'theme.pick', params: { session_id: 'live-1' } })
+    expect(h.connection.requests()).toEqual([])
+    // Not answered as unhandled, which would tell Hermes no client can answer it.
+    expect(sentFrames(h.sockets[0]!).some(f => f.id === 'srq-3' && (f.error as { code?: number } | undefined)?.code === -32601)).toBe(false)
+  })
+
+  it('forgets requests when the socket goes', async () => {
+    const h = await open()
+    h.sockets[0]!.serverSends({ jsonrpc: '2.0', id: 'srq-4', method: 'approval', params: { session_id: 'live-1' } })
+    h.connection.signOut()
+    expect(h.connection.requests()).toEqual([])
+    expect(h.requests.at(-1)).toEqual([])
   })
 })

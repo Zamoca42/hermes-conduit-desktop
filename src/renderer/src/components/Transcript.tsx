@@ -1,7 +1,9 @@
 import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { mediaKind, splitReply } from '../state/media'
 import { baseName, type Attachment } from '../state/text'
+import type { PendingRequest } from '@shared/ipc'
 import type { TranscriptItem, TranscriptState } from '../state/transcript'
+import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
 
@@ -131,7 +133,18 @@ function Item({ item }: { item: TranscriptItem }) {
   }
 }
 
-export function Transcript({ state, loading, error }: { state: TranscriptState; loading: boolean; error: string | null }) {
+export function Transcript({
+  state,
+  loading,
+  error,
+  requests = []
+}: {
+  state: TranscriptState
+  loading: boolean
+  error: string | null
+  /** The approvals and questions this chat waits on, drawn after its last item. */
+  requests?: PendingRequest[]
+}) {
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
 
@@ -149,7 +162,7 @@ export function Transcript({ state, loading, error }: { state: TranscriptState; 
   useLayoutEffect(() => {
     const el = scroller.current
     if (el && pinned.current) el.scrollTop = el.scrollHeight
-  }, [state])
+  }, [state, requests])
 
   return (
     <div className="transcript" ref={scroller} aria-live="polite">
@@ -164,6 +177,9 @@ export function Transcript({ state, loading, error }: { state: TranscriptState; 
         ) : null}
         {state.items.map(item => (
           <Item key={item.key} item={item} />
+        ))}
+        {requests.map(request => (
+          <RequestCard key={request.id} request={request} />
         ))}
         {state.running && state.status ? (
           <div className="status-line">

@@ -54,6 +54,21 @@ export interface GatewayEventMessage {
   replayed?: boolean
 }
 
+/** Server→client requests the window answers: Needs you. */
+export type AnsweredRequestMethod = 'approval' | 'clarify'
+
+export const ANSWERED_REQUEST_METHODS: readonly AnsweredRequestMethod[] = ['approval', 'clarify']
+
+/** A question Hermes is waiting on: a command to approve, or questions to answer. */
+export interface PendingRequest {
+  id: string
+  method: AnsweredRequestMethod
+  /** The live session blocked on the answer. */
+  sessionId: string
+  params: Record<string, unknown>
+  receivedAt: number
+}
+
 export type RpcOutcome<T = unknown> = { ok: true; result: T } | { ok: false; error: string; code?: number }
 
 export type Platform = 'win32' | 'darwin' | 'linux'
@@ -71,6 +86,13 @@ export interface ConduitApi {
   http<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T>
   onStatus(listener: (status: ConnectionStatus) => void): () => void
   onEvent(listener: (event: GatewayEventMessage) => void): () => void
+  /** The questions Hermes is waiting on, now and whenever they change. */
+  requests(): Promise<PendingRequest[]>
+  onRequests(listener: (requests: PendingRequest[]) => void): () => void
+  /** Answers a request with its result; false when it's already gone. */
+  answerRequest(id: string, result: Record<string, unknown>): Promise<boolean>
+  /** Drops a request the gateway settled some other way (a batch's last `clarify.lock`). */
+  dismissRequest(id: string): Promise<void>
   /** A menu bar command (the Mac's File > New Chat). */
   onMenu(listener: (action: MenuAction) => void): () => void
   window: {
@@ -85,6 +107,10 @@ export type MenuAction = 'new-chat'
 
 export const IPC = {
   menu: 'conduit:menu',
+  requests: 'conduit:requests',
+  requestsChanged: 'conduit:requests-changed',
+  answerRequest: 'conduit:answer-request',
+  dismissRequest: 'conduit:dismiss-request',
   probe: 'conduit:probe',
   signIn: 'conduit:sign-in',
   signOut: 'conduit:sign-out',

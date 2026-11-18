@@ -3,7 +3,16 @@
  * socket with the vendored Hermes client, redials with backoff when it drops,
  * and passes events on to the window.
  */
-import type { ConnectionStatus, GatewayEventMessage, SignInMethod, SignInRequest } from '../shared/ipc'
+import {
+  ANSWERED_REQUEST_METHODS,
+  type AnsweredRequestMethod,
+  type ConnectionStatus,
+  type GatewayEventMessage,
+  type PendingRequest,
+  type SignInMethod,
+  type SignInRequest
+} from '../shared/ipc'
+import type { ServerRequest } from '../vendor/hermes-shared/json-rpc-channel'
 import { JsonRpcGatewayClient, type WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
 import { reconnectBackoffDelayMs, isStableOpen } from '../vendor/hermes-shared/reconnect-backoff'
 import {
@@ -45,6 +54,8 @@ export interface ConnectionDeps {
   createSocket: SocketFactory
   onStatus: (status: ConnectionStatus) => void
   onEvent: (event: GatewayEventMessage) => void
+  /** The questions Hermes is waiting on, whenever they change. */
+  onRequests?: (requests: PendingRequest[]) => void
   /** Timers, replaceable in tests. */
   setTimeout?: (fn: () => void, ms: number) => unknown
   clearTimeout?: (handle: unknown) => void
@@ -61,6 +72,8 @@ export class Connection {
   private openToken: string | null = null
   /** Bumped on every sign-in and sign-out, so a late dial from an earlier one is dropped. */
   private generation = 0
+  /** Approvals and questions waiting on an answer from this window, by request id. */
+  private readonly pending = new Map<string, { request: ServerRequest; entry: PendingRequest }>()
   private readonly setTimer: (fn: () => void, ms: number) => unknown
   private readonly clearTimer: (handle: unknown) => void
 
@@ -71,6 +84,29 @@ export class Connection {
 
   current(): ConnectionStatus {
     return this.status
+  }
+
+  requests(): PendingRequest[] {
+    return [...this.pending.values()].map(p => p.entry).sort((a, b) => a.receivedAt - b.receivedAt)
+  }
+
+  /** Sends the answer to the backend that asked; false when the request is gone. */
+  answerRequest(id: string, result: Record<string, unknown>): boolean {
+    const pending = this.pending.get(id)
+    if (!pending) return false
+    pending.request.respond(result)
+    this.dropRequest(id)
+    return true
+  }
+
+  dropRequest(id: string): void {
+    if (this.pending.delete(id)) this.deps.onRequests?.(this.requests())
+  }
+
+  private clearRequests(): void {
+    if (!this.pending.size) return
+    this.pending.clear()
+    this.deps.onRequests?.([])
   }
 
   /** Reconnects with what was saved last time, if anything. */
@@ -231,6 +267,11 @@ export class Connection {
         const ready = event.payload as { session_authority?: boolean | null } | undefined
         this.setStatus({ ...this.status, sessionAuthority: ready?.session_authority === true })
       }
+      if (event.type === 'request.cancel') {
+        // Answered on another client, timed out, or the turn stopped.
+        const id = (event.payload as { id?: unknown } | undefined)?.id
+        if (typeof id === 'string') this.dropRequest(id)
+      }
       this.deps.onEvent({
         type: event.type,
         session_id: event.session_id,
@@ -239,11 +280,27 @@ export class Connection {
         replayed: event.replayed
       })
     })
-    // Approvals and questions are answered on the phone for now. Leaving a
-    // request unanswered keeps it open for the clients that can; a backend
-    // that counts declines hears that this window doesn't show the chat.
+    // Approvals and questions wait in Needs you. Anything else (the TUI's
+    // own prompts) is left to the clients that show it: a backend that
+    // counts declines hears that no window here does.
     client.onRequest(request => {
-      request.decline?.('Conduit desktop doesn’t answer this yet')
+      if (this.client !== client) return true
+      if (!ANSWERED_REQUEST_METHODS.includes(request.method as AnsweredRequestMethod)) {
+        request.decline?.('Conduit desktop doesn’t answer this kind of request')
+        return true
+      }
+      const { session_id: sessionId, ...params } = request.params
+      this.pending.set(request.id, {
+        request,
+        entry: {
+          id: request.id,
+          method: request.method as AnsweredRequestMethod,
+          sessionId: typeof sessionId === 'string' ? sessionId : '',
+          params,
+          receivedAt: this.pending.get(request.id)?.entry.receivedAt ?? Date.now()
+        }
+      })
+      this.deps.onRequests?.(this.requests())
       return true
     })
     client.onState(state => {
@@ -328,6 +385,8 @@ export class Connection {
   }
 
   private teardown(): void {
+    // A request belongs to the socket it came on; the next one replays what's still open.
+    this.clearRequests()
     if (this.retryTimer) this.clearTimer(this.retryTimer)
     this.retryTimer = null
     const client = this.client
