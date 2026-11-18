@@ -43,6 +43,15 @@ export interface ConnectionStatus {
   sessionAuthority?: boolean
   /** Seconds until the next reconnect attempt, while reconnecting. */
   retryInSeconds?: number
+  /** Every Hermes host signed in on this computer. */
+  hosts?: HostSummary[]
+}
+
+/** A signed-in Hermes host, without its secrets. */
+export interface HostSummary {
+  url: string
+  method: SignInMethod
+  username?: string
 }
 
 /** One gateway `event` notification, as the window receives it. */
@@ -78,6 +87,10 @@ export interface ConduitApi {
   probe(url: string): Promise<HostProbe>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
   signOut(): Promise<void>
+  /** Opens another signed-in host in place of this one. */
+  switchHost(url: string): Promise<boolean>
+  /** Forgets a signed-in host (the open one signs out). */
+  removeHost(url: string): Promise<void>
   status(): Promise<ConnectionStatus>
   /** Retry now, while reconnecting or failed. */
   reconnect(): Promise<void>
@@ -142,6 +155,8 @@ export const IPC = {
   probe: 'conduit:probe',
   signIn: 'conduit:sign-in',
   signOut: 'conduit:sign-out',
+  switchHost: 'conduit:switch-host',
+  removeHost: 'conduit:remove-host',
   status: 'conduit:status',
   reconnect: 'conduit:reconnect',
   rpc: 'conduit:rpc',

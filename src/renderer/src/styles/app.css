@@ -1991,3 +1991,139 @@ html[data-window='quick'] body {
   font-weight: 600;
   color: var(--text-3);
 }
+
+/* More than one Hermes */
+.host-switch {
+  position: relative;
+  -webkit-app-region: no-drag;
+}
+
+.host-button {
+  border: 0;
+  background: none;
+  padding: 2px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.host-button:hover {
+  background: var(--surface-hover);
+}
+
+.host-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 50;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--composer);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.host-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  text-align: left;
+  font-size: 13px;
+}
+
+.host-menu button:hover {
+  background: var(--surface-hover);
+}
+
+.host-check {
+  width: 14px;
+  color: var(--accent);
+}
+
+.host-label {
+  font-weight: 600;
+}
+
+.hosts {
+  list-style: none;
+  margin: 0 0 6px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hosts li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.hosts li.current {
+  border-color: var(--accent-line);
+}
+
+.hosts .spacer {
+  flex: 1;
+}
+
+.link.danger {
+  color: var(--danger);
+}
+
+.add-host {
+  padding-left: 0;
+}
+
+/* The chat list's bots */
+.profile-strip {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: none;
+}
+
+.profile-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.profile-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px 0 4px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.profile-chip.all {
+  padding: 0 12px;
+}
+
+.profile-chip:hover {
+  background: var(--surface-hover);
+}
+
+.profile-chip[aria-selected='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}

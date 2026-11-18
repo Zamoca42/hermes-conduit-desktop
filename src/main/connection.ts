@@ -10,7 +10,8 @@ import {
   type GatewayEventMessage,
   type PendingRequest,
   type SignInMethod,
-  type SignInRequest
+  type SignInRequest,
+  type HostSummary
 } from '../shared/ipc'
 import type { ServerRequest } from '../vendor/hermes-shared/json-rpc-channel'
 import { JsonRpcGatewayClient, type WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
@@ -41,9 +42,16 @@ export interface SavedConnection {
 }
 
 export interface ConnectionStore {
+  /** The open host. */
   load(): SavedConnection | null
+  /** Adds or updates a host and makes it the open one. */
   save(connection: SavedConnection): void
+  /** Forgets the open host; the next one saved, if any, becomes the open one. */
   clear(): void
+  /** Every saved host, without its secrets. */
+  list?(): HostSummary[]
+  activate?(url: string): boolean
+  remove?(url: string): void
 }
 
 export type SocketFactory = (url: string, headers: Record<string, string>) => WebSocketLike
@@ -120,6 +128,14 @@ export class Connection {
   }
 
   async signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }> {
+    const previous = this.saved
+    const result = await this.trySignIn(request)
+    // A failed sign-in to another host goes back to the one that was open.
+    if (!result.ok && previous && !this.saved) this.open(previous)
+    return result
+  }
+
+  private async trySignIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }> {
     const generation = ++this.generation
     this.teardown()
     let url: string
@@ -155,16 +171,53 @@ export class Connection {
       return { ok: false, error }
     }
     this.deps.store.save(saved)
+    // The host list now holds it.
+    this.setStatus({ ...this.status, hosts: this.hosts() })
     return { ok: true }
   }
 
+  /** Signs out of the open host; the next saved one, if any, opens. */
   signOut(): void {
     this.generation++
     this.teardown()
     this.saved = null
     this.openToken = null
     this.deps.store.clear()
-    this.setStatus({ phase: 'signed-out' })
+    const next = this.deps.store.load()
+    if (next) this.open(next)
+    else this.setStatus({ phase: 'signed-out' })
+  }
+
+  /** Every saved host, without secrets. */
+  hosts(): HostSummary[] {
+    return this.deps.store.list?.() ?? (this.saved ? [{ url: this.saved.url, method: this.saved.method, username: this.saved.username }] : [])
+  }
+
+  /** Opens another saved host in place of this one. */
+  switchHost(url: string): boolean {
+    if (this.saved?.url === url) return true
+    if (!this.deps.store.activate?.(url)) return false
+    const next = this.deps.store.load()
+    if (!next) return false
+    this.open(next)
+    return true
+  }
+
+  /** Forgets a saved host; the open one signs out (and the next opens). */
+  removeHost(url: string): void {
+    if (this.saved?.url === url) return this.signOut()
+    this.deps.store.remove?.(url)
+    this.setStatus({ ...this.identity(), phase: this.status.phase, error: this.status.error, retryInSeconds: this.status.retryInSeconds })
+  }
+
+  private open(saved: SavedConnection): void {
+    const generation = ++this.generation
+    this.teardown()
+    this.saved = saved
+    this.openToken = null
+    this.attempt = 0
+    this.setStatus({ phase: 'connecting', ...this.identityOf(saved) })
+    void this.dial(generation)
   }
 
   /** Dials now instead of waiting for the next retry. */
@@ -230,15 +283,16 @@ export class Connection {
 
   private identity(): ConnectionStatus {
     const saved = this.saved
-    if (!saved) return { phase: 'signed-out' }
-    return {
-      phase: this.status.phase,
-      url: saved.url,
-      hostLabel: new URL(saved.url).hostname,
-      username: saved.username,
-      method: saved.method,
-      sessionAuthority: this.status.sessionAuthority
-    }
+    if (!saved) return { phase: 'signed-out', hosts: this.hosts() }
+    return { phase: this.status.phase, ...this.identityOf(saved), sessionAuthority: this.status.sessionAuthority }
+  }
+
+  private identityOf(saved: SavedConnection): Omit<ConnectionStatus, 'phase'> {
+    const hosts = this.hosts()
+    const here = new URL(saved.url)
+    // The port too when another saved host shares the name.
+    const shared = hosts.some(h => h.url !== saved.url && new URL(h.url).hostname === here.hostname)
+    return { url: saved.url, hostLabel: shared ? here.host : here.hostname, username: saved.username, method: saved.method, hosts }
   }
 
   /** Opens one socket. Returns an error message when it couldn't, after scheduling a retry. */
