@@ -112,5 +112,17 @@ describe('cleanTitle', () => {
     const { cleanTitle } = await import('../src/renderer/src/state/text')
     expect(cleanTitle('Where am I [Recent voice conv')).toBe('Where am I')
     expect(cleanTitle('Relay/Plugin Update')).toBe('Relay/Plugin Update')
+    expect(cleanTitle("What's the weather today in Virginia Beach [Recent voice…")).toBe("What's the weather today in Virginia Beach")
+    expect(cleanTitle('@url:`https://www.reddit.com/r/vibecoding/commen…')).toBe('reddit.com/r/vibecoding/commen…')
+    expect(cleanTitle('@file:`.hermes/attachments/Pasted content (3.0…')).toBe('Pasted content (3.0…')
+  })
+})
+
+describe('a preview cut just past a long link', () => {
+  it('shows the link instead of the letter after it', () => {
+    expect(previewText('@url:`https://github.com/kaishi00/hermes-conduit-notifier/pull/86` g…')).toBe(
+      'github.com/kaishi00/hermes-conduit-notifier/pull/86'
+    )
+    expect(previewText('ok')).toBe('ok')
   })
 })

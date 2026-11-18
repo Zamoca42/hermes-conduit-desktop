@@ -103,12 +103,14 @@ export function previewText(raw: string): string {
   // It can be cut off anywhere, even inside the marker.
   if (attachments.length || CONTEXT_REFERENCE.test(raw)) text = text.replace(/\s*---(?:\s[\s\S]*)?$/, '')
   const words = plainReferences(text, true).replace(/\s+/g, ' ').trim()
-  if (words) return words
   const first = attachments[0]
+  // A preview cut off just past a long link can leave a letter or two of the words.
+  if (words.replace(/[….\s]+$/, '').length >= 3 || (words && !first)) return words
   return first ? (first.kind === 'url' ? first.value.replace(/^https?:\/\/(www\.)?/, '') : baseName(first.value)) : ''
 }
 
 /** A title Hermes made from a voice delegation's first message, without the conversation it carried (cut off anywhere). */
 export function cleanTitle(title: string): string {
-  return title.replace(/\s*\[Recent voice conv[\s\S]*$/i, '').replace(VOICE_JOB_PREFIX, '').trim()
+  const stripped = title.replace(/\s*\[Recent voice\b[^\]]*$/i, '').replace(VOICE_CONTEXT, '').replace(VOICE_JOB_PREFIX, '')
+  return plainReferences(stripped, true).trim()
 }
