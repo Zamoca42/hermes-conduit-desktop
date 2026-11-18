@@ -77,6 +77,8 @@ import { mutateSession } from './state/chatActions'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { GO_TO, SCALES, applyScale, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
+import { CallTranscriptSheet } from './components/CallTranscriptSheet'
+import { loadChatCalls, type ChatCall } from './state/voiceCalls'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -266,6 +268,26 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   useEffect(() => {
     if (calling) setCallMode(voiceMode())
   }, [calling])
+  // The open chat's saved voice calls, read again once a call here ends (its save lands a moment later).
+  const [chatCallList, setChatCallList] = useState<ChatCall[]>([])
+  const [openCall, setOpenCall] = useState<string | null>(null)
+  useEffect(() => {
+    setChatCallList([])
+    setOpenCall(null)
+    const id = selected.id
+    if (!id || calling) return
+    let live = true
+    const read = () =>
+      void loadChatCalls(selected.profile, id).then(calls => {
+        if (live) setChatCallList(calls)
+      })
+    read()
+    const later = window.setTimeout(read, 3000)
+    return () => {
+      live = false
+      window.clearTimeout(later)
+    }
+  }, [selected.id, selected.profile, calling])
   /** Edit Bot, open over Bots home. */
   const [editingBot, setEditingBot] = useState<Bot | null>(null)
   const [newBot, setNewBot] = useState(false)
@@ -737,8 +759,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onCommand={text => void onSend(text)}
                   display={chatDisplay}
                   sessionId={chat.liveId ?? undefined}
+                  calls={chatCallList}
+                  onOpenCall={setOpenCall}
                 />
               </FileLinks.Provider>
+              {openCall && selected.id ? (
+                <CallTranscriptSheet profile={selected.profile} chatId={selected.id} callId={openCall} onClose={() => setOpenCall(null)} />
+              ) : null}
               {contextOpen && chat.liveId ? (
                 <ContextPanel
                   chat={chat}

@@ -6745,3 +6745,97 @@ button.cap-row-text {
   font-size: 14px;
   color: var(--text-2);
 }
+
+/* A voice call saved with the chat, where it started (the phone's VoiceCallMarkerCard). */
+.call-card {
+  max-width: 360px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.call-card:hover:not(:disabled) {
+  border-color: var(--line-strong);
+}
+.call-card:disabled {
+  cursor: default;
+}
+.call-card-icon {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.call-card-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.call-card-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.call-card-time {
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  opacity: 0.78;
+}
+.call-card > svg:last-child {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+}
+.call-transcript {
+  width: min(560px, 100%);
+}
+.call-transcript-turns {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.call-transcript-turns li {
+  display: grid;
+  gap: 3px;
+  justify-items: start;
+  padding: 0;
+  border-bottom: none;
+}
+.call-transcript-turns li.user {
+  justify-items: end;
+}
+.call-transcript-bubble {
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.call-transcript-bubble > :first-child {
+  margin-top: 0;
+}
+.call-transcript-bubble > :last-child {
+  margin-bottom: 0;
+}
+.call-transcript-turns li.user .call-transcript-bubble {
+  white-space: pre-wrap;
+  background: var(--accent-fill);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
