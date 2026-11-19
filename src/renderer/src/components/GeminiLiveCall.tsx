@@ -60,6 +60,7 @@ import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
+import { MicOrb } from './MicOrb'
 
 interface Props {
   profile?: string
@@ -130,6 +131,8 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
+  // The microphone, for the orb's level.
+  const [micStream, setMicStream] = useState<MediaStream | null>(null)
   const [lines, setLines] = useState<Line[]>([])
 
   const socket = useRef<string | null>(null)
@@ -219,6 +222,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
     processor.current = null
     mic.current?.getTracks().forEach(track => track.stop())
     mic.current = null
+    setMicStream(null)
     stopPlayback()
     void capture.current?.close().catch(() => undefined)
     void speaker.current?.close().catch(() => undefined)
@@ -477,6 +481,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
         mic.current = stream
+        setMicStream(stream)
         const input = new AudioContext({ sampleRate: INPUT_RATE })
         capture.current = input
         speaker.current = new AudioContext({ sampleRate: OUTPUT_RATE })
@@ -601,7 +606,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
       aria-label={t('Voice call')}
     >
       <div className="voice-call-status">
-        <span className="voice-call-orb" />
+        <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
         <div className="voice-call-words">
           <strong>{status}</strong>
           {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{copy.name()}</span>}

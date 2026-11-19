@@ -930,6 +930,7 @@ a:hover {
 
 .primary {
   height: 40px;
+  padding: 0 18px;
   border-radius: 20px;
   border: 0;
   background: var(--accent-fill);

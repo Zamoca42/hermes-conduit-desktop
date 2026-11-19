@@ -35,3 +35,6 @@ export function callStep(state: VoiceState, level: number, now: number, elapsedS
   }
   return { state, done: false }
 }
+
+/** A call orb's size for the microphone's level (0 to 1): quiet speech shows too. */
+export const micScale = (level: number) => 1 + Math.min(0.9, Math.sqrt(Math.max(0, level)) * 1.6)

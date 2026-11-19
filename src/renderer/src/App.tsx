@@ -278,9 +278,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // A live mode asks once before sending the call to its company; Allow redraws with the call.
   const [, setConsentGiven] = useState(0)
   const asksConsent = calling && isLive(callMode) && !consented(callMode)
-  useEffect(() => {
-    if (calling) setCallMode(voiceMode())
-  }, [calling])
+  // The mode is set with the call, never a render later: a Classic call drawn first would open the microphone.
+  const toggleCall = () => {
+    if (!calling) setCallMode(voiceMode())
+    setCalling(!calling)
+  }
   // The mode the next call takes, picked beside the call button or in Settings > Voice.
   const [nextMode, setNextMode] = useState<VoiceMode>(voiceMode)
   useEffect(() => {
@@ -843,7 +845,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     aria-label={calling ? t('End call') : t('Voice call in {mode}', { mode: voiceModeTitle(nextMode) })}
                     title={calling ? t('End call') : t('Voice call in {mode}', { mode: voiceModeTitle(nextMode) })}
                     disabled={!connected && !calling}
-                    onClick={() => setCalling(on => !on)}
+                    onClick={toggleCall}
                   >
                     <Icon name={calling ? 'phoneDown' : 'phone'} />
                   </button>

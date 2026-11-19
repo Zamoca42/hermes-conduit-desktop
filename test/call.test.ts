@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { MAX_TURN_S, PAUSE_MS, SPEECH_MS, callStep, type VoiceState } from '../src/renderer/src/state/call'
+import { MAX_TURN_S, PAUSE_MS, SPEECH_MS, callStep, micScale, type VoiceState } from '../src/renderer/src/state/call'
 
 const start: VoiceState = { heard: false, loudAt: 0, quietSince: 0 }
 
@@ -30,5 +30,14 @@ describe('a Classic call turn', () => {
 
   it('stops at the longest turn', () => {
     expect(callStep(start, 0.3, 0, MAX_TURN_S).done).toBe(true)
+  })
+})
+
+describe('micScale', () => {
+  it('rests at 1, shows quiet speech, and stops growing', () => {
+    expect(micScale(0)).toBe(1)
+    expect(micScale(0.02)).toBeGreaterThan(1.2)
+    expect(micScale(1)).toBe(1.9)
+    expect(micScale(-1)).toBe(1)
   })
 })
