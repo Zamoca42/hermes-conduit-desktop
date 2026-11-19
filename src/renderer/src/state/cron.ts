@@ -5,6 +5,7 @@
  * draft, turned into the schedule string Hermes' parse_schedule reads.
  */
 import { locale, t } from '../../../shared/i18n'
+import { reasoningTitle } from './models'
 
 /** Hermes' parsed schedule: `cron` carries `expr`, `interval` its `minutes`, `once` its `run_at`. */
 export interface CronSchedule {
@@ -466,10 +467,27 @@ export interface JobDraft {
   deliver: string
   /** A job that runs a script or no agent can do without a prompt. */
   promptOptional: boolean
+  /** A job that runs no agent has no model to pin. */
+  runsAgent: boolean
+  /** The job's own model and provider, both empty for the profile's. */
+  model: string
+  provider: string
+  /** The job's own reasoning level, empty for the profile's. */
+  reasoning: string
 }
 
 export function newJobDraft(now = Date.now()): JobDraft {
-  return { name: '', prompt: '', schedule: newScheduleDraft(now), deliver: 'local', promptOptional: false }
+  return {
+    name: '',
+    prompt: '',
+    schedule: newScheduleDraft(now),
+    deliver: 'local',
+    promptOptional: false,
+    runsAgent: true,
+    model: '',
+    provider: '',
+    reasoning: ''
+  }
 }
 
 export function jobDraftFrom(job: CronJob, now = Date.now()): JobDraft {
@@ -478,9 +496,38 @@ export function jobDraftFrom(job: CronJob, now = Date.now()): JobDraft {
     prompt: job.prompt ?? '',
     schedule: scheduleDraftFrom(job.schedule, job.scheduleDisplay, now),
     deliver: job.deliver || 'local',
-    promptOptional: job.noAgent === true || !!job.script
+    promptOptional: job.noAgent === true || !!job.script,
+    runsAgent: job.noAgent !== true,
+    model: job.model ?? '',
+    provider: job.provider ?? '',
+    reasoning: job.reasoningEffort ?? ''
   }
 }
+
+/** Whether the job runs on a model or reasoning of its own rather than the profile's. */
+export const pinsModel = (job: CronJob): boolean => !!(job.model || job.provider || job.reasoningEffort)
+
+/**
+ * What the job runs on, as the phone's Model row says it: the model and its
+ * reasoning ("claude-sonnet · High"), or Profile default. Null for a job
+ * that runs no agent.
+ */
+export function modelSummary(job: CronJob): string | null {
+  if (job.noAgent === true) return null
+  const model = job.model || (job.provider ? t('Default') : t('Profile default'))
+  return job.reasoningEffort ? `${model} · ${reasoningTitle(job.reasoningEffort)}` : model
+}
+
+/**
+ * The model's fields. The profile's clears the job's model, provider and
+ * endpoint; a pick names its provider, and clears an endpoint kept for the
+ * one before, which would otherwise override the new provider's.
+ */
+function modelFields(draft: JobDraft): Record<string, unknown> {
+  return { model: draft.model, provider: draft.provider, base_url: '' }
+}
+
+const sameModel = (a: JobDraft, b: JobDraft) => a.model === b.model && a.provider === b.provider
 
 export function canSave(draft: JobDraft): boolean {
   return scheduleString(draft.schedule) !== null && (draft.promptOptional || draft.prompt.trim() !== '')
@@ -490,7 +537,13 @@ export function canSave(draft: JobDraft): boolean {
 export function createBody(draft: JobDraft): Record<string, unknown> | null {
   const schedule = scheduleString(draft.schedule)
   if (!canSave(draft) || !schedule) return null
-  return { name: draft.name.trim(), prompt: draft.prompt.trim(), schedule, deliver: draft.deliver }
+  const body: Record<string, unknown> = { name: draft.name.trim(), prompt: draft.prompt.trim(), schedule, deliver: draft.deliver }
+  return draft.runsAgent && (draft.model || draft.provider) ? { ...body, ...modelFields(draft) } : body
+}
+
+/** Hermes' create takes a model but no reasoning, so a new job's reasoning follows as an edit once it exists. */
+export function createReasoningUpdate(draft: JobDraft): Record<string, unknown> | null {
+  return draft.runsAgent && draft.reasoning ? { reasoning_effort: draft.reasoning } : null
 }
 
 /** PUT /api/cron/jobs/{id}'s `updates`: only what changed, so what the form doesn't show stays as it is. */
@@ -501,6 +554,9 @@ export function jobUpdates(draft: JobDraft, original: JobDraft): Record<string, 
   const schedule = scheduleString(draft.schedule)
   if (schedule && schedule !== scheduleString(original.schedule)) updates.schedule = schedule
   if (draft.deliver !== original.deliver) updates.deliver = draft.deliver
+  if (draft.runsAgent && !sameModel(draft, original)) Object.assign(updates, modelFields(draft))
+  // Empty clears it: the profile's reasoning again.
+  if (draft.runsAgent && draft.reasoning !== original.reasoning) updates.reasoning_effort = draft.reasoning
   return updates
 }
 

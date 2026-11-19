@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
   createBody,
+  createReasoningUpdate,
+  modelSummary,
+  pinsModel,
   cronPath,
   deliveryChoices,
   describeExpression,
@@ -112,6 +115,37 @@ describe('the scheduled-job editor', () => {
     expect(jobUpdates({ ...original, prompt: 'New', schedule: { ...original.schedule, hour: 9 } }, original)).toEqual({ prompt: 'New', schedule: '0 9 * * *' })
     // A script job can do without a prompt.
     expect(jobDraftFrom(job({ script: 'check.py' })).promptOptional).toBe(true)
+  })
+
+  it('pins a job’s model and reasoning, sends only what changed, and clears both for the profile’s', () => {
+    const draft = { ...newJobDraft(0), name: 'Brief', prompt: 'Go', provider: 'anthropic', model: 'claude-sonnet', reasoning: 'high' }
+    // Hermes' create takes the model; the reasoning follows as an edit.
+    expect(createBody(draft)).toMatchObject({ model: 'claude-sonnet', provider: 'anthropic', base_url: '' })
+    expect(createBody(draft)).not.toHaveProperty('reasoning_effort')
+    expect(createReasoningUpdate(draft)).toEqual({ reasoning_effort: 'high' })
+    expect(createBody({ ...draft, provider: '', model: '' })).not.toHaveProperty('model')
+    expect(createReasoningUpdate({ ...draft, reasoning: '' })).toBeNull()
+
+    const pinned = job({ prompt: 'Go', model: 'claude-sonnet', provider: 'anthropic', reasoningEffort: 'high' })
+    const original = jobDraftFrom(pinned)
+    expect(original).toMatchObject({ model: 'claude-sonnet', provider: 'anthropic', reasoning: 'high', runsAgent: true })
+    expect(jobUpdates(original, original)).toEqual({})
+    expect(jobUpdates({ ...original, reasoning: 'low' }, original)).toEqual({ reasoning_effort: 'low' })
+    expect(jobUpdates({ ...original, model: '', provider: '', reasoning: '' }, original)).toEqual({
+      model: '',
+      provider: '',
+      base_url: '',
+      reasoning_effort: ''
+    })
+    expect(jobUpdates({ ...original, model: 'gpt-5', provider: 'openai' }, original)).toEqual({ model: 'gpt-5', provider: 'openai', base_url: '' })
+
+    expect(pinsModel(pinned)).toBe(true)
+    expect(modelSummary(pinned)).toBe('claude-sonnet · High')
+    expect(pinsModel(job({}))).toBe(false)
+    expect(modelSummary(job({}))).toBe('Profile default')
+    // A job that runs no agent has no model.
+    expect(modelSummary(job({ noAgent: true }))).toBeNull()
+    expect(jobDraftFrom(job({ noAgent: true })).runsAgent).toBe(false)
   })
 
   it('keeps a job’s delivery target in the picker when Hermes doesn’t list it', () => {

@@ -8,6 +8,7 @@ import {
   absoluteDateText,
   canSave,
   createBody,
+  createReasoningUpdate,
   deliveryChoices,
   deliveryTitle,
   displayName,
@@ -15,8 +16,10 @@ import {
   isFinished,
   jobDraftFrom,
   jobUpdates,
+  modelSummary,
   newJobDraft,
   nextRunLine,
+  pinsModel,
   previewSchedule,
   runTime,
   scheduleText,
@@ -31,6 +34,10 @@ import {
 import { useCron } from '../state/useCron'
 import { ProfileStrip } from './ChatList'
 import { Icon } from './icons'
+import { REASONING_LEVELS, groupModels, reasoningTitle } from '../state/models'
+import { useModelCatalog } from '../state/modelCatalog'
+import { ModelOptions } from './ModelOptions'
+import { ModelCatalogNote } from './ModelCatalogNote'
 
 interface Props {
   bots: Bot[] | null
@@ -139,6 +146,7 @@ export function ScheduledJobs({ bots, connected, profile, onProfile, onOpenRun, 
           {displayName(job)}
         </span>
         <span className="meta">{scheduleText(job) ?? t('No schedule')}</span>
+        {pinsModel(job) && modelSummary(job) ? <span className="meta job-model">{modelSummary(job)}</span> : null}
         <span className={`meta job-next${isActive(job) ? ' on' : ''}`}>
           <Icon name="clock" />
           {nextRunLine(job)}
@@ -252,6 +260,16 @@ export function ScheduledJobs({ bots, connected, profile, onProfile, onOpenRun, 
                   if (!body) return
                   const made = await cron.create(body, owner)
                   setPane(made ? { kind: 'job', key: jobKey(made) } : null)
+                  // Hermes' create takes no reasoning; the new job gets it as an edit.
+                  const reasoning = createReasoningUpdate(draft)
+                  if (reasoning) {
+                    try {
+                      if (!made) throw new Error(t("Hermes sent a reply Conduit didn't understand. Updating Hermes and Conduit usually fixes this."))
+                      await cron.update(made, reasoning)
+                    } catch (e) {
+                      setNote(t('The job is saved, but not its reasoning: {reason}', { reason: e instanceof Error ? e.message : String(e) }))
+                    }
+                  }
                 }
               }}
             />
@@ -348,10 +366,10 @@ function JobDetails({
         <dd>{runTime(job.lastRunAt)}</dd>
         <dt>{t('Delivery')}</dt>
         <dd>{deliveryTitle(job.deliver ?? 'local')}</dd>
-        {job.model ? (
+        {modelSummary(job) ? (
           <>
             <dt>{t('Model')}</dt>
-            <dd>{job.model}</dd>
+            <dd>{modelSummary(job)}</dd>
           </>
         ) : null}
         {profileName ? (
@@ -431,6 +449,11 @@ function JobEditor({
       live = false
     }
   }, [owner, loadTargets])
+
+  const catalog = useModelCatalog(useMemo(() => ({ profile: owner, explicit_only: true }), [owner]))
+  const groups = useMemo(() => groupModels(catalog.providers ?? [], ''), [catalog.providers])
+  const modelValue = draft.provider || draft.model ? `${draft.provider}\n${draft.model}` : ''
+  const listed = !modelValue || groups.some(group => group.slug === draft.provider && group.models.includes(draft.model))
 
   const schedule = draft.schedule
   const setSchedule = (patch: Partial<JobDraft['schedule']>) => setDraft(d => ({ ...d, schedule: { ...d.schedule, ...patch } }))
@@ -569,6 +592,41 @@ function JobEditor({
           {target && !target.homeTargetSet ? t('This platform has no home channel yet. Set one in Hermes, or the run is only saved.') : t('Each run is also saved as its own conversation.')}
         </span>
       </label>
+      {draft.runsAgent ? (
+        <div className="field job-model-field">
+          <label>
+            {t('Model')}
+            <select
+              value={modelValue}
+              disabled={saving || !catalog.answered}
+              onChange={e => {
+                const [provider = '', model = ''] = e.target.value.split('\n')
+                setDraft(d => ({ ...d, provider, model }))
+              }}
+            >
+              <option value="">{t('Profile default')}</option>
+              {!listed ? <option value={modelValue}>{draft.model || draft.provider}</option> : null}
+              <ModelOptions providers={catalog.providers ?? []} groups={groups} />
+            </select>
+          </label>
+          <label>
+            {t('Reasoning')}
+            <select value={draft.reasoning} disabled={saving} onChange={e => setDraft(d => ({ ...d, reasoning: e.target.value }))}>
+              <option value="">{t('Profile default')}</option>
+              {draft.reasoning && !(REASONING_LEVELS as readonly string[]).includes(draft.reasoning) ? (
+                <option value={draft.reasoning}>{draft.reasoning}</option>
+              ) : null}
+              {REASONING_LEVELS.map(level => (
+                <option key={level} value={level}>
+                  {reasoningTitle(level)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <ModelCatalogNote catalog={catalog} />
+          <span className="meta">{t("Each run uses this model and reasoning. Profile default follows the profile's, so a change there reaches this job too.")}</span>
+        </div>
+      ) : null}
       {error ? <div className="error-text">{error}</div> : null}
       <div className="job-actions">
         <button type="submit" className="primary" disabled={saving || !canSave(draft)}>
