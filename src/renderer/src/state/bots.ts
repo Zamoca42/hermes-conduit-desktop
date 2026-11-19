@@ -37,11 +37,19 @@ function str(value: unknown): string | undefined {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined
 }
 
-/** The name a bot goes by: its own, else the profile's; the default profile with no name is Hermes. */
-export function botTitle(given: string | undefined, name: string, isDefault: boolean): string {
+/**
+ * The name a bot goes by, as the phone's displayLabel: its title, else the
+ * profile's display name, else its id capitalized. A display name that is
+ * only the id names it no more than the id, and the main profile nobody
+ * named is Hermes, never Default.
+ */
+export function botTitle(given: string | undefined, name: string, isDefault: boolean, displayName?: string): string {
   const title = given ? cleanTitle(given) : ''
   if (title) return title
-  return isDefault ? 'Hermes' : name
+  const shown = displayName ? cleanTitle(displayName) : ''
+  if (isDefault && (!shown || shown.toLowerCase() === name.toLowerCase() || shown.toLowerCase() === 'default')) return 'Hermes'
+  if (shown && shown !== name) return shown
+  return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
 export function botsFromProfiles(body: unknown): Bot[] {
@@ -81,7 +89,7 @@ export function rosterFromProfiles(body: unknown): Roster {
     const revision = revisions[BOTS_META_KEY]
     bots.push({
       name,
-      title: botTitle(str(meta.title) ?? str(row.display_name), name, isDefault),
+      title: botTitle(str(meta.title), name, isDefault, str(row.display_name)),
       description: str(row.description),
       model: str(row.model),
       color: str(meta.color),
