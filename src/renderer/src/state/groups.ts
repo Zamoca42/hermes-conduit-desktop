@@ -552,17 +552,24 @@ export function currentDiscussions(events: readonly RoomEvent[]): Map<string, st
  * stopping before queued), else the member's last outcome in its thread's
  * current discussion, later turns winning. A driver that reports idle has no
  * live turns, whatever rows it still lists; a host without `member_activity`
- * names its busy members as responding. A lead's routing turn (the task a
- * `room.assignment` names) is no reply or pass. A member with nothing to
- * show is absent.
+ * names its busy members as responding. A lead's routing turn is no reply
+ * or pass: the task a `room.assignment` names, or, for one that ended
+ * without a pick, the lead's round-0 receipt that read the room only up to
+ * just before a message that went through it (`isLeadReceipt`). A member
+ * with nothing to show is absent.
  */
-export function memberStatuses(room: Pick<Room, 'members'>, events: readonly RoomEvent[], status: Pick<DriverStatus, 'working' | 'busy' | 'activity' | 'approvals'>): Map<string, MemberStatus> {
+export function memberStatuses(
+  room: Pick<Room, 'members'>,
+  events: readonly RoomEvent[],
+  status: Pick<DriverStatus, 'working' | 'busy' | 'activity' | 'approvals' | 'context'>
+): Map<string, MemberStatus> {
   const statuses = new Map<string, MemberStatus>()
   const discussions = currentDiscussions(events)
   const routingTasks = new Set(events.flatMap(e => (e.kind === 'room.assignment' && str(e.payload.task_id) ? [str(e.payload.task_id)!] : [])))
+  const messages = new Map(events.filter(e => e.kind === 'message.user' && e.eventId).map(e => [e.eventId, e]))
   for (const event of events) {
     const task = str(event.payload.task_id)
-    if (event.kind.startsWith('turn.') && task && routingTasks.has(task)) continue
+    if (event.kind.startsWith('turn.') && ((task && routingTasks.has(task)) || isLeadReceipt(room, events, messages, event, status.context))) continue
     const memberId = str(event.payload.member_id)
     const discussion = discussionOf(event)
     if (!memberId || !discussion || discussion !== discussions.get(threadOf(event))) continue
@@ -598,6 +605,48 @@ export function memberStatuses(room: Pick<Room, 'members'>, events: readonly Roo
     if (member) statuses.set(member.memberId, 'needsApproval')
   }
   return statuses
+}
+
+const MENTION_TOKEN = /@([A-Za-z0-9][A-Za-z0-9._:-]*)/g
+
+/**
+ * Whether a message went through the room's routing (the phone's
+ * routesItself): not a scheduled job's post, naming no member, @all or
+ * @everyone, and opening its own thread (or, where the events reach the
+ * room's start, with nothing earlier in its thread).
+ */
+function routesItself(room: Pick<Room, 'members'>, events: readonly RoomEvent[], message: RoomEvent): boolean {
+  if (message.actor.kind === 'user' && (message.actor.id.startsWith('cron:') || message.actor.id.startsWith('cron-notice:'))) return false
+  const text = typeof message.payload.text === 'string' ? message.payload.text : ''
+  const handles = new Set(['all', 'everyone', ...room.members.flatMap(m => (m.handle ? [m.handle.toLowerCase()] : []))])
+  if ([...text.matchAll(MENTION_TOKEN)].some(m => handles.has(m[1]!.toLowerCase()))) return false
+  const thread = str(message.payload.thread_id) ?? ''
+  if (thread && thread === message.eventId) return true
+  const earlier = events.some(e => e.seq < message.seq && (e.kind === 'message.user' || e.kind === 'message.member') && (str(e.payload.thread_id) ?? '') === thread)
+  return !earlier && reachesStart(events)
+}
+
+/**
+ * The lead's routing turn that ended without a pick, as the phone tells it
+ * from its answer: the lead's round-0 receipt that read the room only up to
+ * just before (`seen_through_seq` one under) a message that went through
+ * the lead. Only the lead's, so another member's bounded batch that stopped
+ * there still counts.
+ */
+function isLeadReceipt(
+  room: Pick<Room, 'members'>,
+  events: readonly RoomEvent[],
+  messages: ReadonlyMap<string, RoomEvent>,
+  event: RoomEvent,
+  current: RoomContext | undefined
+): boolean {
+  const message = messages.get(str(event.payload.discussion_event_id) ?? '')
+  if (!message || event.payload.round_index !== 0 || event.payload.seen_through_seq !== message.seq - 1) return false
+  const context = contextAt(events, message.seq, current)
+  if (context?.routing !== 'lead' || !routesItself(room, events, message)) return false
+  const lead = roomMember(room, context.leadMemberId)
+  const memberId = str(event.payload.member_id)
+  return !!lead && !!memberId && memberId.toLowerCase() === lead.memberId.toLowerCase()
 }
 
 /** The member whose pill carries the lead's crown: Who answers' lead, while it is Lead. */

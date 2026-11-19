@@ -4,6 +4,7 @@
  * design, so nothing here names a profile; a board is picked by its slug.
  */
 import { t } from '../../../shared/i18n'
+import { initialCursor } from './kanbanEvents'
 
 export const KANBAN = '/api/plugins/kanban'
 
@@ -33,6 +34,8 @@ export interface KanbanColumn {
 export interface KanbanBoard {
   columns: KanbanColumn[]
   assignees: string[]
+  /** The newest task event this read saw (`latest_event_id`): where the live stream starts. */
+  latestEventId?: number
 }
 
 export interface KanbanBoardRow {
@@ -109,7 +112,7 @@ export const MOVABLE = ['triage', 'todo', 'ready', 'blocked', 'done']
 export const CREATABLE = ['triage', 'todo', 'ready', 'blocked']
 
 export function parseBoard(raw: unknown): KanbanBoard {
-  const object = (raw ?? {}) as { columns?: unknown; assignees?: unknown }
+  const object = (raw ?? {}) as { columns?: unknown; assignees?: unknown; latest_event_id?: unknown }
   const columns = (Array.isArray(object.columns) ? object.columns : []).flatMap(value => {
     const column = (value ?? {}) as { name?: unknown; tasks?: unknown }
     const name = str(column.name)
@@ -123,7 +126,8 @@ export function parseBoard(raw: unknown): KanbanBoard {
   }
   columns.sort((a, b) => rank(a.name) - rank(b.name))
   const assignees = (Array.isArray(object.assignees) ? object.assignees : []).filter((name): name is string => typeof name === 'string' && !!name)
-  return { columns, assignees }
+  const latest = initialCursor(object.latest_event_id)
+  return latest === null ? { columns, assignees } : { columns, assignees, latestEventId: latest }
 }
 
 export function parseBoards(raw: unknown): KanbanBoardRow[] {
