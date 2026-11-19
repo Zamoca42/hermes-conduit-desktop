@@ -8363,3 +8363,79 @@ button.secondary.danger {
   display: flex;
   flex-direction: column;
 }
+
+/* A contact card's people, with Send text. */
+.shown-people {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.shown-person {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.shown-person + .shown-person {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.shown-person-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.shown-person-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  font-weight: 600;
+}
+.shown-person-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shown-person-line {
+  user-select: text;
+}
+.shown-person-note {
+  font-style: italic;
+}
+.shown-person-message {
+  margin-top: 4px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--field);
+  white-space: pre-wrap;
+  user-select: text;
+}
+.shown-person-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.shown-person-actions button {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+.shown-person-actions button.primary {
+  height: 28px;
+  border: 0;
+  background: var(--accent-fill);
+  color: var(--accent-ink);
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { t } from '@shared/i18n'
-import { list, number, share, strings, text, type Board, type Card } from '../state/boards'
+import { dialable, list, mailtoLink, number, people, share, smsLink, strings, text, textRecipient, type Board, type Card, type Person } from '../state/boards'
 import { Icon } from './icons'
 import { Markdown } from './Markdown'
 
@@ -58,6 +58,14 @@ function CardView({ card, titled }: { card: Card; titled: boolean }) {
 
 function CardBody({ card }: { card: Card }) {
   switch (card.type) {
+    case 'contact':
+      return (
+        <div className="shown-people">
+          {people(card).map((person, index) => (
+            <PersonRow key={index} person={person} />
+          ))}
+        </div>
+      )
     case 'stats':
       return (
         <div className="shown-stats">
@@ -282,5 +290,68 @@ function Checklist({ items }: { items: Record<string, unknown>[] }) {
         )
       })}
     </ul>
+  )
+}
+
+/**
+ * A contact card's person, after the phone's RichPersonRow: who they are,
+ * how to reach them, and a text Hermes wrote for the user. Send text copies
+ * it and opens Messages to them, where the user pastes and sends it:
+ * nothing is sent for them.
+ */
+function PersonRow({ person }: { person: Person }) {
+  const [copied, setCopied] = useState(false)
+  const [photoFailed, setPhotoFailed] = useState(false)
+  const recipient = textRecipient(person)
+  const phone = dialable(person.phone)
+  const initials = person.name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+  const open = (link: string) => window.open(link, '_blank', 'noopener')
+  return (
+    <div className="shown-person">
+      <div className="shown-person-head">
+        <span className="shown-person-avatar" aria-hidden="true">
+          {person.photo && !photoFailed ? <img src={person.photo} alt="" referrerPolicy="no-referrer" onError={() => setPhotoFailed(true)} /> : initials}
+        </span>
+        <div>
+          <strong>{person.name}</strong>
+          {person.detail ? <div className="meta">{person.detail}</div> : null}
+        </div>
+      </div>
+      {person.phone ? <div className="shown-person-line">{person.phone}</div> : null}
+      {person.email ? <div className="shown-person-line">{person.email}</div> : null}
+      {person.address ? <div className="shown-person-line">{person.address}</div> : null}
+      {person.note ? <div className="meta shown-person-note">{person.note}</div> : null}
+      {person.message ? (
+        <div className="shown-person-message" aria-label={t('Text to send')}>
+          {person.message}
+        </div>
+      ) : null}
+      <div className="shown-person-actions">
+        {recipient && person.message ? (
+          <button
+            className="primary"
+            onClick={() => {
+              void navigator.clipboard.writeText(person.message!).then(
+                () => setCopied(true),
+                () => undefined
+              )
+              open(smsLink(recipient))
+            }}
+          >
+            {copied ? t('Copied') : t('Send text')}
+          </button>
+        ) : null}
+        {phone ? <button onClick={() => open(`tel:${phone}`)}>{t('Call')}</button> : null}
+        {phone && !person.message ? <button onClick={() => open(smsLink(phone))}>{t('Message')}</button> : null}
+        {person.email ? <button onClick={() => open(mailtoLink(person.email!))}>{t('Email')}</button> : null}
+        {person.url ? <button onClick={() => open(person.url!)}>{t('Website')}</button> : null}
+      </div>
+      {copied ? <p className="meta">{t('The text is copied: paste it in Messages and send it there.')}</p> : null}
+    </div>
   )
 }
