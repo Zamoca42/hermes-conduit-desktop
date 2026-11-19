@@ -389,6 +389,21 @@
     "zh-Hans": "由负责人选择谁回答",
     "zh-Hant": "由負責人選擇誰回答"
   },
+  "A linked person's Hermes asks": {
+    "de": "Der Hermes einer verknüpften Person fragt",
+    "es": "El Hermes de una persona vinculada pregunta",
+    "fr": "Le Hermes d'une personne liée demande",
+    "id": "Hermes milik orang yang tertaut bertanya",
+    "it": "L'Hermes di una persona collegata chiede",
+    "ja": "リンクした相手の Hermes からの質問",
+    "ko": "연결된 사람의 Hermes가 물어봐요",
+    "pl": "Pyta Hermes połączonej osoby",
+    "pt-BR": "O Hermes de uma pessoa vinculada pergunta",
+    "ru": "Спрашивает Hermes связанного человека",
+    "tr": "Bağlı bir kişinin Hermes'i soruyor",
+    "zh-Hans": "已关联的人的 Hermes 在问",
+    "zh-Hant": "已連結的人的 Hermes 在問"
+  },
   "A member": {
     "de": "Ein Mitglied",
     "es": "Un miembro",
@@ -2219,6 +2234,21 @@
     "zh-Hans": "问 {name}…",
     "zh-Hant": "問 {name}…"
   },
+  "Asked in {name}": {
+    "de": "Gefragt in {name}",
+    "es": "Preguntado en {name}",
+    "fr": "Demandé dans {name}",
+    "id": "Ditanyakan di {name}",
+    "it": "Chiesto in {name}",
+    "ja": "{name}で確認",
+    "ko": "{name}에서 물어봄",
+    "pl": "Pytanie z {name}",
+    "pt-BR": "Perguntado em {name}",
+    "ru": "Вопрос из {name}",
+    "tr": "{name} içinde soruldu",
+    "zh-Hans": "来自 {name} 的询问",
+    "zh-Hant": "來自 {name} 的詢問"
+  },
   "Asking Hermes to restart the gateway…": {
     "de": "Hermes wird gebeten, das Gateway neu zu starten …",
     "es": "Pidiendo a Hermes que reinicie la pasarela…",
@@ -3824,6 +3854,21 @@
     "zh-Hans": "更换照片",
     "zh-Hant": "更換照片"
   },
+  "Change it": {
+    "de": "Ändern",
+    "es": "Cambiarlo",
+    "fr": "Le modifier",
+    "id": "Ubah",
+    "it": "Modifica",
+    "ja": "変更する",
+    "ko": "변경",
+    "pl": "Zmień",
+    "pt-BR": "Alterar",
+    "ru": "Изменить",
+    "tr": "Değiştir",
+    "zh-Hans": "修改",
+    "zh-Hant": "修改"
+  },
   "Change what rooms may use?": {
     "de": "Ändern, was Räume nutzen dürfen?",
     "es": "¿Cambiar lo que pueden usar las salas?",
@@ -5293,6 +5338,21 @@
     "tr": "Kendinden emin",
     "zh-Hans": "自信",
     "zh-Hant": "自信"
+  },
+  "Confirm": {
+    "de": "Bestätigen",
+    "es": "Confirmar",
+    "fr": "Confirmer",
+    "id": "Konfirmasi",
+    "it": "Conferma",
+    "ja": "確認",
+    "ko": "확인",
+    "pl": "Potwierdź",
+    "pt-BR": "Confirmar",
+    "ru": "Подтвердить",
+    "tr": "Onayla",
+    "zh-Hans": "确认",
+    "zh-Hant": "確認"
   },
   "Confirm connector reloads": {
     "de": "Neuladen von Konnektoren bestätigen",
@@ -8459,6 +8519,21 @@
     "zh-Hans": "文档",
     "zh-Hant": "文件"
   },
+  "Don't answer": {
+    "de": "Nicht antworten",
+    "es": "No responder",
+    "fr": "Ne pas répondre",
+    "id": "Jangan jawab",
+    "it": "Non rispondere",
+    "ja": "答えない",
+    "ko": "답하지 않기",
+    "pl": "Nie odpowiadaj",
+    "pt-BR": "Não responder",
+    "ru": "Не отвечать",
+    "tr": "Yanıtlama",
+    "zh-Hans": "不回答",
+    "zh-Hant": "不回答"
+  },
   "Don't bring it back": {
     "de": "Nicht wieder anzeigen",
     "es": "No volver a mostrarla",
@@ -8488,6 +8563,36 @@
     "tr": "Kaydetme",
     "zh-Hans": "不保存",
     "zh-Hant": "不儲存"
+  },
+  "Don't share": {
+    "de": "Nicht teilen",
+    "es": "No compartir",
+    "fr": "Ne pas partager",
+    "id": "Jangan bagikan",
+    "it": "Non condividere",
+    "ja": "共有しない",
+    "ko": "공유하지 않기",
+    "pl": "Nie udostępniaj",
+    "pt-BR": "Não compartilhar",
+    "ru": "Не делиться",
+    "tr": "Paylaşma",
+    "zh-Hans": "不分享",
+    "zh-Hant": "不分享"
+  },
+  "Don't start": {
+    "de": "Nicht starten",
+    "es": "No empezar",
+    "fr": "Ne pas lancer",
+    "id": "Jangan mulai",
+    "it": "Non avviare",
+    "ja": "開始しない",
+    "ko": "시작 안 함",
+    "pl": "Nie uruchamiaj",
+    "pt-BR": "Não iniciar",
+    "ru": "Не запускать",
+    "tr": "Başlatma",
+    "zh-Hans": "不开始",
+    "zh-Hant": "不開始"
   },
   "Done": {
     "de": "Fertig",
@@ -11983,6 +12088,21 @@
     "tr": "Bu sunucuda Hermes yanıtlar, bu yüzden sunucuda ayarlanacak bir şey yok. Conduit eklentisi her turu yürütür ve yanıtı sunucuya sesli okutur.",
     "zh-Hans": "此服务器上由 Hermes 回答，因此无需在服务器上进行任何设置。Conduit 插件负责每一轮对话，并让服务器朗读回复。",
     "zh-Hant": "此伺服器上由 Hermes 回答，因此無需在伺服器上進行任何設定。Conduit 外掛負責每一輪對話，並讓伺服器朗讀回覆。"
+  },
+  "Hermes asks": {
+    "de": "Hermes fragt",
+    "es": "Hermes pregunta",
+    "fr": "Hermes demande",
+    "id": "Hermes bertanya",
+    "it": "Hermes chiede",
+    "ja": "Hermesからの確認",
+    "ko": "Hermes의 요청",
+    "pl": "Hermes pyta",
+    "pt-BR": "Hermes pergunta",
+    "ru": "Hermes спрашивает",
+    "tr": "Hermes soruyor",
+    "zh-Hans": "Hermes 请求确认",
+    "zh-Hant": "Hermes 請求確認"
   },
   "Hermes asks: {question}": {
     "de": "Hermes fragt: {question}",
@@ -25649,6 +25769,21 @@
     "zh-Hans": "精明",
     "zh-Hant": "精明"
   },
+  "Say instead": {
+    "de": "Stattdessen sagen",
+    "es": "Decir otra cosa",
+    "fr": "Dire plutôt",
+    "id": "Katakan ini saja",
+    "it": "Di' invece",
+    "ja": "代わりに伝える",
+    "ko": "대신 이렇게 말하기",
+    "pl": "Powiedz zamiast tego",
+    "pt-BR": "Dizer outra coisa",
+    "ru": "Сказать иначе",
+    "tr": "Bunun yerine söyle",
+    "zh-Hans": "改为这样说",
+    "zh-Hant": "改為這樣說"
+  },
   "Say the number of your choice, or answer in your own words.": {
     "de": "Sag die Nummer deiner Wahl oder antworte in deinen eigenen Worten.",
     "es": "Di el número de tu opción o responde con tus propias palabras.",
@@ -35489,6 +35624,21 @@
     "zh-Hans": "它可以分享什么",
     "zh-Hant": "它可以分享什麼"
   },
+  "What it should do instead": {
+    "de": "Was es stattdessen tun soll",
+    "es": "Qué debe hacer en su lugar",
+    "fr": "Ce qu'il doit faire à la place",
+    "id": "Apa yang sebaiknya dilakukan",
+    "it": "Cosa deve fare invece",
+    "ja": "代わりにやること",
+    "ko": "대신 할 일",
+    "pl": "Co ma zrobić zamiast tego",
+    "pt-BR": "O que ele deve fazer em vez disso",
+    "ru": "Что сделать вместо этого",
+    "tr": "Bunun yerine ne yapmalı",
+    "zh-Hans": "改为做什么",
+    "zh-Hant": "改為做什麼"
+  },
   "What this bot is for": {
     "de": "Wofür dieser Bot da ist",
     "es": "Para qué sirve este bot",
@@ -35533,6 +35683,21 @@
     "tr": "Her zaman söylenecekler, atlanacaklar",
     "zh-Hans": "哪些一定要提，哪些不用提",
     "zh-Hant": "哪些一定要提，哪些不用提"
+  },
+  "What to say instead": {
+    "de": "Was er stattdessen sagen soll",
+    "es": "Qué decir en su lugar",
+    "fr": "Ce qu'il doit dire à la place",
+    "id": "Apa yang dikatakan sebagai gantinya",
+    "it": "Cosa dire invece",
+    "ja": "代わりに伝える内容",
+    "ko": "대신 말할 내용",
+    "pl": "Co powiedzieć zamiast tego",
+    "pt-BR": "O que dizer no lugar",
+    "ru": "Что сказать вместо этого",
+    "tr": "Bunun yerine ne söylensin",
+    "zh-Hans": "改为说什么",
+    "zh-Hant": "改為說什麼"
   },
   "What was wrong with it?": {
     "de": "Was hat nicht gepasst?",
@@ -39088,6 +39253,21 @@
     "tr": "{name} adlı kişinin Hermes'i",
     "zh-Hans": "{name} 的 Hermes",
     "zh-Hant": "{name} 的 Hermes"
+  },
+  "{name}'s Hermes asks": {
+    "de": "Der Hermes von {name} fragt",
+    "es": "El Hermes de {name} pregunta",
+    "fr": "Le Hermes de {name} demande",
+    "id": "Hermes milik {name} bertanya",
+    "it": "L'Hermes di {name} chiede",
+    "ja": "{name} の Hermes からの質問",
+    "ko": "{name}의 Hermes가 물어봐요",
+    "pl": "Pyta Hermes {name}",
+    "pt-BR": "O Hermes de {name} pergunta",
+    "ru": "Спрашивает Hermes {name}",
+    "tr": "{name} kişisinin Hermes'i soruyor",
+    "zh-Hans": "{name} 的 Hermes 在问",
+    "zh-Hant": "{name} 的 Hermes 在問"
   },
   "{name}'s Hermes hasn't confirmed yet. It does once it reads its mailbox, and Settings › Multiplayer shows when it has.": {
     "de": "Der Hermes von {name} hat noch nicht bestätigt. Das passiert, sobald er sein Postfach liest, und „Einstellungen › Mehrspieler“ zeigt, wann es so weit ist.",

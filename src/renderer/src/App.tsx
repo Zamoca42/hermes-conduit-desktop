@@ -93,6 +93,8 @@ import { RoomDraftCard } from './components/RoomDraftCard'
 import { canLeave as canLeaveCopy, copyApprovals, copyRoom, isOver } from './state/roomCopies'
 import { LOOKS_READ_MS } from './state/roomLooks'
 import { useRoomLooks, type PersonPicture } from './state/useRoomLooks'
+import { usePresented } from './state/usePresented'
+import { ConfirmPanel } from './components/ConfirmPanel'
 import { everyWhileVisible } from './state/visibility'
 import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
@@ -1150,6 +1152,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // The backdrop glows in the open chat's agent's color, and elsewhere in the profile in use's.
   const glowOf = useGlowColors(glowBots, status.url ?? '')
   const roomChatsServed = roomInvites.capabilities.includes(ROOM_CHATS_CAPABILITY)
+  // What Hermes waits on in each bot's profile: its confirmations, and rooms' and linked people's asks.
+  const presentProfiles = useMemo(() => (roster.bots?.length ? roster.bots.map(b => b.name) : ['default']), [roster.bots])
+  const presented = usePresented(connected, status.url ?? '', roomInvites.capabilities, presentProfiles)
+  const shownConfirm = presented.waiting[0]
   /** A room's private chat with one of your agents: kept, or made and told its room; Wrap Up asks it for notes once it's open. */
   const openRoomChatWith = useCallback(
     async (room: Room, agent: RoomChatAgent, wrapUp: boolean) => {
@@ -1227,6 +1233,25 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   )
   return (
     <GlowContext.Provider value={glowOf}>
+      {shownConfirm && !ring ? (
+        <ConfirmPanel
+          key={shownConfirm.prompt.id}
+          item={shownConfirm}
+          more={presented.waiting.length - 1}
+          onAnswer={(outcome, text) => presented.answer(shownConfirm, outcome, text)}
+          onEdit={
+            shownConfirm.prompt.sessionId
+              ? () => {
+                  // Hermes hears the user wants changes; the chat opens with the preview to rework and send.
+                  presented.answer(shownConfirm, 'edit')
+                  setSelected({ id: shownConfirm.prompt.sessionId, profile: shownConfirm.profile === 'default' ? undefined : shownConfirm.profile })
+                  setSection('chats')
+                  setQuote(prefillRequest(shownConfirm.prompt.preview, botTitle))
+                }
+              : undefined
+          }
+        />
+      ) : null}
       {ring ? <IncomingCall key={ring.id} ring={ring} onAnswer={() => answerRing(ring)} onDecline={missed => declineRing(ring, missed)} /> : null}
       {status.phase !== 'open' ? (
         <div className="banner" role="status">
