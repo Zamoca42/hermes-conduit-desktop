@@ -8818,6 +8818,7 @@ button.secondary.danger {
 .call-picture-chip svg {
   width: 13px;
   height: 13px;
+}
 
 /* A model picker's failed read: the note with Try Again beside it. */
 .model-catalog-note {
