@@ -9047,6 +9047,8 @@ button.secondary.danger {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
 /* Updating… over the Chats list while rows that may be out of date are read again (issue 2706). */
 .updating-capsule {
   position: absolute;
