@@ -244,6 +244,10 @@ export interface ConduitApi {
   setWaiting(count: number): void
   /** A menu bar command (the Mac's File > New Chat). */
   onMenu(listener: (action: MenuAction) => void): () => void
+  /** A Link invite opened from another app before the window could take it, taken once. */
+  takeLinkUrl(): Promise<string | null>
+  /** A Link invite opened from another app while Conduit runs. */
+  onLinkUrl(listener: (url: string) => void): () => void
   window: {
     minimize(): void
     toggleMaximize(): void
@@ -287,6 +291,8 @@ export interface ChatWindowRequest {
 
 export const IPC = {
   menu: 'conduit:menu',
+  takeLinkUrl: 'conduit:take-link-url',
+  linkUrl: 'conduit:link-url',
   requests: 'conduit:requests',
   requestsChanged: 'conduit:requests-changed',
   answerRequest: 'conduit:answer-request',
