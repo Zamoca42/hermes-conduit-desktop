@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
+import { withoutMentionNote } from '../state/botMentions'
 import { lostRows, queueRefusal, resendWords, waitingRows, type QueuedPrompt } from '../state/chatQueue'
 
 /**
@@ -64,7 +65,7 @@ export function ChatQueueDock({
         return (
           <div key={row.admissionId} className="queue-lost" role="group">
             <strong>{t('Hermes restarted before it finished this.')}</strong>
-            {row.text ? <p className="queue-text">{row.text}</p> : null}
+            {row.text ? <p className="queue-text">{withoutMentionNote(row.text)}</p> : null}
             <p className="meta">{t('Messages after it wait until you choose.')}</p>
             {words ? <p className="meta">{t('Resend sends the words only, without any files.')}</p> : null}
             <div className="queue-actions">
@@ -130,7 +131,7 @@ export function ChatQueueDock({
           <div key={row.admissionId} className="queue-row">
             <div className="queue-row-text">
               <span className="meta">{t('Queued')}</span>
-              <span className="queue-text">{row.text}</span>
+              <span className="queue-text">{withoutMentionNote(row.text)}</span>
             </div>
             <div className="queue-actions">
               {row.canSendNow ? (
@@ -139,7 +140,7 @@ export function ChatQueueDock({
                 </button>
               ) : null}
               {row.canEdit ? (
-                <button className="link" disabled={busy} onClick={() => setEditing({ id: row.admissionId, text: row.text })}>
+                <button className="link" disabled={busy} onClick={() => setEditing({ id: row.admissionId, text: withoutMentionNote(row.text) })}>
                   {t('Edit')}
                 </button>
               ) : null}

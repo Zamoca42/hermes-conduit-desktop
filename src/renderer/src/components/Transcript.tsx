@@ -23,6 +23,7 @@ import { followedUpKeys } from '../state/predictive'
 import { ConnectionCardView } from './ConnectionCardView'
 import { PinnedReplyBar, type PinControls } from './PinnedReplies'
 import { barOrder, pinFor, refreshed, resolved } from '../state/pinnedReplies'
+import { delivery, inbound, teammateName } from '../state/teammateMessages'
 
 export interface MessageMenuItem {
   label: string
@@ -258,6 +259,8 @@ interface ItemProps {
   onOpenCall?: (callId: string) => void
   /** ⋯'s Pin reply or Unpin reply. */
   pinToggle?: { label: string; onSelect: () => void }
+  /** The bots, for a teammate's name on its messages. */
+  teammates?: { name: string; title: string }[]
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -382,9 +385,36 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   )
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools, onOpenCall, followedUp, pinToggle }: ItemProps) {
+function Item({
+  item,
+  author,
+  onQuote,
+  jump,
+  onRetry,
+  onEdit,
+  onFollowUp,
+  thinkingToggle,
+  expandTools,
+  onOpenCall,
+  followedUp,
+  pinToggle,
+  teammates
+}: ItemProps) {
   switch (item.kind) {
     case 'user': {
+      // A teammate's delivery: a note with its name, what it said one click away.
+      const teammate = inbound(item.text)
+      if (teammate)
+        return (
+          <details className="teammate-note" data-key={item.key}>
+            <summary>
+              <Icon name="bots" />
+              {t('Message from {name}', { name: teammateName(teammate.handle, teammates, teammate.sender) })}
+              <span className="time">{clock(item.at)}</span>
+            </summary>
+            {teammate.body ? <Reply text={teammate.body} /> : null}
+          </details>
+        )
       const envelope = parseReplyEnvelope(item.text)
       const words = envelope ? envelope.message : item.text
       const voice = parseVoiceMessage(words)
@@ -456,6 +486,9 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
     case 'tool': {
       const done = item.status === 'done'
       if (item.board) return <BoardView board={item.board} onFollowUp={onFollowUp} />
+      // A message to a teammate reads as one: "Messaged Atlas" and what was said.
+      const sent = delivery(item.name, item.args)
+      const sentTo = sent ? teammateName(sent.target, teammates) : null
       const head = (
         <>
           <span className={`card-icon${done ? '' : ' running'}`}>
@@ -463,9 +496,14 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
           </span>
           <span className="card-body">
             <span className="card-title">
-              {toolTitle(item.name, done)} {item.durationS != null ? <span className="time">{item.durationS.toFixed(1)}s</span> : null}
+              {sentTo ? (done ? t('Messaged {name}', { name: sentTo }) : t('Messaging {name}…', { name: sentTo })) : toolTitle(item.name, done)}{' '}
+              {item.durationS != null ? <span className="time">{item.durationS.toFixed(1)}s</span> : null}
             </span>
-            {item.context || item.summary ? <span className="card-detail">{item.summary || item.context}</span> : null}
+            {sent?.message ? (
+              <span className="card-detail">{sent.message}</span>
+            ) : item.context || item.summary ? (
+              <span className="card-detail">{item.summary || item.context}</span>
+            ) : null}
           </span>
         </>
       )
@@ -640,7 +678,8 @@ export function Transcript({
   calls,
   onOpenCall,
   followedUp,
-  pins
+  pins,
+  teammates
 }: {
   state: TranscriptState
   loading: boolean
@@ -666,6 +705,8 @@ export function Transcript({
   followedUp?: Set<string>
   /** Pinned replies: ⋯'s Pin reply and the bar; left out where replies can't be pinned. */
   pins?: PinControls
+  /** The bots, for a teammate's name on its messages and on a message sent to one. */
+  teammates?: { name: string; title: string }[]
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -805,6 +846,7 @@ export function Transcript({
       thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
       expandTools={display.expandTools}
       onOpenCall={onOpenCall}
+      teammates={teammates}
       followedUp={followedUpKeySet.has(item.key)}
       pinToggle={
         pins && item.kind === 'assistant' && !item.streaming

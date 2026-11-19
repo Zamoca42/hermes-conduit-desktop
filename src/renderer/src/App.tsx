@@ -34,6 +34,7 @@ import { openElsewhereMessage, owner } from './state/chatTakeover'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
 import { forgetAvatars, useBots } from './state/useBots'
+import { mentionCandidates, withMentionNote, withoutMentionNote } from './state/botMentions'
 import type { Room } from './state/groups'
 import { useRooms } from './state/useGroups'
 import { useChat } from './state/useChat'
@@ -634,10 +635,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         const outcome = await command(text, commands)
         if (outcome.kind === 'new') return newChat()
         if (outcome.kind === 'model') setModelOpen(true)
-        if (outcome.kind === 'prefill') setQuote(prefillRequest(outcome.text, botTitle))
+        if (outcome.kind === 'prefill') setQuote(prefillRequest(withoutMentionNote(outcome.text), botTitle))
         created = outcome.created
       } else {
-        created = await send(text, attachments, undefined, options)
+        created = await send(withMentionNote(text, roster.bots, selected.profile ?? 'default'), attachments, undefined, options)
         if (created === false) return false
       }
       if (created) {
@@ -646,8 +647,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       }
       return true
     },
-    [send, command, commands, newChat, list, botTitle]
+    [send, command, commands, newChat, list, botTitle, roster.bots, selected.profile]
   )
+  // The bots a chat can tag, in their order: every shown bot but the chat's own.
+  const mentionBots = useMemo(() => mentionCandidates(roster.bots, '', selected.profile ?? 'default'), [roster.bots, selected.profile])
 
   // A Bot Chat goes by its bot's name: Hermes titles every one "Bot Chat".
   const title = workItem
@@ -1175,6 +1178,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     author={botTitle}
                     onQuote={setQuote}
                     onCommand={text => void onSend(text)}
+                    teammates={glowBots}
                     display={chatDisplay}
                     sessionId={chat.liveId ?? undefined}
                     calls={chatCallList}
@@ -1336,7 +1340,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 rows={queue}
                 chatKey={selected.id ?? 'new'}
                 onSendNow={sendQueuedNow}
-                onEdit={editQueued}
+                onEdit={(row, text) => editQueued(row, withMentionNote(text, roster.bots, selected.profile ?? 'default'))}
                 onCancel={cancelQueued}
                 onDiscard={discardLost}
                 onResend={async row => {
@@ -1381,6 +1385,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 canAttach
                 dropZone={chatPane}
                 voice={calling ? undefined : { profile: selected.profile }}
+                mentionBots={mentionBots}
               />
             </main>
             {(artifactsOpen && selected.id) || showWork || (filesOpen && chat.cwd) || (beside && besideFits) ? (

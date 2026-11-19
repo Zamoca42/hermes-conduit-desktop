@@ -11,6 +11,8 @@ import { TAP_GUARD_MS, askable, pauseDelay, type DraftGuesses } from '../state/p
 import { composerDrafts, draftStoreKey, isEmptyDraft, type ComposerDraft } from '../state/composerDrafts'
 import { SummaryHost } from '../state/useStepSummaries'
 import { ClipInbox, indexedClipStore, keepsAfter, memoryClipStore, withRetries, type DictationClip } from '../state/dictationClips'
+import { insertingMention, mentionCandidates, mentionQueryAt, mentionTag } from '../state/botMentions'
+import type { Bot } from '../state/bots'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
 /** The last folder of a path, the way the phone's chip shows it. */
@@ -67,6 +69,8 @@ interface Props {
   wrapReply?: (reply: ReplyReference, draft: string) => string
   /** The microphone: a recording typed out (Dictate) or sent as a voice message, transcribed in this profile. */
   voice?: { profile?: string }
+  /** The bots a chat can tag: the @ list as `@` is typed, and Mention a Bot beside Attach. The chat's own bot is left out. */
+  mentionBots?: Bot[]
 }
 
 const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
@@ -101,7 +105,8 @@ export function Composer({
   onModel,
   context,
   onContext,
-  voice
+  voice,
+  mentionBots
 }: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
@@ -279,10 +284,27 @@ export function Composer({
   // `/` and the start of a name: Hermes' commands that fit, until a space or Esc.
   const suggestions = commands?.length && /^\/[^\s/]*$/.test(text) && text !== dismissed ? suggestCommands(commands, text) : []
   const picked = suggestions[Math.min(highlight, suggestions.length - 1)]
+  // `@` and the start of a bot's name, where the caret is: the bots that fit, until a space or Esc.
+  const [caret, setCaret] = useState(0)
+  const tagging = mentionBots?.length && !picked && text !== dismissed ? mentionQueryAt(text, Math.min(caret, text.length)) : null
+  const tagged = tagging ? mentionCandidates(mentionBots, tagging.query).slice(0, 8) : []
+  const pickedBot = tagged[Math.min(highlight, tagged.length - 1)]
+  const [mentionMenu, setMentionMenu] = useState(false)
+  useEffect(() => {
+    if (!mentionMenu) return
+    const close = () => setMentionMenu(false)
+    const onKey = (e: globalThis.KeyboardEvent) => e.key === 'Escape' && close()
+    window.addEventListener('click', close)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('click', close)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [mentionMenu])
   useEffect(() => setHighlight(0), [text])
 
   // Staged files, a note, a reply chip or the suggestions: a small window makes room for them.
-  const staged = attachments.length > 0 || staging > 0 || !!notice || !!replyTo || !!picked
+  const staged = attachments.length > 0 || staging > 0 || !!notice || !!replyTo || !!picked || !!pickedBot
 
   // While I pause: the draft, asked about once after the chosen pause; its guesses count only while it stays the same.
   const [draftGuess, setDraftGuess] = useState<(DraftGuesses & { draft: string }) | null>(null)
@@ -305,6 +327,32 @@ export function Composer({
   useEffect(() => {
     onStagedChange?.(staged)
   }, [staged, onStagedChange])
+
+  /** A bot picked from the @ list: its tag in place of the `@` being typed, the caret after it. */
+  function pickBot(bot: Bot) {
+    if (!tagging) return
+    const end = Math.min(caret, text.length)
+    const tag = `@${mentionTag(bot)} `
+    const next = text.slice(0, tagging.start) + tag + text.slice(end).replace(/^\s/, '')
+    const at = tagging.start + tag.length
+    setText(next)
+    setCaret(at)
+    requestAnimationFrame(() => {
+      area.current?.focus()
+      area.current?.setSelectionRange(at, at)
+    })
+  }
+
+  /** Mention a Bot: the same tag the @ list puts in, at the end of the draft. */
+  function mentionBot(bot: Bot) {
+    const next = insertingMention(text, bot)
+    setText(next)
+    setCaret(next.length)
+    requestAnimationFrame(() => {
+      area.current?.focus()
+      area.current?.setSelectionRange(next.length, next.length)
+    })
+  }
 
   /** A pick only puts the command in the field, with a space for its words. */
   function pick(command: SlashCommand) {
@@ -488,6 +536,24 @@ export function Composer({
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (pickedBot && !event.nativeEvent.isComposing) {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault()
+        const step = event.key === 'ArrowDown' ? 1 : -1
+        setHighlight(h => (Math.min(h, tagged.length - 1) + step + tagged.length) % tagged.length)
+        return
+      }
+      if (event.key === 'Tab' || (event.key === 'Enter' && !event.shiftKey)) {
+        event.preventDefault()
+        pickBot(pickedBot)
+        return
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setDismissed(text)
+        return
+      }
+    }
     if (picked && !event.nativeEvent.isComposing) {
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault()
@@ -604,6 +670,24 @@ export function Composer({
             ))}
           </div>
         ) : null}
+        {pickedBot ? (
+          <div className="slash-suggestions mention-suggestions" role="listbox" aria-label={t('Mention a Bot')}>
+            {tagged.map((bot, i) => (
+              <button
+                key={bot.name}
+                role="option"
+                aria-selected={bot === pickedBot}
+                className={bot === pickedBot ? 'active' : undefined}
+                onMouseDown={e => e.preventDefault()}
+                onMouseEnter={() => setHighlight(i)}
+                onClick={() => pickBot(bot)}
+              >
+                <span className="slash-name">@{mentionTag(bot)}</span>
+                <span className="slash-description">{bot.title}</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
         {replyTo ? (
           <div className="reply-chip" title={replyTo.text}>
             <span className="reply-chip-body">
@@ -686,7 +770,11 @@ export function Composer({
           rows={1}
           value={text}
           placeholder={placeholder}
-          onChange={e => setText(e.target.value)}
+          onChange={e => {
+            setText(e.target.value)
+            setCaret(e.target.selectionStart)
+          }}
+          onSelect={e => setCaret(e.currentTarget.selectionStart)}
           onKeyDown={onKeyDown}
           onPaste={onPaste}
         />
@@ -707,6 +795,34 @@ export function Composer({
                 }}
               />
             </>
+          ) : null}
+          {mentionBots?.length ? (
+            <span className="message-more composer-mention">
+              <button
+                className="attach mention-button"
+                aria-label={t('Mention a Bot')}
+                title={t('Mention a Bot')}
+                aria-haspopup="menu"
+                aria-expanded={mentionMenu}
+                disabled={disabled}
+                onClick={e => {
+                  e.stopPropagation()
+                  setMentionMenu(open => !open)
+                }}
+              >
+                @
+              </button>
+              {mentionMenu ? (
+                <div className="host-menu message-menu mention-menu" role="menu" aria-label={t('Mention a Bot')}>
+                  {mentionBots.map(bot => (
+                    <button key={bot.name} role="menuitem" onClick={() => mentionBot(bot)}>
+                      {bot.title}
+                      <span className="meta">@{mentionTag(bot)}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </span>
           ) : null}
           {voice ? (
             <button
