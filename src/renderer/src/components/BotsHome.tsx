@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
+import { useContext, useEffect, useState, type CSSProperties, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
 import type { BotWork } from "../state/useWork";
 import { timeLabel } from "../state/chats";
-import { homeLayout, keptColor, type Bot } from "../state/bots";
+import { gridStep, homeLayout, keptColor, type Bot } from "../state/bots";
 import { GlowContext } from "./GlowColors";
 import {
   addToDraft,
@@ -327,12 +327,16 @@ export function BotsHome({
             />
           ) : null}
           {bots && layout !== "one" ? (
-            <div className={layout === "two" ? "bots-two" : "bots-grid"}>
+            <div
+              className={layout === "two" ? "bots-two" : "bots-grid"}
+              style={layout === "two" ? undefined : ({ "--bot-column": `${gridStep(bots.length).column}px` } as CSSProperties)}
+            >
               {bots.map((bot) => (
                 <BotTile
                   key={bot.name}
                   bot={bot}
                   large={layout === "two"}
+                  face={layout === "two" ? 128 : gridStep(bots.length).face}
                   running={runningProfiles.has(bot.name)}
                   picked={draft?.members.includes(bot.name) ?? false}
                   target={dropTarget === bot.name}
@@ -593,6 +597,8 @@ function OneBot({
 interface TileProps {
   bot: Bot;
   large: boolean;
+  /** The face's size: the grid's step for the bots it shows. */
+  face: number;
   running: boolean;
   picked: boolean;
   target: boolean;
@@ -605,6 +611,7 @@ interface TileProps {
 function BotTile({
   bot,
   large,
+  face,
   running,
   picked,
   target,
@@ -622,12 +629,14 @@ function BotTile({
       {...drag}
     >
       <span className="bot-tile-face">
-        <BotAvatar bot={bot} size={large ? 128 : 84} />
+        <BotAvatar bot={bot} size={face} />
         {target ? (
           <span className="drop-plus" aria-hidden="true">
             <Icon name="plus" />
           </span>
         ) : null}
+        {/* On the face's lower edge, so the tiles in a row keep one height (1b). */}
+        {pill ? <span className="bot-tile-pill">{pill}</span> : null}
       </span>
       <span className="bot-name">
         {bot.pinned ? (
@@ -637,7 +646,6 @@ function BotTile({
         ) : null}
         {bot.title}
       </span>
-      {pill}
       {running ? (
         <span className="running">{t('Working')}</span>
       ) : (

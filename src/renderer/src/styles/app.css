@@ -1777,7 +1777,7 @@ html[data-window='quick'] body {
 
 .bots-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--bot-column, 168px), 1fr));
   gap: 12px;
 }
 
@@ -1852,12 +1852,39 @@ html[data-window='quick'] body {
 .bot-tile-face {
   position: relative;
   display: inline-flex;
-  margin-bottom: 6px;
+  margin-bottom: 14px;
   transition: transform 0.15s ease;
 }
 
 .bot-tile .bot-tile-face .bot-avatar {
   margin-bottom: 0;
+}
+
+/* The pill on the face's lower edge, centered on it (1b). */
+.bot-tile-pill {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+  max-width: calc(100% + 40px);
+  white-space: nowrap;
+}
+
+.bot-tile-pill:empty {
+  display: none;
+}
+
+.bot-tile-pill .work-pill {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.bot-tile-pill .work-pill.needs {
+  background: color-mix(in srgb, var(--warning) 16%, var(--surface));
+  border-color: color-mix(in srgb, var(--warning) 50%, transparent);
 }
 
 .bot-tile.drop-target .bot-tile-face {
