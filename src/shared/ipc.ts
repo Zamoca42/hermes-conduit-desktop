@@ -199,6 +199,8 @@ export interface ConduitApi {
   /** A live call's socket opened with a single-use token the host mints at `path` (Gemini Live); the token stays in the main process. */
   /** A page Hermes drew, served on its own scheme for a sandboxed frame; null when it's too large. */
   pageUrl(html: string): Promise<string | null>
+  /** The screen Conduit's window is on, as a PNG data URL, with the window out of the way; null when it can't be captured (no permission). */
+  screenshot(): Promise<string | null>
   liveOpenMinted(path: string): Promise<{ ok: true; id: string; model: string | null; voice: string | null } | { ok: false; error: string; code?: number }>
   liveSend(id: string, data: string | Uint8Array): void
   /** A bot's screen stream (`/api/display/ws`) on this sign-in, admitted by its `display.observe` ticket; its frames come binary on `onLive`. */
@@ -310,6 +312,7 @@ export const IPC = {
   liveOpen: 'conduit:live-open',
   liveOpenMinted: 'conduit:live-open-minted',
   pageUrl: 'conduit:page-url',
+  screenshot: 'conduit:screenshot',
   liveSend: 'conduit:live-send',
   screenOpen: 'conduit:screen-open',
   liveClose: 'conduit:live-close',

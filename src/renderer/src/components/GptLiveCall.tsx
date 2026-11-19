@@ -51,6 +51,7 @@ import { chatFinder, delegatedRead, delegatedSearch, findChatMarker, readChatMar
 import { JOB_STARTED, VoiceJobs, asksForBackground, jobFollowUpMarker, type VoiceJob } from '../state/voiceJobs'
 import { CallCards } from './CallCards'
 import { Icon } from './icons'
+import { pictureNoteText, type PictureNote } from '../state/callPicture'
 import { MicOrb } from './MicOrb'
 
 interface Props {
@@ -70,6 +71,10 @@ interface Props {
   onEnd: () => void
   /** The mode menu under the call's status, which moves the call to another mode. */
   modeMenu?: ReactNode
+  /** Show a picture: the button on the call's row, and the waiting picture's chip. */
+  pictureControls?: ReactNode
+  /** A picture shown or taken off the call's chat, for the call to hear about (and Gemini and Qwen to see). */
+  pictureNote?: PictureNote | null
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
   /** The approvals and questions the chat waits on, which the call can answer by voice. */
@@ -100,7 +105,22 @@ const GOODBYE =
  * you talk with GPT-Live, and what you ask it to do goes to Hermes as the chat's
  * next message, with Hermes' reply told back to you in the call.
  */
-export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, modeMenu, onClassic, requests = [], resume }: Props) {
+export function GptLiveCall({
+  profile,
+  chatId,
+  items,
+  onSay,
+  running,
+  turnsDone,
+  lastReply,
+  onEnd,
+  modeMenu,
+  pictureControls,
+  pictureNote,
+  onClassic,
+  requests = [],
+  resume
+}: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -580,6 +600,11 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
             : t('Interrupted')
   const badge = billing === 'api' ? t('API key · billed per minute') : t('ChatGPT plan')
 
+  // A picture on the call's chat: GPT-Live sees none, so it hears that Hermes has it.
+  useEffect(() => {
+    if (pictureNote && !ended.current) append(pictureNoteText(pictureNote, false), 'commentary', null)
+  }, [pictureNote?.id])
+
   return (
     <>
       <CallCards cards={[]} jobs={jobList} />
@@ -610,6 +635,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
           </ol>
         ) : null}
         <div className="voice-call-buttons">
+          {pictureControls}
           {phase === 'failed' ? (
             <button className="secondary" onClick={onClassic}>
               {t('Classic voice')}

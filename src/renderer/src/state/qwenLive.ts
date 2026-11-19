@@ -118,6 +118,7 @@ export class QwenLiveError extends Error {}
 export class QwenAdapter {
   private activeResponse = false
   private wantsResponse = false
+  private sentAudio = false
   private pendingTools = new Set<string>()
   private toolNames = new Map<string, string>()
   private deliveredTools = new Set<string>()
@@ -150,7 +151,17 @@ export class QwenAdapter {
     const input = frame.realtimeInput as Row | undefined
     if (input && typeof input === 'object') {
       const audio = str((input.audio as Row | undefined)?.data)
-      if (audio) this.out({ type: 'input_audio_buffer.append', audio })
+      if (audio) {
+        this.sentAudio = true
+        this.out({ type: 'input_audio_buffer.append', audio })
+      }
+      // A picture: Qwen takes one after some audio, so a second of silence goes first when none went yet.
+      const image = str((input.video as Row | undefined)?.data)
+      if (image) {
+        if (!this.sentAudio) this.out({ type: 'input_audio_buffer.append', audio: SECOND_OF_SILENCE() })
+        this.sentAudio = true
+        this.out({ type: 'input_image_buffer.append', image })
+      }
       if (input.audioStreamEnd === true) this.out({ type: 'input_audio_buffer.append', audio: SECOND_OF_SILENCE() })
       return
     }

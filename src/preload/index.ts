@@ -65,6 +65,7 @@ const api: ConduitApi = {
   liveOpen: (path, query) => ipcRenderer.invoke(IPC.liveOpen, path, query),
   liveOpenMinted: path => ipcRenderer.invoke(IPC.liveOpenMinted, path),
   pageUrl: html => ipcRenderer.invoke(IPC.pageUrl, html),
+  screenshot: () => ipcRenderer.invoke(IPC.screenshot),
   liveSend: (id, data) => ipcRenderer.send(IPC.liveSend, id, data),
   screenOpen: (path, ticket) => ipcRenderer.invoke(IPC.screenOpen, path, ticket),
   liveClose: (id, code) => ipcRenderer.send(IPC.liveClose, id, code),

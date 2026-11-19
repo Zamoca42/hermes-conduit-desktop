@@ -8789,3 +8789,33 @@ button.secondary.danger {
 .model-group-name .provider-logo {
   color: var(--text-2);
 }
+
+/* Show a picture on a call: the round button's menu opens upward, and a chip says a picture waits for the next request. */
+.call-picture {
+  position: relative;
+}
+
+.call-picture-menu {
+  top: auto;
+  bottom: calc(100% + 6px);
+  left: auto;
+  right: 0;
+  min-width: 200px;
+}
+
+.call-picture-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  padding: 4px 6px 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-hover);
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.call-picture-chip svg {
+  width: 13px;
+  height: 13px;
+}

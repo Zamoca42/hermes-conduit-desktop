@@ -78,3 +78,37 @@ export async function stageFile(file: File, id: string): Promise<StagedAttachmen
   }
   return { id, name, kind: 'file', mime: mime || 'application/octet-stream', size: file.size, base64: await readBase64(file) }
 }
+
+/** The model's copy of a picture shown to a live call: a JPEG of at most 1280 px and 190 KB (Qwen refuses one over 256 KB in Base64), as on the phone. */
+export const MODEL_FRAME_EDGE = 1280
+export const MODEL_FRAME_BYTES = 190_000
+
+/** `file` as a live model's frame, base64 JPEG, or null when it can't be drawn small enough. */
+export async function modelFrame(file: Blob): Promise<string | null> {
+  let bitmap: ImageBitmap
+  try {
+    bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
+  } catch {
+    return null
+  }
+  try {
+    let edge = MODEL_FRAME_EDGE
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const long = Math.max(bitmap.width, bitmap.height)
+      const scale = Math.min(1, edge / long)
+      const canvas = new OffscreenCanvas(Math.max(1, Math.round(bitmap.width * scale)), Math.max(1, Math.round(bitmap.height * scale)))
+      const context = canvas.getContext('2d')
+      if (!context) return null
+      // A see-through picture on white, as a JPEG has no transparency.
+      context.fillStyle = '#ffffff'
+      context.fillRect(0, 0, canvas.width, canvas.height)
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+      const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: attempt < 3 ? 0.8 - attempt * 0.15 : 0.5 })
+      if (blob.size <= MODEL_FRAME_BYTES) return readBase64(blob)
+      if (attempt >= 2) edge = Math.round(edge * 0.75)
+    }
+    return null
+  } finally {
+    bitmap.close()
+  }
+}
