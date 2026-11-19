@@ -40,6 +40,7 @@ import { TitleBar, hostName } from './components/TitleBar'
 import { setRunningCall, switchEndingCall } from './state/callSwitch'
 import { Transcript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { forgetSummaries } from './state/stepSummaries'
+import { forgetChatLists } from './state/savedChatList'
 import { useFollowUps, usePredictions } from './state/usePredictions'
 import { SummaryHost } from './state/useStepSummaries'
 import { chatDraft, composerDrafts } from './state/composerDrafts'
@@ -205,10 +206,12 @@ export function App() {
   setTurnSurfaceHost(url ?? '')
   setDesktopCardsHost(url ?? '')
   setKanbanHost(url ?? '')
-  // A host signed out or removed takes the summaries of its runs of steps with it.
+  // A host signed out or removed takes the summaries of its runs of steps, and its saved chat list, with it.
   const hostList = status?.hosts?.map(h => h.url).join('\n')
   useEffect(() => {
-    if (hostList !== undefined) forgetSummaries(hostList ? hostList.split('\n') : [])
+    if (hostList === undefined) return
+    forgetSummaries(hostList ? hostList.split('\n') : [])
+    forgetChatLists(hostList ? hostList.split('\n') : [])
   }, [hostList])
 
   if (!status) return <div className="app" />
@@ -288,7 +291,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   // `folder`: a new chat started in a project works there.
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean; folder?: string }>({ id: null })
   const [projectsOpen, setProjectsOpen] = useState(false)
-  const list = useChatList(connected)
+  const list = useChatList(connected, status.url ?? '')
   const {
     transcript,
     chat,

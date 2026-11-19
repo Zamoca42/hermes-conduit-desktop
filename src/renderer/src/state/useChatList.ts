@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
+import { SAVED_ROWS, saveChatList, savedChatList } from './savedChatList'
 import { CHAT_LIST_MAX_PAGES, CHAT_LIST_PAGE, chatListPath, mergeRows, refreshFirstPage, responseCount, rowsFromResponse, type ChatRow } from './chats'
 
-/** The chat list, read when the connection opens and again when Hermes says the sessions changed. */
-export function useChatList(connected: boolean) {
-  const [rows, setRows] = useState<ChatRow[] | null>(null)
+/**
+ * The chat list, read when the connection opens and again when Hermes says
+ * the sessions changed. `host`'s saved list stands in from launch until the
+ * first read, saying Updating….
+ */
+export function useChatList(connected: boolean, host = '') {
+  const [saved] = useState(() => savedChatList(host))
+  const [rows, setRows] = useState<ChatRow[] | null>(saved)
   const [error, setError] = useState<string | null>(null)
   /** Archived rows Hermes stamped auto-archived: voice's (see voiceList.ts) are listed with the chats. */
   const [archived, setArchived] = useState<ChatRow[]>([])
@@ -13,14 +19,14 @@ export function useChatList(connected: boolean) {
 
   const generation = useRef(0)
 
-  const rowsRef = useRef<ChatRow[] | null>(null)
+  const rowsRef = useRef<ChatRow[] | null>(saved)
   /**
    * Updating… (issue 2706): rows read before the connection dropped may be
    * out of date, so the read after it says so until its first page lands.
    * The list's own refreshes over a current list say nothing; a failed read
    * stops saying it and leaves the rows stale for the next one.
    */
-  const stale = useRef(false)
+  const stale = useRef(!!saved)
   const [updating, setUpdating] = useState(false)
 
   /**
@@ -48,6 +54,7 @@ export function useChatList(connected: boolean) {
       let all = !full && rowsRef.current ? refreshFirstPage(rowsRef.current, first, pageWasFull) : first
       rowsRef.current = all
       setRows(all)
+      saveChatList(host, all)
       setError(null)
       stale.current = false
       setUpdating(false)
@@ -61,6 +68,7 @@ export function useChatList(connected: boolean) {
         all = mergeRows(all, rowsFromResponse(body))
         rowsRef.current = all
         setRows(all)
+        if (page * CHAT_LIST_PAGE < SAVED_ROWS) saveChatList(host, all)
       }
     } catch (e) {
       // A later page that fails leaves the chats already shown; the next refresh tries again.
@@ -68,7 +76,7 @@ export function useChatList(connected: boolean) {
       setUpdating(false)
       setError(e instanceof Error ? e.message : String(e))
     }
-  }, [])
+  }, [host])
 
   /** The archived pages' auto-archived rows, as deep as the list reads; a refresh reads the first page only. */
   const archivedRef = useRef<ChatRow[]>([])
