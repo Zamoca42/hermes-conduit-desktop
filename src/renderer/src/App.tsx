@@ -3,6 +3,7 @@ import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
+import { orderedBots, useBotOrder, useMixedBotOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
@@ -174,6 +175,9 @@ import { consented, isLive } from './state/consent'
 import { loadChatCalls, type CallTranscript, type ChatCall } from './state/voiceCalls'
 import type { CallResume } from './state/voiceSave'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
+
+/** The host's synced preferences, for the bots' order. */
+const prefsHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
 
 export function App() {
   const [status, setStatus] = useState<ConnectionStatus | null>(null)
@@ -393,6 +397,9 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   }, [])
 
   const roster = useBots(connected)
+  // The bots in the person's order (synced as bots.order), which every list of bots follows.
+  const botOrder = useBotOrder(status.url ?? '', connected, prefsHttp)
+  const orderedRoster = useMemo(() => (roster.bots ? orderedBots(roster.bots, botOrder.order) : null), [roster.bots, botOrder.order])
   const glowBots = useMemo(() => [...(roster.bots ?? []), ...roster.hidden], [roster.bots, roster.hidden])
   // Thinking and Tool cards as the profile's settings say; read again after a visit to Settings.
   const chatDisplay = useChatDisplay(selected.profile, connected, section === 'chats')
@@ -882,7 +889,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
     [send, command, notice, commands, newChat, list, botTitle, roster.bots, selected.profile, selected.botChat, openBotChat]
   )
   // The bots a chat can tag, in their order: every shown bot but the chat's own.
-  const mentionBots = useMemo(() => mentionCandidates(roster.bots, '', selected.profile ?? 'default'), [roster.bots, selected.profile])
+  const mentionBots = useMemo(() => mentionCandidates(orderedRoster, '', selected.profile ?? 'default'), [orderedRoster, selected.profile])
 
   // A Bot Chat goes by its bot's name: Hermes titles every one "Bot Chat".
   const title = workItem
@@ -1075,6 +1082,10 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   // ...and their bots, on Bots Home.
   const otherBots = useKeptBots(keptHosts, section === 'bots')
+  // ...mixed with this host's in one order the person arranges, kept on this computer.
+  const combinedCount = savedHosts ? savedHosts.filter(h => h.combined).length : null
+  const mixedBotOrder = useMixedBotOrder(combinedCount === null ? null : combinedCount > 1)
+  const savedHostUrls = useMemo(() => (savedHosts ?? []).map(h => h.url), [savedHosts])
   // ...and New Bot's choice of where the bot is made: this one, then each other kept connected.
   const newBotDashboards = useMemo<NewBotDashboard[] | undefined>(() => {
     if (!status.url || !badgeFor(status.url)) return undefined
@@ -1976,7 +1987,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
           <BotEditor key={editingBot.name} bot={editingBot} onClose={() => setEditingBot(null)} onSaved={() => void roster.refresh()} />
         ) : section === 'bots' ? (
           <BotsHome
-            bots={roster.bots}
+            bots={orderedRoster}
             error={roster.error}
             runningProfiles={runningProfiles}
             rooms={groupRooms.rooms}
@@ -2000,6 +2011,10 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             badgeFor={badgeFor}
             onOpenOther={openOtherBot}
             hostUrl={statusUrl}
+            savedHosts={savedHostUrls}
+            mixedOrder={mixedBotOrder.order}
+            onMoveMixed={mixedBotOrder.drop}
+            onMoveBot={botOrder.drop}
             onNewGroup={
               connected && groupRooms.capabilities?.supported === true
                 ? () => {
@@ -2027,7 +2042,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
           />
         ) : section === 'tasks' ? (
           <Tasks
-            bots={roster.bots}
+            bots={orderedRoster}
             connected={connected}
             profile={chatProfile}
             // Only the list's profile: picking one here doesn't open its chats.
