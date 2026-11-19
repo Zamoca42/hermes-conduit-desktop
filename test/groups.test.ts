@@ -221,6 +221,23 @@ describe('member statuses', () => {
     expect(Object.fromEntries(memberStatuses(room, events, idle))).toEqual({ 'm-bo': 'unavailable' })
   })
 
+  it('leaves out a lead’s routing turn that ended without a pick, only where the message went through it', () => {
+    const lead = { purpose: '', notes: '', routing: 'lead' as const, leadMemberId: 'm-ada', newerRouting: '' }
+    const members = { members: [{ memberId: 'm-ada', profile: 'ada', handle: 'ada' }, { memberId: 'm-bo', profile: 'bo', handle: 'bo' }] }
+    const at = (seq: number, kind: string, payload: Record<string, unknown>, eventId = `x${seq}`) => ({ seq, eventId, kind, actor: { kind: 'user', id: 'me' }, payload })
+    const receipt = (member: string, message: number) => at(message + 1, 'turn.cancelled', { member_id: member, discussion_event_id: `m${message}`, round_index: 0, seen_through_seq: message - 1 })
+    const message = (seq: number, text: string) => at(seq, 'message.user', { text, thread_id: `m${seq}` }, `m${seq}`)
+    const status = { working: false, busy: [], approvals: [] as string[], context: lead }
+    // The lead's receipt that read only up to the message is its routing turn.
+    expect(Object.fromEntries(memberStatuses(members, [message(5, 'who knows?'), receipt('m-ada', 5)], status))).toEqual({})
+    // Another member's batch that stopped there is a real turn.
+    expect(Object.fromEntries(memberStatuses(members, [message(5, 'who knows?'), receipt('m-bo', 5)], status))).toEqual({ 'm-bo': 'stopped' })
+    // A message naming someone went straight to them, not through the lead.
+    expect(Object.fromEntries(memberStatuses(members, [message(5, '@ada who knows?'), receipt('m-ada', 5)], status))).toEqual({ 'm-ada': 'stopped' })
+    // Under Everyone there is no routing turn.
+    expect(Object.fromEntries(memberStatuses(members, [message(5, 'who knows?'), receipt('m-ada', 5)], { ...status, context: { ...lead, routing: 'everyone' as const } }))).toEqual({ 'm-ada': 'stopped' })
+  })
+
   it('crowns the lead only while Who answers is Lead', () => {
     expect(leadMemberId(room, { purpose: '', notes: '', routing: 'lead', leadMemberId: 'ada', newerRouting: '' })).toBe('m-ada')
     expect(leadMemberId(room, { purpose: '', notes: '', routing: 'everyone', leadMemberId: '', newerRouting: '' })).toBeUndefined()
