@@ -7904,6 +7904,21 @@
     "zh-Hans": "每次运行都会另存为一个对话。让 Hermes 添加或更改计划，或在这里创建。",
     "zh-Hant": "每次執行都會另存為一個對話。請 Hermes 新增或變更排程，或在這裡建立。"
   },
+  "Each run uses this model and reasoning. Profile default follows the profile's, so a change there reaches this job too.": {
+    "de": "Jeder Lauf nutzt dieses Modell und diese Denkstufe. Profilstandard folgt dem Profil, eine Änderung dort gilt also auch für diesen Job.",
+    "es": "Cada ejecución usa este modelo y este razonamiento. Predeterminado del perfil sigue al perfil, así que un cambio allí también llega a este trabajo.",
+    "fr": "Chaque exécution utilise ce modèle et ce raisonnement. Par défaut du profil suit le profil : un changement là-bas s’applique aussi à cette tâche.",
+    "id": "Setiap jalannya memakai model dan penalaran ini. Default profil mengikuti profil, jadi perubahan di sana juga berlaku untuk tugas ini.",
+    "it": "Ogni esecuzione usa questo modello e questo ragionamento. Predefinito del profilo segue il profilo, quindi una modifica lì vale anche per questo job.",
+    "ja": "各実行でこのモデルと推論レベルを使います。「プロファイルのデフォルト」はプロファイルの設定に従うため、そちらの変更はこのジョブにも反映されます。",
+    "ko": "실행할 때마다 이 모델과 추론 수준을 사용합니다. 프로필 기본값은 프로필 설정을 따르므로 그곳의 변경이 이 작업에도 적용됩니다.",
+    "pl": "Każde uruchomienie używa tego modelu i poziomu rozumowania. „Według profilu” podąża za profilem, więc zmiana tam dotyczy też tego zadania.",
+    "pt-BR": "Cada execução usa este modelo e este raciocínio. Padrão do perfil segue o perfil, então uma mudança lá também vale para esta tarefa.",
+    "ru": "Каждый запуск использует эту модель и уровень рассуждений. «Как в профиле» следует профилю, поэтому изменение там применится и к этому заданию.",
+    "tr": "Her çalıştırma bu modeli ve akıl yürütme düzeyini kullanır. Profil varsayılanı profili izler, yani oradaki bir değişiklik bu işe de yansır.",
+    "zh-Hans": "每次运行都使用此模型和推理级别。“配置默认”跟随配置，因此那里的更改也会应用到此任务。",
+    "zh-Hant": "每次執行都使用此模型和推理等級。「設定檔預設」跟隨設定檔，因此那裡的變更也會套用到此任務。"
+  },
   "Each server is tested when this page opens. Changes apply to new sessions.": {
     "de": "Jeder Server wird beim Öffnen dieser Seite getestet. Änderungen gelten für neue Sitzungen.",
     "es": "Cada servidor se prueba al abrir esta página. Los cambios se aplican a las sesiones nuevas.",
@@ -11773,6 +11788,21 @@
     "tr": "Siz bir model seçmedikçe Hermes bu işleri sohbet modeliyle yapar. Küçük ve hızlı bir model, çoğunda zaman ve para kazandırır.",
     "zh-Hans": "除非你另选模型，Hermes 会用聊天模型执行这些任务。对大多数任务来说，小而快的模型能省时省钱。",
     "zh-Hant": "除非你另選模型，Hermes 會用聊天模型執行這些工作。對大多數工作來說，小而快的模型能省時省錢。"
+  },
+  "Hermes sent a reply Conduit didn't understand. Updating Hermes and Conduit usually fixes this.": {
+    "de": "Hermes hat eine Antwort gesendet, die Conduit nicht verstanden hat. Meist hilft es, Hermes und Conduit zu aktualisieren.",
+    "es": "Hermes envió una respuesta que Conduit no entendió. Normalmente se soluciona actualizando Hermes y Conduit.",
+    "fr": "Hermes a envoyé une réponse que Conduit n'a pas comprise. Mettre à jour Hermes et Conduit règle généralement le problème.",
+    "id": "Hermes mengirim balasan yang tidak dipahami Conduit. Memperbarui Hermes dan Conduit biasanya dapat mengatasinya.",
+    "it": "Hermes ha inviato una risposta che Conduit non ha capito. Di solito si risolve aggiornando Hermes e Conduit.",
+    "ja": "HermesからConduitが解釈できない応答が返されました。通常はHermesとConduitをアップデートすると解決します。",
+    "ko": "Hermes가 Conduit이 이해할 수 없는 응답을 보냈어요. 보통 Hermes와 Conduit을 업데이트하면 해결돼요.",
+    "pl": "Hermes wysłał odpowiedź, której Conduit nie rozumie. Zwykle pomaga aktualizacja Hermesa i Conduit.",
+    "pt-BR": "O Hermes enviou uma resposta que o Conduit não entendeu. Atualizar o Hermes e o Conduit geralmente resolve isso.",
+    "ru": "Hermes прислал ответ, который Conduit не понял. Обычно помогает обновление Hermes и Conduit.",
+    "tr": "Hermes, Conduit'in anlamadığı bir yanıt gönderdi. Hermes'i ve Conduit'i güncellemek genellikle sorunu çözer.",
+    "zh-Hans": "Hermes 返回了 Conduit 无法识别的回复。更新 Hermes 和 Conduit 通常可以解决。",
+    "zh-Hant": "Hermes 傳送了 Conduit 無法理解的回覆。更新 Hermes 和 Conduit 通常可以解決此問題。"
   },
   "Hermes sent artifacts Conduit can’t read.": {
     "de": "Hermes hat Artefakte gesendet, die Conduit nicht lesen kann.",
@@ -19514,6 +19544,21 @@
     "zh-Hans": "用户画像容量",
     "zh-Hant": "使用者側寫容量"
   },
+  "Profile default": {
+    "de": "Profilstandard",
+    "es": "Predeterminado del perfil",
+    "fr": "Par défaut du profil",
+    "id": "Default profil",
+    "it": "Predefinito del profilo",
+    "ja": "プロファイルのデフォルト",
+    "ko": "프로필 기본값",
+    "pl": "Według profilu",
+    "pt-BR": "Padrão do perfil",
+    "ru": "Как в профиле",
+    "tr": "Profil varsayılanı",
+    "zh-Hans": "配置默认",
+    "zh-Hant": "設定檔預設"
+  },
   "Profile descriptions": {
     "de": "Profilbeschreibungen",
     "es": "Descripciones de perfiles",
@@ -27178,6 +27223,21 @@
     "tr": "Kurulum tamamlanmadı. Günlüğü aşağıda.",
     "zh-Hans": "安装未完成。日志如下。",
     "zh-Hant": "安裝未完成。記錄如下。"
+  },
+  "The job is saved, but not its reasoning: {reason}": {
+    "de": "Der Job ist gespeichert, aber nicht seine Denkstufe: {reason}",
+    "es": "El trabajo está guardado, pero no su razonamiento: {reason}",
+    "fr": "La tâche est enregistrée, mais pas son raisonnement : {reason}",
+    "id": "Tugas tersimpan, tapi penalarannya belum: {reason}",
+    "it": "Il job è salvato, ma non il suo ragionamento: {reason}",
+    "ja": "ジョブは保存されましたが、推論レベルは保存されていません: {reason}",
+    "ko": "작업은 저장됐지만 추론 수준은 저장되지 않았습니다: {reason}",
+    "pl": "Zadanie zapisano, ale nie jego poziom rozumowania: {reason}",
+    "pt-BR": "A tarefa foi salva, mas não o raciocínio: {reason}",
+    "ru": "Задание сохранено, но не уровень рассуждений: {reason}",
+    "tr": "İş kaydedildi ama akıl yürütme düzeyi kaydedilmedi: {reason}",
+    "zh-Hans": "任务已保存，但未保存推理级别：{reason}",
+    "zh-Hant": "任務已儲存，但未儲存推理等級：{reason}"
   },
   "The keys were saved, but the other settings weren't: {reason}": {
     "de": "Die Schlüssel wurden gespeichert, die anderen Einstellungen aber nicht: {reason}",

@@ -3327,6 +3327,22 @@ html[data-window='quick'] body {
   color-scheme: dark light;
 }
 
+.job-model-field {
+  gap: 10px;
+}
+
+.job-model-field label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.job-row .job-model {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .job-editor .job-prompt-field {
   font: 400 14px/20px var(--font);
 }

@@ -13,7 +13,7 @@ export function ModelCatalogNote({ catalog }: { catalog: ModelCatalog }) {
     return (
       <div className="model-note error model-catalog-note">
         {t('Could not load models.')}
-        <button className="link-button" disabled={catalog.loading || catalog.refreshing} onClick={catalog.tryAgain}>
+        <button type="button" className="link-button" disabled={catalog.loading || catalog.refreshing} onClick={catalog.tryAgain}>
           {t('Try Again')}
         </button>
       </div>
