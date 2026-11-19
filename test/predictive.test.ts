@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { askable, draftBody, draftGuesses, guesses, repliesBody, settledReply } from '../src/renderer/src/state/predictive'
+import {
+  askable,
+  draftBody,
+  draftGuesses,
+  followedUpKeys,
+  followUpId,
+  guesses,
+  isTransient,
+  repliesBody,
+  settledReply,
+  turnAnswer,
+  turnBody
+} from '../src/renderer/src/state/predictive'
 import type { TranscriptItem } from '../src/renderer/src/state/transcript'
 
 describe('predictive replies', () => {
@@ -62,5 +74,55 @@ describe('predictive draft guesses', () => {
       model: 'chat',
       wait_s: 4
     })
+  })
+})
+
+describe('Hermes follows up', () => {
+  it('sends the turn facts rounded and clamped', () => {
+    const body = turnBody('s1', { lastReplyS: 61.6, onScreenS: -3, check: 9, localTime: 'Thursday 14:05' }, 'en', 'fast')
+    expect(body).toEqual({
+      session_id: 's1',
+      kind: 'turn',
+      count: 1,
+      language: 'en',
+      model: 'fast',
+      wait_s: 30,
+      facts: { last_reply_s: 62, on_screen_s: 0, check: 4, max_checks: 4, local_time: 'Thursday 14:05' }
+    })
+    expect(turnBody('s1', { lastReplyS: 1, onScreenS: 1, check: 0 }, 'en', 'chat').facts).not.toHaveProperty('local_time')
+  })
+
+  it('takes a turn only with a nudge, and clamps when to ask again', () => {
+    expect(turnAnswer({ take_turn: true, nudge: 'Check the build', ask_again_in_seconds: 5 })).toEqual({
+      takeTurn: true,
+      nudge: 'Check the build',
+      askAgain: 30
+    })
+    expect(turnAnswer({ take_turn: true, nudge: '  ' }).takeTurn).toBe(false)
+    expect(turnAnswer({ take_turn: false, ask_again_in_seconds: 5000 })).toEqual({ takeTurn: false, nudge: null, askAgain: 900 })
+    expect(turnAnswer(null)).toEqual({ takeTurn: false, nudge: null, askAgain: null })
+  })
+
+  it('retries only errors that may pass', () => {
+    expect(isTransient(new Error('HTTP 503'))).toBe(true)
+    expect(isTransient(new Error('HTTP 429'))).toBe(true)
+    expect(isTransient(new Error('HTTP 501'))).toBe(false)
+    expect(isTransient(new Error('HTTP 404'))).toBe(false)
+    expect(isTransient(new Error('The model took too long'))).toBe(true)
+    expect(isTransient(new Error('Unknown kind'))).toBe(false)
+  })
+})
+
+describe('followed-up tags', () => {
+  it('tags the last of replies alike under the same message', () => {
+    const items = [
+      { kind: 'user', key: 'u1', text: 'hi' },
+      { kind: 'assistant', key: 'a1', text: 'Hello', streaming: false },
+      { kind: 'assistant', key: 'a2', text: 'Hello ', streaming: false },
+      { kind: 'user', key: 'u2', text: 'more' },
+      { kind: 'assistant', key: 'a3', text: 'Hello', streaming: false }
+    ] as unknown as TranscriptItem[]
+    expect([...followedUpKeys(items, new Set([followUpId(1, 'Hello')]))]).toEqual(['a2'])
+    expect(followedUpKeys(items, undefined).size).toBe(0)
   })
 })

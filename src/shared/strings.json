@@ -9659,6 +9659,21 @@
     "zh-Hans": "Hermes 会在你的主机上结束它。它提供或监视的内容也会一起停止。",
     "zh-Hant": "Hermes 會在你的主機上結束它。它提供或監看的內容也會一起停止。"
   },
+  "Hermes followed up": {
+    "de": "Hermes hat nachgehakt",
+    "es": "Hermes hizo un seguimiento",
+    "fr": "Relance d'Hermes",
+    "id": "Hermes menindaklanjuti",
+    "it": "Hermes ha ripreso il discorso",
+    "ja": "Hermesからのフォローアップ",
+    "ko": "Hermes가 이어서 말함",
+    "pl": "Hermes się odezwał",
+    "pt-BR": "Hermes deu seguimento",
+    "ru": "Hermes продолжил",
+    "tr": "Hermes devam etti",
+    "zh-Hans": "Hermes 主动跟进",
+    "zh-Hant": "Hermes 主動跟進"
+  },
   "Hermes forgets “{name}”. This can't be undone.": {
     "de": "Hermes vergisst „{name}“. Das lässt sich nicht rückgängig machen.",
     "es": "Hermes olvida «{name}». No se puede deshacer.",
@@ -11923,6 +11938,21 @@
     "tr": "Hermes'in ayarları değiştirmesine izin ver",
     "zh-Hans": "允许 Hermes 更改设置",
     "zh-Hant": "允許 Hermes 變更設定"
+  },
+  "Let Hermes follow up": {
+    "de": "Hermes nachhaken lassen",
+    "es": "Dejar que Hermes haga seguimiento",
+    "fr": "Laisser Hermes relancer",
+    "id": "Izinkan Hermes menindaklanjuti",
+    "it": "Lascia che Hermes riprenda il discorso",
+    "ja": "Hermesのフォローアップを許可",
+    "ko": "Hermes 후속 메시지 허용",
+    "pl": "Pozwól Hermesowi się odezwać",
+    "pt-BR": "Deixar o Hermes dar seguimento",
+    "ru": "Разрешить Hermes продолжать",
+    "tr": "Hermes'in devam etmesine izin ver",
+    "zh-Hans": "允许 Hermes 主动跟进",
+    "zh-Hant": "允許 Hermes 主動跟進"
   },
   "Let a delegate agent start and coordinate its own delegates, up to the depth above.": {
     "de": "Lass einen delegierten Agenten eigene Delegierte starten und koordinieren, bis zur obigen Tiefe.",
@@ -19544,6 +19574,21 @@
     "zh-Hans": "运行时间",
     "zh-Hant": "執行時間"
   },
+  "Runs on {model}": {
+    "de": "Läuft mit {model}",
+    "es": "Usa {model}",
+    "fr": "Tourne sur {model}",
+    "id": "Berjalan dengan {model}",
+    "it": "Usa {model}",
+    "ja": "{model}で実行",
+    "ko": "{model}에서 실행",
+    "pl": "Działa na {model}",
+    "pt-BR": "Roda em {model}",
+    "ru": "Работает на {model}",
+    "tr": "{model} ile çalışıyor",
+    "zh-Hans": "使用 {model} 运行",
+    "zh-Hant": "使用 {model} 執行"
+  },
   "Runs the /review command's reviewer.": {
     "de": "Führt den Prüfer des Befehls /review aus.",
     "es": "Ejecuta el revisor del comando /review.",
@@ -22033,6 +22078,21 @@
     "tr": "Yeni bir konuşma başlat",
     "zh-Hans": "开始新对话",
     "zh-Hant": "開始新對話"
+  },
+  "Start asking after": {
+    "de": "Fragen ab",
+    "es": "Empezar a preguntar tras",
+    "fr": "Commencer à demander après",
+    "id": "Mulai bertanya setelah",
+    "it": "Inizia a chiedere dopo",
+    "ja": "問い合わせ開始まで",
+    "ko": "요청 시작까지",
+    "pl": "Zacznij pytać po",
+    "pt-BR": "Começar a perguntar após",
+    "ru": "Начинать спрашивать через",
+    "tr": "Sormaya başlama süresi",
+    "zh-Hans": "多久后开始询问",
+    "zh-Hant": "多久後開始詢問"
   },
   "Start compression at 85% for supported ChatGPT Codex sign-in models.": {
     "de": "Bei unterstützten ChatGPT-Codex-Anmeldemodellen erst bei 85 % komprimieren.",
@@ -27584,6 +27644,21 @@
     "zh-Hans": "此配置的模型来源。密钥保存在你的 Hermes 主机上，不会再次显示。",
     "zh-Hant": "此設定檔的模型來源。金鑰儲存在你的 Hermes 主機上，不會再次顯示。"
   },
+  "While a chat is on screen and you aren't writing, Hermes is asked now and then whether it has something useful to add. At most one follow-up per message you send, marked \"Hermes followed up\".": {
+    "de": "Während ein Chat auf dem Bildschirm ist und du nicht schreibst, wird Hermes ab und zu gefragt, ob es etwas Nützliches beizutragen hat. Höchstens ein Nachhaken pro gesendeter Nachricht, markiert mit „Hermes hat nachgehakt“.",
+    "es": "Mientras un chat está en pantalla y no escribes, se pregunta de vez en cuando a Hermes si tiene algo útil que añadir. Como máximo un seguimiento por mensaje que envías, marcado como «Hermes hizo un seguimiento».",
+    "fr": "Quand une conversation est à l'écran et que vous n'écrivez pas, on demande de temps en temps à Hermes s'il a quelque chose d'utile à ajouter. Au plus une relance par message envoyé, marquée « Relance d'Hermes ».",
+    "id": "Saat obrolan tampil di layar dan Anda tidak menulis, Hermes sesekali ditanya apakah ada hal berguna untuk ditambahkan. Paling banyak satu tindak lanjut per pesan yang Anda kirim, ditandai \"Hermes menindaklanjuti\".",
+    "it": "Mentre una chat è sullo schermo e non stai scrivendo, a Hermes viene chiesto ogni tanto se ha qualcosa di utile da aggiungere. Al massimo un seguito per ogni messaggio che invii, contrassegnato da «Hermes ha ripreso il discorso».",
+    "ja": "チャットを表示していて何も書いていないとき、Hermesに役立つ追加があるかをときどき尋ねます。送信したメッセージ1件につき最大1回で、「Hermesからのフォローアップ」と表示されます。",
+    "ko": "채팅이 화면에 있고 아무것도 쓰지 않을 때, 추가할 유용한 내용이 있는지 가끔 Hermes에게 묻습니다. 보낸 메시지당 최대 한 번이며 \"Hermes가 이어서 말함\"으로 표시됩니다.",
+    "pl": "Gdy czat jest na ekranie, a ty nic nie piszesz, Hermes jest co jakiś czas pytany, czy ma coś przydatnego do dodania. Najwyżej raz na wysłaną wiadomość, z oznaczeniem „Hermes się odezwał”.",
+    "pt-BR": "Enquanto uma conversa está na tela e você não está escrevendo, o Hermes é perguntado de vez em quando se tem algo útil a acrescentar. No máximo um seguimento por mensagem enviada, marcado como \"Hermes deu seguimento\".",
+    "ru": "Пока чат на экране и вы ничего не пишете, Hermes время от времени спрашивают, есть ли ему что добавить. Не больше одного продолжения на каждое ваше сообщение, с пометкой «Hermes продолжил».",
+    "tr": "Bir sohbet ekrandayken ve siz yazmıyorken Hermes'e ara sıra ekleyecek yararlı bir şeyi olup olmadığı sorulur. Gönderdiğiniz mesaj başına en fazla bir kez, \"Hermes devam etti\" etiketiyle.",
+    "zh-Hans": "当聊天显示在屏幕上而你没有输入时，会不时询问 Hermes 是否有有用的内容要补充。你每发一条消息最多跟进一次，并标记为“Hermes 主动跟进”。",
+    "zh-Hant": "當聊天顯示在螢幕上而你沒有輸入時，會不時詢問 Hermes 是否有實用的內容要補充。你每傳一則訊息最多跟進一次，並標示為「Hermes 主動跟進」。"
+  },
   "Why?": {
     "de": "Warum?",
     "es": "¿Por qué?",
@@ -29474,6 +29549,21 @@
     "zh-Hans": "{label}：请从选项中选择一个。",
     "zh-Hant": "{label}：請從選項中選擇一個。"
   },
+  "{minutes} min": {
+    "de": "{minutes} Min.",
+    "es": "{minutes} min",
+    "fr": "{minutes} min",
+    "id": "{minutes} mnt",
+    "it": "{minutes} min",
+    "ja": "{minutes}分",
+    "ko": "{minutes}분",
+    "pl": "{minutes} min",
+    "pt-BR": "{minutes} min",
+    "ru": "{minutes} мин",
+    "tr": "{minutes} dk",
+    "zh-Hans": "{minutes} 分钟",
+    "zh-Hant": "{minutes} 分鐘"
+  },
   "{model} limited": {
     "de": "{model} begrenzt",
     "es": "{model} limitado",
@@ -29788,20 +29878,5 @@
     "tr": "“{kind}” kartları",
     "zh-Hans": "“{kind}”卡片",
     "zh-Hant": "「{kind}」卡片"
-  },
-  "Runs on {model}": {
-    "de": "Läuft mit {model}",
-    "es": "Usa {model}",
-    "fr": "Tourne sur {model}",
-    "id": "Berjalan dengan {model}",
-    "it": "Usa {model}",
-    "ja": "{model}で実行",
-    "ko": "{model}에서 실행",
-    "pl": "Działa na {model}",
-    "pt-BR": "Roda em {model}",
-    "ru": "Работает на {model}",
-    "tr": "{model} ile çalışıyor",
-    "zh-Hans": "使用 {model} 运行",
-    "zh-Hant": "使用 {model} 執行"
   }
 }

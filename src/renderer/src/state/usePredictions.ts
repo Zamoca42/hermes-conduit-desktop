@@ -3,6 +3,17 @@ import { language } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { STATUS_PATH, pluginStatus, serves } from './plugin'
 import {
+  ASK_AGAIN_RANGE,
+  MAX_CHECKS,
+  TURN_WAIT_S,
+  followUpDelay,
+  followUpEnabled,
+  followUpId,
+  isTransient,
+  localTime,
+  turnAnswer,
+  turnBody,
+  type TurnAnswer,
   DRAFT_WAIT_S,
   askable,
   draftBody,
@@ -104,4 +115,132 @@ export function usePredictions(state: TranscriptState, sessionId: string | undef
   )
 
   return { replies: enabled && key && answer?.key === key ? answer.replies : [], askDraft: pausing && sessionId ? askDraft : undefined }
+}
+
+// A gateway that refused `display_kind` takes no hidden prompts: no more follow-ups this run.
+let refusesHidden = false
+
+/** Whether Conduit is in front and the window shown. */
+function useOnScreen(): boolean {
+  const [on, setOn] = useState(() => document.hasFocus() && document.visibilityState === 'visible')
+  useEffect(() => {
+    const update = () => setOn(document.hasFocus() && document.visibilityState === 'visible')
+    window.addEventListener('focus', update)
+    window.addEventListener('blur', update)
+    document.addEventListener('visibilitychange', update)
+    return () => {
+      window.removeEventListener('focus', update)
+      window.removeEventListener('blur', update)
+      document.removeEventListener('visibilitychange', update)
+    }
+  }, [])
+  return on
+}
+
+/**
+ * Hermes follows up, after the phone's: while the chat is on screen,
+ * settled and unwritten, Hermes is asked after the chosen wait (then when
+ * it asks, held to 30 s–15 min) whether it has something useful to add, at
+ * most 4 checks per reply and one hidden turn per message the user sends.
+ * The reply to a hidden turn is tagged "Hermes followed up": this returns
+ * those replies by `followUpId`, which outlasts a reload of the history.
+ */
+export function useFollowUps(state: TranscriptState, sessionId: string | undefined, profile: string | undefined, draftEmpty: boolean): Set<string> {
+  const [enabled, setEnabled] = useState(followUpEnabled)
+  const onScreen = useOnScreen()
+  const [tick, setTick] = useState(0)
+  const [tagged, setTagged] = useState<Set<string>>(() => new Set())
+  const reply = sessionId ? settledReply(state.items, state.running) : null
+  // The reply's key too, so a follow-up worded like the answer still counts as new.
+  const anchor = reply && sessionId ? `${sessionId}|${state.items[state.items.length - 1].key}|${reply}` : null
+  const userKey = sessionId ? `${sessionId}|${state.items.filter(i => i.kind === 'user').length}` : null
+  const clock = useRef({ anchor: null as string | null, checks: 0, nextAt: 0, stopped: false, idleSince: Date.now(), replyAt: Date.now(), idle: false })
+  const spent = useRef(new Set<string>())
+  const pendingTag = useRef<string | null>(null)
+  const live = useRef({ anchor, draftEmpty, onScreen, enabled, sessionId, profile, userKey })
+  live.current = { anchor, draftEmpty, onScreen, enabled, sessionId, profile, userKey }
+
+  useEffect(() => {
+    const changed = () => setEnabled(followUpEnabled())
+    window.addEventListener(PREDICTIVE_EVENT, changed)
+    return () => window.removeEventListener(PREDICTIVE_EVENT, changed)
+  }, [])
+
+  // A new settled reply starts the clock over; the one after a hidden turn wears the tag.
+  const c = clock.current
+  if (anchor !== c.anchor) {
+    if (anchor && pendingTag.current && anchor.startsWith(`${pendingTag.current}|`)) {
+      const text = state.items[state.items.length - 1]
+      if (text?.kind === 'assistant') {
+        const id = followUpId(state.items.filter(i => i.kind === 'user').length, text.text)
+        pendingTag.current = null
+        queueMicrotask(() => setTagged(current => new Set(current).add(id)))
+      }
+    }
+    clock.current = { anchor, checks: 0, nextAt: 0, stopped: false, idleSince: Date.now(), replyAt: Date.now(), idle: false }
+  }
+
+  const ready = enabled && !!anchor && !!sessionId && onScreen && draftEmpty && !refusesHidden
+  useEffect(() => {
+    const now = Date.now()
+    const c = clock.current
+    if (!ready) {
+      c.idle = false
+      return
+    }
+    // Back on screen, or the draft emptied: the wait starts over.
+    if (!c.idle) {
+      c.idle = true
+      c.idleSince = now
+    }
+    if (c.stopped || c.checks >= MAX_CHECKS || (userKey && spent.current.has(userKey))) return
+    const due = Math.max(c.nextAt, c.idleSince + followUpDelay() * 1000)
+    const timer = window.setTimeout(() => void check(anchor!), Math.max(0, due - now))
+    return () => window.clearTimeout(timer)
+
+    async function check(asked: string) {
+      const c = clock.current
+      const now = live.current
+      if (c.anchor !== asked || !now.enabled || !now.onScreen || !now.draftEmpty || !now.sessionId || !(await predictionsServed())) return
+      c.checks += 1
+      const body = turnBody(
+        now.sessionId,
+        { lastReplyS: (Date.now() - c.replyAt) / 1000, onScreenS: (Date.now() - c.idleSince) / 1000, check: c.checks, localTime: localTime() },
+        languageName(language()),
+        predictModel()
+      )
+      let answer: TurnAnswer
+      try {
+        answer = turnAnswer(await gateway.http('POST', PREDICT_PATH, body, (TURN_WAIT_S + 5) * 1000))
+      } catch (e) {
+        if (clock.current !== c) return
+        if (isTransient(e) && c.checks < MAX_CHECKS) c.nextAt = Date.now() + ASK_AGAIN_RANGE[0] * 1000
+        else c.stopped = true
+        return setTick(n => n + 1)
+      }
+      const after = live.current
+      // Still the same reply on screen, nobody writing, the switch still on.
+      if (clock.current !== c || after.anchor !== asked || !after.enabled || !after.onScreen || !after.draftEmpty || !after.sessionId) return
+      if (answer.takeTurn && answer.nudge) {
+        c.stopped = true
+        if (after.userKey) spent.current.add(after.userKey)
+        const params: Record<string, unknown> = { session_id: after.sessionId, text: answer.nudge, display_kind: 'hidden' }
+        if (after.profile) params.profile = after.profile
+        pendingTag.current = after.sessionId
+        try {
+          await gateway.rpc('prompt.submit', params)
+        } catch (e) {
+          // Nothing reached Hermes: the user's message keeps its follow-up.
+          pendingTag.current = null
+          if (after.userKey) spent.current.delete(after.userKey)
+          if (/display_kind/.test(e instanceof Error ? e.message : String(e))) refusesHidden = true
+          else c.stopped = false
+        }
+      } else if (answer.askAgain !== null && c.checks < MAX_CHECKS) c.nextAt = Date.now() + answer.askAgain * 1000
+      else c.stopped = true
+      setTick(n => n + 1)
+    }
+  }, [ready, anchor, userKey, tick])
+
+  return tagged
 }
