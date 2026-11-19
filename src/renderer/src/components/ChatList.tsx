@@ -183,7 +183,7 @@ export function ChatList({
     writeLeftOut(next)
   }
   // Pinned rows move while the list shows every pinned chat: not during a search or under a filter, nor grouped by profile.
-  const canReorder = !query.trim() && filter === 'all' && !source && !grouped
+  const canReorder = !query.trim() && filter === 'all' && !source
   const { sections, listed, allowed, pinnedSection } = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile
@@ -213,10 +213,20 @@ export function ChatList({
       : sections.map(section => (section.rows[0]?.pinned ? { ...section, rows: pinned.filter(r => shown.has(r.id)) } : section))
     return { sections: arranged, listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined, pinnedSection: pinned }
   }, [rows, query, profile, marks, filter, runningIds, waitingIds, isDone, source, pinOrder.orders, grouped, showingAll, selectedId, bots, botNames, allLeftOut])
+  /**
+   * The pins a pinned row moves among: the Pinned section, or grouped by
+   * profile its own section's, so a move there orders only that profile's
+   * pins, as the phone's section does.
+   */
+  const pinsBeside = (row: ChatRow): ChatRow[] => {
+    if (!grouped) return pinnedSection
+    return sections.find(section => section.profile !== undefined && section.rows.some(r => r.id === row.id))?.rows.filter(r => r.pinned) ?? []
+  }
   const movePinned = (row: ChatRow, to: number) => {
-    const from = pinnedSection.findIndex(r => r.id === row.id)
-    const next = moved(pinnedSection, from, to)
-    if (next !== pinnedSection) pinOrder.reorder(next)
+    const pins = pinsBeside(row)
+    const from = pins.findIndex(r => r.id === row.id)
+    const next = moved(pins, from, to)
+    if (next !== pins) pinOrder.reorder(next)
   }
   const [dragging, setDragging] = useState<string | null>(null)
   const [dropAt, setDropAt] = useState<{ id: string; after: boolean } | null>(null)
@@ -386,7 +396,7 @@ export function ChatList({
                       : undefined
                   }
                   onDragOver={
-                    dragging && row.pinned
+                    dragging && row.pinned && pinsBeside(row).some(r => r.id === dragging)
                       ? e => {
                           e.preventDefault()
                           const box = e.currentTarget.getBoundingClientRect()
@@ -396,12 +406,13 @@ export function ChatList({
                       : undefined
                   }
                   onDrop={
-                    dragging && row.pinned
+                    dragging && row.pinned && pinsBeside(row).some(r => r.id === dragging)
                       ? e => {
                           e.preventDefault()
-                          const moving = pinnedSection.find(r => r.id === dragging)
-                          const from = pinnedSection.findIndex(r => r.id === dragging)
-                          let to = pinnedSection.findIndex(r => r.id === row.id) + (dropAt?.after ? 1 : 0)
+                          const pins = pinsBeside(row)
+                          const moving = pins.find(r => r.id === dragging)
+                          const from = pins.findIndex(r => r.id === dragging)
+                          let to = pins.findIndex(r => r.id === row.id) + (dropAt?.after ? 1 : 0)
                           if (from < to) to -= 1
                           if (moving) movePinned(moving, to)
                           setDragging(null)
@@ -575,9 +586,10 @@ export function ChatList({
                   {menu.row.pinned ? t('Unpin') : t('Pin')}
                 </button>
               ) : null}
-              {canReorder && menu.row.pinned && pinnedSection.length > 1
+              {canReorder && menu.row.pinned && pinsBeside(menu.row).length > 1
                 ? (() => {
-                    const at = pinnedSection.findIndex(r => r.id === menu.row.id)
+                    const pins = pinsBeside(menu.row)
+                    const at = pins.findIndex(r => r.id === menu.row.id)
                     return (
                       <>
                         {at > 0 ? (
@@ -585,7 +597,7 @@ export function ChatList({
                             {t('Move Earlier')}
                           </button>
                         ) : null}
-                        {at >= 0 && at < pinnedSection.length - 1 ? (
+                        {at >= 0 && at < pins.length - 1 ? (
                           <button role="menuitem" onClick={() => movePinned(menu.row, at + 1)}>
                             {t('Move Later')}
                           </button>
