@@ -90,3 +90,41 @@ export function writeClosedSections(profiles: string[]): void {
     // Kept for this window only.
   }
 }
+
+const LEFT_OUT_KEY = 'conduit.allProfiles.leftOut'
+
+/**
+ * The profiles All lists, after the phone's Show in All: every profile but
+ * the ones left out, kept by name so a profile added later is in. Leaving
+ * every one out lists them all, so All never lists nothing.
+ */
+export function includedInAll(profiles: string[], leftOut: string[]): string[] {
+  const out = new Set(leftOut.map(p => p.toLowerCase()))
+  const kept = profiles.filter(p => !out.has(p.toLowerCase()))
+  return kept.length ? kept : profiles
+}
+
+/** Whether a row of `profile` shows in All: only a profile left out (while another is still in) is hidden. */
+export function shownInAll(profile: string | undefined, profiles: string[], leftOut: string[]): boolean {
+  const name = (profile || 'default').toLowerCase()
+  if (!leftOut.some(p => p.toLowerCase() === name)) return true
+  return includedInAll(profiles, leftOut).some(p => p.toLowerCase() === name)
+}
+
+export function readLeftOut(): string[] {
+  try {
+    const list = JSON.parse(localStorage.getItem(LEFT_OUT_KEY) ?? '[]')
+    return Array.isArray(list) ? list.filter((p): p is string => typeof p === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+export function writeLeftOut(profiles: string[]): void {
+  try {
+    if (profiles.length) localStorage.setItem(LEFT_OUT_KEY, JSON.stringify(profiles))
+    else localStorage.removeItem(LEFT_OUT_KEY)
+  } catch {
+    // Kept for this window only.
+  }
+}

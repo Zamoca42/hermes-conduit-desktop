@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { underSource } from '../state/voiceList'
-import { profileGroups, readClosedSections, readGroupByProfile, writeClosedSections, writeGroupByProfile } from '../state/profileGroups'
+import { includedInAll, profileGroups, readClosedSections, readGroupByProfile, readLeftOut, shownInAll, writeClosedSections, writeGroupByProfile, writeLeftOut } from '../state/profileGroups'
 import { sectionRows, timeLabel, type ChatRow } from '../state/chats'
 import type { Bot } from '../state/bots'
 import { BotAvatar } from './BotsHome'
@@ -172,11 +172,25 @@ export function ChatList({
     writeClosedSections(next)
   }
   const profileTitle = (p: string) => bots?.find(b => b.name.toLowerCase() === p)?.title ?? p
+  // Show in All: the profiles All lists, kept by the names left out (the phone's sheet from the All chip).
+  const [leftOut, setLeftOut] = useState<string[]>(readLeftOut)
+  const [showInAll, setShowInAll] = useState(false)
+  const botNames = useMemo(() => (bots ?? []).map(b => b.name), [bots])
+  const allLeftOut = canGroup ? leftOut : []
+  const includeInAll = (name: string, on: boolean) => {
+    const next = on ? leftOut.filter(p => p.toLowerCase() !== name.toLowerCase()) : [...leftOut, name]
+    setLeftOut(next)
+    writeLeftOut(next)
+  }
   // Pinned rows move while the list shows every pinned chat: not during a search or under a filter, nor grouped by profile.
   const canReorder = !query.trim() && filter === 'all' && !source && !grouped
   const { sections, listed, allowed, pinnedSection } = useMemo(() => {
     const q = query.trim().toLowerCase()
-    const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
+    const inProfile = profile
+      ? (rows ?? []).filter(r => sameProfile(r, profile))
+      : allLeftOut.length
+        ? (rows ?? []).filter(r => shownInAll(r.profile, botNames, allLeftOut))
+        : (rows ?? [])
     const marked = marks ? filterRows(inProfile, isDone || !DONE_FILTERS.some(f => f.value === filter) ? filter : 'all', marks, runningIds, waitingIds, isDone) : inProfile
     const sourced = source ? marked.filter(r => underSource(r, source)) : marked
     const filtered = q ? sourced.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : sourced
@@ -187,7 +201,7 @@ export function ChatList({
     const arranged: ListSection[] = grouped
       ? profileGroups(
           filtered,
-          (bots ?? []).map(b => b.name),
+          includedInAll(botNames, allLeftOut),
           {
             // A search or a status or Starred filter lists every match; a source filter is still a browse.
             capped: !q && filter === 'all',
@@ -198,7 +212,7 @@ export function ChatList({
         ).map(group => ({ title: profileTitle(group.profile), rows: group.rows, profile: group.profile, hidden: group.hidden, extra: group.extra }))
       : sections.map(section => (section.rows[0]?.pinned ? { ...section, rows: pinned.filter(r => shown.has(r.id)) } : section))
     return { sections: arranged, listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined, pinnedSection: pinned }
-  }, [rows, query, profile, marks, filter, runningIds, waitingIds, isDone, source, pinOrder.orders, grouped, showingAll, selectedId, bots])
+  }, [rows, query, profile, marks, filter, runningIds, waitingIds, isDone, source, pinOrder.orders, grouped, showingAll, selectedId, bots, botNames, allLeftOut])
   const movePinned = (row: ChatRow, to: number) => {
     const from = pinnedSection.findIndex(r => r.id === row.id)
     const next = moved(pinnedSection, from, to)
@@ -208,8 +222,11 @@ export function ChatList({
   const [dropAt, setDropAt] = useState<{ id: string; after: boolean } | null>(null)
   // In messages: Hermes' full-text search, on the profile shown or every profile the list holds.
   const searchProfiles = useMemo(
-    () => (profile ? [profile] : [...new Set((rows ?? []).map(r => r.profile || 'default'))].sort().slice(0, MAX_SEARCH_PROFILES)),
-    [rows, profile]
+    () =>
+      profile
+        ? [profile]
+        : [...new Set((rows ?? []).filter(r => shownInAll(r.profile, botNames, allLeftOut)).map(r => r.profile || 'default'))].sort().slice(0, MAX_SEARCH_PROFILES),
+    [rows, profile, botNames, allLeftOut]
   )
   const content = useContentSearch(query, rows ? searchProfiles : [], searchScope, searchHttp)
   const contentMatches = useMemo(
@@ -266,7 +283,24 @@ export function ChatList({
         <span className="sr-only">{t('Search chats')}</span>
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t('Search chats')} />
       </label>
-      {showStrip ? <ProfileStrip bots={bots!} profile={profile} onProfile={onProfile!} /> : null}
+      {showStrip ? (
+        <div className="profile-strip-wrap">
+          <ProfileStrip bots={bots!} profile={profile} onProfile={onProfile!} onShowInAll={() => setShowInAll(true)} />
+          {showInAll ? (
+            <ShowInAll
+              bots={bots!}
+              leftOut={leftOut}
+              onInclude={includeInAll}
+              groupByProfile={groupByProfile}
+              onGroupByProfile={on => {
+                setGroupByProfile(on)
+                writeGroupByProfile(on)
+              }}
+              onClose={() => setShowInAll(false)}
+            />
+          ) : null}
+        </div>
+      ) : null}
       {marks ? (
         <div className="filter-chips" role="tablist" aria-label={t('Filter')}>
           {(isDone ? [...FILTERS, ...DONE_FILTERS] : FILTERS).map(({ value, label }) => (
@@ -605,8 +639,82 @@ export function ChatList({
   )
 }
 
+/**
+ * Show in All, from the All chip (right-click, or a click while All is
+ * already chosen): which profiles All lists, and Group by profile. The last
+ * profile left in can't be turned off, so All never lists nothing.
+ */
+function ShowInAll({
+  bots,
+  leftOut,
+  onInclude,
+  groupByProfile,
+  onGroupByProfile,
+  onClose
+}: {
+  bots: Bot[]
+  leftOut: string[]
+  onInclude: (name: string, on: boolean) => void
+  groupByProfile: boolean
+  onGroupByProfile: (on: boolean) => void
+  onClose: () => void
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) onClose()
+    }
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('mousedown', onDown)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('mousedown', onDown)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+  const included = includedInAll(
+    bots.map(b => b.name),
+    leftOut
+  )
+  const isIn = (name: string) => included.some(p => p.toLowerCase() === name.toLowerCase())
+  return (
+    <div className="host-menu show-in-all" role="dialog" aria-label={t('Show in All')} ref={ref}>
+      <strong>{t('Show in All')}</strong>
+      <span className="meta">{t("All lists these profiles' chats together, newest first. A new chat asks which profile to use.")}</span>
+      {bots.map(bot => (
+        <label key={bot.name} className="show-in-all-row">
+          <BotAvatar bot={bot} size={22} />
+          <span className="show-in-all-name">{bot.title}</span>
+          <input
+            type="checkbox"
+            checked={isIn(bot.name)}
+            disabled={isIn(bot.name) && included.length === 1}
+            aria-label={t('{name} profile', { name: bot.title })}
+            onChange={e => onInclude(bot.name, e.target.checked)}
+          />
+        </label>
+      ))}
+      <label className="show-in-all-row group">
+        <span className="show-in-all-name">{t('Group by profile')}</span>
+        <input type="checkbox" checked={groupByProfile} onChange={e => onGroupByProfile(e.target.checked)} />
+      </label>
+    </div>
+  )
+}
+
 /** All, then each bot's face, the chosen one with its name: the list's profile. */
-export function ProfileStrip({ bots, profile, onProfile }: { bots: Bot[]; profile: string | null; onProfile: (profile: string | null) => void }) {
+export function ProfileStrip({
+  bots,
+  profile,
+  onProfile,
+  onShowInAll
+}: {
+  bots: Bot[]
+  profile: string | null
+  onProfile: (profile: string | null) => void
+  /** Opens Show in All: from a right-click on All, or a click on All while it's chosen. */
+  onShowInAll?: () => void
+}) {
   return (
     <div
       className="profile-strip"
@@ -617,7 +725,21 @@ export function ProfileStrip({ bots, profile, onProfile }: { bots: Bot[]; profil
         if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY
       }}
     >
-      <button role="tab" className="profile-chip all" aria-selected={profile === null} onClick={() => onProfile(null)}>
+      <button
+        role="tab"
+        className="profile-chip all"
+        aria-selected={profile === null}
+        title={onShowInAll ? t('Right-click to choose which profiles All shows') : undefined}
+        onClick={() => (profile === null && onShowInAll ? onShowInAll() : onProfile(null))}
+        onContextMenu={
+          onShowInAll
+            ? e => {
+                e.preventDefault()
+                onShowInAll()
+              }
+            : undefined
+        }
+      >
         {t('All')}
       </button>
       {bots.map(bot => (
