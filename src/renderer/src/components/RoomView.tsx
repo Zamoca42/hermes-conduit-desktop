@@ -17,10 +17,13 @@ import {
   type RoomApproval,
 } from "../state/groups";
 import { RoomSettings } from "./RoomSettings";
+import { RoomPeopleSheet } from "./RoomPeopleSheet";
+import { parsePeople, withPeople, type RoomPerson } from "../state/roomChoices";
 import { Fragment } from "react";
 import { useRoom, type RoomApprovalAnswer } from "../state/useGroups";
 import { useRoomCopy } from "../state/useRoomCopies";
-import { approvalLine, copyHost, copyLine, copyReadOnly, isOver, leaveMessage, outLine, postRow, takesPosts, type CopyApproval, type RoomCopy } from "../state/roomCopies";
+import { ROOM_PEOPLE_PATH, approvalLine, copyHost, copyLine, copyReadOnly, isOver, leaveMessage, outLine, postRow, takesPosts, type CopyApproval, type RoomCopy } from "../state/roomCopies";
+import { gateway } from "../gateway";
 import { BotAvatar, LookFace, RoomFaces } from "./BotsHome";
 import { memberLook, personLook, type RoomLooks } from "../state/roomLooks";
 import { askLine, roomChatAgents, wrapUpLine, type RoomChatAgent } from "../state/roomChats";
@@ -40,6 +43,8 @@ interface Props {
   storesFiles?: boolean;
   /** The plugin reads back the pictures it stored (and, in a copy, your host's copies of them). */
   readsStoredFiles?: boolean;
+  /** Group Info's people in a room with other people's agents: your agents' choices (room-rules), Use my data's free/busy, and Take Out (room-leave). */
+  people?: { canSetChoices: boolean; freeBusy: boolean; canLeave: boolean; onChanged: () => void };
   bots: Bot[];
   connected: boolean;
   canStop: boolean;
@@ -186,9 +191,31 @@ function FileChips({ files, roomId, eventId, readsStored }: { files: ShownFile[]
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, storesFiles = false, readsStoredFiles = false, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy, looks, onOpenRoomChat }: Props) {
+export function RoomView({ room: givenRoom, storesFiles = false, readsStoredFiles = false, people, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy, looks, onOpenRoomChat }: Props) {
+  // Who's who in a room this Hermes hosts with linked people: owners, and who left or was taken out.
+  const [whosWho, setWhosWho] = useState<{ roomId: string; people: Map<string, RoomPerson> } | null>(null);
+  const [peopleRead, setPeopleRead] = useState(0);
+  const readsPeople = !copy && givenRoom.linked && connected && !!people;
+  useEffect(() => {
+    if (!readsPeople) return;
+    let live = true;
+    const roomId = givenRoom.roomId;
+    void gateway
+      .http("GET", `${ROOM_PEOPLE_PATH}?room_id=${encodeURIComponent(roomId)}`)
+      .then((answer) => {
+        if (live) setWhosWho({ roomId, people: parsePeople(answer) });
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [readsPeople, givenRoom.roomId, peopleRead]);
+  const room = useMemo(
+    () => (whosWho && whosWho.roomId === givenRoom.roomId && !copy ? { ...givenRoom, members: withPeople(givenRoom.members, whosWho.people) } : givenRoom),
+    [givenRoom, whosWho, copy],
+  );
   // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
-  const hosted = useRoom(copy ? null : room, connected, storesFiles);
+  const hosted = useRoom(copy ? null : givenRoom, connected, storesFiles);
   const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
   const { pending, send, stop, saveContext, continueDiscussion, approvals, answers, approve } = hosted;
   const { events, status, loading, error } = copy ? copied : hosted;
@@ -273,6 +300,7 @@ export function RoomView({ room, storesFiles = false, readsStoredFiles = false, 
     (m) => m.displayName ?? m.profile ?? m.memberId,
   );
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [peopleOpen, setPeopleOpen] = useState(false);
   const [continuing, setContinuing] = useState<string | null>(null);
   const [continueError, setContinueError] = useState<string | null>(null);
   const choosing = useMemo(() => choosingWhoAnswers(room, events, status.context), [room, events, status.context]);
@@ -363,6 +391,16 @@ export function RoomView({ room, storesFiles = false, readsStoredFiles = false, 
             <Icon name="trash" />
           </button>
         ) : null}
+        {people && room.linked && (people.canSetChoices || people.canLeave) ? (
+          <button
+            className="chat-head-button"
+            title={t("Members")}
+            aria-label={t("Members")}
+            onClick={() => setPeopleOpen(true)}
+          >
+            <Icon name="linked" />
+          </button>
+        ) : null}
         {showsSettings ? (
           <button
             className="chat-head-button"
@@ -437,6 +475,21 @@ export function RoomView({ room, storesFiles = false, readsStoredFiles = false, 
             </p>
           </div>
         </div>
+      ) : null}
+      {peopleOpen && people ? (
+        <RoomPeopleSheet
+          room={room}
+          copy={copy ?? null}
+          nameOf={(member) => member.displayName ?? memberBot(member.memberId)?.title ?? member.profile ?? member.memberId}
+          canSetChoices={people.canSetChoices}
+          freeBusy={people.freeBusy}
+          canLeave={people.canLeave}
+          onChanged={() => {
+            setPeopleRead((n) => n + 1);
+            people.onChanged();
+          }}
+          onClose={() => setPeopleOpen(false)}
+        />
       ) : null}
       {settingsOpen && status.context ? (
         <RoomSettings

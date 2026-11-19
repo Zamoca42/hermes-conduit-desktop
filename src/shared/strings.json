@@ -434,6 +434,21 @@
     "zh-Hans": "某成员",
     "zh-Hant": "某位成員"
   },
+  "A note holds up to 1,000 characters.": {
+    "de": "Eine Notiz fasst bis zu 1.000 Zeichen.",
+    "es": "Una nota admite hasta 1000 caracteres.",
+    "fr": "Une note peut contenir jusqu'à 1000 caractères.",
+    "id": "Catatan bisa berisi hingga 1.000 karakter.",
+    "it": "Una nota può contenere fino a 1.000 caratteri.",
+    "ja": "メモは最大1,000文字です。",
+    "ko": "메모는 최대 1,000자까지 쓸 수 있어요.",
+    "pl": "Notatka może mieć maksymalnie 1000 znaków.",
+    "pt-BR": "Uma nota pode ter até 1.000 caracteres.",
+    "ru": "В заметке может быть до 1000 символов.",
+    "tr": "Bir not en fazla 1.000 karakter olabilir.",
+    "zh-Hans": "备注最多 1,000 个字符。",
+    "zh-Hant": "備註最多 1,000 個字元。"
+  },
   "A profile named {name} already exists.": {
     "de": "Ein Profil namens {name} existiert bereits.",
     "es": "Ya existe un perfil llamado {name}.",
@@ -1768,6 +1783,21 @@
     "tr": "vLLM, LM Studio veya Ollama gibi OpenAI uyumlu herhangi bir sunucu",
     "zh-Hans": "任何兼容 OpenAI 的服务器，例如 vLLM、LM Studio 或 Ollama",
     "zh-Hant": "任何相容 OpenAI 的伺服器，例如 vLLM、LM Studio 或 Ollama"
+  },
+  "Anything it should keep in mind here": {
+    "de": "Worauf er hier achten soll",
+    "es": "Algo que deba tener en cuenta aquí",
+    "fr": "Ce qu'il doit garder en tête ici",
+    "id": "Hal yang perlu diingatnya di sini",
+    "it": "Qualcosa da tenere a mente qui",
+    "ja": "ここで気にかけてほしいこと",
+    "ko": "여기서 기억해 둘 내용",
+    "pl": "O czym ma tu pamiętać",
+    "pt-BR": "Algo que ele deva ter em mente aqui",
+    "ru": "Что ему стоит учитывать здесь",
+    "tr": "Burada aklında tutması gerekenler",
+    "zh-Hans": "它在这里需要注意的事项",
+    "zh-Hant": "它在這裡需要留意的事項"
   },
   "Apartment, suite (optional)": {
     "de": "Wohnung, Etage (optional)",
@@ -6059,6 +6089,21 @@
     "zh-Hans": "无法更改委派暂停设置。",
     "zh-Hant": "無法變更委派暫停設定。"
   },
+  "Could not change this setting: {reason}": {
+    "de": "Diese Einstellung konnte nicht geändert werden: {reason}",
+    "es": "No se pudo cambiar este ajuste: {reason}",
+    "fr": "Impossible de modifier ce réglage : {reason}",
+    "id": "Tidak dapat mengubah pengaturan ini: {reason}",
+    "it": "Impossibile modificare questa impostazione: {reason}",
+    "ja": "この設定を変更できませんでした：{reason}",
+    "ko": "이 설정을 변경할 수 없어요: {reason}",
+    "pl": "Nie udało się zmienić tego ustawienia: {reason}",
+    "pt-BR": "Não foi possível alterar esta configuração: {reason}",
+    "ru": "Не удалось изменить этот параметр: {reason}",
+    "tr": "Bu ayar değiştirilemedi: {reason}",
+    "zh-Hans": "无法更改此设置：{reason}",
+    "zh-Hant": "無法更改此設定：{reason}"
+  },
   "Could not change what {name}'s Hermes can ask: {reason}": {
     "de": "Konnte nicht ändern, was der Hermes von {name} fragen kann: {reason}",
     "es": "No se pudo cambiar qué puede preguntar el Hermes de {name}: {reason}",
@@ -6464,6 +6509,21 @@
     "zh-Hans": "无法从主机读取此设置：{error}",
     "zh-Hant": "無法從主機讀取此設定：{error}"
   },
+  "Could not read this setting from the host: {reason}": {
+    "de": "Diese Einstellung konnte nicht vom Host gelesen werden: {reason}",
+    "es": "No se pudo leer este ajuste del host: {reason}",
+    "fr": "Impossible de lire ce réglage depuis l'hôte : {reason}",
+    "id": "Tidak dapat membaca pengaturan ini dari host: {reason}",
+    "it": "Impossibile leggere questa impostazione dall'host: {reason}",
+    "ja": "ホストからこの設定を読み込めませんでした：{reason}",
+    "ko": "호스트에서 이 설정을 읽을 수 없어요: {reason}",
+    "pl": "Nie udało się odczytać tego ustawienia z hosta: {reason}",
+    "pt-BR": "Não foi possível ler esta configuração do host: {reason}",
+    "ru": "Не удалось прочитать этот параметр с хоста: {reason}",
+    "tr": "Bu ayar ana makineden okunamadı: {reason}",
+    "zh-Hans": "无法从主机读取此设置：{reason}",
+    "zh-Hant": "無法從主機讀取此設定：{reason}"
+  },
   "Could not read what they can ask: {reason}": {
     "de": "Konnte nicht lesen, was sie fragen können: {reason}",
     "es": "No se pudo leer qué pueden preguntar: {reason}",
@@ -6643,6 +6703,21 @@
     "tr": "Geri alınamadı: {reason}",
     "zh-Hans": "无法撤回：{reason}",
     "zh-Hant": "無法撤回：{reason}"
+  },
+  "Could not take this agent out: {reason}": {
+    "de": "Agent konnte nicht entfernt werden: {reason}",
+    "es": "No se pudo sacar a este agente: {reason}",
+    "fr": "Impossible de retirer cet agent : {reason}",
+    "id": "Tidak dapat mengeluarkan agen ini: {reason}",
+    "it": "Impossibile togliere questo agente: {reason}",
+    "ja": "このエージェントを外せませんでした: {reason}",
+    "ko": "이 에이전트를 내보내지 못했어요: {reason}",
+    "pl": "Nie udało się usunąć tego agenta: {reason}",
+    "pt-BR": "Não foi possível tirar este agente: {reason}",
+    "ru": "Не удалось убрать этого агента: {reason}",
+    "tr": "Bu ajan çıkarılamadı: {reason}",
+    "zh-Hans": "无法移出此智能体：{reason}",
+    "zh-Hant": "無法移出此代理程式：{reason}"
   },
   "Could not unlink {name}: {error}": {
     "de": "Die Verknüpfung mit {name} konnte nicht getrennt werden: {error}",
@@ -14819,6 +14894,21 @@
     "zh-Hans": "它可以搜索你的其他聊天来回答这里的问题，其中也包括其他人的消息。",
     "zh-Hant": "它可以搜尋你的其他聊天來回答這裡的問題，其中也包含其他人的訊息。"
   },
+  "It can start work for this room, like research or code. Before each start, and before it sends the work more, it asks you on your phone: Start, Change it or Don't start. What the work finds reaches the room only as your share choices allow.": {
+    "de": "Es kann Arbeit für diesen Raum starten, etwa Recherche oder Code. Vor jedem Start und bevor es der Arbeit mehr schickt, fragt es dich auf deinem Telefon: Starten, Ändern oder Nicht starten. Was die Arbeit findet, erreicht den Raum nur so, wie deine Freigabe-Einstellungen es erlauben.",
+    "es": "Puede empezar trabajo para esta sala, como investigación o código. Antes de cada inicio, y antes de enviarle más al trabajo, te pregunta en tu teléfono: Empezar, Cambiarlo o No empezar. Lo que encuentre el trabajo llega a la sala solo como lo permitan tus opciones de compartir.",
+    "fr": "Il peut lancer du travail pour ce salon, comme des recherches ou du code. Avant chaque lancement, et avant d'envoyer plus au travail, il te demande sur ton téléphone : Lancer, Le modifier ou Ne pas lancer. Ce que le travail trouve n'atteint le salon que comme tes choix de partage le permettent.",
+    "id": "Ia bisa memulai pekerjaan untuk ruang ini, seperti riset atau kode. Sebelum setiap mulai, dan sebelum mengirim lebih banyak ke pekerjaan itu, ia bertanya di ponselmu: Mulai, Ubah, atau Jangan mulai. Temuan pekerjaan itu sampai ke ruang hanya sejauh pilihan berbagimu mengizinkan.",
+    "it": "Può avviare lavori per questa stanza, come ricerche o codice. Prima di ogni avvio, e prima di mandare altro al lavoro, te lo chiede sul telefono: Avvia, Modifica o Non avviare. Quello che il lavoro trova arriva alla stanza solo come consentono le tue scelte di condivisione.",
+    "ja": "このルームのために、調査やコードなどの作業を開始できます。開始のたび、また作業に追加で送る前に、スマートフォンで確認します: 開始、変更する、開始しない。作業の結果は、共有の設定が許す範囲でのみルームに届きます。",
+    "ko": "이 방을 위해 조사나 코드 같은 작업을 시작할 수 있습니다. 시작할 때마다, 그리고 작업에 더 보내기 전에 휴대폰에서 물어봅니다: 시작, 변경, 시작 안 함. 작업이 찾은 내용은 공유 선택이 허용하는 만큼만 방에 전달됩니다.",
+    "pl": "Może uruchamiać pracę dla tego pokoju, np. research lub kod. Przed każdym startem i zanim wyśle pracy coś więcej, pyta cię na telefonie: Uruchom, Zmień lub Nie uruchamiaj. To, co znajdzie praca, trafia do pokoju tylko tak, jak pozwalają twoje wybory udostępniania.",
+    "pt-BR": "Ele pode iniciar trabalho para esta sala, como pesquisa ou código. Antes de cada início, e antes de enviar mais ao trabalho, ele pergunta no seu telefone: Iniciar, Alterar ou Não iniciar. O que o trabalho encontrar chega à sala só como suas escolhas de compartilhamento permitirem.",
+    "ru": "Он может запускать работу для этой комнаты, например поиск или код. Перед каждым запуском и перед тем, как отправить работе что-то ещё, он спрашивает вас на телефоне: Запустить, Изменить или Не запускать. То, что найдёт работа, попадает в комнату только так, как позволяют ваши настройки доступа.",
+    "tr": "Bu oda için araştırma ya da kod gibi işler başlatabilir. Her başlatmadan önce ve işe daha fazlasını göndermeden önce telefonunda sorar: Başlat, Değiştir ya da Başlatma. İşin bulduğu şeyler odaya yalnızca paylaşım seçimlerinin izin verdiği kadar ulaşır.",
+    "zh-Hans": "它可以为这个房间开始工作，比如调研或写代码。每次开始前，以及给工作发送更多内容前，它都会在你的手机上询问：开始、修改或不开始。工作的发现只会按你的分享选择传到房间。",
+    "zh-Hant": "它可以為這個房間開始工作，例如調查或寫程式。每次開始前，以及給工作傳送更多內容前，它都會在你的手機上詢問：開始、修改或不開始。工作的發現只會依你的分享選擇傳到房間。"
+  },
   "It ended": {
     "de": "Beendet",
     "es": "Terminó",
@@ -20084,6 +20174,21 @@
     "zh-Hans": "没用",
     "zh-Hant": "沒用"
   },
+  "Note for this room": {
+    "de": "Notiz für diesen Raum",
+    "es": "Nota para esta sala",
+    "fr": "Note pour ce salon",
+    "id": "Catatan untuk ruang ini",
+    "it": "Nota per questa stanza",
+    "ja": "このグループへのメモ",
+    "ko": "이 방에 대한 메모",
+    "pl": "Notatka dla tego pokoju",
+    "pt-BR": "Nota para esta sala",
+    "ru": "Заметка для этой комнаты",
+    "tr": "Bu oda için not",
+    "zh-Hans": "此群聊的备注",
+    "zh-Hant": "此群組的備註"
+  },
   "Note to Pulse": {
     "de": "Notiz an Pulse",
     "es": "Nota para Pulse",
@@ -25229,6 +25334,21 @@
     "zh-Hans": "Conduit 无法更新时（例如 Hermes 版本较旧），请在仪表板的主机上运行这些命令。",
     "zh-Hant": "Conduit 無法更新時（例如 Hermes 版本較舊），請在儀表板的主機上執行這些指令。"
   },
+  "Run work": {
+    "de": "Arbeit ausführen",
+    "es": "Ejecutar trabajo",
+    "fr": "Lancer du travail",
+    "id": "Jalankan pekerjaan",
+    "it": "Avvia lavori",
+    "ja": "作業を実行",
+    "ko": "작업 실행",
+    "pl": "Uruchamiaj pracę",
+    "pt-BR": "Executar trabalho",
+    "ru": "Запуск работы",
+    "tr": "İş başlatma",
+    "zh-Hans": "运行工作",
+    "zh-Hant": "執行工作"
+  },
   "Running": {
     "de": "Läuft",
     "es": "En ejecución",
@@ -29534,6 +29654,21 @@
     "zh-Hans": "重试",
     "zh-Hant": "再試一次"
   },
+  "Take Out": {
+    "de": "Entfernen",
+    "es": "Sacar",
+    "fr": "Retirer",
+    "id": "Keluarkan",
+    "it": "Togli",
+    "ja": "外す",
+    "ko": "내보내기",
+    "pl": "Usuń z pokoju",
+    "pt-BR": "Tirar",
+    "ru": "Убрать",
+    "tr": "Çıkar",
+    "zh-Hans": "移出",
+    "zh-Hant": "移出"
+  },
   "Take Over": {
     "de": "Übernehmen",
     "es": "Tomar el control",
@@ -29638,6 +29773,21 @@
     "tr": "{name} adlı botu çıkar",
     "zh-Hans": "移出 {name}",
     "zh-Hant": "移出 {name}"
+  },
+  "Take {name} out of this room?": {
+    "de": "{name} aus diesem Raum entfernen?",
+    "es": "¿Sacar a {name} de esta sala?",
+    "fr": "Retirer {name} de ce salon ?",
+    "id": "Keluarkan {name} dari ruang ini?",
+    "it": "Togliere {name} da questa stanza?",
+    "ja": "{name} をこのグループから外しますか？",
+    "ko": "{name}을(를) 이 방에서 내보낼까요?",
+    "pl": "Usunąć {name} z tego pokoju?",
+    "pt-BR": "Tirar {name} desta sala?",
+    "ru": "Убрать {name} из этой комнаты?",
+    "tr": "{name} bu odadan çıkarılsın mı?",
+    "zh-Hans": "要将 {name} 移出此群聊吗？",
+    "zh-Hant": "要將 {name} 移出此群組聊天嗎？"
   },
   "Taken out": {
     "de": "Entfernt",
@@ -31663,6 +31813,21 @@
     "tr": "Ardından yeni eklentiyi kullanması için Hermes panelini yeniden başlatın.",
     "zh-Hans": "然后重启 Hermes 仪表板，让它使用新插件。",
     "zh-Hant": "然後重新啟動 Hermes 儀表板，讓它使用新外掛程式。"
+  },
+  "These are {name}'s defaults. A change here applies to this room only.": {
+    "de": "Das sind die Standardwerte von {name}. Eine Änderung hier gilt nur für diesen Raum.",
+    "es": "Estos son los valores predeterminados de {name}. Un cambio aquí solo se aplica a esta sala.",
+    "fr": "Ce sont les réglages par défaut de {name}. Une modification ici ne s'applique qu'à ce salon.",
+    "id": "Ini adalah pengaturan default {name}. Perubahan di sini hanya berlaku untuk ruang ini.",
+    "it": "Queste sono le impostazioni predefinite di {name}. Una modifica qui vale solo per questa stanza.",
+    "ja": "これは{name}のデフォルト設定です。ここでの変更はこのグループにのみ適用されます。",
+    "ko": "{name}의 기본 설정이에요. 여기서 바꾸면 이 방에만 적용돼요.",
+    "pl": "To są ustawienia domyślne: {name}. Zmiana tutaj dotyczy tylko tego pokoju.",
+    "pt-BR": "Estes são os padrões de {name}. Uma alteração aqui vale só para esta sala.",
+    "ru": "Это настройки по умолчанию для {name}. Изменение здесь действует только для этой комнаты.",
+    "tr": "Bunlar {name} için varsayılanlardır. Burada yapılan değişiklik yalnızca bu odaya uygulanır.",
+    "zh-Hans": "这些是 {name} 的默认设置。在这里所做的更改仅适用于此群聊。",
+    "zh-Hant": "這些是 {name} 的預設設定。在這裡所做的變更只會套用到此群組。"
   },
   "These files are larger than the {limit} MB a room with other people's agents can share with them: {names}.": {
     "de": "Diese Dateien sind größer als die {limit} MB, die ein Raum mit Agenten anderer Personen mit ihnen teilen kann: {names}.",
@@ -39449,6 +39614,21 @@
     "zh-Hans": "{name} 配置文件",
     "zh-Hant": "{name} 設定檔"
   },
+  "{name} reads this on each of its turns here. It isn't posted to the room.": {
+    "de": "{name} liest das bei jedem Durchgang hier. Es wird nicht im Raum gepostet.",
+    "es": "{name} lee esto en cada uno de sus turnos aquí. No se publica en la sala.",
+    "fr": "{name} lit ceci à chacun de ses tours ici. Ce n'est pas publié dans le salon.",
+    "id": "{name} membaca ini di setiap gilirannya di sini. Ini tidak diposting ke ruang.",
+    "it": "{name} lo legge a ogni suo turno qui. Non viene pubblicato nella stanza.",
+    "ja": "{name}はここでの各ターンでこれを読みます。グループには投稿されません。",
+    "ko": "{name}은(는) 여기서 차례마다 이 메모를 읽어요. 방에는 게시되지 않아요.",
+    "pl": "{name} czyta to przy każdej swojej turze tutaj. Nie jest to publikowane w pokoju.",
+    "pt-BR": "{name} lê isto em cada um dos seus turnos aqui. Não é publicado na sala.",
+    "ru": "{name} читает это на каждом своём ходе здесь. В комнату это не публикуется.",
+    "tr": "{name} buradaki her turunda bunu okur. Odada paylaşılmaz.",
+    "zh-Hans": "{name} 在这里的每个回合都会读取这条备注。它不会发布到群聊中。",
+    "zh-Hant": "{name} 在這裡的每個回合都會讀取這則備註。它不會發佈到群組中。"
+  },
   "{name} sees you by this name.": {
     "de": "{name} sieht dich unter diesem Namen.",
     "es": "{name} te verá con este nombre.",
@@ -39463,6 +39643,66 @@
     "tr": "{name} sizi bu adla görür.",
     "zh-Hans": "{name} 会以这个名字看到你。",
     "zh-Hant": "{name} 會以這個名字看到你。"
+  },
+  "{name} stops taking part, and the host is told.": {
+    "de": "{name} nimmt nicht mehr teil, und der Gastgeber wird informiert.",
+    "es": "{name} deja de participar y se avisa al anfitrión.",
+    "fr": "{name} ne participe plus, et l’hôte est prévenu.",
+    "id": "{name} berhenti ikut serta, dan tuan rumah diberi tahu.",
+    "it": "{name} smette di partecipare e l’host viene avvisato.",
+    "ja": "{name} は参加をやめ、ホストに通知されます。",
+    "ko": "{name}이(가) 더 이상 참여하지 않으며, 방장에게 알려요.",
+    "pl": "{name} przestaje brać udział, a gospodarz zostaje powiadomiony.",
+    "pt-BR": "{name} deixa de participar, e o anfitrião é avisado.",
+    "ru": "{name} больше не участвует, и хозяин получит уведомление.",
+    "tr": "{name} artık katılmıyor ve odayı açana bildiriliyor.",
+    "zh-Hans": "{name} 不再参与，并会通知主持人。",
+    "zh-Hant": "{name} 不再參與，並會通知主持人。"
+  },
+  "{name} stops taking part, and their Hermes is told.": {
+    "de": "{name} nimmt nicht mehr teil, und der zugehörige Hermes wird informiert.",
+    "es": "{name} deja de participar y se avisa a su Hermes.",
+    "fr": "{name} ne participe plus, et son Hermes est prévenu.",
+    "id": "{name} berhenti ikut serta, dan Hermes-nya diberi tahu.",
+    "it": "{name} smette di partecipare e il suo Hermes viene avvisato.",
+    "ja": "{name} は参加をやめ、その Hermes に通知されます。",
+    "ko": "{name}이(가) 더 이상 참여하지 않으며, 해당 Hermes에 알려요.",
+    "pl": "{name} przestaje brać udział, a Hermes właściciela zostaje powiadomiony.",
+    "pt-BR": "{name} deixa de participar, e o Hermes de origem é avisado.",
+    "ru": "{name} больше не участвует, и Hermes владельца получит уведомление.",
+    "tr": "{name} artık katılmıyor ve kendi Hermes'ine bildiriliyor.",
+    "zh-Hans": "{name} 不再参与，并会通知其 Hermes。",
+    "zh-Hant": "{name} 不再參與，並會通知其 Hermes。"
+  },
+  "{name} stops taking part, and {host} is told.": {
+    "de": "{name} nimmt nicht mehr teil, und {host} wird informiert.",
+    "es": "{name} deja de participar y se avisa a {host}.",
+    "fr": "{name} ne participe plus, et {host} est prévenu.",
+    "id": "{name} berhenti ikut serta, dan {host} diberi tahu.",
+    "it": "{name} smette di partecipare e {host} viene avvisato.",
+    "ja": "{name} は参加をやめ、{host} さんに通知されます。",
+    "ko": "{name}이(가) 더 이상 참여하지 않으며, {host} 님에게 알려요.",
+    "pl": "{name} przestaje brać udział, a {host} zostaje powiadomiony.",
+    "pt-BR": "{name} deixa de participar, e {host} é avisado.",
+    "ru": "{name} больше не участвует, и {host} получит уведомление.",
+    "tr": "{name} artık katılmıyor ve {host} adlı kişiye bildiriliyor.",
+    "zh-Hans": "{name} 不再参与，并会通知 {host}。",
+    "zh-Hant": "{name} 不再參與，並會通知 {host}。"
+  },
+  "{name} stops taking part, and {owner}'s Hermes is told.": {
+    "de": "{name} nimmt nicht mehr teil, und der Hermes von {owner} wird informiert.",
+    "es": "{name} deja de participar y se avisa al Hermes de {owner}.",
+    "fr": "{name} ne participe plus, et le Hermes de {owner} est prévenu.",
+    "id": "{name} berhenti ikut serta, dan Hermes milik {owner} diberi tahu.",
+    "it": "{name} smette di partecipare e l’Hermes di {owner} viene avvisato.",
+    "ja": "{name} は参加をやめ、{owner} さんの Hermes に通知されます。",
+    "ko": "{name}이(가) 더 이상 참여하지 않으며, {owner} 님의 Hermes에 알려요.",
+    "pl": "{name} przestaje brać udział, a Hermes użytkownika {owner} zostaje powiadomiony.",
+    "pt-BR": "{name} deixa de participar, e o Hermes de {owner} é avisado.",
+    "ru": "{name} больше не участвует, и Hermes пользователя {owner} получит уведомление.",
+    "tr": "{name} artık katılmıyor ve {owner} adlı kişinin Hermes'ine bildiriliyor.",
+    "zh-Hans": "{name} 不再参与，并会通知 {owner} 的 Hermes。",
+    "zh-Hant": "{name} 不再參與，並會通知 {owner} 的 Hermes。"
   },
   "{name} then stops answering in rooms already started with other people's agents, which hold it to the tools it had when they started. New rooms use these.": {
     "de": "{name} antwortet dann nicht mehr in bereits begonnenen Räumen mit Agenten anderer Personen, denn diese halten ihn an die Werkzeuge, die er beim Start hatte. Neue Räume nutzen diese.",
