@@ -10,6 +10,7 @@
  */
 import type { PendingRequest } from '../../../shared/ipc'
 import { cleanTitle } from './text'
+import { inputPromptView } from './inputPrompts'
 import { t } from '../../../shared/i18n'
 
 export const WAITING_PATH = '/api/plugins/conduit_push/waiting'
@@ -132,6 +133,8 @@ export function lockedAnswers(params: Record<string, unknown>): Record<string, s
 /** One line for a request in the Needs you list. */
 export function requestSummary(request: PendingRequest): string {
   if (request.method === 'approval') return approvalView(request.params).description
+  const input = inputPromptView(request)
+  if (input) return input.title
   const questions = clarifyQuestions(request.params)
   const first = questions[0]?.question ?? t('Hermes has a question.')
   return questions.length > 1 ? t('{question} (+{count} more)', { question: first, count: questions.length - 1 }) : first

@@ -84,13 +84,20 @@ export interface GatewayEventMessage {
   replayed?: boolean
 }
 
-/** Server→client requests the window answers: Needs you's, and a bot's screen install asking for the host's sudo password. */
-export type AnsweredRequestMethod = 'approval' | 'clarify' | 'display.install.sudo'
+/** A value only the user may give, typed on the chat's card and sent straight to the tool that asked (never into the chat): a sudo password, a secret, a password manager's master password, a website's login or one-time code. */
+export type InputPromptMethod = 'sudo' | 'secret' | 'vault.unlock_prompt' | 'vault.save_login' | 'vault.code'
 
-export const ANSWERED_REQUEST_METHODS: readonly AnsweredRequestMethod[] = ['approval', 'clarify', 'display.install.sudo']
+export const INPUT_PROMPT_METHODS: readonly InputPromptMethod[] = ['sudo', 'secret', 'vault.unlock_prompt', 'vault.save_login', 'vault.code']
+
+export const isInputPrompt = (request: { method: string }): boolean => (INPUT_PROMPT_METHODS as readonly string[]).includes(request.method)
+
+/** Server→client requests the window answers: Needs you's, and a bot's screen install asking for the host's sudo password. */
+export type AnsweredRequestMethod = 'approval' | 'clarify' | 'display.install.sudo' | InputPromptMethod
+
+export const ANSWERED_REQUEST_METHODS: readonly AnsweredRequestMethod[] = ['approval', 'clarify', 'display.install.sudo', ...INPUT_PROMPT_METHODS]
 
 /** Needs you's: the rest are answered where they're asked (the screen's install). */
-export const isNeedsYouRequest = (request: { method: string }) => request.method === 'approval' || request.method === 'clarify'
+export const isNeedsYouRequest = (request: { method: string }) => request.method === 'approval' || request.method === 'clarify' || isInputPrompt(request)
 
 /** A question Hermes is waiting on: a command to approve, or questions to answer. */
 export interface PendingRequest {

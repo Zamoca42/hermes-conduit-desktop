@@ -4,6 +4,7 @@
  * brings the window back on that chat.
  */
 import type { PendingRequest } from '../../../shared/ipc'
+import { inputPromptView } from './inputPrompts'
 import { approvalView, clarifyQuestions } from './needsYou'
 import { plainLine } from './text'
 import { t } from '../../../shared/i18n'
@@ -41,7 +42,6 @@ export function setNotificationsEnabled(on: boolean): void {
   }
 }
 
-
 /** A finished turn's notification, or none (a stop needs no telling). */
 export function turnNotification(sessionId: string, payload: unknown, chat: ChatRef | undefined): NotificationSpec | null {
   const p = payload && typeof payload === 'object' ? (payload as Record<string, unknown>) : {}
@@ -60,8 +60,15 @@ export function requestNotification(request: PendingRequest, chat: ChatRef | und
   const where = chat?.title ? ` · ${chat.title}` : ''
   if (request.method === 'approval') {
     const view = approvalView(request.params)
-    return { title: `${t('Needs your OK')}${where}`, body: plainLine(view.command ? `${view.description}: ${view.command}` : view.description), tag: `ask-${request.id}` }
+    return {
+      title: `${t('Needs your OK')}${where}`,
+      body: plainLine(view.command ? `${view.description}: ${view.command}` : view.description),
+      tag: `ask-${request.id}`
+    }
   }
+  // A password, login or code: its title only, never what's typed.
+  const input = inputPromptView(request)
+  if (input) return { title: `${t('Input needed')}${where}`, body: plainLine(input.title), tag: `ask-${request.id}` }
   const questions = clarifyQuestions(request.params)
   const first = questions[0]?.question ?? t('Hermes has a question.')
   return {
