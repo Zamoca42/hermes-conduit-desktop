@@ -9193,6 +9193,69 @@ button.secondary.danger {
   font-size: 11px;
 }
 
+.room-pill.pickable {
+  cursor: pointer;
+}
+
+.room-pill.pickable:hover {
+  border-color: var(--accent);
+}
+
+/* A bot's picture over its message: a click asks just it, in the To row. */
+.room-member-face {
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+  align-self: flex-start;
+  display: inline-flex;
+}
+
+/* The room composer's To row: the bots the next message goes to, none picked for every bot. */
+.room-to {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* Lined up with the message box under it (.composer-wrap's padding, .composer's width and inset). */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 828px;
+  margin: 0 auto -6px;
+  padding: 0 24px 0 36px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.room-to-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.room-to-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px 3px 3px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--surface);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.room-to-chip.picked {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
 /* Right-click on text selected in a reply: Copy, Quote, Pin. */
 .selection-menu {
   position: fixed;

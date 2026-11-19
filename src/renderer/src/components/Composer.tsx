@@ -65,6 +65,8 @@ interface Props {
   onContext?: () => void
   /** The slash commands this chat takes, suggested as a `/` is typed. None in a room. */
   commands?: SlashCommand[]
+  /** The draft's words as they go, before any reply wraps them (a room's To row puts its picks' tags in front). */
+  address?: (draft: string) => string
   /** The text sent for a draft replying to a message. Defaults to a chat's reply envelope. */
   wrapReply?: (reply: ReplyReference, draft: string) => string
   /** The microphone: a recording typed out (Dictate) or sent as a voice message, transcribed in this profile. */
@@ -101,6 +103,7 @@ export function Composer({
   onDraftPause,
   onDrafting,
   wrapReply = chatReply,
+  address,
   commands,
   onModel,
   context,
@@ -375,7 +378,8 @@ export function Composer({
     const replying = replyTo && carriesReply(text, attachments.length > 0)
     const sent: ComposerDraft = { text, attachments, replyTo }
     const sentKey = storeKey
-    const outcome = onSend(replying ? wrapReply(replyTo, text.trim()) : text, attachments)
+    const words = address ? address(text) : text
+    const outcome = onSend(replying ? wrapReply(replyTo, words.trim()) : words, attachments)
     if (outcome) void outcome.then(went => went === false && returnDraft(sentKey, sent))
     setText('')
     setAttachments([])

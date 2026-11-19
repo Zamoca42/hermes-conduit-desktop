@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Bot } from "../state/bots";
 import {
+  addressing,
   canContinue,
   choosingWhoAnswers,
   dayLabel,
@@ -8,6 +9,7 @@ import {
   leadMemberId,
   memberStatusLabel,
   memberStatuses,
+  pickableMembers,
   roomItems,
   routingChoices,
   startsNewDay,
@@ -199,6 +201,23 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
   const statuses = useMemo(() => memberStatuses(room, events, status), [room, events, status]);
   const lead = leadMemberId(room, status.context);
   const settled = useMemo(() => !status.working && latestDiscussionSettled(events, pending.length > 0), [events, pending.length, status.working]);
+  // The composer's To row, as the phone's: the next message goes to the bots picked here, or to every bot.
+  const pickable = useMemo(() => pickableMembers(room.members), [room.members]);
+  const [recipients, setRecipients] = useState<string[]>([]);
+  // A picked bot that leaves drops off, so the row shows who the next message goes to.
+  const picked = recipients.filter((h) => pickable.some((m) => m.handle!.trim().toLowerCase() === h.toLowerCase()));
+  const handleOf = (memberId: string) => pickable.find((m) => m.memberId === memberId)?.handle?.trim();
+  const isPicked = (handle: string) => picked.some((h) => h.toLowerCase() === handle.toLowerCase());
+  const toggle = (handle: string) =>
+    setRecipients((list) => (list.some((h) => h.toLowerCase() === handle.toLowerCase()) ? list.filter((h) => h.toLowerCase() !== handle.toLowerCase()) : [...list, handle]));
+  /** A pill or a bot's picture picks it in the To row, as on the phone, and the message box takes focus. */
+  const pickMember = (memberId: string) => {
+    const handle = handleOf(memberId);
+    if (!handle) return;
+    setRecipients((list) => (list.some((h) => h.toLowerCase() === handle.toLowerCase()) ? list : [...list, handle]));
+    pane.current?.querySelector<HTMLTextAreaElement>(".composer textarea")?.focus();
+  };
+  const canPick = connected && !status.disbanded;
   return (
     <main className="chat room" ref={pane}>
       <div className="chat-head">
@@ -234,8 +253,17 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
             const bot = memberBot(member.memberId);
             const shown = statuses.get(member.memberId);
             const name = member.displayName ?? bot?.title ?? member.profile ?? member.memberId;
+            const pick = canPick && handleOf(member.memberId) ? () => pickMember(member.memberId) : undefined;
             return (
-              <span key={member.memberId} className={`room-pill${shown ? ` ${shown}` : ""}`}>
+              <span
+                key={member.memberId}
+                className={`room-pill${shown ? ` ${shown}` : ""}${pick ? " pickable" : ""}`}
+                role={pick ? "button" : undefined}
+                tabIndex={pick ? 0 : undefined}
+                title={pick ? t("Mention {name}", { name }) : undefined}
+                onClick={pick}
+                onKeyDown={pick ? (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), pick()) : undefined}
+              >
                 {bot ? <BotAvatar bot={bot} size={16} /> : null}
                 <span className="room-pill-name">{name}</span>
                 {member.memberId === lead ? (
@@ -319,7 +347,16 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                   </div>
                 ) : item.kind === "member" ? (
                   <div key={item.key} className="room-member" data-key={item.key}>
-                    {memberBot(item.memberId) ? (
+                    {memberBot(item.memberId) && canPick && handleOf(item.memberId) ? (
+                      <button
+                        className="room-member-face"
+                        title={t("Mention {name}", { name: item.name })}
+                        aria-label={t("Mention {name}", { name: item.name })}
+                        onClick={() => pickMember(item.memberId)}
+                      >
+                        <BotAvatar bot={memberBot(item.memberId)!} size={30} />
+                      </button>
+                    ) : memberBot(item.memberId) ? (
                       <BotAvatar bot={memberBot(item.memberId)!} size={30} />
                     ) : (
                       <span
@@ -437,11 +474,32 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           ))}
         </div>
       ) : null}
+      {canPick && pickable.length ? (
+        <div className="room-to" role="group" aria-label={t("To")} title={t("Only the bots you pick answer. With none picked, every bot can answer.")}>
+          <span className="room-to-label" aria-hidden="true">
+            {t("To")}
+          </span>
+          {pickable.map((member) => {
+            const handle = member.handle!.trim();
+            const bot = memberBot(member.memberId);
+            const on = isPicked(handle);
+            return (
+              <button key={member.memberId} className={`room-to-chip${on ? " picked" : ""}`} aria-pressed={on} onClick={() => toggle(handle)}>
+                {bot ? <BotAvatar bot={bot} size={18} /> : null}
+                <span>{member.displayName ?? bot?.title ?? member.profile ?? handle}</span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
       <Composer
         placeholder={t('Message {name}…', { name: room.name })}
         running={canStop && status.working}
         disabled={!connected || status.disbanded}
-        onSend={(text, attachments) => void send(text, attachments)}
+        onSend={(text, attachments) => {
+          void send(text, attachments);
+          if (picked.length) setRecipients([]);
+        }}
         onStop={() => void stop()}
         focusKey={room.roomId}
         canAttach={canAttach && !room.linked}
@@ -449,6 +507,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
         checkAttachments={roomUploadProblem}
         quote={quote}
         wrapReply={(reply, draft) => roomReplyText(reply.text, reply.author, draft)}
+        address={(draft) => addressing(draft, picked, room.members)}
       />
     </main>
   );
