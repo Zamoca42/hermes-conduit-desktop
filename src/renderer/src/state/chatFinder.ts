@@ -11,6 +11,7 @@
  */
 import { gateway } from '../gateway'
 import { fromHistory, type TranscriptItem } from './transcript'
+import { namingFiles } from './media'
 
 export const FIND_CHAT = 'find_chat'
 export const READ_CHAT = 'read_chat'
@@ -190,7 +191,9 @@ export function searchResult(matches: ChatMatch[], now = new Date()): Record<str
 /** A found chat's text turns for the model, the newest kept within the budget, fenced as data. */
 export function readout(items: TranscriptItem[], match: ChatMatch, now = new Date()): string | null {
   const turns = items.flatMap(item =>
-    (item.kind === 'user' || item.kind === 'assistant') && item.text.trim() ? [`${item.kind === 'user' ? 'User' : 'Hermes'}: ${item.text.trim()}`] : []
+    (item.kind === 'user' || item.kind === 'assistant') && item.text.trim()
+      ? [`${item.kind === 'user' ? 'User' : 'Hermes'}: ${namingFiles(item.text.trim())}`]
+      : []
   )
   if (!turns.length) return null
   const kept: string[] = []
@@ -264,4 +267,46 @@ export function chatFinder(profile: string | undefined, http: typeof gateway.htt
       }
     }
   }
+}
+
+// MARK: GPT-Live delegations
+
+/** GPT-Live has no tools: it delegates "Find chat: GPU setup" and "Read chat: 2", which Conduit answers itself. */
+export const DELEGATED_FIND_CHAT_RULE =
+  'When the user asks to find or go back to one of their earlier conversations with Hermes, or what was said in one, delegate "Find chat:" with one to three distinctive words from the topic, like "Find chat: GPU setup". Conduit answers with numbered matches: when one clearly fits, delegate "Read chat:" with its number, like "Read chat: 2", and answer from what Conduit sends back; when several could, say the titles of the likeliest two or three and ask which. This call can\'t open another chat; if the user wants to see it, tell them they\'ll find it in Conduit\'s chat list after the call. These markers are for Conduit only: never say them aloud.'
+
+/** The words after "Find chat:" at the very start of a delegation; null when it isn't one. */
+export function findChatMarker(request: string): string | null {
+  const m = /^\s*find\s+(?:a\s+|the\s+|my\s+)?chats?\s*:([\s\S]*)$/i.exec(request)
+  return m ? m[1]!.trim() : null
+}
+
+/** The number in "Read chat: 2", "Read chat 2:" or "Read chat 2"; null when it isn't one. */
+export function readChatMarker(request: string): string | null {
+  const m = /^\s*read\s+(?:the\s+|my\s+)?(?:chats?|conversations?)\s*(?:(?:number\s*|#\s*)?(\d{1,2})\s*(?::|$)|:\s*(?:number\s*|#\s*)?(\d{1,2})\b)/i.exec(
+    request
+  )
+  return m ? (m[1] ?? m[2] ?? null) : null
+}
+
+const reason = (error: string) => error.replace(/ Tell the user in a few words\.$/, '')
+
+/** A "Find chat:" delegation's answer, from find's result. */
+export function delegatedSearch(result: Record<string, string>): string {
+  if (result.error) return `[Conduit couldn't search the chats: ${reason(result.error)} Tell the user in a few words.]`
+  if (!result.chats) return '[No chats match that. Tell the user, and offer to try other words.]'
+  const one = /^One chat matches/.test(result.message ?? '')
+  const next = one
+    ? 'One chat matches. If it fits what the user asked for, delegate "Read chat: 1" to talk about it.'
+    : 'If one clearly fits what the user asked for, delegate "Read chat:" with its number, like "Read chat: 2", to talk about it. Otherwise say the titles of the likeliest two or three, with when, and ask which one; don\'t read the lines out.'
+  return `[Chats that match:\n${result.chats}\n${next}]`
+}
+
+/** A "Read chat:" delegation's answer, from read's result. */
+export function delegatedRead(result: Record<string, string>): string {
+  if (result.error)
+    return /find_chat first/.test(result.error)
+      ? '[That isn\'t one of the chats found. Delegate "Find chat:" with a few words from the topic first.]'
+      : `[Conduit couldn't read the chat: ${reason(result.error)} Tell the user in a few words.]`
+  return result.chat ? `[${result.chat}\n${result.message}]` : `[${result.message}]`
 }

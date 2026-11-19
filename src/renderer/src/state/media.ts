@@ -33,15 +33,75 @@ function previews(line: string): { index: number; length: number; path: string }
 export const isHtmlPage = (path: string) => /\.(?:html?|xhtml)$/i.test(path)
 
 export const KNOWN_EXTENSIONS = [
-  'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'heic', 'heif', 'svg',
-  'mp4', 'mov', 'm4v', 'avi', 'mkv', 'webm', '3gp',
-  'mp3', 'm2a', 'wav', 'ogg', 'oga', 'opus', 'm4a', 'aac', 'flac', 'caf', 'aiff', 'aif',
-  'pdf', 'docx', 'doc', 'odt', 'rtf', 'txt', 'md', 'epub',
-  'xlsx', 'xls', 'ods', 'csv', 'tsv', 'json', 'xml', 'yaml', 'yml',
-  'kmz', 'kml', 'geojson', 'gpx',
-  'pptx', 'ppt', 'odp', 'key', 'pages', 'numbers',
-  'zip', 'tar', 'gz', 'tgz', 'bz2', 'xz', '7z', 'rar', 'apk', 'ipa',
-  'html', 'htm'
+  'png',
+  'jpg',
+  'jpeg',
+  'gif',
+  'webp',
+  'bmp',
+  'tiff',
+  'tif',
+  'heic',
+  'heif',
+  'svg',
+  'mp4',
+  'mov',
+  'm4v',
+  'avi',
+  'mkv',
+  'webm',
+  '3gp',
+  'mp3',
+  'm2a',
+  'wav',
+  'ogg',
+  'oga',
+  'opus',
+  'm4a',
+  'aac',
+  'flac',
+  'caf',
+  'aiff',
+  'aif',
+  'pdf',
+  'docx',
+  'doc',
+  'odt',
+  'rtf',
+  'txt',
+  'md',
+  'epub',
+  'xlsx',
+  'xls',
+  'ods',
+  'csv',
+  'tsv',
+  'json',
+  'xml',
+  'yaml',
+  'yml',
+  'kmz',
+  'kml',
+  'geojson',
+  'gpx',
+  'pptx',
+  'ppt',
+  'odp',
+  'key',
+  'pages',
+  'numbers',
+  'zip',
+  'tar',
+  'gz',
+  'tgz',
+  'bz2',
+  'xz',
+  '7z',
+  'rar',
+  'apk',
+  'ipa',
+  'html',
+  'htm'
 ]
 
 const DIRECTIVES = ['[[audio_as_voice]]', '[[as_document]]']
@@ -152,4 +212,22 @@ function insideCode(line: string, index: number): boolean {
   let ticks = 0
   for (let i = 0; i < keyword; i++) if (line[i] === '`') ticks++
   return ticks % 2 === 1 && line.indexOf('`', keyword) >= 0
+}
+
+/** A delivered file's name, never its path on the host. */
+export const fileName = (path: string) => path.split(/[\\/]/).filter(Boolean).pop() ?? path
+
+/**
+ * A reply as a voice model gets it, after the phone's GatewayMediaTags.namingFiles:
+ * each delivered file or preview named, never given by its path (live models
+ * are told of a file by name, #1449).
+ */
+export function namingFiles(text: string): string {
+  const blocks = splitReply(text)
+  if (blocks.length === 1 && blocks[0]!.kind === 'markdown') return blocks[0]!.text
+  return blocks
+    .map(block =>
+      block.kind === 'markdown' ? block.text : `${block.kind === 'media' && block.alt ? `${block.alt} ` : ''}(a file in the chat: ${fileName(block.path)})`
+    )
+    .join('\n')
 }

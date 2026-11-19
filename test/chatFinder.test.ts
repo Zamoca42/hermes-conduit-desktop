@@ -81,3 +81,36 @@ describe('finding chats from a call', () => {
     expect(closingFence('```\nx\n```')).toBe('```\nx\n```')
   })
 })
+
+describe("GPT-Live's chat markers", () => {
+  it('reads Find chat and Read chat at the start only', async () => {
+    const { findChatMarker, readChatMarker, delegatedSearch, delegatedRead } = await import('../src/renderer/src/state/chatFinder')
+    expect(findChatMarker('Find chat: GPU setup')).toBe('GPU setup')
+    expect(findChatMarker('find my chats:budget')).toBe('budget')
+    expect(findChatMarker('Please find chat: x')).toBeNull()
+    expect(readChatMarker('Read chat: 2')).toBe('2')
+    expect(readChatMarker('Read chat 3')).toBe('3')
+    expect(readChatMarker('read the conversation #4:')).toBe('4')
+    expect(readChatMarker('Read chat: the budget one')).toBeNull()
+    expect(delegatedSearch({ chats: '<chats>x</chats>', message: 'One chat matches. …' })).toMatch(
+      /^\[Chats that match:\n<chats>x<\/chats>\nOne chat matches\. .*"Read chat: 1"/
+    )
+    expect(delegatedSearch({ chats: '', message: 'No chats' })).toMatch(/No chats match/)
+    expect(delegatedSearch({ error: 'HTTP 500 Tell the user in a few words.' })).toBe(
+      "[Conduit couldn't search the chats: HTTP 500 Tell the user in a few words.]"
+    )
+    expect(
+      delegatedRead({ error: "That number isn't one of the chats find_chat returned. Call find_chat first, then read_chat with a number from its list." })
+    ).toMatch(/Delegate "Find chat:"/)
+    expect(delegatedRead({ chat: '<chat>x</chat>', message: 'Talk about it.' })).toBe('[<chat>x</chat>\nTalk about it.]')
+  })
+})
+
+describe('files named, never their paths', () => {
+  it('names delivered files and previews in what a voice model reads', async () => {
+    const { namingFiles } = await import('../src/renderer/src/state/media')
+    expect(namingFiles('Here it is:\nMEDIA:/home/me/out/report.pdf\nDone.')).toBe('Here it is:\n(a file in the chat: report.pdf)\nDone.')
+    expect(namingFiles('::preview{file="/tmp/a/page.html"}')).toBe('(a file in the chat: page.html)')
+    expect(namingFiles('No files here')).toBe('No files here')
+  })
+})

@@ -45,6 +45,7 @@ import {
 import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { answerApproval, answerQuestion, answerWords, isApprove, isDeny, requestUpdate } from '../state/liveRequests'
+import { chatFinder, delegatedRead, delegatedSearch, findChatMarker, readChatMarker } from '../state/chatFinder'
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 
@@ -110,6 +111,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const turns = useRef(new TurnAssembler())
   const quiet = useRef<number | null>(null)
   const ended = useRef(false)
+  const finder = useRef(chatFinder(profile))
   const ending = useRef(false)
   const lineId = useRef(0)
   // The user's words since the last delegation: finished turns, and the one still being said.
@@ -235,6 +237,17 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     if (isApprove(text) || isDeny(text) || reply !== null) {
       const answering = reply !== null ? answerQuestion(live.current.requests, reply) : answerApproval(live.current.requests, isApprove(text) ? 'once' : 'deny')
       void answering.then(result => append(result.next_question ?? result.message ?? result.error ?? '', 'speakable', id))
+      return
+    }
+    // Finding and reading the user's earlier chats, answered here.
+    const lookFor = findChatMarker(text)
+    if (lookFor !== null) {
+      void finder.current.find(lookFor).then(result => !ended.current && append(delegatedSearch(result), 'speakable', id))
+      return
+    }
+    const number = readChatMarker(text)
+    if (number !== null) {
+      void finder.current.read(number).then(result => !ended.current && append(delegatedRead(result), 'speakable', id))
       return
     }
     if (isReadBack(text)) {
