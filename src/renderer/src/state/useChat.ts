@@ -34,6 +34,11 @@ import {
   missingDetails,
   toolArgs,
   toolAnswers,
+  applyingReaction,
+  reactionTarget,
+  reactionsFrom,
+  setReactions,
+  type Reaction,
   type HistoryRow,
   type TranscriptState
 } from './transcript'
@@ -58,6 +63,8 @@ type Action =
   | { type: 'edited'; admission: string; edited: string; text: string }
   | { type: 'failed'; error: string }
   | { type: 'withdrawn' }
+  /** A reply's reactions, painted at once and then as Hermes saved them. */
+  | { type: 'reactions'; key: string; reactions: Reaction[]; rowId?: number }
   | { type: 'output'; command?: string; text: string; format: 'plain' | 'markdown' }
   | { type: 'notice'; text: string; tone?: 'error' | 'info' }
 
@@ -100,6 +107,8 @@ function reducer(state: TranscriptState, action: Action): TranscriptState {
       return addOutput(state, action)
     case 'notice':
       return addNotice(state, action.text, action.tone)
+    case 'reactions':
+      return setReactions(state, action.key, action.reactions, action.rowId)
   }
 }
 
@@ -866,9 +875,52 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     [discardLost, send]
   )
 
+  /**
+   * A tapback on a reply (null, or the one you have, takes it back): painted
+   * at once, saved with `message.react`, then the saved list. A failed save
+   * puts your old reaction back and says why. Hermes hands it to the agent
+   * with the next message, so nothing is sent now.
+   */
+  const reactingTo = useRef(new Map<string, number>())
+  const react = useCallback(async (key: string, emoji: string | null) => {
+    const sid = liveId.current
+    const state = transcriptRef.current
+    const target = reactionTarget(state, key)
+    const item = state.items.find(i => i.key === key)
+    if (!sid || !target || item?.kind !== 'assistant') return
+    const previous = item.reactions ?? []
+    const mine = previous.find(r => r.author === 'user')
+    const pick = emoji && mine?.emoji === emoji ? null : emoji
+    const attempt = (reactingTo.current.get(key) ?? 0) + 1
+    reactingTo.current.set(key, attempt)
+    dispatch({ type: 'reactions', key, reactions: applyingReaction(previous, pick) })
+    try {
+      const result = (await gateway.rpc('message.react', { session_id: sid, author: 'user', emoji: pick, ...target })) as { row_id?: unknown; reactions?: unknown }
+      if (liveId.current !== sid || reactingTo.current.get(key) !== attempt) return
+      const rowId = typeof result?.row_id === 'number' ? result.row_id : undefined
+      // "The newest reply" is named when Hermes takes the call: keep the answer only for the reply it still is.
+      if ('newest_role' in target && rowId) {
+        const now = transcriptRef.current
+        const newest = [...now.items].reverse().find(i => i.kind === 'assistant')
+        if (now.running || newest?.key !== key) {
+          dispatch({ type: 'reactions', key, reactions: previous })
+          return
+        }
+      }
+      dispatch({ type: 'reactions', key, reactions: reactionsFrom(result?.reactions), rowId })
+    } catch (e) {
+      if (liveId.current !== sid || reactingTo.current.get(key) !== attempt) return
+      const now = transcriptRef.current.items.find(i => i.key === key)
+      const others = (now?.kind === 'assistant' ? (now.reactions ?? []) : []).filter(r => r.author !== 'user')
+      dispatch({ type: 'reactions', key, reactions: mine ? [...others, mine] : others })
+      dispatch({ type: 'notice', text: t("Your reaction wasn't saved. {error}", { error: e instanceof Error ? e.message : String(e) }), tone: 'error' })
+    }
+  }, [])
+
   return {
     transcript,
     chat,
+    react,
     loading,
     error,
     send,

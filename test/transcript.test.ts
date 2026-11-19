@@ -2,9 +2,13 @@ import { describe, expect, it } from 'vitest'
 import {
   addPendingUser,
   applyEvent,
+  applyingReaction,
   emptyTranscript,
   failPendingUser,
   fromHistory,
+  reactionTarget,
+  reactionsFrom,
+  setReactions,
   type TranscriptState
 } from '../src/renderer/src/state/transcript'
 
@@ -97,5 +101,57 @@ describe('sending', () => {
       { kind: 'user', text: 'hello', pending: false },
       { kind: 'notice', tone: 'error', text: 'Not sent: Not connected to Hermes.' }
     ])
+  })
+})
+
+describe('reactions', () => {
+  const reply = (rowId?: number) =>
+    fromHistory([
+      { role: 'user', text: 'Hi', row_id: 1 },
+      {
+        role: 'assistant',
+        text: 'Hello',
+        ...(rowId ? { row_id: rowId } : {}),
+        display_metadata: JSON.stringify({ reactions: [{ emoji: '👍', author: 'agent', at: 1 }, { emoji: '', author: 'user' }] })
+      } as never
+    ])
+
+  it('reads them from a row and drops broken ones', () => {
+    const item = reply(2).find(i => i.kind === 'assistant')
+    expect(item && item.kind === 'assistant' ? [item.rowId, item.reactions] : null).toEqual([2, [{ emoji: '👍', author: 'agent', at: 1 }]])
+    expect(reactionsFrom('x')).toEqual([])
+  })
+
+  it('keeps one per author, and the same emoji again takes it back', () => {
+    const start = [{ emoji: '👍', author: 'user' }, { emoji: '❤️', author: 'agent' }]
+    expect(applyingReaction(start, '😂').map(r => [r.emoji, r.author])).toEqual([['😂', 'user'], ['❤️', 'agent']])
+    expect(applyingReaction(start, '👍')).toEqual([{ emoji: '❤️', author: 'agent' }])
+    expect(applyingReaction(start, null)).toEqual([{ emoji: '❤️', author: 'agent' }])
+  })
+
+  it('addresses a stored row, or the newest reply only while nothing runs', () => {
+    const stored: TranscriptState = { ...emptyTranscript, items: reply(2) }
+    expect(reactionTarget(stored, 'row-2')).toEqual({ row_id: 2 })
+    const live = play([{ type: 'message.delta', payload: { text: 'Hi there' } }, { type: 'message.complete', payload: { text: 'Hi there' } }], stored)
+    const key = live.items[live.items.length - 1]!.key
+    expect(reactionTarget(live, key)).toEqual({ newest_role: 'assistant' })
+    expect(reactionTarget({ ...live, running: true }, key)).toBeNull()
+    expect(reactionTarget(live, 'row-1')).toBeNull()
+  })
+
+  it('takes the agent reaction onto its row, or onto the newest live reply, which learns its row', () => {
+    const stored: TranscriptState = { ...emptyTranscript, items: reply(2) }
+    const onRow = play([{ type: 'message.reaction', payload: { row_id: 2, role: 'assistant', reactions: [{ emoji: '❤️', author: 'agent' }] } }], stored)
+    expect(onRow.items.find(i => i.key === 'row-2')).toMatchObject({ reactions: [{ emoji: '❤️', author: 'agent' }] })
+    const live = play(
+      [
+        { type: 'message.delta', payload: { text: 'Done' } },
+        { type: 'message.complete', payload: { text: 'Done' } },
+        { type: 'message.reaction', payload: { row_id: 9, role: 'assistant', reactions: [{ emoji: '😂', author: 'agent' }] } }
+      ],
+      stored
+    )
+    expect(live.items[live.items.length - 1]).toMatchObject({ rowId: 9, reactions: [{ emoji: '😂', author: 'agent' }] })
+    expect(setReactions(live, 'nope', [])).toBe(live)
   })
 })

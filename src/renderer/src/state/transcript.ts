@@ -29,6 +29,75 @@ export interface AssistantItem {
   text: string
   at?: number
   streaming: boolean
+  /** Its stored row, which a reaction addresses; a live reply learns it from its first reaction. */
+  rowId?: number
+  /** Tapbacks on it, yours and the agent's, in the order they came (Hermes' display_metadata.reactions). */
+  reactions?: Reaction[]
+}
+
+/** One reaction on a reply: one per author, the same emoji again takes it back (Hermes' Tapback rules). */
+export interface Reaction {
+  emoji: string
+  /** `user` or `agent`. */
+  author: string
+  at?: number
+}
+
+/** The six reactions the picker offers, in order, as the phone's. */
+export const TAPBACKS = ['👍', '👎', '❤️', '😂', '😮', '😢']
+
+/** A reaction list as Hermes sends it (`message.react`'s answer, `message.reaction`, a row's metadata). */
+export function reactionsFrom(value: unknown): Reaction[] {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((entry): Reaction[] => {
+    const row = entry && typeof entry === 'object' ? (entry as Record<string, unknown>) : null
+    const emoji = typeof row?.emoji === 'string' ? row.emoji.trim() : ''
+    const author = typeof row?.author === 'string' ? row.author.trim() : ''
+    if (!emoji || !author) return []
+    return [{ emoji, author, ...(typeof row!.at === 'number' ? { at: row!.at } : {}) }]
+  })
+}
+
+/** A row's display_metadata, an object or its JSON. */
+function metadataOf(value: unknown): Record<string, unknown> | null {
+  if (typeof value === 'string') {
+    try {
+      value = JSON.parse(value)
+    } catch {
+      return null
+    }
+  }
+  return value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
+}
+
+/** The list after `author` picks `emoji` (null takes theirs back), by Hermes' rules, keeping their place. */
+export function applyingReaction(reactions: readonly Reaction[], emoji: string | null, author = 'user'): Reaction[] {
+  const at = reactions.findIndex(r => r.author === author)
+  const previous = at >= 0 ? reactions[at] : undefined
+  const rest = reactions.filter(r => r.author !== author)
+  if (!emoji || previous?.emoji === emoji) return rest
+  const picked = { emoji, author, at: Date.now() / 1000 }
+  return at >= 0 ? [...rest.slice(0, at), picked, ...rest.slice(at)] : [...rest, picked]
+}
+
+/** What a reaction on `key` addresses: its row, or the newest reply while no turn writes newer rows; null when it can't be named yet. */
+export function reactionTarget(state: TranscriptState, key: string): { row_id: number } | { newest_role: 'assistant' } | null {
+  const item = state.items.find(i => i.key === key)
+  if (!item || item.kind !== 'assistant' || !item.text.trim()) return null
+  if (item.rowId) return { row_id: item.rowId }
+  const newest = [...state.items].reverse().find(i => i.kind === 'assistant')
+  return !state.running && newest?.key === key ? { newest_role: 'assistant' } : null
+}
+
+/** A reply's reactions (and its row, once known) replaced. */
+export function setReactions(state: TranscriptState, key: string, reactions: Reaction[], rowId?: number): TranscriptState {
+  let changed = false
+  const items = state.items.map(item => {
+    if (item.key !== key || item.kind !== 'assistant') return item
+    changed = true
+    return { ...item, reactions, ...(rowId ? { rowId } : {}) }
+  })
+  return changed ? { ...state, items } : state
 }
 
 export interface ThinkingItem {
@@ -291,7 +360,17 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
           items.push({ kind: 'thinking', key: `${key}-r`, text: row.reasoning.trim(), streaming: false })
         }
         const text = rowText(row).trim()
-        if (text) items.push({ kind: 'assistant', key, text, at, streaming: false })
+        const reactions = reactionsFrom(metadataOf(row.display_metadata)?.reactions)
+        if (text)
+          items.push({
+            kind: 'assistant',
+            key,
+            text,
+            at,
+            streaming: false,
+            ...(row.row_id != null ? { rowId: row.row_id } : {}),
+            ...(reactions.length ? { reactions } : {})
+          })
         break
       }
       case 'system': {
@@ -439,6 +518,18 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
         items = [...items, { kind: 'notice', key: nextKey('n'), text: t('Stopped'), tone: 'info' }]
       }
       return { ...state, items, running: false, status: undefined }
+    }
+    case 'message.reaction': {
+      // The agent reacted (or a reaction changed elsewhere): the row's whole list. A live reply
+      // with no row yet is the newest of that role, the agent tool's default, and learns its row.
+      const rowId = typeof payload.row_id === 'number' && Number.isInteger(payload.row_id) && payload.row_id > 0 ? payload.row_id : null
+      if (!rowId) return state
+      const reactions = reactionsFrom(payload.reactions)
+      const known = state.items.find(i => i.kind === 'assistant' && i.rowId === rowId)
+      if (known) return setReactions(state, known.key, reactions)
+      if (str(payload.role) !== 'assistant') return state
+      const live = [...state.items].reverse().find(i => i.kind === 'assistant' && !i.rowId)
+      return live ? setReactions(state, live.key, reactions, rowId) : state
     }
     case 'user.message': {
       // Sent from another client of this chat (the phone).
