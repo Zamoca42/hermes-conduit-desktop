@@ -674,6 +674,21 @@
     "zh-Hans": "添加到保险库",
     "zh-Hant": "新增到保險庫"
   },
+  "Add to your message": {
+    "de": "Zu deiner Nachricht hinzufügen",
+    "es": "Añadir a tu mensaje",
+    "fr": "Ajouter à votre message",
+    "id": "Tambahkan ke pesan Anda",
+    "it": "Aggiungi al tuo messaggio",
+    "ja": "メッセージに追加",
+    "ko": "메시지에 추가",
+    "pl": "Dodaj do wiadomości",
+    "pt-BR": "Adicionar à sua mensagem",
+    "ru": "Добавить в сообщение",
+    "tr": "Mesajınıza ekleyin",
+    "zh-Hans": "添加到你的消息",
+    "zh-Hant": "加入你的訊息"
+  },
   "Added to your calendar": {
     "de": "Zu deinem Kalender hinzugefügt",
     "es": "Añadido a tu calendario",
@@ -16289,6 +16304,21 @@
     "zh-Hans": "暂停循环",
     "zh-Hant": "暫停循環"
   },
+  "Pause before asking": {
+    "de": "Pause vor der Anfrage",
+    "es": "Pausa antes de preguntar",
+    "fr": "Pause avant de demander",
+    "id": "Jeda sebelum bertanya",
+    "it": "Pausa prima di chiedere",
+    "ja": "問い合わせまでの間",
+    "ko": "요청 전 대기 시간",
+    "pl": "Przerwa przed zapytaniem",
+    "pt-BR": "Pausa antes de perguntar",
+    "ru": "Пауза перед запросом",
+    "tr": "Sormadan önce bekleme",
+    "zh-Hans": "询问前的停顿",
+    "zh-Hant": "詢問前的停頓"
+  },
   "Pause delegation": {
     "de": "Delegierung pausieren",
     "es": "Pausar delegación",
@@ -22589,6 +22619,21 @@
     "zh-Hans": "建议回复",
     "zh-Hant": "建議回覆"
   },
+  "Suggest while I pause": {
+    "de": "Beim Innehalten vorschlagen",
+    "es": "Sugerir cuando hago una pausa",
+    "fr": "Suggérer pendant une pause",
+    "id": "Sarankan saat saya berhenti",
+    "it": "Suggerisci quando mi fermo",
+    "ja": "入力を止めたときに提案",
+    "ko": "입력을 멈추면 추천",
+    "pl": "Podpowiadaj, gdy przerwę",
+    "pt-BR": "Sugerir quando eu pausar",
+    "ru": "Предлагать во время паузы",
+    "tr": "Durduğumda öner",
+    "zh-Hans": "停顿时建议",
+    "zh-Hant": "停頓時建議"
+  },
   "Suggested replies": {
     "de": "Vorgeschlagene Antworten",
     "es": "Respuestas sugeridas",
@@ -22631,6 +22676,21 @@
     "pt-BR": "Sugestão",
     "ru": "Предложение",
     "tr": "Öneri",
+    "zh-Hans": "建议",
+    "zh-Hant": "建議"
+  },
+  "Suggestions": {
+    "de": "Vorschläge",
+    "es": "Sugerencias",
+    "fr": "Suggestions",
+    "id": "Saran",
+    "it": "Suggerimenti",
+    "ja": "候補",
+    "ko": "추천",
+    "pl": "Podpowiedzi",
+    "pt-BR": "Sugestões",
+    "ru": "Подсказки",
+    "tr": "Öneriler",
     "zh-Hans": "建议",
     "zh-Hant": "建議"
   },
@@ -27494,6 +27554,21 @@
     "zh-Hans": "运行数达到这个值时，{bot} 会等其中一个完成，或把新工作交给已在处理的那个。",
     "zh-Hant": "執行數達到這個值時，{bot} 會等其中一個完成，或把新工作交給已在處理的那一個。"
   },
+  "When you stop typing for a moment, words to finish your message and whole messages you might mean. Your unsent draft goes to your agent's model to make them.": {
+    "de": "Wenn du kurz mit dem Tippen aufhörst: Wörter, um deine Nachricht zu beenden, und ganze Nachrichten, die du meinen könntest. Dafür geht dein ungesendeter Entwurf an das Modell deines Agenten.",
+    "es": "Cuando dejas de escribir un momento, palabras para terminar tu mensaje y mensajes completos que quizá quieras decir. Para crearlas, tu borrador sin enviar va al modelo de tu agente.",
+    "fr": "Quand vous arrêtez de taper un instant, des mots pour finir votre message et des messages entiers que vous voulez peut-être dire. Pour les créer, votre brouillon non envoyé est transmis au modèle de votre agent.",
+    "id": "Saat Anda berhenti mengetik sejenak, kata-kata untuk menyelesaikan pesan dan pesan utuh yang mungkin Anda maksud. Untuk membuatnya, draf Anda yang belum terkirim dikirim ke model agen Anda.",
+    "it": "Quando smetti di scrivere per un momento, parole per finire il messaggio e messaggi interi che potresti voler dire. Per crearli, la bozza non inviata va al modello del tuo agente.",
+    "ja": "入力を少し止めると、メッセージの続きの言葉と、言いたそうなメッセージ全体を表示します。そのために未送信の下書きがエージェントのモデルに送られます。",
+    "ko": "입력을 잠시 멈추면 메시지를 마칠 단어와 의도했을 법한 전체 메시지를 보여 줍니다. 이를 위해 보내지 않은 초안이 에이전트 모델로 전송됩니다.",
+    "pl": "Gdy na chwilę przestaniesz pisać: słowa do dokończenia wiadomości i całe wiadomości, które możesz mieć na myśli. Aby je przygotować, niewysłany szkic trafia do modelu agenta.",
+    "pt-BR": "Quando você para de digitar por um momento, palavras para terminar a mensagem e mensagens inteiras que você talvez queira dizer. Para criá-las, seu rascunho não enviado vai para o modelo do seu agente.",
+    "ru": "Когда вы ненадолго перестаёте печатать — слова, чтобы закончить сообщение, и целые сообщения, которые вы, возможно, имеете в виду. Для этого неотправленный черновик передаётся модели вашего агента.",
+    "tr": "Yazmayı kısa bir süre bıraktığınızda, mesajınızı bitirecek kelimeler ve kastedebileceğiniz tam mesajlar. Bunları oluşturmak için gönderilmemiş taslağınız ajanınızın modeline gider.",
+    "zh-Hans": "当你暂停输入片刻，会给出补完消息的字词，以及你可能想说的完整消息。为此，你未发送的草稿会发送给你的智能体模型。",
+    "zh-Hant": "當你暫停輸入片刻，會提供補完訊息的字詞，以及你可能想說的完整訊息。為此，你尚未傳送的草稿會送到你的代理模型。"
+  },
   "Where this profile's models come from. Keys are saved on your Hermes host and are never shown again.": {
     "de": "Woher die Modelle dieses Profils kommen. Schlüssel werden auf deinem Hermes-Host gespeichert und nie wieder angezeigt.",
     "es": "De dónde vienen los modelos de este perfil. Las claves se guardan en tu host de Hermes y no se vuelven a mostrar.",
@@ -29608,6 +29683,21 @@
     "tr": "{name} ekranı",
     "zh-Hans": "{name} 的屏幕",
     "zh-Hant": "{name} 的螢幕"
+  },
+  "{number} s": {
+    "de": "{number} s",
+    "es": "{number} s",
+    "fr": "{number} s",
+    "id": "{number} dtk",
+    "it": "{number} s",
+    "ja": "{number}秒",
+    "ko": "{number}초",
+    "pl": "{number} s",
+    "pt-BR": "{number} s",
+    "ru": "{number} с",
+    "tr": "{number} sn",
+    "zh-Hans": "{number} 秒",
+    "zh-Hant": "{number} 秒"
   },
   "{on} of {all} on": {
     "de": "{on} von {all} an",

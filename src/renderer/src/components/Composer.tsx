@@ -7,7 +7,7 @@ import { stageFile } from '../state/picture'
 import { useRecorder } from '../state/useRecorder'
 import { blobToBase64, durationLabel, transcribe, voiceFileName, voicePromptText } from '../state/voice'
 import { suggestCommands, type SlashCommand } from '../state/slash'
-import { TAP_GUARD_MS } from '../state/predictive'
+import { TAP_GUARD_MS, askable, pauseDelay, type DraftGuesses } from '../state/predictive'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
 /** The last folder of a path, the way the phone's chip shows it. */
@@ -46,6 +46,8 @@ interface Props {
   replies?: string[]
   /** A suggested reply clicked: sent as the next message. */
   onSuggestion?: (text: string) => void
+  /** Asks about the draft once typing pauses (Predictive's While I pause). */
+  onDraftPause?: (draft: string) => Promise<DraftGuesses | null>
   /** The model chip's click: the Model panel. Without it the chip only shows the model. */
   onModel?: () => void
   /** How full the chat's context window is; the ring opens the Context panel. */
@@ -79,6 +81,7 @@ export function Composer({
   quote,
   replies: guessed,
   onSuggestion,
+  onDraftPause,
   wrapReply = chatReply,
   commands,
   onModel,
@@ -257,6 +260,23 @@ export function Composer({
 
   // Staged files, a note, a reply chip or the suggestions: a small window makes room for them.
   const staged = attachments.length > 0 || staging > 0 || !!notice || !!replyTo || !!picked
+
+  // While I pause: the draft, asked about once after the chosen pause; its guesses count only while it stays the same.
+  const [draftGuess, setDraftGuess] = useState<(DraftGuesses & { draft: string }) | null>(null)
+  const askedDraft = useRef<string | null>(null)
+  const latestText = useRef(text)
+  latestText.current = text
+  useEffect(() => {
+    if (draftGuess && draftGuess.draft !== text) setDraftGuess(null)
+    if (!onDraftPause || staged || running || disabled || !askable(text) || askedDraft.current === text) return
+    const timer = window.setTimeout(() => {
+      askedDraft.current = text
+      void onDraftPause(text).then(guess => {
+        if (guess && latestText.current === text && (guess.next.length || guess.replies.length)) setDraftGuess({ ...guess, draft: text })
+      })
+    }, pauseDelay() * 1000)
+    return () => window.clearTimeout(timer)
+  }, [text, onDraftPause, staged, running, disabled])
   useEffect(() => {
     onStagedChange?.(staged)
   }, [staged, onStagedChange])
@@ -387,23 +407,45 @@ export function Composer({
   }
 
   const chips = guessed?.length && onSuggestion && !text.trim() && !staged && !running && !disabled ? guessed : null
+  const fill = (value: string) => {
+    setText(value)
+    requestAnimationFrame(() => {
+      const field = area.current
+      if (field) {
+        field.focus()
+        field.setSelectionRange(value.length, value.length)
+      }
+    })
+  }
+  const paused = draftGuess && draftGuess.draft === text && onSuggestion && !chips && !staged && !running && !disabled ? draftGuess : null
   return (
     <div className="composer-wrap">
-      {chips ? (
-        <SuggestedReplies
-          replies={chips}
-          onSend={onSuggestion!}
-          onEdit={reply => {
-            setText(reply)
-            requestAnimationFrame(() => {
-              const field = area.current
-              if (field) {
-                field.focus()
-                field.setSelectionRange(reply.length, reply.length)
-              }
-            })
-          }}
-        />
+      {chips ? <SuggestedReplies replies={chips} onSend={onSuggestion!} onEdit={fill} /> : null}
+      {paused ? (
+        <div className="suggested-replies" role="group" aria-label={t('Suggestions')}>
+          {paused.next.map(words => (
+            <button key={`n${words}`} className="suggested-reply continuation" title={t('Add to your message')} onClick={() => fill(text + words)}>
+              …{words.trim()}
+            </button>
+          ))}
+          {paused.replies.map(reply => (
+            <button
+              key={`r${reply}`}
+              className="suggested-reply"
+              title={t('Click to send. Right-click to edit it first.')}
+              onClick={() => {
+                setText('')
+                onSuggestion!(reply)
+              }}
+              onContextMenu={e => {
+                e.preventDefault()
+                fill(reply)
+              }}
+            >
+              {reply}
+            </button>
+          ))}
+        </div>
       ) : null}
       <div className={`composer${dragging ? ' dropping' : ''}`}>
         {dragging ? (

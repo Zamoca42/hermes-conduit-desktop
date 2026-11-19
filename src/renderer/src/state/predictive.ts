@@ -90,3 +90,57 @@ export function settledReply(items: TranscriptItem[], running: boolean): string 
   const text = last.text.trim()
   return `${items.filter(i => i.kind === 'user').length}:${text.length}:${text.slice(-120)}`
 }
+
+// While I pause: guesses for an unsent draft.
+const PAUSE_KEY = 'conduit.predictive.pause'
+const PAUSE_DELAY_KEY = 'conduit.predictive.pauseDelay'
+export const PAUSE_DELAYS = [0.8, 1.2, 2, 3, 5] as const
+export const DEFAULT_PAUSE_DELAY = 1.2
+export const DRAFT_WAIT_S = 4
+/** A draft shorter than this isn't asked about. */
+export const MIN_DRAFT_CHARS = 3
+/** The plugin's limit, counted in code points as Python counts them: a longer draft isn't asked about rather than cut short. */
+export const MAX_DRAFT_CHARS = 2000
+const MAX_NEXT_CHARS = 60
+
+export const pauseEnabled = () => read(PAUSE_KEY) === 'true'
+export const setPauseEnabled = (on: boolean) => {
+  write(PAUSE_KEY, String(on))
+  window.dispatchEvent(new Event(PREDICTIVE_EVENT))
+}
+export function pauseDelay(): number {
+  const n = Number(read(PAUSE_DELAY_KEY))
+  return (PAUSE_DELAYS as readonly number[]).includes(n) ? n : DEFAULT_PAUSE_DELAY
+}
+export const setPauseDelay = (n: number) => write(PAUSE_DELAY_KEY, String(n))
+
+/** Whether a draft is asked about: long enough to guess at, short enough to send whole. */
+export function askable(draft: string): boolean {
+  const length = [...draft].length
+  return draft.trim().length >= MIN_DRAFT_CHARS && length <= MAX_DRAFT_CHARS
+}
+
+export function draftBody(sessionId: string, draft: string, count: number, language: string, model: PredictModel) {
+  return { session_id: sessionId, kind: 'draft', draft, count: Math.min(Math.max(count, 1), 5), language, model, wait_s: DRAFT_WAIT_S }
+}
+
+export interface DraftGuesses {
+  /** Words that finish the draft, starting where it stops (a leading space when a new word starts). */
+  next: string[]
+  /** Whole messages the draft probably means. */
+  replies: string[]
+}
+
+/** The route's answer about a draft. */
+export function draftGuesses(answer: unknown): DraftGuesses {
+  const raw = ((answer ?? {}) as Record<string, unknown>).next
+  const seen = new Set<string>()
+  const next = (Array.isArray(raw) ? raw : []).flatMap(item => {
+    const text = typeof (item as Record<string, unknown> | null)?.text === 'string' ? ((item as Record<string, unknown>).text as string) : ''
+    const line = (/^\s/.test(text) ? ' ' : '') + text.trim().replace(/\s+/g, ' ')
+    if (!line.trim() || [...line].length > MAX_NEXT_CHARS || seen.has(line)) return []
+    seen.add(line)
+    return [line]
+  })
+  return { next, replies: guesses(answer) }
+}

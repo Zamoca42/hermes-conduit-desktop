@@ -1,8 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { language } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { STATUS_PATH, pluginStatus, serves } from './plugin'
 import {
+  DRAFT_WAIT_S,
+  askable,
+  draftBody,
+  draftGuesses,
+  pauseEnabled,
+  type DraftGuesses,
   PREDICTIVE_EVENT,
   PREDICT_CAPABILITY,
   PREDICT_PATH,
@@ -37,15 +43,26 @@ export function predictionsServed(): Promise<boolean> {
  * settles or the chat opens on it, while Settings > Chat > Predictive has
  * them on. Empty while a turn runs, and gone once the chat moves on.
  */
-export function usePredictions(state: TranscriptState, sessionId: string | undefined): string[] {
+export interface Predictions {
+  /** Suggested replies to the settled reply, best first. */
+  replies: string[]
+  /** Asks about a paused draft, when While I pause is on and Hermes can be asked. */
+  askDraft?: (draft: string) => Promise<DraftGuesses | null>
+}
+
+export function usePredictions(state: TranscriptState, sessionId: string | undefined): Predictions {
   const [enabled, setEnabled] = useState(repliesEnabled)
+  const [pausing, setPausing] = useState(pauseEnabled)
   const [answer, setAnswer] = useState<{ key: string; replies: string[] } | null>(null)
   const asked = useRef(new Set<string>())
   const reply = sessionId ? settledReply(state.items, state.running) : null
   const key = reply && sessionId ? `${sessionId}|${reply}` : null
 
   useEffect(() => {
-    const changed = () => setEnabled(repliesEnabled())
+    const changed = () => {
+      setEnabled(repliesEnabled())
+      setPausing(pauseEnabled())
+    }
     window.addEventListener(PREDICTIVE_EVENT, changed)
     return () => window.removeEventListener(PREDICTIVE_EVENT, changed)
   }, [])
@@ -73,5 +90,18 @@ export function usePredictions(state: TranscriptState, sessionId: string | undef
     }
   }, [enabled, key, sessionId])
 
-  return enabled && key && answer?.key === key ? answer.replies : []
+  const askDraft = useCallback(
+    async (draft: string): Promise<DraftGuesses | null> => {
+      if (!sessionId || !askable(draft) || !(await predictionsServed())) return null
+      try {
+        const body = draftBody(sessionId, draft, replyCount(), languageName(language()), predictModel())
+        return draftGuesses(await gateway.http('POST', PREDICT_PATH, body, (DRAFT_WAIT_S + 3) * 1000))
+      } catch {
+        return null
+      }
+    },
+    [sessionId]
+  )
+
+  return { replies: enabled && key && answer?.key === key ? answer.replies : [], askDraft: pausing && sessionId ? askDraft : undefined }
 }
