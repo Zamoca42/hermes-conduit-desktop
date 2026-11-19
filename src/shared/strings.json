@@ -6344,6 +6344,21 @@
     "zh-Hans": "删除任务？",
     "zh-Hant": "刪除任務？"
   },
+  "Delete this recording? Its words haven't been transcribed.": {
+    "de": "Diese Aufnahme löschen? Ihr Inhalt wurde noch nicht transkribiert.",
+    "es": "¿Eliminar esta grabación? Sus palabras aún no se han transcrito.",
+    "fr": "Supprimer cet enregistrement ? Ses paroles n’ont pas été transcrites.",
+    "id": "Hapus rekaman ini? Kata-katanya belum ditranskripsikan.",
+    "it": "Eliminare questa registrazione? Le sue parole non sono state trascritte.",
+    "ja": "この録音を削除しますか？まだ文字起こしされていません。",
+    "ko": "이 녹음을 삭제할까요? 아직 텍스트로 변환되지 않았습니다.",
+    "pl": "Usunąć to nagranie? Jego treść nie została przepisana.",
+    "pt-BR": "Apagar esta gravação? As palavras dela ainda não foram transcritas.",
+    "ru": "Удалить эту запись? Её текст ещё не распознан.",
+    "tr": "Bu kayıt silinsin mi? İçindeki sözler henüz yazıya dökülmedi.",
+    "zh-Hans": "删除这段录音？其中的内容尚未转写。",
+    "zh-Hant": "刪除這段錄音？其中的內容尚未轉寫。"
+  },
   "Delete {name}?": {
     "de": "{name} löschen?",
     "es": "¿Eliminar {name}?",
@@ -29338,6 +29353,21 @@
     "tr": "Sesiniz {company} şirketine gider",
     "zh-Hans": "你的语音将发送给 {company}",
     "zh-Hant": "你的語音將傳送給 {company}"
+  },
+  "Your {duration} dictation wasn't transcribed. Its recording is saved.": {
+    "de": "Dein {duration} langes Diktat wurde nicht transkribiert. Die Aufnahme ist gespeichert.",
+    "es": "Tu dictado de {duration} no se transcribió. La grabación está guardada.",
+    "fr": "Votre dictée de {duration} n’a pas été transcrite. L’enregistrement est conservé.",
+    "id": "Dikte {duration} Anda tidak ditranskripsikan. Rekamannya tersimpan.",
+    "it": "La tua dettatura di {duration} non è stata trascritta. La registrazione è salvata.",
+    "ja": "{duration} の音声入力は文字起こしされませんでした。録音は保存されています。",
+    "ko": "{duration} 분량의 받아쓰기를 텍스트로 변환하지 못했습니다. 녹음은 저장되어 있습니다.",
+    "pl": "Twoje dyktowanie ({duration}) nie zostało przepisane. Nagranie jest zapisane.",
+    "pt-BR": "Seu ditado de {duration} não foi transcrito. A gravação está salva.",
+    "ru": "Диктовка длиной {duration} не распознана. Запись сохранена.",
+    "tr": "{duration} süren dikteniz yazıya dökülemedi. Kaydı saklandı.",
+    "zh-Hans": "你的听写（{duration}）未能转写。录音已保存。",
+    "zh-Hant": "你的聽寫（{duration}）未能轉寫。錄音已儲存。"
   },
   "Youthful": {
     "de": "Jugendlich",
