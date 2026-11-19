@@ -4,7 +4,7 @@ import { PagePreview } from './PagePreview'
 import { baseName, type Attachment } from '../state/text'
 import { displayName } from '../state/attachments'
 import type { PendingRequest } from '@shared/ipc'
-import type { ToolItem, TranscriptItem, TranscriptState } from '../state/transcript'
+import { TAPBACKS, type Reaction, type ToolItem, type TranscriptItem, type TranscriptState } from '../state/transcript'
 import type { DelegationEntry } from '../state/timeline'
 import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
@@ -31,9 +31,10 @@ export interface MessageMenuItem {
 }
 
 /** Copy, and ⋯ with the rest (Quote, Retry…), under a message on hover. */
-export function MessageActions({ copy, menu = [] }: { copy: string; menu?: MessageMenuItem[] }) {
+export function MessageActions({ copy, menu = [], react }: { copy: string; menu?: MessageMenuItem[]; react?: ReactControls }) {
   const [copied, setCopied] = useState(false)
   const [open, setOpen] = useState(false)
+  const [picking, setPicking] = useState(false)
   useEffect(() => {
     if (!copied) return
     const timer = setTimeout(() => setCopied(false), 1500)
@@ -50,8 +51,58 @@ export function MessageActions({ copy, menu = [] }: { copy: string; menu?: Messa
       window.removeEventListener('keydown', onKey)
     }
   }, [open])
+  useEffect(() => {
+    if (!picking) return
+    const close = () => setPicking(false)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
+    window.addEventListener('click', close)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('click', close)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [picking])
+  const mine = react?.reactions.find(r => r.author === 'user')?.emoji
   return (
-    <div className={`message-actions${open ? ' open' : ''}`}>
+    <div className={`message-actions${open || picking ? ' open' : ''}`}>
+      {react ? (
+        <span className="message-more">
+          <button
+            className="message-action"
+            aria-label={mine ? t('Change your reaction') : t('React to this response')}
+            title={mine ? t('Change your reaction') : t('React to this response')}
+            aria-haspopup="menu"
+            aria-expanded={picking}
+            onClick={e => {
+              e.stopPropagation()
+              setOpen(false)
+              setPicking(p => !p)
+            }}
+          >
+            <Icon name="smile" />
+          </button>
+          {picking ? (
+            <div className="host-menu reaction-picker" role="menu">
+              {TAPBACKS.map(emoji => (
+                <button
+                  key={emoji}
+                  role="menuitemradio"
+                  aria-checked={mine === emoji}
+                  className={mine === emoji ? 'chosen' : undefined}
+                  aria-label={mine === emoji ? t('Remove reaction {emoji}', { emoji }) : t('React with {emoji}', { emoji })}
+                  title={mine === emoji ? t('Remove reaction {emoji}', { emoji }) : t('React with {emoji}', { emoji })}
+                  onClick={() => {
+                    setPicking(false)
+                    react.onPick(mine === emoji ? null : emoji)
+                  }}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </span>
+      ) : null}
       <button
         className="message-action"
         aria-label={copied ? t('Copied') : t('Copy')}
@@ -73,6 +124,7 @@ export function MessageActions({ copy, menu = [] }: { copy: string; menu?: Messa
             aria-expanded={open}
             onClick={e => {
               e.stopPropagation()
+              setPicking(false)
               setOpen(o => !o)
             }}
           >
@@ -96,6 +148,51 @@ export function MessageActions({ copy, menu = [] }: { copy: string; menu?: Messa
           ) : null}
         </span>
       ) : null}
+    </div>
+  )
+}
+
+/** A reply's reactions and the pick that changes yours (null takes it back). */
+export interface ReactControls {
+  reactions: Reaction[]
+  onPick: (emoji: string | null) => void
+}
+
+/** The reactions under a reply, one chip per emoji with its count; yours is outlined, and a click on it takes it back. */
+export function ReactionChips({ reactions, author, onPick }: { reactions: Reaction[]; author: string; onPick?: (emoji: string | null) => void }) {
+  if (!reactions.length) return null
+  const groups: { emoji: string; authors: string[] }[] = []
+  for (const r of reactions) {
+    const group = groups.find(g => g.emoji === r.emoji)
+    if (group) group.authors.push(r.author)
+    else groups.push({ emoji: r.emoji, authors: [r.author] })
+  }
+  return (
+    <div className="reaction-chips">
+      {groups.map(({ emoji, authors }) => {
+        const mine = authors.includes('user')
+        const others = authors.filter(a => a !== 'user').length > 0
+        const label =
+          mine && others
+            ? t('You and {name} reacted {emoji}', { name: author, emoji })
+            : mine
+              ? t('You reacted {emoji}', { emoji })
+              : t('{name} reacted {emoji}', { name: author, emoji })
+        const click = mine && onPick ? () => onPick(null) : undefined
+        return (
+          <button
+            key={emoji}
+            className={`reaction-chip${mine ? ' mine' : ''}`}
+            aria-label={click ? `${label}. ${t('Remove reaction {emoji}', { emoji })}` : label}
+            title={label}
+            disabled={!click}
+            onClick={click}
+          >
+            <span aria-hidden="true">{emoji}</span>
+            {authors.length > 1 ? <span className="reaction-count">{authors.length}</span> : null}
+          </button>
+        )
+      })}
     </div>
   )
 }
@@ -371,6 +468,8 @@ interface ItemProps {
   teammates?: { name: string; title: string }[]
   /** The teammate this reply answers: folded under "Replied to Atlas", since it isn't for the user. */
   repliedTo?: string
+  /** React on a reply Hermes can address now; the chips show either way. */
+  onReact?: (emoji: string | null) => void
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -471,7 +570,7 @@ function CronReportCard({ job, report, at }: { job: string; report: string; at?:
   )
 }
 
-function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: string; menu: MessageMenuItem[] }) {
+function ReplyActions({ messageKey, text, menu, react }: { messageKey: string; text: string; menu: MessageMenuItem[]; react?: ReactControls }) {
   const reading = useReadingKey() === messageKey
   const profile = useContext(PictureProfile)
   const [problem, setProblem] = useState<string | null>(null)
@@ -485,7 +584,7 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   }
   return (
     <>
-      <MessageActions copy={copyableReply(text)} menu={[...menu, read]} />
+      <MessageActions copy={copyableReply(text)} menu={[...menu, read]} react={react} />
       {problem ? (
         <div className="read-problem" role="status">
           {t("Hermes couldn't read this aloud: {error}", { error: problem })}
@@ -509,7 +608,8 @@ function Item({
   followedUp,
   pinToggle,
   teammates,
-  repliedTo
+  repliedTo,
+  onReact
 }: ItemProps) {
   switch (item.kind) {
     case 'user': {
@@ -569,10 +669,12 @@ function Item({
             </span>
           ) : null}
           <Reply text={item.text} />
+          <ReactionChips reactions={item.reactions ?? []} author={author} onPick={onReact} />
           {!item.streaming && item.text.trim() ? (
             <ReplyActions
               messageKey={item.key}
               text={item.text}
+              react={onReact ? { reactions: item.reactions ?? [], onPick: onReact } : undefined}
               menu={[
                 ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []),
                 ...(onRetry ? [{ label: t('Retry'), onSelect: onRetry }] : []),
@@ -803,7 +905,8 @@ export function Transcript({
   onOpenCall,
   followedUp,
   pins,
-  teammates
+  teammates,
+  onReact
 }: {
   state: TranscriptState
   loading: boolean
@@ -831,6 +934,8 @@ export function Transcript({
   pins?: PinControls
   /** The bots, for a teammate's name on its messages and on a message sent to one. */
   teammates?: { name: string; title: string }[]
+  /** Saves your reaction on a reply (null takes it back); left out where replies can't take one. */
+  onReact?: (key: string, emoji: string | null) => void
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -960,6 +1065,10 @@ export function Transcript({
     onRevealed?.()
   }, [reveal, pinKeys, loading, onRevealed])
 
+  // What reactionTarget allows, without a walk of the chat per reply.
+  const newestReply = useMemo(() => [...state.items].reverse().find(i => i.kind === 'assistant')?.key, [state.items])
+  const reactable = (item: TranscriptItem) =>
+    item.kind === 'assistant' && !!item.text.trim() && (!!item.rowId || (!state.running && item.key === newestReply))
   const renderItem = (item: TranscriptItem) => (
     <Item
       key={item.key}
@@ -976,6 +1085,7 @@ export function Transcript({
       teammates={teammates}
       followedUp={followedUpKeySet.has(item.key)}
       repliedTo={repliesToTeammates.get(item.key)}
+      onReact={onReact && reactable(item) ? emoji => onReact(item.key, emoji) : undefined}
       pinToggle={
         pins && item.kind === 'assistant' && !item.streaming
           ? { label: pinnedKeys.has(item.key) ? t('Unpin reply') : t('Pin reply'), onSelect: () => togglePin(item) }

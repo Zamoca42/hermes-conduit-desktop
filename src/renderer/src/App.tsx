@@ -312,7 +312,8 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
     editQueued,
     sendQueuedNow,
     discardLost,
-    resendLost
+    resendLost,
+    react: reactTo
   } = useChat(selected.id, selected.profile, status.sessionAuthority === true, connected, selected.botChat === true, selected.id ? undefined : selected.folder)
 
   // The chat list's profile: a new chat starts in it.
@@ -1725,6 +1726,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
                     onOpenCall={setOpenCall}
                     followedUp={followedUp}
                     pins={pinControls}
+                    onReact={chat.liveId ? reactTo : undefined}
                   />
                 </ConnectionActionsContext.Provider>
               </FileLinks.Provider>
