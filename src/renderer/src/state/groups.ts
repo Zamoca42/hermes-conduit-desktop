@@ -45,6 +45,10 @@ export interface RoomCapabilities {
   canStop: boolean
   /** Hermes keeps a message's files as its own attachments (`groups.attachment.upload`). */
   attachments: boolean
+  /** Group Settings: purpose, shared notes and (where it routes) who answers. */
+  context?: boolean
+  /** Continue on a discussion paused at its turn limit. */
+  canContinue?: boolean
   maxLogLimit?: number
 }
 
@@ -60,6 +64,8 @@ export function roomCapabilities(result: unknown): RoomCapabilities {
     supported: REQUIRED_ROOM_METHODS.every(m => methods.has(m)),
     canStop: methods.has('groups.stop'),
     attachments: methods.has('groups.attachment.upload'),
+    context: methods.has('groups.context'),
+    canContinue: methods.has('groups.continue'),
     maxLogLimit: int(obj(result)?.max_log_limit)
   }
 }
@@ -139,7 +145,7 @@ export function mergeEvents(existing: readonly RoomEvent[], incoming: readonly R
 export type RoomItem =
   | { kind: 'user'; key: string; text: string; files?: RoomFile[]; at?: number; pending?: boolean; failed?: boolean }
   | { kind: 'member'; key: string; text: string; memberId: string; name: string; at?: number }
-  | { kind: 'note'; key: string; text: string; tone?: 'error' }
+  | { kind: 'note'; key: string; text: string; tone?: 'error'; /** A discussion paused at its turn limit: Continue may reopen it. */ paused?: string }
 
 function memberName(room: Room | null, memberId: string, fallback?: string): string {
   const member = room?.members.find(m => m.memberId === memberId)
@@ -190,9 +196,180 @@ export function roomItems(room: Room | null, events: readonly RoomEvent[]): Room
     } else if (event.kind === 'room.renamed') {
       const name = str(event.payload.name)
       if (name) items.push({ kind: 'note', key: event.eventId, text: t('Renamed to {name}', { name }) })
+    } else if (event.kind === 'room.context_set') {
+      items.push({ kind: 'note', key: event.eventId, text: t("The room's settings changed.") })
+    } else if (event.kind === 'room.continued') {
+      items.push({ kind: 'note', key: event.eventId, text: t('The conversation continued.') })
+    } else if (event.kind === 'room.assignment' || event.kind === 'room.routed') {
+      items.push({ kind: 'note', key: event.eventId, text: routingCaption(room, event) })
+    } else if (event.kind === 'room.activity' && event.payload.status === 'bounded') {
+      items.push({ kind: 'note', key: event.eventId, text: t('The conversation reached its turn limit.'), paused: str(event.payload.discussion_event_id) })
     }
   }
   return items
+}
+
+/** "Ada and Linus", in the app's language. */
+function namesList(names: string[]): string {
+  try {
+    return new Intl.ListFormat(locale(), { style: 'long', type: 'conjunction' }).format(names)
+  } catch {
+    return names.join(', ')
+  }
+}
+
+const memberIds = (value: unknown) => (Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string' && !!id) : [])
+
+/** What the routing decided for a message that named nobody, in Desktop's words. */
+export function routingCaption(room: Room | null, event: RoomEvent): string {
+  const picked = memberIds(event.payload.member_ids)
+  if (event.kind === 'room.assignment') {
+    const leadId = str(event.payload.lead_member_id)
+    const lead = leadId ? memberName(room, leadId) : t('The lead')
+    const keptIt = picked.length === 1 && picked[0]!.toLowerCase() === leadId?.toLowerCase()
+    if (event.payload.fallback === true || !picked.length || keptIt) return t('{lead} is taking this.', { lead })
+    return t('{lead} gave this to {names}.', { lead, names: namesList(picked.map(id => memberName(room, id))) })
+  }
+  if (event.payload.fallback === true) return t("Couldn't choose who answers, so everyone will.")
+  if (event.payload.everyone === true || !picked.length) return t('Assigned to everyone.')
+  return t('Assigned to {names}.', { names: namesList(picked.map(id => memberName(room, id))) })
+}
+
+export type Routing = 'everyone' | 'lead' | 'auto'
+const ROUTINGS: Routing[] = ['everyone', 'lead', 'auto']
+
+/** A room's settings, from `groups.state`'s `context` or a `room.context_set` payload. */
+export interface RoomContext {
+  purpose: string
+  notes: string
+  routing: Routing
+  /** The lead's member id; empty unless routing is `lead`. */
+  leadMemberId: string
+  /** A routing mode this app predates, as the host named it; routing reads `everyone` meanwhile. */
+  newerRouting: string
+}
+
+export const MAX_PURPOSE_CHARACTERS = 500
+export const MAX_NOTES_BYTES = 4 * 1024
+
+export function contextFrom(value: unknown): RoomContext | undefined {
+  const row = obj(value)
+  if (!row) return undefined
+  const raw = typeof row.routing === 'string' ? row.routing.trim() : ''
+  const routing = (ROUTINGS as string[]).includes(raw) ? (raw as Routing) : 'everyone'
+  return {
+    purpose: typeof row.purpose === 'string' ? row.purpose : '',
+    notes: typeof row.notes === 'string' ? row.notes : '',
+    routing,
+    leadMemberId: routing === 'lead' && typeof row.lead_member_id === 'string' ? row.lead_member_id : '',
+    newerRouting: raw && !(ROUTINGS as string[]).includes(raw) ? raw : ''
+  }
+}
+
+/** The Who answers choices this host offers: none on a host before routing, Everyone at least on a room running a newer mode. */
+export function routingChoices(status: Pick<DriverStatus, 'routingModes' | 'context'>): Routing[] {
+  const listed = (status.routingModes ?? []).filter((mode): mode is Routing => (ROUTINGS as string[]).includes(mode))
+  if (listed.length) return ROUTINGS.filter(mode => listed.includes(mode))
+  return status.context?.newerRouting ? ['everyone'] : []
+}
+
+/**
+ * The `groups.context` a save sends: purpose and notes always, routing only
+ * when it changes who answers from what the settings opened with, so a
+ * change another client made meanwhile stays.
+ */
+export function contextSave(draft: RoomContext, opened: RoomContext): Record<string, unknown> {
+  const save: Record<string, unknown> = { purpose: draft.purpose.trim(), notes: draft.notes }
+  const changed = draft.newerRouting
+    ? false
+    : draft.routing !== opened.routing || !!opened.newerRouting || (draft.routing === 'lead' && draft.leadMemberId !== opened.leadMemberId)
+  if (changed) {
+    save.routing = draft.routing
+    save.lead_member_id = draft.routing === 'lead' ? draft.leadMemberId : ''
+  }
+  return save
+}
+
+/** Whether these events start at the room's beginning, so they show everything about a discussion. */
+const reachesStart = (events: readonly RoomEvent[]) => events[0]?.seq === 1
+
+/**
+ * Whether Continue can reopen this discussion, as the host decides it: its
+ * latest outcome is the turn limit, no Stop and no newer message in its
+ * thread came after its message, and it has had fewer Continues than the
+ * host allows. Only claimed where the events show its message (so every
+ * Continue after it is counted) or reach the room's start.
+ */
+export function canContinue(events: readonly RoomEvent[], discussionEventId: string, maxContinues: number | undefined): boolean {
+  if (maxContinues === undefined) return false
+  const source = events.find(event => event.eventId === discussionEventId)
+  if (!source && !reachesStart(events)) return false
+  let bounded: RoomEvent | null = null
+  let grants = 0
+  for (const event of events) {
+    if (event.payload.discussion_event_id !== discussionEventId) continue
+    if (event.kind === 'room.continued') {
+      grants += 1
+      bounded = null
+    } else if (event.kind === 'room.activity') bounded = event.payload.status === 'bounded' ? event : null
+  }
+  if (!bounded || grants >= maxContinues) return false
+  const thread = bounded.payload.thread_id
+  const after = source?.seq ?? bounded.seq
+  return !events.some(
+    event => event.seq > after && (event.kind === 'room.stop_requested' || (event.kind === 'message.user' && event.payload.thread_id === thread))
+  )
+}
+
+/** The settings a discussion opened under: the latest change before it, the defaults from the room's start, or the current ones with no change after it. */
+function contextAt(events: readonly RoomEvent[], seq: number, current: RoomContext | undefined): RoomContext | undefined {
+  const before = [...events].reverse().find(event => event.kind === 'room.context_set' && event.seq < seq)
+  if (before) return contextFrom(before.payload)
+  if (!events.some(event => event.kind === 'room.context_set' && event.seq > seq)) return current
+  return reachesStart(events) ? contextFrom({}) : undefined
+}
+
+/**
+ * Who is choosing who answers right now, for the title line: the oldest
+ * discussion still open, opened by a message that named nobody in a lead or
+ * automatic room, with no pick and no answer yet. Null when the events
+ * can't say so.
+ */
+export function choosingWhoAnswers(room: Room | null, events: readonly RoomEvent[], current: RoomContext | undefined): { lead?: string } | null {
+  const continued = new Map<string, number>()
+  const closed = new Set<string>()
+  for (const event of events) {
+    const id = str(event.payload.discussion_event_id)
+    if (!id) continue
+    if (event.kind === 'room.continued') {
+      continued.set(id, event.seq)
+      closed.delete(id)
+    } else if (event.kind === 'room.activity' && (event.payload.status === 'settled' || event.payload.status === 'bounded')) closed.add(id)
+  }
+  const lastStop = Math.max(0, ...events.filter(event => event.kind === 'room.stop_requested').map(event => event.seq))
+  // The host works one discussion at a time, the oldest still open.
+  const open = events.find(
+    event =>
+      event.kind === 'message.user' &&
+      event.payload.thread_id === event.eventId &&
+      event.seq > lastStop &&
+      !closed.has(event.eventId) &&
+      !continued.has(event.eventId)
+  )
+  if (!open) return null
+  const text = typeof open.payload.text === 'string' ? open.payload.text : ''
+  // A message naming members goes straight to them.
+  if (/(^|\s)@[\w-]/.test(text)) return null
+  const context = contextAt(events, open.seq, current)
+  if (!context || (context.routing !== 'lead' && context.routing !== 'auto')) return null
+  const answered = events.some(
+    event =>
+      event.seq > open.seq &&
+      (((event.kind === 'room.assignment' || event.kind === 'room.routed') && event.payload.discussion_event_id === open.eventId) ||
+        ((event.kind === 'message.member' || event.kind.startsWith('turn.')) && event.payload.thread_id === open.payload.thread_id))
+  )
+  if (answered) return null
+  return context.routing === 'lead' && context.leadMemberId ? { lead: memberName(room, context.leadMemberId) } : {}
 }
 
 export interface DriverStatus {
@@ -200,6 +377,12 @@ export interface DriverStatus {
   /** The members taking a turn now. */
   busy: string[]
   disbanded: boolean
+  /** The room's settings, where the host keeps them. */
+  context?: RoomContext
+  /** The Who answers modes the host routes by; absent on a host before routing. */
+  routingModes?: string[]
+  /** How many times one discussion can be continued past its turn limit. */
+  maxContinues?: number
 }
 
 export function driverStatus(result: unknown): DriverStatus {
@@ -210,7 +393,15 @@ export function driverStatus(result: unknown): DriverStatus {
     const id = str(obj(raw)?.member_id)
     if (id && !busy.includes(id)) busy.push(id)
   }
-  return { working: driver?.working === true || busy.length > 0, busy, disbanded: typeof obj(row?.room)?.disbanded_at === 'number' }
+  const modes = Array.isArray(driver?.routing_modes) ? (driver!.routing_modes as unknown[]).filter((m): m is string => typeof m === 'string') : undefined
+  return {
+    working: driver?.working === true || busy.length > 0,
+    busy,
+    disbanded: typeof obj(row?.room)?.disbanded_at === 'number',
+    context: contextFrom(row?.context),
+    routingModes: modes,
+    maxContinues: int(driver?.max_continues)
+  }
 }
 
 /** A bot's @handle in a room, as the phone gives it: its profile name, the default profile's "hermes". */

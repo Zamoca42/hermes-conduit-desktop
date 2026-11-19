@@ -8048,3 +8048,51 @@ a.ask-btn[aria-disabled='true'] {
   background: var(--surface);
   cursor: pointer;
 }
+
+/* A room's Group Settings and its turn-limit Continue. */
+.room-settings header {
+  gap: 8px;
+}
+
+.room-settings header h2 {
+  flex: 1;
+  text-align: center;
+}
+
+.room-settings .input-ask-field {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font: inherit;
+}
+
+.room-modes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 2px 0 6px;
+}
+
+.room-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.notice .notice-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 10px;
+}
+
+.room-settings .meta {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.room-mode input {
+  accent-color: var(--accent);
+}

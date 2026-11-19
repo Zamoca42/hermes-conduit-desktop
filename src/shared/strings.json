@@ -299,6 +299,21 @@
     "zh-Hans": "提醒未完成或快到期的事：每天三条提醒。",
     "zh-Hant": "提醒未完成或快到期的事：每天三則提醒。"
   },
+  "A lead picks who answers": {
+    "de": "Eine Leitung wählt, wer antwortet",
+    "es": "Un líder elige quién responde",
+    "fr": "Un responsable choisit qui répond",
+    "id": "Pemimpin memilih siapa yang menjawab",
+    "it": "Un responsabile sceglie chi risponde",
+    "ja": "リーダーが回答者を選ぶ",
+    "ko": "리더가 답할 멤버를 골라요",
+    "pl": "Lider wybiera, kto odpowie",
+    "pt-BR": "Um líder escolhe quem responde",
+    "ru": "Ведущий выбирает, кто ответит",
+    "tr": "Bir lider kimin yanıtlayacağını seçer",
+    "zh-Hans": "由负责人选择谁回答",
+    "zh-Hant": "由負責人選擇誰回答"
+  },
   "A profile named {name} already exists.": {
     "de": "Ein Profil namens {name} existiert bereits.",
     "es": "Ya existe un perfil llamado {name}.",
@@ -328,6 +343,21 @@
     "tr": "Bir soru",
     "zh-Hans": "一个问题",
     "zh-Hant": "一個問題"
+  },
+  "A quick model call picks who a message is for. @mentions still go straight to the members you name.": {
+    "de": "Ein kurzer Modellaufruf wählt aus, für wen eine Nachricht ist. @Erwähnungen gehen weiter direkt an die genannten Mitglieder.",
+    "es": "Una llamada rápida a un modelo elige para quién es un mensaje. Las @menciones siguen yendo directamente a los miembros que nombres.",
+    "fr": "Un appel rapide à un modèle choisit à qui s’adresse un message. Les @mentions vont toujours directement aux membres nommés.",
+    "id": "Panggilan model singkat memilih untuk siapa pesan itu. @sebutan tetap langsung ke anggota yang kamu sebut.",
+    "it": "Una rapida chiamata a un modello sceglie a chi è rivolto un messaggio. Le @menzioni vanno comunque direttamente ai membri che nomini.",
+    "ja": "短いモデル呼び出しで、メッセージが誰宛てかを選びます。@メンションは引き続き指名したメンバーに直接届きます。",
+    "ko": "짧은 모델 호출로 메시지가 누구에게 온 것인지 골라요. @멘션은 여전히 지정한 멤버에게 바로 가요.",
+    "pl": "Szybkie wywołanie modelu wybiera, do kogo jest wiadomość. @wzmianki nadal trafiają prosto do wskazanych członków.",
+    "pt-BR": "Uma chamada rápida a um modelo escolhe para quem é a mensagem. As @menções continuam indo direto para os membros que você citar.",
+    "ru": "Быстрый запрос к модели выбирает, кому адресовано сообщение. @упоминания по-прежнему идут прямо названным участникам.",
+    "tr": "Kısa bir model çağrısı mesajın kime olduğunu seçer. @bahsetmeler yine doğrudan adını verdiğin üyelere gider.",
+    "zh-Hans": "一次快速的模型调用会判断消息是给谁的。@提及仍会直接发给你点名的成员。",
+    "zh-Hant": "一次快速的模型呼叫會判斷訊息是給誰的。@提及仍會直接傳給你點名的成員。"
   },
   "A reply running there always finishes first. If you go back to that app, reopen the chat there to see what you sent from Conduit.": {
     "de": "Eine dort laufende Antwort wird immer zuerst abgeschlossen. Wenn du zu dieser App zurückkehrst, öffne den Chat dort erneut, um zu sehen, was du aus Conduit gesendet hast.",
@@ -1604,6 +1634,21 @@
     "zh-Hans": "无法载入产物",
     "zh-Hant": "無法載入產物"
   },
+  "As set elsewhere ({mode})": {
+    "de": "Wie anderswo festgelegt ({mode})",
+    "es": "Como se configuró en otro lugar ({mode})",
+    "fr": "Comme défini ailleurs ({mode})",
+    "id": "Seperti diatur di tempat lain ({mode})",
+    "it": "Come impostato altrove ({mode})",
+    "ja": "他の場所での設定のまま（{mode}）",
+    "ko": "다른 곳에서 설정한 대로 ({mode})",
+    "pl": "Jak ustawiono gdzie indziej ({mode})",
+    "pt-BR": "Como definido em outro lugar ({mode})",
+    "ru": "Как задано в другом месте ({mode})",
+    "tr": "Başka yerde ayarlandığı gibi ({mode})",
+    "zh-Hans": "沿用其他地方的设置（{mode}）",
+    "zh-Hant": "沿用其他地方的設定（{mode}）"
+  },
   "Ask Hermes": {
     "de": "Hermes fragen",
     "es": "Preguntar a Hermes",
@@ -1783,6 +1828,36 @@
     "tr": "Atanan",
     "zh-Hans": "指派给",
     "zh-Hant": "指派給"
+  },
+  "Assigned to everyone.": {
+    "de": "An alle vergeben.",
+    "es": "Asignado a todos.",
+    "fr": "Attribué à tout le monde.",
+    "id": "Diberikan ke semua.",
+    "it": "Assegnato a tutti.",
+    "ja": "全員に割り当てました。",
+    "ko": "모두에게 배정했어요.",
+    "pl": "Przydzielono wszystkim.",
+    "pt-BR": "Atribuído a todos.",
+    "ru": "Назначено всем.",
+    "tr": "Herkese verildi.",
+    "zh-Hans": "已分配给所有人。",
+    "zh-Hant": "已分配給所有人。"
+  },
+  "Assigned to {names}.": {
+    "de": "An {names} vergeben.",
+    "es": "Asignado a {names}.",
+    "fr": "Attribué à {names}.",
+    "id": "Diberikan ke {names}.",
+    "it": "Assegnato a {names}.",
+    "ja": "{names}に割り当てました。",
+    "ko": "{names} 님에게 배정했어요.",
+    "pl": "Przydzielono: {names}.",
+    "pt-BR": "Atribuído a {names}.",
+    "ru": "Назначено: {names}.",
+    "tr": "{names} adlı üyeye verildi.",
+    "zh-Hans": "已分配给 {names}。",
+    "zh-Hant": "已分配給 {names}。"
   },
   "At a place": {
     "de": "An einem Ort",
@@ -3569,6 +3644,21 @@
     "zh-Hans": "选择 Conduit 跟随 Hermes、始终显示还是从不显示维护动态。",
     "zh-Hant": "選擇 Conduit 要跟隨 Hermes、一律顯示，還是永不顯示維護更新。"
   },
+  "Choosing who answers…": {
+    "de": "Wählt aus, wer antwortet …",
+    "es": "Eligiendo quién responde…",
+    "fr": "Choix de qui répond…",
+    "id": "Memilih siapa yang menjawab…",
+    "it": "Scelta di chi risponde…",
+    "ja": "回答者を選んでいます…",
+    "ko": "답할 멤버를 고르는 중…",
+    "pl": "Wybieranie, kto odpowie…",
+    "pt-BR": "Escolhendo quem responde…",
+    "ru": "Выбираем, кто ответит…",
+    "tr": "Kimin yanıtlayacağı seçiliyor…",
+    "zh-Hans": "正在选择由谁回答…",
+    "zh-Hant": "正在選擇由誰回答…"
+  },
   "City": {
     "de": "Stadt",
     "es": "Ciudad",
@@ -5188,6 +5278,21 @@
     "tr": "Güncellemeler denetlenemedi",
     "zh-Hans": "无法检查更新",
     "zh-Hant": "無法檢查更新"
+  },
+  "Couldn't choose who answers, so everyone will.": {
+    "de": "Es konnte nicht gewählt werden, wer antwortet, daher antworten alle.",
+    "es": "No se pudo elegir quién responde, así que responderán todos.",
+    "fr": "Impossible de choisir qui répond, tout le monde répondra donc.",
+    "id": "Tidak bisa memilih siapa yang menjawab, jadi semua akan menjawab.",
+    "it": "Non è stato possibile scegliere chi risponde, quindi risponderanno tutti.",
+    "ja": "回答者を選べなかったため、全員が回答します。",
+    "ko": "답할 멤버를 고르지 못해 모두가 답해요.",
+    "pl": "Nie udało się wybrać, kto odpowie, więc odpowiedzą wszyscy.",
+    "pt-BR": "Não foi possível escolher quem responde, então todos vão responder.",
+    "ru": "Не удалось выбрать, кто ответит, поэтому ответят все.",
+    "tr": "Kimin yanıtlayacağı seçilemedi, bu yüzden herkes yanıtlayacak.",
+    "zh-Hans": "无法选出由谁回答，所以所有人都会回答。",
+    "zh-Hant": "無法選出由誰回答，所以所有人都會回答。"
   },
   "Couldn't connect to Gemini Live.": {
     "de": "Keine Verbindung zu Gemini Live möglich.",
@@ -7859,6 +7964,36 @@
     "zh-Hans": "每小时第 {minute} 分钟",
     "zh-Hant": "每小時第 {minute} 分鐘"
   },
+  "Every member gets a turn on a message that names nobody.": {
+    "de": "Bei einer Nachricht, die niemanden nennt, ist jedes Mitglied an der Reihe.",
+    "es": "Cada miembro tiene su turno en un mensaje que no nombra a nadie.",
+    "fr": "Chaque membre a son tour sur un message qui ne nomme personne.",
+    "id": "Setiap anggota mendapat giliran untuk pesan yang tidak menyebut siapa pun.",
+    "it": "Ogni membro ha un turno su un messaggio che non nomina nessuno.",
+    "ja": "誰も指名していないメッセージには、全メンバーが順番に答えます。",
+    "ko": "아무도 지정하지 않은 메시지에는 모든 멤버가 차례로 답해요.",
+    "pl": "Przy wiadomości, która nikogo nie wskazuje, każdy członek dostaje swoją turę.",
+    "pt-BR": "Cada membro tem sua vez numa mensagem que não cita ninguém.",
+    "ru": "На сообщение без упоминаний отвечает каждый участник по очереди.",
+    "tr": "Kimseyi anmayan bir mesajda her üye sırayla yanıt verir.",
+    "zh-Hans": "没有点名任何人的消息，每位成员都会轮流回答。",
+    "zh-Hant": "沒有點名任何人的訊息，每位成員都會輪流回答。"
+  },
+  "Every member reads the purpose and notes with each message. A change applies from the next message.": {
+    "de": "Jedes Mitglied liest den Zweck und die Notizen mit jeder Nachricht. Eine Änderung gilt ab der nächsten Nachricht.",
+    "es": "Cada miembro lee el propósito y las notas con cada mensaje. Un cambio se aplica desde el siguiente mensaje.",
+    "fr": "Chaque membre lit l’objectif et les notes avec chaque message. Une modification s’applique à partir du message suivant.",
+    "id": "Setiap anggota membaca tujuan dan catatan bersama setiap pesan. Perubahan berlaku mulai pesan berikutnya.",
+    "it": "Ogni membro legge lo scopo e le note con ogni messaggio. Una modifica vale dal messaggio successivo.",
+    "ja": "各メンバーはメッセージごとに目的とメモを読みます。変更は次のメッセージから適用されます。",
+    "ko": "모든 멤버가 메시지마다 목적과 메모를 읽어요. 변경 사항은 다음 메시지부터 적용돼요.",
+    "pl": "Każdy członek czyta cel i notatki przy każdej wiadomości. Zmiana obowiązuje od następnej wiadomości.",
+    "pt-BR": "Cada membro lê o propósito e as notas com cada mensagem. Uma alteração vale a partir da próxima mensagem.",
+    "ru": "Каждый участник читает цель и заметки с каждым сообщением. Изменение действует со следующего сообщения.",
+    "tr": "Her üye her mesajla birlikte amacı ve notları okur. Değişiklik bir sonraki mesajdan itibaren geçerli olur.",
+    "zh-Hans": "每位成员都会随每条消息读取目的和共享备注。更改从下一条消息开始生效。",
+    "zh-Hant": "每位成員都會隨每則訊息讀取目的和共享備註。變更從下一則訊息開始生效。"
+  },
   "Every minute": {
     "de": "Jede Minute",
     "es": "Cada minuto",
@@ -7978,6 +8113,21 @@
     "tr": "Her {days} saat {time}",
     "zh-Hans": "每{days} {time}",
     "zh-Hant": "每{days} {time}"
+  },
+  "Everyone answers": {
+    "de": "Alle antworten",
+    "es": "Responden todos",
+    "fr": "Tout le monde répond",
+    "id": "Semua menjawab",
+    "it": "Rispondono tutti",
+    "ja": "全員が答える",
+    "ko": "모두가 답해요",
+    "pl": "Odpowiadają wszyscy",
+    "pt-BR": "Todos respondem",
+    "ru": "Отвечают все",
+    "tr": "Herkes yanıtlar",
+    "zh-Hans": "所有人回答",
+    "zh-Hant": "所有人回答"
   },
   "Everyone here reads what you send. Mention a bot with @ to ask just them.": {
     "de": "Alle hier lesen, was du sendest. Erwähne einen Bot mit @, um nur ihn zu fragen.",
@@ -8203,6 +8353,21 @@
     "tr": "Bilgiler",
     "zh-Hans": "事实",
     "zh-Hant": "事實"
+  },
+  "Facts every member should keep in mind": {
+    "de": "Fakten, die jedes Mitglied im Kopf behalten soll",
+    "es": "Datos que todos los miembros deben tener en cuenta",
+    "fr": "Faits que chaque membre doit garder en tête",
+    "id": "Fakta yang perlu diingat setiap anggota",
+    "it": "Fatti che ogni membro dovrebbe tenere a mente",
+    "ja": "全メンバーが覚えておくべきこと",
+    "ko": "모든 멤버가 기억해야 할 사실",
+    "pl": "Fakty, o których każdy członek powinien pamiętać",
+    "pt-BR": "Fatos que todos os membros devem ter em mente",
+    "ru": "Факты, которые каждый участник должен помнить",
+    "tr": "Her üyenin aklında tutması gereken bilgiler",
+    "zh-Hans": "每位成员都应记住的事项",
+    "zh-Hant": "每位成員都應記住的事項"
   },
   "Failed": {
     "de": "Fehlgeschlagen",
@@ -9658,6 +9823,21 @@
     "tr": "Grok Live, bu profilin SOUL.md dosyasındaki kişilikle konuşur. SOUL.md konuşmayla birlikte xAI'a gönderilir. Sonraki konuşmada geçerli olur.",
     "zh-Hans": "Grok Live 会以此配置文件 SOUL.md 中的个性说话。SOUL.md 会随对话发送给 xAI。将在下一次对话中生效。",
     "zh-Hant": "Grok Live 會以此設定檔 SOUL.md 中的個性說話。SOUL.md 會隨對話傳送給 xAI。下次對話起生效。"
+  },
+  "Group Settings": {
+    "de": "Gruppeneinstellungen",
+    "es": "Ajustes del grupo",
+    "fr": "Réglages du groupe",
+    "id": "Pengaturan Grup",
+    "it": "Impostazioni gruppo",
+    "ja": "グループ設定",
+    "ko": "그룹 설정",
+    "pl": "Ustawienia grupy",
+    "pt-BR": "Ajustes do grupo",
+    "ru": "Настройки группы",
+    "tr": "Grup Ayarları",
+    "zh-Hans": "群组设置",
+    "zh-Hant": "群組設定"
   },
   "Group chat being started": {
     "de": "Gruppenchat wird gestartet",
@@ -12284,6 +12464,21 @@
     "zh-Hans": "默认保持已完成的工具详情展开。",
     "zh-Hant": "預設展開已完成的工具詳細資訊。"
   },
+  "Keep the purpose under 500 characters.": {
+    "de": "Halte den Zweck unter 500 Zeichen.",
+    "es": "Mantén el propósito por debajo de 500 caracteres.",
+    "fr": "Gardez l’objectif sous 500 caractères.",
+    "id": "Buat tujuan kurang dari 500 karakter.",
+    "it": "Mantieni lo scopo sotto i 500 caratteri.",
+    "ja": "目的は500文字以内にしてください。",
+    "ko": "목적은 500자 이내로 적어 주세요.",
+    "pl": "Cel nie może mieć więcej niż 500 znaków.",
+    "pt-BR": "Mantenha o propósito com menos de 500 caracteres.",
+    "ru": "Цель должна быть короче 500 символов.",
+    "tr": "Amacı 500 karakterin altında tut.",
+    "zh-Hans": "目的请控制在 500 个字符以内。",
+    "zh-Hant": "目的請控制在 500 個字元以內。"
+  },
   "Keep them": {
     "de": "Behalten",
     "es": "Conservarlos",
@@ -12598,6 +12793,21 @@
     "tr": "Son özet",
     "zh-Hans": "最新摘要",
     "zh-Hant": "最新摘要"
+  },
+  "Lead": {
+    "de": "Leitung",
+    "es": "Líder",
+    "fr": "Responsable",
+    "id": "Pemimpin",
+    "it": "Responsabile",
+    "ja": "リーダー",
+    "ko": "리더",
+    "pl": "Lider",
+    "pt-BR": "Líder",
+    "ru": "Ведущий",
+    "tr": "Lider",
+    "zh-Hans": "负责人",
+    "zh-Hant": "負責人"
   },
   "Learned": {
     "de": "Gelernt",
@@ -17429,6 +17639,21 @@
     "zh-Hans": "请至少选择一天。",
     "zh-Hant": "請至少選擇一天。"
   },
+  "Pick who answers automatically": {
+    "de": "Automatisch wählen, wer antwortet",
+    "es": "Elegir automáticamente quién responde",
+    "fr": "Choisir automatiquement qui répond",
+    "id": "Pilih otomatis siapa yang menjawab",
+    "it": "Scegli automaticamente chi risponde",
+    "ja": "回答者を自動で選ぶ",
+    "ko": "답할 멤버를 자동으로 골라요",
+    "pl": "Automatycznie wybieraj, kto odpowie",
+    "pt-BR": "Escolher automaticamente quem responde",
+    "ru": "Выбирать отвечающих автоматически",
+    "tr": "Kimin yanıtlayacağını otomatik seç",
+    "zh-Hans": "自动选择由谁回答",
+    "zh-Hant": "自動選擇由誰回答"
+  },
   "Picked, but the look ahead was full": {
     "de": "Ausgewählt, aber die Vorausschau war voll",
     "es": "Elegido, pero la previsión estaba llena",
@@ -18433,6 +18658,21 @@
     "tr": "Mor",
     "zh-Hans": "紫色",
     "zh-Hant": "紫色"
+  },
+  "Purpose": {
+    "de": "Zweck",
+    "es": "Propósito",
+    "fr": "Objectif",
+    "id": "Tujuan",
+    "it": "Scopo",
+    "ja": "目的",
+    "ko": "목적",
+    "pl": "Cel",
+    "pt-BR": "Propósito",
+    "ru": "Цель",
+    "tr": "Amaç",
+    "zh-Hans": "目的",
+    "zh-Hant": "目的"
   },
   "Put back": {
     "de": "Zurücklegen",
@@ -21959,6 +22199,36 @@
     "zh-Hans": "共享的密钥和账户与主配置文件保持同一套，因此在其中一个刷新登录不会让另一个退出登录。关闭后将使用单独的副本。",
     "zh-Hant": "共享的金鑰和帳號與主設定檔保持同一套，因此在其中一個重新整理登入不會讓另一個登出。關閉後將使用單獨的副本。"
   },
+  "Shared notes": {
+    "de": "Geteilte Notizen",
+    "es": "Notas compartidas",
+    "fr": "Notes partagées",
+    "id": "Catatan bersama",
+    "it": "Note condivise",
+    "ja": "共有メモ",
+    "ko": "공유 메모",
+    "pl": "Wspólne notatki",
+    "pt-BR": "Notas compartilhadas",
+    "ru": "Общие заметки",
+    "tr": "Paylaşılan notlar",
+    "zh-Hans": "共享备注",
+    "zh-Hant": "共享備註"
+  },
+  "Shared notes are too long. Keep them under 4 KB.": {
+    "de": "Die geteilten Notizen sind zu lang. Halte sie unter 4 KB.",
+    "es": "Las notas compartidas son demasiado largas. Mantenlas por debajo de 4 KB.",
+    "fr": "Les notes partagées sont trop longues. Gardez-les sous 4 Ko.",
+    "id": "Catatan bersama terlalu panjang. Buat kurang dari 4 KB.",
+    "it": "Le note condivise sono troppo lunghe. Mantienile sotto i 4 KB.",
+    "ja": "共有メモが長すぎます。4 KB以内にしてください。",
+    "ko": "공유 메모가 너무 길어요. 4KB 이내로 적어 주세요.",
+    "pl": "Wspólne notatki są za długie. Nie mogą przekraczać 4 KB.",
+    "pt-BR": "As notas compartilhadas estão longas demais. Mantenha-as abaixo de 4 KB.",
+    "ru": "Общие заметки слишком длинные. Сократите их до 4 КБ.",
+    "tr": "Paylaşılan notlar çok uzun. 4 KB’nin altında tut.",
+    "zh-Hans": "共享备注太长了。请控制在 4 KB 以内。",
+    "zh-Hant": "共享備註太長了。請控制在 4 KB 以內。"
+  },
   "Shortcuts inbox": {
     "de": "Kurzbefehle-Eingang",
     "es": "Bandeja de Atajos",
@@ -24599,6 +24869,36 @@
     "zh-Hans": "与 Hermes 的连接已断开。",
     "zh-Hant": "與 Hermes 的連線已中斷。"
   },
+  "The conversation continued.": {
+    "de": "Die Unterhaltung geht weiter.",
+    "es": "La conversación continuó.",
+    "fr": "La conversation a repris.",
+    "id": "Percakapan dilanjutkan.",
+    "it": "La conversazione è ripresa.",
+    "ja": "会話が再開されました。",
+    "ko": "대화가 이어졌어요.",
+    "pl": "Rozmowa trwa dalej.",
+    "pt-BR": "A conversa continuou.",
+    "ru": "Разговор продолжен.",
+    "tr": "Konuşma devam etti.",
+    "zh-Hans": "对话已继续。",
+    "zh-Hant": "對話已繼續。"
+  },
+  "The conversation reached its turn limit.": {
+    "de": "Die Unterhaltung hat ihr Limit an Durchgängen erreicht.",
+    "es": "La conversación alcanzó su límite de turnos.",
+    "fr": "La conversation a atteint sa limite de tours.",
+    "id": "Percakapan mencapai batas gilirannya.",
+    "it": "La conversazione ha raggiunto il limite di turni.",
+    "ja": "会話がターンの上限に達しました。",
+    "ko": "대화가 턴 한도에 도달했어요.",
+    "pl": "Rozmowa osiągnęła limit tur.",
+    "pt-BR": "A conversa atingiu o limite de turnos.",
+    "ru": "Разговор достиг лимита ходов.",
+    "tr": "Konuşma tur sınırına ulaştı.",
+    "zh-Hans": "对话已达到回合上限。",
+    "zh-Hant": "對話已達到回合上限。"
+  },
   "The dashboard is running an older copy of Pulse. Restart it to use the update.": {
     "de": "Das Dashboard führt eine ältere Version von Pulse aus. Starte es neu, um das Update zu nutzen.",
     "es": "El panel está ejecutando una copia anterior de Pulse. Reinícialo para usar la actualización.",
@@ -24838,6 +25138,36 @@
     "tr": "Anahtarlar kaydedildi ancak diğer ayarlar kaydedilmedi: {reason}",
     "zh-Hans": "密钥已保存，但其他设置未保存：{reason}",
     "zh-Hant": "金鑰已儲存，但其他設定未儲存：{reason}"
+  },
+  "The lead": {
+    "de": "Die Leitung",
+    "es": "El líder",
+    "fr": "Le responsable",
+    "id": "Pemimpin",
+    "it": "Il responsabile",
+    "ja": "リーダー",
+    "ko": "리더",
+    "pl": "Lider",
+    "pt-BR": "O líder",
+    "ru": "Ведущий",
+    "tr": "Lider",
+    "zh-Hans": "负责人",
+    "zh-Hant": "負責人"
+  },
+  "The lead picks who takes a message that names nobody. @mentions and @everyone still go straight to those members.": {
+    "de": "Die Leitung wählt aus, wer eine Nachricht übernimmt, die niemanden nennt. @Erwähnungen und @everyone gehen weiter direkt an diese Mitglieder.",
+    "es": "El líder elige quién se encarga de un mensaje que no nombra a nadie. Las @menciones y @everyone siguen yendo directamente a esos miembros.",
+    "fr": "Le responsable choisit qui prend un message qui ne nomme personne. Les @mentions et @everyone vont toujours directement à ces membres.",
+    "id": "Pemimpin memilih siapa yang mengambil pesan yang tidak menyebut siapa pun. @sebutan dan @everyone tetap langsung ke anggota tersebut.",
+    "it": "Il responsabile sceglie chi prende un messaggio che non nomina nessuno. Le @menzioni e @everyone vanno comunque direttamente a quei membri.",
+    "ja": "誰も指名していないメッセージは、リーダーが担当者を選びます。@メンションと @everyone は引き続きそのメンバーに直接届きます。",
+    "ko": "아무도 지정하지 않은 메시지는 리더가 맡을 멤버를 골라요. @멘션과 @everyone은 여전히 해당 멤버에게 바로 가요.",
+    "pl": "Lider wybiera, kto zajmie się wiadomością, która nikogo nie wskazuje. @wzmianki i @everyone nadal trafiają prosto do tych członków.",
+    "pt-BR": "O líder escolhe quem fica com uma mensagem que não cita ninguém. As @menções e @everyone continuam indo direto para esses membros.",
+    "ru": "Ведущий выбирает, кто возьмёт сообщение без упоминаний. @упоминания и @everyone по-прежнему идут прямо этим участникам.",
+    "tr": "Kimseyi anmayan bir mesajı kimin alacağını lider seçer. @bahsetmeler ve @everyone yine doğrudan o üyelere gider.",
+    "zh-Hans": "没有点名任何人的消息由负责人决定交给谁。@提及和 @everyone 仍会直接发给这些成员。",
+    "zh-Hant": "沒有點名任何人的訊息由負責人決定交給誰。@提及和 @everyone 仍會直接傳給這些成員。"
   },
   "The look ahead passed over it": {
     "de": "Die Vorausschau hat es übergangen",
@@ -25108,6 +25438,21 @@
     "tr": "Gerisi ekranınızda.",
     "zh-Hans": "其余内容在你的屏幕上。",
     "zh-Hant": "其餘內容在你的螢幕上。"
+  },
+  "The room's settings changed.": {
+    "de": "Die Einstellungen des Raums haben sich geändert.",
+    "es": "Los ajustes de la sala cambiaron.",
+    "fr": "Les réglages du salon ont changé.",
+    "id": "Pengaturan ruang berubah.",
+    "it": "Le impostazioni della stanza sono cambiate.",
+    "ja": "ルームの設定が変更されました。",
+    "ko": "방 설정이 바뀌었어요.",
+    "pl": "Ustawienia pokoju się zmieniły.",
+    "pt-BR": "Os ajustes da sala mudaram.",
+    "ru": "Настройки комнаты изменились.",
+    "tr": "Odanın ayarları değişti.",
+    "zh-Hans": "房间设置已更改。",
+    "zh-Hant": "房間設定已變更。"
   },
   "The screen is off": {
     "de": "Der Bildschirm ist aus",
@@ -26368,6 +26713,21 @@
     "tr": "Bu istek artık etkin değil.",
     "zh-Hans": "此请求已失效。",
     "zh-Hant": "此請求已失效。"
+  },
+  "This room answers in a way set in a newer app. It stays that way unless you pick another.": {
+    "de": "Dieser Raum antwortet auf eine Weise, die in einer neueren App festgelegt wurde. Das bleibt so, bis du etwas anderes wählst.",
+    "es": "Esta sala responde de una forma configurada en una app más reciente. Seguirá así a menos que elijas otra.",
+    "fr": "Ce salon répond d’une façon définie dans une app plus récente. Il reste ainsi tant que vous n’en choisissez pas une autre.",
+    "id": "Ruang ini menjawab dengan cara yang diatur di app yang lebih baru. Akan tetap begitu kecuali kamu memilih yang lain.",
+    "it": "Questa stanza risponde in un modo impostato in un’app più recente. Resta così finché non ne scegli un altro.",
+    "ja": "このルームは新しいアプリで設定された方法で応答します。別の方法を選ぶまでそのままです。",
+    "ko": "이 방은 더 새로운 앱에서 설정한 방식으로 답합니다. 다른 방식을 고르기 전까지 그대로 유지됩니다.",
+    "pl": "Ten pokój odpowiada w sposób ustawiony w nowszej aplikacji. Tak zostanie, dopóki nie wybierzesz innego.",
+    "pt-BR": "Esta sala responde de um jeito definido em um app mais novo. Continua assim, a menos que você escolha outro.",
+    "ru": "Эта комната отвечает так, как задано в более новом приложении. Так и останется, пока вы не выберете другой вариант.",
+    "tr": "Bu oda daha yeni bir uygulamada ayarlanan şekilde yanıt veriyor. Başka birini seçmediğin sürece böyle kalır.",
+    "zh-Hans": "此聊天室按较新的 App 中设置的方式回答。除非你选择其他方式，否则保持不变。",
+    "zh-Hant": "此聊天室依較新的 App 中設定的方式回答。除非你選擇其他方式，否則維持不變。"
   },
   "This server's own model answers Live calls, and the Conduit plugin runs every other call's turns on it, so there's nothing to set up on it.": {
     "de": "Bei Live-Anrufen antwortet das eigene Modell dieses Servers, und bei allen anderen Anrufen führt das Conduit-Plugin die Runden darauf aus, dort ist also nichts einzurichten.",
@@ -28889,6 +29249,21 @@
     "zh-Hans": "这个机器人的用途",
     "zh-Hant": "這個機器人的用途"
   },
+  "What this room is for, in one line": {
+    "de": "Wofür dieser Raum da ist, in einer Zeile",
+    "es": "Para qué es esta sala, en una línea",
+    "fr": "À quoi sert ce salon, en une ligne",
+    "id": "Untuk apa ruang ini, dalam satu baris",
+    "it": "A cosa serve questa stanza, in una riga",
+    "ja": "このルームの目的を一行で",
+    "ko": "이 방의 용도를 한 줄로",
+    "pl": "Do czego służy ten pokój, w jednym zdaniu",
+    "pt-BR": "Para que serve esta sala, em uma linha",
+    "ru": "Для чего эта комната, одной строкой",
+    "tr": "Bu odanın amacı, tek satırda",
+    "zh-Hans": "用一句话说明这个房间的用途",
+    "zh-Hant": "用一句話說明這個房間的用途"
+  },
   "What to always bring up, what to leave out": {
     "de": "Was immer zur Sprache kommen soll, was wegbleiben soll",
     "es": "Qué mencionar siempre, qué dejar fuera",
@@ -29158,6 +29533,21 @@
     "tr": "Bir sohbet ekrandayken ve siz yazmıyorken Hermes'e ara sıra ekleyecek yararlı bir şeyi olup olmadığı sorulur. Gönderdiğiniz mesaj başına en fazla bir kez, \"Hermes devam etti\" etiketiyle.",
     "zh-Hans": "当聊天显示在屏幕上而你没有输入时，会不时询问 Hermes 是否有有用的内容要补充。你每发一条消息最多跟进一次，并标记为“Hermes 主动跟进”。",
     "zh-Hant": "當聊天顯示在螢幕上而你沒有輸入時，會不時詢問 Hermes 是否有實用的內容要補充。你每傳一則訊息最多跟進一次，並標示為「Hermes 主動跟進」。"
+  },
+  "Who answers": {
+    "de": "Wer antwortet",
+    "es": "Quién responde",
+    "fr": "Qui répond",
+    "id": "Siapa yang menjawab",
+    "it": "Chi risponde",
+    "ja": "回答する人",
+    "ko": "누가 답할지",
+    "pl": "Kto odpowiada",
+    "pt-BR": "Quem responde",
+    "ru": "Кто отвечает",
+    "tr": "Kim yanıtlar",
+    "zh-Hans": "由谁回答",
+    "zh-Hant": "由誰回答"
   },
   "Why?": {
     "de": "Warum?",
@@ -31094,6 +31484,36 @@
     "zh-Hans": "{label}：请从选项中选择一个。",
     "zh-Hant": "{label}：請從選項中選擇一個。"
   },
+  "{lead} gave this to {names}.": {
+    "de": "{lead} hat das an {names} gegeben.",
+    "es": "{lead} se lo pasó a {names}.",
+    "fr": "{lead} a confié ceci à {names}.",
+    "id": "{lead} memberikan ini ke {names}.",
+    "it": "{lead} l’ha affidato a {names}.",
+    "ja": "{lead}がこれを{names}に任せました。",
+    "ko": "{lead} 님이 이 메시지를 {names} 님에게 맡겼어요.",
+    "pl": "{lead} przekazuje to do: {names}.",
+    "pt-BR": "{lead} passou isto para {names}.",
+    "ru": "{lead} передаёт это: {names}.",
+    "tr": "{lead} bunu {names} adlı üyeye verdi.",
+    "zh-Hans": "{lead} 把这条交给了 {names}。",
+    "zh-Hant": "{lead} 把這則交給了 {names}。"
+  },
+  "{lead} is taking this.": {
+    "de": "{lead} übernimmt das.",
+    "es": "{lead} se encarga de esto.",
+    "fr": "{lead} s’en charge.",
+    "id": "{lead} mengambil ini.",
+    "it": "{lead} se ne occupa.",
+    "ja": "{lead}がこれを引き受けます。",
+    "ko": "{lead} 님이 직접 맡아요.",
+    "pl": "{lead} zajmie się tym.",
+    "pt-BR": "{lead} vai cuidar disto.",
+    "ru": "{lead} берёт это на себя.",
+    "tr": "{lead} bunu üstleniyor.",
+    "zh-Hans": "{lead} 来处理这条。",
+    "zh-Hant": "{lead} 來處理這則。"
+  },
   "{minutes} min": {
     "de": "{minutes} Min.",
     "es": "{minutes} min",
@@ -31183,6 +31603,21 @@
     "tr": "{name} yanıtlıyor…",
     "zh-Hans": "{name} 正在回答…",
     "zh-Hant": "{name} 正在回答…"
+  },
+  "{name} is choosing who answers…": {
+    "de": "{name} wählt aus, wer antwortet …",
+    "es": "{name} está eligiendo quién responde…",
+    "fr": "{name} choisit qui répond…",
+    "id": "{name} sedang memilih siapa yang menjawab…",
+    "it": "{name} sta scegliendo chi risponde…",
+    "ja": "{name}が回答者を選んでいます…",
+    "ko": "{name} 님이 답할 멤버를 고르는 중…",
+    "pl": "{name} wybiera, kto odpowie…",
+    "pt-BR": "{name} está escolhendo quem responde…",
+    "ru": "{name} выбирает, кто ответит…",
+    "tr": "{name} kimin yanıtlayacağını seçiyor…",
+    "zh-Hans": "{name} 正在选择由谁回答…",
+    "zh-Hant": "{name} 正在選擇由誰回答…"
   },
   "{name} is in control": {
     "de": "{name} hat die Kontrolle",
