@@ -40543,5 +40543,20 @@
     "tr": "“{kind}” kartları",
     "zh-Hans": "“{kind}”卡片",
     "zh-Hant": "「{kind}」卡片"
+  },
+  "Create switches to {host} and makes the bot there, from its main profile with its default model, skills and tools.": {
+    "de": "„Erstellen“ wechselt zu {host} und erstellt den Bot dort, ausgehend vom Hauptprofil mit dessen Standardmodell, -Skills und -Tools.",
+    "es": "Crear cambia a {host} y crea el bot allí, a partir de su perfil principal con su modelo, habilidades y herramientas predeterminados.",
+    "fr": "Créer passe à {host} et y crée le bot, à partir de son profil principal avec son modèle, ses compétences et ses outils par défaut.",
+    "id": "Buat beralih ke {host} dan membuat bot di sana, dari profil utamanya dengan model, keterampilan, dan alat bawaannya.",
+    "it": "Crea passa a {host} e crea lì il bot, dal suo profilo principale con il modello, le competenze e gli strumenti predefiniti.",
+    "ja": "作成すると {host} に切り替わり、そのメインプロファイルから既定のモデル、スキル、ツールでボットを作成します。",
+    "ko": "만들기를 누르면 {host}(으)로 전환되어 그곳의 기본 프로필에서 기본 모델, 스킬, 도구로 봇을 만듭니다.",
+    "pl": "Utwórz przełącza na {host} i tworzy tam bota z jego profilu głównego, z domyślnym modelem, umiejętnościami i narzędziami.",
+    "pt-BR": "Criar muda para {host} e cria o bot lá, a partir do perfil principal com o modelo, as habilidades e as ferramentas padrão.",
+    "ru": "«Создать» переключает на {host} и создаёт бота там из основного профиля с моделью, навыками и инструментами по умолчанию.",
+    "tr": "Oluştur, {host} panosuna geçer ve botu orada, ana profilinden varsayılan modeli, becerileri ve araçlarıyla oluşturur.",
+    "zh-Hans": "“创建”会切换到 {host}，并在那里从其主配置文件以默认模型、技能和工具创建机器人。",
+    "zh-Hant": "「建立」會切換到 {host}，並在那裡從其主設定檔以預設模型、技能與工具建立機器人。"
   }
 }

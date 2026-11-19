@@ -84,7 +84,7 @@ import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
 import { TakeoverSettings } from './components/TakeoverSettings'
 import { ConnectionActionsContext } from './components/ConnectionCardView'
-import { NewBot } from './components/NewBot'
+import { NewBot, type NewBotDashboard } from './components/NewBot'
 import { useChatDisplay } from './state/display'
 import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
@@ -115,6 +115,9 @@ import {
   openBotAfterSwitch,
   openChatAfterSwitch,
   openPageAfterSwitch,
+  newBotAfterSwitch,
+  takeNewBotAfterSwitch,
+  type NewBotCarry,
   otherHostsChats,
   otherHostsWaiting,
   takeBotAfterSwitch,
@@ -561,6 +564,8 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   /** Edit Bot, open over Bots home. */
   const [editingBot, setEditingBot] = useState<Bot | null>(null)
   const [newBot, setNewBot] = useState(false)
+  // New Bot made on another combined dashboard: the sheet's words, carried over the switch.
+  const [carriedBot, setCarriedBot] = useState<NewBotCarry | null>(null)
   const [botNotice, setBotNotice] = useState<string | null>(null)
   // A call is the open chat's: another chat, or another screen, ends it. A
   // new chat getting its id from the call's first message is the same chat.
@@ -1070,6 +1075,20 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   // ...and their bots, on Bots Home.
   const otherBots = useKeptBots(keptHosts, section === 'bots')
+  // ...and New Bot's choice of where the bot is made: this one, then each other kept connected.
+  const newBotDashboards = useMemo<NewBotDashboard[] | undefined>(() => {
+    if (!status.url || !badgeFor(status.url)) return undefined
+    const live = keptHosts.filter(h => h.state === 'live')
+    return [
+      { url: status.url, name: hostName(status.url), badge: badgeFor(status.url), taken: [] },
+      ...live.map(h => ({
+        url: h.url,
+        name: hostName(h.url),
+        badge: badgeFor(h.url),
+        taken: otherBots.filter(o => o.host === h.url).map(o => o.bot.name)
+      }))
+    ]
+  }, [status.url, badgeFor, keptHosts, otherBots])
   // ...and a Pulse chip each, with how many cards are new there.
   const keptPulse = useKeptPulse(keptHosts, section === 'pulse')
   const pulseUnseen = pulse.feed?.unseen ?? 0
@@ -1191,6 +1210,20 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   useEffect(() => {
     if (takePageAfterSwitch(statusUrl) === 'pulse') setSection('pulse')
   }, [statusUrl])
+  // New Bot picked another dashboard: its sheet opens here with the words, once the roster is read.
+  useEffect(() => {
+    if (!connected || roster.bots === undefined) return
+    const bot = takeNewBotAfterSwitch(statusUrl)
+    if (!bot) return
+    setCarriedBot(bot)
+    setSection('bots')
+    setNewBot(true)
+  }, [connected, statusUrl, roster.bots])
+  const createBotElsewhere = useCallback((url: string, bot: NewBotCarry) => {
+    if (!switchEndingCall(hostName(url))) return
+    newBotAfterSwitch(url, bot)
+    void window.conduit.switchHost(url)
+  }, [])
   const openOtherBot = useCallback((other: OtherBot) => {
     if (!switchEndingCall(hostName(other.host))) return
     openBotAfterSwitch(other)
@@ -1916,9 +1949,16 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
           <NewBot
             bots={[...(roster.bots ?? []), ...roster.hidden]}
             protocol={roster.protocol}
-            onClose={() => setNewBot(false)}
+            dashboards={newBotDashboards}
+            onCreateElsewhere={createBotElsewhere}
+            carried={carriedBot}
+            onClose={() => {
+              setNewBot(false)
+              setCarriedBot(null)
+            }}
             onCreated={(bot, introduce, warning) => {
               setNewBot(false)
+              setCarriedBot(null)
               setBotNotice(warning)
               void roster.refresh()
               if (bot) {

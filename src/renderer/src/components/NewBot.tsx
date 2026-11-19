@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { BOTS_META_KEY, keptColor, rosterFromProfiles, type Bot } from '../state/bots'
@@ -25,6 +25,17 @@ import { ModelOptions } from './ModelOptions'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote } from './ModelCatalogNote'
 import { mayMove, movingPicture, TooLargeError } from '../state/movingPicture'
+import type { HostBadge, NewBotCarry } from '../state/keptHosts'
+import { HostBadgeMark } from './CombinedDashboards'
+
+/** A dashboard New Bot can make the bot on, in a combined group: the one on screen and every other kept connected. */
+export interface NewBotDashboard {
+  url: string
+  name: string
+  badge: HostBadge | null
+  /** The profiles and bots it last listed, which a new name stays clear of. */
+  taken: readonly string[]
+}
 
 interface Props {
   /** Every bot, hidden ones too: a new name and face stay clear of them. */
@@ -34,6 +45,12 @@ interface Props {
   onClose: () => void
   /** The bot was made: `introduce` when it can reach a model and should say hello in its Bot Chat. */
   onCreated: (bot: Bot | null, introduce: boolean, warning: string | null) => void
+  /** In a combined group: where the bot can be made, the one on screen first. */
+  dashboards?: NewBotDashboard[]
+  /** Another dashboard picked: switch there and make the bot with these. */
+  onCreateElsewhere?: (url: string, bot: NewBotCarry) => void
+  /** Carried over a switch from another dashboard's sheet: filled in, and made at once. */
+  carried?: NewBotCarry | null
 }
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -44,15 +61,18 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
  * with a composed SOUL, then its face, color and picture. It says hello in
  * its Bot Chat once its profile can reach a model.
  */
-export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [soul, setSoul] = useState('')
-  const [face, setFace] = useState(() => nextFreeFace(bots))
-  const [picture, setPicture] = useState<string | null>(null)
+export function NewBot({ bots, protocol, onClose, onCreated, dashboards, onCreateElsewhere, carried }: Props) {
+  const [name, setName] = useState(carried?.name ?? '')
+  const [description, setDescription] = useState(carried?.description ?? '')
+  const [soul, setSoul] = useState(carried?.soul ?? '')
+  const [face, setFace] = useState(() => carried?.face ?? nextFreeFace(bots))
+  const [picture, setPicture] = useState<string | null>(carried?.picture ?? null)
   const [pick, setPick] = useState('')
   const [cloneFrom, setCloneFrom] = useState(MAIN_PROFILE)
-  const [shareAuth, setShareAuth] = useState(true)
+  const [shareAuth, setShareAuth] = useState(carried?.shareAuth ?? true)
+  // The dashboard it's made on: the one on screen until another is picked.
+  const [target, setTarget] = useState(dashboards?.[0]?.url ?? '')
+  const elsewhere = !!dashboards?.length && target !== dashboards[0]!.url ? dashboards.find(d => d.url === target) : undefined
   const [noSkills, setNoSkills] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -79,7 +99,7 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
   const groups = useMemo(() => groupModels(providers, ''), [providers])
 
   const slug = slugFrom(name)
-  const taken = bots.some(b => b.name.toLowerCase() === slug)
+  const taken = elsewhere ? elsewhere.taken.some(n => n.toLowerCase() === slug) : bots.some(b => b.name.toLowerCase() === slug)
   const nameNote = !name.trim()
     ? null
     : !isValidSlug(slug)
@@ -93,6 +113,11 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
 
   const create = async () => {
     if (!canCreate) return
+    if (elsewhere && onCreateElsewhere) {
+      // What this sheet read (models, profiles to start from) is this dashboard's, so there it starts from its main profile with its own defaults.
+      onCreateElsewhere(elsewhere.url, { name, description: description.trim(), soul, face, picture, shareAuth })
+      return
+    }
     setSaving(true)
     setError(null)
     const title = titleFor(name)
@@ -153,6 +178,15 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
     onCreated(fresh, !missing, warnings.length ? warnings.join(' ') : null)
   }
 
+  // Carried over a switch: made as soon as the sheet opens here; a failure stays on the sheet to try again.
+  const madeCarried = useRef(false)
+  useEffect(() => {
+    if (!carried || madeCarried.current) return
+    madeCarried.current = true
+    void create()
+    // Once, with the carried words.
+  }, [])
+
   const color = keptColor(faceHex(starterFace(face)))
 
   return (
@@ -179,6 +213,23 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
           <input className="pset-note" value={name} autoFocus placeholder={t('Name')} onChange={e => setName(e.target.value)} aria-label={t('Name')} />
           {nameNote ? <p className={taken || !isValidSlug(slug) ? 'error-text' : 'meta'}>{nameNote}</p> : null}
         </section>
+
+        {dashboards?.length ? (
+          <section className="pset-section">
+            <h2>{t('Dashboard')}</h2>
+            <div className="pulse-hosts" role="radiogroup" aria-label={t('Dashboard')}>
+              {dashboards.map(d => (
+                <button key={d.url} role="radio" aria-checked={target === d.url} className={target === d.url ? 'on' : undefined} onClick={() => setTarget(d.url)} disabled={saving}>
+                  {d.badge ? <HostBadgeMark badge={d.badge} /> : null}
+                  {d.name}
+                </button>
+              ))}
+            </div>
+            {elsewhere ? (
+              <p className="meta">{t('Create switches to {host} and makes the bot there, from its main profile with its default model, skills and tools.', { host: elsewhere.name })}</p>
+            ) : null}
+          </section>
+        ) : null}
 
         <section className="pset-section">
           <h2>{t('Picture')}</h2>

@@ -255,3 +255,14 @@ describe('combined dashboards in the window', () => {
     expect(launchRows([hosts[0]!, hosts[1]!], null).every(r => r.kind === 'host')).toBe(true)
   })
 })
+
+describe('New Bot on another combined dashboard', () => {
+  it('carries the sheet over the switch to that host only, once', async () => {
+    const { newBotAfterSwitch, takeNewBotAfterSwitch } = await import('../src/renderer/src/state/keptHosts')
+    const bot = { name: 'Scout', description: 'Finds things', soul: '', face: 3, picture: null, shareAuth: true }
+    newBotAfterSwitch('https://b.example', bot)
+    expect(takeNewBotAfterSwitch('https://a.example')).toBeNull()
+    expect(takeNewBotAfterSwitch('https://b.example')).toEqual(bot)
+    expect(takeNewBotAfterSwitch('https://b.example')).toBeNull()
+  })
+})
