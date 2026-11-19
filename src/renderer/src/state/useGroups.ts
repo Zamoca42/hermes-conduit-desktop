@@ -110,7 +110,7 @@ export function useRoom(room: Room | null, connected: boolean) {
 
   const readState = useCallback(async (id: string, mine: number) => {
     const next = driverStatus(await gateway.rpc('groups.state', { room_id: id, include_disbanded: true }))
-    if (mine === ticket.current) setStatus(current => (current.working === next.working && current.disbanded === next.disbanded && current.busy.join() === next.busy.join() ? current : next))
+    if (mine === ticket.current) setStatus(current => (JSON.stringify(current) === JSON.stringify(next) ? current : next))
   }, [])
 
   useEffect(() => {
@@ -166,5 +166,30 @@ export function useRoom(room: Room | null, connected: boolean) {
     }
   }, [roomId, readState])
 
-  return { events, status, loading, error, pending, send, stop }
+  /** Saves the room's settings; the event id stays while the save is unchanged, so a retry returns the first save. */
+  const saveKey = useRef<{ body: string; eventId: string } | null>(null)
+  const saveContext = useCallback(
+    async (save: Record<string, unknown>) => {
+      if (!roomId) return
+      const body = JSON.stringify(save)
+      if (saveKey.current?.body !== body) saveKey.current = { body, eventId: uuid() }
+      await gateway.rpc('groups.context', { room_id: roomId, event_id: saveKey.current.eventId, ...save })
+      saveKey.current = null
+      await Promise.all([readState(roomId, ticket.current), readLog(roomId, ticket.current)])
+    },
+    [roomId, readState, readLog]
+  )
+
+  /** Grants a discussion paused at its turn limit one more budget. */
+  const continueDiscussion = useCallback(
+    async (discussionEventId: string) => {
+      if (!roomId) return
+      await gateway.rpc('groups.continue', { room_id: roomId, discussion_event_id: discussionEventId })
+      setStatus(current => ({ ...current, working: true }))
+      await Promise.all([readState(roomId, ticket.current), readLog(roomId, ticket.current)])
+    },
+    [roomId, readState, readLog]
+  )
+
+  return { events, status, loading, error, pending, send, stop, saveContext, continueDiscussion }
 }

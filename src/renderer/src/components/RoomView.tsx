@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Bot } from "../state/bots";
-import { dayLabel, roomItems, startsNewDay, type Room } from "../state/groups";
+import { canContinue, choosingWhoAnswers, dayLabel, roomItems, routingChoices, startsNewDay, type Room } from "../state/groups";
+import { RoomSettings } from "./RoomSettings";
 import { Fragment } from "react";
 import { useRoom } from "../state/useGroups";
 import { BotAvatar, RoomFaces } from "./BotsHome";
@@ -20,6 +21,10 @@ interface Props {
   canStop: boolean;
   /** The room's Hermes keeps files as its messages' own attachments. */
   canAttach: boolean;
+  /** The host takes `groups.context`: Group Settings. */
+  canEditSettings?: boolean;
+  /** The host takes `groups.continue`. */
+  canContinueDiscussions?: boolean;
 }
 
 interface ShownFile {
@@ -76,8 +81,8 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
-  const { events, status, loading, error, pending, send, stop } = useRoom(
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions }: Props) {
+  const { events, status, loading, error, pending, send, stop, saveContext, continueDiscussion } = useRoom(
     room,
     connected,
   );
@@ -119,15 +124,45 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
   const names = room.members.map(
     (m) => m.displayName ?? m.profile ?? m.memberId,
   );
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [continuing, setContinuing] = useState<string | null>(null);
+  const [continueError, setContinueError] = useState<string | null>(null);
+  const choosing = useMemo(() => choosingWhoAnswers(room, events, status.context), [room, events, status.context]);
+  const showsSettings = !!canEditSettings && !!status.context && !status.disbanded;
   return (
     <main className="chat room" ref={pane}>
       <div className="chat-head">
         <div className="chat-title room-title" title={names.join(", ")}>
           <RoomFaces room={room} bots={bots} size={20} />
           <span className="room-title-name">{room.name}</span>
-          <span className="room-title-count">{names.length} bots</span>
+          <span className="room-title-count">
+            {choosing
+              ? choosing.lead
+                ? t("{name} is choosing who answers…", { name: choosing.lead })
+                : t("Choosing who answers…")
+              : `${names.length} bots`}
+          </span>
         </div>
+        {showsSettings ? (
+          <button
+            className="chat-head-button"
+            title={t("Group Settings")}
+            aria-label={t("Group Settings")}
+            onClick={() => setSettingsOpen(true)}
+          >
+            <Icon name="settings" />
+          </button>
+        ) : null}
       </div>
+      {settingsOpen && status.context ? (
+        <RoomSettings
+          room={room}
+          context={status.context}
+          modes={routingChoices(status)}
+          onSave={saveContext}
+          onClose={() => setSettingsOpen(false)}
+        />
+      ) : null}
       <div
         className="transcript"
         ref={scroller}
@@ -221,6 +256,25 @@ export function RoomView({ room, bots, connected, canStop, canAttach }: Props) {
                     className={`notice${item.tone === "error" ? " error" : ""}`}
                   >
                     {item.text}
+                    {item.paused && canContinueDiscussions && connected && canContinue(events, item.paused, status.maxContinues) ? (
+                      <span className="notice-action">
+                        <button
+                          className="ask-btn"
+                          disabled={continuing === item.paused}
+                          onClick={() => {
+                            const id = item.paused!;
+                            setContinuing(id);
+                            setContinueError(null);
+                            void continueDiscussion(id)
+                              .catch((e) => setContinueError(e instanceof Error ? e.message : String(e)))
+                              .finally(() => setContinuing(null));
+                          }}
+                        >
+                          {t("Continue")}
+                        </button>
+                        {continueError ? <span className="ask-error">{continueError}</span> : null}
+                      </span>
+                    ) : null}
                   </div>
                 )}
               </Fragment>

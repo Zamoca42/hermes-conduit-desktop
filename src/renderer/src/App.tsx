@@ -1321,6 +1321,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             connected={connected}
             canStop={groupRooms.capabilities?.canStop === true}
             canAttach={groupRooms.capabilities?.attachments === true}
+            canEditSettings={groupRooms.capabilities?.context === true}
+            canContinueDiscussions={groupRooms.capabilities?.canContinue === true}
           />
         ) : section === 'needs' ? (
           <NeedsYou

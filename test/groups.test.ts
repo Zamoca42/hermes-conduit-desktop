@@ -40,9 +40,12 @@ describe('rooms', () => {
       supported: true,
       canStop: true,
       attachments: false,
+      context: false,
+      canContinue: false,
       maxLogLimit: 500
     })
     expect(roomCapabilities({ methods: ['groups.list', 'groups.attachment.upload'] }).attachments).toBe(true)
+    expect(roomCapabilities({ methods: ['groups.context', 'groups.continue'] })).toMatchObject({ context: true, canContinue: true })
     expect(roomCapabilities({ methods: ['groups.list'] }).supported).toBe(false)
     expect(roomCapabilities(null).supported).toBe(false)
   })
