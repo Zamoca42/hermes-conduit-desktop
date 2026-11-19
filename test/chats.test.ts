@@ -15,8 +15,8 @@ describe('chat rows', () => {
       ]
     })
     expect(rows).toEqual([
-      { id: 'a', title: 'Q3 spending', preview: 'Total the quarter', activeAt: now - 3_600_000, profile: 'default', pinned: false, source: undefined, messageCount: undefined },
-      { id: 'b', title: 'Untitled one', preview: undefined, activeAt: now - 30 * 3_600_000, profile: 'furina', pinned: true, source: undefined, messageCount: undefined }
+      { id: 'a', title: 'Q3 spending', preview: 'Total the quarter', activeAt: now - 3_600_000, profile: 'default', pinned: false, source: undefined, sourceKind: 'chat', messageCount: undefined },
+      { id: 'b', title: 'Untitled one', preview: undefined, activeAt: now - 30 * 3_600_000, profile: 'furina', pinned: true, source: undefined, sourceKind: 'chat', messageCount: undefined }
     ])
   })
 

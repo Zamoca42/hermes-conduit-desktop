@@ -5,6 +5,7 @@ import { BotAvatar } from './BotsHome'
 import { t } from '@shared/i18n'
 import { Icon } from './icons'
 import { filterRows, isStarred, isUnread, type ChatFilter, type ChatMarks } from '../state/chatMarks'
+import { sourceName, sourcesIn, type ChatSource } from '../state/chatSources'
 
 const FILTERS: { value: ChatFilter; label: () => string }[] = [
   { value: 'all', label: () => t('All') },
@@ -84,6 +85,8 @@ export function ChatList({
     setMoving(current => (current === null ? targets : current))
   }
   const [filter, setFilter] = useState<ChatFilter>('all')
+  /** The Sources filter: one source's chats, or null for every source. */
+  const [source, setSource] = useState<ChatSource | null>(null)
 
   useEffect(() => {
     if (!menu) return
@@ -110,9 +113,15 @@ export function ChatList({
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
     const marked = marks ? filterRows(inProfile, filter, marks, runningIds) : inProfile
-    const filtered = q ? marked.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : marked
+    const sourced = source ? marked.filter(r => (r.sourceKind ?? 'chat') === source) : marked
+    const filtered = q ? sourced.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : sourced
     return sectionRows(filtered)
-  }, [rows, query, profile, marks, filter, runningIds])
+  }, [rows, query, profile, marks, filter, runningIds, source])
+  // The Sources filter shows once chats come from more than one place.
+  const sources = useMemo(() => sourcesIn(rows ?? []), [rows])
+  useEffect(() => {
+    if (source && !sources.includes(source)) setSource(null)
+  }, [sources, source])
   const showStrip = !!onProfile && (bots?.length ?? 0) > 1
   const botName = (row: ChatRow) => {
     if (!row.profile || row.profile === 'default' || profile) return null
@@ -161,6 +170,21 @@ export function ChatList({
               {label()}
             </button>
           ))}
+          {sources.length > 1 ? (
+            <select
+              className={`source-filter${source ? ' on' : ''}`}
+              aria-label={t('Source')}
+              value={source ?? ''}
+              onChange={e => setSource((e.target.value || null) as ChatSource | null)}
+            >
+              <option value="">{t('All Sources')}</option>
+              {sources.map(kind => (
+                <option key={kind} value={kind}>
+                  {sourceName(kind)}
+                </option>
+              ))}
+            </select>
+          ) : null}
         </div>
       ) : null}
       <div className="chatlist-scroll" ref={scroller}>
@@ -217,6 +241,7 @@ export function ChatList({
                           {marks && isStarred(marks, row) ? <Icon name="star" className="row-pin row-star" /> : null}
                           {row.title}
                         </span>
+                        {row.sourceKind && row.sourceKind !== 'chat' ? <span className="row-source">{sourceName(row.sourceKind)}</span> : null}
                         <span className="meta row-time">{timeLabel(row.activeAt)}</span>
                       </span>
                       {running ? (
