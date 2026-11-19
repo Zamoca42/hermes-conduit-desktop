@@ -20,7 +20,8 @@ import { Pairing } from './pairing'
 import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
-import { chooseLanguage, chooseTheme, languageChoice, resolvedLanguage, themeChoice } from './settings'
+import { chooseLanguage, chooseLock, chooseTheme, languageChoice, lockOnLaunch, resolvedLanguage, themeChoice } from './settings'
+import { lockKind, promptUnlock } from './appLock'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
 import { jsonRpcErrorReason } from '../vendor/hermes-shared/json-rpc-channel'
 import { LIVE_TOKEN_PATHS, mintedSocket, type LiveSocketEvent } from '../shared/ipc'
@@ -78,6 +79,30 @@ const pairing = new Pairing({
   signIn: request => connection.signIn(request),
   switchHost: url => connection.switchHost(url)
 })
+
+let unlocking: Promise<boolean> | null = null
+
+/** Touch ID or Windows Hello, then the saved hosts open; one prompt at a time. */
+function unlock(): Promise<boolean> {
+  if (!connection.isLocked) return Promise.resolve(true)
+  unlocking ??= promptUnlock(t('open your Hermes sign-ins'))
+    .then(async given => {
+      if (given) await connection.unlocked()
+      return given
+    })
+    .finally(() => (unlocking = null))
+  return unlocking
+}
+
+/** At launch: the host open last time, after the lock when it's on and the computer still offers it. */
+async function openSavedHosts(): Promise<void> {
+  if (lockOnLaunch() && connection.hosts().length && (await lockKind())) {
+    connection.lock()
+    void unlock()
+    return
+  }
+  await connection.restore()
+}
 
 function createWindow(): void {
   const window = new BrowserWindow({
@@ -161,6 +186,13 @@ function registerIpc(): void {
       if (!window.isDestroyed()) window.setBackgroundColor(nativeTheme.shouldUseDarkColors ? '#0b0d12' : '#f5f5f7')
     }
   })
+  ipcMain.handle(IPC.appLock, async () => ({ kind: await lockKind(), on: lockOnLaunch() }))
+  ipcMain.handle(IPC.setAppLock, async (_event, on: unknown) => {
+    if (typeof on !== 'boolean' || !(await lockKind())) return false
+    if (!(await promptUnlock(on ? t('turn on the lock for your Hermes sign-ins') : t('turn off the lock for your Hermes sign-ins')))) return false
+    return chooseLock(on)
+  })
+  ipcMain.handle(IPC.unlock, () => unlock())
   ipcMain.on(IPC.openChat, (_event, chat: OpenChatRequest) => {
     quickAsk.hide()
     showWindow()
@@ -328,7 +360,7 @@ if (!app.requestSingleInstanceLock()) {
     createWindow()
     tray.create()
     quickAsk.register()
-    void connection.restore()
+    void openSavedHosts()
     // The Dock icon brings the hidden window back.
     app.on('activate', () => showWindow())
   })

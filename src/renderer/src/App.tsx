@@ -71,6 +71,7 @@ import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
+import { AppLockSetting, LockedScreen } from './components/AppLock'
 import { StepSummarySettings } from './components/StepSummarySettings'
 import { PredictiveSettings } from './components/PredictiveSettings'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
@@ -130,7 +131,9 @@ export function App() {
         currentUrl={status.url}
         onSwitch={url => void window.conduit.switchHost(url)}
       />
-      {adding ? (
+      {status.phase === 'locked' ? (
+        <LockedScreen />
+      ) : adding ? (
         <SignIn onCancel={() => setAdding(false)} />
       ) : signedOut || status.phase === 'failed' ? (
         <SignIn notice={status.error} />
@@ -1505,6 +1508,7 @@ function Settings({
           {status.username ? ` (${status.username})` : ''}
         </dd>
         {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
+        <AppLockSetting />
         <dt>{t('Models')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>

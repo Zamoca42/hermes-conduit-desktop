@@ -4259,6 +4259,21 @@
     "zh-Hans": "Conduit 无法使用麦克风。请在电脑的隐私设置中允许 Conduit 使用，然后重试。",
     "zh-Hant": "Conduit 無法使用麥克風。請在電腦的隱私權設定中允許 Conduit 使用，然後再試一次。"
   },
+  "Conduit is locked": {
+    "de": "Conduit ist gesperrt",
+    "es": "Conduit está bloqueado",
+    "fr": "Conduit est verrouillé",
+    "id": "Conduit terkunci",
+    "it": "Conduit è bloccato",
+    "ja": "Conduitはロックされています",
+    "ko": "Conduit가 잠겨 있어요",
+    "pl": "Conduit jest zablokowany",
+    "pt-BR": "O Conduit está bloqueado",
+    "ru": "Conduit заблокирован",
+    "tr": "Conduit kilitli",
+    "zh-Hans": "Conduit 已锁定",
+    "zh-Hant": "Conduit 已鎖定"
+  },
   "Conduit manages this header itself, so it can't be set here.": {
     "de": "Conduit verwaltet diesen Header selbst, daher kann er hier nicht festgelegt werden.",
     "es": "Conduit gestiona este encabezado por sí mismo, así que no se puede definir aquí.",
@@ -16289,6 +16304,21 @@
     "zh-Hans": "未登录。",
     "zh-Hant": "未登入。"
   },
+  "Not unlocked. Try again.": {
+    "de": "Nicht entsperrt. Versuche es erneut.",
+    "es": "No se desbloqueó. Inténtalo de nuevo.",
+    "fr": "Non déverrouillé. Réessayez.",
+    "id": "Belum terbuka. Coba lagi.",
+    "it": "Non sbloccato. Riprova.",
+    "ja": "ロックを解除できませんでした。もう一度お試しください。",
+    "ko": "잠금을 해제하지 못했어요. 다시 시도하세요.",
+    "pl": "Nie odblokowano. Spróbuj ponownie.",
+    "pt-BR": "Não desbloqueado. Tente de novo.",
+    "ru": "Не разблокировано. Попробуйте ещё раз.",
+    "tr": "Kilit açılmadı. Tekrar dene.",
+    "zh-Hans": "未解锁。请重试。",
+    "zh-Hant": "未解鎖。請再試一次。"
+  },
   "Not useful": {
     "de": "Nicht hilfreich",
     "es": "No es útil",
@@ -27194,6 +27224,21 @@
     "zh-Hans": "总计",
     "zh-Hant": "總計"
   },
+  "Touch ID unlocks the saved sign-in when Conduit opens.": {
+    "de": "Touch ID entsperrt die gespeicherte Anmeldung, wenn Conduit startet.",
+    "es": "Touch ID desbloquea el inicio de sesión guardado al abrir Conduit.",
+    "fr": "Touch ID déverrouille la connexion enregistrée à l'ouverture de Conduit.",
+    "id": "Touch ID membuka login tersimpan saat Conduit dibuka.",
+    "it": "Touch ID sblocca l'accesso salvato quando apri Conduit.",
+    "ja": "Conduitを開くと、Touch IDで保存済みのサインインのロックを解除します。",
+    "ko": "Conduit를 열 때 Touch ID로 저장된 로그인을 잠금 해제해요.",
+    "pl": "Touch ID odblokowuje zapisane logowanie po otwarciu Conduit.",
+    "pt-BR": "O Touch ID desbloqueia o login salvo quando o Conduit abre.",
+    "ru": "Touch ID открывает сохранённый вход при запуске Conduit.",
+    "tr": "Touch ID, Conduit açıldığında kayıtlı girişin kilidini açar.",
+    "zh-Hans": "打开 Conduit 时，用 Touch ID 解锁已保存的登录信息。",
+    "zh-Hant": "開啟 Conduit 時，用 Touch ID 解鎖已儲存的登入資訊。"
+  },
   "Transcribing": {
     "de": "Wird transkribiert",
     "es": "Transcribiendo",
@@ -27643,6 +27688,66 @@
     "tr": "Kilidi aç",
     "zh-Hans": "解锁",
     "zh-Hant": "解鎖"
+  },
+  "Unlock Conduit first.": {
+    "de": "Entsperre zuerst Conduit.",
+    "es": "Primero desbloquea Conduit.",
+    "fr": "Déverrouillez d'abord Conduit.",
+    "id": "Buka kunci Conduit dulu.",
+    "it": "Prima sblocca Conduit.",
+    "ja": "先にConduitのロックを解除してください。",
+    "ko": "먼저 Conduit 잠금을 해제하세요.",
+    "pl": "Najpierw odblokuj Conduit.",
+    "pt-BR": "Desbloqueie o Conduit primeiro.",
+    "ru": "Сначала разблокируйте Conduit.",
+    "tr": "Önce Conduit'in kilidini aç.",
+    "zh-Hans": "请先解锁 Conduit。",
+    "zh-Hant": "請先解鎖 Conduit。"
+  },
+  "Unlock Conduit in its window first.": {
+    "de": "Entsperre Conduit zuerst in seinem Fenster.",
+    "es": "Primero desbloquea Conduit en su ventana.",
+    "fr": "Déverrouillez d'abord Conduit dans sa fenêtre.",
+    "id": "Buka kunci Conduit di jendelanya dulu.",
+    "it": "Prima sblocca Conduit nella sua finestra.",
+    "ja": "先にConduitのウインドウでロックを解除してください。",
+    "ko": "먼저 Conduit 창에서 잠금을 해제하세요.",
+    "pl": "Najpierw odblokuj Conduit w jego oknie.",
+    "pt-BR": "Desbloqueie o Conduit na janela dele primeiro.",
+    "ru": "Сначала разблокируйте Conduit в его окне.",
+    "tr": "Önce Conduit'in kilidini kendi penceresinde aç.",
+    "zh-Hans": "请先在 Conduit 窗口中解锁。",
+    "zh-Hant": "請先在 Conduit 視窗中解鎖。"
+  },
+  "Unlock with Touch ID": {
+    "de": "Mit Touch ID entsperren",
+    "es": "Desbloquear con Touch ID",
+    "fr": "Déverrouiller avec Touch ID",
+    "id": "Buka dengan Touch ID",
+    "it": "Sblocca con Touch ID",
+    "ja": "Touch IDでロック解除",
+    "ko": "Touch ID로 잠금 해제",
+    "pl": "Odblokuj za pomocą Touch ID",
+    "pt-BR": "Desbloquear com Touch ID",
+    "ru": "Разблокировать с Touch ID",
+    "tr": "Touch ID ile kilidi aç",
+    "zh-Hans": "用 Touch ID 解锁",
+    "zh-Hant": "用 Touch ID 解鎖"
+  },
+  "Unlock with Windows Hello": {
+    "de": "Mit Windows Hello entsperren",
+    "es": "Desbloquear con Windows Hello",
+    "fr": "Déverrouiller avec Windows Hello",
+    "id": "Buka dengan Windows Hello",
+    "it": "Sblocca con Windows Hello",
+    "ja": "Windows Helloでロック解除",
+    "ko": "Windows Hello로 잠금 해제",
+    "pl": "Odblokuj za pomocą Windows Hello",
+    "pt-BR": "Desbloquear com Windows Hello",
+    "ru": "Разблокировать с Windows Hello",
+    "tr": "Windows Hello ile kilidi aç",
+    "zh-Hans": "用 Windows Hello 解锁",
+    "zh-Hant": "用 Windows Hello 解鎖"
   },
   "Unlock your password manager": {
     "de": "Entsperre deinen Passwortmanager",
@@ -28363,6 +28468,36 @@
     "tr": "Bu model kullanılsın mı?",
     "zh-Hans": "使用此模型？",
     "zh-Hant": "使用此模型？"
+  },
+  "Use Touch ID": {
+    "de": "Touch ID verwenden",
+    "es": "Usar Touch ID",
+    "fr": "Utiliser Touch ID",
+    "id": "Gunakan Touch ID",
+    "it": "Usa Touch ID",
+    "ja": "Touch IDを使用",
+    "ko": "Touch ID 사용",
+    "pl": "Używaj Touch ID",
+    "pt-BR": "Usar Touch ID",
+    "ru": "Использовать Touch ID",
+    "tr": "Touch ID kullan",
+    "zh-Hans": "使用 Touch ID",
+    "zh-Hant": "使用 Touch ID"
+  },
+  "Use Windows Hello": {
+    "de": "Windows Hello verwenden",
+    "es": "Usar Windows Hello",
+    "fr": "Utiliser Windows Hello",
+    "id": "Gunakan Windows Hello",
+    "it": "Usa Windows Hello",
+    "ja": "Windows Helloを使用",
+    "ko": "Windows Hello 사용",
+    "pl": "Używaj Windows Hello",
+    "pt-BR": "Usar Windows Hello",
+    "ru": "Использовать Windows Hello",
+    "tr": "Windows Hello kullan",
+    "zh-Hans": "使用 Windows Hello",
+    "zh-Hant": "使用 Windows Hello"
   },
   "Use a different address": {
     "de": "Andere Adresse verwenden",
@@ -29639,6 +29774,21 @@
     "zh-Hans": "窗口占用",
     "zh-Hant": "視窗使用量"
   },
+  "Windows Hello unlocks the saved sign-in when Conduit opens.": {
+    "de": "Windows Hello entsperrt die gespeicherte Anmeldung, wenn Conduit startet.",
+    "es": "Windows Hello desbloquea el inicio de sesión guardado al abrir Conduit.",
+    "fr": "Windows Hello déverrouille la connexion enregistrée à l'ouverture de Conduit.",
+    "id": "Windows Hello membuka login tersimpan saat Conduit dibuka.",
+    "it": "Windows Hello sblocca l'accesso salvato quando apri Conduit.",
+    "ja": "Conduitを開くと、Windows Helloで保存済みのサインインのロックを解除します。",
+    "ko": "Conduit를 열 때 Windows Hello로 저장된 로그인을 잠금 해제해요.",
+    "pl": "Windows Hello odblokowuje zapisane logowanie po otwarciu Conduit.",
+    "pt-BR": "O Windows Hello desbloqueia o login salvo quando o Conduit abre.",
+    "ru": "Windows Hello открывает сохранённый вход при запуске Conduit.",
+    "tr": "Windows Hello, Conduit açıldığında kayıtlı girişin kilidini açar.",
+    "zh-Hans": "打开 Conduit 时，用 Windows Hello 解锁已保存的登录信息。",
+    "zh-Hant": "開啟 Conduit 時，用 Windows Hello 解鎖已儲存的登入資訊。"
+  },
   "With nudging": {
     "de": "Wie beim Anstupsen",
     "es": "Según los recordatorios",
@@ -30494,6 +30644,21 @@
     "zh-Hans": "你的报告、晨间简报，以及 Hermes 答应查看之事的进展都会出现在这里。",
     "zh-Hant": "你的報告、晨間簡報，以及 Hermes 答應查看之事的進展都會出現在這裡。"
   },
+  "Your saved Hermes sign-ins open once you unlock.": {
+    "de": "Deine gespeicherten Hermes-Anmeldungen öffnen sich, sobald du entsperrst.",
+    "es": "Tus inicios de sesión de Hermes guardados se abren al desbloquear.",
+    "fr": "Vos connexions Hermes enregistrées s'ouvrent dès que vous déverrouillez.",
+    "id": "Login Hermes tersimpan akan terbuka setelah kamu membuka kunci.",
+    "it": "Gli accessi Hermes salvati si aprono appena sblocchi.",
+    "ja": "ロックを解除すると、保存済みのHermesサインインが開きます。",
+    "ko": "잠금을 해제하면 저장된 Hermes 로그인이 열려요.",
+    "pl": "Zapisane logowania do Hermes otworzą się po odblokowaniu.",
+    "pt-BR": "Seus logins do Hermes salvos abrem assim que você desbloquear.",
+    "ru": "Сохранённые входы в Hermes откроются после разблокировки.",
+    "tr": "Kayıtlı Hermes girişlerin kilidi açınca açılır.",
+    "zh-Hans": "解锁后，已保存的 Hermes 登录信息就会打开。",
+    "zh-Hant": "解鎖後，已儲存的 Hermes 登入資訊就會開啟。"
+  },
   "Your speech server answered a call by itself, so Hermes never got a turn. Turn on Hermes answers under Your speech server.": {
     "de": "Dein Sprachserver hat in einem Anruf selbst geantwortet, Hermes kam also nie an die Reihe. Schalte unter „Dein Sprachserver“ die Option „Hermes antwortet“ ein.",
     "es": "Tu servidor de voz respondió por su cuenta en una llamada, así que Hermes nunca tuvo turno. Activa «Hermes responde» en Tu servidor de voz.",
@@ -30689,6 +30854,21 @@
     "zh-Hans": "hermes.example.com 或 192.168.1.20:9119",
     "zh-Hant": "hermes.example.com 或 192.168.1.20:9119"
   },
+  "open your Hermes sign-ins": {
+    "de": "deine Hermes-Anmeldungen öffnen",
+    "es": "abrir tus inicios de sesión de Hermes",
+    "fr": "ouvrir vos connexions Hermes",
+    "id": "membuka login Hermes kamu",
+    "it": "aprire i tuoi accessi Hermes",
+    "ja": "Hermesのサインインを開く",
+    "ko": "Hermes 로그인 열기",
+    "pl": "otworzyć logowania do Hermes",
+    "pt-BR": "abrir seus logins do Hermes",
+    "ru": "открыть входы в Hermes",
+    "tr": "Hermes girişlerini açmak",
+    "zh-Hans": "打开你的 Hermes 登录信息",
+    "zh-Hant": "開啟你的 Hermes 登入資訊"
+  },
   "or": {
     "de": "oder",
     "es": "o",
@@ -30748,6 +30928,36 @@
     "tr": "web",
     "zh-Hans": "网络",
     "zh-Hant": "網路"
+  },
+  "turn off the lock for your Hermes sign-ins": {
+    "de": "die Sperre für deine Hermes-Anmeldungen ausschalten",
+    "es": "desactivar el bloqueo de tus inicios de sesión de Hermes",
+    "fr": "désactiver le verrouillage de vos connexions Hermes",
+    "id": "mematikan kunci untuk login Hermes kamu",
+    "it": "disattivare il blocco dei tuoi accessi Hermes",
+    "ja": "Hermesのサインインのロックをオフにする",
+    "ko": "Hermes 로그인 잠금 끄기",
+    "pl": "wyłączyć blokadę logowań do Hermes",
+    "pt-BR": "desativar o bloqueio dos seus logins do Hermes",
+    "ru": "выключить блокировку входов в Hermes",
+    "tr": "Hermes girişleri için kilidi devre dışı bırakmak",
+    "zh-Hans": "为你的 Hermes 登录信息关闭锁定",
+    "zh-Hant": "為你的 Hermes 登入資訊關閉鎖定"
+  },
+  "turn on the lock for your Hermes sign-ins": {
+    "de": "die Sperre für deine Hermes-Anmeldungen einschalten",
+    "es": "activar el bloqueo de tus inicios de sesión de Hermes",
+    "fr": "activer le verrouillage de vos connexions Hermes",
+    "id": "menyalakan kunci untuk login Hermes kamu",
+    "it": "attivare il blocco dei tuoi accessi Hermes",
+    "ja": "Hermesのサインインのロックをオンにする",
+    "ko": "Hermes 로그인 잠금 켜기",
+    "pl": "włączyć blokadę logowań do Hermes",
+    "pt-BR": "ativar o bloqueio dos seus logins do Hermes",
+    "ru": "включить блокировку входов в Hermes",
+    "tr": "Hermes girişleri için kilidi etkinleştirmek",
+    "zh-Hans": "为你的 Hermes 登录信息开启锁定",
+    "zh-Hant": "為你的 Hermes 登入資訊開啟鎖定"
   },
   "where you are": {
     "de": "dein Standort",

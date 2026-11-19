@@ -29,7 +29,18 @@ export interface SignInRequest {
   headers?: Record<string, string>
 }
 
-export type ConnectionPhase = 'signed-out' | 'connecting' | 'open' | 'reconnecting' | 'failed'
+/** `locked`: the saved hosts wait for Touch ID or Windows Hello (Settings > Lock). */
+export type ConnectionPhase = 'signed-out' | 'locked' | 'connecting' | 'open' | 'reconnecting' | 'failed'
+
+/** The computer's own lock Conduit can ask for. */
+export type AppLockKind = 'touch-id' | 'windows-hello'
+
+export interface AppLockState {
+  /** What this computer offers; null when neither Touch ID nor Windows Hello is set up. */
+  kind: AppLockKind | null
+  /** Whether Conduit asks for it when it opens. */
+  on: boolean
+}
 
 export interface ConnectionStatus {
   phase: ConnectionPhase
@@ -135,6 +146,12 @@ export interface ConduitApi {
   theme: ThemeChoice
   /** Saves a new choice; the window follows it at once. */
   setTheme(choice: ThemeChoice): void
+  /** Settings > Lock: whether this computer can lock the saved sign-ins, and whether it does. */
+  appLock(): Promise<AppLockState>
+  /** Turns the lock on or off, after Touch ID or Windows Hello; false when that was cancelled. */
+  setAppLock(on: boolean): Promise<boolean>
+  /** Asks for Touch ID or Windows Hello and, once given, opens the saved hosts. */
+  unlock(): Promise<boolean>
   /** `headers` are for a proxy in front of the dashboard (Cloudflare Access and the like). */
   probe(url: string, headers?: Record<string, string>): Promise<HostProbe>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
@@ -272,6 +289,9 @@ export const IPC = {
   setLanguage: 'conduit:set-language',
   theme: 'conduit:theme',
   setTheme: 'conduit:set-theme',
+  appLock: 'conduit:app-lock',
+  setAppLock: 'conduit:set-app-lock',
+  unlock: 'conduit:unlock',
   pluginRelease: 'conduit:plugin-release',
   liveOpen: 'conduit:live-open',
   liveOpenMinted: 'conduit:live-open-minted',

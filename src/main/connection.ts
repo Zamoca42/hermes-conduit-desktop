@@ -85,6 +85,7 @@ export class Connection {
   private retryTimer: unknown = null
   /** An ungated dashboard's session token, read from its page at each dial. */
   private openToken: string | null = null
+  private locked = false
   /** Bumped on every sign-in and sign-out, so a late dial from an earlier one is dropped. */
   private generation = 0
   /** Approvals and questions waiting on an answer from this window, by request id. */
@@ -124,8 +125,27 @@ export class Connection {
     this.deps.onRequests?.([])
   }
 
+  /** Keeps the saved hosts shut until Touch ID or Windows Hello opens them. */
+  lock(): void {
+    this.locked = true
+    this.setStatus({ phase: 'locked', hosts: this.hosts() })
+  }
+
+  get isLocked(): boolean {
+    return this.locked
+  }
+
+  /** The lock was given: opens the host that was open last time. */
+  async unlocked(): Promise<void> {
+    if (!this.locked) return
+    this.locked = false
+    await this.restore()
+    if (this.status.phase === 'locked') this.setStatus({ phase: 'signed-out', hosts: this.hosts() })
+  }
+
   /** Reconnects with what was saved last time, if anything. */
   async restore(): Promise<void> {
+    if (this.locked) return
     const saved = this.deps.store.load()
     if (!saved) return
     this.saved = saved
@@ -135,6 +155,7 @@ export class Connection {
   }
 
   async signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }> {
+    if (this.locked) return { ok: false, error: t('Unlock Conduit first.') }
     const previous = this.saved
     const result = await this.trySignIn(request)
     // A failed sign-in to another host goes back to the one that was open.
@@ -189,6 +210,7 @@ export class Connection {
 
   /** Signs out of the open host; the next saved one, if any, opens. */
   signOut(): void {
+    if (this.locked) return
     this.generation++
     this.teardown()
     this.saved = null
@@ -206,6 +228,7 @@ export class Connection {
 
   /** Opens another saved host in place of this one. */
   switchHost(url: string): boolean {
+    if (this.locked) return false
     if (this.saved?.url === url) return true
     if (!this.deps.store.activate?.(url)) return false
     const next = this.deps.store.load()
@@ -216,6 +239,7 @@ export class Connection {
 
   /** Forgets a saved host; the open one signs out (and the next opens). */
   removeHost(url: string): void {
+    if (this.locked) return
     if (this.saved?.url === url) return this.signOut()
     this.deps.store.remove?.(url)
     this.setStatus({ ...this.identity(), phase: this.status.phase, error: this.status.error, retryInSeconds: this.status.retryInSeconds })

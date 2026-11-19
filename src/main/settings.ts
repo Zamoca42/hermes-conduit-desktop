@@ -1,7 +1,7 @@
 /**
  * The app's own settings, in the data folder beside connection.json. For
  * now that's the language ("system" follows the computer's, or one of
- * Conduit's languages) and the theme ("system", dark or light).
+ * Conduit's languages), the theme ("system", dark or light) and the lock.
  */
 import { app, nativeTheme } from 'electron'
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -11,9 +11,9 @@ import type { LanguageChoice, ThemeChoice } from '../shared/ipc'
 
 const path = () => join(app.getPath('userData'), 'settings.json')
 
-function read(): { language?: unknown; theme?: unknown } {
+function read(): { language?: unknown; theme?: unknown; lock?: unknown } {
   try {
-    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown }
+    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown; lock?: unknown }
   } catch {
     return {}
   }
@@ -61,4 +61,16 @@ export function chooseTheme(choice: ThemeChoice = themeChoice(), save = true): T
   }
   nativeTheme.themeSource = valid
   return valid
+}
+
+/** Whether Conduit asks for Touch ID or Windows Hello before it opens the saved hosts. */
+export const lockOnLaunch = (): boolean => read().lock === true
+
+export function chooseLock(on: boolean): boolean {
+  try {
+    writeFileSync(path(), JSON.stringify({ ...read(), lock: on }, null, 2))
+    return true
+  } catch {
+    return false
+  }
 }
