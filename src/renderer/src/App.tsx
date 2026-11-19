@@ -20,6 +20,7 @@ import { archiveClassicChat, tagVoiceSession, useVoiceList, withVoice } from './
 import { setCatalogHost } from './state/modelCatalog'
 import { setTurnSurfaceHost } from './state/turnSurface'
 import { setDesktopCardsHost } from './state/desktopCards'
+import { setKanbanHost } from './state/useKanban'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { BesideChatPane, type BesideChat } from './components/BesideChat'
 import { absolutePath, pathForDraft } from './state/workspace'
@@ -138,6 +139,7 @@ export function App() {
   setCatalogHost(url ?? '')
   setTurnSurfaceHost(url ?? '')
   setDesktopCardsHost(url ?? '')
+  setKanbanHost(url ?? '')
   // A host signed out or removed takes the summaries of its runs of steps with it.
   const hostList = status?.hosts?.map(h => h.url).join('\n')
   useEffect(() => {
