@@ -1,5 +1,5 @@
 import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -86,6 +86,8 @@ interface Props {
   /** The chat's newest reply. */
   lastReply: string | null
   onEnd: () => void
+  /** The mode menu under the call's status, which moves the call to another mode. */
+  modeMenu?: ReactNode
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
   /** Gemini, or Qwen on the same shell through the phone's adapter. */
@@ -145,6 +147,7 @@ export function GeminiLiveCall({
   turnsDone,
   lastReply,
   onEnd,
+  modeMenu,
   onClassic,
   provider = 'gemini',
   requests = [],
@@ -727,7 +730,8 @@ export function GeminiLiveCall({
           <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
           <div className="voice-call-words">
             <strong>{status}</strong>
-            {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{copy.name()}</span>}
+            {problem ? <span className="voice-call-problem">{problem}</span> : modeMenu ? null : <span className="meta">{copy.name()}</span>}
+            {modeMenu}
           </div>
         </div>
         {lines.length ? (

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { t } from '@shared/i18n'
 import { useRecorder } from '../state/useRecorder'
 import { stopReading } from '../state/readAloud'
@@ -19,6 +19,8 @@ interface Props {
   /** Stops the running reply. */
   onStop: () => void
   onEnd: () => void
+  /** The mode menu under the call's status, which moves the call to another mode. */
+  modeMenu?: ReactNode
 }
 
 /**
@@ -27,7 +29,7 @@ interface Props {
  * and speaks the reply with Hermes' voice, then listens again. Every turn is
  * the chat's own, typed or spoken.
  */
-export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onStop, onEnd }: Props) {
+export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onStop, onEnd, modeMenu }: Props) {
   const recorder = useRecorder()
   const [phase, setPhase] = useState<CallPhase>('starting')
   const [muted, setMuted] = useState(false)
@@ -184,9 +186,10 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
             <span className="voice-call-problem">{problem}</span>
           ) : heard ? (
             <span className="meta">{heard}</span>
-          ) : (
+          ) : modeMenu ? null : (
             <span className="meta">{t('Classic voice')}</span>
           )}
+          {modeMenu}
         </div>
       </div>
       <div className="voice-call-buttons">

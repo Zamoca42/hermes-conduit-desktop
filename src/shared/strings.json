@@ -8084,6 +8084,21 @@
     "zh-Hans": "结束安静时段",
     "zh-Hant": "結束安靜時段"
   },
+  "Ends this call and starts again in the mode you pick, in the same chat. Voice settings keep the new mode.": {
+    "de": "Beendet diesen Anruf und startet ihn im gewählten Modus im selben Chat neu. Die Spracheinstellungen übernehmen den neuen Modus.",
+    "es": "Termina esta llamada y vuelve a empezar en el modo que elijas, en el mismo chat. Los ajustes de voz conservan el nuevo modo.",
+    "fr": "Met fin à cet appel et le relance dans le mode choisi, dans la même discussion. Les réglages vocaux gardent le nouveau mode.",
+    "id": "Mengakhiri panggilan ini dan memulai lagi dalam mode yang Anda pilih, di chat yang sama. Pengaturan suara menyimpan mode baru.",
+    "it": "Termina questa chiamata e la riavvia nella modalità scelta, nella stessa chat. Le impostazioni vocali mantengono la nuova modalità.",
+    "ja": "この通話を終了し、選んだモードで同じチャットにて再開します。新しいモードは音声設定に保存されます。",
+    "ko": "이 통화를 끝내고 선택한 모드로 같은 채팅에서 다시 시작합니다. 새 모드는 음성 설정에 저장됩니다.",
+    "pl": "Kończy to połączenie i zaczyna je od nowa w wybranym trybie, w tym samym czacie. Ustawienia głosu zachowują nowy tryb.",
+    "pt-BR": "Encerra esta chamada e recomeça no modo escolhido, no mesmo chat. Os ajustes de voz mantêm o novo modo.",
+    "ru": "Завершает этот звонок и начинает заново в выбранном режиме в том же чате. Новый режим сохраняется в настройках голоса.",
+    "tr": "Bu aramayı bitirir ve seçtiğiniz modda aynı sohbette yeniden başlatır. Ses ayarları yeni modu korur.",
+    "zh-Hans": "结束此通话，并在同一聊天中以所选模式重新开始。语音设置会保留新模式。",
+    "zh-Hant": "結束此通話，並在同一聊天中以所選模式重新開始。語音設定會保留新模式。"
+  },
   "Enter a header name.": {
     "de": "Gib einen Header-Namen ein.",
     "es": "Escribe un nombre de encabezado.",

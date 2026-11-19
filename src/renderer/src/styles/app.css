@@ -8624,3 +8624,53 @@ button.secondary.danger {
 .running.waiting {
   color: var(--warning);
 }
+
+/* The mode menu on a call: the call's mode and a chevron, which moves the call to another mode. */
+.voice-mode-capsule-wrap {
+  position: relative;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.voice-mode-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.voice-mode-capsule:hover {
+  color: var(--text);
+}
+
+.voice-mode-capsule svg {
+  width: 10px;
+  height: 10px;
+}
+
+.voice-mode-menu {
+  left: 0;
+}
+
+.voice-mode-menu button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.voice-mode-tick {
+  display: inline-flex;
+  width: 14px;
+}
+
+.voice-mode-tick svg {
+  width: 12px;
+  height: 12px;
+}
