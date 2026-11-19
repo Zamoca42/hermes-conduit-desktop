@@ -11,6 +11,7 @@ import { REQUESTS_RULE, REQUEST_TOOL_SPECS } from './liveRequests'
 export const ASK_THREAD = 'ask_thread'
 export const READ_LAST_REPLY = 'read_last_reply'
 export const END_CONVERSATION = 'end_conversation'
+export const SHOW_ON_SCREEN = 'show_on_screen'
 
 /** The phone's tools for a call attached to a chat, with JSON Schema arguments (lowercase types). */
 export const TOOL_SPECS: { name: string; description: string; parameters: Record<string, unknown> }[] = [
@@ -38,9 +39,55 @@ export const TOOL_SPECS: { name: string; description: string; parameters: Record
       'End this voice conversation and close it. Call only when the user says goodbye or asks to end, hang up, or close the conversation, after you have said a short goodbye.',
     parameters: { type: 'object', properties: {} }
   },
+  {
+    name: SHOW_ON_SCREEN,
+    description:
+      "Show something on the user's screen during the call, above the call bar in Conduit on their computer. Use it for anything better seen than heard: tables, forecasts, recipes and other step-by-step instructions, lists, comparisons, code, images and links, and whenever the user asks to see or show something. Write Markdown: tables for data, numbered lists for steps, ![description](url) for images using only direct image URLs you actually found, and [title](url) for links. Put real numbers only, never guesses, and name the source of numbers and forecasts you looked up. Then tell the user in a sentence that it's on their screen and give the gist; don't read it out. If it says the screen isn't available, tell the user instead.",
+    parameters: {
+      type: 'object',
+      properties: {
+        title: { type: 'string', description: 'A short heading, a few words.' },
+        markdown: { type: 'string', description: 'What to show, as Markdown.' }
+      },
+      required: ['title', 'markdown']
+    }
+  },
   // Answering the chat's approvals and questions by voice.
   ...REQUEST_TOOL_SPECS
 ]
+
+// MARK: Cards on screen
+
+/** Something the model put on screen with show_on_screen; the call keeps the last 20, each up to 20,000 characters, as the phone does. */
+export interface ScreenCard {
+  id: number
+  title: string
+  markdown: string
+}
+export const MAX_SCREEN_CARDS = 20
+export const MAX_SCREEN_CARD_CHARACTERS = 20_000
+export const SHOW_ON_SCREEN_RULE =
+  "\nUse show_on_screen for anything better seen than heard: tables, forecasts, recipes and other steps, comparisons, code, images and links. Put the full detail there; once it's shown, say in a sentence that it's on their screen and give the gist: the screen takes the place of a long spoken answer."
+
+/** show_on_screen's card and its answer for the model; no card when there's nothing to show. */
+export function screenCard(args: Record<string, string | undefined>, id: number): { card: ScreenCard | null; result: Record<string, string> } {
+  const markdown = (args.markdown ?? '').trim()
+  if (!markdown) return { card: null, result: { status: 'error', error: 'markdown is required' } }
+  const cut = markdown.length > MAX_SCREEN_CARD_CHARACTERS
+  const title = (args.title ?? '').trim().slice(0, 120)
+  return {
+    card: { id, title, markdown: cut ? markdown.slice(0, MAX_SCREEN_CARD_CHARACTERS) : markdown },
+    result: {
+      status: 'shown',
+      message: cut
+        ? "Only the start of it fit on the user's screen. Say it's on their screen, give the gist, and offer to show the rest separately."
+        : "It's on the user's screen. Say so in a sentence and give the gist; don't read it out."
+    }
+  }
+}
+
+/** The call's cards with `card` added: the last 20. */
+export const withCard = (cards: ScreenCard[], card: ScreenCard) => [...cards, card].slice(-MAX_SCREEN_CARDS)
 
 export const RECALL_MEMORY = 'recall_memory'
 export const MEMORY_RECALL_PATH = '/api/plugins/conduit_push/memory/recall'
@@ -148,7 +195,7 @@ Never speak while the user is speaking. If they interrupt you, stop and listen. 
 Answer quick questions yourself. ${options.lookups}
 Call ask_thread for work that needs the user's Hermes agent: their files, code, systems, accounts, questions about this chat, follow-ups, or longer multi-step research. Pass the complete request. It goes to Hermes as the chat's next message, so Hermes has the chat's earlier turns; while Hermes is still answering one, the next waits and goes once it's done. ${options.announces ? 'Every time you call ask_thread, first acknowledge it out loud.' : 'Call ask_thread without announcing it first, and only once it returns, acknowledge it out loud.'} ${ACKNOWLEDGEMENT} Then carry on with the conversation; Hermes' reply arrives later on this call. When it arrives, tell the user what Hermes found or did, with the details that matter.
 When the user asks to hear a reply again, word for word or in full (Hermes' last reply), don't answer from memory: call read_last_reply and read what it returns word for word, all of it, once.
-${REQUESTS_RULE}
+${REQUESTS_RULE}${SHOW_ON_SCREEN_RULE}
 When the user says goodbye to you, or asks to end, hang up or close the call, say a short goodbye, then call end_conversation.`
   return (
     rules +
