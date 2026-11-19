@@ -1659,6 +1659,11 @@ function Settings({
           <LastCallTrace />
           <p className="meta">{t('The steps of the last Grok Live, Qwen Live, Local Live or GPT-Live call, without what was said, to paste into an issue.')}</p>
         </dd>
+        <dt>{t('Last Read Aloud')}</dt>
+        <dd>
+          <LastCallTrace reading />
+          <p className="meta">{t('How the last reply read aloud went: Hermes’ voice and playback, without the reply’s words, to paste into an issue.')}</p>
+        </dd>
         <dt>{t('Appearance')}</dt>
         <dd>
           <button className="link" onClick={() => setPage('appearance')}>

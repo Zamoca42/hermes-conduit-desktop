@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CallTrace, MAX_STEPS, startCallTrace, lastCallTrace } from '../src/renderer/src/state/callTrace'
+import { CallTrace, MAX_STEPS, startCallTrace, lastCallTrace, startReadingTrace, lastReadingTrace } from '../src/renderer/src/state/callTrace'
 
 describe('call trace', () => {
   it('keeps the first 20 steps and the newest, up to 200', () => {
@@ -41,5 +41,18 @@ describe('call trace', () => {
     const second = startCallTrace('Local Live')
     expect(first.isEnded).toBe(true)
     expect(lastCallTrace()).toBe(second)
+  })
+
+  it('keeps the last Read Aloud reading apart from the calls', () => {
+    const call = startCallTrace('Grok Live')
+    const first = startReadingTrace('Reading a reply: 12 of its 20 characters to speak')
+    expect(first.report()).toMatch(/^Read Aloud reading, started /)
+    expect(first.report()).toContain('+0.0s Reading a reply: 12 of its 20 characters to speak')
+    const second = startReadingTrace('Reading a reply: 3 of its 3 characters to speak')
+    expect(first.isEnded).toBe(true)
+    expect(first.steps.at(-1)?.text).toBe('Ended: another reading started')
+    expect(lastReadingTrace()).toBe(second)
+    expect(lastCallTrace()).toBe(call)
+    expect(call.isEnded).toBe(false)
   })
 })
