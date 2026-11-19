@@ -9,7 +9,7 @@
  */
 import { useEffect, useState } from 'react'
 import { searchQuery } from './chatFinder'
-import type { ChatRow } from './chats'
+import { isLegacyKanbanWorker, type ChatRow } from './chats'
 
 export const MIN_QUERY = 2
 /** Matches shown; Hermes is asked for three times as many, since old Kanban workers pass its source filter and are dropped after. */
@@ -139,7 +139,6 @@ const seconds = (v: unknown) => {
   const n = typeof v === 'number' ? v : typeof v === 'string' ? Number(v) : NaN
   return Number.isFinite(n) && n > 0 ? n : undefined
 }
-const legacyWorker = (source: string, preview: string) => !source && /^\s*(you are a kanban worker|kanban task)/i.test(preview)
 
 /** The response's chats in Hermes' order, each once, the first twenty; null when it isn't a search answer. */
 export function hitsFrom(response: unknown, query: string, profile: string): ContentHit[] | null {
@@ -150,7 +149,7 @@ export function hitsFrom(response: unknown, query: string, profile: string): Con
     .flatMap((raw): ContentHit[] => {
       const row = (raw ?? {}) as Raw
       const id = (str(row.session_id) || str(row.id)).trim()
-      if (!id || seen.has(id) || legacyWorker(str(row.source), str(row.preview))) return []
+      if (!id || seen.has(id) || isLegacyKanbanWorker(str(row.source), str(row.preview))) return []
       seen.add(id)
       const root = str(row.lineage_root).trim()
       return [

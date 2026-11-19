@@ -35,7 +35,7 @@ describe('In messages', () => {
         results: [
           { session_id: 'a', snippet: '>>>gpu<<<', title: 'GPU', last_active: 10 },
           { session_id: 'a', snippet: 'again' },
-          { session_id: 'w', snippet: 'x', preview: 'You are a kanban worker' },
+          { session_id: 'w', snippet: 'x', source: 'local', preview: 'work kanban task t_9f2c' },
           { session_id: 'b', lineage_root: 'root', snippet: 'gpu', archived: false },
           { session_id: 'c', snippet: 'gpu', archived: true },
           { session_id: 'd', snippet: 'gpu' }

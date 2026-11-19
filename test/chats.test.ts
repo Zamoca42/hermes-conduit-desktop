@@ -1,10 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { chatListPath, mergeRows, refreshFirstPage, responseCount, rowsFromResponse, sectionRows, toMillis } from '../src/renderer/src/state/chats'
+import { chatListPath, isLegacyKanbanWorker, mergeRows, refreshFirstPage, responseCount, rowsFromResponse, sectionRows, toMillis } from '../src/renderer/src/state/chats'
 
 const now = new Date(2026, 10, 18, 15, 0).getTime()
 const hoursAgo = (h: number) => (now - h * 3_600_000) / 1000
 
 describe('chat rows', () => {
+  it('leaves out Kanban workers stored before the tag, as the phone tells them', () => {
+    expect(isLegacyKanbanWorker('cli', 'work kanban task t_9f2c')).toBe(true)
+    expect(isLegacyKanbanWorker('local', '  Work Kanban Task t_9f2c ')).toBe(true)
+    // A Telegram row that only reads the same is a chat, and so is a longer sentence.
+    expect(isLegacyKanbanWorker('telegram', 'work kanban task t_9f2c')).toBe(false)
+    expect(isLegacyKanbanWorker('cli', 'work kanban task t_9f2c and then tell me')).toBe(false)
+    expect(isLegacyKanbanWorker('cli', 'work kanban task ')).toBe(false)
+    const rows = rowsFromResponse({ sessions: [{ id: 'w', source: 'cli', preview: 'work kanban task t_1' }, { id: 'c', source: 'cli', preview: 'hello' }, { id: 'k', source: 'kanban' }] })
+    expect(rows.map(r => r.id)).toEqual(['c'])
+  })
+
   it('reads dashboard rows, leaves out non-chats and duplicates', () => {
     const rows = rowsFromResponse({
       sessions: [

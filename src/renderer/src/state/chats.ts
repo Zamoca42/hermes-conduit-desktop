@@ -39,6 +39,22 @@ export interface ChatSection {
 /** Sessions that aren't chats, as the phone's list leaves them out (cron runs have their own list). */
 export const CHAT_LIST_EXCLUDED_SOURCES = 'cron,kanban,oneshot,tool'
 
+/**
+ * A Kanban worker Hermes stored before it tagged workers `kanban`, as the
+ * phone tells one (Models.swift isLegacyKanbanWorker): a `cli` row (`local`
+ * after a peer refresh) whose preview is the dispatcher's one-line prompt,
+ * "work kanban task <id>". A Telegram or cron row that only reads the same
+ * is a chat.
+ */
+export function isLegacyKanbanWorker(source: string | undefined, preview: string | undefined): boolean {
+  if (!['cli', 'local'].includes((source ?? '').toLowerCase())) return false
+  const text = (preview ?? '').trim().toLowerCase()
+  const prompt = 'work kanban task '
+  if (!text.startsWith(prompt)) return false
+  const task = text.slice(prompt.length)
+  return task !== '' && !/\s/.test(task)
+}
+
 /** Rows per page of the chat list. */
 export const CHAT_LIST_PAGE = 200
 
@@ -101,6 +117,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
     seen.add(id)
     const source = typeof obj.source === 'string' ? obj.source : undefined
     if (source && CHAT_LIST_EXCLUDED_SOURCES.split(',').includes(source.toLowerCase())) continue
+    if (isLegacyKanbanWorker(source, typeof obj.preview === 'string' ? obj.preview : undefined)) continue
     const title = typeof obj.title === 'string' ? cleanTitle(obj.title) : ''
     const preview = typeof obj.preview === 'string' ? previewText(obj.preview) : ''
     let activeAt: number | undefined

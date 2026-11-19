@@ -10,6 +10,7 @@
  * the chat on screen, so, as on the Watch, the model reads it instead.
  */
 import { gateway } from '../gateway'
+import { isLegacyKanbanWorker } from './chats'
 import { fromHistory, type TranscriptItem } from './transcript'
 import { namingFiles } from './media'
 
@@ -101,8 +102,6 @@ export function searchPath(query: string, profile?: string): string {
   return profile && profile !== 'default' ? `${path}&profile=${encodeURIComponent(profile)}` : path
 }
 
-/** A worker stored before the `kanban` tag: no source, and its prompt opens like one. */
-const legacyWorker = (source: string, preview: string) => !source && /^\s*(you are a kanban worker|kanban task)/i.test(preview)
 
 /** The search's chats, in Hermes' order, each once. */
 export function matchesFrom(response: unknown): ChatMatch[] {
@@ -112,7 +111,7 @@ export function matchesFrom(response: unknown): ChatMatch[] {
   return rows.flatMap((raw): ChatMatch[] => {
     const row = (raw ?? {}) as Row
     const id = (str(row.session_id) || str(row.id)).trim()
-    if (!id || seen.has(id) || legacyWorker(str(row.source), str(row.preview))) return []
+    if (!id || seen.has(id) || isLegacyKanbanWorker(str(row.source), str(row.preview))) return []
     seen.add(id)
     return [
       {

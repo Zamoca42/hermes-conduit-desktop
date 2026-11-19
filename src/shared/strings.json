@@ -28469,6 +28469,21 @@
     "zh-Hans": "此聊天",
     "zh-Hant": "此聊天"
   },
+  "This chat is a Kanban task's worker, so only the board can run it. Open the task on the Kanban board and check its Worker Log.": {
+    "de": "Dieser Chat ist der Worker einer Kanban-Aufgabe, daher kann nur das Board ihn ausführen. Öffne die Aufgabe auf dem Kanban-Board und sieh dir ihr Worker-Log an.",
+    "es": "Este chat es el ejecutor de una tarea de Kanban, así que solo el tablero puede ejecutarlo. Abre la tarea en el tablero Kanban y consulta su Registro del ejecutor.",
+    "fr": "Cette discussion est le worker d'une tâche Kanban : seul le tableau peut l'exécuter. Ouvrez la tâche sur le tableau Kanban et consultez son Journal du worker.",
+    "id": "Chat ini adalah worker tugas Kanban, jadi hanya papan yang dapat menjalankannya. Buka tugasnya di papan Kanban dan periksa Log Worker-nya.",
+    "it": "Questa chat è il worker di un'attività Kanban, quindi solo la bacheca può eseguirla. Apri l'attività sulla bacheca Kanban e controlla il suo Registro del worker.",
+    "ja": "このチャットはカンバンタスクのワーカーなので、ボードだけが実行できます。カンバンボードでタスクを開き、ワーカーログを確認してください。",
+    "ko": "이 채팅은 Kanban 작업의 워커이므로 보드에서만 실행할 수 있습니다. Kanban 보드에서 작업을 열고 워커 로그를 확인하세요.",
+    "pl": "Ten czat to proces roboczy zadania Kanban, więc może go uruchamiać tylko tablica. Otwórz zadanie na tablicy Kanban i sprawdź jego Dziennik procesu roboczego.",
+    "pt-BR": "Este chat é o executor de uma tarefa do Kanban, então só o quadro pode executá-lo. Abra a tarefa no quadro Kanban e veja o Log do Executor.",
+    "ru": "Этот чат — обработчик задачи Kanban, поэтому запускать его может только доска. Откройте задачу на доске Kanban и посмотрите её Журнал обработчика.",
+    "tr": "Bu sohbet bir Kanban görevinin çalışanı, bu yüzden onu yalnızca pano çalıştırabilir. Görevi Kanban panosunda açıp Çalışan Günlüğü'ne bakın.",
+    "zh-Hans": "此聊天是看板任务的工作进程，只有看板可以运行它。请在看板上打开该任务并查看其工作日志。",
+    "zh-Hant": "此聊天是 Kanban 任務的執行者，只有看板能執行它。請在 Kanban 看板上開啟該任務並查看其執行者記錄。"
+  },
   "This chat is open in Conduit on another device or in the Hermes web chat. Send from there, or close it there and try again.": {
     "de": "Dieser Chat ist in Conduit auf einem anderen Gerät oder im Hermes-Webchat geöffnet. Sende von dort, oder schließe ihn dort und versuche es erneut.",
     "es": "Este chat está abierto en Conduit en otro dispositivo o en el chat web de Hermes. Envía desde allí, o ciérralo allí y vuelve a intentarlo.",
