@@ -23,6 +23,7 @@ import { useRoomCopy } from "../state/useRoomCopies";
 import { approvalLine, copyHost, copyLine, copyReadOnly, isOver, leaveMessage, outLine, postRow, takesPosts, type CopyApproval, type RoomCopy } from "../state/roomCopies";
 import { BotAvatar, LookFace, RoomFaces } from "./BotsHome";
 import { memberLook, personLook, type RoomLooks } from "../state/roomLooks";
+import { askLine, roomChatAgents, wrapUpLine, type RoomChatAgent } from "../state/roomChats";
 import { Composer } from "./Composer";
 import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
 import { blockquote, copyableReply, parseRoomReply, roomReplyText, sameQuotedText, type QuoteRequest } from "../state/quote";
@@ -61,6 +62,8 @@ interface Props {
   onLeaveCopy?: () => Promise<"left" | "sending">;
   /** How the room's other people and their agents look, as their own Conduits gave it. */
   looks?: RoomLooks;
+  /** Opens a private chat about the room with one of your agents (plugin room-chats), asking for notes with `wrapUp`. */
+  onOpenRoomChat?: (agent: RoomChatAgent, wrapUp: boolean) => Promise<void>;
 }
 
 const noRefresh = async () => undefined;
@@ -170,7 +173,7 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy, looks }: Props) {
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy, looks, onOpenRoomChat }: Props) {
   // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
   const hosted = useRoom(copy ? null : room, connected);
   const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
@@ -190,6 +193,36 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
     // Another Hermes' agent is never one of yours, whatever its id.
     return member?.peer ? undefined : botFor(member?.profile ?? memberId);
   };
+  // Your agents in a room with other people's, for a private chat about it.
+  const chatAgents = onOpenRoomChat && connected ? roomChatAgents(room.members, (profile) => botFor(profile)?.title) : [];
+  const [asking, setAsking] = useState(false);
+  const [chatOpening, setChatOpening] = useState<string | null>(null);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const openChat = async (agent: RoomChatAgent, wrapUp: boolean) => {
+    if (!onOpenRoomChat || chatOpening) return;
+    setChatOpening(`${agent.profile}|${wrapUp}`);
+    setChatError(null);
+    try {
+      await onOpenRoomChat(agent, wrapUp);
+      setAsking(false);
+    } catch (e) {
+      setChatError(t("Could not open the room's chat: {reason}", { reason: e instanceof Error ? e.message : String(e) }));
+    } finally {
+      setChatOpening(null);
+    }
+  };
+  useEffect(() => {
+    if (!asking) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !chatOpening) {
+        event.preventDefault();
+        event.stopPropagation();
+        setAsking(false);
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [asking, chatOpening]);
   /** Another person's agent's look. */
   const peerLook = (memberId: string) => memberLook(looks, room.members.find((m) => m.memberId === memberId));
   /** A person's look by name; in a room someone else hosts, the host's by the host's name. */
@@ -276,6 +309,19 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                 : `${names.length} bots`}
           </span>
         </div>
+        {chatAgents.length ? (
+          <button
+            className="chat-head-button"
+            title={t("Ask Your Agent")}
+            aria-label={t("Ask Your Agent")}
+            onClick={() => {
+              setChatError(null);
+              setAsking(true);
+            }}
+          >
+            <Icon name="chats" />
+          </button>
+        ) : null}
         {copy && onLeaveCopy ? (
           <button
             className="chat-head-button"
@@ -350,6 +396,33 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
               </span>
             );
           })}
+        </div>
+      ) : null}
+      {asking ? (
+        <div className="shortcuts-backdrop" onClick={() => !chatOpening && setAsking(false)}>
+          <div className="shortcuts-sheet link-sheet room-chat-sheet" role="dialog" aria-modal="true" aria-label={t("Ask Your Agent")} onClick={(e) => e.stopPropagation()}>
+            <header>
+              <span />
+              <h2>{t("Ask Your Agent")}</h2>
+              <button type="button" className="link" onClick={() => setAsking(false)} disabled={!!chatOpening}>
+                {t("Done")}
+              </button>
+            </header>
+            {chatError ? <p className="error-text">{chatError}</p> : null}
+            {chatAgents.map((agent) => (
+              <div key={agent.profile} className="room-chat-agent">
+                <button className="secondary" disabled={!!chatOpening} onClick={() => void openChat(agent, false)}>
+                  {chatOpening === `${agent.profile}|false` ? t("Working…") : askLine(agent.name)}
+                </button>
+                <button className="secondary" disabled={!!chatOpening} onClick={() => void openChat(agent, true)}>
+                  {chatOpening === `${agent.profile}|true` ? t("Working…") : wrapUpLine(agent.name)}
+                </button>
+              </div>
+            ))}
+            <p className="meta">
+              {t("Opens a private chat with your agent about this room. Nothing you write there goes to the room. An agent that only listens leaves you notes there when the room goes quiet.")}
+            </p>
+          </div>
         </div>
       ) : null}
       {settingsOpen && status.context ? (
