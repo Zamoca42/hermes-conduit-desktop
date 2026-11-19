@@ -17,6 +17,7 @@ import { Icon } from "./icons";
 import { inviteRowLine, type RoomInvite } from "../state/roomInvites";
 import { copyLine, copyRoom, isOver, type RoomCopy } from "../state/roomCopies";
 import { draftLine, type RoomDraft } from "../state/roomDrafts";
+import { lookPictureUrl, memberLook, type RoomLook, type RoomLooks } from "../state/roomLooks";
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 
@@ -57,28 +58,62 @@ export function BotAvatar({ bot, size, moving = false }: { bot: Bot; size: numbe
   );
 }
 
-/** A room's icon: its bots' faces overlapping. */
+/** Another person, or another person's agent, as their own Conduit draws them (a room look), else their initial. */
+export function LookFace({ look, name, size }: { look?: RoomLook; name: string; size: number }) {
+  const url = lookPictureUrl(look);
+  return (
+    <span
+      className="bot-avatar look-face"
+      style={{
+        width: size,
+        height: size,
+        background: url ? undefined : look?.color,
+        color: url || !look?.color ? undefined : "#fff",
+        boxShadow: look?.color ? `0 0 0 2px color-mix(in srgb, ${look.color} 25%, transparent)` : undefined,
+      }}
+      aria-hidden="true"
+    >
+      {url ? (
+        <img src={url} alt="" draggable={false} />
+      ) : (
+        <span className="look-initial" style={{ fontSize: Math.max(8, size * 0.45) }}>
+          {name.trim().charAt(0).toUpperCase()}
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** A room's icon: its bots' faces overlapping, with other people's agents that have a look. */
 export function RoomFaces({
   room,
   bots,
   size,
+  looks,
 }: {
   room: Pick<Room, "members">;
   bots: Bot[];
   size: number;
+  looks?: RoomLooks;
 }) {
   const shown = room.members
-    .map((m) => (m.peer ? undefined : bots.find((b) => b.name === (m.profile ?? m.memberId))))
-    .filter((b): b is Bot => !!b)
+    .flatMap((m): ({ key: string; bot: Bot } | { key: string; look: RoomLook; name: string })[] => {
+      if (m.peer) {
+        const look = memberLook(looks, m);
+        return look ? [{ key: `peer:${m.memberId}`, look, name: m.displayName ?? m.memberId }] : [];
+      }
+      const bot = bots.find((b) => b.name === (m.profile ?? m.memberId));
+      return bot ? [{ key: bot.name, bot }] : [];
+    })
     .slice(0, 4);
   return (
     <span className="room-faces" style={{ height: size }} aria-hidden="true">
-      {shown.map((bot, i) => (
+      {shown.map((face, i) => (
         <span
-          key={bot.name}
+          key={face.key}
           style={{ marginLeft: i ? -size * 0.38 : 0, zIndex: shown.length - i }}
         >
-          <BotAvatar bot={bot} size={size} />
+          {"bot" in face ? <BotAvatar bot={face.bot} size={size} /> : <LookFace look={face.look} name={face.name} size={size} />}
         </span>
       ))}
     </span>
@@ -121,6 +156,8 @@ interface Props {
   onOpenDraft?: (draft: RoomDraft) => void;
   /** New Group Chat: your bots, and people you've linked. */
   onNewGroup?: () => void;
+  /** How the rooms over Links look, by room id: other people's agents' faces. */
+  roomLooks?: Record<string, RoomLooks>;
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -196,6 +233,7 @@ export function BotsHome({
   drafts,
   onOpenDraft,
   onNewGroup,
+  roomLooks,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -415,7 +453,7 @@ export function BotsHome({
                     aria-label={`${copy.name}, ${t("With linked people")}, ${copyLine(copy)}`}
                   >
                     <span className="copy-faces">
-                      <RoomFaces room={copyRoom(copy)} bots={bots ?? []} size={44} />
+                      <RoomFaces room={copyRoom(copy)} bots={bots ?? []} size={44} looks={roomLooks?.[copy.roomId]} />
                       <span className="copy-badge" title={t("With linked people")}>
                         <Icon name="linked" />
                       </span>
@@ -448,7 +486,7 @@ export function BotsHome({
                     {room.linked ? (
                       // With people you've linked: the two-people mark, as rooms hosted by others carry.
                       <span className="copy-faces">
-                        <RoomFaces room={room} bots={bots ?? []} size={44} />
+                        <RoomFaces room={room} bots={bots ?? []} size={44} looks={roomLooks?.[room.roomId]} />
                         <span className="copy-badge" title={t("With linked people")}>
                           <Icon name="linked" />
                         </span>
