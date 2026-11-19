@@ -12389,6 +12389,21 @@
     "zh-Hans": "在此聊天中",
     "zh-Hant": "在此聊天中"
   },
+  "In messages": {
+    "de": "In Nachrichten",
+    "es": "En mensajes",
+    "fr": "Dans les messages",
+    "id": "Dalam pesan",
+    "it": "Nei messaggi",
+    "ja": "メッセージ内",
+    "ko": "메시지에서",
+    "pl": "W wiadomościach",
+    "pt-BR": "Nas mensagens",
+    "ru": "В сообщениях",
+    "tr": "Mesajlarda",
+    "zh-Hans": "消息中",
+    "zh-Hant": "訊息中"
+  },
   "In progress": {
     "de": "Läuft",
     "es": "En curso",
@@ -16408,6 +16423,21 @@
     "tr": "Eşleşen bağlayıcı yok",
     "zh-Hans": "没有匹配的连接器",
     "zh-Hant": "沒有符合的連接器"
+  },
+  "No matching conversations": {
+    "de": "Keine passenden Unterhaltungen",
+    "es": "No hay conversaciones que coincidan",
+    "fr": "Aucune conversation correspondante",
+    "id": "Tidak ada percakapan yang cocok",
+    "it": "Nessuna conversazione corrispondente",
+    "ja": "一致するチャットがありません",
+    "ko": "일치하는 대화 없음",
+    "pl": "Brak pasujących rozmów",
+    "pt-BR": "Nenhuma conversa correspondente",
+    "ru": "Нет подходящих чатов",
+    "tr": "Eşleşen konuşma yok",
+    "zh-Hans": "没有匹配的对话",
+    "zh-Hant": "沒有符合的對話"
   },
   "No matching plugins": {
     "de": "Keine passenden Plugins",
@@ -22783,6 +22813,21 @@
     "tr": "Dosyalarda aranıyor",
     "zh-Hans": "正在搜索文件",
     "zh-Hant": "正在搜尋檔案"
+  },
+  "Searching messages": {
+    "de": "Nachrichten werden durchsucht",
+    "es": "Buscando en los mensajes",
+    "fr": "Recherche dans les messages",
+    "id": "Mencari di pesan",
+    "it": "Ricerca nei messaggi",
+    "ja": "メッセージを検索中",
+    "ko": "메시지 검색 중",
+    "pl": "Przeszukiwanie wiadomości",
+    "pt-BR": "Buscando nas mensagens",
+    "ru": "Поиск по сообщениям",
+    "tr": "Mesajlarda aranıyor",
+    "zh-Hans": "正在搜索消息",
+    "zh-Hant": "正在搜尋訊息"
   },
   "Searching the web": {
     "de": "Sucht im Web",
@@ -29413,6 +29458,21 @@
     "tr": "Başlıksız sohbet",
     "zh-Hans": "无标题聊天",
     "zh-Hant": "無標題聊天"
+  },
+  "Untitled conversation": {
+    "de": "Unbenannte Unterhaltung",
+    "es": "Conversación sin título",
+    "fr": "Conversation sans titre",
+    "id": "Percakapan tanpa judul",
+    "it": "Conversazione senza titolo",
+    "ja": "無題のチャット",
+    "ko": "제목 없는 대화",
+    "pl": "Rozmowa bez tytułu",
+    "pt-BR": "Conversa sem título",
+    "ru": "Чат без названия",
+    "tr": "Başlıksız konuşma",
+    "zh-Hans": "无标题对话",
+    "zh-Hant": "未命名的對話"
   },
   "Untitled project": {
     "de": "Unbenanntes Projekt",
