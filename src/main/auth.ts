@@ -137,6 +137,7 @@ export async function probeHost(input: string, fetchImpl: Fetch, headers?: Proxy
     if (behindCloudflareAccess(response)) {
       return {
         ok: false,
+        help: 'cloudflare',
         error: headers
           ? t('Cloudflare Access turned this computer away. Check the service token under Proxy sign-in.')
           : t('This dashboard is behind Cloudflare Access. Add its service token under Proxy sign-in.')
@@ -154,8 +155,10 @@ export async function probeHost(input: string, fetchImpl: Fetch, headers?: Proxy
     return { ok: true, url, methods: signInMethods(body), version: typeof body.version === 'string' ? body.version : undefined }
   } catch (error) {
     // A certificate this computer doesn't trust: offer to read and save its root.
-    const untrusted = (error as { kind?: unknown }).kind === 'tlsUntrusted' && url.startsWith('https:')
-    return { ok: false, error: (error as Error).message, ...(untrusted ? { untrusted: url } : {}) }
+    const kind = (error as { kind?: unknown }).kind
+    const untrusted = kind === 'tlsUntrusted' && url.startsWith('https:')
+    const tls = typeof kind === 'string' && kind.startsWith('tls')
+    return { ok: false, error: (error as Error).message, ...(untrusted ? { untrusted: url } : {}), ...(tls ? { help: 'tls' as const } : {}) }
   }
 }
 

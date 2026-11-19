@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react'
-import type { HostSummary, SignInMethod } from '@shared/ipc'
+import type { HostSummary, SignInMethod, TroubleshootingTopic } from '@shared/ipc'
 import { t } from '@shared/i18n'
 import { ServerCertificate } from './ServerCertificate'
 import { PairWithPhone } from './PairWithPhone'
+import { Troubleshooting } from './Troubleshooting'
 import { composerDrafts } from '../state/composerDrafts'
 import { copyHostData, finishHostMove, undoHostCopy } from '../state/hostData'
 
@@ -45,6 +46,9 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
   const [otherHeaders, setOtherHeaders] = useState('')
   /** An address whose certificate this computer doesn't trust: Install this server's certificate. */
   const [untrusted, setUntrusted] = useState<string | null>(null)
+  /** The troubleshooting page the last failure points to, and the one open. */
+  const [help, setHelp] = useState<TroubleshootingTopic | null>(null)
+  const [troubleshooting, setTroubleshooting] = useState<TroubleshootingTopic | null>(null)
 
   /** The proxy's headers as typed, or an error to show. */
   function proxyHeaders(): { ok: true; headers?: Record<string, string> } | { ok: false; error: string } {
@@ -63,6 +67,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
     setBusy(true)
     setError(null)
     setUntrusted(null)
+    setHelp(null)
     const proxy = proxyHeaders()
     if (!proxy.ok) {
       setBusy(false)
@@ -74,6 +79,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
     if (!probe.ok) {
       setError(probe.error)
       setUntrusted(probe.untrusted ?? null)
+      setHelp(probe.help ?? null)
       return
     }
     setUrl(probe.url)
@@ -119,6 +125,14 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
     return (
       <div className="signin">
         <PairWithPhone onBack={() => setPairing(false)} />
+      </div>
+    )
+  }
+
+  if (troubleshooting) {
+    return (
+      <div className="signin">
+        <Troubleshooting topic={troubleshooting} onTopic={setTroubleshooting} untrusted={untrusted} onBack={() => setTroubleshooting(null)} />
       </div>
     )
   }
@@ -171,6 +185,11 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
           ) : null}
           {error ? <div className="error-text" role="alert">{error}</div> : null}
           {untrusted ? <ServerCertificate url={untrusted} /> : null}
+          {error && help ? (
+            <button className="link-button" type="button" onClick={() => setTroubleshooting(help)}>
+              {t('Troubleshoot Connection')}
+            </button>
+          ) : null}
           <button className="primary" type="submit" disabled={busy || !address.trim()}>
             {busy ? t('Connecting…') : t('Continue')}
           </button>
