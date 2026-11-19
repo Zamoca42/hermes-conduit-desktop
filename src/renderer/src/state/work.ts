@@ -5,14 +5,12 @@
  * them and take the user's own actions, which skip the Bot Chat's model.
  */
 import { t } from '../../../shared/i18n'
+import { dashboardProfilePath } from './dashboardProfile'
 
 export const WORK = '/api/plugins/conduit_push/workstreams'
 
 /** The route for a bot: a secondary bot is named with ?conduit_profile=, since its work is driven in the dashboard's own process. */
-export function workPath(path: string, profile?: string): string {
-  if (!profile || profile === 'default') return path
-  return `${path}${path.includes('?') ? '&' : '?'}conduit_profile=${encodeURIComponent(profile)}`
-}
+export const workPath = (path: string, profile?: string): string => dashboardProfilePath(path, profile)
 
 export type WorkKind = 'workstream' | 'ask_out' | 'ask_in'
 export type StepState = 'done' | 'doing' | 'todo'

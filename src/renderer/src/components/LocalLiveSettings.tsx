@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { language, t } from '@shared/i18n'
 import { GatewayError, gateway } from '../gateway'
-import { withProfile } from '../state/gptLive'
 import { KEY_PATH, PLUGIN_MISSING, STATUS_PATH, agentSetupText, localStatus, serverFlags, type LocalStatus } from '../state/localLive'
 import { relativeTime } from '../state/pulseLook'
 import { LocalLiveAgentSettings } from './LocalLiveAgentSettings'
+import { dashboardProfilePath } from '../state/dashboardProfile'
 
 function CopyRow({ title, value }: { title: string; value: string }) {
   const [copied, setCopied] = useState(false)
@@ -34,7 +34,7 @@ export function LocalLiveSettings({ profile }: { profile?: string }) {
   useEffect(() => {
     let live = true
     setStatus(current => (current && current !== 'checking' && !('failed' in current) ? current : 'checking'))
-    Promise.all([gateway.http('GET', withProfile(STATUS_PATH, profile), undefined, 30_000), window.conduit.status()])
+    Promise.all([gateway.http('GET', dashboardProfilePath(STATUS_PATH, profile), undefined, 30_000), window.conduit.status()])
       .then(([body, host]) => live && setStatus(localStatus(body, host.url)))
       .catch((e: unknown) => {
         if (!live) return
@@ -49,7 +49,7 @@ export function LocalLiveSettings({ profile }: { profile?: string }) {
     setRotating(true)
     setRotateError(null)
     try {
-      await gateway.http('POST', withProfile(KEY_PATH, profile), {}, 30_000)
+      await gateway.http('POST', dashboardProfilePath(KEY_PATH, profile), {}, 30_000)
       setLoad(n => n + 1)
     } catch (e) {
       setRotateError(e instanceof Error ? e.message : String(e))

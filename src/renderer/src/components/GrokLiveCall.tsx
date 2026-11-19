@@ -44,6 +44,7 @@ import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
+import { dashboardProfileQuery } from '../state/dashboardProfile'
 
 interface Props {
   profile?: string
@@ -519,7 +520,7 @@ export function GrokLiveCall({
         if (ended.current) return
         told = instructions({ language: language(), persona, memory, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) })
         trace.current.step('Opening the socket')
-        const opened = await window.conduit.liveOpen(SOCKET_PATH, profile && profile !== 'default' ? { profile } : {})
+        const opened = await window.conduit.liveOpen(SOCKET_PATH, dashboardProfileQuery(profile))
         if (!opened.ok) trace.current.step('The socket did not open')
         if (!opened.ok) return fail(t("Couldn't connect to Grok Live: {reason}", { reason: opened.error }))
         if (ended.current) return window.conduit.liveClose(opened.id)

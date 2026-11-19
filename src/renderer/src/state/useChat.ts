@@ -43,6 +43,7 @@ import { t } from '../../../shared/i18n'
 import { lostRows, queueFrom, refusalMeansSettled, resendWords, type QueuedPrompt } from './chatQueue'
 import { discardTurnSurface, reportTurnSurface } from './turnSurface'
 import { readsRepliesAloud } from './readAloud'
+import { dashboardProfilePath } from './dashboardProfile'
 
 type Action =
   | { type: 'reset'; state: TranscriptState }
@@ -387,7 +388,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   const takeOverChat = useCallback(
     (live: string | null) => {
       const ids = [...new Set([chatRef.current.storedId, live].filter((id): id is string => !!id))].slice(0, TAKEOVER_MAX_IDS)
-      const path = profile && profile !== 'default' ? `${TAKEOVER_PATH}?profile=${encodeURIComponent(profile)}` : TAKEOVER_PATH
+      const path = dashboardProfilePath(TAKEOVER_PATH, profile)
       return gateway.http('POST', path, { session_ids: ids })
     },
     [profile]
