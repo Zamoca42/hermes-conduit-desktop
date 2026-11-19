@@ -19,6 +19,8 @@ export const MAX_INVITE_LENGTH = 2048
 export const MAX_NAME_LENGTH = 64
 export const NAME_KEY = 'conduit.roomLinks.name'
 
+import { t } from '../../../shared/i18n'
+
 const PAYLOAD = /^[A-Za-z0-9_-]+$/
 
 /** The whole text, trimmed, as an invite, or null. The scheme and host may come in any case. */
@@ -97,7 +99,7 @@ const obj = (value: unknown): Row | null => (value && typeof value === 'object' 
 const str = (value: unknown): string | null => (typeof value === 'string' ? value : null)
 
 function bad(): never {
-  throw new Error('Hermes answered in a way Conduit doesn’t read.')
+  throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
 }
 
 /** Four words, or null. */

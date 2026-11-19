@@ -84,6 +84,8 @@ import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
 import { MultiplayerPage } from './components/MultiplayerPage'
+import { RoomInviteCard } from './components/RoomInviteCard'
+import { useRoomInvites } from './state/useRoomInvites'
 import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
@@ -938,6 +940,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     void onSend(ask.text)
   }, [selected, loading, error, chat.liveId, chat.storedId, onSend])
   const groupRooms = useRooms(connected)
+  const roomInvites = useRoomInvites(connected, status.url ?? '')
+  const [openInvite, setOpenInvite] = useState<string | null>(null)
+  const shownInvite = openInvite ? roomInvites.invites.find(i => i.id === openInvite) : undefined
   const [openRoom, setOpenRoom] = useState<Room | null>(null)
   const showRoom = useCallback((room: Room) => {
     setOpenRoom(room)
@@ -1660,6 +1665,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onAction={connected ? botAction : undefined}
             notice={botNotice}
             onDismissNotice={() => setBotNotice(null)}
+            invites={roomInvites.rows}
+            onOpenInvite={invite => setOpenInvite(invite.id)}
             work={workByBot}
             onWork={bot => {
               openBot(bot)
@@ -1746,6 +1753,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         )}
       </div>
       {shortcutsOpen ? <ShortcutsSheet onClose={closeShortcuts} /> : null}
+      {shownInvite ? (
+        <RoomInviteCard
+          invite={shownInvite}
+          bots={roster.bots}
+          freeBusy={roomInvites.freeBusy}
+          onAnswer={roomInvites.answer}
+          onRemove={invite => void roomInvites.remove(invite)}
+          onRefresh={roomInvites.refresh}
+          onClose={() => setOpenInvite(null)}
+        />
+      ) : null}
     </GlowContext.Provider>
   )
 }
@@ -1777,7 +1795,8 @@ function Settings({
     'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance' | 'multiplayer'
   >('main')
   // Multiplayer shows while the host's plugin keeps Links.
-  const [linksServed, setLinksServed] = useState(false)
+  const [pluginCapabilities, setPluginCapabilities] = useState<string[]>([])
+  const linksServed = pluginCapabilities.includes(ROOM_LINKS_CAPABILITY)
   useEffect(() => {
     if (status.phase !== 'open') return
     let live = true
@@ -1785,7 +1804,7 @@ function Settings({
       .http('GET', PLUGIN_STATUS_PATH, undefined, 8_000)
       .then(body => {
         const plugin = pluginStatus(body)
-        if (live) setLinksServed(plugin.state === 'reported' && plugin.capabilities.includes(ROOM_LINKS_CAPABILITY))
+        if (live) setPluginCapabilities(plugin.state === 'reported' ? plugin.capabilities : [])
       })
       .catch(() => undefined)
     return () => {
@@ -1821,7 +1840,7 @@ function Settings({
   if (page === 'multiplayer' && status.url)
     return (
       <main className="settings">
-        <MultiplayerPage host={status.url} onBack={() => setPage('main')} />
+        <MultiplayerPage host={status.url} capabilities={pluginCapabilities} bots={bots} profile={profile} onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'vault')
