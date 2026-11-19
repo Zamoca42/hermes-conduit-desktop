@@ -37,7 +37,7 @@ import { Icon } from './icons'
 import { REASONING_LEVELS, groupModels, reasoningTitle } from '../state/models'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelOptions } from './ModelOptions'
-import { ModelCatalogNote } from './ModelCatalogNote'
+import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
 interface Props {
   bots: Bot[] | null
@@ -623,7 +623,10 @@ function JobEditor({
               ))}
             </select>
           </label>
-          <ModelCatalogNote catalog={catalog} />
+          <div className="job-model-refresh">
+            <ModelCatalogNote catalog={catalog} />
+            <RefreshModelsButton catalog={catalog} />
+          </div>
           <span className="meta">{t("Each run uses this model and reasoning. Profile default follows the profile's, so a change there reaches this job too.")}</span>
         </div>
       ) : null}

@@ -23,7 +23,7 @@ import { StarterFaceArt } from './StarterFaceArt'
 import { Icon } from './icons'
 import { ModelOptions } from './ModelOptions'
 import { useModelCatalog } from '../state/modelCatalog'
-import { ModelCatalogNote } from './ModelCatalogNote'
+import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 import { mayMove, movingPicture, TooLargeError } from '../state/movingPicture'
 import type { HostBadge, NewBotCarry } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
@@ -321,7 +321,10 @@ export function NewBot({ bots, protocol, onClose, onCreated, dashboards, onCreat
         </section>
 
         <section className="pset-section">
-          <h2>{t('Model')}</h2>
+          <h2 className="model-section-title">
+            {t('Model')}
+            <RefreshModelsButton catalog={catalog} />
+          </h2>
           <select className="language-select" value={pick} aria-label={t('Model')} disabled={!catalog.answered} onChange={e => setPick(e.target.value)}>
             <option value="">{t('Default')}</option>
             <ModelOptions providers={providers} groups={groups} />

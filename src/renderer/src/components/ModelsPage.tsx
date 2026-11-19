@@ -8,7 +8,7 @@ import { FallbackModels } from './FallbackModels'
 import { ProvidersSection } from './ProvidersSection'
 import { ModelOptions } from './ModelOptions'
 import { useModelCatalog } from '../state/modelCatalog'
-import { ModelCatalogNote } from './ModelCatalogNote'
+import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -134,7 +134,10 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
       ) : (
         <>
           <section className="pset-section">
-            <h2>{t('Chat model')}</h2>
+            <h2 className="model-section-title">
+              {t('Chat model')}
+              <RefreshModelsButton catalog={modelCatalog} />
+            </h2>
             <div className="pset-row">
               <span>{t('New chats')}</span>
               {picker(t('Chat model'), settings.main, false, (provider, model) => {

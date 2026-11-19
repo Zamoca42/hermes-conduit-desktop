@@ -8984,6 +8984,17 @@ button.secondary.danger {
   margin-left: auto;
 }
 
+/* A job's Refresh models, after its catalog note. */
+.job-model-refresh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.job-model-refresh .refresh-models {
+  margin-left: auto;
+}
+
 .model-current .refresh-models {
   margin-left: auto;
 }
