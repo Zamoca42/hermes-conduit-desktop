@@ -87,7 +87,7 @@ import { MultiplayerPage } from './components/MultiplayerPage'
 import { RoomInviteCard } from './components/RoomInviteCard'
 import { useRoomInvites } from './state/useRoomInvites'
 import { useRoomCopies } from './state/useRoomCopies'
-import { copyRoom } from './state/roomCopies'
+import { copyApprovals, copyRoom } from './state/roomCopies'
 import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
@@ -951,6 +951,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [openCopy, setOpenCopy] = useState<string | null>(null)
   const shownCopy = openCopy ? roomCopies.copies.find(c => c.id === openCopy) : undefined
   const shownCopyRoom = useMemo(() => (shownCopy ? copyRoom(shownCopy) : null), [shownCopy])
+  const shownCopyApprovals = useMemo(
+    () => (shownCopy ? copyApprovals(roomCopies.approvals, shownCopy, roomCopies.copies) : []),
+    [shownCopy, roomCopies.approvals, roomCopies.copies]
+  )
+  const copiesWaiting = useMemo(
+    () => new Set(roomCopies.copies.filter(c => copyApprovals(roomCopies.approvals, c, roomCopies.copies).length).map(c => c.id)),
+    [roomCopies.approvals, roomCopies.copies]
+  )
   const showRoom = useCallback((room: Room) => {
     setOpenRoom(room)
     setOpenCopy(null)
@@ -1676,6 +1684,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             invites={roomInvites.rows}
             onOpenInvite={invite => setOpenInvite(invite.id)}
             copies={roomCopies.copies}
+            copiesWaiting={copiesWaiting}
             onOpenCopy={copy => {
               setOpenCopy(copy.id)
               setOpenRoom(null)
@@ -1739,6 +1748,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             copy={shownCopy}
             onRefreshCopies={roomCopies.refresh}
             canPostInCopy={roomCopies.canPost}
+            copyApprovals={shownCopyApprovals}
+            copyAnswers={roomCopies.answers}
+            onAnswerCopyApproval={(approval, choice) => void roomCopies.answer(approval, choice)}
             onDeleteCopy={
               roomCopies.canForget
                 ? async () => {

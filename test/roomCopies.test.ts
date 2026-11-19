@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { eventFromWire, roomItems, unnamedPost } from '../src/renderer/src/state/groups'
-import { copyLine, copyRoom, copyStatus, isOver, parseCopies, parsePost, postRow, roomCopiesClient, takesPosts } from '../src/renderer/src/state/roomCopies'
+import { approvalLine, copyApprovals, copyLine, copyRoom, copyStatus, isOver, parseCopies, parseCopyApproval, parsePost, postRow, roomCopiesClient, takesPosts } from '../src/renderer/src/state/roomCopies'
 
 const wire = {
   room_id: 'conduit-1',
@@ -129,5 +129,30 @@ describe('rooms other people host', () => {
       ['POST', '/api/plugins/conduit_push/rooms/copies/messages', { room_id: 'r1', event_id: 'p1', text: 'hi' }, 55000],
       ['GET', '/api/plugins/conduit_push/rooms/copies/messages?room_id=r1', undefined, undefined]
     ])
+  })
+
+  it('finds your agents’ approvals in a copy and answers them', async () => {
+    const copies = parseCopies({ ok: true, copies: [wire, { ...wire, link: 'L2' }] })!
+    const approval = parseCopyApproval({
+      run_id: 'run1', request_id: 'req1', room_id: 'conduit-1', room: 'Trip planning', link: 'L1', from: 'Ana',
+      agent: { profile: 'default', handle: 'hermes', display_name: 'Kuro' }, command: 'rm -rf build', description: 'Clean up', choices: ['once', 'always', 'deny']
+    })!
+    expect(approval).toMatchObject({ id: 'run1/req1', memberId: 'default', choices: ['once', 'deny'], command: 'rm -rf build' })
+    expect(parseCopyApproval({ run_id: 'run1' })).toBeNull()
+    expect(approvalLine(approval)).toBe('Kuro in Trip planning, hosted by Ana')
+    expect(approvalLine({ ...approval, agentName: undefined, agentHandle: undefined, agentProfile: undefined, room: undefined, from: undefined })).toBe('Your agent in a room hosted elsewhere')
+    const linkless = { ...approval, id: 'x', link: undefined }
+    // By Link and room; one without a Link only where no other copy has the room id.
+    expect(copyApprovals([approval, linkless], copies[0]!, copies).map(a => a.id)).toEqual(['run1/req1'])
+    expect(copyApprovals([linkless], copies[0]!, [copies[0]!]).map(a => a.id)).toEqual(['x'])
+
+    const calls: unknown[] = []
+    const client = roomCopiesClient(async (method, path, body, timeoutMs) => {
+      calls.push([method, path, body, timeoutMs])
+      return { ok: true, approvals: [] } as never
+    })
+    await client.answer(approval, 'deny')
+    expect(await client.approvals()).toEqual([])
+    expect(calls[0]).toEqual(['POST', '/api/plugins/conduit_push/rooms/approvals/answer', { run_id: 'run1', request_id: 'req1', choice: 'deny' }, 35000])
   })
 })

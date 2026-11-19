@@ -20,7 +20,7 @@ import { RoomSettings } from "./RoomSettings";
 import { Fragment } from "react";
 import { useRoom, type RoomApprovalAnswer } from "../state/useGroups";
 import { useRoomCopy } from "../state/useRoomCopies";
-import { copyHost, copyLine, copyReadOnly, isOver, postRow, takesPosts, type RoomCopy } from "../state/roomCopies";
+import { approvalLine, copyHost, copyLine, copyReadOnly, isOver, postRow, takesPosts, type CopyApproval, type RoomCopy } from "../state/roomCopies";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
@@ -52,6 +52,10 @@ interface Props {
   onDeleteCopy?: () => Promise<void>;
   /** This Hermes' plugin posts in rooms other people host. */
   canPostInCopy?: boolean;
+  /** Your agents' approvals in the copy, each answered on its card. */
+  copyApprovals?: CopyApproval[];
+  copyAnswers?: Record<string, RoomApprovalAnswer>;
+  onAnswerCopyApproval?: (approval: CopyApproval, choice: "once" | "deny") => void;
 }
 
 const noRefresh = async () => undefined;
@@ -161,7 +165,7 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false }: Props) {
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval }: Props) {
   // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
   const hosted = useRoom(copy ? null : room, connected);
   const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
@@ -247,7 +251,9 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           <span className="room-title-name">{room.name}</span>
           <span className="room-title-count">
             {copy
-              ? copyLine(copy)
+              ? copyApprovals.length
+                ? t("Approval needed")
+                : copyLine(copy)
               : approvals.length
               ? t("Approval needed")
               : choosing
@@ -594,7 +600,21 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           ) : null}
         </div>
       </div>
-      {approvals.length ? (
+      {copy && copyApprovals.length ? (
+        <div className="room-approvals">
+          {copyApprovals.map((approval) => (
+            <RoomApprovalCard
+              key={approval.id}
+              approval={approval}
+              name={room.members.find((m) => !m.peer && m.profile === approval.agentProfile)?.displayName ?? approvalLine(approval)}
+              answer={copyAnswers[approval.id]}
+              canAnswer={connected && !!onAnswerCopyApproval}
+              onAnswer={(choice) => onAnswerCopyApproval?.(approval, choice)}
+            />
+          ))}
+        </div>
+      ) : null}
+      {!copy && approvals.length ? (
         <div className="room-approvals">
           {approvals.map((approval) => (
             <RoomApprovalCard

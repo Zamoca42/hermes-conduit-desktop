@@ -7,7 +7,7 @@
  */
 
 import { t } from '../../../shared/i18n'
-import { logPage, type DriverStatus, type LogPage, type Room } from './groups'
+import { logPage, type DriverStatus, type LogPage, type Room, type RoomApproval } from './groups'
 import { MAILBOX_TIMEOUT_MS, ROOMS_PATH, type Http } from './roomLinks'
 
 export const ROOM_COPIES_CAPABILITY = 'room-copies'
@@ -19,6 +19,11 @@ export const ROOM_PEOPLE_PATH = `${ROOMS_PATH}/people`
 /** Posting in rooms other people host: `POST`/`GET /rooms/copies/messages`. */
 export const ROOM_POSTS_CAPABILITY = 'room-posts'
 export const POSTS_PATH = `${COPIES_PATH}/messages`
+/** Your agents' approvals in rooms other people host: `GET /rooms/approvals`, `POST /rooms/approvals/answer`. */
+export const ROOM_APPROVALS_CAPABILITY = 'room-approvals'
+export const APPROVALS_PATH = `${ROOMS_PATH}/approvals`
+/** The plugin answers within 30 s, its API server's wait. */
+export const APPROVAL_ANSWER_TIMEOUT_MS = 35_000
 /** room_copies.MAX_LOG_LIMIT. */
 export const MAX_COPY_LOG_LIMIT = 500
 
@@ -257,6 +262,68 @@ export function postRow(post: RoomPost | undefined, inFlight: boolean, copy: Roo
   return { state: 'sending' }
 }
 
+/**
+ * An approval one of your agents' turns in a room hosted elsewhere waits
+ * for: the turn runs on your Hermes, so the plugin lists it and answers it.
+ */
+export interface CopyApproval extends RoomApproval {
+  runId: string
+  roomId?: string
+  /** The room's name, as the invite named it. */
+  room?: string
+  link?: string
+  /** Who hosts it, by the name the Link shows them. */
+  from?: string
+  agentProfile?: string
+  agentHandle?: string
+  agentName?: string
+}
+
+/** One approval; one without a run or request id can't be answered and is left out. */
+export function parseCopyApproval(value: unknown): CopyApproval | null {
+  const row = obj(value)
+  const runId = text(row?.run_id)
+  const requestId = text(row?.request_id)
+  if (!row || !runId || !requestId) return null
+  const agent = obj(row.agent) ?? {}
+  const offered = (Array.isArray(row.choices) ? row.choices : []).filter((c): c is 'once' | 'deny' => c === 'once' || c === 'deny')
+  return {
+    id: `${runId}/${requestId}`,
+    runId,
+    requestId,
+    memberId: text(agent.profile) ?? '',
+    taskId: runId,
+    executionGeneration: 0,
+    roomId: text(row.room_id),
+    room: text(row.room),
+    link: text(row.link),
+    from: text(row.from),
+    agentProfile: text(agent.profile),
+    agentHandle: text(agent.handle),
+    agentName: text(agent.display_name),
+    description: typeof row.description === 'string' ? row.description : '',
+    command: typeof row.command === 'string' ? row.command : '',
+    choices: offered.length ? offered : ['once', 'deny']
+  }
+}
+
+/** Your agents' approvals in this copy: by its Link and room, or by room alone where no other copy has that room id. */
+export function copyApprovals(approvals: readonly CopyApproval[], copy: RoomCopy, copies: readonly RoomCopy[]): CopyApproval[] {
+  const shared = copies.some(c => c.roomId === copy.roomId && c.link !== copy.link)
+  return approvals.filter(a => a.roomId === copy.roomId && (a.link === copy.link || (!a.link && !shared)))
+}
+
+/** The agent and where it waits: "Kuro in Zoo trip, hosted by Furina". */
+export function approvalLine(approval: CopyApproval): string {
+  const agent = [approval.agentName, approval.agentHandle, approval.agentProfile].map(v => v?.trim()).find(Boolean) ?? t('Your agent')
+  const room = approval.room?.trim() ?? ''
+  const host = approval.from?.trim() ?? ''
+  if (room && host) return t('{agent} in {room}, hosted by {host}', { agent, room, host })
+  if (room) return t('{agent} in {room}', { agent, room })
+  if (host) return t('{agent} in a room hosted by {host}', { agent, host })
+  return t('{agent} in a room hosted elsewhere', { agent })
+}
+
 const query = (value: string) => encodeURIComponent(value)
 
 /** The plugin's copies routes over the dashboard. */
@@ -294,6 +361,17 @@ export function roomCopiesClient(http: Http) {
       const body = obj(await http('GET', `${POSTS_PATH}?room_id=${query(roomId)}`))
       if (body?.ok !== true || !Array.isArray(body.messages)) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
       return body.messages.map(parsePost).filter((p): p is RoomPost => p !== null)
+    },
+    /** Your agents' approvals in rooms other people host, the oldest turn's first. */
+    approvals: async (): Promise<CopyApproval[]> => {
+      const body = obj(await http('GET', APPROVALS_PATH))
+      if (body?.ok !== true || !Array.isArray(body.approvals)) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+      return body.approvals.map(parseCopyApproval).filter((a): a is CopyApproval => a !== null)
+    },
+    /** Answers an approval, once or deny. */
+    answer: async (approval: CopyApproval, choice: 'once' | 'deny'): Promise<void> => {
+      const body = obj(await http('POST', `${APPROVALS_PATH}/answer`, { run_id: approval.runId, request_id: approval.requestId, choice }, APPROVAL_ANSWER_TIMEOUT_MS))
+      if (body?.ok !== true) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
     },
     /** Deletes the copy. */
     forget: async (roomId: string): Promise<void> => {

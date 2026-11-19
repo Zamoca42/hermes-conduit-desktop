@@ -9664,3 +9664,7 @@ button.secondary.danger {
   height: 16px;
   flex: none;
 }
+.copy-tile .bot-time.waiting {
+  color: var(--accent);
+  font-weight: 600;
+}

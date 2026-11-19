@@ -1,7 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { gateway } from '../gateway'
 import { ROOM_POLL_MS, mergeEvents, type DriverStatus, type RoomEvent } from './groups'
-import { ROOM_COPIES_CAPABILITY, ROOM_FORGET_CAPABILITY, ROOM_POSTS_CAPABILITY, copyStatus, isOver, roomCopiesClient, type RoomCopy, type RoomPost } from './roomCopies'
+import {
+  ROOM_APPROVALS_CAPABILITY,
+  ROOM_COPIES_CAPABILITY,
+  ROOM_FORGET_CAPABILITY,
+  ROOM_POSTS_CAPABILITY,
+  copyStatus,
+  isOver,
+  roomCopiesClient,
+  type CopyApproval,
+  type RoomCopy,
+  type RoomPost
+} from './roomCopies'
+import type { RoomApprovalAnswer } from './useGroups'
+import { t } from '../../../shared/i18n'
 import type { RoomInvite } from './roomInvites'
 import { everyWhileVisible } from './visibility'
 
@@ -16,15 +29,44 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
   const served = capabilities.includes(ROOM_COPIES_CAPABILITY)
   const canForget = served && capabilities.includes(ROOM_FORGET_CAPABILITY)
   const canPost = served && capabilities.includes(ROOM_POSTS_CAPABILITY)
+  const canAnswer = capabilities.includes(ROOM_APPROVALS_CAPABILITY)
   const [copies, setCopies] = useState<RoomCopy[] | null>(null)
   const reads = useRef(0)
+  const [approvals, setApprovals] = useState<CopyApproval[]>([])
+  const approvalReads = useRef(0)
+  const answering = useRef(new Set<string>())
+  /** Each answer: on its way, sent, or failed with why; by approval id. A sent one's card goes. */
+  const [answers, setAnswers] = useState<Record<string, RoomApprovalAnswer>>({})
 
   useEffect(() => {
     reads.current++
+    approvalReads.current++
     setCopies(null)
+    setApprovals([])
+    setAnswers({})
   }, [host])
 
+  /** Your agents' approvals; a read that fails keeps what was read last. */
+  const refreshApprovals = useCallback(async () => {
+    if (!canAnswer) return
+    const read = ++approvalReads.current
+    try {
+      const list = await client.approvals()
+      if (read !== approvalReads.current) return
+      setApprovals(current => (JSON.stringify(current) === JSON.stringify(list) ? current : list))
+      // An answer whose approval is no longer listed needn't be kept.
+      const listed = new Set(list.map(a => a.id))
+      setAnswers(current => {
+        const kept = Object.fromEntries(Object.entries(current).filter(([id]) => listed.has(id)))
+        return Object.keys(kept).length === Object.keys(current).length ? current : kept
+      })
+    } catch {
+      // The next read tries again.
+    }
+  }, [canAnswer])
+
   const refresh = useCallback(async () => {
+    void refreshApprovals()
     const read = ++reads.current
     try {
       const list = await client.list()
@@ -34,7 +76,7 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
     } catch {
       // The list stays as it was; the next read tries again.
     }
-  }, [])
+  }, [refreshApprovals])
 
   useEffect(() => {
     if (!connected || !served) return
@@ -55,7 +97,40 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
     setCopies(current => (current ?? []).filter(c => c.id !== copy.id))
   }, [])
 
-  return { served, canForget, canPost, copies: served && copies ? copies : [], refresh, remove }
+  /** Run or Reject, once: sent, its card goes; refused, the plugin's words, and the list is read again. */
+  const answer = useCallback(
+    async (approval: CopyApproval, choice: 'once' | 'deny') => {
+      if (!approval.choices.includes(choice) || answering.current.has(approval.id)) return
+      answering.current.add(approval.id)
+      setAnswers(current => ({ ...current, [approval.id]: { state: 'sending' } }))
+      try {
+        await client.answer(approval, choice)
+        setAnswers(current => ({ ...current, [approval.id]: { state: 'sent' } }))
+        approvalReads.current++
+        setApprovals(current => current.filter(a => a.id !== approval.id))
+      } catch (e) {
+        setAnswers(current => ({ ...current, [approval.id]: { state: 'failed', message: t('Could not answer: {reason}', { reason: message(e) }) } }))
+        void refreshApprovals()
+      } finally {
+        answering.current.delete(approval.id)
+      }
+    },
+    [refreshApprovals]
+  )
+
+  const shownApprovals = useMemo(() => approvals.filter(a => answers[a.id]?.state !== 'sent'), [approvals, answers])
+
+  return {
+    served,
+    canForget,
+    canPost,
+    copies: served && copies ? copies : [],
+    refresh,
+    remove,
+    approvals: served && canAnswer ? shownApprovals : [],
+    answers,
+    answer
+  }
 }
 
 /** A post of yours this window sent, until the room's log holds it. */

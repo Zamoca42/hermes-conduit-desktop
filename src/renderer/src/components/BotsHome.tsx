@@ -113,6 +113,8 @@ interface Props {
   /** Rooms people you've linked host that your agents are in, from this Hermes' copies: each in its invite's place. */
   copies?: RoomCopy[];
   onOpenCopy?: (copy: RoomCopy) => void;
+  /** The copies an agent of yours waits in for your approval. */
+  copiesWaiting?: ReadonlySet<string>;
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -184,6 +186,7 @@ export function BotsHome({
   onOpenInvite,
   copies,
   onOpenCopy,
+  copiesWaiting,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -388,7 +391,9 @@ export function BotsHome({
                       </span>
                     </span>
                     <span className="bot-name">{copy.name}</span>
-                    <span className="meta bot-time">{copyLine(copy)}</span>
+                    <span className={`meta bot-time${copiesWaiting?.has(copy.id) ? " waiting" : ""}`}>
+                      {copiesWaiting?.has(copy.id) ? t("Approval needed") : copyLine(copy)}
+                    </span>
                   </button>
                 ))}
                 {(invites ?? []).filter((invite) => !copies?.some((c) => c.id === invite.id)).map((invite) => (
