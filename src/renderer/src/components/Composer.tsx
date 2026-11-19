@@ -48,6 +48,8 @@ interface Props {
   onSuggestion?: (text: string) => void
   /** Asks about the draft once typing pauses (Predictive's While I pause). */
   onDraftPause?: (draft: string) => Promise<DraftGuesses | null>
+  /** Told whether the draft has words, so Hermes doesn't follow up while you write. */
+  onDrafting?: (drafting: boolean) => void
   /** The model chip's click: the Model panel. Without it the chip only shows the model. */
   onModel?: () => void
   /** How full the chat's context window is; the ring opens the Context panel. */
@@ -82,6 +84,7 @@ export function Composer({
   replies: guessed,
   onSuggestion,
   onDraftPause,
+  onDrafting,
   wrapReply = chatReply,
   commands,
   onModel,
@@ -265,6 +268,8 @@ export function Composer({
   const [draftGuess, setDraftGuess] = useState<(DraftGuesses & { draft: string }) | null>(null)
   const askedDraft = useRef<string | null>(null)
   const latestText = useRef(text)
+  const drafting = !!text.trim()
+  useEffect(() => onDrafting?.(drafting), [drafting, onDrafting])
   latestText.current = text
   useEffect(() => {
     if (draftGuess && draftGuess.draft !== text) setDraftGuess(null)

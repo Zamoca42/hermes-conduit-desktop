@@ -144,3 +144,97 @@ export function draftGuesses(answer: unknown): DraftGuesses {
   })
   return { next, replies: guesses(answer) }
 }
+
+// Hermes follows up: while a chat is on screen, settled and unwritten, Hermes is asked now and then whether it has something to add.
+const FOLLOW_UP_KEY = 'conduit.predictive.followUp'
+const FOLLOW_UP_DELAY_KEY = 'conduit.predictive.followUpDelay'
+export const FOLLOW_UP_DELAYS = [30, 60, 120, 300] as const
+export const DEFAULT_FOLLOW_UP_DELAY = 60
+export const MAX_CHECKS = 4
+export const TURN_WAIT_S = 30
+export const ASK_AGAIN_RANGE = [30, 900] as const
+
+export const followUpEnabled = () => read(FOLLOW_UP_KEY) === 'true'
+export const setFollowUpEnabled = (on: boolean) => {
+  write(FOLLOW_UP_KEY, String(on))
+  window.dispatchEvent(new Event(PREDICTIVE_EVENT))
+}
+export function followUpDelay(): number {
+  const n = Number(read(FOLLOW_UP_DELAY_KEY))
+  return (FOLLOW_UP_DELAYS as readonly number[]).includes(n) ? n : DEFAULT_FOLLOW_UP_DELAY
+}
+export const setFollowUpDelay = (n: number) => write(FOLLOW_UP_DELAY_KEY, String(n))
+
+/** The day and time where the user is, as the phone sends it ("Thursday 14:05"). */
+export function localTime(date = new Date()): string {
+  const day = date.toLocaleDateString('en-US', { weekday: 'long' })
+  return `${day} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+}
+
+export interface TurnFacts {
+  lastReplyS: number
+  onScreenS: number
+  check: number
+  localTime?: string
+}
+
+export function turnBody(sessionId: string, facts: TurnFacts, language: string, model: PredictModel) {
+  return {
+    session_id: sessionId,
+    kind: 'turn',
+    count: 1,
+    language,
+    model,
+    wait_s: TURN_WAIT_S,
+    facts: {
+      last_reply_s: Math.max(0, Math.round(facts.lastReplyS)),
+      on_screen_s: Math.max(0, Math.round(facts.onScreenS)),
+      check: Math.min(Math.max(facts.check, 1), MAX_CHECKS),
+      max_checks: MAX_CHECKS,
+      ...(facts.localTime ? { local_time: facts.localTime } : {})
+    }
+  }
+}
+
+export interface TurnAnswer {
+  takeTurn: boolean
+  nudge: string | null
+  /** Seconds, held to 30 s–15 min; null when Hermes didn't ask to be asked again. */
+  askAgain: number | null
+}
+
+export function turnAnswer(answer: unknown): TurnAnswer {
+  const r = (answer ?? {}) as Record<string, unknown>
+  const nudge = typeof r.nudge === 'string' && r.nudge.trim() ? r.nudge : null
+  const again = typeof r.ask_again_in_seconds === 'number' && Number.isFinite(r.ask_again_in_seconds) ? Math.round(r.ask_again_in_seconds) : null
+  return {
+    takeTurn: r.take_turn === true && !!nudge,
+    nudge,
+    askAgain: again === null ? null : Math.min(Math.max(again, ASK_AGAIN_RANGE[0]), ASK_AGAIN_RANGE[1])
+  }
+}
+
+/** A check the host can't answer for a while, asked again 30 s later: busy (429, 503), slow (504, 408), another 5xx but 501, or no connection. */
+export function isTransient(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+  const status = Number(/\b(\d{3})\b/.exec(message)?.[1])
+  if (status) return status === 429 || status === 408 || (status >= 500 && status !== 501)
+  return /timed? ?out|took too long|too many|try again|still running|busy|network|not connected|ECONN|socket/i.test(message)
+}
+
+/** A reply by the messages the user had sent before it and its text; the hidden turn adds no message of the user's. */
+export const followUpId = (userMessages: number, text: string) => `${userMessages}|${text.trim()}`
+
+/** The keys of the replies to tag: of replies alike, the last, since the follow-up comes after the answer. */
+export function followedUpKeys(items: TranscriptItem[], ids: Set<string> | undefined): Set<string> {
+  const last = new Map<string, string>()
+  let users = 0
+  for (const item of items) {
+    if (item.kind === 'user') users++
+    else if (item.kind === 'assistant' && ids?.size) {
+      const id = followUpId(users, item.text)
+      if (ids.has(id)) last.set(id, item.key)
+    }
+  }
+  return new Set(last.values())
+}

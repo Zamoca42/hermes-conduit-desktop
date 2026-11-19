@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react'
 import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import {
+  FOLLOW_UP_DELAYS,
   MINIMUM_PLUGIN,
+  followUpDelay,
+  followUpEnabled,
+  setFollowUpDelay,
+  setFollowUpEnabled,
   PAUSE_DELAYS,
   PREDICT_PATH,
   pauseDelay,
@@ -27,6 +32,8 @@ export function PredictiveSettings() {
   const [model, setModel] = useState(predictModel)
   const [pause, setPause] = useState(pauseEnabled)
   const [delay, setDelay] = useState(pauseDelay)
+  const [followUp, setFollowUp] = useState(followUpEnabled)
+  const [wait, setWait] = useState(followUpDelay)
   const [served, setServed] = useState<boolean | null>(null)
   const [host, setHost] = useState<{ fast: string | null; today: number } | null>(null)
 
@@ -138,12 +145,52 @@ export function PredictiveSettings() {
           ))}
         </select>
       </div>
+      <p className="meta">
+        {t(
+          'While a chat is on screen and you aren\'t writing, Hermes is asked now and then whether it has something useful to add. At most one follow-up per message you send, marked "Hermes followed up".'
+        )}
+      </p>
+      <div className="pset-row">
+        <span>{t('Let Hermes follow up')}</span>
+        <label className="switch-inline">
+          <input
+            type="checkbox"
+            checked={followUp}
+            disabled={served === false}
+            aria-label={t('Let Hermes follow up')}
+            onChange={e => {
+              setFollowUp(e.target.checked)
+              setFollowUpEnabled(e.target.checked)
+            }}
+          />
+        </label>
+      </div>
+      <div className="pset-row">
+        <span>{t('Start asking after')}</span>
+        <select
+          className="language-select"
+          value={wait}
+          disabled={!followUp}
+          aria-label={t('Start asking after')}
+          onChange={e => {
+            const n = Number(e.target.value)
+            setWait(n)
+            setFollowUpDelay(n)
+          }}
+        >
+          {FOLLOW_UP_DELAYS.map(n => (
+            <option key={n} value={n}>
+              {n < 60 ? t('{number} s', { number: String(n) }) : t('{minutes} min', { minutes: String(n / 60) })}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="pset-row">
         <span>{t('Predictions use')}</span>
         <select
           className="language-select"
           value={model}
-          disabled={!on && !pause}
+          disabled={!on && !pause && !followUp}
           aria-label={t('Predictions use')}
           onChange={e => {
             const m = e.target.value as PredictModel

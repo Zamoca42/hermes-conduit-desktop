@@ -19,6 +19,7 @@ import { VOICE_FILE_PREFIX, parseVoiceMessage } from '../state/voice'
 import { foldRuns, isStep, span, spanText, type Row } from '../state/runs'
 import { useStepSummaries, type StepSummaries } from '../state/useStepSummaries'
 import { callLength, withCalls, type ChatCall } from '../state/voiceCalls'
+import { followedUpKeys } from '../state/predictive'
 
 export interface MessageMenuItem {
   label: string
@@ -232,6 +233,8 @@ function toolTitle(name: string, done: boolean): string {
 }
 
 interface ItemProps {
+  /** This reply answers a turn Hermes took on its own (Predictive follow-ups). */
+  followedUp?: boolean
   item: TranscriptItem
   /** Who answers in this chat, for "Replying to". */
   author: string
@@ -374,7 +377,7 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   )
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools, onOpenCall }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools, onOpenCall, followedUp }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -413,6 +416,12 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
     case 'assistant':
       return (
         <div className={`assistant${item.streaming ? ' streaming' : ''}`} data-key={item.key}>
+          {followedUp ? (
+            <span className="followed-up">
+              <span aria-hidden="true">✦</span>
+              {t('Hermes followed up')}
+            </span>
+          ) : null}
           <Reply text={item.text} />
           {!item.streaming && item.text.trim() ? (
             <ReplyActions
@@ -621,7 +630,8 @@ export function Transcript({
   display = DEFAULT_DISPLAY,
   sessionId,
   calls,
-  onOpenCall
+  onOpenCall,
+  followedUp
 }: {
   state: TranscriptState
   loading: boolean
@@ -643,6 +653,8 @@ export function Transcript({
   /** Voice calls saved with this chat, each drawn as a card where it started. */
   calls?: ChatCall[]
   onOpenCall?: (callId: string) => void
+  /** The replies that answer a turn Hermes took on its own, by `followUpId`. */
+  followedUp?: Set<string>
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -667,6 +679,7 @@ export function Transcript({
     [state.items, showsThinking, display.toolCards, display.showReviews, calls]
   )
   const rows = useMemo(() => foldRuns(shown), [shown])
+  const followedUpKeySet = useMemo(() => followedUpKeys(state.items, followedUp), [state.items, followedUp])
   const summaries = useStepSummaries(state, sessionId, profile)
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
@@ -754,6 +767,7 @@ export function Transcript({
       thinkingToggle={item.kind === 'assistant' ? thinkingToggle : undefined}
       expandTools={display.expandTools}
       onOpenCall={onOpenCall}
+      followedUp={followedUpKeySet.has(item.key)}
     />
   )
 
