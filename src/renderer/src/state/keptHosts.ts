@@ -294,7 +294,7 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
           if (!outcome.ok || stopped) return
           byHost.current.set(
             url,
-            rosterFromProfiles(outcome.result).bots.map(bot => ({ host: url, bot: { ...bot, hasAvatar: false } }))
+            rosterFromProfiles(outcome.result).bots.map(bot => ({ host: url, bot }))
           )
         })
       )

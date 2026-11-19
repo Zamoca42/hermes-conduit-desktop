@@ -58,20 +58,28 @@ export function avatarChanged(name: string): void {
 }
 
 /** A bot's picture as an image URL, read once per launch and again after avatarChanged. */
-export function readAvatar(name: string): Promise<string | null> {
-  let pending = avatarCache.get(name)
+export function readAvatar(name: string, host?: string): Promise<string | null> {
+  const key = host ? `${host}\u0000${name}` : name
+  let pending = avatarCache.get(key)
   if (!pending) {
-    pending = gateway
-      .rpc('profiles.get_asset', { name, asset: 'avatar' })
-      .then(avatarUrl)
-      .catch(() => null)
-    avatarCache.set(name, pending)
+    pending = host
+      ? // Another combined dashboard's bot, through its kept connection; a failed read is tried again next time.
+        window.conduit.keptRpc(host, 'profiles.get_asset', { name, asset: 'avatar' }).then(outcome => {
+          if (!outcome.ok) avatarCache.delete(key)
+          return outcome.ok ? avatarUrl(outcome.result) : null
+        })
+      : gateway
+          .rpc('profiles.get_asset', { name, asset: 'avatar' })
+          .then(avatarUrl)
+          .catch(() => null)
+    avatarCache.set(key, pending)
   }
   return pending
 }
 
 /** A bot's picture from its profile's asset store, read once per launch and again when Edit Bot changes it. */
-export function useAvatar(name: string, hasAvatar: boolean): string | null {
+/** `host`: another combined dashboard's bot, read through that host's kept connection. */
+export function useAvatar(name: string, hasAvatar: boolean, host?: string): string | null {
   const [url, setUrl] = useState<string | null>(null)
   const [version, setVersion] = useState(0)
   useEffect(() => {
@@ -87,13 +95,13 @@ export function useAvatar(name: string, hasAvatar: boolean): string | null {
       return
     }
     let live = true
-    void readAvatar(name).then(value => {
+    void readAvatar(name, host).then(value => {
       if (live) setUrl(value)
     })
     return () => {
       live = false
     }
-  }, [name, hasAvatar, version])
+  }, [name, hasAvatar, host, version])
   return url
 }
 

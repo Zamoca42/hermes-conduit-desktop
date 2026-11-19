@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Fetch } from '../src/main/auth'
 import { createHostList } from '../src/main/hosts'
-import { KEPT_BACKOFF, KeptHosts, MAX_KEPT } from '../src/main/keptHosts'
+import { KEPT_BACKOFF, KEPT_RPC_METHODS, KeptHosts, MAX_KEPT } from '../src/main/keptHosts'
 import { Connection, type SavedConnection } from '../src/main/connection'
 import type { ConnectionStatus, KeptHost } from '../src/shared/ipc'
 import type { WebSocketLike } from '../src/vendor/hermes-shared/json-rpc-gateway'
@@ -111,6 +111,9 @@ describe('combined dashboards in the main process', () => {
     expect(await h.kept.http('https://b.example', '/api/profiles')).toEqual({ profiles: [{ name: 'default' }, { name: 'mira' }] })
     // Only reads go over a kept socket.
     await expect(h.kept.rpc('https://b.example', 'prompt.submit', {})).rejects.toThrow(/Only reads/)
+    await expect(h.kept.rpc('https://b.example', 'profiles.set_asset', {})).rejects.toThrow(/Only reads/)
+    // Its bots' pictures are a read.
+    expect(KEPT_RPC_METHODS).toEqual(['profiles.list', 'profiles.get_asset'])
     await expect(h.kept.rpc('https://d.example', 'profiles.list')).rejects.toThrow(/Not connected/)
   })
 
