@@ -41323,5 +41323,35 @@
     "tr": "Conduit’in kendi barındırdığınız Hermes panosuna nasıl ulaşacağını seçin, ardından bu yolun neye ihtiyaç duyduğunu kontrol edin.",
     "zh-Hans": "选择 Conduit 访问你自托管的 Hermes 控制台的方式，再检查这种方式需要什么。",
     "zh-Hant": "選擇 Conduit 連到你自行架設的 Hermes 控制台的方式，再檢查這種方式需要什麼。"
+  },
+  "Profile": {
+    "de": "Profil",
+    "es": "Perfil",
+    "fr": "Profil",
+    "id": "Profil",
+    "it": "Profilo",
+    "ja": "プロファイル",
+    "ko": "프로필",
+    "pl": "Profil",
+    "pt-BR": "Perfil",
+    "ru": "Профиль",
+    "tr": "Profil",
+    "zh-Hans": "档案",
+    "zh-Hant": "設定檔"
+  },
+  "Edit profile": {
+    "de": "Profil bearbeiten",
+    "es": "Editar perfil",
+    "fr": "Modifier le profil",
+    "id": "Edit profil",
+    "it": "Modifica profilo",
+    "ja": "プロファイルを編集",
+    "ko": "프로필 편집",
+    "pl": "Edytuj profil",
+    "pt-BR": "Editar perfil",
+    "ru": "Изменить профиль",
+    "tr": "Profili düzenle",
+    "zh-Hans": "编辑配置文件",
+    "zh-Hant": "編輯設定檔"
   }
 }

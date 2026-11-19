@@ -612,7 +612,31 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
     setCalling(true)
   }, [selected.id, selected.profile, section])
   // Edit Bot closes when another section opens.
-  useEffect(() => setEditingBot(null), [section])
+  /** Edit profile from Settings or the profile strip: the section to go back to, and a switch to Bots that keeps the editor. */
+  const profileEditReturn = useRef<Section | null>(null)
+  const keepEditor = useRef(false)
+  useEffect(() => {
+    if (keepEditor.current) keepEditor.current = false
+    else {
+      setEditingBot(null)
+      profileEditReturn.current = null
+    }
+  }, [section])
+  /** The phone's Profiles card Edit (and Settings > Edit profile): Edit Bot for any profile, Bots or not, then back where it was opened. */
+  const editProfile = (bot: Bot) => {
+    if (section !== 'bots') {
+      profileEditReturn.current = section
+      keepEditor.current = true
+      setSection('bots')
+    }
+    setEditingBot(bot)
+  }
+  const closeBotEditor = () => {
+    setEditingBot(null)
+    const back = profileEditReturn.current
+    profileEditReturn.current = null
+    if (back) setSection(back)
+  }
   // Read replies aloud: the open chat's reply, as its turn ends, unless a call speaks it.
   const readTurn = useRef(turnsDone)
   useEffect(() => {
@@ -1645,6 +1669,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
                 bots={roster.bots}
                 profile={chatProfile}
                 onProfile={chooseProfile}
+                onEditProfile={connected ? editProfile : undefined}
                 onPin={row => void chatAction(row, { pinned: !row.pinned })}
                 onRename={(row, title) => void chatAction(row, { title })}
                 marks={marks}
@@ -2072,7 +2097,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             }}
           />
         ) : section === 'bots' && editingBot ? (
-          <BotEditor key={editingBot.name} bot={editingBot} onClose={() => setEditingBot(null)} onSaved={() => void roster.refresh()} />
+          <BotEditor key={editingBot.name} bot={editingBot} onClose={closeBotEditor} onSaved={() => void roster.refresh()} />
         ) : section === 'bots' ? (
           <BotsHome
             bots={orderedRoster}
@@ -2264,6 +2289,14 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             onEditHost={onEditHost}
             bots={(roster.bots ?? []).map(bot => ({ name: bot.name, title: bot.title }))}
             profile={selected.profile ?? 'default'}
+            onEditProfile={
+              connected
+                ? () => {
+                    const bot = roster.bots?.find(each => each.name === (selected.profile ?? 'default')) ?? roster.bots?.find(each => each.isDefault)
+                    if (bot) editProfile(bot)
+                  }
+                : undefined
+            }
             chatScale={chatScale}
             setChatScale={setChatScale}
             onShortcuts={() => setShortcutsOpen(true)}
@@ -2323,6 +2356,7 @@ function Settings({
   onEditHost,
   bots,
   profile,
+  onEditProfile,
   chatScale,
   setChatScale,
   onShortcuts,
@@ -2337,6 +2371,8 @@ function Settings({
   onEditHost: (host: HostSummary) => void
   bots: { name: string; title: string }[]
   profile: string
+  /** Settings > Edit profile: the profile in use, in Edit Bot. */
+  onEditProfile?: () => void
   chatScale: number
   setChatScale: (scale: number) => void
   onShortcuts: () => void
@@ -2548,6 +2584,13 @@ function Settings({
           {status.username ? ` (${status.username})` : ''}
         </dd>
         {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
+        <dt>{t('Profile')}</dt>
+        <dd>
+          <span>{bots.find(bot => bot.name === profile)?.title ?? profile}</span>{' '}
+          <button className="link" disabled={!onEditProfile} onClick={onEditProfile}>
+            {t('Edit profile')}
+          </button>
+        </dd>
         <AppLockSetting />
         <AskDashboardSetting hosts={status.hosts?.length ?? 0} />
         <CombineDashboardsSetting hosts={status.hosts ?? []} />
