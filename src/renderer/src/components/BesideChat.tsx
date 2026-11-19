@@ -31,15 +31,21 @@ export function BesideChatPane({
   author,
   display,
   onSwap,
-  onClose
+  onClose,
+  onOpenInWindow,
+  onOpenInMain
 }: {
   chat: BesideChat
   sessionAuthority: boolean
   connected: boolean
   author: string
   display?: ChatDisplay
-  onSwap: () => void
-  onClose: () => void
+  onSwap?: () => void
+  onClose?: () => void
+  /** The pane's Open in New Window, where there's room for another window. */
+  onOpenInWindow?: () => void
+  /** In a chat window of its own: Open in Main Window, in place of Swap and Close. */
+  onOpenInMain?: () => void
 }) {
   const { transcript, chat: open, loading, error, send } = useChat(chat.id, chat.profile, sessionAuthority, connected)
   const [text, setText] = useState('')
@@ -62,17 +68,35 @@ export function BesideChatPane({
 
   const shown = transcript.items.length > BESIDE_ROWS ? { ...transcript, items: transcript.items.slice(-BESIDE_ROWS) } : transcript
   return (
-    <aside className="ws-panel beside-chat" aria-label={t('Beside chat')}>
+    <aside className={`ws-panel beside-chat${onOpenInMain ? ' chat-window' : ''}`} aria-label={onOpenInMain ? open.title || chat.title || t('Chat') : t('Beside chat')}>
       <div className="ws-head">
         <span className="ws-title">{open.title || chat.title || t('Chat')}</span>
         {transcript.running ? <span className="beside-working">{t('Working…')}</span> : null}
         <span className="spacer" />
-        <button className="link" onClick={onSwap} aria-label={t('Swap Chats')} title={t('Swap Chats')}>
-          {t('Swap')}
-        </button>
-        <button className="staged-remove" aria-label={t('Close Chat Beside')} title={t('Close Chat Beside')} onClick={onClose}>
-          <Icon name="close" />
-        </button>
+        {onOpenInMain ? (
+          <button className="link" onClick={onOpenInMain}>
+            {t('Open in Main Window')}
+          </button>
+        ) : (
+          <>
+            {onOpenInWindow ? (
+              <button
+                className="staged-remove"
+                onClick={onOpenInWindow}
+                aria-label={t('Open in New Window')}
+                title={`${t('Open in New Window')}: ${t('Moves this chat to a window of its own, and closes the pane.')}`}
+              >
+                <Icon name="window" />
+              </button>
+            ) : null}
+            <button className="link" onClick={onSwap} aria-label={t('Swap Chats')} title={t('Swap Chats')}>
+              {t('Swap')}
+            </button>
+            <button className="staged-remove" aria-label={t('Close Chat Beside')} title={t('Close Chat Beside')} onClick={onClose}>
+              <Icon name="close" />
+            </button>
+          </>
+        )}
       </div>
       <div className="beside-rows">
         <Transcript

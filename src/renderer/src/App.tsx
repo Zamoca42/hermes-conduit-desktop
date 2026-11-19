@@ -23,6 +23,7 @@ import { setDesktopCardsHost } from './state/desktopCards'
 import { setKanbanHost } from './state/useKanban'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { BesideChatPane, type BesideChat } from './components/BesideChat'
+import { CHAT_WINDOW_LIMIT } from '@shared/chatWindows'
 import { absolutePath, pathForDraft } from './state/workspace'
 import { FileLinks } from './components/Markdown'
 import { usePulse } from './state/usePulse'
@@ -614,6 +615,23 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [beside, setBeside] = useState<BesideChat | null>(null)
   const besideFits = besideChatFits(windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
   const sameProfileAs = (a?: string, b?: string) => (a ?? 'default').toLowerCase() === (b ?? 'default').toLowerCase()
+  // The chats in windows of their own (up to three), from the main process.
+  const [chatWindowIds, setChatWindowIds] = useState<string[]>([])
+  useEffect(() => {
+    const off = window.conduit.onChatWindows(setChatWindowIds)
+    void window.conduit.chatWindows().then(setChatWindowIds)
+    return off
+  }, [])
+  // A chat opened here closes its window of its own.
+  useEffect(() => {
+    if (selected.id && chatWindowIds.includes(selected.id)) window.conduit.closeChatWindows([selected.id])
+  }, [selected.id, chatWindowIds])
+  /** The pane's Open in New Window: the chat moves to a window of its own and the pane closes. */
+  const moveBesideToWindow = (moving: BesideChat, author: string) => {
+    void window.conduit.openChatWindow({ id: moving.id, profile: moving.profile, title: moving.title, author }).then(opened => {
+      if (opened) setBeside(current => (current?.id === moving.id ? null : current))
+    })
+  }
   // Opening the pane's chat in the chat's column, or a chat of another profile, closes it.
   useEffect(() => {
     if (beside && (selected.id === beside.id || !sameProfileAs(selected.profile, beside.profile))) setBeside(null)
@@ -686,6 +704,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       list.patchRow(row.id, patch)
       if (patch === null && (selected.id === row.id || chat.storedId === row.id)) newChat()
       if (patch === null) setBeside(current => (current?.id === row.id ? null : current))
+      if (patch === null) window.conduit.closeChatWindows([row.id])
       // A deleted chat's pins go with it.
       if (patch === null) updatePins(current => withoutChat(current, row.profile, row.id))
       try {
@@ -842,8 +861,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // that's newer), or a new chat when it has none, so the open chat matches the list.
   const chooseProfile = useCallback(
     (next: string | null) => {
+      // Any change of profile closes the chat windows, and the chat kept beside.
+      if (next && !sameProfileAs(next, chatProfile ?? undefined)) window.conduit.closeChatWindows()
       setChatProfile(next)
-      // Any change of profile closes the chat kept beside.
       if (next) setBeside(current => (current && !sameProfileAs(current.profile, next) ? null : current))
       if (!next) return
       const same = (name: string | undefined) => (name ?? 'default').toLowerCase() === next.toLowerCase()
@@ -853,7 +873,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       if (bot?.botChatId && (bot.lastActive ?? 0) >= (newest?.activeAt ?? 0)) return openBot(bot)
       setSelected(newest ? { id: newest.id, profile: newest.profile, title: newest.title } : { id: null, profile: next })
     },
-    [selected.profile, listedRows, roster.bots, openBot]
+    [selected.profile, listedRows, roster.bots, openBot, chatProfile]
   )
   // A bot row's menu: Pin, Duplicate, Hide, Show and Delete. Answers what went wrong, if anything.
   const botAction = useCallback(
@@ -1594,6 +1614,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 display={chatDisplay}
                 onSwap={swapBeside}
                 onClose={() => setBeside(null)}
+                onOpenInWindow={
+                  chatWindowIds.length < CHAT_WINDOW_LIMIT || chatWindowIds.includes(beside.id)
+                    ? () => moveBesideToWindow(beside, roster.bots?.find(b => b.name === (beside.profile ?? 'default'))?.title ?? 'Hermes')
+                    : undefined
+                }
               />
             ) : null}
           </KeptPane>

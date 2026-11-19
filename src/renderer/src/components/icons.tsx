@@ -27,6 +27,12 @@ const paths = {
   minimize: <path d="M6 12h12" />,
   maximize: <rect x="6" y="6" width="12" height="12" rx="1.5" />,
   close: <path d="M7 7l10 10M17 7L7 17" />,
+  window: (
+    <>
+      <path d="M13 5H5.5A1.5 1.5 0 004 6.5v11A1.5 1.5 0 005.5 19h13a1.5 1.5 0 001.5-1.5V12M4 9h9" />
+      <path d="M18 3v6M15 6h6" />
+    </>
+  ),
   back: <path d="M15 5l-7 7 7 7" />,
   phone: <path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 005.5 5.5L16 13l4 1.5v3a2 2 0 01-2 2A15 15 0 014.5 6a2 2 0 012-2z" />,
   phoneDown: <path d="M3 13.5c5-4.5 13-4.5 18 0l-2 3-3.5-1.2v-2.6a10 10 0 00-7 0v2.6L5 16.5z" />,

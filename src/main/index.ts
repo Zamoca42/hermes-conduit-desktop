@@ -18,6 +18,7 @@ import {
   type GatewayEventMessage,
   type LanguageChoice,
   type MenuAction,
+  type ChatWindowRequest,
   type OpenChatRequest,
   type RpcOutcome,
   type SignInRequest,
@@ -31,6 +32,8 @@ import { Connection, DISPLAY_SOCKET_PATH } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
+import { ChatWindowSet } from './chatWindowSet'
+import { createChatWindow } from './chatWindows'
 import { ConduitTray } from './tray'
 import {
   askHostAtLaunch,
@@ -87,12 +90,23 @@ function send(channel: string, payload: unknown): void {
   }
 }
 
+const chatWindows = new ChatWindowSet(createChatWindow, ids => send(IPC.chatWindowsChanged, ids))
+/** The dashboard the chat windows belong to: another one closes them. */
+let chatWindowsHost: string | null = null
+
 const connection = new Connection({
   fetch: globalThis.fetch.bind(globalThis),
   store: createFileStore(),
   // Browsers' WebSocket can't set headers; `ws` can, and has the same shape.
   createSocket: (url, headers) => new WebSocket(url, { headers }) as unknown as WebSocketLike,
-  onStatus: status => send(IPC.statusChanged, status),
+  onStatus: status => {
+    send(IPC.statusChanged, status)
+    const host = status.url ?? null
+    if (host !== chatWindowsHost) {
+      chatWindowsHost = host
+      chatWindows.close()
+    }
+  },
   onEvent: (event: GatewayEventMessage) => send(IPC.event, event),
   onRequests: requests => send(IPC.requestsChanged, requests)
 })
@@ -230,6 +244,18 @@ function registerIpc(): void {
     showWindow()
     mainWindow?.webContents.send(IPC.openChat, chat)
   })
+  ipcMain.handle(IPC.openChatWindow, (_event, chat: unknown) => {
+    const request = chat as ChatWindowRequest | null
+    if (!request || typeof request.id !== 'string' || !request.id) return false
+    return chatWindows.show({
+      id: request.id,
+      profile: typeof request.profile === 'string' ? request.profile : undefined,
+      title: typeof request.title === 'string' ? request.title : undefined,
+      author: typeof request.author === 'string' ? request.author : undefined
+    })
+  })
+  ipcMain.on(IPC.closeChatWindows, (_event, ids: unknown) => chatWindows.close(Array.isArray(ids) ? ids.filter((id): id is string => typeof id === 'string') : undefined))
+  ipcMain.handle(IPC.chatWindows, () => chatWindows.ids())
   ipcMain.on(IPC.hideQuickAsk, () => quickAsk.hide())
   ipcMain.on(IPC.copyText, (_event, text: unknown) => {
     if (typeof text === 'string') clipboard.writeText(text)

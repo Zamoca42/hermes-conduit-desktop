@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { QuickAsk } from './components/QuickAsk'
+import { ChatWindow } from './components/ChatWindow'
+import { chatWindowRequest } from '@shared/chatWindows'
 import { PictureViewerHost } from './components/Picture'
 import './styles/theme.css'
 import './styles/app.css'
@@ -16,9 +18,11 @@ applyStoredAppearance()
 window.addEventListener('storage', () => applyStoredAppearance())
 const quick = window.location.hash === '#quick'
 if (quick) document.documentElement.dataset.window = 'quick'
+const chatWindow = chatWindowRequest(window.location.hash)
+if (chatWindow) document.documentElement.dataset.window = 'chat'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PictureViewerHost>{quick ? <QuickAsk /> : <App />}</PictureViewerHost>
+    <PictureViewerHost>{quick ? <QuickAsk /> : chatWindow ? <ChatWindow chat={chatWindow} /> : <App />}</PictureViewerHost>
   </StrictMode>
 )

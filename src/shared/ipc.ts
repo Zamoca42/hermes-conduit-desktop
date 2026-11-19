@@ -223,6 +223,13 @@ export interface ConduitApi {
   /** Shows a chat in the main window (quick ask's Open in Conduit). */
   openChat(chat: OpenChatRequest): void
   onOpenChat(listener: (chat: OpenChatRequest) => void): () => void
+  /** Moves a chat to a window of its own (the pane's Open in New Window); false when three are open. */
+  openChatWindow(chat: ChatWindowRequest): Promise<boolean>
+  /** Closes these chats' windows, or every chat window. */
+  closeChatWindows(ids?: string[]): void
+  /** The chats that have a window of their own, now and whenever that changes. */
+  chatWindows(): Promise<string[]>
+  onChatWindows(listener: (ids: string[]) => void): () => void
   /** The quick ask window was just shown: focus its field. */
   onQuickAskShown(listener: () => void): () => void
   /** Sizes the quick ask window: true for a reply, false for the field alone, or the px the field and its staged files need. */
@@ -269,6 +276,15 @@ export interface OpenChatRequest {
   title?: string
 }
 
+/** A chat for a window of its own. */
+export interface ChatWindowRequest {
+  id: string
+  profile?: string
+  title?: string
+  /** The bot's name for the message box. */
+  author?: string
+}
+
 export const IPC = {
   menu: 'conduit:menu',
   requests: 'conduit:requests',
@@ -277,6 +293,10 @@ export const IPC = {
   dismissRequest: 'conduit:dismiss-request',
   setWaiting: 'conduit:set-waiting',
   openChat: 'conduit:open-chat',
+  openChatWindow: 'conduit:open-chat-window',
+  closeChatWindows: 'conduit:close-chat-windows',
+  chatWindows: 'conduit:chat-windows',
+  chatWindowsChanged: 'conduit:chat-windows-changed',
   hideQuickAsk: 'conduit:hide-quick-ask',
   copyText: 'conduit:copy-text',
   quickAskShown: 'conduit:quick-ask-shown',
