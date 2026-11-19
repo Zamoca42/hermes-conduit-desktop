@@ -5,6 +5,7 @@ import type { ModelSwitch, OpenChat } from '../state/useChat'
 import { REASONING_LEVELS, groupModels, reasoningTitle, type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
 import { isPinned, pinnedRows, recentRows, type ModelPick } from '../state/modelQuickPicks'
+import { ProviderLogo } from './ProviderLogo'
 import { useModelQuickPicks } from './ModelOptions'
 
 interface Props {
@@ -232,7 +233,10 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
         ) : null}
         {groups.map(group => (
           <section key={group.slug} className="model-group">
-            <div className="model-group-name">{group.name}</div>
+            <div className="model-group-name">
+              <ProviderLogo slug={group.slug} title={group.name} size={16} />
+              {group.name}
+            </div>
             {group.models.map(model => row(model, group.slug, false))}
           </section>
         ))}

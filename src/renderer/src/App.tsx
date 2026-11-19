@@ -86,6 +86,9 @@ import { useWork, useWorkSessions } from './state/useWork'
 import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
 import { VoiceModeCapsule } from './components/VoiceModeCapsule'
+import { CallPictureControls } from './components/CallPictureControls'
+import { dataUrlBlob, type CallPicture, type PictureKind, type PictureNote } from './state/callPicture'
+import { modelFrame, stageFile } from './state/picture'
 import { GptLiveCall } from './components/GptLiveCall'
 import { GrokLiveCall } from './components/GrokLiveCall'
 import { LocalLiveCall } from './components/LocalLiveCall'
@@ -352,6 +355,68 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setCallMode(mode)
   }
   const modeMenu = <VoiceModeCapsule mode={callMode} onPick={switchCallMode} />
+  // Show a picture on a call: it waits on the call's chat for the next request, and the call hears of it.
+  const [callPicture, setCallPicture] = useState<CallPicture | null>(null)
+  const [pictureNote, setPictureNote] = useState<PictureNote | null>(null)
+  const [pictureBusy, setPictureBusy] = useState(false)
+  const pictureIds = useRef(0)
+  const waitingPicture = useRef<CallPicture | null>(null)
+  waitingPicture.current = callPicture
+  useEffect(() => {
+    if (calling) return
+    setCallPicture(null)
+    setPictureNote(null)
+  }, [calling])
+  const showPicture = async (file: Blob & { name?: string }, kind: PictureKind) => {
+    setPictureBusy(true)
+    try {
+      const id = ++pictureIds.current
+      const named = file instanceof File ? file : new File([file], kind === 'screenshot' ? 'Screenshot.png' : 'Picture.png', { type: file.type || 'image/png' })
+      const [attachment, frame] = await Promise.all([stageFile(named, `call-picture-${id}`), modelFrame(named)])
+      if (attachment.kind !== 'image') {
+        window.alert(t('That file isn’t a picture Conduit can show.'))
+        return
+      }
+      setCallPicture({ id, kind, attachment, frame })
+      setPictureNote({ id, kind, change: 'shown', frame })
+    } finally {
+      setPictureBusy(false)
+    }
+  }
+  const screenshotForCall = async () => {
+    setPictureBusy(true)
+    const shot = await window.conduit.screenshot().catch(() => null)
+    setPictureBusy(false)
+    if (!shot) {
+      window.alert(t('Conduit couldn’t capture the screen. On a Mac, allow Screen Recording for Conduit in System Settings, then try again.'))
+      return
+    }
+    await showPicture(dataUrlBlob(shot), 'screenshot')
+  }
+  const removeCallPicture = () => {
+    const picture = waitingPicture.current
+    if (!picture) return
+    setCallPicture(null)
+    setPictureNote({ id: ++pictureIds.current, kind: picture.kind, change: 'removed', frame: null })
+  }
+  /** A call's request to Hermes: the waiting picture goes with it, once. */
+  const callSay = (words: string) => {
+    const picture = waitingPicture.current
+    if (picture) {
+      waitingPicture.current = null
+      setCallPicture(null)
+    }
+    void onSend(words, picture ? [picture.attachment] : [], { takeOver: true })
+  }
+  const pictureControls = (
+    <CallPictureControls
+      waiting={callPicture}
+      busy={pictureBusy}
+      onPick={file => void showPicture(file, 'picture')}
+      onScreenshot={() => void screenshotForCall()}
+      onRemove={removeCallPicture}
+    />
+  )
   // The mode the next call takes, picked beside the call button or in Settings > Voice.
   const [nextMode, setNextMode] = useState<VoiceMode>(voiceMode)
   useEffect(() => {
@@ -1236,10 +1301,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <GptLiveCall
                   key={callMode}
                   modeMenu={modeMenu}
+                  pictureControls={pictureControls}
+                  pictureNote={pictureNote}
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
-                  onSay={words => void onSend(words, [], { takeOver: true })}
+                  onSay={callSay}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1252,11 +1319,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <GeminiLiveCall
                   key={callMode}
                   modeMenu={modeMenu}
+                  pictureControls={pictureControls}
+                  pictureNote={pictureNote}
                   provider={callMode}
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
-                  onSay={words => void onSend(words, [], { takeOver: true })}
+                  onSay={callSay}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1269,10 +1338,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <GrokLiveCall
                   key={callMode}
                   modeMenu={modeMenu}
+                  pictureControls={pictureControls}
+                  pictureNote={pictureNote}
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
-                  onSay={words => void onSend(words, [], { takeOver: true })}
+                  onSay={callSay}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1285,12 +1356,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <LocalLiveCall
                   key={callMode}
                   modeMenu={modeMenu}
+                  pictureControls={pictureControls}
+                  pictureNote={pictureNote}
                   profile={selected.profile}
                   chatId={selected.id}
                   liveId={chat.liveId}
                   onCorrected={noteCorrection}
                   items={transcript.items}
-                  onSay={words => void onSend(words, [], { takeOver: true })}
+                  onSay={callSay}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1303,8 +1376,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <VoiceCall
                   key={callMode}
                   modeMenu={modeMenu}
+                  pictureControls={pictureControls}
                   profile={selected.profile}
-                  onSay={words => void onSend(words, [], { takeOver: true })}
+                  onSay={callSay}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}

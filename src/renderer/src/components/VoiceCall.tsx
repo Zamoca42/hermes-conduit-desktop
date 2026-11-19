@@ -21,6 +21,8 @@ interface Props {
   onEnd: () => void
   /** The mode menu under the call's status, which moves the call to another mode. */
   modeMenu?: ReactNode
+  /** Show a picture: the button on the call's row, and the waiting picture's chip. */
+  pictureControls?: ReactNode
 }
 
 /**
@@ -29,7 +31,7 @@ interface Props {
  * and speaks the reply with Hermes' voice, then listens again. Every turn is
  * the chat's own, typed or spoken.
  */
-export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onStop, onEnd, modeMenu }: Props) {
+export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onStop, onEnd, modeMenu, pictureControls }: Props) {
   const recorder = useRecorder()
   const [phase, setPhase] = useState<CallPhase>('starting')
   const [muted, setMuted] = useState(false)
@@ -193,6 +195,7 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
         </div>
       </div>
       <div className="voice-call-buttons">
+        {pictureControls}
         {phase === 'failed' ? (
           <button className="secondary" onClick={() => void listen()}>
             {t('Try again')}

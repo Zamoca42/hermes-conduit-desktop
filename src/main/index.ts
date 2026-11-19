@@ -1,4 +1,16 @@
-import { BrowserWindow, Menu, app, clipboard, globalShortcut, ipcMain, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron'
+import {
+  BrowserWindow,
+  Menu,
+  app,
+  clipboard,
+  desktopCapturer,
+  globalShortcut,
+  ipcMain,
+  nativeTheme,
+  screen,
+  shell,
+  type MenuItemConstructorOptions
+} from 'electron'
 import { join } from 'node:path'
 import WebSocket from 'ws'
 import {
@@ -297,6 +309,7 @@ function registerIpc(): void {
     }
   })
   ipcMain.handle(IPC.pageUrl, (_event, html: unknown) => pageUrl(html))
+  ipcMain.handle(IPC.screenshot, () => captureScreen())
   ipcMain.handle(IPC.liveOpenMinted, async (event, path: unknown) => {
     if (typeof path !== 'string' || !LIVE_TOKEN_PATHS.some(allowed => path === allowed || path.startsWith(`${allowed}?`)))
       return { ok: false, error: 'Not a live token route.' }
@@ -437,4 +450,31 @@ function macMenu(): Menu {
     { role: 'help', submenu: [{ label: t('Keyboard Shortcuts'), accelerator: 'Cmd+/', click: command('shortcuts') }] }
   ]
   return Menu.buildFromTemplate(template)
+}
+
+/**
+ * The screen Conduit's window is on, for a call's screenshot (the phone's
+ * Ask Hermes About Screen): the window steps aside for the capture, then
+ * comes back. Null when the system gives no picture (on a Mac, until Screen
+ * Recording is allowed for Conduit).
+ */
+async function captureScreen(): Promise<string | null> {
+  const win = mainWindow
+  const display = win ? screen.getDisplayMatching(win.getBounds()) : screen.getPrimaryDisplay()
+  const size = { width: Math.round(display.size.width * display.scaleFactor), height: Math.round(display.size.height * display.scaleFactor) }
+  const shown = !!win && win.isVisible() && !win.isMinimized()
+  try {
+    if (shown) {
+      win!.hide()
+      await new Promise(resolve => setTimeout(resolve, 300))
+    }
+    const sources = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: size })
+    const source = sources.find(s => s.display_id === String(display.id)) ?? sources[0]
+    if (!source || source.thumbnail.isEmpty()) return null
+    return source.thumbnail.toDataURL()
+  } catch {
+    return null
+  } finally {
+    if (shown) win!.show()
+  }
 }

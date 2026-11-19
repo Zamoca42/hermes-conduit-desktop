@@ -42,6 +42,7 @@ import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
+import { pictureNoteText, type PictureNote } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 
 interface Props {
@@ -61,6 +62,10 @@ interface Props {
   onEnd: () => void
   /** The mode menu under the call's status, which moves the call to another mode. */
   modeMenu?: ReactNode
+  /** Show a picture: the button on the call's row, and the waiting picture's chip. */
+  pictureControls?: ReactNode
+  /** A picture shown or taken off the call's chat, for the call to hear about (and Gemini and Qwen to see). */
+  pictureNote?: PictureNote | null
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
   /** The approvals and questions the chat waits on, which the call can answer by voice. */
@@ -97,7 +102,22 @@ const SILENCE = new Float32Array(Math.round(SAMPLE_RATE * 0.8))
  * goes to Hermes as the chat's next message, with Hermes' reply told back to
  * you in the call. Audio goes both ways as 24 kHz PCM over the plugin's relay.
  */
-export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, modeMenu, onClassic, requests = [], resume }: Props) {
+export function GrokLiveCall({
+  profile,
+  chatId,
+  items,
+  onSay,
+  running,
+  turnsDone,
+  lastReply,
+  onEnd,
+  modeMenu,
+  pictureControls,
+  pictureNote,
+  onClassic,
+  requests = [],
+  resume
+}: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -596,6 +616,11 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
           ? t('Speaking')
           : t('Interrupted')
 
+  // A picture on the call's chat: Grok Live sees none, so it hears that Hermes has it.
+  useEffect(() => {
+    if (pictureNote && !ended.current) updates.current.push(pictureNoteText(pictureNote, false))
+  }, [pictureNote?.id])
+
   return (
     <>
       <CallCards cards={cards} jobs={jobList} />
@@ -622,6 +647,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
           </ol>
         ) : null}
         <div className="voice-call-buttons">
+          {pictureControls}
           {phase === 'failed' ? (
             <button className="secondary" onClick={onClassic}>
               {t('Classic voice')}

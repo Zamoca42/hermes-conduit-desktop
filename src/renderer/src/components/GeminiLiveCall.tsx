@@ -69,6 +69,7 @@ import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
+import { pictureNoteText, type PictureNote, imageFrame } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 
 interface Props {
@@ -88,6 +89,10 @@ interface Props {
   onEnd: () => void
   /** The mode menu under the call's status, which moves the call to another mode. */
   modeMenu?: ReactNode
+  /** Show a picture: the button on the call's row, and the waiting picture's chip. */
+  pictureControls?: ReactNode
+  /** A picture shown or taken off the call's chat, for the call to hear about (and Gemini and Qwen to see). */
+  pictureNote?: PictureNote | null
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
   /** Gemini, or Qwen on the same shell through the phone's adapter. */
@@ -148,6 +153,8 @@ export function GeminiLiveCall({
   lastReply,
   onEnd,
   modeMenu,
+  pictureControls,
+  pictureNote,
   onClassic,
   provider = 'gemini',
   requests = [],
@@ -718,6 +725,14 @@ export function GeminiLiveCall({
           ? t('Speaking')
           : t('Interrupted')
 
+  // A picture on the call's chat: Gemini and Qwen are sent it as a frame, and hear that Hermes has it too.
+  useEffect(() => {
+    if (!pictureNote || ended.current) return
+    const seen = pictureNote.change === 'shown' && !!pictureNote.frame && ready.current && !!socket.current
+    if (seen) send(imageFrame(pictureNote.frame!))
+    updates.current.push(pictureNoteText(pictureNote, seen))
+  }, [pictureNote?.id])
+
   return (
     <>
       <CallCards cards={cards} jobs={jobList} />
@@ -744,6 +759,7 @@ export function GeminiLiveCall({
           </ol>
         ) : null}
         <div className="voice-call-buttons">
+          {pictureControls}
           {phase === 'failed' ? (
             <button className="secondary" onClick={onClassic}>
               {t('Classic voice')}

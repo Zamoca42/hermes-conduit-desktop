@@ -1799,6 +1799,21 @@
     "zh-Hans": "问 Hermes",
     "zh-Hant": "問 Hermes"
   },
+  "Ask Hermes About Screen": {
+    "de": "Hermes zum Bildschirm fragen",
+    "es": "Preguntar a Hermes sobre la pantalla",
+    "fr": "Interroger Hermes sur l'écran",
+    "id": "Tanya Hermes tentang Layar",
+    "it": "Chiedi a Hermes sullo schermo",
+    "ja": "画面についてHermesに質問",
+    "ko": "화면에 대해 Hermes에게 묻기",
+    "pl": "Zapytaj Hermesa o ekran",
+    "pt-BR": "Perguntar ao Hermes Sobre a Tela",
+    "ru": "Спросить Hermes об экране",
+    "tr": "Hermes'e Ekranı Sor",
+    "zh-Hans": "向 Hermes 询问屏幕内容",
+    "zh-Hant": "向 Hermes 詢問畫面內容"
+  },
   "Ask Hermes anything…": {
     "de": "Frag Hermes etwas…",
     "es": "Pregunta a Hermes lo que quieras…",
@@ -1933,6 +1948,36 @@
     "tr": "Hermes'ten güncellemesi isteniyor…",
     "zh-Hans": "正在请求 Hermes 更新…",
     "zh-Hant": "正在請求 Hermes 更新…"
+  },
+  "Asking about this picture": {
+    "de": "Frage zu diesem Bild",
+    "es": "Preguntando por esta imagen",
+    "fr": "Question sur cette image",
+    "id": "Bertanya tentang gambar ini",
+    "it": "Domanda su questa immagine",
+    "ja": "この画像について質問中",
+    "ko": "이 사진에 대해 질문 중",
+    "pl": "Pytanie o ten obraz",
+    "pt-BR": "Perguntando sobre esta imagem",
+    "ru": "Вопрос об этом изображении",
+    "tr": "Bu resim hakkında soruluyor",
+    "zh-Hans": "正在询问这张图片",
+    "zh-Hant": "正在詢問這張圖片"
+  },
+  "Asking about this screenshot": {
+    "de": "Frage zu diesem Bildschirmfoto",
+    "es": "Preguntando sobre esta captura",
+    "fr": "Question sur cette capture d'écran",
+    "id": "Bertanya tentang jepretan layar ini",
+    "it": "Domanda su questa istantanea",
+    "ja": "このスクリーンショットについて質問中",
+    "ko": "이 스크린샷에 대해 질문 중",
+    "pl": "Pytanie o ten zrzut ekranu",
+    "pt-BR": "Perguntando sobre esta captura de tela",
+    "ru": "Вопрос об этом снимке экрана",
+    "tr": "Bu ekran görüntüsü hakkında soruluyor",
+    "zh-Hans": "正在询问这张截图",
+    "zh-Hant": "詢問這張截圖"
   },
   "Asks before the first call": {
     "de": "Fragt vor dem ersten Anruf",
@@ -3794,6 +3839,21 @@
     "zh-Hans": "在回复的 ⋯ 菜单中选择“置顶此回复”。它会固定在所在聊天的顶部，并显示在这里。",
     "zh-Hant": "在回覆的 ⋯ 選單中選擇「釘選此回覆」。它會固定在所在聊天的頂端，並顯示在這裡。"
   },
+  "Choose a picture…": {
+    "de": "Bild auswählen …",
+    "es": "Elegir una imagen…",
+    "fr": "Choisir une image…",
+    "id": "Pilih gambar…",
+    "it": "Scegli un’immagine…",
+    "ja": "画像を選択…",
+    "ko": "사진 선택…",
+    "pl": "Wybierz obraz…",
+    "pt-BR": "Escolher uma imagem…",
+    "ru": "Выбрать изображение…",
+    "tr": "Resim seç…",
+    "zh-Hans": "选择图片…",
+    "zh-Hant": "選擇圖片…"
+  },
   "Choose how Conduit appears across the app.": {
     "de": "Wähle, wie Conduit in der gesamten App aussieht.",
     "es": "Elige cómo se ve Conduit en toda la app.",
@@ -4498,6 +4558,21 @@
     "tr": "Conduit geçen sefer beklenmedik şekilde kapandı",
     "zh-Hans": "Conduit 上次意外退出",
     "zh-Hant": "Conduit 上次意外結束"
+  },
+  "Conduit couldn’t capture the screen. On a Mac, allow Screen Recording for Conduit in System Settings, then try again.": {
+    "de": "Conduit konnte den Bildschirm nicht aufnehmen. Erlaube auf einem Mac Conduit die Bildschirmaufnahme in den Systemeinstellungen und versuche es dann erneut.",
+    "es": "Conduit no pudo capturar la pantalla. En un Mac, permite la grabación de pantalla para Conduit en Ajustes del Sistema y vuelve a intentarlo.",
+    "fr": "Conduit n’a pas pu capturer l’écran. Sur un Mac, autorisez l’enregistrement de l’écran pour Conduit dans Réglages Système, puis réessayez.",
+    "id": "Conduit tidak bisa menangkap layar. Di Mac, izinkan Perekaman Layar untuk Conduit di Pengaturan Sistem, lalu coba lagi.",
+    "it": "Conduit non è riuscito a catturare lo schermo. Su un Mac, consenti la registrazione dello schermo per Conduit in Impostazioni di Sistema, poi riprova.",
+    "ja": "Conduit は画面をキャプチャできませんでした。Mac ではシステム設定で Conduit の画面収録を許可してから、もう一度お試しください。",
+    "ko": "Conduit이 화면을 캡처하지 못했습니다. Mac에서는 시스템 설정에서 Conduit의 화면 기록을 허용한 다음 다시 시도하세요.",
+    "pl": "Conduit nie mógł przechwycić ekranu. Na Macu zezwól Conduit na nagrywanie ekranu w Ustawieniach systemowych, a potem spróbuj ponownie.",
+    "pt-BR": "O Conduit não conseguiu capturar a tela. No Mac, permita a Gravação de Tela para o Conduit nos Ajustes do Sistema e tente novamente.",
+    "ru": "Conduit не удалось снять экран. На Mac разрешите Conduit запись экрана в Системных настройках и повторите попытку.",
+    "tr": "Conduit ekranı yakalayamadı. Mac’te Sistem Ayarları’nda Conduit için Ekran Kaydı’na izin verip yeniden deneyin.",
+    "zh-Hans": "Conduit 无法截取屏幕。在 Mac 上，请在“系统设置”中允许 Conduit 录制屏幕，然后重试。",
+    "zh-Hant": "Conduit 無法擷取螢幕。在 Mac 上，請在「系統設定」中允許 Conduit 錄製螢幕，然後再試一次。"
   },
   "Conduit froze last time": {
     "de": "Conduit ist beim letzten Mal eingefroren",
@@ -23774,6 +23849,21 @@
     "zh-Hans": "显示更多",
     "zh-Hant": "顯示更多"
   },
+  "Show a picture": {
+    "de": "Bild zeigen",
+    "es": "Mostrar una imagen",
+    "fr": "Montrer une image",
+    "id": "Tunjukkan gambar",
+    "it": "Mostra un’immagine",
+    "ja": "画像を見せる",
+    "ko": "사진 보여주기",
+    "pl": "Pokaż obraz",
+    "pt-BR": "Mostrar uma imagem",
+    "ru": "Показать изображение",
+    "tr": "Resim göster",
+    "zh-Hans": "展示图片",
+    "zh-Hant": "展示圖片"
+  },
   "Show all": {
     "de": "Alle anzeigen",
     "es": "Mostrar todo",
@@ -26203,6 +26293,21 @@
     "tr": "Bu bir web adresine benzemiyor.",
     "zh-Hans": "这看起来不像网址。",
     "zh-Hant": "這看起來不像網址。"
+  },
+  "That file isn’t a picture Conduit can show.": {
+    "de": "Diese Datei ist kein Bild, das Conduit zeigen kann.",
+    "es": "Ese archivo no es una imagen que Conduit pueda mostrar.",
+    "fr": "Ce fichier n’est pas une image que Conduit peut montrer.",
+    "id": "Berkas itu bukan gambar yang bisa ditunjukkan Conduit.",
+    "it": "Quel file non è un’immagine che Conduit può mostrare.",
+    "ja": "このファイルは Conduit で見せられる画像ではありません。",
+    "ko": "이 파일은 Conduit에서 보여줄 수 있는 사진이 아닙니다.",
+    "pl": "Ten plik nie jest obrazem, który Conduit może pokazać.",
+    "pt-BR": "Esse arquivo não é uma imagem que o Conduit possa mostrar.",
+    "ru": "Этот файл — не изображение, которое Conduit может показать.",
+    "tr": "Bu dosya Conduit’in gösterebileceği bir resim değil.",
+    "zh-Hans": "该文件不是 Conduit 能展示的图片。",
+    "zh-Hant": "該檔案不是 Conduit 能展示的圖片。"
   },
   "That folder isn't on the server.": {
     "de": "Dieser Ordner ist nicht auf dem Server.",
