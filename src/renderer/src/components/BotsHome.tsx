@@ -21,7 +21,8 @@ import { lookPictureUrl, memberLook, type RoomLook, type RoomLooks } from "../st
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 import type { HostBadge, OtherBot } from "../state/keptHosts";
-import { mixedBotKey, mixedTiles, neighbour, type MixedTile } from "../state/botOrder";
+import { canAddFar, mixedBotKey, mixedTiles, neighbour, type MixedTile } from "../state/botOrder";
+import type { OwnHermesBot } from "../state/roomDrafts";
 import { HostBadgeMark } from "./CombinedDashboards";
 
 const BOT_DRAG = "application/x-conduit-bot";
@@ -175,6 +176,10 @@ interface Props {
   onMoveMixed?: (dragged: string, target: string | null, shown: string[]) => void;
   /** This host's portrait dropped on another's place (null: at the end), by bot name, among `shown`. */
   onMoveBot?: (moved: string, target: string | null, shown: string[]) => void;
+  /** Another dashboard's bot as your own other Hermes brings it into a room here, or null when none does. */
+  farFor?: (host: string, name: string) => OwnHermesBot | null;
+  /** Starts a room with this host's bots and your other Hermes' (a draft they join by themselves). */
+  onCreateFarDraft?: (name: string, bots: Bot[], far: OwnHermesBot[]) => Promise<"made" | "sending">;
   /** A group chat's tile dropped on another's place (null: at the end), by room id, among `shown`. */
   onMoveRoom?: (moved: string, target: string | null, shown: string[]) => void;
   badgeFor?: (url: string) => HostBadge | null;
@@ -216,9 +221,19 @@ function WorkPill({ bot, work, onWork }: { bot: Bot; work?: BotWork; onWork?: (b
   );
 }
 
+/** Another combined dashboard's bot in a room being started, brought by your own other Hermes. */
+interface FarMember {
+  key: string;
+  host: string;
+  bot: Bot;
+  far: OwnHermesBot;
+}
+
 interface Draft {
   roomId: string;
   members: string[];
+  /** Another dashboard's bots, brought over your own Link to it (a room's draft, not a room). */
+  far?: FarMember[];
   name: string;
   busy: boolean;
   error?: string;
@@ -266,6 +281,8 @@ export function BotsHome({
   onMoveMixed,
   onMoveBot,
   onMoveRoom,
+  farFor,
+  onCreateFarDraft,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -348,18 +365,52 @@ export function BotsHome({
         ? { ...current, members: current.members.filter((m) => m !== name) }
         : current,
     );
+  // Another dashboard's bot joins as your own other Hermes brings it.
+  const farOf = (tile: MixedTile): FarMember | null => {
+    if (tile.own || !onCreateFarDraft || !canStartRooms) return null;
+    const far = farFor?.(tile.host, tile.bot.name);
+    return far ? { key: tile.key, host: tile.host, bot: tile.bot, far } : null;
+  };
+  const farFits = (own: number, current: FarMember[], adding: FarMember[]) =>
+    canAddFar(own, current.map((m) => m.far), adding.filter((m) => !current.some((c) => c.key === m.key)).map((m) => m.far), ROOM_MAX_MEMBERS);
+  const joinMixed = (names: string[], far: FarMember[]) =>
+    setDraft((current) => {
+      if (current?.busy) return current;
+      const base = current ?? { roomId: crypto.randomUUID(), members: [], name: "", busy: false };
+      const members = addToDraft(base.members, ...names);
+      const kept = base.far ?? [];
+      if (!farFits(members.length, kept, far)) return current;
+      return { ...base, members, far: [...kept, ...far.filter((m) => !kept.some((k) => k.key === m.key))], error: undefined };
+    });
+  const leaveFar = (key: string) =>
+    setDraft((current) =>
+      current && !current.busy ? { ...current, far: (current.far ?? []).filter((m) => m.key !== key) } : current,
+    );
 
   const draftBots = draft
     ? draft.members
         .map((name) => bots?.find((b) => b.name === name))
         .filter((b): b is Bot => !!b)
     : [];
+  const draftFar = draft?.far ?? [];
+  const draftCount = draftBots.length + draftFar.length;
+  const draftTitles = [...draftBots.map((b) => b.title), ...draftFar.map((m) => m.bot.title)];
   const create = async (event: FormEvent) => {
     event.preventDefault();
-    if (!draft || draftBots.length < ROOM_MIN_MEMBERS || draft.busy) return;
-    const name =
-      draft.name.trim() || defaultRoomName(draftBots.map((b) => b.title));
+    if (!draft || draftCount < ROOM_MIN_MEMBERS || draft.busy) return;
+    const name = draft.name.trim() || defaultRoomName(draftTitles);
     setDraft({ ...draft, busy: true, error: undefined });
+    if (draftFar.length && onCreateFarDraft) {
+      // A room with your other Hermes' bots starts as a draft they join by themselves.
+      try {
+        const outcome = await onCreateFarDraft(name, draftBots, draftFar.map((m) => m.far));
+        setDraft(null);
+        if (outcome === "sending") setActionError(t("Your Hermes is still sending the invites. The room shows under Group Chats once it has."));
+      } catch (e) {
+        setDraft((current) => (current ? { ...current, busy: false, error: e instanceof Error ? e.message : String(e) } : current));
+      }
+      return;
+    }
     try {
       const room = await onCreateRoom(draft.roomId, name, draftBots);
       setDraft(null);
@@ -387,44 +438,63 @@ export function BotsHome({
     setMoveTarget(null);
     setDragging(null);
   };
+  /**
+   * Whether `source` held over `target`'s face starts (or grows) a room:
+   * two of this host's bots as before; one of this host's and another
+   * dashboard's that your own other Hermes brings; or two of that one's
+   * once a bot here is in the room being started.
+   */
+  const merging = (source: MixedTile, target: MixedTile): { names: string[]; far: FarMember[] } | null => {
+    if (source.key === target.key || !canStartRooms) return null;
+    if (source.own && target.own) return canDrag ? { names: [target.bot.name, source.bot.name], far: [] } : null;
+    const names = [source, target].filter((tile) => tile.own).map((tile) => tile.bot.name);
+    const far = [source, target].filter((tile) => !tile.own).map(farOf);
+    if (far.some((m) => !m)) return null;
+    const members = addToDraft(draft?.members ?? [], ...names);
+    return farFits(members.length, draft?.far ?? [], far as FarMember[]) ? { names, far: far as FarMember[] } : null;
+  };
+  const tileOf = (key: string | null) => (key ? tiles.find((tile) => tile.key === key) ?? null : null);
   const tileDrag = (tile: MixedTile) => {
     const { bot, key } = tile;
-    const roomsHere = canDrag && tile.own;
+    const roomsHere = canStartRooms && (tile.own ? canDrag || !!onCreateFarDraft : !!farOf(tile));
     if (!roomsHere && !canMove) return {};
     return {
       draggable: true,
       onDragStart: (e: DragEvent) => {
         if (tile.own && canDrag) e.dataTransfer.setData(BOT_DRAG, bot.name);
-        if (canMove) e.dataTransfer.setData(BOT_MOVE, key);
+        e.dataTransfer.setData(BOT_MOVE, key);
         e.dataTransfer.effectAllowed = "copyMove";
         setDragging(key);
       },
       onDragOver: (e: DragEvent) => {
         const types = e.dataTransfer.types;
-        const room = roomsHere && types.includes(BOT_DRAG) && overFace(e) && dragging !== key;
-        const moves = canMove && types.includes(BOT_MOVE) && !room;
-        if (!room && !moves && !(roomsHere && types.includes(BOT_DRAG))) return;
+        const source = tileOf(dragging);
+        const room = !!source && overFace(e) && !!merging(source, tile);
+        const moves = canMove && types.includes(BOT_MOVE) && !room && dragging !== key;
+        if (!room && !moves && !(source && overFace(e))) return;
         e.preventDefault();
         e.dataTransfer.dropEffect = room ? "copy" : "move";
-        setDropTarget(room ? bot.name : null);
-        setMoveTarget(moves && dragging !== key ? key : null);
+        setDropTarget(room ? key : null);
+        setMoveTarget(moves ? key : null);
       },
       onDragLeave: () => {
-        setDropTarget((t) => (t === bot.name ? null : t));
+        setDropTarget((t) => (t === key ? null : t));
         setMoveTarget((t) => (t === key ? null : t));
       },
       onDrop: (e: DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        const moved = e.dataTransfer.getData(BOT_MOVE) || dragging;
+        const source = tileOf(moved);
         endDrag();
-        const dragged = e.dataTransfer.getData(BOT_DRAG);
-        const moved = e.dataTransfer.getData(BOT_MOVE);
-        if (roomsHere && dragged && (overFace(e) || !moved)) {
-          if (dragged !== bot.name) join(bot.name, dragged);
-          else if (draft) join(dragged);
+        const merge = source && overFace(e) ? merging(source, tile) : null;
+        if (merge) {
+          if (!merge.far.length && source!.own && tile.own) join(...merge.names);
+          else joinMixed(merge.names, merge.far);
           return;
         }
-        if (moved && moved !== key) move(moved, key);
+        if (source?.key === key && draft && tile.own && overFace(e)) return join(bot.name);
+        if (moved && moved !== key && canMove) move(moved, key);
       },
       onDragEnd: endDrag,
     };
@@ -558,7 +628,7 @@ export function BotsHome({
                       face={layout === "two" ? 128 : gridStep(tileCount).face}
                       running={runningProfiles.has(bot.name)}
                       picked={draft?.members.includes(bot.name) ?? false}
-                      target={dropTarget === bot.name}
+                      target={dropTarget === tile.key}
                       moveTarget={moveTarget === tile.key}
                       onClick={() => openOrPick(bot)}
                       onMenu={openMenu?.(bot)}
@@ -575,10 +645,16 @@ export function BotsHome({
                     large={layout === "two"}
                     face={layout === "two" ? 128 : gridStep(tileCount).face}
                     running={false}
-                    picked={false}
-                    target={false}
+                    picked={draftFar.some((m) => m.key === tile.key)}
+                    target={dropTarget === tile.key}
                     moveTarget={moveTarget === tile.key}
-                    onClick={() => onOpenOther?.({ host: tile.host, bot })}
+                    onClick={() => {
+                      // While a room is being started, a tap puts a bot your other Hermes brings in or out.
+                      const far = draft ? farOf(tile) : null;
+                      if (!far) return onOpenOther?.({ host: tile.host, bot });
+                      if (draftFar.some((m) => m.key === tile.key)) leaveFar(tile.key);
+                      else joinMixed([], [far]);
+                    }}
                     badge={badge ? <HostBadgeMark badge={badge} /> : null}
                     host={tile.host}
                     drag={tileDrag(tile)}
@@ -752,10 +828,29 @@ export function BotsHome({
                 </span>
               </button>
             ))}
+            {draftFar.map((member) => {
+              const badge = badgeFor?.(member.host) ?? null;
+              return (
+                <button
+                  key={member.key}
+                  type="button"
+                  className="draft-face"
+                  title={t('Take {name} out', { name: member.bot.title })}
+                  onClick={() => leaveFar(member.key)}
+                  disabled={draft.busy}
+                >
+                  <BotAvatar bot={member.bot} size={36} host={member.host} />
+                  {badge ? <span className="draft-badge"><HostBadgeMark badge={badge} /></span> : null}
+                  <span className="draft-x" aria-hidden="true">
+                    <Icon name="close" />
+                  </span>
+                </button>
+              );
+            })}
             <span className="meta">
-              {draftBots.length < ROOM_MIN_MEMBERS
+              {draftCount < ROOM_MIN_MEMBERS
                 ? t('Drop or click one more bot.')
-                : draftBots.length >= ROOM_MAX_MEMBERS
+                : draftCount >= ROOM_MAX_MEMBERS
                   ? t('Six is the most a room holds.')
                   : t('Click or drop more bots to add them.')}
             </span>
@@ -764,8 +859,8 @@ export function BotsHome({
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
             placeholder={
-              draftBots.length
-                ? defaultRoomName(draftBots.map((b) => b.title))
+              draftCount
+                ? defaultRoomName(draftTitles)
                 : t('Room name')
             }
             aria-label={t('Group chat name')}
@@ -787,7 +882,7 @@ export function BotsHome({
             <button
               type="submit"
               className="primary"
-              disabled={draftBots.length < ROOM_MIN_MEMBERS || draft.busy}
+              disabled={draftCount < ROOM_MIN_MEMBERS || draft.busy}
             >
               {draft.busy ? t('Creating…') : t('Create')}
             </button>
