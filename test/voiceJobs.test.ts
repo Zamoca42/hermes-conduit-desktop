@@ -1,5 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { VoiceJobs, completionPrompt, jobTitle, listResult, type VoiceJob } from '../src/renderer/src/state/voiceJobs'
+import {
+  MAX_SAVED_JOBS,
+  SAVED_JOB_MAX_AGE_MS,
+  VoiceJobs,
+  completionPrompt,
+  jobTitle,
+  listResult,
+  mergeLedger,
+  replyAfter,
+  restoredFor,
+  type LedgerStore,
+  type SavedJob,
+  type VoiceJob
+} from '../src/renderer/src/state/voiceJobs'
 
 type Event = { type: string; session_id?: string; payload?: unknown }
 
@@ -122,5 +135,92 @@ describe("GPT-Live's job follow-ups", () => {
     expect(jobFollowUpMarker('Job 2: make it Alex')).toEqual({ jobId: 'job-2', words: 'make it Alex' })
     expect(jobFollowUpMarker('add to job #1: also a quiet table')).toEqual({ jobId: 'job-1', words: 'also a quiet table' })
     expect(jobFollowUpMarker('Check job 2: status')).toBeNull()
+  })
+})
+
+describe('jobs kept past their call', () => {
+  const memory = (initial: SavedJob[] = []) => {
+    let saved = initial
+    return { store: { read: () => saved, write: (jobs: SavedJob[]) => (saved = jobs) } as LedgerStore, get: () => saved }
+  }
+
+  it('keeps a running job for the next call in the chat, which reads its reply from the chat', async () => {
+    const ledger = memory()
+    const first = setup()
+    first.jobs.keepWith('chat-a', ledger.store)
+    await first.jobs.start('Check the deploy')
+    first.jobs.dispose()
+    expect(ledger.get()).toMatchObject([{ profile: 'work', chat: 'chat-a', stored: 'stored1', status: 'running' }])
+
+    // Another chat's call doesn't get it.
+    const other = setup()
+    other.jobs.keepWith('chat-b', ledger.store, async () => ({ messages: [] }))
+    expect(other.jobs.jobs).toEqual([])
+
+    const sentAt = ledger.get()[0]!.sentAt
+    let page: unknown = { messages: [{ role: 'user', text: 'Check the deploy', timestamp: sentAt / 1000 }] }
+    const paths: string[] = []
+    const next = setup()
+    next.jobs.keepWith('chat-a', ledger.store, async (_m, path) => (paths.push(path), page))
+    expect(next.jobs.jobs).toMatchObject([{ id: 'job-1', title: 'Check the deploy', status: 'running', restored: true }])
+    await new Promise(r => setTimeout(r, 0))
+    expect(next.told).toEqual([])
+    expect(paths[0]).toContain('/api/sessions/stored1/messages?order=latest&limit=20&inline_images=false&profile=work')
+    page = {
+      messages: [
+        { role: 'user', text: 'Check the deploy', timestamp: sentAt / 1000 },
+        { role: 'assistant', text: 'All green.', timestamp: sentAt / 1000 + 30 }
+      ]
+    }
+    await (next.jobs as unknown as { readRestored(): Promise<void> }).readRestored()
+    expect(next.jobs.jobs[0]).toMatchObject({ status: 'done', reply: 'All green.', told: true })
+    expect(next.told).toEqual([completionPrompt('Check the deploy', 'All green.')])
+    next.jobs.dispose()
+    // Told: the ledger lets it go.
+    expect(ledger.get()).toEqual([])
+  })
+
+  it('tells a job that settled after its call at the next call in that chat, once', async () => {
+    const ledger = memory()
+    const first = setup()
+    first.jobs.keepWith('chat-a', ledger.store)
+    await first.jobs.start('Summarize the logs')
+    first.jobs.dispose()
+    // Settled while no call listened.
+    first.emit({ type: 'message.complete', session_id: 's1', payload: { text: 'Quiet night.' } })
+    expect(first.told).toEqual([])
+    const next = setup()
+    next.jobs.keepWith('chat-a', ledger.store, async () => ({ messages: [{ role: 'assistant', text: 'Quiet night.', timestamp: Date.now() / 1000 }] }))
+    await (next.jobs as unknown as { readRestored(): Promise<void> }).readRestored()
+    expect(next.told).toEqual([completionPrompt('Summarize the logs', 'Quiet night.')])
+    next.jobs.dispose()
+    const later = setup()
+    later.jobs.keepWith('chat-a', ledger.store, async () => ({ messages: [] }))
+    expect(later.jobs.jobs).toEqual([])
+  })
+
+  it('keeps a day of jobs, twelve settled at most, running ones always', () => {
+    const now = 10 * SAVED_JOB_MAX_AGE_MS
+    const job = (i: number, status: SavedJob['status'], sentAt = now - i): SavedJob => ({
+      profile: '',
+      chat: 'c',
+      title: `t${i}`,
+      stored: `s${i}`,
+      sentAt,
+      status
+    })
+    const settled = Array.from({ length: 15 }, (_, i) => job(i, 'done'))
+    const merged = mergeLedger([job(99, 'running', now - SAVED_JOB_MAX_AGE_MS - 1), ...settled], [job(100, 'running')], ['s0'], now)
+    expect(merged.filter(j => j.status === 'running').map(j => j.stored)).toEqual(['s100'])
+    expect(merged.filter(j => j.status === 'done')).toHaveLength(MAX_SAVED_JOBS - 1)
+    expect(merged.some(j => j.stored === 's0')).toBe(false)
+    expect(restoredFor(merged, undefined, 'c', now)).toHaveLength(MAX_SAVED_JOBS)
+  })
+
+  it('reads a reply only once the turn is over', () => {
+    expect(replyAfter({ messages: [{ role: 'assistant', text: 'old', timestamp: 1 }] }, 100_000)).toBeNull()
+    expect(replyAfter({ messages: [{ role: 'assistant', text: '', tool_calls: [{ id: 'x' }], timestamp: 200 }] }, 100_000)).toBeNull()
+    expect(replyAfter({ messages: [{ role: 'tool', text: 'x', timestamp: 200 }] }, 100_000)).toBeNull()
+    expect(replyAfter({ messages: [{ role: 'assistant', content: [{ text: 'Done ' }, { text: 'now' }], timestamp: 200 }] }, 100_000)).toBe('Done now')
   })
 })
