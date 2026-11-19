@@ -9627,6 +9627,9 @@ button.secondary.danger {
   opacity: 0.55;
 }
 .room-pill-owner {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 0 6px;
   border-radius: 999px;
   background: var(--surface-hover);
@@ -9722,4 +9725,27 @@ button.secondary.danger {
 }
 .new-group .invite-bot-row {
   padding: 4px 0;
+}
+
+/* Another person, or their agent, as their own Conduit draws them. */
+.look-face {
+  background: var(--surface-hover);
+  color: var(--text-2);
+}
+.look-face .look-initial {
+  line-height: 1;
+}
+.you-in-rooms {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.you-in-rooms .bot-avatar {
+  font-size: 22px;
+}
+.links-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
 }

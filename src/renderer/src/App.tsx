@@ -90,7 +90,10 @@ import { useRoomCopies } from './state/useRoomCopies'
 import { useRoomDrafts } from './state/useRoomDrafts'
 import { NewGroupChat } from './components/NewGroupChat'
 import { RoomDraftCard } from './components/RoomDraftCard'
-import { canLeave as canLeaveCopy, copyApprovals, copyRoom } from './state/roomCopies'
+import { canLeave as canLeaveCopy, copyApprovals, copyRoom, isOver } from './state/roomCopies'
+import { LOOKS_READ_MS } from './state/roomLooks'
+import { useRoomLooks, type PersonPicture } from './state/useRoomLooks'
+import { everyWhileVisible } from './state/visibility'
 import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
@@ -1145,6 +1148,31 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }
   // The backdrop glows in the open chat's agent's color, and elsewhere in the profile in use's.
   const glowOf = useGlowColors(glowBots, status.url ?? '')
+  const roomLooks = useRoomLooks(connected, status.url ?? '', roomInvites.capabilities, roster.bots, glowOf)
+  const personPicture = useMemo<PersonPicture>(
+    () => ({ served: roomLooks.served, picture: roomLooks.you, saving: roomLooks.youSaving, set: roomLooks.setYou }),
+    [roomLooks.served, roomLooks.you, roomLooks.youSaving, roomLooks.setYou]
+  )
+  // How the rooms over Links look: Bots Home's, or the open one's, each read at most every 30 s while the window shows.
+  const looksRooms = useMemo(() => {
+    if (section === 'room') {
+      if (shownCopy) return { ids: [shownCopy.roomId], over: isOver(shownCopy) ? [shownCopy.roomId] : [] }
+      return openRoom && openRoom.members.some(m => m.peer) ? { ids: [openRoom.roomId], over: [] } : { ids: [], over: [] }
+    }
+    if (section !== 'bots') return { ids: [], over: [] }
+    const hosted = (groupRooms.rooms ?? []).filter(r => r.linked).map(r => r.roomId)
+    return { ids: [...hosted, ...roomCopies.copies.map(c => c.roomId)], over: roomCopies.copies.filter(isOver).map(c => c.roomId) }
+  }, [section, shownCopy, openRoom, groupRooms.rooms, roomCopies.copies])
+  const looksKey = `${looksRooms.ids.join(',')}|${looksRooms.over.join(',')}`
+  const readLooks = roomLooks.read
+  useEffect(() => {
+    if (!looksRooms.ids.length) return
+    const once = new Set(looksRooms.over)
+    void readLooks(looksRooms.ids, once)
+    return everyWhileVisible(() => void readLooks(looksRooms.ids, once), LOOKS_READ_MS)
+    // The rooms are read again when the list of them changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [looksKey, readLooks])
   const glow = glowOf(section === 'chats' ? (selected.profile ?? chatProfile) : chatProfile)
   useEffect(() => {
     document.documentElement.style.setProperty('--glow', glow)
@@ -1718,6 +1746,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onOpenInvite={invite => setOpenInvite(invite.id)}
             drafts={roomDrafts.rows}
             onOpenDraft={draft => setOpenDraft(draft.id)}
+            roomLooks={roomLooks.looks}
             onNewGroup={
               connected && groupRooms.capabilities?.supported === true
                 ? () => {
@@ -1785,6 +1814,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <RoomView
             key={shownCopy.id}
             room={shownCopyRoom}
+            looks={roomLooks.looks[shownCopy.roomId]}
             bots={roster.bots ?? []}
             connected={connected}
             canStop={false}
@@ -1821,6 +1851,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <RoomView
             key={openRoom.roomId}
             room={openRoom}
+            looks={roomLooks.looks[openRoom.roomId]}
             bots={roster.bots ?? []}
             connected={connected}
             canStop={groupRooms.capabilities?.canStop === true}
@@ -1854,6 +1885,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onAppsRequestTaken={() => setAppsRequest(null)}
             linkRequest={linkRequest}
             onLinkRequestTaken={() => setLinkRequest(null)}
+            personPicture={personPicture}
           />
         )}
       </div>
@@ -1909,7 +1941,8 @@ function Settings({
   appsRequest,
   onAppsRequestTaken,
   linkRequest,
-  onLinkRequestTaken
+  onLinkRequestTaken,
+  personPicture
 }: {
   status: ConnectionStatus
   onAddHost: () => void
@@ -1923,6 +1956,8 @@ function Settings({
   /** A Link invite opened from another app: Multiplayer opens it. */
   linkRequest: { url: string; at: number } | null
   onLinkRequestTaken: () => void
+  /** The picture you show in rooms over Links. */
+  personPicture: PersonPicture
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
@@ -1989,6 +2024,7 @@ function Settings({
           bots={bots}
           profile={profile}
           invite={linkInvite}
+          personPicture={personPicture}
           onBack={() => setPage('main')}
         />
       </main>

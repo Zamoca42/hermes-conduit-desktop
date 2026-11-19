@@ -3749,6 +3749,21 @@
     "zh-Hans": "更改",
     "zh-Hant": "變更"
   },
+  "Change Picture": {
+    "de": "Bild ändern",
+    "es": "Cambiar foto",
+    "fr": "Changer de photo",
+    "id": "Ganti Foto",
+    "it": "Cambia foto",
+    "ja": "写真を変更",
+    "ko": "사진 변경",
+    "pl": "Zmień zdjęcie",
+    "pt-BR": "Alterar foto",
+    "ru": "Изменить фото",
+    "tr": "Fotoğrafı Değiştir",
+    "zh-Hans": "更换照片",
+    "zh-Hant": "更換照片"
+  },
   "Change what rooms may use?": {
     "de": "Ändern, was Räume nutzen dürfen?",
     "es": "¿Cambiar lo que pueden usar las salas?",
@@ -4179,6 +4194,21 @@
     "ko": "사진 선택",
     "pl": "Wybierz zdjęcie",
     "pt-BR": "Escolher Foto",
+    "ru": "Выбрать фото",
+    "tr": "Fotoğraf Seç",
+    "zh-Hans": "选择照片",
+    "zh-Hant": "選擇照片"
+  },
+  "Choose Picture": {
+    "de": "Bild auswählen",
+    "es": "Elegir foto",
+    "fr": "Choisir une photo",
+    "id": "Pilih Foto",
+    "it": "Scegli foto",
+    "ja": "写真を選択",
+    "ko": "사진 선택",
+    "pl": "Wybierz zdjęcie",
+    "pt-BR": "Escolher foto",
     "ru": "Выбрать фото",
     "tr": "Fotoğraf Seç",
     "zh-Hans": "选择照片",
@@ -6748,6 +6778,21 @@
     "tr": "Ağ geçidi yeniden başlatılamadı",
     "zh-Hans": "无法重启网关",
     "zh-Hant": "無法重新啟動閘道"
+  },
+  "Couldn't save": {
+    "de": "Speichern fehlgeschlagen",
+    "es": "No se pudo guardar",
+    "fr": "Enregistrement impossible",
+    "id": "Tidak dapat menyimpan",
+    "it": "Impossibile salvare",
+    "ja": "保存できませんでした",
+    "ko": "저장할 수 없음",
+    "pl": "Nie udało się zapisać",
+    "pt-BR": "Não foi possível salvar",
+    "ru": "Не удалось сохранить",
+    "tr": "Kaydedilemedi",
+    "zh-Hans": "无法保存",
+    "zh-Hant": "無法儲存"
   },
   "Couldn't save the file. Try again.": {
     "de": "Die Datei ließ sich nicht sichern. Versuch es noch einmal.",
@@ -30464,6 +30509,21 @@
     "zh-Hans": "页面还有更多内容。全屏打开即可查看其余部分。",
     "zh-Hant": "頁面還有更多內容。全螢幕打開即可查看其餘部分。"
   },
+  "The people in your rooms see it beside your messages, and beside your agents' names. Their pictures and glow colors for their bots show for you the same way.": {
+    "de": "Die Personen in deinen Räumen sehen es neben deinen Nachrichten und neben den Namen deiner Agenten. Ihre Bilder und Leuchtfarben für ihre Bots siehst du genauso.",
+    "es": "Las personas de tus salas la ven junto a tus mensajes y junto a los nombres de tus agentes. Sus fotos y colores de brillo para sus bots se te muestran igual.",
+    "fr": "Les personnes de vos salons la voient à côté de vos messages et des noms de vos agents. Leurs photos et couleurs de halo pour leurs bots s’affichent pour vous de la même façon.",
+    "id": "Orang-orang di ruang Anda melihatnya di samping pesan Anda dan di samping nama agen Anda. Foto dan warna cahaya bot mereka tampil untuk Anda dengan cara yang sama.",
+    "it": "Le persone nelle tue stanze la vedono accanto ai tuoi messaggi e ai nomi dei tuoi agenti. Le loro foto e i colori di bagliore dei loro bot appaiono a te allo stesso modo.",
+    "ja": "ルームの参加者には、あなたのメッセージやエージェント名の横にこの写真が表示されます。相手のボットの写真やグローカラーも同じようにあなたに表示されます。",
+    "ko": "방에 있는 사람들은 내 메시지와 내 에이전트 이름 옆에서 이 사진을 봅니다. 그들의 봇 사진과 글로 색상도 같은 방식으로 나에게 표시됩니다.",
+    "pl": "Osoby w Twoich pokojach widzą je obok Twoich wiadomości i nazw Twoich agentów. Ich zdjęcia i kolory poświaty ich botów widzisz w ten sam sposób.",
+    "pt-BR": "As pessoas nas suas salas a veem ao lado das suas mensagens e dos nomes dos seus agentes. As fotos e cores de brilho dos bots delas aparecem para você do mesmo jeito.",
+    "ru": "Участники ваших комнат видят его рядом с вашими сообщениями и именами ваших агентов. Их фото и цвета свечения их ботов показываются вам так же.",
+    "tr": "Odalarınızdaki kişiler bunu mesajlarınızın ve ajanlarınızın adlarının yanında görür. Onların botlarının fotoğrafları ve parıltı renkleri de size aynı şekilde görünür.",
+    "zh-Hans": "房间里的人会在你的消息和你的智能体名称旁看到它。他们的机器人照片和光晕颜色也会以同样的方式显示给你。",
+    "zh-Hant": "房間裡的人會在你的訊息和你的代理名稱旁看到它。他們的機器人照片和光暈顏色也會以同樣的方式顯示給你。"
+  },
   "The person who invited you is told.": {
     "de": "Die Person, die dich eingeladen hat, wird benachrichtigt.",
     "es": "Se avisa a la persona que te invitó.",
@@ -36284,6 +36344,21 @@
     "zh-Hans": "你已拒绝",
     "zh-Hant": "你已拒絕"
   },
+  "You in rooms": {
+    "de": "Du in Räumen",
+    "es": "Tú en las salas",
+    "fr": "Vous dans les salons",
+    "id": "Anda di ruang",
+    "it": "Tu nelle stanze",
+    "ja": "ルームでのあなた",
+    "ko": "방에서의 나",
+    "pl": "Ty w pokojach",
+    "pt-BR": "Você nas salas",
+    "ru": "Вы в комнатах",
+    "tr": "Odalarda siz",
+    "zh-Hans": "你在房间中",
+    "zh-Hant": "你在房間中"
+  },
   "You joined without your bots: you read this room and post in it yourself.": {
     "de": "Du bist ohne deine Bots beigetreten: Du liest diesen Raum und schreibst selbst darin.",
     "es": "Te uniste sin tus bots: lees esta sala y escribes en ella tú mismo.",
@@ -37048,6 +37123,21 @@
     "tr": "Telefonunuz girişlerini mühürlü olarak bu bilgisayara gönderir. Aradaki kimse okuyamaz. Kod {time} daha geçerli.",
     "zh-Hans": "你的手机会把登录信息加密发送到这台电脑，中途任何人都无法读取。二维码还有 {time} 有效。",
     "zh-Hant": "你的手機會把登入資訊加密傳送到這台電腦，中途任何人都無法讀取。條碼還有 {time} 有效。"
+  },
+  "Your picture": {
+    "de": "Dein Bild",
+    "es": "Tu foto",
+    "fr": "Votre photo",
+    "id": "Foto Anda",
+    "it": "La tua foto",
+    "ja": "あなたの写真",
+    "ko": "내 사진",
+    "pl": "Twoje zdjęcie",
+    "pt-BR": "Sua foto",
+    "ru": "Ваше фото",
+    "tr": "Fotoğrafınız",
+    "zh-Hans": "你的照片",
+    "zh-Hant": "你的照片"
   },
   "Your reports, your morning brief and the news on what Hermes promised to check land here.": {
     "de": "Deine Berichte, dein Morgenbriefing und Neues zu dem, was Hermes prüfen wollte, landen hier.",

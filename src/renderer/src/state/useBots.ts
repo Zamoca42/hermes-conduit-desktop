@@ -49,7 +49,7 @@ export function forgetAvatars(): void {
   avatarCache.clear()
 }
 
-const AVATAR_CHANGED = 'conduit-avatar-changed'
+export const AVATAR_CHANGED = 'conduit-avatar-changed'
 
 /** A bot's picture changed here: read it again wherever it shows. */
 export function avatarChanged(name: string): void {

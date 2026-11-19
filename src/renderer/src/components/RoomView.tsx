@@ -21,7 +21,8 @@ import { Fragment } from "react";
 import { useRoom, type RoomApprovalAnswer } from "../state/useGroups";
 import { useRoomCopy } from "../state/useRoomCopies";
 import { approvalLine, copyHost, copyLine, copyReadOnly, isOver, leaveMessage, outLine, postRow, takesPosts, type CopyApproval, type RoomCopy } from "../state/roomCopies";
-import { BotAvatar, RoomFaces } from "./BotsHome";
+import { BotAvatar, LookFace, RoomFaces } from "./BotsHome";
+import { memberLook, personLook, type RoomLooks } from "../state/roomLooks";
 import { Composer } from "./Composer";
 import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
 import { blockquote, copyableReply, parseRoomReply, roomReplyText, sameQuotedText, type QuoteRequest } from "../state/quote";
@@ -58,6 +59,8 @@ interface Props {
   onAnswerCopyApproval?: (approval: CopyApproval, choice: "once" | "deny") => void;
   /** Takes all your agents out of the copy, when the plugin can and they're still in. */
   onLeaveCopy?: () => Promise<"left" | "sending">;
+  /** How the room's other people and their agents look, as their own Conduits gave it. */
+  looks?: RoomLooks;
 }
 
 const noRefresh = async () => undefined;
@@ -167,7 +170,7 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy }: Props) {
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy, looks }: Props) {
   // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
   const hosted = useRoom(copy ? null : room, connected);
   const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
@@ -187,6 +190,10 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
     // Another Hermes' agent is never one of yours, whatever its id.
     return member?.peer ? undefined : botFor(member?.profile ?? memberId);
   };
+  /** Another person's agent's look. */
+  const peerLook = (memberId: string) => memberLook(looks, room.members.find((m) => m.memberId === memberId));
+  /** A person's look by name; in a room someone else hosts, the host's by the host's name. */
+  const lookOf = (name?: string) => personLook(looks, name, copy ? copy.from : undefined);
   const busyNames = status.busy.map(
     (id) => room.members.find((m) => m.memberId === id)?.displayName ?? id,
   );
@@ -251,7 +258,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
     <main className="chat room" ref={pane}>
       <div className="chat-head">
         <div className="chat-title room-title" title={names.join(", ")}>
-          <RoomFaces room={room} bots={bots} size={20} />
+          <RoomFaces room={room} bots={bots} size={20} looks={looks} />
           <span className="room-title-name">{room.name}</span>
           <span className="room-title-count">
             {copy
@@ -325,9 +332,14 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                 onClick={pick}
                 onKeyDown={pick ? (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), pick()) : undefined}
               >
-                {bot ? <BotAvatar bot={bot} size={16} /> : null}
+                {bot ? <BotAvatar bot={bot} size={16} /> : peerLook(member.memberId) ? <LookFace look={peerLook(member.memberId)} name={name} size={16} /> : null}
                 <span className="room-pill-name">{name}</span>
-                {member.owner ? <span className="room-pill-owner">{member.owner}</span> : null}
+                {member.owner ? (
+                  <span className="room-pill-owner">
+                    {lookOf(member.owner) ? <LookFace look={lookOf(member.owner)} name={member.owner} size={12} /> : null}
+                    {member.owner}
+                  </span>
+                ) : null}
                 {member.out ? <span className="room-pill-status">· {outLine(member.out)}</span> : null}
                 {member.memberId === lead ? (
                   <span className="room-pill-crown" title={t("Lead")} aria-label={t("Lead")}>
@@ -412,9 +424,13 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                   </div>
                 ) : item.kind === "person" ? (
                   <div key={item.key} className="room-member room-person" data-key={item.key}>
-                    <span className="bot-avatar blank room-person-face" style={{ width: 30, height: 30 }} aria-hidden="true">
-                      {item.name.trim().charAt(0).toUpperCase()}
-                    </span>
+                    {lookOf(item.name) ? (
+                      <LookFace look={lookOf(item.name)} name={item.name} size={30} />
+                    ) : (
+                      <span className="bot-avatar blank room-person-face" style={{ width: 30, height: 30 }} aria-hidden="true">
+                        {item.name.trim().charAt(0).toUpperCase()}
+                      </span>
+                    )}
                     <div className="room-member-body">
                       <div className="room-member-name">
                         {item.name}
@@ -445,6 +461,8 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                       </button>
                     ) : memberBot(item.memberId) ? (
                       <BotAvatar bot={memberBot(item.memberId)!} size={30} />
+                    ) : peerLook(item.memberId) ? (
+                      <LookFace look={peerLook(item.memberId)} name={item.name} size={30} />
                     ) : (
                       <span
                         className="bot-avatar blank"
@@ -686,7 +704,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
             const on = isPicked(handle);
             return (
               <button key={member.memberId} className={`room-to-chip${on ? " picked" : ""}`} aria-pressed={on} onClick={() => toggle(handle)}>
-                {bot ? <BotAvatar bot={bot} size={18} /> : null}
+                {bot ? <BotAvatar bot={bot} size={18} /> : peerLook(member.memberId) ? <LookFace look={peerLook(member.memberId)} name={member.displayName ?? handle} size={18} /> : null}
                 <span>{member.displayName ?? bot?.title ?? member.profile ?? handle}</span>
               </button>
             );
