@@ -275,7 +275,10 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       .catch(e => {
         if (ticket !== request.current) return
         dispatch({ type: 'reset', state: emptyTranscript })
-        setError(e instanceof Error ? e.message : String(e))
+        // A Kanban worker reached anyway (a link, a kept row): only the board may run it.
+        if (e instanceof GatewayError && e.code === 4132)
+          setError(t("This chat is a Kanban task's worker, so only the board can run it. Open the task on the Kanban board and check its Worker Log."))
+        else setError(e instanceof Error ? e.message : String(e))
       })
       .finally(() => {
         if (ticket === request.current) setLoading(false)

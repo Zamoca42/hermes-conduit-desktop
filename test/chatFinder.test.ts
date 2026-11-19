@@ -29,7 +29,7 @@ describe('finding chats from a call', () => {
       results: [
         { session_id: 'a', title: 'GPU', snippet: 'the >>>GPU<<<\n setup', last_active: at(1) },
         { id: 'a', title: 'again' },
-        { session_id: 'b', title: '', preview: 'You are a Kanban worker' },
+        { session_id: 'b', title: '', source: 'cli', preview: 'work kanban task t_9f2c' },
         { session_id: 'c', title: 'Other', session_started: at(20) }
       ]
     })
