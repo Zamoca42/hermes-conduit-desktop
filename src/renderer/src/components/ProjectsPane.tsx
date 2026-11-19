@@ -14,12 +14,16 @@ interface Props {
   /** A new chat working in the project's folder. */
   onNewChat: (folder: string | undefined, project: Project) => void
   onClose: () => void
+  /** Whether a chat has a reply the user hasn't seen, read as its chat row reads it. */
+  isUnread?: (chat: ProjectChat) => boolean
+  /** Chats with a turn running. */
+  runningIds?: Set<string>
 }
 
 const reason = (e: unknown) => (e instanceof Error ? e.message : String(e))
 
 /** The phone's Chats › Projects: Hermes' projects, then one project's chats by folder. */
-export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewChat, onClose }: Props) {
+export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewChat, onClose, isUnread, runningIds }: Props) {
   const [projects, setProjects] = useState<Project[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState<Project | null>(null)
@@ -53,6 +57,8 @@ export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewCh
         connected={connected}
         selectedId={selectedId}
         withProfile={withProfile}
+        isUnread={isUnread}
+        runningIds={runningIds}
         onSelect={onSelect}
         onNewChat={() => onNewChat(open.path, open)}
         onBack={() => setOpen(null)}
@@ -90,18 +96,27 @@ export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewCh
         {projects === null && !error ? <div className="empty">{t('Loading projects…')}</div> : null}
         {error ? <div className="empty">{`${t('Couldn’t Load Projects')} ${error}`}</div> : null}
         {projects && !projects.length && !creating ? <div className="empty">{t('Projects you make here or in Hermes Desktop show here.')}</div> : null}
-        {projects?.map(project => (
-          <button key={project.id} className="row project-row" onClick={() => setOpen(project)}>
-            <span className="row-top">
-              <span className="row-title">
-                <Icon name="folder" className="row-pin" />
-                {project.title}
+        {projects?.map(project => {
+          // The dot while any chat the tree lists for it is unread, and the Running line beside it (issue 1496).
+          const unread = !!isUnread && project.previews.some(chat => chat.id !== selectedId && isUnread(chat))
+          const running = !!runningIds && project.previews.some(chat => runningIds.has(chat.id))
+          return (
+            <button key={project.id} className="row project-row" onClick={() => setOpen(project)}>
+              <span className="row-top">
+                <span className="row-title">
+                  <span className="project-icon">
+                    <Icon name="folder" className="row-pin" />
+                    {unread ? <span className="unread-dot project-dot" role="img" aria-label={t('Unread')} /> : null}
+                  </span>
+                  {project.title}
+                </span>
+                <span className="meta row-time">{project.count}</span>
               </span>
-              <span className="meta row-time">{project.count}</span>
-            </span>
-            {project.path ? <span className="meta project-path">{project.path}</span> : null}
-          </button>
-        ))}
+              {running ? <span className="running">{t('Running')}</span> : null}
+              {project.path ? <span className="meta project-path">{project.path}</span> : null}
+            </button>
+          )
+        })}
       </div>
     </section>
   )
@@ -165,6 +180,8 @@ function ProjectPage({
   connected,
   selectedId,
   withProfile,
+  isUnread,
+  runningIds,
   onSelect,
   onNewChat,
   onBack,
@@ -174,6 +191,8 @@ function ProjectPage({
   connected: boolean
   selectedId: string | null
   withProfile: (p: Record<string, unknown>) => Record<string, unknown>
+  isUnread?: (chat: ProjectChat) => boolean
+  runningIds?: Set<string>
   onSelect: (chat: ProjectChat) => void
   onNewChat: () => void
   onBack: () => void
@@ -288,10 +307,17 @@ function ProjectPage({
                 : lane.chats.map(chat => (
                     <button key={chat.id} className="row" aria-current={chat.id === selectedId ? 'true' : undefined} onClick={() => onSelect(chat)}>
                       <span className="row-top">
-                        <span className="row-title">{chat.title}</span>
+                        <span className="row-title">
+                          {isUnread && chat.id !== selectedId && isUnread(chat) ? <span className="unread-dot" role="img" aria-label={t('Unread')} /> : null}
+                          {chat.title}
+                        </span>
                         {chat.lastActive ? <span className="meta row-time">{timeLabel(chat.lastActive)}</span> : null}
                       </span>
-                      {chat.preview && chat.preview !== chat.title ? <span className="meta">{chat.preview}</span> : null}
+                      {runningIds?.has(chat.id) ? (
+                        <span className="running">{t('Running')}</span>
+                      ) : chat.preview && chat.preview !== chat.title ? (
+                        <span className="meta">{chat.preview}</span>
+                      ) : null}
                     </button>
                   ))}
             </div>

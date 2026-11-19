@@ -8876,3 +8876,19 @@ button.secondary.danger {
     zoom: 1.3529;
   }
 }
+
+/* A project's unread dot, on its tile's corner as on a chat row's icon (issue 1496). */
+.project-icon {
+  position: relative;
+  display: inline-flex;
+}
+
+.project-icon .project-dot {
+  position: absolute;
+  top: -3px;
+  right: 2px;
+  width: 7px;
+  height: 7px;
+  margin: 0;
+  box-shadow: 0 0 0 1.5px var(--surface);
+}

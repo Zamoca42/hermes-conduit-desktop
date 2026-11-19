@@ -103,7 +103,7 @@ import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle,
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
 import { moveChat, mutateSession } from './state/chatActions'
-import { parseProjects } from './state/projects'
+import { parseProjects, type ProjectChat } from './state/projects'
 import { useLiveStatus } from './state/liveStatus'
 import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply } from './state/pinnedReplies'
 import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
@@ -894,6 +894,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     if (transcript.running && chat.storedId) ids.add(chat.storedId)
     return ids
   }, [liveStatus, transcript.running, chat.storedId])
+  // A project's chats read as their chat rows do: the list's copy when it has one (Unread dot on projects).
+  const projectChatUnread = useCallback(
+    (chat: ProjectChat) => {
+      if (!marks) return false
+      const listed = list.rows?.find(r => r.id === chat.id)
+      return isUnread(marks, listed ?? { id: chat.id, title: chat.title, pinned: false, profile: chat.profile, activeAt: chat.lastActive })
+    },
+    [marks, list.rows]
+  )
   const waitingIds = useMemo(() => {
     const ids = new Set<string>()
     for (const [id, state] of liveStatus) if (state === 'waiting') ids.add(id)
@@ -1126,6 +1135,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onSelect={item => setSelected({ id: item.id, profile: item.profile ?? chatProfile ?? undefined, title: item.title })}
                 onNewChat={folder => setSelected({ id: null, profile: chatProfile ?? undefined, folder })}
                 onClose={() => setProjectsOpen(false)}
+                isUnread={projectChatUnread}
+                runningIds={runningIds}
               />
             ) : (
               <ChatList
