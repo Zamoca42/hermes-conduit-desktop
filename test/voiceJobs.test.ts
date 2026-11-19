@@ -3,7 +3,8 @@ import { VoiceJobs, completionPrompt, jobTitle, listResult, type VoiceJob } from
 
 type Event = { type: string; session_id?: string; payload?: unknown }
 
-function setup(fail = false) {
+function setup(fail = false, correction: 'redirected' | 'queued' | 'rejected' = 'redirected') {
+  const corrected: [string, string, string | undefined][] = []
   const calls: [string, Record<string, unknown>][] = []
   let handler: (event: Event) => void = () => {}
   const changes: VoiceJob[][] = []
@@ -21,9 +22,13 @@ function setup(fail = false) {
     h => {
       handler = h
       return () => (handler = () => {})
+    },
+    async (sid, text, profile) => {
+      corrected.push([sid, text, profile])
+      return correction
     }
   )
-  return { jobs, calls, changes, told, emit: (e: Event) => handler(e) }
+  return { jobs, calls, changes, told, corrected, emit: (e: Event) => handler(e) }
 }
 
 describe('background jobs from a call', () => {
@@ -84,5 +89,32 @@ describe("GPT-Live's background words", () => {
     expect(asksForBackground('在后台运行这个')).toBe(true)
     expect(asksForBackground('What is in the background of this photo?')).toBe(true)
     expect(asksForBackground('Check the repo')).toBe(false)
+  })
+})
+
+describe('correcting a running job', () => {
+  it("puts the user's words into the job, and says when it's too late", async () => {
+    const { jobs, corrected, emit } = setup()
+    await jobs.start('Book a table for two')
+    expect((await jobs.followUp('job-9', 'make it three')).error).toMatch(/Unknown job_id/)
+    expect((await jobs.followUp('job-1', '  ')).error).toBe('message is required')
+    const sent = await jobs.followUp('job-1', 'make it three')
+    expect(sent).toMatchObject({ status: 'sent' })
+    expect(sent.message).toMatch(/at once/)
+    expect(corrected).toEqual([['s1', '(voice) make it three', 'work']])
+    emit({ type: 'message.complete', session_id: 's1', payload: { text: 'Booked.' } })
+    expect((await jobs.followUp('job-1', 'and a high chair')).status).toBe('not_sent')
+    const queued = setup(false, 'queued')
+    await queued.jobs.start('x')
+    expect((await queued.jobs.followUp('job-1', 'y')).message).toMatch(/right after the step/)
+  })
+})
+
+describe("GPT-Live's job follow-ups", () => {
+  it('reads "Job 2:" and "Add to job 2:" at the start only', async () => {
+    const { jobFollowUpMarker } = await import('../src/renderer/src/state/voiceJobs')
+    expect(jobFollowUpMarker('Job 2: make it Alex')).toEqual({ jobId: 'job-2', words: 'make it Alex' })
+    expect(jobFollowUpMarker('add to job #1: also a quiet table')).toEqual({ jobId: 'job-1', words: 'also a quiet table' })
+    expect(jobFollowUpMarker('Check job 2: status')).toBeNull()
   })
 })

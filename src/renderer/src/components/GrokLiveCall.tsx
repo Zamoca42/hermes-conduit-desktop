@@ -40,7 +40,7 @@ import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
-import { CANCEL_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
+import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 
 interface Props {
   profile?: string
@@ -304,6 +304,11 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
       }
       case CANCEL_JOB:
         void jobs.current?.cancel(event.args.job_id).then(result => !ended.current && answer(event.id, result))
+        return
+      case INTERRUPT_JOB:
+        void (jobs.current?.followUp(event.args.job_id ?? '', event.args.message ?? '') ?? Promise.resolve({ status: 'error', error: 'No jobs.' })).then(
+          result => !ended.current && answer(event.id, result)
+        )
         return
       case FIND_CHAT:
         // Grok holds its turn on every call: one search, not three.

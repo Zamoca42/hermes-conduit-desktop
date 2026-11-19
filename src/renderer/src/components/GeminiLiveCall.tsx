@@ -67,7 +67,7 @@ import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
-import { CANCEL_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
+import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 
 interface Props {
   profile?: string
@@ -333,6 +333,11 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
       }
       case CANCEL_JOB:
         void jobs.current?.cancel(event.args.job_id).then(result => !ended.current && answer(result))
+        return
+      case INTERRUPT_JOB:
+        void (jobs.current?.followUp(event.args.job_id ?? '', event.args.message ?? '') ?? Promise.resolve({ status: 'error', error: 'No jobs.' })).then(
+          result => !ended.current && answer(result)
+        )
         return
       case FIND_CHAT:
         void finder.current.find(event.args.query ?? '').then(result => !ended.current && answer(result))
