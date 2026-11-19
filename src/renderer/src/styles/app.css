@@ -7650,3 +7650,7 @@ button.cap-row-text {
   font-weight: 600;
   color: var(--accent);
 }
+
+.screen-card-tabs .chip.job span {
+  margin-right: 4px;
+}
