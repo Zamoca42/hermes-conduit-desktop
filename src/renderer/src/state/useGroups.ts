@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
 import { uploadRoomAttachments, type StagedAttachment } from './attachments'
+import { roomFilesText } from './roomFiles'
 import {
   ROOM_POLL_MS,
   approveParams,
@@ -85,9 +86,15 @@ export interface PendingSend {
 
 export type RoomApprovalAnswer = { state: 'sending' } | { state: 'sent' } | { state: 'failed'; message: string }
 
-/** One open room: its log, read in pages and then every few seconds, its driver's status, and sending. */
-export function useRoom(room: Room | null, connected: boolean) {
+/**
+ * One open room: its log, read in pages and then every few seconds, its
+ * driver's status, and sending. In a room with other people's agents,
+ * files go through the plugin (`pluginFiles`) as `@file:` lines above the
+ * words: Hermes' peer route carries no attachments.
+ */
+export function useRoom(room: Room | null, connected: boolean, pluginFiles = false) {
   const roomId = room?.roomId ?? null
+  const viaPlugin = pluginFiles && room?.linked === true
   const [events, setEvents] = useState<RoomEvent[]>([])
   const [status, setStatus] = useState<DriverStatus>({ working: false, busy: [], disbanded: false, approvals: [] })
   const [loading, setLoading] = useState(false)
@@ -158,7 +165,9 @@ export function useRoom(room: Room | null, connected: boolean) {
       setPending(current => [...current.filter(p => p.eventId !== eventId), { eventId, text: trimmed, attachments }])
       try {
         const payload: Record<string, unknown> = { text: trimmed, thread_id: eventId }
-        if (attachments.length) payload.attachments = await uploadRoomAttachments((method, params) => gateway.rpc(method, params), roomId, attachments)
+        if (attachments.length && viaPlugin)
+          payload.text = await roomFilesText((path, body, timeoutMs) => gateway.http('POST', path, body, timeoutMs), trimmed, attachments)
+        else if (attachments.length) payload.attachments = await uploadRoomAttachments((method, params) => gateway.rpc(method, params), roomId, attachments)
         await gateway.rpc('groups.send', { room_id: roomId, event_id: eventId, payload })
         setStatus(current => ({ ...current, working: true }))
         await readLog(roomId, ticket.current)
@@ -166,7 +175,7 @@ export function useRoom(room: Room | null, connected: boolean) {
         setPending(current => current.map(p => (p.eventId === eventId ? { ...p, failed: message(e) } : p)))
       }
     },
-    [roomId, readLog]
+    [roomId, readLog, viaPlugin]
   )
 
   const stop = useCallback(async () => {

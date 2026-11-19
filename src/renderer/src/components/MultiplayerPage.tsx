@@ -19,6 +19,8 @@ import {
 } from '../state/roomLinks'
 import { Icon } from './icons'
 import { RoomSetupSection } from './RoomSetupSection'
+import { LinkAsksSection } from './LinkAsksSection'
+import { LINK_ASKS_CAPABILITY } from '../state/linkAsks'
 import { LookFace } from './BotsHome'
 import { lookPicture } from '../state/lookPictures'
 import type { PersonPicture } from '../state/useRoomLooks'
@@ -177,6 +179,8 @@ export function MultiplayerPage({
     setChanging(null)
   }
 
+  const linkedIds = list?.links.filter(l => l.status === 'linked').map(l => l.id) ?? []
+
   const openPasted = (text: string) => {
     const found = findInvite(text)
     if (!found) return setPasteError(t('The clipboard has no Link invite.'))
@@ -298,6 +302,9 @@ export function MultiplayerPage({
       </section>
 
       {personPicture?.served ? <YouInRooms picture={personPicture} /> : null}
+
+      {/* What each linked person's Hermes may ask yours, on a plugin that answers asks. */}
+      {capabilities.includes(LINK_ASKS_CAPABILITY) && linkedIds.length ? <LinkAsksSection host={host} linkIds={linkedIds} bots={bots} /> : null}
 
       {list?.invites.length ? (
         <section className="pset-section">

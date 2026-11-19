@@ -8,6 +8,7 @@
  */
 import { gateway } from '../gateway'
 import { pictureType } from './attachments'
+import { ROOM_FILE_READ_PATH, pictureFromRead } from './roomFiles'
 
 const MAX_BYTES = 16 * 1024 * 1024
 /** Read pictures by attachment id: a data URL, or null for one that won't load. */
@@ -44,6 +45,32 @@ export function readRoomPicture(roomId: string, eventId: string, attachmentId: s
       )
       .finally(() => reading.delete(attachmentId))
     reading.set(attachmentId, read)
+  }
+  return read
+}
+
+/** Pictures the plugin stored for a room (`@file:` lines), read back by their path. */
+const keptStored = new Map<string, string | null>()
+const readingStored = new Map<string, Promise<string | null>>()
+
+export const keptStoredPicture = (path: string) => keptStored.get(path)
+
+export function readStoredPicture(path: string): Promise<string | null> {
+  if (keptStored.has(path)) return Promise.resolve(keptStored.get(path) ?? null)
+  let read = readingStored.get(path)
+  if (!read) {
+    read = gateway
+      .http('GET', `${ROOM_FILE_READ_PATH}?path=${encodeURIComponent(path)}`)
+      .then(
+        result => {
+          const url = pictureFromRead(result)
+          keptStored.set(path, url)
+          return url
+        },
+        () => null
+      )
+      .finally(() => readingStored.delete(path))
+    readingStored.set(path, read)
   }
   return read
 }

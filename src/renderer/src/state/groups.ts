@@ -5,6 +5,8 @@
  * with no window open. Read the phone's GroupChatModels.swift for the rest.
  */
 import type { Bot } from './bots'
+import { referencedFile } from './roomFiles'
+import { splitLeadingReferences } from './text'
 import { formatDate, locale, t } from '../../../shared/i18n'
 
 export const ROOM_MIN_MEMBERS = 2
@@ -170,7 +172,10 @@ function memberName(room: Room | null, memberId: string, fallback?: string): str
 /** What a room's log shows: the user's and the bots' messages, and a line when a bot's turn failed. */
 /** A file a room message carries, from its `attachments` manifest. */
 export interface RoomFile {
-  attachmentId: string
+  /** Where Hermes keeps it, for one from its `attachments` manifest. */
+  attachmentId?: string
+  /** Where the plugin stored it, for one its message names in an `@file:` line. */
+  path?: string
   kind: string
   name: string
   mime?: string
@@ -185,6 +190,15 @@ export function roomFiles(payload: Record<string, unknown>): RoomFile[] {
     files.push({ attachmentId, kind: str(a.kind) ?? 'file', name: str(a.name) ?? attachmentId, mime: str(a.mime) })
   }
   return files
+}
+
+/** A person's room message: its words, and its files, Hermes' and the ones its leading `@file:` lines name. */
+export function roomMessage(payload: Record<string, unknown>, raw = typeof payload.text === 'string' ? payload.text : ''): { text: string; files: RoomFile[] } {
+  const lead = splitLeadingReferences(raw)
+  const named = lead.attachments.filter(a => a.kind === 'file' || a.kind === 'image')
+  // Only a message whose leading lines are all files reads them apart.
+  if (!named.length || named.length !== lead.attachments.length) return { text: raw, files: roomFiles(payload) }
+  return { text: lead.text, files: [...named.map(a => referencedFile(a.value)), ...roomFiles(payload)] }
 }
 
 /**
@@ -210,13 +224,14 @@ export function roomItems(room: Room | null, events: readonly RoomEvent[], copy?
   for (const event of events) {
     const text = typeof event.payload.text === 'string' ? event.payload.text : ''
     if (event.kind === 'message.user') {
-      const files = roomFiles(event.payload)
-      if (!text.trim() && !files.length) continue
+      // Whose it is first: a post the host named for someone has the name on every line.
+      const name = copy ? (!event.post ? copy.host : (event.post.by ?? null)) : null
+      const words = !copy || !event.post ? text : unnamedPost(text, event.post.by ?? copy.you)
+      const { text: said, files } = roomMessage(event.payload, words)
+      if (!said.trim() && !files.length) continue
       const shown = files.length ? { files } : {}
-      if (copy && !event.post) items.push({ kind: 'person', key: event.eventId, text, name: copy.host, ...shown, at: event.createdAt })
-      else if (copy && event.post?.by)
-        items.push({ kind: 'person', key: event.eventId, text: unnamedPost(text, event.post.by), name: event.post.by, ...shown, at: event.createdAt })
-      else items.push({ kind: 'user', key: event.eventId, text: copy ? unnamedPost(text, copy.you) : text, ...shown, at: event.createdAt })
+      if (name) items.push({ kind: 'person', key: event.eventId, text: said, name, ...shown, at: event.createdAt })
+      else items.push({ kind: 'user', key: event.eventId, text: said, ...shown, at: event.createdAt })
     } else if (event.kind === 'message.member') {
       const memberId = str(event.payload.member_id) ?? event.actor.id
       if (text.trim()) items.push({ kind: 'member', key: event.eventId, text, memberId, name: memberName(room, memberId, event.actor.displayName), at: event.createdAt })

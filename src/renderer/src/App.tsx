@@ -1,3 +1,4 @@
+import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
@@ -1152,6 +1153,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // The backdrop glows in the open chat's agent's color, and elsewhere in the profile in use's.
   const glowOf = useGlowColors(glowBots, status.url ?? '')
   const roomChatsServed = roomInvites.capabilities.includes(ROOM_CHATS_CAPABILITY)
+  // Files in rooms with other people's agents go through the plugin, which reads their pictures back.
+  const roomFilesStored = roomInvites.capabilities.includes(ROOM_FILES_CAPABILITY)
+  const roomFilePictures = roomInvites.capabilities.includes(ROOM_FILE_PICTURES_CAPABILITY)
   // What Hermes waits on in each bot's profile: its confirmations, and rooms' and linked people's asks.
   const presentProfiles = useMemo(() => (roster.bots?.length ? roster.bots.map(b => b.name) : ['default']), [roster.bots])
   const presented = usePresented(connected, status.url ?? '', roomInvites.capabilities, presentProfiles)
@@ -1881,6 +1885,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <RoomView
             key={shownCopy.id}
             room={shownCopyRoom}
+            readsStoredFiles={roomFilePictures && roomInvites.capabilities.includes(ROOM_FILES_LINKED_CAPABILITY)}
             looks={roomLooks.looks[shownCopy.roomId]}
             onOpenRoomChat={roomChatsServed ? (agent, wrapUp) => openRoomChatWith(shownCopyRoom, agent, wrapUp) : undefined}
             bots={roster.bots ?? []}
@@ -1919,6 +1924,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <RoomView
             key={openRoom.roomId}
             room={openRoom}
+            storesFiles={roomFilesStored}
+            readsStoredFiles={roomFilePictures}
             looks={roomLooks.looks[openRoom.roomId]}
             onOpenRoomChat={roomChatsServed ? (agent, wrapUp) => openRoomChatWith(openRoom, agent, wrapUp) : undefined}
             bots={roster.bots ?? []}

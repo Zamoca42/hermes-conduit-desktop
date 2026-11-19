@@ -1200,6 +1200,10 @@ body.resizing-columns {
   max-width: min(560px, 85%);
 }
 
+.room-person .attachments {
+  justify-content: flex-start;
+  align-self: flex-start;
+}
 .attachments .chip {
   display: inline-flex;
   align-items: center;
@@ -9411,6 +9415,19 @@ button.secondary.danger {
 .links-paste .input-ask-field {
   flex: 1;
   min-width: 0;
+}
+.link-asks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.link-asks-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 .link-row {
   display: flex;
