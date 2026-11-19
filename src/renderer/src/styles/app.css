@@ -752,7 +752,8 @@ a:hover {
   flex: none;
   padding: 10px 24px 20px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .composer {
@@ -7551,4 +7552,30 @@ button.cap-row-text {
 }
 .screen-error {
   margin: 0;
+}
+
+.suggested-replies {
+  width: 100%;
+  max-width: 780px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+.suggested-reply {
+  max-width: min(100%, 420px);
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.suggested-reply:hover {
+  border-color: var(--accent);
 }

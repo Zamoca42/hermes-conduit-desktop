@@ -21,6 +21,7 @@ import { SignIn } from './components/SignIn'
 import { TitleBar, hostName } from './components/TitleBar'
 import { Transcript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { forgetSummaries } from './state/stepSummaries'
+import { usePredictions } from './state/usePredictions'
 import { SummaryHost } from './state/useStepSummaries'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
@@ -63,6 +64,7 @@ import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
 import { StepSummarySettings } from './components/StepSummarySettings'
+import { PredictiveSettings } from './components/PredictiveSettings'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
@@ -368,6 +370,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const workChecklist = workItem?.checklist
   const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
   const delegates = useAgents(chat.liveId, connected, transcript.running)
+  const suggestions = usePredictions(transcript, connected && !calling ? (chat.liveId ?? undefined) : undefined)
   // Hermes may have changed the goal, loop or heartbeat: a turn ended or a command answered.
   const outputs = useMemo(() => transcript.items.filter(item => item.kind === 'output').length, [transcript.items])
   const controlPulse = turnsDone + outputs
@@ -1036,6 +1039,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 model={chat.model}
                 cwd={chat.cwd}
                 onSend={(text, attachments) => void onSend(text, attachments)}
+                replies={suggestions}
+                onSuggestion={text => void onSend(text, [])}
                 onStop={() => void stop()}
                 focusKey={selected.id ?? 'new'}
                 canAttach
@@ -1260,6 +1265,7 @@ function Settings({
           onBack={() => setPage('main')}
         >
           <StepSummarySettings />
+          <PredictiveSettings />
         </ConfigPage>
       </main>
     )
