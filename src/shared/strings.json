@@ -11714,6 +11714,21 @@
     "zh-Hans": "在此聊天中",
     "zh-Hant": "在此聊天中"
   },
+  "In progress": {
+    "de": "Läuft",
+    "es": "En curso",
+    "fr": "En cours",
+    "id": "Berlangsung",
+    "it": "In corso",
+    "ja": "進行中",
+    "ko": "진행 중",
+    "pl": "W toku",
+    "pt-BR": "Em andamento",
+    "ru": "В процессе",
+    "tr": "Sürüyor",
+    "zh-Hans": "进行中",
+    "zh-Hant": "進行中"
+  },
   "In the morning brief": {
     "de": "Im Morgenbriefing",
     "es": "En el resumen matutino",
@@ -12748,6 +12763,21 @@
     "tr": "Son hata",
     "zh-Hans": "上次错误",
     "zh-Hant": "上次錯誤"
+  },
+  "Last live call": {
+    "de": "Letzter Live-Anruf",
+    "es": "Última llamada en vivo",
+    "fr": "Dernier appel en direct",
+    "id": "Panggilan live terakhir",
+    "it": "Ultima chiamata dal vivo",
+    "ja": "最後のライブ通話",
+    "ko": "마지막 라이브 통화",
+    "pl": "Ostatnie połączenie na żywo",
+    "pt-BR": "Última chamada ao vivo",
+    "ru": "Последний живой звонок",
+    "tr": "Son canlı arama",
+    "zh-Hans": "上次实时通话",
+    "zh-Hant": "上次即時通話"
   },
   "Last run": {
     "de": "Letzte Ausführung",
@@ -15523,6 +15553,21 @@
     "tr": "Sınır yok",
     "zh-Hans": "不限",
     "zh-Hant": "不限"
+  },
+  "No live call since Conduit opened.": {
+    "de": "Seit dem Start von Conduit gab es keinen Live-Anruf.",
+    "es": "No ha habido ninguna llamada en vivo desde que se abrió Conduit.",
+    "fr": "Aucun appel en direct depuis l’ouverture de Conduit.",
+    "id": "Belum ada panggilan live sejak Conduit dibuka.",
+    "it": "Nessuna chiamata dal vivo da quando Conduit è aperto.",
+    "ja": "Conduit を開いてからライブ通話はありません。",
+    "ko": "Conduit을 연 뒤로 라이브 통화가 없습니다.",
+    "pl": "Od uruchomienia Conduit nie było połączenia na żywo.",
+    "pt-BR": "Nenhuma chamada ao vivo desde que o Conduit foi aberto.",
+    "ru": "С момента запуска Conduit живых звонков не было.",
+    "tr": "Conduit açıldığından beri canlı arama yok.",
+    "zh-Hans": "自打开 Conduit 以来没有实时通话。",
+    "zh-Hant": "自開啟 Conduit 以來沒有即時通話。"
   },
   "No longer on the host": {
     "de": "Nicht mehr auf dem Host",
@@ -25619,6 +25664,21 @@
     "zh-Hans": "技能、工具或 MCP 选择未保存。",
     "zh-Hant": "技能、工具或 MCP 選擇未儲存。"
   },
+  "The steps of the last Grok Live, Qwen Live, Local Live or GPT-Live call, without what was said, to paste into an issue.": {
+    "de": "Die Schritte des letzten Anrufs mit Grok Live, Qwen Live, Local Live oder GPT-Live, ohne das Gesagte, zum Einfügen in ein Issue.",
+    "es": "Los pasos de la última llamada de Grok Live, Qwen Live, Local Live o GPT-Live, sin lo que se dijo, para pegarlos en una incidencia.",
+    "fr": "Les étapes du dernier appel Grok Live, Qwen Live, Local Live ou GPT-Live, sans ce qui a été dit, à coller dans un ticket.",
+    "id": "Langkah-langkah panggilan Grok Live, Qwen Live, Local Live, atau GPT-Live terakhir, tanpa isi pembicaraan, untuk ditempel ke issue.",
+    "it": "I passaggi dell’ultima chiamata Grok Live, Qwen Live, Local Live o GPT-Live, senza ciò che è stato detto, da incollare in una segnalazione.",
+    "ja": "最後の Grok Live、Qwen Live、Local Live、GPT-Live 通話の手順です。話した内容は含まれません。Issue に貼り付けられます。",
+    "ko": "마지막 Grok Live, Qwen Live, Local Live 또는 GPT-Live 통화의 단계입니다. 말한 내용은 포함되지 않으며 이슈에 붙여넣을 수 있습니다.",
+    "pl": "Kroki ostatniego połączenia Grok Live, Qwen Live, Local Live lub GPT-Live, bez tego, co powiedziano, do wklejenia w zgłoszeniu.",
+    "pt-BR": "As etapas da última chamada do Grok Live, Qwen Live, Local Live ou GPT-Live, sem o que foi dito, para colar em um relato.",
+    "ru": "Шаги последнего звонка Grok Live, Qwen Live, Local Live или GPT-Live без сказанного — чтобы вставить в issue.",
+    "tr": "Son Grok Live, Qwen Live, Local Live veya GPT-Live aramasının adımları; söylenenler olmadan, bir soruna yapıştırmak için.",
+    "zh-Hans": "上次 Grok Live、Qwen Live、Local Live 或 GPT-Live 通话的步骤，不含说话内容，可粘贴到问题报告中。",
+    "zh-Hant": "上次 Grok Live、Qwen Live、Local Live 或 GPT-Live 通話的步驟，不含說話內容，可貼到問題回報中。"
+  },
   "The turn failed.": {
     "de": "Der Durchgang ist fehlgeschlagen.",
     "es": "El turno falló.",
@@ -31558,6 +31618,21 @@
     "tr": "{model} {time} tarihine kadar sınırlı",
     "zh-Hans": "{model} 受限至 {time}",
     "zh-Hant": "{model} 受限至 {time}"
+  },
+  "{mode}, {count} steps": {
+    "de": "{mode}, {count} Schritte",
+    "es": "{mode}, {count} pasos",
+    "fr": "{mode}, {count} étapes",
+    "id": "{mode}, {count} langkah",
+    "it": "{mode}, {count} passaggi",
+    "ja": "{mode}、{count} ステップ",
+    "ko": "{mode}, {count}단계",
+    "pl": "{mode}, kroki: {count}",
+    "pt-BR": "{mode}, {count} etapas",
+    "ru": "{mode}, шагов: {count}",
+    "tr": "{mode}, {count} adım",
+    "zh-Hans": "{mode}，{count} 个步骤",
+    "zh-Hant": "{mode}，{count} 個步驟"
   },
   "{names} are answering…": {
     "de": "{names} antworten…",
