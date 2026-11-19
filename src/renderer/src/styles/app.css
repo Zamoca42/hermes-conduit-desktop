@@ -8619,3 +8619,8 @@ button.secondary.danger {
   gap: 6px;
   margin-right: 14px;
 }
+
+/* Needs approval on a chat row: Hermes waits on the user there. */
+.running.waiting {
+  color: var(--warning);
+}

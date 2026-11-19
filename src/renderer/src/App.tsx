@@ -97,6 +97,7 @@ import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/read
 import { useCommands } from './state/useCommands'
 import { moveChat, mutateSession } from './state/chatActions'
 import { parseProjects } from './state/projects'
+import { useLiveStatus } from './state/liveStatus'
 import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply } from './state/pinnedReplies'
 import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
@@ -274,12 +275,6 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       window.removeEventListener('keydown', onKey)
     }
   }, [])
-
-  const runningIds = useMemo(() => {
-    const ids = new Set<string>()
-    if (transcript.running && chat.storedId) ids.add(chat.storedId)
-    return ids
-  }, [transcript.running, chat.storedId])
 
   const roster = useBots(connected)
   const glowBots = useMemo(() => [...(roster.bots ?? []), ...roster.hidden], [roster.bots, roster.hidden])
@@ -788,6 +783,23 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const waitingRows = useMemo(() => unmatchedWaiting(waiting.rows, requests), [waiting.rows, requests])
   const needsCount = requests.length + waitingRows.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
+  // Running and Needs approval on the list's rows: the gateway's live registry while the list shows, the
+  // plugin's waiting list, and the open chat's own turn and requests.
+  const liveProfiles = useMemo(() => (chatProfile ? [chatProfile] : profiles.slice(0, 8)), [chatProfile, profiles])
+  const liveStatus = useLiveStatus(connected && section === 'chats' && !projectsOpen, liveProfiles, `${turnsDone}\t${list.rows?.length ?? 0}`)
+  const runningIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const [id, state] of liveStatus) if (state === 'working') ids.add(id)
+    if (transcript.running && chat.storedId) ids.add(chat.storedId)
+    return ids
+  }, [liveStatus, transcript.running, chat.storedId])
+  const waitingIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const [id, state] of liveStatus) if (state === 'waiting') ids.add(id)
+    for (const row of waiting.rows) for (const id of row.sessionIds) ids.add(id)
+    if (openRequests.length && chat.storedId) ids.add(chat.storedId)
+    return ids
+  }, [liveStatus, waiting.rows, openRequests.length, chat.storedId])
 
   /** The chats this window opened, by live id: a request's card outside its chat, and a notification's click. */
   const chats = useRef(new Map<string, ChatRef>())
@@ -1020,6 +1032,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 error={list.error}
                 selectedId={chat.storedId ?? selected.id}
                 runningIds={runningIds}
+                waitingIds={waitingIds}
                 runningStatus={transcript.status}
                 onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
                 onOpenBeside={besideFits ? openBeside : undefined}

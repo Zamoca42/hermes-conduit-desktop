@@ -6,7 +6,7 @@
  */
 import type { ChatRow } from './chats'
 
-export type ChatFilter = 'all' | 'starred' | 'unread' | 'running'
+export type ChatFilter = 'all' | 'starred' | 'unread' | 'running' | 'waiting'
 
 export interface ChatMarks {
   /** "profile\tid" of each starred chat. */
@@ -77,14 +77,22 @@ export function markUnread(marks: ChatMarks, row: ChatRow): ChatMarks {
   return marks.unread.includes(key) ? marks : { ...marks, unread: [...marks.unread, key] }
 }
 
-export function filterRows(rows: ChatRow[], filter: ChatFilter, marks: ChatMarks, running: ReadonlySet<string>): ChatRow[] {
+export function filterRows(
+  rows: ChatRow[],
+  filter: ChatFilter,
+  marks: ChatMarks,
+  running: ReadonlySet<string>,
+  waiting: ReadonlySet<string> = new Set()
+): ChatRow[] {
   switch (filter) {
     case 'starred':
       return rows.filter(row => isStarred(marks, row))
     case 'unread':
       return rows.filter(row => isUnread(marks, row))
     case 'running':
-      return rows.filter(row => running.has(row.id))
+      return rows.filter(row => running.has(row.id) && !waiting.has(row.id))
+    case 'waiting':
+      return rows.filter(row => waiting.has(row.id))
     default:
       return rows
   }

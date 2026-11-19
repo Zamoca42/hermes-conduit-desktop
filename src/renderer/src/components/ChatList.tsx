@@ -13,7 +13,8 @@ const FILTERS: { value: ChatFilter; label: () => string }[] = [
   { value: 'all', label: () => t('All') },
   { value: 'starred', label: () => t('Starred') },
   { value: 'unread', label: () => t('Unread') },
-  { value: 'running', label: () => t('Running') }
+  { value: 'running', label: () => t('Running') },
+  { value: 'waiting', label: () => t('Needs approval') }
 ]
 
 interface Props {
@@ -21,6 +22,8 @@ interface Props {
   error: string | null
   selectedId: string | null
   runningIds: ReadonlySet<string>
+  /** Chats Hermes waits on the user in (an approval or a question): Needs approval on the row. */
+  waitingIds?: ReadonlySet<string>
   runningStatus?: string
   onSelect: (row: ChatRow) => void
   onNewChat: () => void
@@ -59,6 +62,7 @@ export interface MoveTarget {
 
 /** Profiles In messages asks at most, one request each. */
 const MAX_SEARCH_PROFILES = 8
+const NONE: ReadonlySet<string> = new Set()
 const searchHttp = (path: string) => gateway.http('GET', path)
 
 const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
@@ -68,6 +72,7 @@ export function ChatList({
   error,
   selectedId,
   runningIds,
+  waitingIds = NONE,
   runningStatus,
   onSelect,
   onNewChat,
@@ -129,11 +134,11 @@ export function ChatList({
   const { sections, listed, allowed } = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
-    const marked = marks ? filterRows(inProfile, filter, marks, runningIds) : inProfile
+    const marked = marks ? filterRows(inProfile, filter, marks, runningIds, waitingIds) : inProfile
     const sourced = source ? marked.filter(r => (r.sourceKind ?? 'chat') === source) : marked
     const filtered = q ? sourced.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : sourced
     return { sections: sectionRows(filtered), listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined }
-  }, [rows, query, profile, marks, filter, runningIds, source])
+  }, [rows, query, profile, marks, filter, runningIds, waitingIds, source])
   // In messages: Hermes' full-text search, on the profile shown or every profile the list holds.
   const searchProfiles = useMemo(
     () => (profile ? [profile] : [...new Set((rows ?? []).map(r => r.profile || 'default'))].sort().slice(0, MAX_SEARCH_PROFILES)),
@@ -230,14 +235,17 @@ export function ChatList({
                 ? t('No unread chats.')
                 : filter === 'running'
                   ? t('Nothing is running.')
-                  : t('No chats yet. Start one with the + button.')}
+                  : filter === 'waiting'
+                    ? t('No chat is waiting on your answer.')
+                    : t('No chats yet. Start one with the + button.')}
           </div>
         ) : null}
         {sections.map(section => (
           <div key={section.title} role="group" aria-label={section.title}>
             <div className="sect">{section.title}</div>
             {section.rows.map(row => {
-              const running = runningIds.has(row.id)
+              const waits = waitingIds.has(row.id)
+              const running = !waits && runningIds.has(row.id)
               return (
                 <div
                   key={row.id}
@@ -276,7 +284,9 @@ export function ChatList({
                         {row.sourceKind && row.sourceKind !== 'chat' ? <span className="row-source">{sourceName(row.sourceKind)}</span> : null}
                         <span className="meta row-time">{timeLabel(row.activeAt)}</span>
                       </span>
-                      {running ? (
+                      {waits ? (
+                        <span className="running waiting">{t('Needs approval')}</span>
+                      ) : running ? (
                         <span className="running">
                           {t('Running')}
                           {runningStatus && row.id === selectedId ? ` · ${runningStatus}` : ''}
