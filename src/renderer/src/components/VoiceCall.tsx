@@ -3,7 +3,7 @@ import { t } from '@shared/i18n'
 import { useRecorder } from '../state/useRecorder'
 import { stopReading } from '../state/readAloud'
 import { blobToBase64, speak, spokenText, transcribe } from '../state/voice'
-import { callStep, type CallPhase } from '../state/call'
+import { callStep, micScale, type CallPhase } from '../state/call'
 import { Icon } from './icons'
 
 interface Props {
@@ -64,7 +64,8 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
   }, [])
 
   useEffect(() => {
-    if (recorder.error === 'denied') setProblem(t("Conduit can't use the microphone. Allow it for Conduit in your computer's privacy settings, then try again."))
+    if (recorder.error === 'denied')
+      setProblem(t("Conduit can't use the microphone. Allow it for Conduit in your computer's privacy settings, then try again."))
     else if (recorder.error === 'missing') setProblem(t('No microphone found.'))
     else if (recorder.error) setProblem(recorder.error)
   }, [recorder.error])
@@ -176,10 +177,16 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
   return (
     <div className={`voice-call phase-${phase}`} role="region" aria-label={t('Voice call')}>
       <div className="voice-call-status">
-        <span className="voice-call-orb" style={phase === 'listening' ? { transform: `scale(${1 + Math.min(0.6, recorder.level * 1.5)})` } : undefined} />
+        <span className="voice-call-orb" style={phase === 'listening' ? { transform: `scale(${micScale(recorder.level)})` } : undefined} />
         <div className="voice-call-words">
           <strong>{status}</strong>
-          {problem ? <span className="voice-call-problem">{problem}</span> : heard ? <span className="meta">{heard}</span> : <span className="meta">{t('Classic voice')}</span>}
+          {problem ? (
+            <span className="voice-call-problem">{problem}</span>
+          ) : heard ? (
+            <span className="meta">{heard}</span>
+          ) : (
+            <span className="meta">{t('Classic voice')}</span>
+          )}
         </div>
       </div>
       <div className="voice-call-buttons">
@@ -197,7 +204,12 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
             {t('Interrupt')}
           </button>
         ) : null}
-        <button className={`voice-call-round${muted ? ' on' : ''}`} aria-label={muted ? t('Unmute microphone') : t('Mute microphone')} title={muted ? t('Unmute microphone') : t('Mute microphone')} onClick={toggleMute}>
+        <button
+          className={`voice-call-round${muted ? ' on' : ''}`}
+          aria-label={muted ? t('Unmute microphone') : t('Mute microphone')}
+          title={muted ? t('Unmute microphone') : t('Mute microphone')}
+          onClick={toggleMute}
+        >
           <Icon name={muted ? 'micOff' : 'mic'} />
         </button>
         <button className="voice-call-round end" aria-label={t('End call')} title={t('End call')} onClick={onEnd}>

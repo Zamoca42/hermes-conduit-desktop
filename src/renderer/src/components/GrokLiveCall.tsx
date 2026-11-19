@@ -36,6 +36,7 @@ import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
+import { MicOrb } from './MicOrb'
 
 interface Props {
   profile?: string
@@ -90,6 +91,8 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
+  // The microphone, for the orb's level.
+  const [micStream, setMicStream] = useState<MediaStream | null>(null)
   const [lines, setLines] = useState<Line[]>([])
 
   const socket = useRef<string | null>(null)
@@ -183,6 +186,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
     processor.current = null
     mic.current?.getTracks().forEach(track => track.stop())
     mic.current = null
+    setMicStream(null)
     stopPlayback()
     void context.current?.close().catch(() => undefined)
     context.current = null
@@ -391,6 +395,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
         mic.current = stream
+        setMicStream(stream)
         const ctx = new AudioContext({ sampleRate: SAMPLE_RATE })
         context.current = ctx
         const turns = items.flatMap((item): { role: 'user' | 'assistant'; text: string }[] =>
@@ -500,7 +505,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
       aria-label={t('Voice call')}
     >
       <div className="voice-call-status">
-        <span className="voice-call-orb" />
+        <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
         <div className="voice-call-words">
           <strong>{status}</strong>
           {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{t('Grok Live')}</span>}

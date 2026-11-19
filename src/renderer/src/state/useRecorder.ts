@@ -21,8 +21,18 @@ export function useRecorder() {
   const [elapsed, setElapsed] = useState(0)
   const [level, setLevel] = useState(0)
   const [error, setError] = useState<string | null>(null)
-  const parts = useRef<{ recorder: MediaRecorder; stream: MediaStream; context: AudioContext; chunks: Blob[]; started: number; timer: number; frame: number } | null>(null)
+  const parts = useRef<{
+    recorder: MediaRecorder
+    stream: MediaStream
+    context: AudioContext
+    chunks: Blob[]
+    started: number
+    timer: number
+    frame: number
+  } | null>(null)
   const stopping = useRef<((recording: Recording | null) => void) | null>(null)
+  // Counts starts and cancels: a start whose microphone arrives after a cancel (or a hang-up) lets it go.
+  const generation = useRef(0)
 
   const release = useCallback(() => {
     const current = parts.current
@@ -36,7 +46,13 @@ export function useRecorder() {
     setLevel(0)
   }, [])
 
-  useEffect(() => release, [release])
+  useEffect(
+    () => () => {
+      generation.current++
+      release()
+    },
+    [release]
+  )
 
   const stop = useCallback((): Promise<Recording | null> => {
     const current = parts.current
@@ -51,13 +67,20 @@ export function useRecorder() {
     if (parts.current) return true
     setError(null)
     setElapsed(0)
+    const mine = ++generation.current
     let stream: MediaStream
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } })
+      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
     } catch (e) {
+      // Cancelled meanwhile: not a failure.
+      if (mine !== generation.current) return true
       const name = (e as { name?: string }).name
       setError(name === 'NotAllowedError' || name === 'SecurityError' ? 'denied' : name === 'NotFoundError' ? 'missing' : String((e as Error).message ?? e))
       return false
+    }
+    if (mine !== generation.current || parts.current) {
+      stream.getTracks().forEach(track => track.stop())
+      return true
     }
     const mime = MIME.find(type => MediaRecorder.isTypeSupported(type)) ?? ''
     const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined)
@@ -101,6 +124,7 @@ export function useRecorder() {
   }, [release])
 
   const cancel = useCallback(() => {
+    generation.current++
     const current = parts.current
     stopping.current = null
     if (current && current.recorder.state !== 'inactive') {

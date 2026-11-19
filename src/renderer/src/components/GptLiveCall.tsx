@@ -46,6 +46,7 @@ import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { answerApproval, answerQuestion, answerWords, isApprove, isDeny, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
+import { MicOrb } from './MicOrb'
 
 interface Props {
   profile?: string
@@ -94,6 +95,8 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
+  // The microphone, for the orb's level.
+  const [micStream, setMicStream] = useState<MediaStream | null>(null)
   const [lines, setLines] = useState<Line[]>([])
   const [billing] = useState(gptLiveBilling)
   const [voice] = useState(() => gptLiveVoice(gptLiveBilling()))
@@ -152,6 +155,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     channel.current = null
     pc.current = null
     mic.current = null
+    setMicStream(null)
   }
 
   const fail = (message: string) => {
@@ -335,6 +339,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
         mic.current = stream
+        setMicStream(stream)
         const peer = new RTCPeerConnection()
         pc.current = peer
         stream.getAudioTracks().forEach(track => peer.addTrack(track, stream))
@@ -470,7 +475,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
       aria-label={t('Voice call')}
     >
       <div className="voice-call-status">
-        <span className="voice-call-orb" />
+        <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
         <div className="voice-call-words">
           <strong>{status}</strong>
           {problem ? (

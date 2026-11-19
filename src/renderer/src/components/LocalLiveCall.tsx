@@ -65,6 +65,7 @@ import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, openQ
 import { approvalView, clarifyQuestions } from '../state/needsYou'
 import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import { Icon } from './icons'
+import { MicOrb } from './MicOrb'
 
 interface Props {
   profile?: string
@@ -134,6 +135,8 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
+  // The microphone, for the orb's level.
+  const [micStream, setMicStream] = useState<MediaStream | null>(null)
   const [lines, setLines] = useState<Line[]>([])
 
   const socket = useRef<string | null>(null)
@@ -223,6 +226,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
     processor.current = null
     mic.current?.getTracks().forEach(track => track.stop())
     mic.current = null
+    setMicStream(null)
     stopPlayback()
     void context.current?.close().catch(() => undefined)
     context.current = null
@@ -617,6 +621,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
         mic.current = stream
+        setMicStream(stream)
         const ctx = new AudioContext({ sampleRate: SAMPLE_RATE })
         context.current = ctx
         if (localLiveAgent()) {
@@ -779,7 +784,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   return (
     <div className={`voice-call live phase-${phase}`} role="region" aria-label={t('Voice call')}>
       <div className="voice-call-status">
-        <span className="voice-call-orb" />
+        <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
         <div className="voice-call-words">
           <strong>{status}</strong>
           {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{t('Local Live')}</span>}
