@@ -8584,3 +8584,30 @@ button.secondary.danger {
   padding: 28px 12px;
   text-align: center;
 }
+
+/* In messages: chats Hermes found by what was said in them. */
+.content-sect {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.content-spinner .ico {
+  width: 12px;
+  height: 12px;
+  animation: spin 1s linear infinite;
+}
+
+.content-snippet {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+
+.content-snippet mark {
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+}

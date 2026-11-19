@@ -1025,6 +1025,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     void chatAction(row, null)
                 }}
                 onProjects={() => setProjectsOpen(true)}
+                searchScope={markHost}
                 onPinnedReplies={pins.length ? () => setPinSheet({ scope: 'all' }) : undefined}
                 moveTargets={moveTargets}
                 onMove={(row, target) => void moveToProject(row, target)}

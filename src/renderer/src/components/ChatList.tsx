@@ -6,6 +6,8 @@ import { t } from '@shared/i18n'
 import { Icon } from './icons'
 import { filterRows, isStarred, isUnread, type ChatFilter, type ChatMarks } from '../state/chatMarks'
 import { sourceName, sourcesIn, type ChatSource } from '../state/chatSources'
+import { contentRows, useContentSearch } from '../state/contentSearch'
+import { gateway } from '../gateway'
 
 const FILTERS: { value: ChatFilter; label: () => string }[] = [
   { value: 'all', label: () => t('All') },
@@ -37,6 +39,8 @@ interface Props {
   onToggleRead?: (row: ChatRow) => void
   /** Opens Projects, the phone's Chats › Projects. */
   onProjects?: () => void
+  /** The host, so a Hermes without message search isn't asked again. */
+  searchScope?: string
   /** Opens every pinned reply; left out while there are none. */
   onPinnedReplies?: () => void
   /** Move to Project: the projects a chat can move into (its profile's, each with its folder), read when asked. */
@@ -52,6 +56,10 @@ export interface MoveTarget {
   title: string
   path: string
 }
+
+/** Profiles In messages asks at most, one request each. */
+const MAX_SEARCH_PROFILES = 8
+const searchHttp = (path: string) => gateway.http('GET', path)
 
 const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
 
@@ -74,6 +82,7 @@ export function ChatList({
   onToggleRead,
   onProjects,
   onPinnedReplies,
+  searchScope = '',
   moveTargets,
   onMove,
   onOpenBeside,
@@ -117,14 +126,24 @@ export function ChatList({
     setRenaming(null)
     if (save && row && title && title !== row.title) onRename?.(row, title)
   }
-  const sections = useMemo(() => {
+  const { sections, listed, allowed } = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
     const marked = marks ? filterRows(inProfile, filter, marks, runningIds) : inProfile
     const sourced = source ? marked.filter(r => (r.sourceKind ?? 'chat') === source) : marked
     const filtered = q ? sourced.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : sourced
-    return sectionRows(filtered)
+    return { sections: sectionRows(filtered), listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined }
   }, [rows, query, profile, marks, filter, runningIds, source])
+  // In messages: Hermes' full-text search, on the profile shown or every profile the list holds.
+  const searchProfiles = useMemo(
+    () => (profile ? [profile] : [...new Set((rows ?? []).map(r => r.profile || 'default'))].sort().slice(0, MAX_SEARCH_PROFILES)),
+    [rows, profile]
+  )
+  const content = useContentSearch(query, rows ? searchProfiles : [], searchScope, searchHttp)
+  const contentMatches = useMemo(
+    () => (content.hits.length ? contentRows(content.hits, listed, rows ?? [], allowed).filter(m => !profile || sameProfile(m.row, profile)) : []),
+    [content.hits, listed, rows, allowed, profile]
+  )
   // The Sources filter shows once chats come from more than one place.
   const sources = useMemo(() => sourcesIn(rows ?? []), [rows])
   useEffect(() => {
@@ -290,6 +309,35 @@ export function ChatList({
             })}
           </div>
         ))}
+        {query.trim() && (contentMatches.length || content.searching) ? (
+          <div role="group" aria-label={t('In messages')}>
+            <div className="sect content-sect">
+              {t('In messages')}
+              {content.searching ? (
+                <span className="content-spinner" role="status" aria-label={t('Searching messages')}>
+                  <Icon name="spinner" />
+                </span>
+              ) : null}
+            </div>
+            {contentMatches.map(match => (
+              <div key={match.key} className="row-wrap">
+                <button className="row" aria-current={match.row.id === selectedId ? 'true' : undefined} onClick={() => onSelect(match.row)}>
+                  <span className="row-top">
+                    <span className="row-title">{match.row.title || t('Untitled conversation')}</span>
+                    <span className="meta row-time">{timeLabel(match.row.activeAt)}</span>
+                  </span>
+                  <span className="meta content-snippet">
+                    {botName(match.row) ? `${botName(match.row)} · ` : ''}
+                    {match.snippet.map((run, i) => (run.match ? <mark key={i}>{run.text}</mark> : <span key={i}>{run.text}</span>))}
+                  </span>
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {rows && query.trim() && !sections.length && !contentMatches.length && !content.searching ? (
+          <div className="empty">{t('No matching conversations')}</div>
+        ) : null}
       </div>
       {menu ? (
         <div
