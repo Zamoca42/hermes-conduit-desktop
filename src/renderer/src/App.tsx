@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
+import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
@@ -82,6 +83,8 @@ import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
+import { MultiplayerPage } from './components/MultiplayerPage'
+import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
 import { AskDashboardSetting, DashboardChoice } from './components/AskDashboard'
@@ -1771,8 +1774,24 @@ function Settings({
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
   const [page, setPage] = useState<
-    'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance'
+    'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance' | 'multiplayer'
   >('main')
+  // Multiplayer shows while the host's plugin keeps Links.
+  const [linksServed, setLinksServed] = useState(false)
+  useEffect(() => {
+    if (status.phase !== 'open') return
+    let live = true
+    gateway
+      .http('GET', PLUGIN_STATUS_PATH, undefined, 8_000)
+      .then(body => {
+        const plugin = pluginStatus(body)
+        if (live) setLinksServed(plugin.state === 'reported' && plugin.capabilities.includes(ROOM_LINKS_CAPABILITY))
+      })
+      .catch(() => undefined)
+    return () => {
+      live = false
+    }
+  }, [status.phase, status.url])
   // The apps card's ask, taken once: Capabilities opens on Browse Apps with its picks.
   const [apps, setApps] = useState<AppsRequest | null>(null)
   useEffect(() => {
@@ -1797,6 +1816,12 @@ function Settings({
     return (
       <main className="settings">
         <AppearancePage onBack={() => setPage('main')} />
+      </main>
+    )
+  if (page === 'multiplayer' && status.url)
+    return (
+      <main className="settings">
+        <MultiplayerPage host={status.url} onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'vault')
@@ -1963,6 +1988,16 @@ function Settings({
             {t('Version, updates and what it does here')}
           </button>
         </dd>
+        {linksServed ? (
+          <>
+            <dt>{t('Multiplayer')}</dt>
+            <dd>
+              <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('multiplayer')}>
+                {t("Rooms with other people's agents")}
+              </button>
+            </dd>
+          </>
+        ) : null}
         <dt>{t('Passwords & logins')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('vault')}>
