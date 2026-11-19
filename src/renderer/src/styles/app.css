@@ -239,6 +239,7 @@ a:hover {
 
 .chatlist {
   flex: none;
+  position: relative;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--line);
@@ -9046,4 +9047,29 @@ button.secondary.danger {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Updating… over the Chats list while rows that may be out of date are read again (issue 2706). */
+.updating-capsule {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translate(-50%, 6px);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--composer);
+  color: var(--text-2);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+.updating-capsule.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }

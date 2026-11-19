@@ -1149,6 +1149,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               <ChatList
                 rows={listedRows}
                 error={list.error}
+                updating={list.updating}
                 selectedId={chat.storedId ?? selected.id}
                 runningIds={runningIds}
                 waitingIds={waitingIds}

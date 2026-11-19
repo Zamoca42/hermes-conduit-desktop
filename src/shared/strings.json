@@ -30434,6 +30434,21 @@
     "zh-Hans": "正在更新计划",
     "zh-Hant": "正在更新計畫"
   },
+  "Updating…": {
+    "de": "Wird aktualisiert …",
+    "es": "Actualizando…",
+    "fr": "Mise à jour…",
+    "id": "Memperbarui…",
+    "it": "Aggiornamento…",
+    "ja": "更新中…",
+    "ko": "업데이트 중…",
+    "pl": "Aktualizowanie…",
+    "pt-BR": "Atualizando…",
+    "ru": "Обновление…",
+    "tr": "Güncelleniyor…",
+    "zh-Hans": "更新中…",
+    "zh-Hant": "正在更新…"
+  },
   "Urgent": {
     "de": "Dringend",
     "es": "Urgente",
