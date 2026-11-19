@@ -5894,6 +5894,21 @@
     "zh-Hans": "严重",
     "zh-Hant": "危急"
   },
+  "Cron": {
+    "de": "Cron",
+    "es": "Cron",
+    "fr": "Cron",
+    "id": "Cron",
+    "it": "Cron",
+    "ja": "Cron",
+    "ko": "크론",
+    "pl": "Cron",
+    "pt-BR": "Cron",
+    "ru": "Cron",
+    "tr": "Cron",
+    "zh-Hans": "定时任务",
+    "zh-Hant": "排程"
+  },
   "Custom": {
     "de": "Eigene",
     "es": "Personalizado",
@@ -28588,6 +28603,21 @@
     "tr": "Web aramaları",
     "zh-Hans": "网页查询",
     "zh-Hant": "網路查詢"
+  },
+  "Webhook": {
+    "de": "Webhook",
+    "es": "Webhook",
+    "fr": "Webhook",
+    "id": "Webhook",
+    "it": "Webhook",
+    "ja": "Webhook",
+    "ko": "웹훅",
+    "pl": "Webhook",
+    "pt-BR": "Webhook",
+    "ru": "Вебхук",
+    "tr": "Webhook",
+    "zh-Hans": "Webhook",
+    "zh-Hant": "Webhook"
   },
   "Weekdays": {
     "de": "Werktags",

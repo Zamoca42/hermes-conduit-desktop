@@ -5,6 +5,7 @@
  */
 import { locale, t } from '../../../shared/i18n'
 import { cleanTitle, previewText } from './text'
+import { classifySource, type ChatSource } from './chatSources'
 
 export interface ChatRow {
   id: string
@@ -17,6 +18,8 @@ export interface ChatRow {
   /** Hermes' shared read flag (Hermes Desktop's Mark as unread sets it). */
   unread?: boolean
   source?: string
+  /** Where the chat came from, for its badge and the Sources filter. */
+  sourceKind?: ChatSource
   messageCount?: number
 }
 
@@ -107,6 +110,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
       pinned: obj.pinned === true || obj.pinned === 1,
       unread: obj.unread === true || obj.unread === 1 || undefined,
       source,
+      sourceKind: classifySource(obj),
       messageCount: typeof obj.message_count === 'number' ? obj.message_count : undefined
     })
   }

@@ -361,6 +361,19 @@ a:hover {
   overflow: visible;
 }
 
+/* Where a chat came from, when that isn't a chat here or in Hermes Desktop. */
+.row-source {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--field);
+  color: var(--text-2);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
 .row[aria-current='true'] .row-time {
   color: var(--accent-time);
 }
@@ -2971,10 +2984,9 @@ html[data-window='quick'] body {
 
 .filter-chips {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   padding: 0 12px 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
   flex: none;
 }
 
@@ -2995,6 +3007,26 @@ html[data-window='quick'] body {
 }
 
 .filter-chips button.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* The Sources filter, once chats come from more than one place. */
+.filter-chips .source-filter {
+  flex: none;
+  height: 26px;
+  max-width: 140px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.filter-chips .source-filter.on {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
