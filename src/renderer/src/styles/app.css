@@ -9372,3 +9372,16 @@ button.secondary.danger {
   border-radius: 0;
   padding-top: 10px;
 }
+
+/* A chat in a window of its own: the pane, filling the window. */
+.chat-window-page {
+  height: 100vh;
+  display: flex;
+  background: var(--canvas);
+}
+.beside-chat.chat-window {
+  width: auto;
+  flex: 1;
+  border-left: none;
+  background: var(--canvas);
+}

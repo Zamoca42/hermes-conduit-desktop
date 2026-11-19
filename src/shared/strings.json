@@ -16184,6 +16184,21 @@
     "zh-Hans": "上移",
     "zh-Hant": "上移"
   },
+  "Moves this chat to a window of its own, and closes the pane.": {
+    "de": "Verschiebt diesen Chat in ein eigenes Fenster und schließt den Bereich.",
+    "es": "Mueve este chat a una ventana propia y cierra el panel.",
+    "fr": "Déplace cette discussion dans sa propre fenêtre et ferme le panneau.",
+    "id": "Memindahkan chat ini ke jendelanya sendiri, dan menutup panel.",
+    "it": "Sposta questa chat in una finestra separata e chiude il riquadro.",
+    "ja": "このチャットを専用のウインドウに移し、パネルを閉じます。",
+    "ko": "이 채팅을 별도 윈도우로 옮기고 패널을 닫습니다.",
+    "pl": "Przenosi ten czat do osobnego okna i zamyka panel.",
+    "pt-BR": "Move esta conversa para uma janela própria e fecha o painel.",
+    "ru": "Переносит этот чат в отдельное окно и закрывает панель.",
+    "tr": "Bu sohbeti kendi penceresine taşır ve paneli kapatır.",
+    "zh-Hans": "将此聊天移到单独的窗口，并关闭面板。",
+    "zh-Hant": "將此聊天移到單獨的視窗，並關閉面板。"
+  },
   "Mute microphone": {
     "de": "Mikrofon stummschalten",
     "es": "Silenciar micrófono",
@@ -18643,6 +18658,36 @@
     "tr": "Conduit’te aç",
     "zh-Hans": "在 Conduit 中打开",
     "zh-Hant": "在 Conduit 中打開"
+  },
+  "Open in Main Window": {
+    "de": "Im Hauptfenster öffnen",
+    "es": "Abrir en la ventana principal",
+    "fr": "Ouvrir dans la fenêtre principale",
+    "id": "Buka di Jendela Utama",
+    "it": "Apri nella finestra principale",
+    "ja": "メインウインドウで開く",
+    "ko": "기본 윈도우에서 열기",
+    "pl": "Otwórz w oknie głównym",
+    "pt-BR": "Abrir na janela principal",
+    "ru": "Открыть в главном окне",
+    "tr": "Ana Pencerede Aç",
+    "zh-Hans": "在主窗口中打开",
+    "zh-Hant": "在主視窗中打開"
+  },
+  "Open in New Window": {
+    "de": "In neuem Fenster öffnen",
+    "es": "Abrir en una ventana nueva",
+    "fr": "Ouvrir dans une nouvelle fenêtre",
+    "id": "Buka di Jendela Baru",
+    "it": "Apri in una nuova finestra",
+    "ja": "新しいウインドウで開く",
+    "ko": "새 윈도우에서 열기",
+    "pl": "Otwórz w nowym oknie",
+    "pt-BR": "Abrir em uma nova janela",
+    "ru": "Открыть в новом окне",
+    "tr": "Yeni Pencerede Aç",
+    "zh-Hans": "在新窗口中打开",
+    "zh-Hant": "在新視窗中打開"
   },
   "Open private-network addresses in a local browser even when a cloud browser is set up.": {
     "de": "Adressen im privaten Netzwerk in einem lokalen Browser öffnen, auch wenn ein Cloud-Browser eingerichtet ist.",
