@@ -91,7 +91,7 @@ describe('sign-in methods', () => {
     expect(await reason(failing('ERR_TLS_CERT_ALTNAME_INVALID'))).toMatch(/isn’t issued for this address/)
   })
 
-  it('points a certificate failure to HTTPS & certificates, and others to no troubleshooting page', async () => {
+  it('points a certificate failure to HTTPS & certificates, and a network failure to Network & reachability', async () => {
     const failing = (code: string) => async (): Promise<Response> => {
       throw new TypeError('fetch failed', { cause: Object.assign(new Error(code), { code }) })
     }
@@ -102,8 +102,10 @@ describe('sign-in methods', () => {
     expect(await help('SELF_SIGNED_CERT_IN_CHAIN')).toBe('tls')
     expect(await help('CERT_HAS_EXPIRED')).toBe('tls')
     expect(await help('ERR_TLS_CERT_ALTNAME_INVALID')).toBe('tls')
-    expect(await help('ENOTFOUND')).toBeUndefined()
-    expect(await help('ECONNREFUSED')).toBeUndefined()
+    expect(await help('ENOTFOUND')).toBe('network')
+    expect(await help('ECONNREFUSED')).toBe('network')
+    expect(await help('ETIMEDOUT')).toBe('network')
+    expect(await help('SOMETHING_ELSE')).toBeUndefined()
   })
 
   it('says a 401 or 403 on the status read is something in front of the dashboard refusing this computer', async () => {
@@ -111,6 +113,7 @@ describe('sign-in methods', () => {
       const { fetchImpl } = dashboard({ '/api/status': () => new Response('nope', { status }) })
       const probe = await probeHost('example.com', fetchImpl)
       expect(probe.ok ? '' : probe.error).toMatch(/refused this device/)
+      expect(probe.ok ? undefined : probe.help).toBe('network')
     }
   })
 })

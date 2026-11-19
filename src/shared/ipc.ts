@@ -23,12 +23,12 @@ export type HostProbe =
       error: string
       /** This computer doesn't trust the server's certificate: the address, for Install this server's certificate. */
       untrusted?: string
-      /** Which troubleshooting page fits the failure: HTTPS & certificates or Cloudflare Access. */
+      /** Which troubleshooting page fits the failure: Network & reachability, HTTPS & certificates or Cloudflare Access. */
       help?: TroubleshootingTopic
     }
 
 /** The phone's troubleshooting topics a sign-in failure can point to. */
-export type TroubleshootingTopic = 'tls' | 'cloudflare'
+export type TroubleshootingTopic = 'network' | 'tls' | 'cloudflare'
 
 /** The root certificate a server sends, read for the person to check and install. */
 export type CertificateCheck = { ok: true; fingerprint: string; name: string } | { ok: false; reason: 'noRoot' | 'unreachable' | 'notHttps' }
