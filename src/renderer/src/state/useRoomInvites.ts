@@ -124,6 +124,7 @@ export function useRoomInvites(connected: boolean, host: string) {
   )
 
   return {
+    capabilities,
     served,
     freeBusy: capabilities.includes(FREE_BUSY_CAPABILITY),
     invites: served && invites ? invites : [],

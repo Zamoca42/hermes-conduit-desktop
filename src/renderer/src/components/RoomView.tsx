@@ -19,6 +19,8 @@ import {
 import { RoomSettings } from "./RoomSettings";
 import { Fragment } from "react";
 import { useRoom, type RoomApprovalAnswer } from "../state/useGroups";
+import { useRoomCopy } from "../state/useRoomCopies";
+import { copyHost, copyLine, copyReadOnly, isOver, type RoomCopy } from "../state/roomCopies";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
@@ -42,7 +44,15 @@ interface Props {
   canContinueDiscussions?: boolean;
   /** The host takes `groups.approve`: Run or Reject on a member's held tool call. */
   canApprove?: boolean;
+  /** A room someone else hosts, read from this Hermes' copy of it: no composer, its people's messages under their names. */
+  copy?: RoomCopy;
+  /** Reads the copies again, for the copy's status. */
+  onRefreshCopies?: () => Promise<void>;
+  /** Deletes the copy once it's over, when the plugin can. */
+  onDeleteCopy?: () => Promise<void>;
 }
+
+const noRefresh = async () => undefined;
 
 /** A member's tool call the room holds for the user, above the composer: who asks, why, the command, Run and Reject. */
 function RoomApprovalCard({
@@ -149,17 +159,23 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove }: Props) {
-  const { events, status, loading, error, pending, send, stop, saveContext, continueDiscussion, approvals, answers, approve } = useRoom(
-    room,
-    connected,
-  );
-  const items = useMemo(() => roomItems(room, events), [room, events]);
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy }: Props) {
+  // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
+  const hosted = useRoom(copy ? null : room, connected);
+  const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
+  const { pending, send, stop, saveContext, continueDiscussion, approvals, answers, approve } = hosted;
+  const { events, status, loading, error } = copy ? copied : hosted;
+  const host = copy ? copy.from.trim() || t("The host") : "";
+  const copyYou = copied.you;
+  const items = useMemo(() => roomItems(room, events, copy ? { host, you: copyYou } : undefined), [room, events, copy, host, copyYou]);
+  const [deleting, setDeleting] = useState<"asking" | "deleting" | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const botFor = (profile?: string) => bots.find((b) => b.name === profile);
-  const memberBot = (memberId: string) =>
-    botFor(
-      room.members.find((m) => m.memberId === memberId)?.profile ?? memberId,
-    );
+  const memberBot = (memberId: string) => {
+    const member = room.members.find((m) => m.memberId === memberId);
+    // Another Hermes' agent is never one of yours, whatever its id.
+    return member?.peer ? undefined : botFor(member?.profile ?? memberId);
+  };
   const busyNames = status.busy.map(
     (id) => room.members.find((m) => m.memberId === id)?.displayName ?? id,
   );
@@ -177,7 +193,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
   const replies = useMemo(() => {
     const map = new Map<string, { author: string; quote: string; message: string }>();
     for (const item of items) {
-      if (item.kind !== "user") continue;
+      if (item.kind !== "user" && item.kind !== "person") continue;
       const reply = parseRoomReply(item.text);
       if (reply) map.set(item.key, reply);
     }
@@ -217,7 +233,9 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
     setRecipients((list) => (list.some((h) => h.toLowerCase() === handle.toLowerCase()) ? list : [...list, handle]));
     pane.current?.querySelector<HTMLTextAreaElement>(".composer textarea")?.focus();
   };
-  const canPick = connected && !status.disbanded;
+  const canPick = connected && !status.disbanded && !copy;
+  // A copy's pictures are the host's: not readable from this Hermes' gateway, so they show by name.
+  const shownFiles = (files: ShownFile[]) => (copy ? files.map((f) => ({ ...f, attachmentId: undefined })) : files);
   return (
     <main className="chat room" ref={pane}>
       <div className="chat-head">
@@ -225,7 +243,9 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           <RoomFaces room={room} bots={bots} size={20} />
           <span className="room-title-name">{room.name}</span>
           <span className="room-title-count">
-            {approvals.length
+            {copy
+              ? copyLine(copy)
+              : approvals.length
               ? t("Approval needed")
               : choosing
               ? choosing.lead
@@ -236,6 +256,20 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                 : `${names.length} bots`}
           </span>
         </div>
+        {copy && onDeleteCopy && isOver(copy) ? (
+          <button
+            className="chat-head-button"
+            title={t("Delete")}
+            aria-label={t("Delete")}
+            disabled={deleting === "deleting"}
+            onClick={() => {
+              setDeleteError(null);
+              setDeleting("asking");
+            }}
+          >
+            <Icon name="trash" />
+          </button>
+        ) : null}
         {showsSettings ? (
           <button
             className="chat-head-button"
@@ -266,6 +300,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
               >
                 {bot ? <BotAvatar bot={bot} size={16} /> : null}
                 <span className="room-pill-name">{name}</span>
+                {member.owner ? <span className="room-pill-owner">{member.owner}</span> : null}
                 {member.memberId === lead ? (
                   <span className="room-pill-crown" title={t("Lead")} aria-label={t("Lead")}>
                     ♛
@@ -299,14 +334,40 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
         <div className="transcript-inner">
           {loading ? <div className="notice">{t('Loading…')}</div> : null}
           {error ? <div className="notice error">{error}</div> : null}
-          {status.disbanded ? (
+          {deleting === "asking" || deleting === "deleting" ? (
+            <div className="notice">
+              <strong>{t("Delete this room?")}</strong>{" "}
+              {t("Your copy of it and your agents' chats for it are deleted from your Hermes. The others keep theirs.")}
+              <span className="notice-action">
+                <button
+                  className="ask-btn danger"
+                  disabled={deleting === "deleting"}
+                  onClick={() => {
+                    setDeleting("deleting");
+                    void onDeleteCopy?.()
+                      .catch((e) => setDeleteError(t("Could not delete this room: {reason}", { reason: e instanceof Error ? e.message : String(e) })))
+                      .finally(() => setDeleting(null));
+                  }}
+                >
+                  {t("Delete")}
+                </button>
+                <button className="ask-btn" disabled={deleting === "deleting"} onClick={() => setDeleting(null)}>
+                  {t("Cancel")}
+                </button>
+              </span>
+            </div>
+          ) : null}
+          {deleteError ? <div className="notice error">{deleteError}</div> : null}
+          {copy ? (
+            isOver(copy) ? <div className="notice">{`${copyHost(copy)} · ${copyLine(copy)}`}</div> : null
+          ) : status.disbanded ? (
             <div className="notice">{t('This group chat was disbanded.')}</div>
           ) : null}
           {!loading && !error && items.length === 0 && pending.length === 0 ? (
             <div className="welcome">
               <h2>{room.name}</h2>
               <span>
-                {t('Everyone here reads what you send. Mention a bot with @ to ask just them.')}
+                {copy ? copyReadOnly(copy) : t('Everyone here reads what you send. Mention a bot with @ to ask just them.')}
               </span>
             </div>
           ) : null}
@@ -335,7 +396,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                         onJump={jump(replies.get(item.key)!.quote)}
                       />
                     ) : null}
-                    {item.files ? <FileChips files={item.files} roomId={room.roomId} eventId={item.key} /> : null}
+                    {item.files ? <FileChips files={shownFiles(item.files)} roomId={room.roomId} eventId={item.key} /> : null}
                     {ownWords(item).trim() ? <div className="bubble">{ownWords(item)}</div> : null}
                     <span className="time">{clock(item.at)}</span>
                     {ownWords(item).trim() ? (
@@ -344,6 +405,28 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                         menu={[{ label: t('Quote'), onSelect: () => setQuote(quoteRequest({ text: blockquote(ownWords(item)) })) }]}
                       />
                     ) : null}
+                  </div>
+                ) : item.kind === "person" ? (
+                  <div key={item.key} className="room-member room-person" data-key={item.key}>
+                    <span className="bot-avatar blank room-person-face" style={{ width: 30, height: 30 }} aria-hidden="true">
+                      {item.name.trim().charAt(0).toUpperCase()}
+                    </span>
+                    <div className="room-member-body">
+                      <div className="room-member-name">
+                        {item.name}
+                        <span className="time">{clock(item.at)}</span>
+                      </div>
+                      {item.files ? <FileChips files={shownFiles(item.files)} roomId={room.roomId} eventId={item.key} /> : null}
+                      {ownWords(item).trim() ? (
+                        <div className="assistant">
+                          <div className="bubble person-bubble">{ownWords(item)}</div>
+                          <MessageActions
+                            copy={ownWords(item)}
+                            menu={[{ label: t('Quote'), onSelect: () => setQuote(quoteRequest({ reply: { author: item.name, text: ownWords(item) } })) }]}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 ) : item.kind === "member" ? (
                   <div key={item.key} className="room-member" data-key={item.key}>
@@ -492,6 +575,12 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           })}
         </div>
       ) : null}
+      {copy ? (
+        <div className="room-read-only" role="note">
+          <Icon name="eye" />
+          <span>{copyReadOnly(copy)}</span>
+        </div>
+      ) : (
       <Composer
         placeholder={t('Message {name}…', { name: room.name })}
         running={canStop && status.working}
@@ -509,6 +598,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
         wrapReply={(reply, draft) => roomReplyText(reply.text, reply.author, draft)}
         address={(draft) => addressing(draft, picked, room.members)}
       />
+      )}
     </main>
   );
 }
