@@ -23,6 +23,7 @@ import {
 } from '../state/botEditor'
 import { groupModels } from '../state/models'
 import { starterFace } from '../state/starterFaces'
+import { movingPicture, mayMove, TooLargeError } from '../state/movingPicture'
 import { avatarChanged, useAvatar } from '../state/useBots'
 import { SummaryHost } from '../state/useStepSummaries'
 import { readPicks, savePick, subscribePicks } from '../state/glowColors'
@@ -96,6 +97,7 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
   const [error, setError] = useState<string | null>(null)
   const [warning, setWarning] = useState<string | null>(null)
   const picker = useRef<HTMLInputElement>(null)
+  const movingPicker = useRef<HTMLInputElement>(null)
   const stored = useAvatar(bot.name, bot.hasAvatar)
   const host = useContext(SummaryHost)
   const glowOf = useContext(GlowContext)
@@ -133,13 +135,19 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
   const modelValue = draft.provider && draft.model ? `${draft.provider}\n${draft.model}` : ''
   const listed = groups.some(group => group.slug === draft.provider && group.models.includes(draft.model))
 
-  const pickPicture = async (file: File | undefined) => {
+  const [making, setMaking] = useState(false)
+  const pickPicture = async (file: File | undefined, moving = false) => {
     if (!file) return
+    setMaking(true)
     try {
-      update({ picture: await normalizedPicture(file), removePicture: false })
+      // Choose GIF or Video: a picture that moves, or a video, becomes a looping one; a still is used as a photo.
+      const animation = moving && mayMove(file) ? await movingPicture(file) : null
+      update({ picture: animation ?? (await normalizedPicture(file)), removePicture: false })
       setError(null)
-    } catch {
-      setError(t('That picture could not be used.'))
+    } catch (e) {
+      setError(e instanceof TooLargeError ? t('That animation is too large. Try a shorter or simpler clip.') : t('That picture could not be used.'))
+    } finally {
+      setMaking(false)
     }
   }
 
@@ -284,8 +292,11 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
               {picture ? <img src={picture} alt="" draggable={false} /> : <StarterFaceArt face={face} background={color} />}
             </span>
             <div className="pset-actions">
-              <button className="secondary" onClick={() => picker.current?.click()} disabled={saving}>
+              <button className="secondary" onClick={() => picker.current?.click()} disabled={saving || making}>
                 {t('Choose Photo')}
+              </button>
+              <button className="secondary" onClick={() => movingPicker.current?.click()} disabled={saving || making}>
+                {making ? t('Working…') : t('Choose GIF or Video')}
               </button>
               {draft.picture || (bot.hasAvatar && !draft.removePicture) ? (
                 <button className="secondary" onClick={() => update({ picture: undefined, removePicture: bot.hasAvatar })} disabled={saving}>
@@ -307,7 +318,18 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
                 e.target.value = ''
               }}
             />
+            <input
+              ref={movingPicker}
+              type="file"
+              accept="image/gif,image/webp,image/png,video/mp4,video/quicktime,video/webm"
+              hidden
+              onChange={e => {
+                void pickPicture(e.target.files?.[0], true)
+                e.target.value = ''
+              }}
+            />
           </div>
+          <p className="meta">{t('A GIF, a short video or a picture brought to life moves on Bots Home and in Hermes Desktop.')}</p>
         </section>
 
         <section className="pset-section">

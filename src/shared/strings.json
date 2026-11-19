@@ -179,6 +179,21 @@
     "zh-Hans": "Cloudflare Access 服务令牌需要客户端 ID 和密钥。",
     "zh-Hant": "Cloudflare Access 服務權杖需要用戶端 ID 和密鑰。"
   },
+  "A GIF, a short video or a picture brought to life moves on Bots Home and in Hermes Desktop.": {
+    "de": "Ein GIF, ein kurzes Video oder ein zum Leben erwecktes Bild bewegt sich auf Bots Home und in Hermes Desktop.",
+    "es": "Un GIF, un vídeo corto o una imagen a la que se da vida se mueve en Bots Home y en Hermes Desktop.",
+    "fr": "Un GIF, une courte vidéo ou une image à laquelle on donne vie s’anime sur Bots Home et dans Hermes Desktop.",
+    "id": "GIF, video pendek, atau gambar yang dihidupkan akan bergerak di Bots Home dan di Hermes Desktop.",
+    "it": "Una GIF, un breve video o un’immagine a cui hai dato vita si muove su Bots Home e in Hermes Desktop.",
+    "ja": "GIF、短いビデオ、または命を吹き込んだ画像は、Bots HomeとHermes Desktopで動きます。",
+    "ko": "GIF, 짧은 비디오 또는 생동감을 넣은 사진은 Bots Home과 Hermes Desktop에서 움직입니다.",
+    "pl": "GIF, krótkie wideo lub ożywione zdjęcie poruszają się na Bots Home i w Hermes Desktop.",
+    "pt-BR": "Um GIF, um vídeo curto ou uma imagem que ganhou vida se move no Bots Home e no Hermes Desktop.",
+    "ru": "GIF, короткое видео или оживлённое изображение двигаются на Bots Home и в Hermes Desktop.",
+    "tr": "Bir GIF, kısa bir video veya canlandırılmış bir resim Bots Home'da ve Hermes Desktop'ta hareket eder.",
+    "zh-Hans": "GIF、短视频或动起来的图片会在 Bots Home 和 Hermes Desktop 中动起来。",
+    "zh-Hant": "GIF、短片或動起來的圖片會在 Bots Home 和 Hermes Desktop 中動起來。"
+  },
   "A Hermes terminal is still replying in this chat. Try again when it finishes.": {
     "de": "Ein Hermes-Terminal antwortet noch in diesem Chat. Versuche es erneut, wenn die Antwort fertig ist.",
     "es": "Un terminal de Hermes sigue respondiendo en este chat. Vuelve a intentarlo cuando termine.",
@@ -3958,6 +3973,21 @@
     "tr": "Neşeli",
     "zh-Hans": "愉快",
     "zh-Hant": "開朗"
+  },
+  "Choose GIF or Video": {
+    "de": "GIF oder Video auswählen",
+    "es": "Elegir GIF o vídeo",
+    "fr": "Choisir un GIF ou une vidéo",
+    "id": "Pilih GIF atau Video",
+    "it": "Scegli GIF o video",
+    "ja": "GIFまたはビデオを選択",
+    "ko": "GIF 또는 비디오 선택",
+    "pl": "Wybierz GIF lub wideo",
+    "pt-BR": "Escolher GIF ou vídeo",
+    "ru": "Выбрать GIF или видео",
+    "tr": "GIF veya Video Seç",
+    "zh-Hans": "选取 GIF 或视频",
+    "zh-Hant": "選擇 GIF 或影片"
   },
   "Choose Photo": {
     "de": "Foto auswählen",
@@ -27088,6 +27118,21 @@
     "tr": "Gönderilecek mesaj",
     "zh-Hans": "要发送的消息",
     "zh-Hant": "要傳送的訊息"
+  },
+  "That animation is too large. Try a shorter or simpler clip.": {
+    "de": "Diese Animation ist zu groß. Versuche einen kürzeren oder einfacheren Clip.",
+    "es": "Esa animación es demasiado grande. Prueba con un clip más corto o más sencillo.",
+    "fr": "Cette animation est trop lourde. Essayez un extrait plus court ou plus simple.",
+    "id": "Animasi itu terlalu besar. Coba klip yang lebih pendek atau lebih sederhana.",
+    "it": "Quell'animazione è troppo grande. Prova una clip più breve o più semplice.",
+    "ja": "そのアニメーションは大きすぎます。もっと短いか、シンプルなクリップを試してください。",
+    "ko": "애니메이션이 너무 커요. 더 짧거나 단순한 클립을 사용해 보세요.",
+    "pl": "Ta animacja jest za duża. Spróbuj krótszego lub prostszego klipu.",
+    "pt-BR": "Essa animação é grande demais. Tente um clipe mais curto ou mais simples.",
+    "ru": "Эта анимация слишком большая. Попробуйте более короткий или простой клип.",
+    "tr": "Bu animasyon çok büyük. Daha kısa veya daha basit bir klip deneyin.",
+    "zh-Hans": "这个动画太大了。请换一个更短或更简单的片段。",
+    "zh-Hant": "這個動畫太大了。請換一個更短或更簡單的片段。"
   },
   "That call's transcript is no longer available.": {
     "de": "Das Transkript dieses Anrufs ist nicht mehr verfügbar.",

@@ -1,5 +1,6 @@
+import { isMovingDataUrl, stillOf, stillReady } from './movingPicture'
 import { gateway } from '../gateway'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { avatarUrl, rosterFromProfiles, type Bot } from './bots'
 
 /** The bots roster, read when the connection opens, when profiles change and when a turn ends. */
@@ -94,4 +95,37 @@ export function useAvatar(name: string, hasAvatar: boolean): string | null {
     }
   }, [name, hasAvatar, version])
   return url
+}
+
+const reducedMotion = () => {
+  try {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  } catch {
+    return false
+  }
+}
+
+/**
+ * The picture a face shows: a moving one plays only where `moving` (and
+ * not with Reduce Motion); elsewhere its first frame, as the phone's rows,
+ * transcript and menus keep it.
+ */
+export function useFace(url: string | null, moving: boolean): string | null {
+  const plays = moving && !reducedMotion()
+  const moves = useMemo(() => !!url && isMovingDataUrl(url), [url])
+  const animated = !!url && !plays && moves
+  const [still, setStill] = useState<{ of: string; url: string } | null>(null)
+  useEffect(() => {
+    if (!animated || !url) return
+    let live = true
+    void stillOf(url).then(frame => {
+      if (live) setStill({ of: url, url: frame })
+    })
+    return () => {
+      live = false
+    }
+  }, [animated, url])
+  if (!animated) return url
+  // Nothing until the first frame is ready, so a row never flashes the moving picture.
+  return still?.of === url ? still.url : (stillReady(url) ?? null)
 }
