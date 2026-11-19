@@ -546,18 +546,32 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     }
   }, [profile])
 
-  /** Runs a typed `/command`: Conduit's own, else Hermes' `slash.exec` (`command.dispatch` when that turns it down). */
+  /**
+   * Runs a typed `/command`: Conduit's own, else Hermes' `slash.exec` (`command.dispatch` when that turns it down).
+   * `botChat`: the chat is a bot's one Bot Chat, which never resets, so `/new` compacts it instead.
+   */
   const command = useCallback(
-    async (text: string, commands: SlashCommand[] = []): Promise<CommandOutcome> => {
-      const typed = text.trim()
-      const { name, arg } = parseSlashCommand(typed)
+    async (text: string, commands: SlashCommand[] = [], options: { botChat?: boolean } = {}): Promise<CommandOutcome> => {
+      const asTyped = text.trim()
+      let typed = asTyped
+      let { name, arg } = parseSlashCommand(typed)
+      /** A Bot Chat's /new says why it compacts, under what was typed; shown after the compaction reads the history again, which would drop it. */
+      let compactNote: string | null = null
+      const showCompactNote = () => compactNote && dispatch({ type: 'output', command: asTyped, text: compactNote, format: 'plain' })
       const output = (body: string, format: 'plain' | 'markdown' = 'plain') => dispatch({ type: 'output', command: typed, text: body, format })
       const failed = (e: unknown) => dispatch({ type: 'notice', text: t('Command failed: {reason}', { reason: message(e) }), tone: 'error' })
       switch (name) {
         case 'new':
         case 'reset':
         case 'clear':
-          return { kind: 'new' }
+          if (!options.botChat) return { kind: 'new' }
+          // A Bot Chat is one continuous conversation: it compacts, whatever follows the command.
+          compactNote = t(
+            'Bot chats never reset, so this one is compacted instead: Hermes carries on from a summary with fresh context, and keeps its memory and skills. For a separate chat, start one in Chats.'
+          )
+          typed = '/compress'
+          ;({ name, arg } = parseSlashCommand(typed))
+          break
         case 'help':
         case 'commands':
           output(helpText(commands), 'markdown')
@@ -635,28 +649,36 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           }
           result = parseSlashResult(raw)
         } catch (e) {
+          showCompactNote()
           failed(e)
           return done
         }
         if (result?.type !== 'alias' || hops >= 2) break
         current = `/${result.target.replace(/^\/+/, '')}${parseSlashCommand(current).arg ? ` ${parseSlashCommand(current).arg}` : ''}`
       }
-      if (!result) return done
+      if (!result) {
+        showCompactNote()
+        return done
+      }
       // /undo, /retry and /compress change the history Hermes keeps: read it again.
       const rewrites = ['undo', 'retry', 'compress', 'compact'].includes(name)
       switch (result.type) {
         case 'alias':
+          showCompactNote()
           return done
         case 'output':
           if (rewrites) await reloadHistory()
+          showCompactNote()
           if (result.output) output(result.output)
           return done
         case 'prefill':
           await reloadHistory()
+          showCompactNote()
           if (result.notice) dispatch({ type: 'notice', text: result.notice })
           return { kind: 'prefill', text: result.message, created }
         case 'send':
           if (rewrites) await reloadHistory()
+          showCompactNote()
           if (result.notice) dispatch({ type: 'notice', text: result.notice })
           await send(result.display ?? result.message, [], result.message)
           return done
@@ -664,6 +686,9 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     },
     [profile, createSession, reloadHistory, send, stop]
   )
+
+  /** A line in the chat from Conduit itself (a refusal, say), as a command's notice shows. */
+  const notice = useCallback((text: string, tone: 'error' | 'info' = 'info') => dispatch({ type: 'notice', text, tone }), [])
 
   /** A `config.set` on this chat's session, its answer's info folded in. */
   /** Words a call put into the running reply (a correction): shown in the chat as the user's, where Hermes keeps them. */
@@ -818,6 +843,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     send,
     stop,
     command,
+    notice,
     setModel,
     setReasoning,
     setSpeed,

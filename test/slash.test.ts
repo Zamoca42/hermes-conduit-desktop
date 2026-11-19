@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { question } from '../src/renderer/src/state/stepSummaries'
 import {
   helpText,
+  isResetCommand,
   looksLikeSlashCommand,
   normalizeCatalog,
   parseSlashCommand,
@@ -20,6 +21,14 @@ describe('a typed slash command', () => {
     expect(looksLikeSlashCommand('run /clean')).toBe(false)
     expect(parseSlashCommand('/Goal  ship it\n  and test ')).toEqual({ name: 'goal', arg: 'ship it\n  and test' })
     expect(parseSlashCommand('/')).toEqual({ name: '', arg: '' })
+  })
+
+  it('knows /new by any of its names, whatever follows it, so a Bot Chat compacts instead', () => {
+    expect(isResetCommand('/new')).toBe(true)
+    expect(isResetCommand('  /Reset fresh start')).toBe(true)
+    expect(isResetCommand('/clear')).toBe(true)
+    expect(isResetCommand('/news')).toBe(false)
+    expect(isResetCommand('start /new')).toBe(false)
   })
 })
 
