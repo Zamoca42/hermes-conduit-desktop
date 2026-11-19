@@ -34,8 +34,8 @@ export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delet
  * looking at (`moving`: Bots Home's portraits, the editor), as on the phone,
  * and never with Reduce Motion; everywhere else it keeps its first frame.
  */
-export function BotAvatar({ bot, size, moving = false }: { bot: Bot; size: number; moving?: boolean }) {
-  const url = useFace(useAvatar(bot.name, bot.hasAvatar), moving);
+export function BotAvatar({ bot, size, moving = false, host }: { bot: Bot; size: number; moving?: boolean; host?: string }) {
+  const url = useFace(useAvatar(bot.name, bot.hasAvatar, host), moving);
   // Its ring is its chat's glow color, as on the phone.
   const color = useContext(GlowContext)(bot.name);
   return (
@@ -441,6 +441,7 @@ export function BotsHome({
                     target={false}
                     onClick={() => onOpenOther?.(other)}
                     badge={badge ? <HostBadgeMark badge={badge} /> : null}
+                    host={other.host}
                     drag={{}}
                   />
                 );
@@ -769,6 +770,8 @@ interface TileProps {
   pill?: ReactNode;
   /** Another combined dashboard's bot: its badge on the face's corner. */
   badge?: ReactNode;
+  /** Another combined dashboard's bot: the host its picture is read from. */
+  host?: string;
   drag: Record<string, unknown>;
 }
 
@@ -783,6 +786,7 @@ function BotTile({
   onMenu,
   pill,
   badge,
+  host,
   drag,
 }: TileProps) {
   return (
@@ -794,7 +798,7 @@ function BotTile({
       {...drag}
     >
       <span className="bot-tile-face">
-        <BotAvatar bot={bot} size={face} moving />
+        <BotAvatar bot={bot} size={face} moving host={host} />
         {target ? (
           <span className="drop-plus" aria-hidden="true">
             <Icon name="plus" />
