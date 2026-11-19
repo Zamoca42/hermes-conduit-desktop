@@ -21,7 +21,7 @@ export interface Board {
 }
 
 /** The kinds drawn here. */
-export const DRAWN = new Set(['stats', 'table', 'checklist', 'list', 'progress', 'callout', 'status', 'steps', 'timeline'])
+export const DRAWN = new Set(['stats', 'table', 'checklist', 'list', 'progress', 'callout', 'status', 'steps', 'timeline', 'contact'])
 
 const object = (value: unknown): Record<string, unknown> | null => {
   if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>
@@ -65,7 +65,8 @@ export function boardFrom(name: string, result: unknown, args: unknown): Board |
 // Readers for a card's parts: the plugin normalized them, so these only keep the shape safe.
 
 export const text = (value: unknown): string => (typeof value === 'string' ? value : typeof value === 'number' ? String(value) : '')
-export const list = (value: unknown): Record<string, unknown>[] => (Array.isArray(value) ? value.filter((v): v is Record<string, unknown> => !!v && typeof v === 'object') : [])
+export const list = (value: unknown): Record<string, unknown>[] =>
+  Array.isArray(value) ? value.filter((v): v is Record<string, unknown> => !!v && typeof v === 'object') : []
 export const strings = (value: unknown): string[] => (Array.isArray(value) ? value.map(text) : [])
 export const number = (value: unknown): number | undefined => (typeof value === 'number' && Number.isFinite(value) ? value : undefined)
 
@@ -76,3 +77,59 @@ export function share(value: unknown, goal: unknown): number {
   if (!g || g <= 0) return Math.max(0, Math.min(1, v > 1 ? v / 100 : v))
   return Math.max(0, Math.min(1, v / g))
 }
+
+/** A contact card's person, after the phone's RichPerson. */
+export interface Person {
+  name: string
+  detail?: string
+  phone?: string
+  email?: string
+  url?: string
+  address?: string
+  note?: string
+  /** A text Hermes wrote for the user to send them. */
+  message?: string
+  photo?: string
+}
+
+const trimmed = (value: unknown) => (typeof value === 'string' && value.trim() ? value.trim() : undefined)
+
+export function people(card: Card): Person[] {
+  return list(card.people).flatMap(row => {
+    const name = trimmed(row.name)
+    if (!name) return []
+    const photo = row.photo && typeof row.photo === 'object' ? trimmed((row.photo as Record<string, unknown>).url) : trimmed(row.photo)
+    const web = (value: string | undefined) => (value && /^https?:\/\//i.test(value) ? value : undefined)
+    return [
+      {
+        name,
+        detail: trimmed(row.detail),
+        phone: trimmed(row.phone),
+        email: trimmed(row.email),
+        url: web(trimmed(row.url)),
+        address: trimmed(row.address),
+        note: trimmed(row.note),
+        message: trimmed(row.message),
+        photo: web(photo)
+      }
+    ]
+  })
+}
+
+/** The number to dial: its digits, with + when the number starts international. */
+export function dialable(phone: string | undefined): string | undefined {
+  if (!phone) return undefined
+  const digits = phone.replace(/[^0-9]/g, '')
+  if (!digits) return undefined
+  const lead = phone.slice(0, phone.search(/[0-9]/))
+  return lead.includes('+') ? `+${digits}` : digits
+}
+
+/** Where Send text sends: their number, or without one their email (iMessage). */
+export const textRecipient = (person: Person) => dialable(person.phone) ?? person.email
+
+/** Messages opened to a number or an email; nothing in the address can add a body. */
+export const smsLink = (recipient: string) => `sms:${recipient.replace(/[^A-Za-z0-9@._+-]/g, c => encodeURIComponent(c))}`
+
+/** The Email action's link, built so nothing in the address adds a header or a recipient. */
+export const mailtoLink = (email: string) => `mailto:${email.replace(/[^A-Za-z0-9@._+-]/g, c => encodeURIComponent(c))}`

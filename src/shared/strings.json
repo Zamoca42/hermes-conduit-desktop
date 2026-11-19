@@ -3074,6 +3074,21 @@
     "zh-Hans": "日历",
     "zh-Hant": "行事曆"
   },
+  "Call": {
+    "de": "Anrufen",
+    "es": "Llamar",
+    "fr": "Appeler",
+    "id": "Telepon",
+    "it": "Chiama",
+    "ja": "電話",
+    "ko": "전화",
+    "pl": "Zadzwoń",
+    "pt-BR": "Ligar",
+    "ru": "Позвонить",
+    "tr": "Ara",
+    "zh-Hans": "拨打电话",
+    "zh-Hant": "撥打電話"
+  },
   "Call about approvals and questions": {
     "de": "Bei Freigaben und Fragen anrufen",
     "es": "Llamar por aprobaciones y preguntas",
@@ -22859,6 +22874,21 @@
     "zh-Hans": "立即发送",
     "zh-Hant": "立即傳送"
   },
+  "Send text": {
+    "de": "SMS senden",
+    "es": "Enviar mensaje",
+    "fr": "Envoyer le SMS",
+    "id": "Kirim pesan",
+    "it": "Invia messaggio",
+    "ja": "メッセージを送信",
+    "ko": "문자 보내기",
+    "pl": "Wyślij SMS",
+    "pt-BR": "Enviar mensagem",
+    "ru": "Отправить сообщение",
+    "tr": "Mesaj gönder",
+    "zh-Hans": "发送短信",
+    "zh-Hant": "傳送訊息"
+  },
   "Send the report to Conduit’s developer? It shows where the app stopped, never your messages.": {
     "de": "Den Bericht an den Entwickler von Conduit senden? Er zeigt, wo die App stehen geblieben ist, nie deine Nachrichten.",
     "es": "¿Enviar el informe al desarrollador de Conduit? Muestra dónde se detuvo la app, nunca tus mensajes.",
@@ -25694,6 +25724,21 @@
     "zh-Hans": "仅文字",
     "zh-Hant": "僅文字"
   },
+  "Text to send": {
+    "de": "Zu sendende Nachricht",
+    "es": "Mensaje para enviar",
+    "fr": "Message à envoyer",
+    "id": "Pesan untuk dikirim",
+    "it": "Messaggio da inviare",
+    "ja": "送信するメッセージ",
+    "ko": "보낼 문자",
+    "pl": "Wiadomość do wysłania",
+    "pt-BR": "Mensagem para enviar",
+    "ru": "Сообщение для отправки",
+    "tr": "Gönderilecek mesaj",
+    "zh-Hans": "要发送的消息",
+    "zh-Hant": "要傳送的訊息"
+  },
   "That call's transcript is no longer available.": {
     "de": "Das Transkript dieses Anrufs ist nicht mehr verfügbar.",
     "es": "La transcripción de esa llamada ya no está disponible.",
@@ -26878,6 +26923,21 @@
     "tr": "Anahtarlar başka bir yerde değişti. Şu anki ayarları gösteriyorlar; yeniden dene.",
     "zh-Hans": "开关已在别处更改。现在显示的是当前设置；请重试。",
     "zh-Hant": "開關已在別處更改。現在顯示的是目前設定；請再試一次。"
+  },
+  "The text is copied: paste it in Messages and send it there.": {
+    "de": "Der Text ist kopiert: Füge ihn in Nachrichten ein und sende ihn dort.",
+    "es": "El texto está copiado: pégalo en Mensajes y envíalo desde allí.",
+    "fr": "Le texte est copié : collez-le dans Messages et envoyez-le depuis là.",
+    "id": "Teks sudah disalin: tempel di Pesan dan kirim dari sana.",
+    "it": "Il testo è copiato: incollalo in Messaggi e invialo da lì.",
+    "ja": "テキストをコピーしました。メッセージに貼り付けて送信してください。",
+    "ko": "텍스트를 복사했습니다. 메시지에 붙여 넣고 거기서 보내세요.",
+    "pl": "Tekst jest skopiowany: wklej go w Wiadomościach i wyślij stamtąd.",
+    "pt-BR": "O texto foi copiado: cole no Mensagens e envie por lá.",
+    "ru": "Текст скопирован: вставьте его в Сообщения и отправьте оттуда.",
+    "tr": "Metin kopyalandı: Mesajlar’a yapıştırıp oradan gönderin.",
+    "zh-Hans": "文本已复制：粘贴到“信息”中并从那里发送。",
+    "zh-Hant": "文字已拷貝：貼到「訊息」中並從那裡傳送。"
   },
   "The turn failed.": {
     "de": "Der Durchgang ist fehlgeschlagen.",
@@ -30448,6 +30508,21 @@
     "tr": "Webhook",
     "zh-Hans": "Webhook",
     "zh-Hant": "Webhook"
+  },
+  "Website": {
+    "de": "Website",
+    "es": "Sitio web",
+    "fr": "Site web",
+    "id": "Situs web",
+    "it": "Sito web",
+    "ja": "Webサイト",
+    "ko": "웹사이트",
+    "pl": "Strona WWW",
+    "pt-BR": "Site",
+    "ru": "Веб-сайт",
+    "tr": "Web sitesi",
+    "zh-Hans": "网站",
+    "zh-Hant": "網站"
   },
   "Weekdays": {
     "de": "Werktags",
