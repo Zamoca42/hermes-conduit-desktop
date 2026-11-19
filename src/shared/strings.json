@@ -4409,6 +4409,36 @@
     "zh-Hans": "Conduit 无法使用麦克风。请在电脑的隐私设置中允许 Conduit 使用，然后重试。",
     "zh-Hant": "Conduit 無法使用麥克風。請在電腦的隱私權設定中允許 Conduit 使用，然後再試一次。"
   },
+  "Conduit closed unexpectedly last time": {
+    "de": "Conduit wurde beim letzten Mal unerwartet beendet",
+    "es": "Conduit se cerró inesperadamente la última vez",
+    "fr": "Conduit s’est fermé de façon inattendue la dernière fois",
+    "id": "Conduit tertutup tiba-tiba terakhir kali",
+    "it": "L’ultima volta Conduit si è chiuso in modo imprevisto",
+    "ja": "前回 Conduit が予期せず終了しました",
+    "ko": "지난번에 Conduit가 예기치 않게 종료되었습니다",
+    "pl": "Ostatnio Conduit nieoczekiwanie się zamknął",
+    "pt-BR": "O Conduit fechou inesperadamente da última vez",
+    "ru": "В прошлый раз Conduit неожиданно закрылся",
+    "tr": "Conduit geçen sefer beklenmedik şekilde kapandı",
+    "zh-Hans": "Conduit 上次意外退出",
+    "zh-Hant": "Conduit 上次意外結束"
+  },
+  "Conduit froze last time": {
+    "de": "Conduit ist beim letzten Mal eingefroren",
+    "es": "Conduit se congeló la última vez",
+    "fr": "Conduit s’est figé la dernière fois",
+    "id": "Conduit macet terakhir kali",
+    "it": "L’ultima volta Conduit si è bloccato",
+    "ja": "前回 Conduit がフリーズしました",
+    "ko": "지난번에 Conduit가 멈췄습니다",
+    "pl": "Ostatnio Conduit się zawiesił",
+    "pt-BR": "O Conduit travou da última vez",
+    "ru": "В прошлый раз Conduit завис",
+    "tr": "Conduit geçen sefer dondu",
+    "zh-Hans": "Conduit 上次卡住了",
+    "zh-Hant": "Conduit 上次卡住了"
+  },
   "Conduit is locked": {
     "de": "Conduit ist gesperrt",
     "es": "Conduit está bloqueado",
@@ -6164,6 +6194,21 @@
     "zh-Hans": "无法保存此更改：{error}",
     "zh-Hant": "無法儲存此變更：{error}"
   },
+  "Couldn’t send the report": {
+    "de": "Bericht konnte nicht gesendet werden",
+    "es": "No se pudo enviar el informe",
+    "fr": "Impossible d’envoyer le rapport",
+    "id": "Tidak dapat mengirim laporan",
+    "it": "Impossibile inviare il rapporto",
+    "ja": "レポートを送信できませんでした",
+    "ko": "보고서를 보낼 수 없습니다",
+    "pl": "Nie udało się wysłać raportu",
+    "pt-BR": "Não foi possível enviar o relatório",
+    "ru": "Не удалось отправить отчёт",
+    "tr": "Rapor gönderilemedi",
+    "zh-Hans": "无法发送报告",
+    "zh-Hant": "無法傳送報告"
+  },
   "Country": {
     "de": "Land",
     "es": "País",
@@ -7123,6 +7168,21 @@
     "tr": "Algılandı. Hermes bir girişe ihtiyaç duyduğunda kilidi açmanızı ister; isterseniz şimdi açın.",
     "zh-Hans": "已检测到。Hermes 需要登录信息时会请你解锁，也可以现在解锁。",
     "zh-Hant": "已偵測到。Hermes 需要登入資訊時會請你解鎖，也可以現在解鎖。"
+  },
+  "Device reports": {
+    "de": "Geräteberichte",
+    "es": "Informes del dispositivo",
+    "fr": "Rapports de l’appareil",
+    "id": "Laporan perangkat",
+    "it": "Report del dispositivo",
+    "ja": "デバイスレポート",
+    "ko": "기기 보고서",
+    "pl": "Raporty urządzenia",
+    "pt-BR": "Relatórios do dispositivo",
+    "ru": "Отчёты устройства",
+    "tr": "Cihaz raporları",
+    "zh-Hans": "设备报告",
+    "zh-Hant": "裝置報告"
   },
   "Dictate": {
     "de": "Diktieren",
@@ -16094,6 +16154,21 @@
     "zh-Hans": "暂无连接器",
     "zh-Hant": "尚無連接器"
   },
+  "No crash or freeze reports.": {
+    "de": "Keine Absturz- oder Hänger-Berichte.",
+    "es": "No hay informes de cierres ni bloqueos.",
+    "fr": "Aucun rapport de plantage ou de blocage.",
+    "id": "Tidak ada laporan crash atau macet.",
+    "it": "Nessuna segnalazione di arresti o blocchi.",
+    "ja": "クラッシュやフリーズのレポートはありません。",
+    "ko": "충돌 또는 멈춤 보고서가 없습니다.",
+    "pl": "Brak raportów o awariach i zawieszeniach.",
+    "pt-BR": "Nenhum relatório de falha ou travamento.",
+    "ru": "Нет отчётов о сбоях и зависаниях.",
+    "tr": "Çökme veya donma raporu yok.",
+    "zh-Hans": "没有崩溃或卡死报告。",
+    "zh-Hant": "沒有當機或凍結報告。"
+  },
   "No description.": {
     "de": "Keine Beschreibung.",
     "es": "Sin descripción.",
@@ -17998,6 +18073,21 @@
     "tr": "Park edilen görev atanmamış kalır, böylece hiçbir çalışan onu almaz.",
     "zh-Hans": "搁置会让任务保持未分配，不会有工作者接手。",
     "zh-Hant": "擱置會讓任務保持未指派，不會有工作者接手。"
+  },
+  "Part of Conduit stopped unexpectedly": {
+    "de": "Ein Teil von Conduit wurde unerwartet beendet",
+    "es": "Una parte de Conduit se detuvo inesperadamente",
+    "fr": "Une partie de Conduit s’est arrêtée de façon inattendue",
+    "id": "Sebagian Conduit berhenti secara tak terduga",
+    "it": "Una parte di Conduit si è fermata inaspettatamente",
+    "ja": "Conduitの一部が予期せず停止しました",
+    "ko": "Conduit의 일부가 예기치 않게 멈췄습니다",
+    "pl": "Część Conduit nieoczekiwanie się zatrzymała",
+    "pt-BR": "Uma parte do Conduit parou inesperadamente",
+    "ru": "Часть Conduit неожиданно остановилась",
+    "tr": "Conduit’in bir bölümü beklenmedik şekilde durdu",
+    "zh-Hans": "Conduit 的一部分意外停止",
+    "zh-Hant": "Conduit 的一部分意外停止"
   },
   "Password": {
     "de": "Passwort",
@@ -20729,6 +20819,21 @@
     "zh-Hans": "报告",
     "zh-Hant": "報告"
   },
+  "Report sent. Thank you!": {
+    "de": "Bericht gesendet. Danke!",
+    "es": "Informe enviado. ¡Gracias!",
+    "fr": "Rapport envoyé. Merci !",
+    "id": "Laporan terkirim. Terima kasih!",
+    "it": "Rapporto inviato. Grazie!",
+    "ja": "レポートを送信しました。ありがとうございます！",
+    "ko": "보고서를 보냈습니다. 감사합니다!",
+    "pl": "Raport wysłany. Dziękujemy!",
+    "pt-BR": "Relatório enviado. Obrigado!",
+    "ru": "Отчёт отправлен. Спасибо!",
+    "tr": "Rapor gönderildi. Teşekkürler!",
+    "zh-Hans": "报告已发送，谢谢！",
+    "zh-Hant": "報告已傳送，謝謝！"
+  },
   "Report time": {
     "de": "Berichtszeit",
     "es": "Hora del informe",
@@ -22754,6 +22859,21 @@
     "zh-Hans": "立即发送",
     "zh-Hant": "立即傳送"
   },
+  "Send the report to Conduit’s developer? It shows where the app stopped, never your messages.": {
+    "de": "Den Bericht an den Entwickler von Conduit senden? Er zeigt, wo die App stehen geblieben ist, nie deine Nachrichten.",
+    "es": "¿Enviar el informe al desarrollador de Conduit? Muestra dónde se detuvo la app, nunca tus mensajes.",
+    "fr": "Envoyer le rapport au développeur de Conduit ? Il indique où l’app s’est arrêtée, jamais vos messages.",
+    "id": "Kirim laporan ke pengembang Conduit? Laporan menunjukkan di mana aplikasi berhenti dan tidak pernah menampilkan pesan Anda.",
+    "it": "Inviare il rapporto allo sviluppatore di Conduit? Mostra dove si è fermata l’app, mai i tuoi messaggi.",
+    "ja": "レポートを Conduit の開発者に送信しますか？アプリが止まった箇所だけが含まれ、メッセージは含まれません。",
+    "ko": "Conduit 개발자에게 보고서를 보낼까요? 앱이 멈춘 위치만 담기며 메시지는 절대 포함되지 않습니다.",
+    "pl": "Wysłać raport twórcy Conduit? Pokazuje, gdzie aplikacja się zatrzymała, i nigdy nie pokazuje Twoich wiadomości.",
+    "pt-BR": "Enviar o relatório ao desenvolvedor do Conduit? Ele mostra onde o app parou, nunca suas mensagens.",
+    "ru": "Отправить отчёт разработчику Conduit? В нём видно, где остановилось приложение, но никогда — ваши сообщения.",
+    "tr": "Rapor Conduit’in geliştiricisine gönderilsin mi? Uygulamanın nerede durduğunu gösterir, mesajlarınızı asla göstermez.",
+    "zh-Hans": "将报告发送给 Conduit 的开发者？报告只显示应用停在哪里，绝不包含你的消息。",
+    "zh-Hant": "要將報告傳送給 Conduit 的開發者嗎？報告只顯示 App 停在哪裡，絕不包含你的訊息。"
+  },
   "Send to {ref}": {
     "de": "An {ref} senden",
     "es": "Enviar a {ref}",
@@ -22799,6 +22919,21 @@
     "zh-Hans": "将你的语音发送给 {company}？",
     "zh-Hant": "將你的語音傳送給 {company}？"
   },
+  "Sending the report…": {
+    "de": "Bericht wird gesendet …",
+    "es": "Enviando el informe…",
+    "fr": "Envoi du rapport…",
+    "id": "Mengirim laporan…",
+    "it": "Invio del rapporto…",
+    "ja": "レポートを送信中…",
+    "ko": "보고서 보내는 중…",
+    "pl": "Wysyłanie raportu…",
+    "pt-BR": "Enviando o relatório…",
+    "ru": "Отправка отчёта…",
+    "tr": "Rapor gönderiliyor…",
+    "zh-Hans": "正在发送报告…",
+    "zh-Hant": "正在傳送報告…"
+  },
   "Sending…": {
     "de": "Wird gesendet …",
     "es": "Enviando…",
@@ -22843,6 +22978,21 @@
     "tr": "Bu sözleri, içindeki dosyalar olmadan yeni bir mesaj olarak yeniden gönderir.",
     "zh-Hans": "将这些文字作为新消息重新发送，不含原有的文件。",
     "zh-Hant": "將這些文字作為新訊息重新傳送，不含原有的檔案。"
+  },
+  "Sent": {
+    "de": "Gesendet",
+    "es": "Enviado",
+    "fr": "Envoyé",
+    "id": "Terkirim",
+    "it": "Inviato",
+    "ja": "送信済み",
+    "ko": "보냄",
+    "pl": "Wysłano",
+    "pt-BR": "Enviado",
+    "ru": "Отправлено",
+    "tr": "Gönderildi",
+    "zh-Hans": "已发送",
+    "zh-Hant": "已傳送"
   },
   "Sent. The agent reads it at its next step.": {
     "de": "Gesendet. Der Agent liest es bei seinem nächsten Schritt.",
@@ -30718,6 +30868,21 @@
     "tr": "Bir yanıt birkaç adım sürdüğünde Hermes bunlara kısa bir paragrafla geri bakar: ne yapmaya çalıştığını ve her adıma neden geçtiğini katlanmış adımların altında gösterir.",
     "zh-Hans": "当一条回复用了多个步骤时，Hermes 会用一小段话回顾：它打算做什么、为什么走到下一步，显示在折叠的步骤下方。",
     "zh-Hant": "當一則回覆用了多個步驟時，Hermes 會用一小段話回顧：它打算做什麼、為什麼走到下一步，顯示在收合的步驟下方。"
+  },
+  "When part of Conduit stops or the window stops responding, it keeps a report of which part and why, never your messages, and asks once before sending it to Conduit’s developer.": {
+    "de": "Wenn ein Teil von Conduit stoppt oder das Fenster nicht mehr reagiert, behält Conduit einen Bericht darüber, welcher Teil und warum, nie deine Nachrichten, und fragt einmal, bevor er an den Entwickler von Conduit geht.",
+    "es": "Cuando una parte de Conduit se detiene o la ventana deja de responder, guarda un informe de qué parte y por qué, nunca tus mensajes, y pregunta una vez antes de enviarlo al desarrollador de Conduit.",
+    "fr": "Quand une partie de Conduit s’arrête ou que la fenêtre ne répond plus, Conduit garde un rapport indiquant quelle partie et pourquoi, jamais vos messages, et demande une fois avant de l’envoyer au développeur de Conduit.",
+    "id": "Saat bagian dari Conduit berhenti atau jendelanya tidak merespons, Conduit menyimpan laporan tentang bagian mana dan mengapa, tidak pernah pesan Anda, dan bertanya sekali sebelum mengirimnya ke pengembang Conduit.",
+    "it": "Quando una parte di Conduit si ferma o la finestra non risponde più, Conduit conserva una segnalazione su quale parte e perché, mai i tuoi messaggi, e chiede una volta prima di inviarla allo sviluppatore di Conduit.",
+    "ja": "Conduitの一部が止まったりウインドウが応答しなくなったりすると、どの部分がなぜ止まったかのレポートを保存します（メッセージは含みません）。Conduitの開発者に送る前に一度だけ確認します。",
+    "ko": "Conduit의 일부가 멈추거나 창이 응답하지 않으면 어느 부분이 왜 멈췄는지 보고서를 보관하며(메시지는 포함하지 않음), Conduit 개발자에게 보내기 전에 한 번 묻습니다.",
+    "pl": "Gdy część Conduit się zatrzyma lub okno przestanie odpowiadać, Conduit zachowuje raport o tym, która część i dlaczego (bez Twoich wiadomości), i pyta raz, zanim wyśle go twórcy Conduit.",
+    "pt-BR": "Quando uma parte do Conduit para ou a janela deixa de responder, ele guarda um relatório de qual parte e por quê, nunca suas mensagens, e pergunta uma vez antes de enviá-lo ao desenvolvedor do Conduit.",
+    "ru": "Когда часть Conduit останавливается или окно перестаёт отвечать, Conduit сохраняет отчёт о том, какая часть и почему, без ваших сообщений, и один раз спрашивает, прежде чем отправить его разработчику Conduit.",
+    "tr": "Conduit’in bir bölümü durduğunda veya pencere yanıt vermediğinde, hangi bölümün neden durduğunu anlatan bir rapor saklar (mesajlarınızı içermez) ve Conduit’in geliştiricisine göndermeden önce bir kez sorar.",
+    "zh-Hans": "当 Conduit 的某个部分停止或窗口无响应时，它会保留一份报告，说明是哪个部分以及原因，绝不包含你的消息，并在发送给 Conduit 开发者之前询问一次。",
+    "zh-Hant": "當 Conduit 的某個部分停止或視窗沒有回應時，它會保留一份報告，說明是哪個部分以及原因，絕不包含你的訊息，並在傳送給 Conduit 開發者之前詢問一次。"
   },
   "When this is on, Hermes waits longer before calling, up to 10 minutes, while you're talking to it in Hermes Desktop, the dashboard or a terminal, or have the chat open in Conduit, and a failed request there only sends a notification.": {
     "de": "Wenn das an ist, wartet Hermes länger mit dem Anruf, bis zu 10 Minuten, während du mit ihm in Hermes Desktop, im Dashboard oder in einem Terminal sprichst oder den Chat in Conduit geöffnet hast, und eine fehlgeschlagene Anfrage sendet dort nur eine Mitteilung.",

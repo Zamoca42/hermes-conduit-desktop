@@ -4,6 +4,7 @@
  * connection to Hermes, to sign in and to make gateway calls for it.
  */
 import type { Language } from './i18n'
+import type { DeviceReport } from './deviceReports'
 
 /** How a dashboard lets us in, from its public `/api/status`. */
 export type SignInMethod = 'password' | 'token' | 'open'
@@ -154,6 +155,13 @@ export interface ConduitApi {
   setAppLock(on: boolean): Promise<boolean>
   /** Asks for Touch ID or Windows Hello and, once given, opens the saved hosts. */
   unlock(): Promise<boolean>
+  /** Crash and freeze reports kept on this computer, and those Conduit still asks about. */
+  deviceReports(): Promise<{ reports: DeviceReport[]; offered: DeviceReport[] }>
+  /** Posts the reports to Conduit's relay; true when it kept every one. */
+  sendDeviceReports(ids: string[]): Promise<boolean>
+  /** Not now: Conduit doesn't ask about them again. */
+  declineDeviceReports(ids: string[]): Promise<void>
+  onDeviceReports(listener: () => void): () => void
   /** `headers` are for a proxy in front of the dashboard (Cloudflare Access and the like). */
   probe(url: string, headers?: Record<string, string>): Promise<HostProbe>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
@@ -294,6 +302,10 @@ export const IPC = {
   appLock: 'conduit:app-lock',
   setAppLock: 'conduit:set-app-lock',
   unlock: 'conduit:unlock',
+  deviceReports: 'conduit:device-reports',
+  sendDeviceReports: 'conduit:send-device-reports',
+  declineDeviceReports: 'conduit:decline-device-reports',
+  deviceReportsChanged: 'conduit:device-reports-changed',
   pluginRelease: 'conduit:plugin-release',
   liveOpen: 'conduit:live-open',
   liveOpenMinted: 'conduit:live-open-minted',

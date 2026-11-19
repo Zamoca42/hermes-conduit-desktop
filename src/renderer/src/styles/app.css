@@ -8345,3 +8345,21 @@ button.secondary.danger {
 .connection-browse {
   margin-top: 8px;
 }
+
+/* Crash and freeze reports. */
+.report-banner-text {
+  flex: 1;
+  min-width: 0;
+}
+.device-reports ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.device-reports li {
+  display: flex;
+  flex-direction: column;
+}

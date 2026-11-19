@@ -22,6 +22,7 @@ import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
 import { chooseLanguage, chooseLock, chooseTheme, languageChoice, lockOnLaunch, resolvedLanguage, themeChoice } from './settings'
 import { lockKind, promptUnlock } from './appLock'
+import { declineDeviceReports, deviceReports, sendDeviceReports, watchDeviceReports, watchWindowFreezes } from './deviceReports'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
 import { jsonRpcErrorReason } from '../vendor/hermes-shared/json-rpc-channel'
 import { LIVE_TOKEN_PATHS, mintedSocket, type LiveSocketEvent } from '../shared/ipc'
@@ -124,6 +125,7 @@ function createWindow(): void {
     }
   })
   mainWindow = window
+  watchWindowFreezes(window)
   window.on('ready-to-show', () => window.show())
   window.on('close', event => {
     if (quitting) return
@@ -187,6 +189,10 @@ function registerIpc(): void {
     }
   })
   ipcMain.handle(IPC.appLock, async () => ({ kind: await lockKind(), on: lockOnLaunch() }))
+  const ids = (value: unknown) => (Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string') : [])
+  ipcMain.handle(IPC.deviceReports, () => deviceReports())
+  ipcMain.handle(IPC.sendDeviceReports, (_event, value: unknown) => sendDeviceReports(ids(value)))
+  ipcMain.handle(IPC.declineDeviceReports, (_event, value: unknown) => declineDeviceReports(ids(value)))
   ipcMain.handle(IPC.setAppLock, async (_event, on: unknown) => {
     if (typeof on !== 'boolean' || !(await lockKind())) return false
     if (!(await promptUnlock(on ? t('turn on the lock for your Hermes sign-ins') : t('turn off the lock for your Hermes sign-ins')))) return false
@@ -357,6 +363,7 @@ if (!app.requestSingleInstanceLock()) {
     setLanguage(resolvedLanguage())
     chooseTheme(themeChoice(), false)
     registerIpc()
+    watchDeviceReports(() => send(IPC.deviceReportsChanged, null))
     createWindow()
     tray.create()
     quickAsk.register()
