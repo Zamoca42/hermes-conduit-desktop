@@ -121,7 +121,8 @@ import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
-import { moveChat, mutateSession } from './state/chatActions'
+import { authorityMutation, moveChat, mutateSession, sessionPath } from './state/chatActions'
+import { ROOM_CHATS_CAPABILITY, openRoomChat, roomChatsClient, wrapUpPrompt, type RoomChatAgent } from './state/roomChats'
 import { parseProjects, type ProjectChat } from './state/projects'
 import { useLiveStatus } from './state/liveStatus'
 import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply } from './state/pinnedReplies'
@@ -1148,6 +1149,47 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }
   // The backdrop glows in the open chat's agent's color, and elsewhere in the profile in use's.
   const glowOf = useGlowColors(glowBots, status.url ?? '')
+  const roomChatsServed = roomInvites.capabilities.includes(ROOM_CHATS_CAPABILITY)
+  /** A room's private chat with one of your agents: kept, or made and told its room; Wrap Up asks it for notes once it's open. */
+  const openRoomChatWith = useCallback(
+    async (room: Room, agent: RoomChatAgent, wrapUp: boolean) => {
+      const chats = roomChatsClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
+      const scoped = (profile: string) => (profile && profile !== 'default' ? { profile } : {})
+      const opened = await openRoomChat(
+        {
+          chats: profile => chats.chats(profile),
+          create: async profile => {
+            const made = await gateway.rpc<{ session_id?: string; stored_session_id?: string | null }>('session.create', { cols: 96, source: 'desktop', ...scoped(profile) })
+            if (!made?.session_id) throw new Error(t('The chat didn’t open. Try again.'))
+            return { runtimeId: made.session_id, storedId: made.stored_session_id ?? null }
+          },
+          register: (roomId, chatId, profile) => chats.open(roomId, chatId, profile),
+          // By the id it runs under, as a Bot Chat's title goes; the authority's is a rename.
+          title: async (runtimeId, profile, title) => {
+            if (status.sessionAuthority) await authorityMutation(gateway.rpc, gateway.http, runtimeId, profile, 'rename', { title })
+            else await gateway.rpc('session.title', { session_id: runtimeId, title, ...scoped(profile) })
+          },
+          exists: async (chatId, profile) => {
+            try {
+              await gateway.http('GET', sessionPath(chatId, profile))
+              return true
+            } catch (e) {
+              if ((e as { code?: unknown })?.code === 404) return false
+              throw e
+            }
+          }
+        },
+        room.roomId,
+        room.name,
+        agent.profile
+      )
+      if (wrapUp) pendingAsk.current = { text: wrapUpPrompt(), storedId: opened.chatId, profile: agent.profile }
+      setSelected({ id: opened.chatId, profile: agent.profile, title: opened.title })
+      setSection('chats')
+      list.refresh()
+    },
+    [status.sessionAuthority, list]
+  )
   const roomLooks = useRoomLooks(connected, status.url ?? '', roomInvites.capabilities, roster.bots, glowOf)
   const personPicture = useMemo<PersonPicture>(
     () => ({ served: roomLooks.served, picture: roomLooks.you, saving: roomLooks.youSaving, set: roomLooks.setYou }),
@@ -1815,6 +1857,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             key={shownCopy.id}
             room={shownCopyRoom}
             looks={roomLooks.looks[shownCopy.roomId]}
+            onOpenRoomChat={roomChatsServed ? (agent, wrapUp) => openRoomChatWith(shownCopyRoom, agent, wrapUp) : undefined}
             bots={roster.bots ?? []}
             connected={connected}
             canStop={false}
@@ -1852,6 +1895,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             key={openRoom.roomId}
             room={openRoom}
             looks={roomLooks.looks[openRoom.roomId]}
+            onOpenRoomChat={roomChatsServed ? (agent, wrapUp) => openRoomChatWith(openRoom, agent, wrapUp) : undefined}
             bots={roster.bots ?? []}
             connected={connected}
             canStop={groupRooms.capabilities?.canStop === true}
@@ -1905,11 +1949,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         <NewGroupChat
           bots={roster.bots ?? []}
           people={roomDrafts.people}
+          ownBots={roomDrafts.ownBots}
           peopleOffered={roomDrafts.served && roomDrafts.read}
           startsUnavailable={roomDrafts.read && !roomDrafts.startsAvailable}
           canLink={roomInvites.capabilities.includes('room-links')}
           onCreateRoom={groupRooms.create}
-          onCreateDraft={(name, agents, links) => roomDrafts.create(name, agents, links, chatProfile ?? 'default')}
+          onCreateDraft={(name, agents, links, bring) => roomDrafts.create(name, agents, links, chatProfile ?? 'default', bring)}
           onOpenRoom={showRoom}
           onClose={() => setNewGroupOpen(false)}
         />

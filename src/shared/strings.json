@@ -464,6 +464,21 @@
     "zh-Hans": "那里正在进行的回复总会先完成。如果你回到那个应用，请在那里重新打开对话，才能看到你从 Conduit 发送的内容。",
     "zh-Hant": "那裡正在進行的回覆一律會先完成。如果你回到該 App，請在那裡重新打開聊天，才能看到你從 Conduit 傳送的內容。"
   },
+  "A room can bring bots from one of your other Hermes beside at least one of your bots here, and then invites no one else. They join by themselves.": {
+    "de": "Ein Raum kann neben mindestens einem deiner Bots hier Bots von einem deiner anderen Hermes mitbringen und lädt dann niemanden sonst ein. Sie treten von selbst bei.",
+    "es": "Una sala puede traer bots de uno de tus otros Hermes junto a al menos uno de tus bots de aquí y entonces no invita a nadie más. Se unen por sí solos.",
+    "fr": "Un salon peut accueillir les bots de l'un de vos autres Hermes avec au moins un de vos bots d'ici, et n'invite alors personne d'autre. Ils rejoignent d'eux-mêmes.",
+    "id": "Satu ruang bisa membawa bot dari salah satu Hermes Anda yang lain di samping setidaknya satu bot Anda di sini, lalu tidak mengundang orang lain. Mereka bergabung sendiri.",
+    "it": "Una stanza può portare i bot di uno dei tuoi altri Hermes insieme ad almeno uno dei tuoi bot di qui, e allora non invita nessun altro. Entrano da soli.",
+    "ja": "ルームには、ここにある自分のボットを少なくとも 1 体入れたうえで、ほかの Hermes のうち 1 つからボットを連れてこられます。その場合はほかの誰も招待しません。ボットは自動で参加します。",
+    "ko": "룸에는 여기 있는 내 봇을 하나 이상 넣고, 다른 Hermes 중 하나의 봇을 데려올 수 있습니다. 이때는 다른 누구도 초대하지 않습니다. 봇은 알아서 참여합니다.",
+    "pl": "Pokój może wnieść boty z jednego z Twoich pozostałych Hermesów obok co najmniej jednego Twojego bota stąd i wtedy nie zaprasza nikogo innego. Dołączają same.",
+    "pt-BR": "Uma sala pode trazer bots de um dos seus outros Hermes junto com pelo menos um dos seus bots daqui e, nesse caso, não convida mais ninguém. Eles entram sozinhos.",
+    "ru": "Комната может взять ботов одного из ваших других Hermes вместе хотя бы с одним вашим ботом отсюда и тогда никого больше не приглашает. Они присоединяются сами.",
+    "tr": "Bir oda, buradaki botlarınızdan en az biriyle birlikte diğer Hermes'lerinizden birinin botlarını getirebilir ve o zaman başka kimseyi davet etmez. Botlar kendiliğinden katılır.",
+    "zh-Hans": "一个房间可以在至少一个你在这里的机器人之外，带上你另一个 Hermes 的机器人，这时不会再邀请其他人。它们会自动加入。",
+    "zh-Hant": "一個房間可以在至少一個你在這裡的機器人之外，帶上你另一個 Hermes 的機器人，這時不會再邀請其他人。它們會自動加入。"
+  },
   "A room holds up to 6 agents: your bots, and at least one for each person.": {
     "de": "Ein Raum fasst bis zu 6 Agenten: deine Bots und mindestens einen für jede Person.",
     "es": "Una sala admite hasta 6 agentes: tus bots y al menos uno por cada persona.",
@@ -643,6 +658,21 @@
     "tr": "API sunucusu",
     "zh-Hans": "API 服务器",
     "zh-Hant": "API 伺服器"
+  },
+  "About {name}": {
+    "de": "Über {name}",
+    "es": "Sobre {name}",
+    "fr": "À propos de {name}",
+    "id": "Tentang {name}",
+    "it": "Su {name}",
+    "ja": "{name}について",
+    "ko": "{name} 관련",
+    "pl": "O {name}",
+    "pt-BR": "Sobre {name}",
+    "ru": "О {name}",
+    "tr": "{name} hakkında",
+    "zh-Hans": "关于 {name}",
+    "zh-Hant": "關於 {name}"
   },
   "Accent color": {
     "de": "Akzentfarbe",
@@ -2054,6 +2084,21 @@
     "zh-Hans": "启动时询问仪表板",
     "zh-Hant": "啟動時詢問儀表板"
   },
+  "Ask Your Agent": {
+    "de": "Frag deinen Agenten",
+    "es": "Pregunta a tu agente",
+    "fr": "Demandez à votre agent",
+    "id": "Tanya agen Anda",
+    "it": "Chiedi al tuo agente",
+    "ja": "エージェントに聞く",
+    "ko": "내 에이전트에게 묻기",
+    "pl": "Zapytaj swojego agenta",
+    "pt-BR": "Pergunte ao seu agente",
+    "ru": "Спросить своего агента",
+    "tr": "Ajanına sor",
+    "zh-Hans": "问你的智能体",
+    "zh-Hant": "問你的智慧體"
+  },
   "Ask a side question about this chat": {
     "de": "Eine Nebenfrage zu diesem Chat stellen",
     "es": "Hacer una pregunta aparte sobre este chat",
@@ -2143,6 +2188,21 @@
     "tr": "{name} adlı bota sor",
     "zh-Hans": "问 {name}",
     "zh-Hant": "問 {name}"
+  },
+  "Ask {name} about this room": {
+    "de": "{name} zu diesem Raum fragen",
+    "es": "Preguntar a {name} sobre esta sala",
+    "fr": "Demander à {name} à propos de ce salon",
+    "id": "Tanya {name} tentang ruang ini",
+    "it": "Chiedi a {name} di questa stanza",
+    "ja": "このルームについて{name}に聞く",
+    "ko": "이 방에 대해 {name}에게 묻기",
+    "pl": "Zapytaj {name} o ten pokój",
+    "pt-BR": "Perguntar a {name} sobre esta sala",
+    "ru": "Спросить {name} об этой комнате",
+    "tr": "Bu oda hakkında {name} adlı ajana sor",
+    "zh-Hans": "向 {name} 询问这个房间",
+    "zh-Hant": "向 {name} 詢問這個房間"
   },
   "Ask {name}…": {
     "de": "{name} fragen…",
@@ -6148,6 +6208,21 @@
     "tr": "Local Live bağlantısı açılamadı.",
     "zh-Hans": "无法打开 Local Live 连接。",
     "zh-Hant": "無法開啟 Local Live 連線。"
+  },
+  "Could not open the room's chat: {reason}": {
+    "de": "Der Chat des Raums konnte nicht geöffnet werden: {reason}",
+    "es": "No se pudo abrir el chat de la sala: {reason}",
+    "fr": "Impossible d'ouvrir la discussion du salon : {reason}",
+    "id": "Tidak dapat membuka obrolan ruang: {reason}",
+    "it": "Impossibile aprire la chat della stanza: {reason}",
+    "ja": "ルームのチャットを開けませんでした：{reason}",
+    "ko": "방의 채팅을 열 수 없어요: {reason}",
+    "pl": "Nie udało się otworzyć czatu pokoju: {reason}",
+    "pt-BR": "Não foi possível abrir o chat da sala: {reason}",
+    "ru": "Не удалось открыть чат комнаты: {reason}",
+    "tr": "Odanın sohbeti açılamadı: {reason}",
+    "zh-Hans": "无法打开房间的聊天：{reason}",
+    "zh-Hant": "無法開啟房間的聊天：{reason}"
   },
   "Could not pause scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht pausiert werden: {reason}",
@@ -20264,6 +20339,36 @@
     "zh-Hans": "在语音服务器上，将其语言模型设为此地址和密钥，模型名称为 {name}。这样它会朗读 Hermes 的回复，而不是自己写回复。",
     "zh-Hant": "在語音伺服器上，將其語言模型設為此位址和密鑰，模型名稱為 {name}。這樣它會朗讀 Hermes 的回覆，而不是自己寫回覆。"
   },
+  "On {name}": {
+    "de": "Auf {name}",
+    "es": "En {name}",
+    "fr": "Sur {name}",
+    "id": "Di {name}",
+    "it": "Su {name}",
+    "ja": "{name} 上",
+    "ko": "{name}에서",
+    "pl": "Na {name}",
+    "pt-BR": "Em {name}",
+    "ru": "На {name}",
+    "tr": "{name} üzerinde",
+    "zh-Hans": "在 {name} 上",
+    "zh-Hant": "在 {name} 上"
+  },
+  "On {name} · turn on rooms for it there first": {
+    "de": "Auf {name} · schalte dort zuerst Räume dafür ein",
+    "es": "En {name} · activa primero las salas para él allí",
+    "fr": "Sur {name} · activez d'abord les salons pour lui là-bas",
+    "id": "Di {name} · aktifkan ruang untuknya di sana dulu",
+    "it": "Su {name} · attiva prima le stanze per lui lì",
+    "ja": "{name} 上 · 先にそちらでこのボットのルームを有効にしてください",
+    "ko": "{name}에서 · 먼저 그곳에서 이 봇의 룸을 켜세요",
+    "pl": "Na {name} · najpierw włącz tam dla niego pokoje",
+    "pt-BR": "Em {name} · ative as salas para ele lá primeiro",
+    "ru": "На {name} · сначала включите для него комнаты там",
+    "tr": "{name} üzerinde · önce orada onun için odaları açın",
+    "zh-Hans": "在 {name} 上 · 请先在那里为它开启房间",
+    "zh-Hant": "在 {name} 上 · 請先在那裡為它開啟房間"
+  },
   "On: {list}": {
     "de": "An: {list}",
     "es": "Activadas: {list}",
@@ -20683,6 +20788,21 @@
     "tr": "Bir sayfa açılıyor",
     "zh-Hans": "正在打开网页",
     "zh-Hant": "正在打開網頁"
+  },
+  "Opens a private chat with your agent about this room. Nothing you write there goes to the room. An agent that only listens leaves you notes there when the room goes quiet.": {
+    "de": "Öffnet einen privaten Chat mit deinem Agenten über diesen Raum. Was du dort schreibst, geht nicht in den Raum. Ein Agent, der nur zuhört, hinterlässt dir dort Notizen, wenn es im Raum ruhig wird.",
+    "es": "Abre un chat privado con tu agente sobre esta sala. Nada de lo que escribas allí llega a la sala. Un agente que solo escucha te deja notas allí cuando la sala se queda en silencio.",
+    "fr": "Ouvre une discussion privée avec votre agent à propos de ce salon. Rien de ce que vous y écrivez n'arrive dans le salon. Un agent qui ne fait qu'écouter vous y laisse des notes quand le salon devient calme.",
+    "id": "Membuka obrolan pribadi dengan agen Anda tentang ruang ini. Apa pun yang Anda tulis di sana tidak masuk ke ruang. Agen yang hanya mendengarkan meninggalkan catatan untuk Anda di sana saat ruang menjadi sepi.",
+    "it": "Apre una chat privata con il tuo agente su questa stanza. Niente di ciò che scrivi lì arriva nella stanza. Un agente che ascolta soltanto ti lascia lì delle note quando la stanza si fa silenziosa.",
+    "ja": "このルームについてエージェントとのプライベートチャットを開きます。そこに書いたことはルームには届きません。聞くだけのエージェントは、ルームが静かになるとそこにメモを残します。",
+    "ko": "이 방에 대해 에이전트와 비공개 채팅을 엽니다. 거기에 쓴 내용은 방으로 가지 않아요. 듣기만 하는 에이전트는 방이 조용해지면 거기에 메모를 남겨요.",
+    "pl": "Otwiera prywatny czat z twoim agentem o tym pokoju. Nic, co tam napiszesz, nie trafia do pokoju. Agent, który tylko słucha, zostawia ci tam notatki, gdy w pokoju robi się cicho.",
+    "pt-BR": "Abre um chat privado com seu agente sobre esta sala. Nada do que você escreve lá vai para a sala. Um agente que só escuta deixa notas para você lá quando a sala fica em silêncio.",
+    "ru": "Открывает личный чат с вашим агентом об этой комнате. Ничего из написанного там не попадает в комнату. Агент, который только слушает, оставляет вам там заметки, когда в комнате становится тихо.",
+    "tr": "Bu oda hakkında ajanınla özel bir sohbet açar. Orada yazdıkların odaya gitmez. Yalnızca dinleyen bir ajan, oda sessizleştiğinde sana orada notlar bırakır.",
+    "zh-Hans": "打开与你的智能体关于这个房间的私聊。你在那里写的内容不会发到房间里。只旁听的智能体会在房间安静下来后在那里给你留下笔记。",
+    "zh-Hant": "開啟與你的智慧體關於這個房間的私人聊天。你在那裡寫的內容不會傳到房間裡。只旁聽的智慧體會在房間安靜下來後在那裡給你留下筆記。"
   },
   "Opens the chat at this reply": {
     "de": "Öffnet den Chat bei dieser Antwort",
@@ -29834,6 +29954,21 @@
     "zh-Hans": "机器人的沙盒需要桌面镜像",
     "zh-Hant": "機器人的沙盒需要桌面映像"
   },
+  "The chat didn’t open. Try again.": {
+    "de": "Der Chat wurde nicht geöffnet. Versuch es noch einmal.",
+    "es": "El chat no se abrió. Inténtalo de nuevo.",
+    "fr": "La discussion ne s’est pas ouverte. Réessayez.",
+    "id": "Obrolan tidak terbuka. Coba lagi.",
+    "it": "La chat non si è aperta. Riprova.",
+    "ja": "チャットが開きませんでした。もう一度お試しください。",
+    "ko": "채팅이 열리지 않았어요. 다시 시도해 주세요.",
+    "pl": "Czat się nie otworzył. Spróbuj ponownie.",
+    "pt-BR": "O chat não abriu. Tente novamente.",
+    "ru": "Чат не открылся. Попробуйте ещё раз.",
+    "tr": "Sohbet açılmadı. Tekrar dene.",
+    "zh-Hans": "聊天没有打开。请重试。",
+    "zh-Hant": "聊天沒有開啟。請再試一次。"
+  },
   "The clipboard has no Link invite.": {
     "de": "In der Zwischenablage ist keine Einladung zur Verknüpfung.",
     "es": "El portapapeles no contiene ninguna invitación de vínculo.",
@@ -36134,6 +36269,36 @@
     "zh-Hans": "值得了解",
     "zh-Hant": "值得了解"
   },
+  "Wrap Up with {name}": {
+    "de": "Mit {name} zusammenfassen",
+    "es": "Resumir con {name}",
+    "fr": "Faire le bilan avec {name}",
+    "id": "Rangkum bersama {name}",
+    "it": "Riepiloga con {name}",
+    "ja": "{name}とまとめる",
+    "ko": "{name}와 정리하기",
+    "pl": "Podsumuj z {name}",
+    "pt-BR": "Resumir com {name}",
+    "ru": "Подвести итоги с {name}",
+    "tr": "{name} ile özetle",
+    "zh-Hans": "和 {name} 一起总结",
+    "zh-Hant": "和 {name} 一起總結"
+  },
+  "Wrap up this room for me: what was decided, what I said I’d do, what I might have missed, and anything waiting on my answer.": {
+    "de": "Fasse diesen Raum für mich zusammen: was entschieden wurde, was ich zugesagt habe, was ich verpasst haben könnte und was auf meine Antwort wartet.",
+    "es": "Resúmeme esta sala: qué se decidió, qué dije que haría, qué podría haberme perdido y qué espera mi respuesta.",
+    "fr": "Fais-moi le bilan de ce salon : ce qui a été décidé, ce que j’ai dit que je ferais, ce que j’ai pu manquer et ce qui attend ma réponse.",
+    "id": "Rangkum ruang ini untuk saya: apa yang diputuskan, apa yang saya bilang akan saya lakukan, apa yang mungkin saya lewatkan, dan apa saja yang menunggu jawaban saya.",
+    "it": "Riepilogami questa stanza: cosa è stato deciso, cosa ho detto che avrei fatto, cosa potrei essermi perso e cosa aspetta una mia risposta.",
+    "ja": "このルームをまとめて：決まったこと、私がやると言ったこと、私が見落としたかもしれないこと、私の返事を待っていること。",
+    "ko": "이 방을 정리해 줘: 정해진 것, 내가 하겠다고 한 것, 내가 놓쳤을 수도 있는 것, 내 답을 기다리는 것.",
+    "pl": "Podsumuj mi ten pokój: co ustalono, co obiecałem zrobić, co mogło mi umknąć i co czeka na moją odpowiedź.",
+    "pt-BR": "Resuma esta sala para mim: o que foi decidido, o que eu disse que faria, o que posso ter perdido e o que está esperando minha resposta.",
+    "ru": "Подведи для меня итоги этой комнаты: что решили, что я обещал сделать, что я мог упустить и что ждёт моего ответа.",
+    "tr": "Bu odayı benim için özetle: neye karar verildi, ne yapacağımı söyledim, neyi kaçırmış olabilirim ve cevabımı bekleyen ne var.",
+    "zh-Hans": "帮我总结这个房间：决定了什么、我说过要做什么、我可能错过了什么，以及有什么在等我回复。",
+    "zh-Hant": "幫我總結這個房間：決定了什麼、我說過要做什麼、我可能錯過了什麼，以及有什麼在等我回覆。"
+  },
   "Write each header on its own line as Name: value. This one isn’t: {line}": {
     "de": "Schreib jeden Header in eine eigene Zeile als Name: Wert. Diese Zeile passt nicht: {line}",
     "es": "Escribe cada cabecera en su propia línea como Nombre: valor. Esta no lo está: {line}",
@@ -37333,6 +37498,21 @@
     "tr": "Genç",
     "zh-Hans": "年轻",
     "zh-Hant": "年輕"
+  },
+  "a room": {
+    "de": "ein Raum",
+    "es": "una sala",
+    "fr": "un salon",
+    "id": "sebuah ruang",
+    "it": "una stanza",
+    "ja": "ルーム",
+    "ko": "방",
+    "pl": "pokój",
+    "pt-BR": "uma sala",
+    "ru": "комната",
+    "tr": "bir oda",
+    "zh-Hans": "一个房间",
+    "zh-Hant": "一個房間"
   },
   "every {interval}": {
     "de": "alle {interval}",

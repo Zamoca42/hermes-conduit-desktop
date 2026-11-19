@@ -23,6 +23,62 @@ export const MAX_PEOPLE = 5
 export const canCreateGroup = (bots: number, people: number) =>
   people > 0 ? bots >= 1 && people <= MAX_PEOPLE && bots + people <= MAX_AGENTS : bots >= 2 && bots <= MAX_AGENTS
 export const canPickBot = (bots: number, people: number) => bots + people < MAX_AGENTS
+
+/** `GET /rooms/own-bots` and a draft's `bring`: your other Hermes' bots. */
+export const ROOM_OWN_BOTS_CAPABILITY = 'room-own-bots'
+/** `PUT /rooms/links/own`: Links between your own Hermes. */
+export const ROOM_OWN_LINKS_CAPABILITY = 'room-own-links'
+
+/** A bot of your own other Hermes, as it told this one over an own Link: New Group Chat offers it beside your own, and a draft brings it with no join card. */
+export interface OwnHermesBot {
+  /** The own Link it came over, and that Link's name: which Hermes it lives on. */
+  linkId: string
+  linkName: string
+  profile: string
+  handle: string
+  displayName: string
+  /** Set up to join a room another Hermes hosts (Linked Rooms on for it there). */
+  ready: boolean
+}
+
+export const ownBotId = (bot: Pick<OwnHermesBot, 'linkId' | 'profile'>) => `${bot.linkId}/${bot.profile}`
+
+/** The bots of your own other Hermes a draft can bring, by the own Link they came over (only Links whose Hermes takes a bring). */
+export function parseOwnBots(value: unknown): OwnHermesBot[] | null {
+  const row = obj(value)
+  const links = obj(row?.links)
+  if (row?.ok !== true || !links) return null
+  return Object.keys(links)
+    .sort()
+    .flatMap(linkId => {
+      const link = obj(links[linkId])
+      if (link?.brings !== true || typeof link.name !== 'string' || !Array.isArray(link.bots)) return []
+      return link.bots.flatMap((raw): OwnHermesBot[] => {
+        const bot = obj(raw)
+        const profile = nonEmpty(bot?.profile)
+        const handle = nonEmpty(bot?.handle)
+        if (!bot || !profile || !handle || typeof bot.display_name !== 'string') return []
+        return [{ linkId, linkName: link.name as string, profile, handle, displayName: bot.display_name, ready: bot.ready === true }]
+      })
+    })
+}
+
+/**
+ * With bots of your other Hermes too (`far`, by own Link): one bot of this
+ * Hermes hosts it and every bot counts toward 6. They come from one other
+ * Hermes and nobody else is invited, since their Hermes joins them by itself
+ * only for an invite that names nobody else.
+ */
+export function canCreateWithFar(bots: number, far: Record<string, number>, people: number): boolean {
+  const picked = Object.values(far).filter(n => n > 0)
+  if (!picked.length) return canCreateGroup(bots, people)
+  return bots >= 1 && people === 0 && picked.length === 1 && bots + picked[0]! <= MAX_AGENTS
+}
+
+/** Whether one more bot of your other Hermes over `link` can be picked. */
+export function canPickFar(bots: number, far: Record<string, number>, link: string, people: number): boolean {
+  return canCreateWithFar(Math.max(bots, 1), { ...far, [link]: (far[link] ?? 0) + 1 }, people)
+}
 export const canPickPerson = (bots: number, people: number) => people < MAX_PEOPLE && bots + people < MAX_AGENTS
 
 export interface DraftPerson {
@@ -192,15 +248,27 @@ export function roomDraftsClient(http: Http) {
       if (!list) throw unexpected()
       return list
     },
-    /** A room with the people of `links` and your `agents`; a 504 is a draft made with its invites still going out. */
-    create: async (name: string, agents: Row[], links: string[], profile: string, conduitProfile: boolean): Promise<DraftCreation> => {
+    /**
+     * A room with the people of `links` and your `agents`; a 504 is a draft
+     * made with its invites still going out. `bring` names, by own Link, the
+     * bots of your other Hermes that join by themselves; each is one of `links`.
+     */
+    create: async (name: string, agents: Row[], links: string[], profile: string, conduitProfile: boolean, bring: Record<string, string[]> = {}): Promise<DraftCreation> => {
       const scoped = profile && profile !== 'default' ? `?${conduitProfile ? 'conduit_profile' : 'profile'}=${encodeURIComponent(profile)}` : ''
+      const body: Row = { name, agents, links }
+      if (Object.keys(bring).length) body.bring = bring
       try {
-        return { kind: 'made', draft: draftOf(await http('POST', `${DRAFTS_PATH}${scoped}`, { name, agents, links }, MAILBOX_TIMEOUT_MS)) }
+        return { kind: 'made', draft: draftOf(await http('POST', `${DRAFTS_PATH}${scoped}`, body, MAILBOX_TIMEOUT_MS)) }
       } catch (error) {
         if ((error as { code?: unknown })?.code === 504) return { kind: 'sending' }
         throw error
       }
+    },
+    /** Your other Hermes' bots, by the own Links they came over. */
+    ownBots: async (): Promise<OwnHermesBot[]> => {
+      const bots = parseOwnBots(await http('GET', `${ROOMS_PATH}/own-bots`))
+      if (!bots) throw unexpected()
+      return bots
     },
     /** Start now: the room starts with whoever joined on the rooms loop's next pass. */
     start: async (roomId: string) => draftOf(await http('POST', `${DRAFTS_PATH}/start`, { room_id: roomId })),

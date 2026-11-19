@@ -1,6 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
-import { DISMISSED_DRAFTS_KEY, ROOM_DRAFTS_CAPABILITY, draftRows, roomDraftsClient, type DraftCreation, type RoomDraft } from './roomDrafts'
+import {
+  DISMISSED_DRAFTS_KEY,
+  ROOM_DRAFTS_CAPABILITY,
+  ROOM_OWN_BOTS_CAPABILITY,
+  ROOM_OWN_LINKS_CAPABILITY,
+  draftRows,
+  roomDraftsClient,
+  type DraftCreation,
+  type OwnHermesBot,
+  type RoomDraft
+} from './roomDrafts'
 import { ROOM_LINKS_CAPABILITY, roomLinksClient, type RoomLink } from './roomLinks'
 import { ROOM_DASHBOARD_PROFILES_CAPABILITY } from './roomSetup'
 import { everyWhileVisible } from './visibility'
@@ -40,6 +50,8 @@ export function useRoomDrafts(connected: boolean, host: string, capabilities: re
   const [drafts, setDrafts] = useState<RoomDraft[] | null>(null)
   const [startsAvailable, setStartsAvailable] = useState(false)
   const [people, setPeople] = useState<RoomLink[]>([])
+  const [ownBots, setOwnBots] = useState<OwnHermesBot[]>([])
+  const bringsOwnBots = capabilities.includes(ROOM_OWN_LINKS_CAPABILITY) && capabilities.includes(ROOM_OWN_BOTS_CAPABILITY)
   const [dismissed, setDismissed] = useState<Set<string>>(() => readDismissed(host))
   const reads = useRef(0)
 
@@ -47,6 +59,7 @@ export function useRoomDrafts(connected: boolean, host: string, capabilities: re
     reads.current++
     setDrafts(null)
     setPeople([])
+    setOwnBots([])
     setStartsAvailable(false)
     setDismissed(readDismissed(host))
   }, [host])
@@ -63,16 +76,14 @@ export function useRoomDrafts(connected: boolean, host: string, capabilities: re
     }
   }, [])
 
-  /** The people to invite, read when New Group Chat opens. */
+  /** The people to invite, and your other Hermes' bots, read when New Group Chat opens. */
   const refreshPeople = useCallback(async () => {
     if (!capabilities.includes(ROOM_LINKS_CAPABILITY)) return
-    try {
-      const list = await links.list()
-      setPeople(list.links.filter(link => link.status === 'linked'))
-    } catch {
-      // Kept as last read.
-    }
-  }, [capabilities])
+    const [list, bots] = await Promise.all([links.list().catch(() => null), bringsOwnBots ? client.ownBots().catch(() => null) : Promise.resolve([])])
+    // Each kept as last read when its read failed.
+    if (list) setPeople(list.links.filter(link => link.status === 'linked'))
+    if (bots) setOwnBots(bots)
+  }, [capabilities, bringsOwnBots])
 
   useEffect(() => {
     if (!connected || !served) return
@@ -90,8 +101,8 @@ export function useRoomDrafts(connected: boolean, host: string, capabilities: re
   }, [])
 
   const create = useCallback(
-    async (name: string, agents: Record<string, unknown>[], linkIds: string[], profile: string): Promise<DraftCreation> => {
-      const outcome = await client.create(name, agents, linkIds, profile, conduitProfile)
+    async (name: string, agents: Record<string, unknown>[], linkIds: string[], profile: string, bring: Record<string, string[]> = {}): Promise<DraftCreation> => {
+      const outcome = await client.create(name, agents, linkIds, profile, conduitProfile, bring)
       if (outcome.kind === 'made') adopt(outcome.draft)
       else void refresh()
       return outcome
@@ -133,7 +144,10 @@ export function useRoomDrafts(connected: boolean, host: string, capabilities: re
     /** Whether the drafts were read: they say whether rooms with people can start. */
     read: drafts !== null,
     startsAvailable,
-    people: served && startsAvailable ? people : [],
+    // Your own other Hermes shows as its bots, not as a person to invite.
+    people: served && startsAvailable ? people.filter(p => !(bringsOwnBots ? ownBots : []).some(b => b.linkId === p.id)) : [],
+    /** Your other Hermes' bots New Group Chat offers beside your own. */
+    ownBots: served && startsAvailable && bringsOwnBots ? ownBots : [],
     refresh,
     refreshPeople,
     create,

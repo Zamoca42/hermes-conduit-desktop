@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   canCreateGroup,
+  canCreateWithFar,
+  canPickFar,
   canPickBot,
   canPickPerson,
   canStartNow,
@@ -8,6 +10,7 @@ import {
   draftLine,
   draftRows,
   parseDrafts,
+  parseOwnBots,
   personStatus,
   roomDraftsClient
 } from '../src/renderer/src/state/roomDrafts'
@@ -99,5 +102,38 @@ describe('rooms with people you’ve linked, before they start', () => {
       throw Object.assign(new Error('timeout'), { code: 504 })
     })
     expect(await slow.create('x', [], ['L1'], 'default', false)).toEqual({ kind: 'sending' })
+  })
+
+  it('brings bots of your other Hermes, from one of them, with nobody else invited', () => {
+    expect(
+      parseOwnBots({
+        ok: true,
+        links: {
+          L9: { name: 'Studio Mac', brings: true, bots: [{ profile: 'art', handle: 'art', display_name: 'Art', ready: true }, { profile: 'x', display_name: 'X' }] },
+          L8: { name: 'Old', brings: false, bots: [{ profile: 'a', handle: 'a', display_name: 'A', ready: true }] }
+        }
+      })
+    ).toEqual([{ linkId: 'L9', linkName: 'Studio Mac', profile: 'art', handle: 'art', displayName: 'Art', ready: true }])
+    expect(parseOwnBots({ ok: true })).toBeNull()
+    expect(canCreateWithFar(1, { L9: 1 }, 0)).toBe(true)
+    expect(canCreateWithFar(0, { L9: 2 }, 0)).toBe(false)
+    expect(canCreateWithFar(1, { L9: 1 }, 1)).toBe(false)
+    expect(canCreateWithFar(1, { L9: 1, L8: 1 }, 0)).toBe(false)
+    expect(canCreateWithFar(2, { L9: 5 }, 0)).toBe(false)
+    expect(canCreateWithFar(2, { L9: 0 }, 0)).toBe(true)
+    expect(canPickFar(0, {}, 'L9', 0)).toBe(true)
+    expect(canPickFar(1, { L9: 1 }, 'L8', 0)).toBe(false)
+    expect(canPickFar(3, { L9: 2 }, 'L9', 0)).toBe(true)
+    expect(canPickFar(3, { L9: 3 }, 'L9', 0)).toBe(false)
+  })
+
+  it('sends what a draft brings', async () => {
+    const calls: unknown[] = []
+    const client = roomDraftsClient(async (method, path, body) => {
+      calls.push([method, path, body])
+      return { ok: true, draft: wire } as never
+    })
+    await client.create('Studio', [{ profile: 'default' }], ['L9'], 'default', true, { L9: ['art'] })
+    expect(calls).toEqual([['POST', '/api/plugins/conduit_push/rooms/drafts', { name: 'Studio', agents: [{ profile: 'default' }], links: ['L9'], bring: { L9: ['art'] } }]])
   })
 })
