@@ -54,6 +54,8 @@ interface Props {
   /** The profile the list shows (null: every one). */
   profile?: string | null
   onProfile?: (profile: string | null) => void
+  /** Edit profile from a face's right-click in the strip. */
+  onEditProfile?: (bot: Bot) => void
   /** A row's menu (right-click or ⋯): Pin or Unpin, Rename, Delete. */
   onPin?: (row: ChatRow) => void
   onRename?: (row: ChatRow, title: string) => void
@@ -114,6 +116,7 @@ export function ChatList({
   bots,
   profile = null,
   onProfile,
+  onEditProfile,
   onPin,
   onRename,
   onDelete,
@@ -328,7 +331,7 @@ export function ChatList({
       </label>
       {showStrip ? (
         <div className="profile-strip-wrap">
-          <ProfileStrip bots={bots!} profile={profile} onProfile={onProfile!} onShowInAll={() => setShowInAll(true)} />
+          <ProfileStrip bots={bots!} profile={profile} onProfile={onProfile!} onShowInAll={() => setShowInAll(true)} onEditProfile={onEditProfile} />
           {showInAll ? (
             <ShowInAll
               bots={bots!}
@@ -775,15 +778,33 @@ export function ProfileStrip({
   bots,
   profile,
   onProfile,
-  onShowInAll
+  onShowInAll,
+  onEditProfile
 }: {
   bots: Bot[]
   profile: string | null
   onProfile: (profile: string | null) => void
   /** Opens Show in All: from a right-click on All, or a click on All while it's chosen. */
   onShowInAll?: () => void
+  /** Edit profile from a face's right-click: the phone's Profiles card Edit menu (name, picture and the rest). */
+  onEditProfile?: (bot: Bot) => void
 }) {
+  const [menu, setMenu] = useState<{ bot: Bot; x: number; y: number } | null>(null)
+  useEffect(() => {
+    if (!menu) return
+    const close = () => setMenu(null)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
+    window.addEventListener('click', close)
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('blur', close)
+    return () => {
+      window.removeEventListener('click', close)
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('blur', close)
+    }
+  }, [menu])
   return (
+    <>
     <div
       className="profile-strip"
       role="tablist"
@@ -820,11 +841,27 @@ export function ProfileStrip({
           aria-label={bot.title}
           title={bot.title}
           onClick={() => onProfile(profile === bot.name ? null : bot.name)}
+          onContextMenu={
+            onEditProfile
+              ? e => {
+                  e.preventDefault()
+                  setMenu({ bot, x: e.clientX, y: e.clientY })
+                }
+              : undefined
+          }
         >
           <BotAvatar bot={bot} size={22} />
           {profile === bot.name ? <span>{bot.title}</span> : null}
         </button>
       ))}
     </div>
+    {menu && onEditProfile ? (
+      <div className="host-menu row-menu" role="menu" style={{ left: Math.min(menu.x, window.innerWidth - 220), top: Math.min(menu.y, window.innerHeight - 60) }}>
+        <button role="menuitem" onClick={() => onEditProfile(menu.bot)}>
+          {t('Edit profile')}
+        </button>
+      </div>
+    ) : null}
+    </>
   )
 }
