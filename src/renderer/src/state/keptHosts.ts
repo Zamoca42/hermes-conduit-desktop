@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { HostSummary, KeptHost, KeptHostState } from '../../../shared/ipc'
 import { t } from '../../../shared/i18n'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
-import { CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
+import { CHAT_LIST_PAGE, CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
 import { rosterFromProfiles, type Bot } from './bots'
 import { PULSE, parseFeed } from './pulse'
 import { listPath, parsePage, type ArtifactFilter, type ArtifactItem } from './artifacts'
@@ -188,14 +188,37 @@ export type OtherChatRow = ChatRow & { host: string }
 /** How often the other hosts' chats are read while the window is on screen, at most (the phone's minute). */
 export const KEPT_CHATS_POLL_MS = 60_000
 
+/** The newest chats read from each of another host's profiles, as on the phone. */
+export const KEPT_CHATS_PER_PROFILE = 50
+
+/** One profile's newest chats on another host: the chat list's read, narrowed to that profile. */
+export const keptChatsPath = (profile: string): string =>
+  `${CHAT_LIST_PATH.replace(`limit=${CHAT_LIST_PAGE}`, `limit=${KEPT_CHATS_PER_PROFILE}`)}&profile=${encodeURIComponent(profile)}`
+
+/** Rows read per profile as one list, each chat once (a Hermes that ignores `profile` answers every profile each time). */
+export function mergeKeptChats(host: string, pages: readonly unknown[]): OtherChatRow[] {
+  const seen = new Set<string>()
+  const rows: OtherChatRow[] = []
+  for (const page of pages) {
+    for (const row of rowsFromResponse(page)) {
+      if (seen.has(row.id)) continue
+      seen.add(row.id)
+      rows.push({ ...row, pinned: false, host })
+    }
+  }
+  return rows.sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))
+}
+
 /**
- * Every live kept host's newest chats (one page of the list, every profile),
- * read once a minute while the window is on screen. A failed read keeps what
- * the host showed; a host let go shows nothing more.
+ * Every live kept host's newest chats, 50 from each of its profiles as on
+ * the phone (one page across them while its profiles can't be read), read
+ * once a minute while the window is on screen. A failed read keeps what the
+ * host showed; a host let go shows nothing more.
  */
 export function useKeptChats(kept: readonly KeptHost[], on: boolean): OtherChatRow[] {
   const [rows, setRows] = useState<OtherChatRow[]>([])
   const byHost = useRef(new Map<string, OtherChatRow[]>())
+  const profiles = useRef(new Map<string, { names: string[]; at: number }>())
   const live = on
     ? kept
         .filter(h => h.state === 'live')
@@ -206,20 +229,29 @@ export function useKeptChats(kept: readonly KeptHost[], on: boolean): OtherChatR
   useEffect(() => {
     const urls = live ? live.split('\n') : []
     for (const url of [...byHost.current.keys()]) if (!urls.includes(url)) byHost.current.delete(url)
+    for (const url of [...profiles.current.keys()]) if (!urls.includes(url)) profiles.current.delete(url)
     const show = () => setRows([...byHost.current.values()].flat())
     show()
     if (!urls.length) return
     let stopped = false
+    const namesOf = async (url: string): Promise<string[] | null> => {
+      const last = profiles.current.get(url)
+      if (last && Date.now() - last.at <= KEPT_PROFILES_MAX_AGE_MS) return last.names
+      const outcome = await window.conduit.keptHttp(url, '/api/profiles')
+      const read = outcome.ok ? profileNames(outcome.result) : null
+      if (read) profiles.current.set(url, { names: read, at: Date.now() })
+      return read ?? last?.names ?? null
+    }
     const read = async () => {
       if (document.hidden) return
       await Promise.all(
         urls.map(async url => {
-          const outcome = await window.conduit.keptHttp(url, CHAT_LIST_PATH)
-          if (!outcome.ok || stopped) return
-          byHost.current.set(
-            url,
-            rowsFromResponse(outcome.result).map(row => ({ ...row, pinned: false, host: url }))
-          )
+          const names = await namesOf(url)
+          const paths = names ? names.map(keptChatsPath) : [CHAT_LIST_PATH]
+          const outcomes = await Promise.all(paths.map(path => window.conduit.keptHttp(url, path)))
+          if (stopped || !outcomes.some(o => o.ok)) return
+          // A profile whose read failed keeps nothing back: the rest still show.
+          byHost.current.set(url, mergeKeptChats(url, outcomes.filter(o => o.ok).map(o => (o as { result: unknown }).result)))
         })
       )
       if (!stopped) show()

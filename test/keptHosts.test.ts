@@ -14,6 +14,9 @@ import {
   openBotAfterSwitch,
   openChatAfterSwitch,
   otherHostsChats,
+  keptChatsPath,
+  mergeKeptChats,
+  KEPT_CHATS_PER_PROFILE,
   otherHostsWaiting,
   profileNames,
   pulseChips,
@@ -289,6 +292,23 @@ describe('combined dashboards in the window', () => {
     const other = [chat('c1', 'https://studio.example'), chat('c2', 'https://studio.example'), chat('c2', 'https://third.example')] as OtherChatRow[]
     expect(otherHostsChats(other, [chat('c1')]).map(r => `${r.id}@${r.host}`)).toEqual(['c2@https://studio.example'])
     expect(otherHostsChats(other, null)).toHaveLength(2)
+  })
+
+  it('reads 50 of each of another host’s profiles, newest first, each chat once', () => {
+    expect(KEPT_CHATS_PER_PROFILE).toBe(50)
+    const path = new URL(`https://x${keptChatsPath('mira bot')}`)
+    expect(path.pathname).toBe('/api/profiles/sessions')
+    expect(path.searchParams.get('limit')).toBe('50')
+    expect(path.searchParams.get('profile')).toBe('mira bot')
+    expect(path.searchParams.get('archived')).toBe('exclude')
+    const page = (rows: [string, string, number][]) => ({ sessions: rows.map(([id, profile, at]) => ({ id, title: id, profile, last_active: at, message_count: 3 })) })
+    const merged = mergeKeptChats('https://studio.example', [
+      page([['d1', 'default', 300], ['d2', 'default', 100]]),
+      // A Hermes that ignores `profile` answers every profile again.
+      page([['m1', 'mira', 200], ['d1', 'default', 300]])
+    ])
+    expect(merged.map(r => `${r.id}@${r.host}`)).toEqual(['d1@https://studio.example', 'm1@https://studio.example', 'd2@https://studio.example'])
+    expect(merged.every(r => !r.pinned)).toBe(true)
   })
 
   it('opens another host’s chat in that host’s window after the switch', () => {
