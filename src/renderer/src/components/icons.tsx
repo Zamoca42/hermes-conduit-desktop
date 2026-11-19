@@ -55,6 +55,8 @@ const paths = {
   ),
   video: <path d="M4 7h11v10H4zM15 10.5l5-3v9l-5-3" />,
   link: <path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" />,
+  server: <path d="M4 5h16v6H4zM4 13h16v6H4zM8 8h.01M8 16h.01" />,
+  puzzle: <path d="M10 4a2 2 0 014 0v2h4v4h-2a2 2 0 000 4h2v4h-4v-2a2 2 0 00-4 0v2H6v-4h2a2 2 0 000-4H6V6h4z" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
   star: <path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.3L12 16l-4.9 2.6 1.1-5.3-4-3.7 5.4-.6z" />,
   pin: <path d="M9 4h6l-1 6 3 3H7l3-3zM12 13v7" />,

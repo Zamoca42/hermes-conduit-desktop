@@ -1094,6 +1094,21 @@
     "zh-Hans": "已经完成",
     "zh-Hant": "已經完成"
   },
+  "Already installed": {
+    "de": "Bereits installiert",
+    "es": "Ya instalado",
+    "fr": "Déjà installé",
+    "id": "Sudah terpasang",
+    "it": "Già installato",
+    "ja": "インストール済み",
+    "ko": "이미 설치됨",
+    "pl": "Już zainstalowano",
+    "pt-BR": "Já instalado",
+    "ru": "Уже установлено",
+    "tr": "Zaten yüklü",
+    "zh-Hans": "已安装",
+    "zh-Hant": "已安裝"
+  },
   "Always allow": {
     "de": "Immer erlauben",
     "es": "Permitir siempre",
@@ -1483,6 +1498,21 @@
     "tr": "Onayla",
     "zh-Hans": "批准",
     "zh-Hant": "核准"
+  },
+  "Apps Hermes can use for you": {
+    "de": "Apps, die Hermes für dich nutzen kann",
+    "es": "Apps que Hermes puede usar por ti",
+    "fr": "Apps que Hermes peut utiliser pour vous",
+    "id": "Aplikasi yang bisa dipakai Hermes untuk Anda",
+    "it": "App che Hermes può usare per te",
+    "ja": "Hermes があなたの代わりに使えるアプリ",
+    "ko": "Hermes가 대신 사용할 수 있는 앱",
+    "pl": "Aplikacje, których Hermes może używać za Ciebie",
+    "pt-BR": "Apps que o Hermes pode usar por você",
+    "ru": "Приложения, которыми Hermes может пользоваться за вас",
+    "tr": "Hermes'in senin için kullanabileceği uygulamalar",
+    "zh-Hans": "Hermes 可以替你使用的应用",
+    "zh-Hant": "Hermes 可以替你使用的 App"
   },
   "Archive": {
     "de": "Archivieren",
@@ -2788,6 +2818,21 @@
     "tr": "Modele göre",
     "zh-Hans": "按模型",
     "zh-Hant": "依模型"
+  },
+  "CONNECTED": {
+    "de": "VERBUNDEN",
+    "es": "CONECTADO",
+    "fr": "CONNECTÉ",
+    "id": "TERHUBUNG",
+    "it": "CONNESSO",
+    "ja": "接続済み",
+    "ko": "연결됨",
+    "pl": "POŁĄCZONO",
+    "pt-BR": "CONECTADO",
+    "ru": "ПОДКЛЮЧЕНО",
+    "tr": "BAĞLANDI",
+    "zh-Hans": "已连接",
+    "zh-Hant": "已連線"
   },
   "Cache reads": {
     "de": "Cache-Lesevorgänge",
@@ -4259,6 +4304,36 @@
     "zh-Hans": "确认重新加载连接器",
     "zh-Hant": "確認重新載入連接器"
   },
+  "Connect": {
+    "de": "Verbinden",
+    "es": "Conectar",
+    "fr": "Connecter",
+    "id": "Hubungkan",
+    "it": "Connetti",
+    "ja": "接続",
+    "ko": "연결",
+    "pl": "Połącz",
+    "pt-BR": "Conectar",
+    "ru": "Подключить",
+    "tr": "Bağla",
+    "zh-Hans": "连接",
+    "zh-Hant": "連線"
+  },
+  "Connect for Hermes": {
+    "de": "Für Hermes verbinden",
+    "es": "Conectar para Hermes",
+    "fr": "Connecter pour Hermes",
+    "id": "Hubungkan untuk Hermes",
+    "it": "Connetti per Hermes",
+    "ja": "Hermes のために接続",
+    "ko": "Hermes용으로 연결",
+    "pl": "Połącz dla Hermesa",
+    "pt-BR": "Conectar para o Hermes",
+    "ru": "Подключить для Hermes",
+    "tr": "Hermes için bağla",
+    "zh-Hans": "为 Hermes 连接",
+    "zh-Hant": "為 Hermes 連線"
+  },
   "Connect to Hermes": {
     "de": "Mit Hermes verbinden",
     "es": "Conectar con Hermes",
@@ -4303,6 +4378,21 @@
     "tr": "{host} ile bağlı",
     "zh-Hans": "已连接到 {host}",
     "zh-Hant": "已連線到 {host}"
+  },
+  "Connected, but its tools didn't load": {
+    "de": "Verbunden, aber die Werkzeuge wurden nicht geladen",
+    "es": "Conectado, pero sus herramientas no se cargaron",
+    "fr": "Connecté, mais ses outils ne se sont pas chargés",
+    "id": "Terhubung, tetapi alatnya tidak termuat",
+    "it": "Connesso, ma i suoi strumenti non si sono caricati",
+    "ja": "接続済みですが、ツールを読み込めませんでした",
+    "ko": "연결됐지만 도구를 불러오지 못했습니다",
+    "pl": "Połączono, ale jego narzędzia się nie wczytały",
+    "pt-BR": "Conectado, mas as ferramentas não carregaram",
+    "ru": "Подключено, но его инструменты не загрузились",
+    "tr": "Bağlandı ama araçları yüklenmedi",
+    "zh-Hans": "已连接，但其工具未能加载",
+    "zh-Hant": "已連線，但其工具未能載入"
   },
   "Connecting to Hermes…": {
     "de": "Verbindung mit Hermes…",
@@ -4453,6 +4543,36 @@
     "tr": "Güvenli İşe Devam Et",
     "zh-Hans": "继续安全的工作",
     "zh-Hant": "繼續安全的工作"
+  },
+  "Continue lets Hermes carry on without what isn't connected yet.": {
+    "de": "Mit Weiter macht Hermes ohne das weiter, was noch nicht verbunden ist.",
+    "es": "Continuar deja que Hermes siga sin lo que aún no está conectado.",
+    "fr": "Continuer laisse Hermes poursuivre sans ce qui n'est pas encore connecté.",
+    "id": "Lanjutkan membuat Hermes meneruskan tanpa yang belum terhubung.",
+    "it": "Continua lascia che Hermes prosegua senza ciò che non è ancora connesso.",
+    "ja": "「続ける」で、まだ接続していないものなしで Hermes が先へ進みます。",
+    "ko": "계속을 누르면 Hermes가 아직 연결되지 않은 것 없이 진행합니다.",
+    "pl": "Dalej pozwala Hermesowi kontynuować bez tego, co nie jest jeszcze połączone.",
+    "pt-BR": "Continuar deixa o Hermes seguir sem o que ainda não está conectado.",
+    "ru": "«Продолжить» позволит Hermes продолжить без того, что ещё не подключено.",
+    "tr": "Devam et, Hermes'in henüz bağlanmamış olanlar olmadan sürdürmesini sağlar.",
+    "zh-Hans": "点按“继续”，Hermes 会在没有尚未连接的内容的情况下继续。",
+    "zh-Hant": "點按「繼續」，Hermes 會在沒有尚未連線的項目下繼續。"
+  },
+  "Continue when you're done; Hermes carries on with the apps you connected.": {
+    "de": "Tippe auf Weiter, wenn du fertig bist; Hermes macht mit den verbundenen Apps weiter.",
+    "es": "Continúa cuando termines; Hermes sigue con las apps que conectaste.",
+    "fr": "Continuez quand vous avez terminé ; Hermes poursuit avec les apps connectées.",
+    "id": "Lanjutkan setelah selesai; Hermes meneruskan dengan aplikasi yang Anda hubungkan.",
+    "it": "Continua quando hai finito; Hermes prosegue con le app che hai connesso.",
+    "ja": "終わったら「続ける」をタップ。Hermes は接続したアプリで先へ進みます。",
+    "ko": "다 되면 계속을 누르세요. Hermes가 연결한 앱으로 진행합니다.",
+    "pl": "Gdy skończysz, wybierz Dalej; Hermes będzie kontynuować z połączonymi aplikacjami.",
+    "pt-BR": "Continue quando terminar; o Hermes segue com as apps que você conectou.",
+    "ru": "Нажмите «Продолжить», когда закончите: Hermes продолжит с подключёнными приложениями.",
+    "tr": "Bitirdiğinde devam et; Hermes bağladığın uygulamalarla sürdürür.",
+    "zh-Hans": "完成后点按“继续”；Hermes 会用你连接的应用继续。",
+    "zh-Hant": "完成後點按「繼續」；Hermes 會用你連線的 App 繼續。"
   },
   "Coordinate Work": {
     "de": "Arbeit koordinieren",
@@ -5849,6 +5969,21 @@
     "zh-Hans": "青色",
     "zh-Hant": "青色"
   },
+  "DONE": {
+    "de": "FERTIG",
+    "es": "LISTO",
+    "fr": "TERMINÉ",
+    "id": "SELESAI",
+    "it": "FATTO",
+    "ja": "完了",
+    "ko": "완료",
+    "pl": "GOTOWE",
+    "pt-BR": "CONCLUÍDO",
+    "ru": "ГОТОВО",
+    "tr": "BİTTİ",
+    "zh-Hans": "完成",
+    "zh-Hant": "完成"
+  },
   "Daily at {time}": {
     "de": "Täglich um {time}",
     "es": "Todos los días a las {time}",
@@ -6613,6 +6748,21 @@
     "tr": "Dikte et",
     "zh-Hans": "听写",
     "zh-Hant": "聽寫"
+  },
+  "Didn't connect": {
+    "de": "Nicht verbunden",
+    "es": "No se conectó",
+    "fr": "Connexion échouée",
+    "id": "Gagal terhubung",
+    "it": "Non connesso",
+    "ja": "接続できませんでした",
+    "ko": "연결하지 못함",
+    "pl": "Nie połączono",
+    "pt-BR": "Não conectou",
+    "ru": "Не подключено",
+    "tr": "Bağlanamadı",
+    "zh-Hans": "未能连接",
+    "zh-Hant": "未能連線"
   },
   "Didn't fit a card type": {
     "de": "Passte zu keinem Kartentyp",
@@ -9509,6 +9659,21 @@
     "zh-Hans": "群聊",
     "zh-Hant": "群組聊天"
   },
+  "HERMES IS WAITING": {
+    "de": "HERMES WARTET",
+    "es": "HERMES ESTÁ ESPERANDO",
+    "fr": "HERMES ATTEND",
+    "id": "HERMES MENUNGGU",
+    "it": "HERMES È IN ATTESA",
+    "ja": "HERMES が待機中",
+    "ko": "HERMES가 기다리는 중",
+    "pl": "HERMES CZEKA",
+    "pt-BR": "O HERMES ESTÁ ESPERANDO",
+    "ru": "HERMES ЖДЁТ",
+    "tr": "HERMES BEKLİYOR",
+    "zh-Hans": "HERMES 正在等待",
+    "zh-Hant": "HERMES 正在等待"
+  },
   "Hand Back": {
     "de": "Zurückgeben",
     "es": "Devolver",
@@ -11548,6 +11713,21 @@
     "tr": "Kurulum tamamlandı",
     "zh-Hans": "安装完成",
     "zh-Hant": "安裝完成"
+  },
+  "Install for Hermes": {
+    "de": "Für Hermes installieren",
+    "es": "Instalar para Hermes",
+    "fr": "Installer pour Hermes",
+    "id": "Pasang untuk Hermes",
+    "it": "Installa per Hermes",
+    "ja": "Hermes のためにインストール",
+    "ko": "Hermes용으로 설치",
+    "pl": "Zainstaluj dla Hermesa",
+    "pt-BR": "Instalar para o Hermes",
+    "ru": "Установить для Hermes",
+    "tr": "Hermes için yükle",
+    "zh-Hans": "为 Hermes 安装",
+    "zh-Hant": "為 Hermes 安裝"
   },
   "Install on Host": {
     "de": "Auf dem Host installieren",
@@ -15583,6 +15763,21 @@
     "tr": "Algılanmadı. {name} komut satırı aracını Hermes bilgisayarına kurun ve oturum açın; Hermes onu kendiliğinden algılar.",
     "zh-Hans": "未检测到。请在 Hermes 的电脑上安装 {name} 命令行工具并登录；Hermes 会自动识别。",
     "zh-Hant": "未偵測到。請在 Hermes 的電腦上安裝 {name} 命令列工具並登入；Hermes 會自動辨識。"
+  },
+  "Not installed": {
+    "de": "Nicht installiert",
+    "es": "No instalado",
+    "fr": "Non installé",
+    "id": "Belum terpasang",
+    "it": "Non installato",
+    "ja": "未インストール",
+    "ko": "설치되지 않음",
+    "pl": "Nie zainstalowano",
+    "pt-BR": "Não instalado",
+    "ru": "Не установлено",
+    "tr": "Yüklü değil",
+    "zh-Hans": "未安装",
+    "zh-Hant": "未安裝"
   },
   "Not now": {
     "de": "Nicht jetzt",
@@ -20264,6 +20459,21 @@
     "zh-Hans": "自我改进审核",
     "zh-Hant": "自我改進檢閱"
   },
+  "SENDING": {
+    "de": "WIRD GESENDET",
+    "es": "ENVIANDO",
+    "fr": "ENVOI",
+    "id": "MENGIRIM",
+    "it": "INVIO",
+    "ja": "送信中",
+    "ko": "보내는 중",
+    "pl": "WYSYŁANIE",
+    "pt-BR": "ENVIANDO",
+    "ru": "ОТПРАВКА",
+    "tr": "GÖNDERİLİYOR",
+    "zh-Hans": "正在发送",
+    "zh-Hant": "傳送中"
+  },
   "SSH backend: keep exported variables between commands. The working directory always carries over.": {
     "de": "SSH-Backend: exportierte Variablen zwischen Befehlen behalten. Das Arbeitsverzeichnis bleibt immer erhalten.",
     "es": "Backend SSH: conserva las variables exportadas entre comandos. El directorio de trabajo siempre se mantiene.",
@@ -21268,6 +21478,51 @@
     "tr": "Güvenlik düzeltmeleri",
     "zh-Hans": "安全修复",
     "zh-Hant": "安全性修正"
+  },
+  "Security scan failed": {
+    "de": "Sicherheitsprüfung fehlgeschlagen",
+    "es": "El análisis de seguridad falló",
+    "fr": "Échec de l'analyse de sécurité",
+    "id": "Pemindaian keamanan gagal",
+    "it": "Scansione di sicurezza non superata",
+    "ja": "セキュリティスキャンに失敗",
+    "ko": "보안 검사 실패",
+    "pl": "Skan bezpieczeństwa nie powiódł się",
+    "pt-BR": "A verificação de segurança falhou",
+    "ru": "Проверка безопасности не пройдена",
+    "tr": "Güvenlik taraması başarısız",
+    "zh-Hans": "安全扫描未通过",
+    "zh-Hant": "安全掃描未通過"
+  },
+  "Security scan found warnings": {
+    "de": "Sicherheitsprüfung mit Warnungen",
+    "es": "El análisis de seguridad encontró advertencias",
+    "fr": "L'analyse de sécurité a trouvé des avertissements",
+    "id": "Pemindaian keamanan menemukan peringatan",
+    "it": "La scansione di sicurezza ha trovato avvisi",
+    "ja": "セキュリティスキャンで警告あり",
+    "ko": "보안 검사에서 경고 발견",
+    "pl": "Skan bezpieczeństwa znalazł ostrzeżenia",
+    "pt-BR": "A verificação de segurança encontrou avisos",
+    "ru": "Проверка безопасности нашла предупреждения",
+    "tr": "Güvenlik taraması uyarı buldu",
+    "zh-Hans": "安全扫描发现警告",
+    "zh-Hant": "安全掃描發現警告"
+  },
+  "Security scan passed": {
+    "de": "Sicherheitsprüfung bestanden",
+    "es": "Análisis de seguridad superado",
+    "fr": "Analyse de sécurité réussie",
+    "id": "Pemindaian keamanan lulus",
+    "it": "Scansione di sicurezza superata",
+    "ja": "セキュリティスキャンに合格",
+    "ko": "보안 검사 통과",
+    "pl": "Skan bezpieczeństwa zaliczony",
+    "pt-BR": "Verificação de segurança aprovada",
+    "ru": "Проверка безопасности пройдена",
+    "tr": "Güvenlik taraması geçti",
+    "zh-Hans": "安全扫描通过",
+    "zh-Hant": "安全掃描通過"
   },
   "Self-improvement updates": {
     "de": "Updates zur Selbstverbesserung",
@@ -23578,6 +23833,21 @@
     "tr": "Sistem bildirimi",
     "zh-Hans": "系统通知",
     "zh-Hant": "系統通知"
+  },
+  "TRY AGAIN": {
+    "de": "ERNEUT VERSUCHEN",
+    "es": "REINTENTAR",
+    "fr": "RÉESSAYER",
+    "id": "COBA LAGI",
+    "it": "RIPROVA",
+    "ja": "再試行",
+    "ko": "다시 시도",
+    "pl": "SPRÓBUJ PONOWNIE",
+    "pt-BR": "TENTAR NOVAMENTE",
+    "ru": "ПОВТОРИТЕ",
+    "tr": "YENİDEN DENEYİN",
+    "zh-Hans": "重试",
+    "zh-Hant": "再試一次"
   },
   "Take Over": {
     "de": "Übernehmen",
@@ -28184,6 +28454,21 @@
     "zh-Hans": "等待中",
     "zh-Hant": "等待中"
   },
+  "Waiting for the sign-in…": {
+    "de": "Warte auf die Anmeldung…",
+    "es": "Esperando el inicio de sesión…",
+    "fr": "En attente de la connexion…",
+    "id": "Menunggu proses masuk…",
+    "it": "In attesa dell'accesso…",
+    "ja": "サインインを待っています…",
+    "ko": "로그인을 기다리는 중…",
+    "pl": "Czekanie na zalogowanie…",
+    "pt-BR": "Aguardando o login…",
+    "ru": "Ожидаем вход…",
+    "tr": "Giriş bekleniyor…",
+    "zh-Hans": "正在等待登录…",
+    "zh-Hant": "正在等待登入⋯"
+  },
   "Waiting for you to finish…": {
     "de": "Warte, bis du fertig bist …",
     "es": "Esperando a que termines…",
@@ -30628,6 +30913,21 @@
     "tr": "{kind}: {level}",
     "zh-Hans": "{kind}：{level}",
     "zh-Hant": "{kind}：{level}"
+  },
+  "{label} (required)": {
+    "de": "{label} (erforderlich)",
+    "es": "{label} (obligatorio)",
+    "fr": "{label} (obligatoire)",
+    "id": "{label} (wajib)",
+    "it": "{label} (obbligatorio)",
+    "ja": "{label}（必須）",
+    "ko": "{label} (필수)",
+    "pl": "{label} (wymagane)",
+    "pt-BR": "{label} (obrigatório)",
+    "ru": "{label} (обязательно)",
+    "tr": "{label} (zorunlu)",
+    "zh-Hans": "{label}（必填）",
+    "zh-Hant": "{label}（必填）"
   },
   "{label} is required.": {
     "de": "{label} ist erforderlich.",
