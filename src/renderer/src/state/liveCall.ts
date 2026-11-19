@@ -9,6 +9,7 @@ import { ACKNOWLEDGEMENT, ANSWER_LENGTH, languageRule } from './gptLive'
 import { REQUESTS_RULE, REQUEST_TOOL_SPECS } from './liveRequests'
 import { FIND_CHAT_RULE, FIND_CHAT_SPEC, READ_CHAT_SPEC } from './chatFinder'
 import { JOBS_RULE, JOB_TOOL_SPECS } from './voiceJobs'
+import { CALLBACK_SPEC } from './callbacks'
 
 export const ASK_THREAD = 'ask_thread'
 export const READ_LAST_REPLY = 'read_last_reply'
@@ -56,6 +57,8 @@ export const TOOL_SPECS: { name: string; description: string; parameters: Record
   },
   // Background jobs, each in a chat of its own.
   ...JOB_TOOL_SPECS,
+  // Hermes calls the user's phone once the call's work is done.
+  CALLBACK_SPEC,
   // Finding and reading the user's earlier chats.
   FIND_CHAT_SPEC,
   READ_CHAT_SPEC,

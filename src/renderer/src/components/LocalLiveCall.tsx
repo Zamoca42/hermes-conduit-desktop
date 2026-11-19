@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import type { PendingRequest } from '@shared/ipc'
 import { stopReading } from '../state/readAloud'
@@ -150,13 +151,28 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   const finder = useRef(chatFinder(profile))
   const [jobList, setJobList] = useState<VoiceJob[]>([])
   const jobs = useRef<VoiceJobs | null>(null)
+  // "Call me when it's done": the call's jobs and its request in the chat, as they run.
+  const callbacks = useRef<CallBacks | null>(null)
+  const chatRequest = useRef<CallWork | null>(null)
+  const syncWork = () => callbacks.current?.sync([...(jobs.current?.jobs ?? []).map(jobWork), ...(chatRequest.current ? [chatRequest.current] : [])])
   // The call's background jobs: a settled one is told at the next quiet moment.
   useEffect(() => {
-    const kept = new VoiceJobs(profile, setJobList, notice => {
-      if (!ended.current) updates.current.push(notice)
+    const asked = new CallBacks(profile, note => {
+      if (!ended.current) updates.current.push(note)
     })
+    callbacks.current = asked
+    const kept = new VoiceJobs(
+      profile,
+      list => (setJobList(list), syncWork()),
+      notice => {
+        if (!ended.current) updates.current.push(notice)
+      }
+    )
     jobs.current = kept
-    return () => kept.dispose()
+    return () => {
+      kept.dispose()
+      void asked.hangUp()
+    }
   }, [])
 
   const socket = useRef<string | null>(null)
@@ -326,6 +342,8 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
     if (!next) return
     active.current = { from: live.current.turnsDone, at: Date.now(), started: false }
     live.current.onSay(next)
+    chatRequest.current = chatWork(live.current.chatId, next, active.current.at)
+    syncWork()
   }
 
   const answer = (id: string, name: string, result: Record<string, string>, speak = false) => {
@@ -346,6 +364,11 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
         pump()
         return answer(event.id, event.name, waits ? QUEUED : SENT)
       }
+      case CALL_ME_WHEN_DONE:
+        void (callbacks.current?.request(callbackScope(event.args)) ?? Promise.resolve({ status: 'unavailable', message: 'Not in a call.' })).then(
+          result => !ended.current && answer(event.id, event.name, result, true)
+        )
+        return
       case START_JOB:
         void jobs.current?.start(event.args.instructions ?? '').then(result => !ended.current && answer(event.id, event.name, result, true))
         return
@@ -773,6 +796,8 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
     }
     if (turnsDone !== current.from) {
       active.current = null
+      chatRequest.current = null
+      syncWork()
       updates.current.push(lastReply?.trim() ? replyPrompt(lastReply) : NO_REPLY)
       pump()
       return
@@ -780,6 +805,8 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
     const timer = window.setTimeout(() => {
       if (active.current === current && !current.started) {
         active.current = null
+        chatRequest.current = null
+        syncWork()
         updates.current.push(NO_REPLY)
         pump()
       }

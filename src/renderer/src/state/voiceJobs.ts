@@ -137,6 +137,10 @@ export interface VoiceJob {
   status: JobStatus
   /** The job's live session, for its events. */
   sid?: string
+  /** Its stored session, which the host's turn-end hooks name. */
+  stored?: string
+  /** When its request went out (ms). */
+  sentAt?: number
   reply?: string
   error?: string
 }
@@ -230,7 +234,7 @@ export class VoiceJobs {
       const made = (await this.rpc('session.create', params)) as Row
       const sid = str(made?.session_id)
       if (!sid) throw new Error('Hermes made no session for the job.')
-      this.update(id, { sid })
+      this.update(id, { sid, stored: str(made.stored_session_id) ?? sid, sentAt: Date.now() })
       const submit: Row = { session_id: sid, text: task }
       if (this.profile) submit.profile = this.profile
       await this.rpc('prompt.submit', submit)

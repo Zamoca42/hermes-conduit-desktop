@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { CallBacks, callMeMarker, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { stopReading } from '../state/readAloud'
@@ -116,14 +117,29 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const finder = useRef(chatFinder(profile))
   const [jobList, setJobList] = useState<VoiceJob[]>([])
   const jobs = useRef<VoiceJobs | null>(null)
+  // "Call me when it's done": the call's jobs and its request in the chat, as they run.
+  const callbacks = useRef<CallBacks | null>(null)
+  const chatRequest = useRef<CallWork | null>(null)
+  const syncWork = () => callbacks.current?.sync([...(jobs.current?.jobs ?? []).map(jobWork), ...(chatRequest.current ? [chatRequest.current] : [])])
   const jobDelegations = useRef(new Map<string, string>())
   // The call's background jobs: each result goes on the delegation that started it.
   useEffect(() => {
-    const kept = new VoiceJobs(profile, setJobList, (notice, job) => {
-      if (!ended.current) append(notice, 'speakable', jobDelegations.current.get(job.id) ?? null)
+    const asked = new CallBacks(profile, note => {
+      if (!ended.current) append(note, 'speakable', null)
     })
+    callbacks.current = asked
+    const kept = new VoiceJobs(
+      profile,
+      list => (setJobList(list), syncWork()),
+      (notice, job) => {
+        if (!ended.current) append(notice, 'speakable', jobDelegations.current.get(job.id) ?? null)
+      }
+    )
     jobs.current = kept
-    return () => kept.dispose()
+    return () => {
+      kept.dispose()
+      void asked.hangUp()
+    }
   }, [])
   const ending = useRef(false)
   const lineId = useRef(0)
@@ -216,6 +232,8 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     if (!next) return
     active.current = { id: next.id, from: live.current.turnsDone, at: Date.now(), started: false }
     live.current.onSay(next.request)
+    chatRequest.current = chatWork(live.current.chatId, next.request, active.current.at)
+    syncWork()
     append(SENT_TO_CHAT, 'speakable', next.id)
   }
 
@@ -250,6 +268,26 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     if (isApprove(text) || isDeny(text) || reply !== null) {
       const answering = reply !== null ? answerQuestion(live.current.requests, reply) : answerApproval(live.current.requests, isApprove(text) ? 'once' : 'deny')
       void answering.then(result => append(result.next_question ?? result.message ?? result.error ?? '', 'speakable', id))
+      return
+    }
+    // "Call me:": Hermes calls once the call's newest request is done (the job named, or all of them).
+    let callMe = callMeMarker(text)
+    if (callMe) {
+      // "Call me: call me: …" asks once.
+      for (let again = callMeMarker(callMe.rest); again; again = callMeMarker(callMe.rest))
+        callMe = { scope: callMe.scope.kind === 'newest' ? again.scope : callMe.scope, rest: again.rest }
+      const { scope, rest } = callMe
+      if (rest) {
+        // The work goes first, as this delegation; the call is asked for the request that takes it.
+        const since = Date.now()
+        words.current = { done: said, open: '' }
+        delegate(id, rest)
+        void callbacks.current
+          ?.request(scope.kind === 'newest' ? { kind: 'next', since } : scope)
+          .then(result => !ended.current && append(`[${result.message}]`, 'commentary', id))
+        return
+      }
+      void callbacks.current?.request(scope).then(result => !ended.current && append(result.message, 'speakable', id))
       return
     }
     // Finding and reading the user's earlier chats, answered here.
@@ -469,6 +507,8 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     }
     if (turnsDone !== current.from) {
       active.current = null
+      chatRequest.current = null
+      syncWork()
       append(lastReply?.trim() ? replyPrompt(lastReply) : NO_REPLY, 'speakable', current.id)
       pump()
       return
@@ -477,6 +517,8 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     const timer = window.setTimeout(() => {
       if (active.current === current && !current.started) {
         active.current = null
+        chatRequest.current = null
+        syncWork()
         append(NO_REPLY, 'speakable', current.id)
         pump()
       }

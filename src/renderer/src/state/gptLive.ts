@@ -11,6 +11,7 @@ import { t } from '../../../shared/i18n'
 import { DELEGATED_REQUESTS_RULE } from './liveRequests'
 import { DELEGATED_FIND_CHAT_RULE } from './chatFinder'
 import { DELEGATED_JOBS_RULE, DELEGATED_JOB_FOLLOW_UPS } from './voiceJobs'
+import { CALL_ME_RULE } from './callbacks'
 import { namingFiles } from './media'
 
 export type Billing = 'subscription' | 'api'
@@ -372,6 +373,7 @@ ${READ_BACK_RULE}
 ${DELEGATED_REQUESTS_RULE}
 ${DELEGATED_FIND_CHAT_RULE}
 ${DELEGATED_JOBS_RULE} ${DELEGATED_JOB_FOLLOW_UPS}
+${CALL_ME_RULE.trim()}
 Only say you're sending or passing something to Hermes in a turn where you delegate it: saying so sends nothing, only the delegation does.
 ${END_CALL_RULE}]`
 
