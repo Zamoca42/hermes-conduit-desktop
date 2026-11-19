@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
-import { groupModels, reasoningTitle, REASONING_LEVELS, type ModelProviderRow } from '../state/models'
+import { groupModels, reasoningTitle, REASONING_LEVELS } from '../state/models'
 import {
   fieldValue,
   inTurn,
@@ -21,6 +21,8 @@ import { FieldRow } from './ConfigPage'
 import { FallbackModels } from './FallbackModels'
 import { Icon } from './icons'
 import { ModelOptions } from './ModelOptions'
+import { useModelCatalog } from '../state/modelCatalog'
+import { ModelCatalogNote } from './ModelCatalogNote'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -170,23 +172,15 @@ function DelegateModel({
   const savedReasoning = String(valueAt(config, 'delegation.reasoning_effort') ?? '')
   const [pick, setPick] = useState(savedModel ? `${savedProvider}\n${savedModel}` : '')
   const [reasoning, setReasoning] = useState(savedReasoning)
-  const [providers, setProviders] = useState<ModelProviderRow[]>([])
+  const catalog = useModelCatalog(
+    useMemo(() => (profile !== 'default' ? { explicit_only: true, profile } : { explicit_only: true }), [profile]),
+    { quietReadAgain: true }
+  )
+  const providers = catalog.providers ?? []
   useEffect(() => {
     setPick(savedModel ? `${savedProvider}\n${savedModel}` : '')
     setReasoning(savedReasoning)
   }, [savedProvider, savedModel, savedReasoning])
-  useEffect(() => {
-    let live = true
-    const params: Record<string, unknown> = { explicit_only: true }
-    if (profile !== 'default') params.profile = profile
-    gateway
-      .rpc<{ providers?: ModelProviderRow[] }>('model.options', params)
-      .then(answer => live && setProviders(answer?.providers ?? []))
-      .catch(() => undefined)
-    return () => {
-      live = false
-    }
-  }, [profile])
   const groups = useMemo(() => groupModels(providers, ''), [providers])
   const listed = !pick || groups.some(group => group.models.some(model => `${group.slug}\n${model}` === pick))
   const changed = pick !== (savedModel ? `${savedProvider}\n${savedModel}` : '') || reasoning !== savedReasoning
@@ -195,12 +189,19 @@ function DelegateModel({
       <h2>{t('Delegate model')}</h2>
       <div className="pset-row">
         <span>{t('Model')}</span>
-        <select className="language-select models-select" value={pick} disabled={busy} aria-label={t('Delegate model')} onChange={e => setPick(e.target.value)}>
+        <select
+          className="language-select models-select"
+          value={pick}
+          disabled={busy || !catalog.answered}
+          aria-label={t('Delegate model')}
+          onChange={e => setPick(e.target.value)}
+        >
           <option value="">{t('Inherit chat model')}</option>
           {!listed ? <option value={pick}>{pick.split('\n')[1]}</option> : null}
           <ModelOptions providers={providers} groups={groups} />
         </select>
       </div>
+      <ModelCatalogNote catalog={catalog} />
       <div className="pset-row">
         <span>{t('Reasoning')}</span>
         <select className="language-select" value={reasoning} disabled={busy} aria-label={t('Reasoning')} onChange={e => setReasoning(e.target.value)}>
@@ -215,7 +216,7 @@ function DelegateModel({
       <div>
         <button
           className="secondary"
-          disabled={busy || !changed}
+          disabled={busy || !changed || !catalog.answered}
           onClick={() => {
             const [provider = '', model = ''] = pick.split('\n')
             void onSave({ 'delegation.provider': pick ? provider : '', 'delegation.model': pick ? model : '', 'delegation.reasoning_effort': reasoning })

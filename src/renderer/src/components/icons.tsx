@@ -87,6 +87,7 @@ const paths = {
       <path d="M8 11V8a4 4 0 018 0v3" />
     </>
   ),
+  refresh: <path d="M20 12a8 8 0 11-2.34-5.66M20 4v4.5h-4.5" />,
   mic: (
     <>
       <rect x="9" y="3" width="6" height="11" rx="3" />

@@ -16,6 +16,7 @@ import { ColumnDivider } from './components/ColumnDivider'
 import { LastCallTrace } from './components/LastCallTrace'
 import { CrashReportBanner, DeviceReportsSetting } from './components/DeviceReports'
 import { GlowContext, useGlowColors } from './components/GlowColors'
+import { setCatalogHost } from './state/modelCatalog'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { BesideChatPane, type BesideChat } from './components/BesideChat'
 import { absolutePath, pathForDraft } from './state/workspace'
@@ -128,6 +129,8 @@ export function App() {
   // A new host signed in (or the sign-in screen otherwise left): back to the app.
   const url = status?.url
   useEffect(() => setAdding(false), [url])
+  // Model pickers open on the catalog kept from this host's last answer, never another host's.
+  setCatalogHost(url ?? '')
   // A host signed out or removed takes the summaries of its runs of steps with it.
   const hostList = status?.hosts?.map(h => h.url).join('\n')
   useEffect(() => {

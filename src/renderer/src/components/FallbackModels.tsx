@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { delegateChain, fallbackList, isComplete, moved, sameList, savedValue, type Fallback } from '../state/fallbacks'
-import { groupModels, type ModelProviderRow } from '../state/models'
+import { groupModels } from '../state/models'
 import { readConfig, updateConfig, withValue, type Http } from '../state/profileConfig'
 import { ModelOptions } from './ModelOptions'
+import { useModelCatalog } from '../state/modelCatalog'
+import { ModelCatalogNote } from './ModelCatalogNote'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -22,7 +24,11 @@ export function FallbackModels({ profile, delegate = false }: Props) {
   const [saved, setSaved] = useState<Fallback[]>([])
   const [inherits, setInherits] = useState(false)
   const [savedInherits, setSavedInherits] = useState(false)
-  const [providers, setProviders] = useState<ModelProviderRow[]>([])
+  const catalog = useModelCatalog(
+    useMemo(() => (profile !== 'default' ? { explicit_only: true, profile } : { explicit_only: true }), [profile]),
+    { quietReadAgain: true }
+  )
+  const providers = catalog.providers ?? []
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const read = useRef(0)
@@ -46,23 +52,14 @@ export function FallbackModels({ profile, delegate = false }: Props) {
   useEffect(() => {
     setEntries(null)
     void load()
-    let live = true
-    const params: Record<string, unknown> = { explicit_only: true }
-    if (profile !== 'default') params.profile = profile
-    gateway
-      .rpc<{ providers?: ModelProviderRow[] }>('model.options', params)
-      .then(answer => live && setProviders(answer?.providers ?? []))
-      .catch(() => undefined)
-    return () => {
-      live = false
-    }
   }, [load, profile])
 
   const groups = useMemo(() => groupModels(providers, ''), [providers])
   const list = entries ?? []
   const own = !(delegate && inherits)
   const changed = inherits !== savedInherits || (own && !sameList(list, saved))
-  const canSave = !!entries && !saving && changed && (!own || list.every(isComplete))
+  // A list that didn't load is never edited or saved.
+  const canSave = !!entries && !saving && changed && catalog.answered && (!own || list.every(isComplete))
 
   const save = async () => {
     setSaving(true)
@@ -177,7 +174,11 @@ export function FallbackModels({ profile, delegate = false }: Props) {
           ) : null}
           <div className="pset-actions">
             {own ? (
-              <button className="secondary" disabled={saving || !groups.length} onClick={() => setEntries([...list, { provider: '', model: '', extras: {} }])}>
+              <button
+                className="secondary"
+                disabled={saving || !catalog.answered || !groups.length}
+                onClick={() => setEntries([...list, { provider: '', model: '', extras: {} }])}
+              >
                 {t('Add fallback')}
               </button>
             ) : null}
@@ -185,6 +186,7 @@ export function FallbackModels({ profile, delegate = false }: Props) {
               {saving ? t('Saving…') : t('Save fallbacks')}
             </button>
           </div>
+          {own ? <ModelCatalogNote catalog={catalog} /> : null}
           {own && !list.every(isComplete) ? <p className="meta">{t('Pick a provider and model for every fallback to save.')}</p> : null}
           {error ? <p className="error-text">{error}</p> : null}
         </>

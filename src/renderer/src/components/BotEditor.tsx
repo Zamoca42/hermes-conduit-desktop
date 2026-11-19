@@ -21,7 +21,7 @@ import {
   type Capabilities,
   type Draft
 } from '../state/botEditor'
-import { groupModels, type ModelProviderRow } from '../state/models'
+import { groupModels } from '../state/models'
 import { starterFace } from '../state/starterFaces'
 import { avatarChanged, useAvatar } from '../state/useBots'
 import { SummaryHost } from '../state/useStepSummaries'
@@ -32,6 +32,8 @@ import { BotWorkSettings } from './BotWorkSettings'
 import { StarterFaceArt } from './StarterFaceArt'
 import { Icon } from './icons'
 import { ModelOptions } from './ModelOptions'
+import { useModelCatalog } from '../state/modelCatalog'
+import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
 interface Props {
   bot: Bot
@@ -88,7 +90,8 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
   const [draft, setDraft] = useState<Draft>(() => draftFor(bot))
   const [details, setDetails] = useState<BotDetails | null>(null)
   const [detailsError, setDetailsError] = useState<string | null>(null)
-  const [providers, setProviders] = useState<ModelProviderRow[] | null>(null)
+  const catalog = useModelCatalog(useMemo(() => ({ profile: bot.name, explicit_only: true }), [bot.name]))
+  const providers = catalog.providers
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [warning, setWarning] = useState<string | null>(null)
@@ -124,10 +127,6 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
 
   useEffect(() => {
     void loadDetails()
-    gateway
-      .rpc<{ providers?: ModelProviderRow[] }>('model.options', { profile: bot.name, explicit_only: true })
-      .then(answer => setProviders(answer.providers ?? []))
-      .catch(() => setProviders([]))
   }, [bot.name])
 
   const groups = useMemo(() => groupModels(providers ?? [], ''), [providers])
@@ -337,12 +336,7 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
         <section className="pset-section">
           <h2>{t('Background glow')}</h2>
           <div className="glow-pick">
-            <input
-              type="color"
-              aria-label={t('Background glow')}
-              value={glowValue}
-              onChange={e => savePick(host, bot.name, e.target.value)}
-            />
+            <input type="color" aria-label={t('Background glow')} value={glowValue} onChange={e => savePick(host, bot.name, e.target.value)} />
             {glowPicked ? (
               <button className="ask-btn" onClick={() => savePick(host, bot.name, null)}>
                 {t('Automatic')}
@@ -400,12 +394,16 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
         </section>
 
         <section className="pset-section">
-          <h2>{t('Model')}</h2>
-          {details && providers ? (
+          <h2 className="model-section-title">
+            {t('Model')}
+            <RefreshModelsButton catalog={catalog} />
+          </h2>
+          {details && (providers || catalog.failed) ? (
             <select
               className="language-select"
               value={modelValue}
               aria-label={t('Model')}
+              disabled={!catalog.answered}
               onChange={e => {
                 const [provider = '', model = ''] = e.target.value.split('\n')
                 update({ provider, model })
@@ -415,9 +413,10 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
               {modelValue && !listed ? <option value={modelValue}>{draft.model}</option> : null}
               <ModelOptions providers={providers ?? []} groups={groups} />
             </select>
-          ) : (
+          ) : !details ? (
             <p className="meta">{detailsError ? '—' : t('Loading…')}</p>
-          )}
+          ) : null}
+          {details ? <ModelCatalogNote catalog={catalog} /> : null}
         </section>
 
         {draft.capabilities && (draft.capabilities.skills.length || draft.capabilities.toolsets.length || draft.capabilities.mcpServers.length) ? (

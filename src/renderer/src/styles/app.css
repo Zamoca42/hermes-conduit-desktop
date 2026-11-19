@@ -8818,4 +8818,29 @@ button.secondary.danger {
 .call-picture-chip svg {
   width: 13px;
   height: 13px;
+
+/* A model picker's failed read: the note with Try Again beside it. */
+.model-catalog-note {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.model-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.model-section-title .refresh-models {
+  margin-left: auto;
+}
+
+.model-current .refresh-models {
+  margin-left: auto;
+}
+
+.model-current .refresh-models + .staged-remove {
+  margin-left: 0;
 }
