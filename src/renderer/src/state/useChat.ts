@@ -45,6 +45,7 @@ import { lostRows, queueFrom, refusalMeansSettled, resendWords, type QueuedPromp
 import { discardTurnSurface, reportTurnSurface } from './turnSurface'
 import { readsRepliesAloud } from './readAloud'
 import { dashboardProfilePath } from './dashboardProfile'
+import { authorityModelPick } from './chatActions'
 
 type Action =
   | { type: 'reset'; state: TranscriptState }
@@ -719,6 +720,25 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   /** Switches the chat's model; a pick Hermes guards (an expensive model) asks first. */
   const setModel = useCallback(
     async (model: string, provider: string, confirmed = false): Promise<ModelSwitch> => {
+      // The session authority takes a model pick as a `model` mutation, and refuses `config.set model` by name.
+      const pickOnAuthority = async (): Promise<ModelSwitch> => {
+        const sid = liveId.current
+        if (!sid) throw new Error(t('Not connected.'))
+        const pick = await authorityModelPick(gateway.rpc, gateway.http, sid, profile, model, provider, confirmed)
+        if (pick.confirmRequired) {
+          const words = pick.confirmMessage || t('Hermes did not accept the model switch.')
+          return confirmed ? { kind: 'failed', message: words } : { kind: 'confirm', message: words }
+        }
+        setChat(c => ({ ...c, model: pick.model, provider }))
+        return { kind: 'switched', deferred: pick.deferred }
+      }
+      if (sessionAuthority) {
+        try {
+          return await pickOnAuthority()
+        } catch (e) {
+          return { kind: 'failed', message: message(e) }
+        }
+      }
       try {
         const result = await configure('model', `${model} --provider ${provider} --session`, confirmed ? { confirm_expensive_model: true } : {})
         if (result.confirm_required) {
@@ -728,10 +748,18 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         if (!result.info) setChat(c => ({ ...c, model, provider }))
         return { kind: 'switched', deferred: result.deferred === true }
       } catch (e) {
+        // Sent before the socket said it's the authority's: once more as its mutation.
+        if (/use_session_mutation_model/.test(message(e))) {
+          try {
+            return await pickOnAuthority()
+          } catch (again) {
+            return { kind: 'failed', message: message(again) }
+          }
+        }
         return { kind: 'failed', message: message(e) }
       }
     },
-    [configure]
+    [configure, profile, sessionAuthority]
   )
 
   const setReasoning = useCallback(

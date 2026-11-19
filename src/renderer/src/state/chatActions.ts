@@ -84,6 +84,23 @@ export async function moveChat(rpc: Rpc, http: Http, id: string, profile: string
     await rpc('session.workspace.move', params)
     return
   }
+  await authorityMutation(rpc, http, id, profile, 'workspace', { cwd })
+}
+
+/**
+ * A `session.mutate` on the session authority (Move to project, a model
+ * pick), fenced by the chat's revision and turn generation from its
+ * mutation snapshot; a `revision_conflict` or `stale_generation` goes again
+ * once on a fresh snapshot. The answer is the mutation's result.
+ */
+export async function authorityMutation<T = Record<string, unknown>>(
+  rpc: Rpc,
+  http: Http,
+  id: string,
+  profile: string | undefined,
+  operation: string,
+  payload: Record<string, unknown>
+): Promise<T> {
   const attempt = async () => {
     let snapshot: unknown = null
     try {
@@ -95,18 +112,53 @@ export async function moveChat(rpc: Rpc, http: Http, id: string, profile: string
     const params: Record<string, unknown> = {
       session_id: id,
       request_id: identity?.request_id ?? crypto.randomUUID().toLowerCase(),
-      operation: 'workspace',
-      payload: { cwd },
+      operation,
+      payload,
       expected_revision: identity?.expected_revision ?? 0,
       expected_generation: identity?.expected_generation ?? 0
     }
     if (profile && profile !== 'default') params.profile = profile
-    await rpc('session.mutate', params)
+    return rpc<T>('session.mutate', params)
   }
   try {
-    await attempt()
+    return await attempt()
   } catch (e) {
     if (!/revision_conflict|stale_generation/i.test(e instanceof Error ? e.message : String(e))) throw e
-    await attempt()
+    return await attempt()
+  }
+}
+
+/** The authority's `confirm` token for a guarded model, by chat, model and provider: only that exact token applies it. */
+const modelConfirmTokens = new Map<string, string>()
+
+export interface AuthorityModelPick {
+  model: string
+  confirmRequired: boolean
+  confirmMessage: string
+  deferred: boolean
+}
+
+/**
+ * The authority's model pick, as the phone's authorityModelPick: there
+ * `config.set model` is refused (`use_session_mutation_model`), so it's a
+ * `model` mutation. A model Hermes guards answers with a `confirm` token
+ * instead of switching, and the confirmed pick sends that token back.
+ */
+export async function authorityModelPick(rpc: Rpc, http: Http, id: string, profile: string | undefined, model: string, provider: string, confirmed: boolean): Promise<AuthorityModelPick> {
+  const key = `${id}\n${model}\n${provider}`
+  const payload: Record<string, unknown> = { model, provider }
+  const token = modelConfirmTokens.get(key)
+  if (confirmed && token) payload.confirm = token
+  const result = (await authorityMutation(rpc, http, id, profile, 'model', payload)) ?? {}
+  const confirmRequired = result.confirm_required === true
+  if (confirmRequired && typeof result.confirm === 'string') modelConfirmTokens.set(key, result.confirm)
+  else modelConfirmTokens.delete(key)
+  const text = (value: unknown) => (typeof value === 'string' && value ? value : null)
+  return {
+    // A pick waiting on confirmation names its resolved target as `target_model`, and has no `model` until it applies.
+    model: text(result.model) ?? text(result.target_model) ?? model,
+    confirmRequired,
+    confirmMessage: text(result.confirm_message) ?? '',
+    deferred: result.deferred === true
   }
 }
