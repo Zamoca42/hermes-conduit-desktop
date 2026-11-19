@@ -15,6 +15,7 @@
 import type { HostProbe, SignInMethod } from '../shared/ipc'
 import { t } from '../shared/i18n'
 import { httpsIssue, proxyFetch, type ProxyHeaders } from './proxyHeaders'
+import { accessDeniedMessage, describeConnectionFailure } from './connectionFailure'
 
 export type Fetch = typeof fetch
 
@@ -99,6 +100,9 @@ async function timedFetch(fetchImpl: Fetch, url: string, init: RequestInit = {})
   try {
     return await fetchImpl(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
   } catch (error) {
+    // A network or TLS failure in the phone's words, named by the check that failed.
+    const described = describeConnectionFailure(error)
+    if (described) throw new AuthError(described)
     const reason = error instanceof Error ? (error.cause instanceof Error ? error.cause.message : error.message) : ''
     throw new AuthError(reason ? t('Couldn’t reach {host} ({reason}).', { host: new URL(url).host, reason }) : t('Couldn’t reach {host}.', { host: new URL(url).host }))
   }
@@ -138,6 +142,8 @@ export async function probeHost(input: string, fetchImpl: Fetch, headers?: Proxy
           : t('This dashboard is behind Cloudflare Access. Add its service token under Proxy sign-in.')
       }
     }
+    // No credentials went with this read, so a 401 or 403 is something in front of the dashboard turning this computer away.
+    if (response.status === 401 || response.status === 403) return { ok: false, error: accessDeniedMessage() }
     if (!response.ok) {
       return { ok: false, error: t('This isn’t answering like a Hermes dashboard ({detail}).', { detail: await errorDetail(response) }) }
     }

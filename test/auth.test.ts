@@ -75,6 +75,29 @@ describe('sign-in methods', () => {
     })
     expect(probe).toEqual({ ok: false, error: 'Couldn’t reach example.com (ECONNREFUSED).' })
   })
+
+  it('names the check a network or TLS failure failed, in the phone’s words', async () => {
+    const reason = async (fetchImpl: () => Promise<Response>) => {
+      const probe = await probeHost('example.com', fetchImpl)
+      return probe.ok ? '' : probe.error
+    }
+    const failing = (code: string) => async (): Promise<Response> => {
+      throw new TypeError('fetch failed', { cause: Object.assign(new Error(code), { code }) })
+    }
+    expect(await reason(failing('ECONNREFUSED'))).toMatch(/could not connect to the dashboard at this address/)
+    expect(await reason(failing('ENOTFOUND'))).toMatch(/could not find that host/)
+    expect(await reason(failing('SELF_SIGNED_CERT_IN_CHAIN'))).toMatch(/doesn’t trust its TLS certificate/)
+    expect(await reason(failing('CERT_HAS_EXPIRED'))).toMatch(/expired or not yet valid/)
+    expect(await reason(failing('ERR_TLS_CERT_ALTNAME_INVALID'))).toMatch(/isn’t issued for this address/)
+  })
+
+  it('says a 401 or 403 on the status read is something in front of the dashboard refusing this computer', async () => {
+    for (const status of [401, 403]) {
+      const { fetchImpl } = dashboard({ '/api/status': () => new Response('nope', { status }) })
+      const probe = await probeHost('example.com', fetchImpl)
+      expect(probe.ok ? '' : probe.error).toMatch(/refused this device/)
+    }
+  })
 })
 
 describe('open dashboards', () => {
