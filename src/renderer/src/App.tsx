@@ -18,6 +18,7 @@ import { CrashReportBanner, DeviceReportsSetting } from './components/DeviceRepo
 import { GlowContext, useGlowColors } from './components/GlowColors'
 import { archiveClassicChat, tagVoiceSession, useVoiceList, withVoice } from './state/voiceList'
 import { setCatalogHost } from './state/modelCatalog'
+import { setTurnSurfaceHost } from './state/turnSurface'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { BesideChatPane, type BesideChat } from './components/BesideChat'
 import { absolutePath, pathForDraft } from './state/workspace'
@@ -132,6 +133,7 @@ export function App() {
   useEffect(() => setAdding(false), [url])
   // Model pickers open on the catalog kept from this host's last answer, never another host's.
   setCatalogHost(url ?? '')
+  setTurnSurfaceHost(url ?? '')
   // A host signed out or removed takes the summaries of its runs of steps with it.
   const hostList = status?.hosts?.map(h => h.url).join('\n')
   useEffect(() => {
@@ -410,7 +412,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       waitingPicture.current = null
       setCallPicture(null)
     }
-    void onSend(words, picture ? [picture.attachment] : [], { takeOver: true })
+    void onSend(words, picture ? [picture.attachment] : [], { takeOver: true, spoken: true })
   }
   const pictureControls = (
     <CallPictureControls
@@ -717,7 +719,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [sendNow, setSendNow] = useState(0)
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
-    async (text: string, attachments: StagedAttachment[] = [], options: { takeOver?: boolean } = {}) => {
+    async (text: string, attachments: StagedAttachment[] = [], options: { takeOver?: boolean; spoken?: boolean } = {}) => {
       let created: string | null | false
       if (looksLikeSlashCommand(text) && !attachments.length) {
         const outcome = await command(text, commands)

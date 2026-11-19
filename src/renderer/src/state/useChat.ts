@@ -41,6 +41,8 @@ import type { Attachment } from './text'
 import { helpText, parseSlashCommand, parseSlashResult, wantsDispatch, type SlashCommand, type SlashResult } from './slash'
 import { t } from '../../../shared/i18n'
 import { lostRows, queueFrom, refusalMeansSettled, resendWords, type QueuedPrompt } from './chatQueue'
+import { discardTurnSurface, reportTurnSurface } from './turnSurface'
+import { readsRepliesAloud } from './readAloud'
 
 type Action =
   | { type: 'reset'; state: TranscriptState }
@@ -413,7 +415,12 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   }, [takeover, takeOverChat])
 
   const send = useCallback(
-    async (text: string, attachments: StagedAttachment[] = [], wire?: string, options: { takeOver?: boolean } = {}): Promise<string | null | false> => {
+    async (
+      text: string,
+      attachments: StagedAttachment[] = [],
+      wire?: string,
+      options: { takeOver?: boolean; spoken?: boolean } = {}
+    ): Promise<string | null | false> => {
       const trimmed = text.trim()
       if (!trimmed && !attachments.length) return null
       const shown: Attachment[] = attachments.map(a =>
@@ -425,6 +432,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       dispatch({ type: 'pending', text: trimmed, attachments: shown, key })
       let sid = liveId.current
       let held: string[] = []
+      let reported: string | null = null
       try {
         let createdStoredId: string | null = null
         if (!sid) {
@@ -447,6 +455,9 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         if (waiting && waiting.sessionId === sid) await respondConnection(waiting, [], true).catch(() => undefined)
         const preview = titlePreview(attachments)
         if (preview) params.title_preview = preview
+        // Where it was sent from, for its turn's line (the phone's TurnSurface).
+        reported = params.text as string
+        await reportTurnSurface(sid, reported, options.spoken ? 'spoken' : 'typed', readsRepliesAloud())
         const submit = async () => {
           let receipt: { status?: unknown; admission_id?: unknown } | null
           try {
@@ -471,6 +482,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           if (!options.takeOver && !takesOverAutomatically()) {
             // The words go back to the composer and the offer says why; Take over sends them.
             setTakeover({ surface, busy: false })
+            discardTurnSurface(sid, reported, e)
             if (held.length) await releaseHeldImages((method, params) => gateway.rpc(method, params), sid, profile, held)
             dispatch({ type: 'withdrawn' })
             return false
@@ -491,6 +503,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       } catch (e) {
         // The words go back to the composer; the chat now open gets nothing.
         if (e instanceof ChatMovedOn) return false
+        if (sid && reported !== null) discardTurnSurface(sid, reported, e)
         // Pictures held for this message would ride on the next one.
         if (sid && held.length) await releaseHeldImages((method, params) => gateway.rpc(method, params), sid, profile, held)
         dispatch({ type: 'failed', error: e instanceof Error ? e.message : String(e) })
