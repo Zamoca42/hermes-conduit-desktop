@@ -1689,6 +1689,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             canAttach={groupRooms.capabilities?.attachments === true}
             canEditSettings={groupRooms.capabilities?.context === true}
             canContinueDiscussions={groupRooms.capabilities?.canContinue === true}
+            canApprove={groupRooms.capabilities?.canApprove === true}
           />
         ) : section === 'needs' ? (
           <NeedsYou

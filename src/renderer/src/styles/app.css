@@ -9210,3 +9210,21 @@ button.secondary.danger {
   color: var(--accent);
   font-weight: 600;
 }
+
+/* A room's held tool calls, above the composer; several scroll in a bounded strip so the transcript keeps its room. */
+.room-approvals {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 300px;
+  margin: 0 auto;
+  overflow-y: auto;
+  padding: 8px 16px 0;
+  box-sizing: border-box;
+}
+
+.room-approval {
+  margin: 0;
+}

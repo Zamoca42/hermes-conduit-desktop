@@ -3,6 +3,8 @@ import { gateway } from '../gateway'
 import { uploadRoomAttachments, type StagedAttachment } from './attachments'
 import {
   ROOM_POLL_MS,
+  approveParams,
+  approveResolved,
   driverStatus,
   logPage,
   mergeEvents,
@@ -12,6 +14,7 @@ import {
   roomsFromList,
   type DriverStatus,
   type Room,
+  type RoomApproval,
   type RoomCapabilities,
   type RoomEvent
 } from './groups'
@@ -79,6 +82,8 @@ export interface PendingSend {
   failed?: string
 }
 
+export type RoomApprovalAnswer = { state: 'sending' } | { state: 'sent' } | { state: 'failed'; message: string }
+
 /** One open room: its log, read in pages and then every few seconds, its driver's status, and sending. */
 export function useRoom(room: Room | null, connected: boolean) {
   const roomId = room?.roomId ?? null
@@ -89,6 +94,8 @@ export function useRoom(room: Room | null, connected: boolean) {
   const [pending, setPending] = useState<PendingSend[]>([])
   const cursor = useRef(0)
   const ticket = useRef(0)
+  /** Each approval's answer: on its way, sent, or failed with why; kept by the approval's id. */
+  const [answers, setAnswers] = useState<Record<string, RoomApprovalAnswer>>({})
 
   const readLog = useCallback(async (id: string, mine: number) => {
     let more = true
@@ -110,7 +117,14 @@ export function useRoom(room: Room | null, connected: boolean) {
 
   const readState = useCallback(async (id: string, mine: number) => {
     const next = driverStatus(await gateway.rpc('groups.state', { room_id: id, include_disbanded: true }))
-    if (mine === ticket.current) setStatus(current => (JSON.stringify(current) === JSON.stringify(next) ? current : next))
+    if (mine !== ticket.current) return
+    setStatus(current => (JSON.stringify(current) === JSON.stringify(next) ? current : next))
+    // A failure whose approval the gateway no longer lists goes; sent answers and ones on their way stay.
+    const listed = new Set((next.pendingApprovals ?? []).map(a => a.id))
+    setAnswers(current => {
+      const kept = Object.fromEntries(Object.entries(current).filter(([id, answer]) => answer.state !== 'failed' || listed.has(id)))
+      return Object.keys(kept).length === Object.keys(current).length ? current : kept
+    })
   }, [])
 
   useEffect(() => {
@@ -119,6 +133,7 @@ export function useRoom(room: Room | null, connected: boolean) {
     setEvents([])
     setPending([])
     setError(null)
+    setAnswers({})
     setStatus({ working: false, busy: [], disbanded: false, approvals: [] })
     if (!roomId || !connected) return
     setLoading(true)
@@ -191,5 +206,31 @@ export function useRoom(room: Room | null, connected: boolean) {
     [roomId, readState, readLog]
   )
 
-  return { events, status, loading, error, pending, send, stop, saveContext, continueDiscussion }
+  /** Run or Reject on a member's held tool call, once: the card shows the answer on its way, then the next status drops it. */
+  const answering = useRef(new Set<string>())
+  const approve = useCallback(
+    async (approval: RoomApproval, choice: 'once' | 'deny') => {
+      if (!roomId || !approval.choices.includes(choice) || answering.current.has(approval.id)) return
+      const mine = ticket.current
+      answering.current.add(approval.id)
+      setAnswers(current => ({ ...current, [approval.id]: { state: 'sending' } }))
+      try {
+        const resolved = approveResolved(await gateway.rpc('groups.approve', approveParams(roomId, approval, choice)))
+        if (mine !== ticket.current) return
+        setAnswers(current => ({
+          ...current,
+          [approval.id]: resolved ? { state: 'sent' } : { state: 'failed', message: t('This approval is no longer active.') }
+        }))
+      } catch (e) {
+        // A request the gateway no longer holds (answered elsewhere, timed out, the turn stopped) drops off with the next status.
+        if (mine === ticket.current) setAnswers(current => ({ ...current, [approval.id]: { state: 'failed', message: message(e) } }))
+      } finally {
+        answering.current.delete(approval.id)
+      }
+      if (mine === ticket.current) await readState(roomId, mine).catch(() => undefined)
+    },
+    [roomId, readState]
+  )
+
+  return { events, status, loading, error, pending, send, stop, saveContext, continueDiscussion, approvals: status.pendingApprovals ?? [], answers, approve }
 }
