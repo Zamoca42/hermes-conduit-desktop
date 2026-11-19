@@ -40,6 +40,9 @@ interface Props {
   /** Move to Project: the projects a chat can move into (its profile's, each with its folder), read when asked. */
   moveTargets?: (row: ChatRow) => Promise<MoveTarget[]>
   onMove?: (row: ChatRow, target: MoveTarget) => void
+  /** Open Beside: the row opens and the chat on screen stays beside it; only in a window wide enough for both. */
+  onOpenBeside?: (row: ChatRow) => void
+  canOpenBeside?: (row: ChatRow) => boolean
 }
 
 export interface MoveTarget {
@@ -69,7 +72,9 @@ export function ChatList({
   onToggleRead,
   onProjects,
   moveTargets,
-  onMove
+  onMove,
+  onOpenBeside,
+  canOpenBeside
 }: Props) {
   const [query, setQuery] = useState('')
   const [menu, setMenu] = useState<{ row: ChatRow; x: number; y: number } | null>(null)
@@ -308,6 +313,11 @@ export function ChatList({
             </>
           ) : (
             <>
+              {onOpenBeside && canOpenBeside?.(menu.row) ? (
+                <button role="menuitem" onClick={() => onOpenBeside(menu.row)}>
+                  {t('Open Beside')}
+                </button>
+              ) : null}
               {onPin ? (
                 <button role="menuitem" onClick={() => onPin(menu.row)}>
                   {menu.row.pinned ? t('Unpin') : t('Pin')}
