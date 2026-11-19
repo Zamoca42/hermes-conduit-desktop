@@ -114,13 +114,17 @@ import {
   openAfterSwitch,
   openBotAfterSwitch,
   openChatAfterSwitch,
+  openPageAfterSwitch,
   otherHostsChats,
   otherHostsWaiting,
   takeBotAfterSwitch,
   takeChatAfterSwitch,
   takeOpenAfterSwitch,
+  takePageAfterSwitch,
   useKeptBots,
   useKeptChats,
+  useKeptPulse,
+  pulseChips,
   useKeptHosts,
   useKeptWaiting,
   type KeptWaitingRow,
@@ -1052,6 +1056,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   // ...and their bots, on Bots Home.
   const otherBots = useKeptBots(keptHosts, section === 'bots')
+  // ...and a Pulse chip each, with how many cards are new there.
+  const keptPulse = useKeptPulse(keptHosts, section === 'pulse')
+  const pulseUnseen = pulse.feed?.unseen ?? 0
+  const pulseHostChips = useMemo(
+    () => pulseChips(savedHosts ?? [], status.url ?? '', pulseUnseen, keptPulse, hostName),
+    [savedHosts, status.url, pulseUnseen, keptPulse]
+  )
   const needsCount = requests.length + waitingRows.length + otherWaiting.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
   // Running and Needs approval on the list's rows: the gateway's live registry while the list shows, the
@@ -1163,6 +1174,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setSelected({ id: row.id, profile: row.profile, title: row.title })
     setSection('chats')
   }, [connected, statusUrl])
+  useEffect(() => {
+    if (takePageAfterSwitch(statusUrl) === 'pulse') setSection('pulse')
+  }, [statusUrl])
   const openOtherBot = useCallback((other: OtherBot) => {
     if (!switchEndingCall(hostName(other.host))) return
     openBotAfterSwitch(other)
@@ -1989,6 +2003,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               if (draft) setQuote(quoteRequest({ draft }))
             }}
             onOpenBoard={() => setSection('tasks')}
+            chips={pulseHostChips}
+            onPickHost={url => {
+              if (!switchEndingCall(hostName(url))) return
+              openPageAfterSwitch(url, 'pulse')
+              void window.conduit.switchHost(url)
+            }}
           />
         ) : section === 'room' && shownCopy && shownCopyRoom ? (
           <RoomView
