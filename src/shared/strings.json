@@ -7769,6 +7769,21 @@
     "zh-Hans": "失败",
     "zh-Hant": "失敗"
   },
+  "Failed.": {
+    "de": "Fehlgeschlagen.",
+    "es": "Falló.",
+    "fr": "Échec.",
+    "id": "Gagal.",
+    "it": "Non riuscito.",
+    "ja": "失敗しました。",
+    "ko": "실패했습니다.",
+    "pl": "Nie powiodło się.",
+    "pt-BR": "Falhou.",
+    "ru": "Не удалось.",
+    "tr": "Başarısız oldu.",
+    "zh-Hans": "失败。",
+    "zh-Hant": "失敗。"
+  },
   "Failed: {count}": {
     "de": "Fehlgeschlagen: {count}",
     "es": "Fallidas: {count}",
@@ -8143,6 +8158,21 @@
     "tr": "Tamamlandı",
     "zh-Hans": "已完成",
     "zh-Hant": "已完成"
+  },
+  "Finished without a written reply.": {
+    "de": "Ohne schriftliche Antwort abgeschlossen.",
+    "es": "Terminó sin una respuesta escrita.",
+    "fr": "Terminé sans réponse écrite.",
+    "id": "Selesai tanpa balasan tertulis.",
+    "it": "Terminato senza una risposta scritta.",
+    "ja": "文章での返答なしで完了しました。",
+    "ko": "작성된 답장 없이 완료되었습니다.",
+    "pl": "Zakończono bez pisemnej odpowiedzi.",
+    "pt-BR": "Terminou sem uma resposta escrita.",
+    "ru": "Завершено без письменного ответа.",
+    "tr": "Yazılı bir yanıt olmadan bitti.",
+    "zh-Hans": "已完成，但没有文字回复。",
+    "zh-Hant": "已完成，但沒有文字回覆。"
   },
   "Firm": {
     "de": "Bestimmt",
@@ -9838,6 +9868,21 @@
     "tr": "Hermes güncel",
     "zh-Hans": "Hermes 已是最新",
     "zh-Hant": "Hermes 已是最新"
+  },
+  "Hermes is working on it. Its reply comes back on this call.": {
+    "de": "Hermes arbeitet daran. Die Antwort kommt in diesem Anruf.",
+    "es": "Hermes está trabajando en ello. Su respuesta llegará en esta llamada.",
+    "fr": "Hermes s'en occupe. Sa réponse arrivera pendant cet appel.",
+    "id": "Hermes sedang mengerjakannya. Balasannya akan datang di panggilan ini.",
+    "it": "Hermes ci sta lavorando. La risposta arriverà in questa chiamata.",
+    "ja": "Hermes が作業中です。返答はこの通話に届きます。",
+    "ko": "Hermes가 작업 중입니다. 답장은 이 통화로 전달됩니다.",
+    "pl": "Hermes nad tym pracuje. Odpowiedź przyjdzie w tej rozmowie.",
+    "pt-BR": "O Hermes está trabalhando nisso. A resposta chega nesta chamada.",
+    "ru": "Hermes работает над этим. Ответ придёт в этом звонке.",
+    "tr": "Hermes bunun üzerinde çalışıyor. Yanıtı bu aramada gelecek.",
+    "zh-Hans": "Hermes 正在处理。回复会在本次通话中送达。",
+    "zh-Hant": "Hermes 正在處理。回覆會在這次通話中送達。"
   },
   "Hermes isn't back yet": {
     "de": "Hermes ist noch nicht zurück",

@@ -10,6 +10,7 @@
 import { t } from '../../../shared/i18n'
 import { DELEGATED_REQUESTS_RULE } from './liveRequests'
 import { DELEGATED_FIND_CHAT_RULE } from './chatFinder'
+import { DELEGATED_JOBS_RULE } from './voiceJobs'
 import { namingFiles } from './media'
 
 export type Billing = 'subscription' | 'api'
@@ -370,6 +371,7 @@ Answer yourself, without delegating: greetings and small talk, repeating or reph
 ${READ_BACK_RULE}
 ${DELEGATED_REQUESTS_RULE}
 ${DELEGATED_FIND_CHAT_RULE}
+${DELEGATED_JOBS_RULE}
 Only say you're sending or passing something to Hermes in a turn where you delegate it: saying so sends nothing, only the delegation does.
 ${END_CALL_RULE}]`
 

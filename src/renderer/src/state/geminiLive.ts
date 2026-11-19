@@ -116,7 +116,7 @@ export function functionDeclarations(recall = false, webSearch = false): Row[] {
     name: tool.name,
     description: tool.description,
     parameters: upper(tool.parameters),
-    behavior: tool.name === 'end_conversation' || tool.name === 'show_on_screen' ? 'BLOCKING' : 'NON_BLOCKING'
+    behavior: ['end_conversation', 'show_on_screen', 'list_jobs', 'cancel_job'].includes(tool.name) ? 'BLOCKING' : 'NON_BLOCKING'
   }))
 }
 

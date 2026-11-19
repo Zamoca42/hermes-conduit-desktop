@@ -67,6 +67,7 @@ import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
+import { CANCEL_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 
 interface Props {
   profile?: string
@@ -143,6 +144,16 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const [cards, setCards] = useState<ScreenCard[]>([])
   const cardId = useRef(0)
   const finder = useRef(chatFinder(profile))
+  const [jobList, setJobList] = useState<VoiceJob[]>([])
+  const jobs = useRef<VoiceJobs | null>(null)
+  // The call's background jobs: a settled one is told at the next quiet moment.
+  useEffect(() => {
+    const kept = new VoiceJobs(profile, setJobList, notice => {
+      if (!ended.current) updates.current.push(notice)
+    })
+    jobs.current = kept
+    return () => kept.dispose()
+  }, [])
 
   const socket = useRef<string | null>(null)
   // Qwen's events in and out of the Gemini frames this call speaks.
@@ -313,6 +324,16 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         pump()
         return
       }
+      case START_JOB:
+        void jobs.current?.start(event.args.instructions ?? '').then(result => !ended.current && answer(result))
+        return
+      case LIST_JOBS: {
+        const result = jobs.current?.list() ?? { summary: 'No background jobs are running.' }
+        return answer(result)
+      }
+      case CANCEL_JOB:
+        void jobs.current?.cancel(event.args.job_id).then(result => !ended.current && answer(result))
+        return
       case FIND_CHAT:
         void finder.current.find(event.args.query ?? '').then(result => !ended.current && answer(result))
         return
@@ -621,7 +642,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
 
   return (
     <>
-      <CallCards cards={cards} />
+      <CallCards cards={cards} jobs={jobList} />
       <div
         className={`voice-call live phase-${phase === 'starting' ? 'starting' : phase === 'failed' ? 'failed' : phase === 'speaking' ? 'speaking' : 'listening'}`}
         role="region"

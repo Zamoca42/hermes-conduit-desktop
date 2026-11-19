@@ -46,6 +46,8 @@ import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { answerApproval, answerQuestion, answerWords, isApprove, isDeny, requestUpdate } from '../state/liveRequests'
 import { chatFinder, delegatedRead, delegatedSearch, findChatMarker, readChatMarker } from '../state/chatFinder'
+import { JOB_STARTED, VoiceJobs, asksForBackground, type VoiceJob } from '../state/voiceJobs'
+import { CallCards } from './CallCards'
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 
@@ -112,6 +114,17 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const quiet = useRef<number | null>(null)
   const ended = useRef(false)
   const finder = useRef(chatFinder(profile))
+  const [jobList, setJobList] = useState<VoiceJob[]>([])
+  const jobs = useRef<VoiceJobs | null>(null)
+  const jobDelegations = useRef(new Map<string, string>())
+  // The call's background jobs: each result goes on the delegation that started it.
+  useEffect(() => {
+    const kept = new VoiceJobs(profile, setJobList, (notice, job) => {
+      if (!ended.current) append(notice, 'speakable', jobDelegations.current.get(job.id) ?? null)
+    })
+    jobs.current = kept
+    return () => kept.dispose()
+  }, [])
   const ending = useRef(false)
   const lineId = useRef(0)
   // The user's words since the last delegation: finished turns, and the one still being said.
@@ -262,6 +275,17 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     const request = requestWords(text, said)
     if (!request) {
       append(NOTHING_TO_SEND, 'commentary', id)
+      return
+    }
+    // Work the user wants kept apart from the chat runs as a background job; its result comes on this delegation.
+    if (asksForBackground(text) || asksForBackground(said)) {
+      void jobs.current?.start(request).then(result => {
+        if (ended.current) return
+        if (result.status === 'started' && result.job_id) {
+          jobDelegations.current.set(result.job_id, id)
+          append(JOB_STARTED, 'speakable', id)
+        } else append(`[${result.error ?? 'The job could not start.'}]`, 'speakable', id)
+      })
       return
     }
     queue.current.push({ id, request })
@@ -482,50 +506,53 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const badge = billing === 'api' ? t('API key · billed per minute') : t('ChatGPT plan')
 
   return (
-    <div
-      className={`voice-call live phase-${phase === 'starting' ? 'starting' : phase === 'failed' ? 'failed' : phase === 'speaking' ? 'speaking' : 'listening'}`}
-      role="region"
-      aria-label={t('Voice call')}
-    >
-      <div className="voice-call-status">
-        <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
-        <div className="voice-call-words">
-          <strong>{status}</strong>
-          {problem ? (
-            <span className="voice-call-problem">{problem}</span>
-          ) : (
-            <span className="meta">{note ? `${t('GPT-Live')} · ${badge} · ${note}` : `${t('GPT-Live')} · ${badge}`}</span>
-          )}
+    <>
+      <CallCards cards={[]} jobs={jobList} />
+      <div
+        className={`voice-call live phase-${phase === 'starting' ? 'starting' : phase === 'failed' ? 'failed' : phase === 'speaking' ? 'speaking' : 'listening'}`}
+        role="region"
+        aria-label={t('Voice call')}
+      >
+        <div className="voice-call-status">
+          <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
+          <div className="voice-call-words">
+            <strong>{status}</strong>
+            {problem ? (
+              <span className="voice-call-problem">{problem}</span>
+            ) : (
+              <span className="meta">{note ? `${t('GPT-Live')} · ${badge} · ${note}` : `${t('GPT-Live')} · ${badge}`}</span>
+            )}
+          </div>
+        </div>
+        {lines.length ? (
+          <ol className="voice-call-lines" aria-live="polite">
+            {lines.map(line => (
+              <li key={line.id} className={line.who === 'user' ? 'voice-call-line said' : 'voice-call-line'}>
+                {line.text}
+              </li>
+            ))}
+          </ol>
+        ) : null}
+        <div className="voice-call-buttons">
+          {phase === 'failed' ? (
+            <button className="secondary" onClick={onClassic}>
+              {t('Classic voice')}
+            </button>
+          ) : null}
+          <button
+            className={`voice-call-round${muted ? ' on' : ''}`}
+            aria-label={muted ? t('Unmute microphone') : t('Mute microphone')}
+            title={muted ? t('Unmute microphone') : t('Mute microphone')}
+            disabled={phase === 'failed'}
+            onClick={toggleMute}
+          >
+            <Icon name={muted ? 'micOff' : 'mic'} />
+          </button>
+          <button className="voice-call-round end" aria-label={t('End call')} title={t('End call')} onClick={finish}>
+            <Icon name="phoneDown" />
+          </button>
         </div>
       </div>
-      {lines.length ? (
-        <ol className="voice-call-lines" aria-live="polite">
-          {lines.map(line => (
-            <li key={line.id} className={line.who === 'user' ? 'voice-call-line said' : 'voice-call-line'}>
-              {line.text}
-            </li>
-          ))}
-        </ol>
-      ) : null}
-      <div className="voice-call-buttons">
-        {phase === 'failed' ? (
-          <button className="secondary" onClick={onClassic}>
-            {t('Classic voice')}
-          </button>
-        ) : null}
-        <button
-          className={`voice-call-round${muted ? ' on' : ''}`}
-          aria-label={muted ? t('Unmute microphone') : t('Mute microphone')}
-          title={muted ? t('Unmute microphone') : t('Mute microphone')}
-          disabled={phase === 'failed'}
-          onClick={toggleMute}
-        >
-          <Icon name={muted ? 'micOff' : 'mic'} />
-        </button>
-        <button className="voice-call-round end" aria-label={t('End call')} title={t('End call')} onClick={finish}>
-          <Icon name="phoneDown" />
-        </button>
-      </div>
-    </div>
+    </>
   )
 }
