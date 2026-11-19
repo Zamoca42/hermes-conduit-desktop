@@ -169,6 +169,8 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
       }
     )
     jobs.current = kept
+    // Jobs an earlier call in this chat left come back; this call's are kept with it.
+    kept.keepWith(chatId)
     return () => {
       kept.dispose()
       void asked.hangUp()

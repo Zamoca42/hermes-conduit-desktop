@@ -10,6 +10,12 @@
  *
  * Desktop calls always belong to the chat on screen, where ask_thread goes:
  * start_job is for work the user wants kept apart from it.
+ *
+ * Jobs outlive their call, as the phone's saved ledger keeps them (M5b): a
+ * job still running when the call ends, or settled with an outcome nobody
+ * heard, is kept (12 at most, for a day), across a relaunch too. The next
+ * call in the same chat gets them back: a settled one is told at once, and
+ * a running one is read from its chat until its reply is there.
  */
 import { gateway } from '../gateway'
 import { namingFiles } from './media'
@@ -143,6 +149,129 @@ export interface VoiceJob {
   sentAt?: number
   reply?: string
   error?: string
+  /** Its outcome was handed to a live call. */
+  told?: boolean
+  /** Brought back from the saved ledger: an earlier call started it. */
+  restored?: boolean
+}
+
+// MARK: Saved ledger
+
+export const LEDGER_KEY = 'conduit.voiceJobs.v1'
+export const MAX_SAVED_JOBS = 12
+export const SAVED_JOB_MAX_AGE_MS = 24 * 60 * 60 * 1000
+export const RESTORED_POLL_MS = 15_000
+
+/** A job kept past its call, for the next call in its chat. */
+export interface SavedJob {
+  profile: string
+  chat: string
+  title: string
+  stored: string
+  sid?: string
+  sentAt: number
+  status: JobStatus
+  reply?: string
+  error?: string
+}
+
+export interface LedgerStore {
+  read(): SavedJob[]
+  write(jobs: SavedJob[]): void
+}
+
+const isSaved = (v: unknown): v is SavedJob => {
+  const e = (v ?? {}) as Record<string, unknown>
+  return (
+    typeof e.profile === 'string' &&
+    typeof e.chat === 'string' &&
+    !!e.chat &&
+    typeof e.title === 'string' &&
+    typeof e.stored === 'string' &&
+    !!e.stored &&
+    typeof e.sentAt === 'number' &&
+    ['running', 'done', 'failed', 'cancelled'].includes(e.status as string)
+  )
+}
+
+export const localLedger: LedgerStore = {
+  read() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(LEDGER_KEY) ?? '[]') as unknown
+      return Array.isArray(raw) ? raw.filter(isSaved) : []
+    } catch {
+      return []
+    }
+  },
+  write(jobs) {
+    try {
+      localStorage.setItem(LEDGER_KEY, JSON.stringify(jobs))
+    } catch {
+      // Kept for this call only.
+    }
+  }
+}
+
+/** What a call's jobs leave in the ledger: the running ones, and the settled ones nobody heard (a cancel was the user's own). */
+export function keptJobs(jobs: VoiceJob[], profile: string | undefined, chat: string): SavedJob[] {
+  return jobs.flatMap((job): SavedJob[] =>
+    job.stored && job.sentAt && (job.status === 'running' || ((job.status === 'done' || job.status === 'failed') && !job.told))
+      ? [
+          {
+            profile: profile ?? '',
+            chat,
+            title: job.title,
+            stored: job.stored,
+            sid: job.sid,
+            sentAt: job.sentAt,
+            status: job.status,
+            reply: job.reply,
+            error: job.error
+          }
+        ]
+      : []
+  )
+}
+
+/**
+ * The ledger with one call's jobs written in: its entries for these jobs
+ * (by stored session) replaced or dropped, a day's worth at most, running
+ * ones first, then the newest settled ones.
+ */
+export function mergeLedger(ledger: SavedJob[], mine: SavedJob[], dropped: string[], now: number): SavedJob[] {
+  const gone = new Set([...dropped, ...mine.map(job => job.stored)])
+  const all = [...ledger.filter(job => !gone.has(job.stored)), ...mine].filter(job => now - job.sentAt <= SAVED_JOB_MAX_AGE_MS)
+  const running = all.filter(job => job.status === 'running')
+  const settled = all.filter(job => job.status !== 'running').slice(-Math.max(0, MAX_SAVED_JOBS - running.length))
+  const kept = new Set([...running, ...settled])
+  return all.filter(job => kept.has(job))
+}
+
+/** The saved jobs a call in this chat gets back. */
+export const restoredFor = (ledger: SavedJob[], profile: string | undefined, chat: string, now: number) =>
+  ledger.filter(job => job.profile === (profile ?? '') && job.chat === chat && now - job.sentAt <= SAVED_JOB_MAX_AGE_MS)
+
+/**
+ * A restored running job's reply, read from a page of its chat's messages:
+ * the newest row, when it's an assistant reply with text and no tool calls
+ * written after the request went out. Null while the turn is still going.
+ */
+export function replyAfter(page: unknown, sentAt: number): string | null {
+  const messages = (page as { messages?: unknown } | null)?.messages
+  const rows = (Array.isArray(messages) ? messages : []) as Record<string, unknown>[]
+  const stamped = rows.filter(row => typeof row.timestamp === 'number').sort((a, b) => (a.timestamp as number) - (b.timestamp as number))
+  const last = stamped.at(-1)
+  if (!last || last.role !== 'assistant' || (last.timestamp as number) * 1000 < sentAt - 5_000) return null
+  if (Array.isArray(last.tool_calls) && last.tool_calls.length) return null
+  const text =
+    typeof last.text === 'string'
+      ? last.text
+      : typeof last.content === 'string'
+        ? last.content
+        : Array.isArray(last.content)
+          ? (last.content as { text?: unknown }[]).map(part => (typeof part?.text === 'string' ? part.text : '')).join('')
+          : ''
+  return text.trim() || null
 }
 
 /** A job's title: its task's first words, one line. */
@@ -195,6 +324,10 @@ export class VoiceJobs {
   private count = 0
   private text = new Map<string, string>()
   private unsubscribe: (() => void) | null = null
+  private chat: string | null = null
+  private poll: ReturnType<typeof setInterval> | null = null
+  private ledger: LedgerStore = localLedger
+  private http: (method: string, path: string) => Promise<unknown> = (method, path) => gateway.http(method as 'GET', path, undefined, 15_000)
 
   constructor(
     private profile: string | undefined,
@@ -208,15 +341,99 @@ export class VoiceJobs {
     this.unsubscribe = listen(event => this.event(event))
   }
 
-  /** The call ended: running jobs go on in their chats, but nothing more is told here. */
+  /** The call ended: running jobs go on in their chats, kept in the ledger for the next call there; nothing more is told here. */
   dispose() {
+    this.save()
     this.unsubscribe?.()
     this.unsubscribe = null
+    if (this.poll) clearInterval(this.poll)
+    this.poll = null
+  }
+
+  /**
+   * The chat this call is kept with: its jobs are saved under it, and the
+   * jobs an earlier call there left come back. A settled one is told at
+   * once; a running one is read from its chat until its reply is there.
+   */
+  keepWith(chat: string | null | undefined, ledger: LedgerStore = localLedger, http?: (method: string, path: string) => Promise<unknown>, now = Date.now()) {
+    if (!chat || this.chat) return
+    this.chat = chat
+    this.ledger = ledger
+    if (http) this.http = http
+    const known = new Set(this.jobs.map(job => job.stored))
+    const back = restoredFor(ledger.read(), this.profile, chat, now).filter(job => !known.has(job.stored))
+    if (!back.length) return
+    const restored = back.map(
+      (saved): VoiceJob => ({
+        id: `job-${++this.count}`,
+        title: saved.title,
+        status: saved.status,
+        sid: saved.sid,
+        stored: saved.stored,
+        sentAt: saved.sentAt,
+        reply: saved.reply,
+        error: saved.error,
+        restored: true
+      })
+    )
+    this.jobs = [...this.jobs, ...restored]
+    this.onChange(this.jobs)
+    for (const job of restored) if (job.status !== 'running') this.tell(job)
+    if (restored.some(job => job.status === 'running')) {
+      void this.readRestored()
+      this.poll = setInterval(() => void this.readRestored(), RESTORED_POLL_MS)
+    }
+  }
+
+  /** Restored running jobs, settled from their chats once their replies are there. */
+  private async readRestored() {
+    for (const job of this.jobs.filter(j => j.restored && j.status === 'running' && j.stored)) {
+      const profile = this.profile && this.profile !== 'default' ? `&profile=${encodeURIComponent(this.profile)}` : ''
+      let reply: string | null
+      try {
+        reply = replyAfter(
+          await this.http('GET', `/api/sessions/${encodeURIComponent(job.stored!)}/messages?order=latest&limit=20&inline_images=false${profile}`),
+          job.sentAt ?? 0
+        )
+      } catch {
+        continue
+      }
+      const now = this.jobs.find(j => j.id === job.id)
+      if (!reply || now?.status !== 'running' || !this.unsubscribe) continue
+      this.update(job.id, { status: 'done', reply })
+      this.tell({ ...now, status: 'done', reply })
+    }
+    if (this.poll && !this.jobs.some(j => j.restored && j.status === 'running')) {
+      clearInterval(this.poll)
+      this.poll = null
+    }
+  }
+
+  /** Hands a settled job's notice to the call, once. */
+  private tell(job: VoiceJob) {
+    if (job.told) return
+    this.update(job.id, { told: true })
+    if (job.status === 'failed') this.onOutcome(failurePrompt(job.title, job.error ?? 'the turn failed'), job)
+    else if (job.status === 'done')
+      this.onOutcome(
+        job.reply
+          ? completionPrompt(job.title, job.reply)
+          : `[Background job "${job.title}" finished without a written reply. Tell the user in one short sentence that it's done and its chat shows what happened.]`,
+        job
+      )
+  }
+
+  /** Writes this call's jobs into the ledger, under its chat. */
+  private save() {
+    if (!this.chat) return
+    const told = this.jobs.filter(job => job.stored && !keptJobs([job], this.profile, this.chat!).length).map(job => job.stored!)
+    this.ledger.write(mergeLedger(this.ledger.read(), keptJobs(this.jobs, this.profile, this.chat), told, Date.now()))
   }
 
   private update(id: string, change: Partial<VoiceJob>) {
     this.jobs = this.jobs.map(job => (job.id === id ? { ...job, ...change } : job))
     this.onChange(this.jobs)
+    this.save()
   }
 
   async start(instructions: string): Promise<Record<string, string>> {
@@ -312,16 +529,11 @@ export class VoiceJobs {
     if (status === 'error') {
       const error = str(payload.error) ?? str(payload.failure_reason) ?? job.error ?? 'the turn failed'
       this.update(job.id, { status: 'failed', error })
-      this.onOutcome(failurePrompt(job.title, error), job)
+      this.tell({ ...job, status: 'failed', error })
       return
     }
     const reply = (str(payload.text) ?? str(payload.rendered) ?? this.text.get(job.id) ?? '').trim()
     this.update(job.id, { status: 'done', reply })
-    this.onOutcome(
-      reply
-        ? completionPrompt(job.title, reply)
-        : `[Background job "${job.title}" finished without a written reply. Tell the user in one short sentence that it's done and its chat shows what happened.]`,
-      job
-    )
+    this.tell({ ...job, status: 'done', reply })
   }
 }
