@@ -27,6 +27,12 @@ const paths = {
   minimize: <path d="M6 12h12" />,
   maximize: <rect x="6" y="6" width="12" height="12" rx="1.5" />,
   close: <path d="M7 7l10 10M17 7L7 17" />,
+  envelope: (
+    <>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <path d="M4 7l8 6 8-6" />
+    </>
+  ),
   window: (
     <>
       <path d="M13 5H5.5A1.5 1.5 0 004 6.5v11A1.5 1.5 0 005.5 19h13a1.5 1.5 0 001.5-1.5V12M4 9h9" />

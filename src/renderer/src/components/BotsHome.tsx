@@ -14,6 +14,7 @@ import { starterFace } from "../state/starterFaces";
 import { useAvatar, useFace } from "../state/useBots";
 import { canDelete } from "../state/botActions";
 import { Icon } from "./icons";
+import { inviteRowLine, type RoomInvite } from "../state/roomInvites";
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 
@@ -105,6 +106,9 @@ interface Props {
   onAction?: (kind: BotAction, bot: Bot) => Promise<string | null>;
   notice?: string | null;
   onDismissNotice?: () => void;
+  /** Invites to rooms people you've linked host, as Group chats lists them. */
+  invites?: RoomInvite[];
+  onOpenInvite?: (invite: RoomInvite) => void;
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -172,6 +176,8 @@ export function BotsHome({
   onAction,
   notice,
   onDismissNotice,
+  invites,
+  onOpenInvite,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -353,7 +359,7 @@ export function BotsHome({
               ))}
             </div>
           ) : null}
-          {rooms && (rooms.length > 0 || canDrag) ? (
+          {rooms && (rooms.length > 0 || canDrag || (invites?.length ?? 0) > 0) ? (
             <section className="rooms">
               <h2>{t('Group chats')}</h2>
               {rooms.length === 0 && !draft ? (
@@ -362,6 +368,19 @@ export function BotsHome({
                 </p>
               ) : null}
               <div className="rooms-grid">
+                {(invites ?? []).map((invite) => (
+                  <button
+                    key={invite.id}
+                    className={`room-tile invite-tile ${invite.status}`}
+                    onClick={() => onOpenInvite?.(invite)}
+                  >
+                    <span className="invite-glyph" aria-hidden="true">
+                      <Icon name={invite.status === "waiting" ? "envelope" : invite.status === "joined" ? "clock" : invite.status === "started" ? "check" : "bell"} />
+                    </span>
+                    <span className="bot-name">{invite.name}</span>
+                    <span className="meta bot-time">{inviteRowLine(invite)}</span>
+                  </button>
+                ))}
                 {rooms.map((room) => (
                   <button
                     key={room.roomId}

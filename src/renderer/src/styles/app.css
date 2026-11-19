@@ -9492,3 +9492,104 @@ button.secondary.danger {
   margin: 0;
   overflow-wrap: anywhere;
 }
+
+/* An invite to a room someone you've linked hosts, and its join card. */
+.invite-glyph {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.invite-glyph svg {
+  width: 22px;
+  height: 22px;
+}
+.invite-tile .bot-time {
+  white-space: normal;
+  line-height: 15px;
+}
+.invite-card p {
+  margin: 4px 0;
+}
+.invite-bot {
+  border-top: 1px solid var(--line);
+  padding: 8px 0;
+}
+.invite-bot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.invite-bot-row.disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.invite-bot-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.invite-choices-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+}
+.invite-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 2px 0;
+}
+.invite-choices label:not(.toggle) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+}
+.invite-answers {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Settings › Multiplayer's This Hermes. */
+.setup-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 14px;
+}
+.setup-choice > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.setup-fold {
+  align-self: flex-start;
+}
+.setup-heading {
+  margin: 10px 0 2px;
+  font-size: 14px;
+}
+.setup-steps {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 19px;
+}

@@ -18,6 +18,8 @@ import {
   type RoomLinksList
 } from '../state/roomLinks'
 import { Icon } from './icons'
+import { RoomSetupSection } from './RoomSetupSection'
+import { ROOM_DASHBOARD_PROFILES_CAPABILITY, ROOM_SETUP_CAPABILITY } from '../state/roomSetup'
 
 const client = roomLinksClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -70,7 +72,21 @@ const ABOUT = 'A Link lets you and someone else bring your agents into rooms tog
  * someone makes an invite; an invite someone sent is pasted here. Shown
  * while the host's plugin keeps Links (`room-links`).
  */
-export function MultiplayerPage({ host, onBack }: { host: string; onBack: () => void }) {
+export function MultiplayerPage({
+  host,
+  capabilities,
+  bots,
+  profile: initialProfile,
+  onBack
+}: {
+  host: string
+  capabilities: string[]
+  bots: { name: string; title: string }[]
+  profile: string
+  onBack: () => void
+}) {
+  const [profile, setProfile] = useState(initialProfile)
+  const profileName = bots.find(b => b.name === profile)?.title ?? profile
   const [list, setList] = useState<RoomLinksList | null>(null)
   const [identity, setIdentity] = useState<RoomIdentity | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -162,7 +178,31 @@ export function MultiplayerPage({ host, onBack }: { host: string; onBack: () => 
           <Icon name="back" />
         </button>
         <h1>{t('Multiplayer')}</h1>
+        <span className="spacer" />
+        {bots.length > 1 && capabilities.includes(ROOM_SETUP_CAPABILITY) ? (
+          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+            {bots.map(bot => (
+              <option key={bot.name} value={bot.name}>
+                {bot.title}
+              </option>
+            ))}
+          </select>
+        ) : null}
       </div>
+
+      {capabilities.includes(ROOM_SETUP_CAPABILITY) ? (
+        <RoomSetupSection
+          host={host}
+          profile={profile}
+          profileName={profileName}
+          conduitProfile={capabilities.includes(ROOM_DASHBOARD_PROFILES_CAPABILITY)}
+        />
+      ) : (
+        <section className="pset-section">
+          <h2>{t('This Hermes')}</h2>
+          <p className="meta">{t('Update the Conduit plugin on your Hermes host to set it up for rooms from here.')}</p>
+        </section>
+      )}
 
       <section className="pset-section">
         <h2>{t('Linked with')}</h2>
