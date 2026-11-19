@@ -1,3 +1,4 @@
+import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
 import { useEffect, useRef, useState } from 'react'
 import { CallBacks, callMeMarker, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
@@ -107,6 +108,8 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const [note, setNote] = useState<string | null>(null)
 
   const pc = useRef<RTCPeerConnection | null>(null)
+  // The steps Diagnostics shows for the last call: GPT-Live's startup, never words.
+  const trace = useRef<CallTrace | null>(null)
   const channel = useRef<RTCDataChannel | null>(null)
   const mic = useRef<MediaStream | null>(null)
   const speaker = useRef<HTMLAudioElement | null>(null)
@@ -194,6 +197,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const fail = (message: string) => {
     if (ended.current) return
     ended.current = true
+    trace.current?.end('failed')
     teardown()
     setProblem(message)
     setPhase('failed')
@@ -203,6 +207,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const finish = () => {
     if (!ended.current) {
       ended.current = true
+      trace.current?.end(ending.current ? 'the call ended' : 'hung up')
       teardown()
     }
     onEnd()
@@ -344,6 +349,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const handle = (event: ServerEvent) => {
     switch (event.type) {
       case 'started':
+        trace.current?.step('Conversation started')
         setPhase(current => {
           if (current === 'starting') startLimit()
           return current === 'starting' ? 'listening' : current
@@ -358,6 +364,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
         addLine('assistant', event.text)
         return
       case 'turnDone':
+        trace.current?.step(`Turn done: ${event.role}`)
         if (event.role === 'user') {
           const text = event.transcript.trim() || words.current.open.trim()
           words.current = { done: [words.current.done, text].filter(Boolean).join(' '), open: '' }
@@ -371,9 +378,11 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
         }
         return
       case 'delegation':
+        trace.current?.step('Delegated to Hermes')
         delegate(event.id, event.text)
         return
       case 'error':
+        trace.current?.step(`Server error${event.code ? ` (${event.code})` : ''}`)
         // A late append after a close is expected noise.
         if (event.code === 'context_injection_incomplete') return
         setPhase(current => {
@@ -390,6 +399,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
         })
         return
       case 'closed':
+        trace.current?.step('Conversation closed by the server')
         if (ending.current) {
           if (!ended.current) finish()
         } else fail(t('GPT-Live ended the conversation.'))
@@ -420,9 +430,11 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     stopReading()
     let startTimer = 0
     const connect = async () => {
+      trace.current = startCallTrace('GPT-Live')
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
+        trace.current.step(micStep(stream))
         mic.current = stream
         setMicStream(stream)
         const peer = new RTCPeerConnection()
@@ -436,11 +448,13 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
           void audio.play().catch(() => undefined)
         }
         peer.onconnectionstatechange = () => {
+          trace.current?.step(`Connection ${peer.connectionState}`)
           if (peer.connectionState === 'failed') fail(t('The GPT-Live connection was lost.'))
         }
         const dc = peer.createDataChannel(DATA_CHANNEL)
         channel.current = dc
         dc.onmessage = event => typeof event.data === 'string' && received(event.data)
+        dc.addEventListener('open', () => trace.current?.step('Data channel open'), { once: true })
         await peer.setLocalDescription(await peer.createOffer())
         // The whole offer, candidates included: the host sends it on in one request.
         await new Promise<void>(resolve => {
@@ -465,7 +479,9 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
         const body: Record<string, unknown> = { sdp: peer.localDescription?.sdp ?? '', billing, briefing: told }
         if (seed.length) body.history = seed
         if (voice) body.voice = voice
+        trace.current.step(`Session requested (${String(billing)}, ${peer.iceGatheringState} ICE, ${seed.length} history items)`)
         const answer = sessionAnswer(await gateway.http('POST', withProfile(SESSION_PATH, profile), body, SESSION_TIMEOUT_MS), billing)
+        trace.current.step(`Session answered (${answer.dialect} events, briefing ${answer.briefingApplied ? 'applied' : 'sent after start'})`)
         if (ended.current) return
         dialect.current = answer.dialect
         setNote(voiceNote(voice, answer.voice))

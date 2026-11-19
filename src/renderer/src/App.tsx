@@ -13,6 +13,7 @@ import { Tasks } from './components/Tasks'
 import { PulsePage } from './components/PulsePage'
 import { FilesPanel } from './components/FilesPanel'
 import { ColumnDivider } from './components/ColumnDivider'
+import { LastCallTrace } from './components/LastCallTrace'
 import { GlowContext, useGlowColors } from './components/GlowColors'
 import { LIST_COLUMN, PANEL_COLUMN, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { absolutePath, pathForDraft } from './state/workspace'
@@ -1593,6 +1594,11 @@ function Settings({
         <dt>{t('Calls from Hermes')}</dt>
         <dd>
           <HermesCallSettings profile={profile} />
+        </dd>
+        <dt>{t('Last live call')}</dt>
+        <dd>
+          <LastCallTrace />
+          <p className="meta">{t('The steps of the last Grok Live, Qwen Live, Local Live or GPT-Live call, without what was said, to paste into an issue.')}</p>
         </dd>
         <dt>{t('Appearance')}</dt>
         <dd>

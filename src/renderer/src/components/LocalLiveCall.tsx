@@ -1,3 +1,4 @@
+import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
 import { useEffect, useRef, useState } from 'react'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
@@ -178,6 +179,8 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   }, [])
 
   const socket = useRef<string | null>(null)
+  // The steps Diagnostics shows for the last call: kinds and levels, never words.
+  const trace = useRef<CallTrace | null>(null)
   const context = useRef<AudioContext | null>(null)
   const mic = useRef<MediaStream | null>(null)
   const processor = useRef<ScriptProcessorNode | null>(null)
@@ -273,6 +276,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   const fail = (message: string) => {
     if (ended.current) return
     ended.current = true
+    trace.current?.end('failed')
     teardown()
     setProblem(message)
     setPhase('failed')
@@ -281,6 +285,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   const finish = () => {
     if (!ended.current) {
       ended.current = true
+      trace.current?.end('the call ended')
       teardown()
     }
     onEnd()
@@ -349,6 +354,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   }
 
   const answer = (id: string, name: string, result: Record<string, string>, speak = false) => {
+    trace.current?.step(`Tool answered: ${result.status ?? 'ok'}`)
     if (speak) answers.current.set(id, { name, result })
     send(toolResult(id, result, speak))
   }
@@ -356,6 +362,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   const toolCall = (event: Extract<AgentFrame, { type: 'toolCall' }>) => {
     if (answered.current.has(event.id)) return
     answered.current.add(event.id)
+    trace.current?.step(`Tool call: ${event.name}`)
     if (event.args.invalid_arguments) return answer(event.id, event.name, BAD_ARGUMENTS)
     switch (event.name) {
       case ASK_THREAD: {
@@ -572,6 +579,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   const becomeReady = () => {
     if (ready.current) return
     ready.current = true
+    trace.current?.step(agent.current ? 'Session ready (agent mode, server VAD)' : 'Session ready (Hermes answers each turn, server VAD)')
     setPhase('listening')
     // A server that never ends the check's response mustn't hide the call's own replies.
     window.setTimeout(() => (checking.current = false), 5000)
@@ -599,6 +607,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
         if (!marker.current) startCheck()
         return
       case 'error':
+        trace.current?.step(marker.current ? 'Server error' : 'Server refused the setup')
         // Before the session is set up, the server refused it; a server that can't take the check goes ready anyway.
         if (!marker.current) return fail(refusedLine(event.message))
         if (!ready.current) {
@@ -625,9 +634,11 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
       case 'speechStarted':
         userSpeaking.current = true
         userSpokeAt.current = Date.now()
+        trace.current?.speechStarted()
         stopPlayback()
         return
       case 'speechStopped':
+        trace.current?.speechStopped()
         userSpeaking.current = false
         userSpokeAt.current = Date.now()
         return
@@ -676,11 +687,13 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
       if (event.type === 'open') {
+        trace.current?.step('Socket open, setup sent')
         if (agent.current) send(agentConfigure(agent.current, FUNCTION_TOOLS))
         send(sessionUpdate())
       } else if (event.type === 'message') onFrame(event.data)
       else if (event.type === 'close') {
         socket.current = null
+        trace.current?.step(`Socket closed (${event.code ?? 'no code'})`)
         if (ended.current) return
         const reason = event.reason.trim() || (event.code === 1000 || event.code === 1005 ? '' : String(event.code))
         if (!ready.current) fail(refusedLine(reason))
@@ -688,9 +701,11 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
       }
     })
     const connect = async () => {
+      trace.current = startCallTrace('Local Live')
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
+        trace.current.step(micStep(stream))
         mic.current = stream
         setMicStream(stream)
         const ctx = new AudioContext({ sampleRate: SAMPLE_RATE })
@@ -715,7 +730,9 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
           }
           if (ended.current) return
         }
+        trace.current.step('Opening the socket')
         const opened = await window.conduit.liveOpen(SOCKET_PATH, profile && profile !== 'default' ? { profile } : {})
+        if (!opened.ok) trace.current.step('The socket did not open')
         if (!opened.ok) return fail(/\b404\b/.test(opened.error) ? PLUGIN_MISSING() : t('Could not open the Local Live connection.'))
         if (ended.current) return window.conduit.liveClose(opened.id)
         socket.current = opened.id
@@ -726,7 +743,9 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
           if (!ready.current || ended.current || mutedRef.current) return
           // While the server talks on the speakers, its own voice isn't sent back.
           if (ctx.currentTime < playUntil.current + ECHO_TAIL_MS / 1000) return
-          send(audioAppend(event.inputBuffer.getChannelData(0)))
+          const samples = event.inputBuffer.getChannelData(0)
+          trace.current?.audio(samples, SAMPLE_RATE)
+          send(audioAppend(samples))
         }
         source.connect(node)
         node.connect(ctx.destination)

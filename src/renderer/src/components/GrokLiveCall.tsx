@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -131,6 +132,8 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   }, [])
 
   const socket = useRef<string | null>(null)
+  // The steps Diagnostics shows for the last call: kinds and levels, never words.
+  const trace = useRef<CallTrace | null>(null)
   const context = useRef<AudioContext | null>(null)
   const mic = useRef<MediaStream | null>(null)
   const processor = useRef<ScriptProcessorNode | null>(null)
@@ -230,6 +233,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   const fail = (message: string) => {
     if (ended.current) return
     ended.current = true
+    trace.current?.end('failed')
     teardown()
     setProblem(message)
     setPhase('failed')
@@ -239,6 +243,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   const finish = () => {
     if (!ended.current) {
       ended.current = true
+      trace.current?.end(ending.current ? 'the call ended' : 'hung up')
       teardown()
     }
     onEnd()
@@ -297,6 +302,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   }
 
   const answer = (id: string, result: Record<string, string>, speaks = true) => {
+    trace.current?.step(`Tool answered: ${result.status ?? 'ok'}`)
     send(toolOutput(id, result))
     if (speaks) respond()
   }
@@ -305,6 +311,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
     // The arguments event and the finished item carry the same call: run it once.
     if (answered.current.has(event.id)) return
     answered.current.add(event.id)
+    trace.current?.step(`Tool call: ${event.name}`)
     if (event.args.invalid_arguments) return answer(event.id, BAD_ARGUMENTS)
     switch (event.name) {
       case ASK_THREAD: {
@@ -370,6 +377,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
       case 'ready':
         if (!ready.current) {
           ready.current = true
+          trace.current?.step('Session ready (server VAD, 700 ms silence, 300 ms padding)')
           setPhase('listening')
         }
         return
@@ -391,9 +399,11 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
         // The user cut in: the server drops its response, and playback stops now.
         userSpeaking.current = true
         userSpokeAt.current = Date.now()
+        trace.current?.speechStarted()
         stopPlayback()
         return
       case 'speechStopped':
+        trace.current?.speechStopped()
         userSpeaking.current = false
         userSpokeAt.current = Date.now()
         return
@@ -419,6 +429,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
         toolCall(event)
         return
       case 'error':
+        trace.current?.step(ready.current ? 'Server error' : 'Server refused the setup')
         if (!ready.current)
           fail(event.message ? t('Grok Live refused the connection: {reason}', { reason: event.message }) : t('Grok Live refused the connection.'))
     }
@@ -447,12 +458,16 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
       // The relay passes frames on once xAI's socket is up.
-      if (event.type === 'open') send(sessionUpdate(told))
+      if (event.type === 'open') {
+        trace.current?.step('Socket open, setup sent')
+        send(sessionUpdate(told))
+      }
       else if (event.type === 'message') {
         const decoded = decode(event.data)
         if (decoded) handle(decoded)
       } else if (event.type === 'close') {
         socket.current = null
+        trace.current?.step(`Socket closed (${event.code ?? 'no code'})`)
         if (ending.current) return void (!ended.current && finish())
         const reason = closeReason(event.code, event.reason)
         if (!ready.current) fail(reason ? t("Couldn't connect to Grok Live: {reason}", { reason }) : t("Couldn't connect to Grok Live."))
@@ -460,9 +475,11 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
       }
     })
     const connect = async () => {
+      trace.current = startCallTrace('Grok Live')
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
+        trace.current.step(micStep(stream))
         mic.current = stream
         setMicStream(stream)
         const ctx = new AudioContext({ sampleRate: SAMPLE_RATE })
@@ -477,7 +494,9 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
         ])
         if (ended.current) return
         told = instructions({ language: language(), persona, memory, chat: chatContext(turns) })
+        trace.current.step('Opening the socket')
         const opened = await window.conduit.liveOpen(SOCKET_PATH, profile && profile !== 'default' ? { profile } : {})
+        if (!opened.ok) trace.current.step('The socket did not open')
         if (!opened.ok) return fail(t("Couldn't connect to Grok Live: {reason}", { reason: opened.error }))
         if (ended.current) return window.conduit.liveClose(opened.id)
         socket.current = opened.id
@@ -489,7 +508,9 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
           if (!ready.current || ended.current || ending.current || mutedRef.current) return
           // While the model talks on the speakers, its own voice isn't sent back.
           if (ctx.currentTime < playUntil.current + ECHO_TAIL_MS / 1000) return
-          send(audioAppend(event.inputBuffer.getChannelData(0)))
+          const samples = event.inputBuffer.getChannelData(0)
+          trace.current?.audio(samples, SAMPLE_RATE)
+          send(audioAppend(samples))
         }
         source.connect(node)
         node.connect(ctx.destination)

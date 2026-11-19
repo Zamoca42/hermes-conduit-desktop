@@ -8096,3 +8096,22 @@ a.ask-btn[aria-disabled='true'] {
 .room-mode input {
   accent-color: var(--accent);
 }
+
+/* Settings' Last live call. */
+.call-trace-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.call-trace-steps {
+  max-height: 260px;
+  overflow: auto;
+  margin: 6px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--code-bg);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  white-space: pre-wrap;
+  user-select: text;
+}

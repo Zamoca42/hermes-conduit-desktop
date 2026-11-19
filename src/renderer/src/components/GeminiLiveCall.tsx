@@ -1,3 +1,4 @@
+import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
 import { useEffect, useRef, useState } from 'react'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
@@ -174,6 +175,8 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   }, [])
 
   const socket = useRef<string | null>(null)
+  // The steps Diagnostics shows for the last Qwen Live call: kinds and levels, never words.
+  const trace = useRef<CallTrace | null>(null)
   // Qwen's events in and out of the Gemini frames this call speaks.
   const adapter = useRef<QwenAdapter | null>(null)
   const capture = useRef<AudioContext | null>(null)
@@ -271,6 +274,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const fail = (message: string) => {
     if (ended.current) return
     ended.current = true
+    trace.current?.end('failed')
     teardown()
     setProblem(message)
     setPhase('failed')
@@ -280,6 +284,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const finish = () => {
     if (!ended.current) {
       ended.current = true
+      trace.current?.end(ending.current ? 'the call ended' : 'hung up')
       teardown()
     }
     onEnd()
@@ -332,7 +337,11 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const toolCall = (event: Extract<ServerEvent, { type: 'toolCall' }>) => {
     if (answered.current.has(event.id)) return
     answered.current.add(event.id)
-    const answer = (result: Record<string, string>) => send(toolResponse(event.id, event.name, result, 'WHEN_IDLE'))
+    trace.current?.step(`Tool call: ${event.name}`)
+    const answer = (result: Record<string, string>) => {
+      trace.current?.step(`Tool answered: ${result.status ?? 'ok'}`)
+      send(toolResponse(event.id, event.name, result, 'WHEN_IDLE'))
+    }
     if (event.args.invalid_arguments) return answer(BAD_ARGUMENTS)
     switch (event.name) {
       case ASK_THREAD: {
@@ -410,6 +419,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
       case 'ready':
         if (!ready.current) {
           ready.current = true
+          trace.current?.step('Session ready')
           setPhase('listening')
         }
         return
@@ -488,8 +498,10 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
     let startedOpen = false
     // A single-use credential per connection, minted by the host and kept in the main process.
     const open = async (): Promise<boolean> => {
+      trace.current?.step('Opening the socket')
       const opened = await window.conduit.liveOpenMinted(withProfile(qwen ? QWEN_TOKEN_PATH : TOKEN_PATH, profile))
       if (!opened.ok) {
+        trace.current?.step(`The socket did not open${opened.code ? ` (${opened.code})` : ''}`)
         fail(
           opened.code === 404
             ? t('Install or update the Hermes notifier plugin on your Hermes server.')
@@ -517,9 +529,16 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
     }
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
-      if (event.type === 'open') send(setupMessage(model, told, voice, recall, search))
-      else if (event.type === 'message') {
+      if (event.type === 'open') {
+        trace.current?.step('Socket open, setup sent')
+        send(setupMessage(model, told, voice, recall, search))
+      } else if (event.type === 'message') {
         let frame: string | null = event.data
+        // Qwen's turn steps, from its own frames before they're made Gemini's.
+        if (trace.current && event.data.includes('input_audio_buffer.speech_')) {
+          if (event.data.includes('"input_audio_buffer.speech_started"')) trace.current.speechStarted()
+          else if (event.data.includes('"input_audio_buffer.speech_stopped"')) trace.current.speechStopped()
+        }
         if (adapter.current) {
           try {
             frame = adapter.current.receive(event.data)
@@ -534,6 +553,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         }
       } else if (event.type === 'close') {
         socket.current = null
+        trace.current?.step(`Socket closed (${event.code ?? 'no code'})`)
         if (ending.current) return void (!ended.current && finish())
         if (!qwen && search === 'google' && quotaExhausted(event.reason)) {
           // As on the phone: most likely Search's own quota, so the call opens again without it.
@@ -548,9 +568,12 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
       }
     })
     const connect = async () => {
+      // Qwen Live keeps a trace; Gemini Live has none, as on the phone.
+      if (qwen) trace.current = startCallTrace('Qwen Live')
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         if (ended.current) return stream.getTracks().forEach(track => track.stop())
+        trace.current?.step(micStep(stream))
         mic.current = stream
         setMicStream(stream)
         const input = new AudioContext({ sampleRate: INPUT_RATE })
@@ -589,7 +612,9 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
           // While the model talks on the speakers, its own voice isn't sent back.
           const out = speaker.current
           if (out && out.currentTime < playUntil.current + ECHO_TAIL_MS / 1000) return
-          send(audioMessage(event.inputBuffer.getChannelData(0)))
+          const samples = event.inputBuffer.getChannelData(0)
+          trace.current?.audio(samples, INPUT_RATE)
+          send(audioMessage(samples))
         }
         source.connect(node)
         node.connect(input.destination)
