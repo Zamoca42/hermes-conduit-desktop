@@ -18,7 +18,15 @@ export type HostProbe =
       methods: SignInMethod[]
       version?: string
     }
-  | { ok: false; error: string }
+  | {
+      ok: false
+      error: string
+      /** This computer doesn't trust the server's certificate: the address, for Install this server's certificate. */
+      untrusted?: string
+    }
+
+/** The root certificate a server sends, read for the person to check and install. */
+export type CertificateCheck = { ok: true; fingerprint: string; name: string } | { ok: false; reason: 'noRoot' | 'unreachable' | 'notHttps' }
 
 export interface SignInRequest {
   url: string
@@ -178,6 +186,10 @@ export interface ConduitApi {
   onDeviceReports(listener: () => void): () => void
   /** `headers` are for a proxy in front of the dashboard (Cloudflare Access and the like). */
   probe(url: string, headers?: Record<string, string>): Promise<HostProbe>
+  /** Reads the root certificate the server at `url` sends, trusting it for nothing. */
+  checkCertificate(url: string): Promise<CertificateCheck>
+  /** Saves the root certificate last read for `url` where the person picks; false when they didn't. */
+  saveCertificate(url: string): Promise<boolean>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
   signOut(): Promise<void>
   /** Opens another signed-in host in place of this one. */
@@ -341,6 +353,8 @@ export const IPC = {
   keptHostsChanged: 'conduit:kept-hosts-changed',
   setCombined: 'conduit:set-combined',
   keptHttp: 'conduit:kept-http',
+  checkCertificate: 'conduit:check-certificate',
+  saveCertificate: 'conduit:save-certificate',
   keptRpc: 'conduit:kept-rpc',
   reconnect: 'conduit:reconnect',
   rpc: 'conduit:rpc',

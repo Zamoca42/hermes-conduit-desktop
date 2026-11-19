@@ -46,6 +46,8 @@ const api: ConduitApi = {
   onDeviceReports: listener => listen<void>(IPC.deviceReportsChanged, () => listener()),
   unlock: () => ipcRenderer.invoke(IPC.unlock),
   probe: (url, headers) => ipcRenderer.invoke(IPC.probe, url, headers),
+  checkCertificate: url => ipcRenderer.invoke(IPC.checkCertificate, url),
+  saveCertificate: url => ipcRenderer.invoke(IPC.saveCertificate, url),
   signIn: request => ipcRenderer.invoke(IPC.signIn, request),
   signOut: () => ipcRenderer.invoke(IPC.signOut),
   switchHost: (url: string) => ipcRenderer.invoke(IPC.switchHost, url),

@@ -2129,6 +2129,21 @@
     "zh-Hans": "问 Hermes 任何问题…",
     "zh-Hant": "問 Hermes 任何問題…"
   },
+  "Ask Hermes for the certificate’s fingerprint": {
+    "de": "Frag Hermes nach dem Fingerabdruck des Zertifikats",
+    "es": "Pide a Hermes la huella del certificado",
+    "fr": "Demander à Hermes l’empreinte du certificat",
+    "id": "Tanyakan sidik jari sertifikat ke Hermes",
+    "it": "Chiedi a Hermes l’impronta del certificato",
+    "ja": "証明書のフィンガープリントをHermesに聞く",
+    "ko": "Hermes에게 인증서 지문 묻기",
+    "pl": "Poproś Hermesa o odcisk certyfikatu",
+    "pt-BR": "Pedir ao Hermes a impressão digital do certificado",
+    "ru": "Спросить у Hermes отпечаток сертификата",
+    "tr": "Sertifikanın parmak izini Hermes’e sor",
+    "zh-Hans": "向 Hermes 询问证书指纹",
+    "zh-Hant": "向 Hermes 詢問憑證指紋"
+  },
   "Ask Me First": {
     "de": "Erst mich fragen",
     "es": "Preguntarme antes",
@@ -4319,6 +4334,21 @@
     "zh-Hans": "确认你的 iPhone 显示同样的四个单词。",
     "zh-Hant": "確認你的 iPhone 顯示同樣的四個單字。"
   },
+  "Check this server’s certificate": {
+    "de": "Zertifikat dieses Servers prüfen",
+    "es": "Comprobar el certificado de este servidor",
+    "fr": "Vérifier le certificat de ce serveur",
+    "id": "Periksa sertifikat server ini",
+    "it": "Controlla il certificato di questo server",
+    "ja": "このサーバの証明書を確認",
+    "ko": "이 서버의 인증서 확인",
+    "pl": "Sprawdź certyfikat tego serwera",
+    "pt-BR": "Verificar o certificado deste servidor",
+    "ru": "Проверить сертификат этого сервера",
+    "tr": "Bu sunucunun sertifikasını denetle",
+    "zh-Hans": "检查此服务器的证书",
+    "zh-Hant": "檢查此伺服器的憑證"
+  },
   "Checking": {
     "de": "Wird geprüft",
     "es": "Comprobando",
@@ -4348,6 +4378,21 @@
     "tr": "Güncellemeler denetleniyor…",
     "zh-Hans": "正在检查更新…",
     "zh-Hant": "正在檢查更新…"
+  },
+  "Checking the certificate…": {
+    "de": "Zertifikat wird geprüft …",
+    "es": "Comprobando el certificado…",
+    "fr": "Vérification du certificat…",
+    "id": "Memeriksa sertifikat…",
+    "it": "Controllo del certificato…",
+    "ja": "証明書を確認しています…",
+    "ko": "인증서 확인 중…",
+    "pl": "Sprawdzanie certyfikatu…",
+    "pt-BR": "Verificando o certificado…",
+    "ru": "Проверка сертификата…",
+    "tr": "Sertifika denetleniyor…",
+    "zh-Hans": "正在检查证书…",
+    "zh-Hant": "正在檢查憑證⋯"
   },
   "Checking this dashboard's notifier…": {
     "de": "Notifier dieses Dashboards wird geprüft …",
@@ -4903,6 +4948,21 @@
     "tr": "Birleştirilmiş paneller Conduit açıldığında aynı anda en fazla dört tane bağlanır ve başka birini kullanırken bağlı kalır, böylece aralarında hızlıca geçiş yapılır. Oturum açmanızı gerektiren bir panel, siz açana kadar bekler. İki veya daha fazlasını açın.",
     "zh-Hans": "合并的仪表板会在打开 Conduit 时连接，一次最多四个，并在你使用其他仪表板时保持连接，因此可以快速切换。需要你登录的仪表板会等到你打开它时再连接。请打开两个或更多。",
     "zh-Hant": "合併的儀表板會在打開 Conduit 時連線，一次最多四個，並在你使用其他儀表板時保持連線，因此可以快速切換。需要你登入的儀表板會等到你打開它時再連線。請開啟兩個或更多。"
+  },
+  "Come back here and connect again.": {
+    "de": "Komm danach hierher zurück und verbinde dich erneut.",
+    "es": "Vuelve aquí y conéctate de nuevo.",
+    "fr": "Revenez ici et reconnectez-vous.",
+    "id": "Kembali ke sini dan hubungkan lagi.",
+    "it": "Poi torna qui e connettiti di nuovo.",
+    "ja": "ここに戻って、もう一度接続してください。",
+    "ko": "여기로 돌아와 다시 연결하세요.",
+    "pl": "Wróć tutaj i połącz się ponownie.",
+    "pt-BR": "Volte aqui e conecte de novo.",
+    "ru": "Затем вернитесь сюда и подключитесь снова.",
+    "tr": "Buraya dönüp yeniden bağlanın.",
+    "zh-Hans": "回到这里重新连接。",
+    "zh-Hant": "回到這裡重新連線。"
   },
   "Command allowlist": {
     "de": "Befehls-Positivliste",
@@ -14129,6 +14189,21 @@
     "zh-Hans": "如果默认模型失败，Hermes 会按顺序尝试这些模型。",
     "zh-Hant": "如果預設模型失敗，Hermes 會依序嘗試這些模型。"
   },
+  "If your dashboard uses its own certificate authority or a self-signed certificate, Conduit can save its root certificate for you to trust on this computer.": {
+    "de": "Wenn dein Dashboard eine eigene Zertifizierungsstelle oder ein selbstsigniertes Zertifikat verwendet, kann Conduit sein Root-Zertifikat sichern, damit du ihm auf diesem Computer vertrauen kannst.",
+    "es": "Si tu panel usa su propia autoridad de certificación o un certificado autofirmado, Conduit puede guardar su certificado raíz para que confíes en él en este ordenador.",
+    "fr": "Si ton tableau de bord utilise sa propre autorité de certification ou un certificat auto-signé, Conduit peut enregistrer son certificat racine pour que tu lui fasses confiance sur cet ordinateur.",
+    "id": "Jika dasbor Anda memakai otoritas sertifikat sendiri atau sertifikat yang ditandatangani sendiri, Conduit dapat menyimpan sertifikat root-nya agar Anda dapat memercayainya di komputer ini.",
+    "it": "Se la tua dashboard usa una propria autorità di certificazione o un certificato autofirmato, Conduit può salvarne il certificato radice perché tu lo consideri attendibile su questo computer.",
+    "ja": "ダッシュボードが独自の認証局や自己署名証明書を使っている場合、Conduitはそのルート証明書を保存できます。保存した証明書をこのコンピュータで信頼してください。",
+    "ko": "대시보드가 자체 인증 기관이나 자체 서명 인증서를 사용한다면, Conduit이 루트 인증서를 저장해 이 컴퓨터에서 신뢰하도록 할 수 있어요.",
+    "pl": "Jeśli panel używa własnego urzędu certyfikacji lub certyfikatu z podpisem własnym, Conduit może zapisać jego certyfikat główny, abyś mógł mu zaufać na tym komputerze.",
+    "pt-BR": "Se o seu painel usa a própria autoridade certificadora ou um certificado autoassinado, o Conduit pode salvar o certificado raiz para você confiar nele neste computador.",
+    "ru": "Если панель использует собственный центр сертификации или самоподписанный сертификат, Conduit может сохранить её корневой сертификат, чтобы вы доверили ему на этом компьютере.",
+    "tr": "Panon kendi sertifika yetkilisini ya da kendinden imzalı bir sertifika kullanıyorsa Conduit, bu bilgisayarda güvenebilmen için kök sertifikasını kaydedebilir.",
+    "zh-Hans": "如果你的控制台使用自己的证书颁发机构或自签名证书，Conduit 可以保存它的根证书，供你在这台电脑上信任。",
+    "zh-Hant": "如果你的儀表板使用自己的憑證授權單位或自簽憑證，Conduit 可以儲存它的根憑證，讓你在這台電腦上信任。"
+  },
   "Image": {
     "de": "Bild",
     "es": "Imagen",
@@ -14263,6 +14338,21 @@
     "tr": "iPhone’unuzdaki Conduit’te Ayarlar’ı, ardından Bağlantı’yı, ardından “Bilgisayar eşle”yi açın ve bu kodu tarayın.",
     "zh-Hans": "在 iPhone 上的 Conduit 中，打开“设置”>“连接”>“配对电脑”，然后扫描此二维码。",
     "zh-Hant": "在 iPhone 上的 Conduit 中，打開「設定」>「連線」>「配對電腦」，然後掃描此條碼。"
+  },
+  "In Keychain Access, open the certificate, expand Trust, and set When using this certificate to Always Trust.": {
+    "de": "Öffne das Zertifikat in der Schlüsselbundverwaltung, klappe „Vertrauen“ auf und stelle „Bei Verwendung dieses Zertifikats“ auf „Immer vertrauen“.",
+    "es": "En Acceso a Llaveros, abre el certificado, despliega Confiar y ajusta «Al utilizar este certificado» en «Confiar siempre».",
+    "fr": "Dans Trousseaux d’accès, ouvre le certificat, développe Se fier et règle « Lors de l’utilisation de ce certificat » sur « Toujours approuver ».",
+    "id": "Di Akses Rantai Kunci, buka sertifikatnya, luaskan Kepercayaan, lalu atur Saat menggunakan sertifikat ini ke Selalu Percayai.",
+    "it": "In Accesso Portachiavi, apri il certificato, espandi Fidati e imposta «Quando si utilizza questo certificato» su «Fidati sempre».",
+    "ja": "キーチェーンアクセスで証明書を開き、「信頼」を展開して「この証明書を使用するとき」を「常に信頼」に設定します。",
+    "ko": "키체인 접근에서 인증서를 열고 신뢰를 펼친 다음 '이 인증서 사용 시'를 '항상 신뢰'로 설정하세요.",
+    "pl": "W Pęku kluczy otwórz certyfikat, rozwiń Zaufanie i ustaw „Przy używaniu tego certyfikatu” na „Zawsze ufaj”.",
+    "pt-BR": "No Acesso às Chaves, abra o certificado, expanda Confiança e defina “Ao usar este certificado” como “Sempre Confiar”.",
+    "ru": "В Связке ключей откройте сертификат, разверните «Доверие» и установите «При использовании этого сертификата» на «Всегда доверять».",
+    "tr": "Anahtar Zinciri Erişimi’nde sertifikayı aç, Güven bölümünü genişlet ve “Bu sertifikayı kullanırken” seçeneğini “Her Zaman Güven” yap.",
+    "zh-Hans": "在“钥匙串访问”中打开证书，展开“信任”，把“使用此证书时”设为“始终信任”。",
+    "zh-Hant": "在「鑰匙圈存取」中打開憑證，展開「信任」，把「使用此憑證時」設為「永遠信任」。"
   },
   "In Pulse, no notification": {
     "de": "In Pulse, ohne Mitteilung",
@@ -14608,6 +14698,21 @@
     "tr": "Bildirim eklentisini yükleyin",
     "zh-Hans": "安装通知插件",
     "zh-Hant": "安裝通知外掛程式"
+  },
+  "Install this server’s certificate": {
+    "de": "Zertifikat dieses Servers installieren",
+    "es": "Instalar el certificado de este servidor",
+    "fr": "Installer le certificat de ce serveur",
+    "id": "Instal sertifikat server ini",
+    "it": "Installa il certificato di questo server",
+    "ja": "このサーバの証明書をインストール",
+    "ko": "이 서버의 인증서 설치",
+    "pl": "Zainstaluj certyfikat tego serwera",
+    "pt-BR": "Instalar o certificado deste servidor",
+    "ru": "Установить сертификат этого сервера",
+    "tr": "Bu sunucunun sertifikasını yükle",
+    "zh-Hans": "安装此服务器的证书",
+    "zh-Hant": "安裝此伺服器的憑證"
   },
   "Install waits for Hermes' security scan.": {
     "de": "Die Installation wartet auf die Sicherheitsprüfung von Hermes.",
@@ -20909,6 +21014,21 @@
     "zh-Hans": "仅限设为自定义的群聊",
     "zh-Hant": "僅限設為自訂的群組"
   },
+  "Only install it if this fingerprint matches the one your server reports for this certificate. Anyone between you and the server could present a different one.": {
+    "de": "Installiere es nur, wenn dieser Fingerabdruck mit dem übereinstimmt, den dein Server für dieses Zertifikat angibt. Jemand zwischen dir und dem Server könnte ein anderes vorlegen.",
+    "es": "Instálalo solo si esta huella coincide con la que tu servidor indica para este certificado. Alguien entre tú y el servidor podría presentar otro distinto.",
+    "fr": "Ne l’installez que si cette empreinte correspond à celle que votre serveur indique pour ce certificat. Quelqu’un placé entre vous et le serveur pourrait en présenter un autre.",
+    "id": "Instal hanya jika sidik jari ini cocok dengan yang dilaporkan server Anda untuk sertifikat ini. Siapa pun di antara Anda dan server dapat menyajikan sertifikat lain.",
+    "it": "Installalo solo se questa impronta corrisponde a quella che il tuo server indica per questo certificato. Qualcuno tra te e il server potrebbe presentarne uno diverso.",
+    "ja": "このフィンガープリントが、サーバがこの証明書について示すものと一致する場合にのみインストールしてください。あなたとサーバの間にいる第三者が別の証明書を提示する可能性があります。",
+    "ko": "이 지문이 서버가 이 인증서에 대해 알려 주는 지문과 일치할 때만 설치하세요. 사용자와 서버 사이에 있는 누군가가 다른 인증서를 제시할 수 있습니다.",
+    "pl": "Instaluj go tylko wtedy, gdy ten odcisk zgadza się z tym, który Twój serwer podaje dla tego certyfikatu. Ktoś między Tobą a serwerem mógłby przedstawić inny.",
+    "pt-BR": "Só instale se esta impressão digital corresponder à que o seu servidor informa para este certificado. Alguém entre você e o servidor poderia apresentar outro.",
+    "ru": "Устанавливайте его, только если этот отпечаток совпадает с тем, который ваш сервер сообщает для этого сертификата. Кто-то между вами и сервером может подставить другой.",
+    "tr": "Yalnızca bu parmak izi, sunucunuzun bu sertifika için bildirdiğiyle eşleşiyorsa yükleyin. Sizinle sunucu arasındaki biri farklı bir sertifika sunabilir.",
+    "zh-Hans": "只有当此指纹与你的服务器为此证书报告的指纹一致时才安装。你与服务器之间的任何人都可能出示另一个证书。",
+    "zh-Hant": "只有在此指紋與你的伺服器為此憑證回報的指紋相符時才安裝。你與伺服器之間的任何人都可能出示另一張憑證。"
+  },
   "Only the bots you pick answer. With none picked, every bot can answer.": {
     "de": "Nur die ausgewählten Bots antworten. Ist keiner ausgewählt, kann jeder Bot antworten.",
     "es": "Solo responden los bots que elijas. Si no eliges ninguno, puede responder cualquier bot.",
@@ -21148,6 +21268,36 @@
     "tr": "Sohbeti aç",
     "zh-Hans": "打开聊天",
     "zh-Hant": "打開聊天"
+  },
+  "Open the saved file and choose Install Certificate.": {
+    "de": "Öffne die gesicherte Datei und wähle „Zertifikat installieren“.",
+    "es": "Abre el archivo guardado y elige Instalar certificado.",
+    "fr": "Ouvre le fichier enregistré et choisis Installer le certificat.",
+    "id": "Buka file yang disimpan dan pilih Instal Sertifikat.",
+    "it": "Apri il file salvato e scegli Installa certificato.",
+    "ja": "保存したファイルを開き、「証明書のインストール」を選びます。",
+    "ko": "저장한 파일을 열고 '인증서 설치'를 선택하세요.",
+    "pl": "Otwórz zapisany plik i wybierz Zainstaluj certyfikat.",
+    "pt-BR": "Abra o arquivo salvo e escolha Instalar Certificado.",
+    "ru": "Откройте сохранённый файл и выберите «Установить сертификат».",
+    "tr": "Kaydedilen dosyayı aç ve Sertifika Yükle’yi seç.",
+    "zh-Hans": "打开保存的文件，选择“安装证书”。",
+    "zh-Hant": "打開儲存的檔案，選擇「安裝憑證」。"
+  },
+  "Open the saved file, and Keychain Access adds it to your login keychain.": {
+    "de": "Öffne die gesicherte Datei, dann fügt die Schlüsselbundverwaltung sie deinem Anmeldeschlüsselbund hinzu.",
+    "es": "Abre el archivo guardado y Acceso a Llaveros lo añadirá a tu llavero de inicio de sesión.",
+    "fr": "Ouvre le fichier enregistré : Trousseaux d’accès l’ajoute à ton trousseau de session.",
+    "id": "Buka file yang disimpan, dan Akses Rantai Kunci menambahkannya ke rantai kunci login Anda.",
+    "it": "Apri il file salvato e Accesso Portachiavi lo aggiunge al portachiavi login.",
+    "ja": "保存したファイルを開くと、キーチェーンアクセスがログインキーチェーンに追加します。",
+    "ko": "저장한 파일을 열면 키체인 접근이 로그인 키체인에 추가해요.",
+    "pl": "Otwórz zapisany plik, a Pęk kluczy doda go do pęku logowania.",
+    "pt-BR": "Abra o arquivo salvo, e o Acesso às Chaves o adiciona ao seu chaveiro de início de sessão.",
+    "ru": "Откройте сохранённый файл, и Связка ключей добавит его в связку «вход».",
+    "tr": "Kaydedilen dosyayı aç; Anahtar Zinciri Erişimi onu giriş anahtar zincirine ekler.",
+    "zh-Hans": "打开保存的文件，“钥匙串访问”会把它添加到你的登录钥匙串。",
+    "zh-Hant": "打開儲存的檔案，「鑰匙圈存取」會把它加入你的登入鑰匙圈。"
   },
   "Open this chat in Hermes Desktop to see it.": {
     "de": "Öffne diesen Chat in Hermes Desktop, um sie zu sehen.",
@@ -22199,6 +22349,21 @@
     "zh-Hans": "海盗",
     "zh-Hant": "海盜"
   },
+  "Place it in Trusted Root Certification Authorities, then finish the wizard.": {
+    "de": "Lege es unter „Vertrauenswürdige Stammzertifizierungsstellen“ ab und schließe den Assistenten ab.",
+    "es": "Colócalo en Entidades de certificación raíz de confianza y termina el asistente.",
+    "fr": "Place-le dans Autorités de certification racines de confiance, puis termine l’assistant.",
+    "id": "Tempatkan di Otoritas Sertifikasi Root Tepercaya, lalu selesaikan wizard-nya.",
+    "it": "Mettilo in Autorità di certificazione radice attendibili, poi completa la procedura guidata.",
+    "ja": "「信頼されたルート証明機関」に配置して、ウィザードを完了します。",
+    "ko": "'신뢰할 수 있는 루트 인증 기관'에 두고 마법사를 마치세요.",
+    "pl": "Umieść go w Zaufanych głównych urzędach certyfikacji i dokończ kreator.",
+    "pt-BR": "Coloque-o em Autoridades de Certificação Raiz Confiáveis e conclua o assistente.",
+    "ru": "Поместите его в «Доверенные корневые центры сертификации» и завершите мастер.",
+    "tr": "Güvenilen Kök Sertifika Yetkilileri’ne yerleştir, ardından sihirbazı tamamla.",
+    "zh-Hans": "将它放入“受信任的根证书颁发机构”，然后完成向导。",
+    "zh-Hant": "將它放入「受信任的根憑證授權單位」，然後完成精靈。"
+  },
   "Places for your bots: {count}": {
     "de": "Plätze für deine Bots: {count}",
     "es": "Plazas para tus bots: {count}",
@@ -22243,6 +22408,21 @@
     "tr": "Plan",
     "zh-Hans": "计划",
     "zh-Hant": "計畫"
+  },
+  "Please tell me the SHA-256 fingerprint of the TLS certificate my Hermes dashboard serves, and of the root certificate that issued it if there is one, so I can check it before I trust it on my computer. Only read the certificates; don't change them. Keep dashboard authentication enabled.": {
+    "de": "Nenne mir bitte den SHA-256-Fingerabdruck des TLS-Zertifikats, das mein Hermes-Dashboard ausliefert, und den des Root-Zertifikats, das es ausgestellt hat, falls es eines gibt, damit ich ihn prüfen kann, bevor ich ihm auf meinem Computer vertraue. Lies die Zertifikate nur, ändere sie nicht. Lass die Dashboard-Authentifizierung aktiviert.",
+    "es": "Dime la huella SHA-256 del certificado TLS que sirve mi panel de Hermes, y la del certificado raíz que lo emitió si lo hay, para que pueda comprobarla antes de confiar en él en mi ordenador. Solo lee los certificados; no los cambies. Mantén activada la autenticación del panel.",
+    "fr": "Donne-moi l’empreinte SHA-256 du certificat TLS que sert mon tableau de bord Hermes, et celle du certificat racine qui l’a émis s’il y en a un, pour que je la vérifie avant de lui faire confiance sur mon ordinateur. Lis seulement les certificats, ne les modifie pas. Garde l’authentification du tableau de bord activée.",
+    "id": "Tolong beri tahu saya sidik jari SHA-256 dari sertifikat TLS yang disajikan dasbor Hermes saya, dan dari sertifikat root yang menerbitkannya jika ada, agar saya dapat memeriksanya sebelum memercayainya di komputer saya. Hanya baca sertifikatnya; jangan ubah. Tetap aktifkan autentikasi dasbor.",
+    "it": "Dimmi l’impronta SHA-256 del certificato TLS servito dalla mia dashboard Hermes, e quella del certificato radice che l’ha emesso se c’è, così posso controllarla prima di considerarlo attendibile sul mio computer. Leggi soltanto i certificati, non modificarli. Mantieni attiva l’autenticazione della dashboard.",
+    "ja": "Hermesダッシュボードが提供しているTLS証明書のSHA-256フィンガープリントと、発行元のルート証明書があればそのフィンガープリントも教えてください。このコンピュータで信頼する前に確認したいです。証明書は読むだけで、変更しないでください。ダッシュボードの認証は有効のままにしてください。",
+    "ko": "내 Hermes 대시보드가 제공하는 TLS 인증서의 SHA-256 지문과, 발급한 루트 인증서가 있다면 그 지문도 알려 줘. 이 컴퓨터에서 신뢰하기 전에 확인하고 싶어. 인증서는 읽기만 하고 바꾸지 마. 대시보드 인증은 계속 켜 둬.",
+    "pl": "Podaj mi odcisk SHA-256 certyfikatu TLS, który udostępnia mój panel Hermes, oraz certyfikatu głównego, który go wystawił, jeśli taki jest, żebym mógł go sprawdzić, zanim zaufam mu na komputerze. Tylko odczytaj certyfikaty, nie zmieniaj ich. Pozostaw włączone uwierzytelnianie panelu.",
+    "pt-BR": "Por favor, me diga a impressão digital SHA-256 do certificado TLS que meu painel do Hermes serve, e a do certificado raiz que o emitiu, se houver, para eu conferir antes de confiar nele no meu computador. Apenas leia os certificados; não os altere. Mantenha a autenticação do painel ativada.",
+    "ru": "Пожалуйста, сообщи мне отпечаток SHA-256 TLS-сертификата, который отдаёт моя панель Hermes, и корневого сертификата, который его выпустил, если он есть, чтобы я проверил его, прежде чем доверять ему на компьютере. Только прочитай сертификаты, не меняй их. Оставь аутентификацию панели включённой.",
+    "tr": "Lütfen Hermes panomun sunduğu TLS sertifikasının ve varsa onu veren kök sertifikanın SHA-256 parmak izini söyle; bilgisayarımda güvenmeden önce denetleyebileyim. Sertifikaları yalnızca oku, değiştirme. Pano kimlik doğrulamasını etkin tut.",
+    "zh-Hans": "请告诉我我的 Hermes 控制台所使用的 TLS 证书的 SHA-256 指纹，如果有签发它的根证书，也告诉我根证书的指纹，以便我在这台电脑上信任它之前核对。只读取证书，不要修改。保持控制台身份验证处于启用状态。",
+    "zh-Hant": "請告訴我我的 Hermes 儀表板所提供的 TLS 憑證的 SHA-256 指紋，若有簽發它的根憑證，也請告訴我根憑證的指紋，讓我在這台電腦上信任它之前先核對。只讀取憑證，不要修改。保持儀表板驗證為啟用狀態。"
   },
   "Plugin": {
     "de": "Plugin",
@@ -25604,6 +25784,21 @@
     "zh-Hans": "正在发送",
     "zh-Hant": "傳送中"
   },
+  "SHA-256 fingerprint": {
+    "de": "SHA-256-Fingerabdruck",
+    "es": "Huella SHA-256",
+    "fr": "Empreinte SHA-256",
+    "id": "Sidik jari SHA-256",
+    "it": "Impronta SHA-256",
+    "ja": "SHA-256フィンガープリント",
+    "ko": "SHA-256 지문",
+    "pl": "Odcisk SHA-256",
+    "pt-BR": "Impressão digital SHA-256",
+    "ru": "Отпечаток SHA-256",
+    "tr": "SHA-256 parmak izi",
+    "zh-Hans": "SHA-256 指纹",
+    "zh-Hant": "SHA-256 指紋"
+  },
   "SSH backend: keep exported variables between commands. The working directory always carries over.": {
     "de": "SSH-Backend: exportierte Variablen zwischen Befehlen behalten. Das Arbeitsverzeichnis bleibt immer erhalten.",
     "es": "Backend SSH: conserva las variables exportadas entre comandos. El directorio de trabajo siempre se mantiene.",
@@ -25873,6 +26068,21 @@
     "tr": "Yalnızca kaydet",
     "zh-Hans": "仅保存",
     "zh-Hant": "僅儲存"
+  },
+  "Save the certificate": {
+    "de": "Zertifikat sichern",
+    "es": "Guardar el certificado",
+    "fr": "Enregistrer le certificat",
+    "id": "Simpan sertifikat",
+    "it": "Salva il certificato",
+    "ja": "証明書を保存",
+    "ko": "인증서 저장",
+    "pl": "Zapisz certyfikat",
+    "pt-BR": "Salvar o certificado",
+    "ru": "Сохранить сертификат",
+    "tr": "Sertifikayı kaydet",
+    "zh-Hans": "保存证书",
+    "zh-Hant": "儲存憑證"
   },
   "Save the tools rooms may let {name} use": {
     "de": "Die Werkzeuge speichern, die Räume {name} nutzen lassen dürfen",
@@ -31513,6 +31723,21 @@
     "tr": "Sunucu yanıt verdi.",
     "zh-Hans": "服务器已响应。",
     "zh-Hant": "伺服器已回應。"
+  },
+  "The server doesn’t send its certificate authority’s root, so Conduit can’t save it. Install the root certificate from wherever you made your certificates, then turn on full trust for it.": {
+    "de": "Der Server sendet das Root-Zertifikat seiner Zertifizierungsstelle nicht mit, deshalb kann Conduit es nicht sichern. Installiere das Root-Zertifikat von dort, wo du deine Zertifikate erstellt hast, und aktiviere dann das volle Vertrauen dafür.",
+    "es": "El servidor no envía el certificado raíz de su autoridad de certificación, así que Conduit no puede guardarlo. Instala el certificado raíz desde donde creaste tus certificados y después activa la confianza total en él.",
+    "fr": "Le serveur n’envoie pas le certificat racine de son autorité de certification, donc Conduit ne peut pas l’enregistrer. Installez le certificat racine depuis l’endroit où vous avez créé vos certificats, puis activez la confiance totale pour lui.",
+    "id": "Server tidak mengirim sertifikat root dari otoritas sertifikatnya, jadi Conduit tidak dapat menyimpannya. Instal sertifikat root dari tempat Anda membuat sertifikat, lalu nyalakan kepercayaan penuh untuknya.",
+    "it": "Il server non invia il certificato radice della sua autorità di certificazione, quindi Conduit non può salvarlo. Installa il certificato radice da dove hai creato i tuoi certificati, poi attiva l’attendibilità completa.",
+    "ja": "サーバが認証局のルート証明書を送信していないため、Conduitでは保存できません。証明書を作成した場所からルート証明書をインストールし、全面的に信頼してください。",
+    "ko": "서버가 인증 기관의 루트 인증서를 보내지 않아 Conduit이 저장할 수 없습니다. 인증서를 만든 곳에서 루트 인증서를 설치한 다음 완전 신뢰를 켜세요.",
+    "pl": "Serwer nie wysyła certyfikatu głównego swojego urzędu certyfikacji, więc Conduit nie może go zapisać. Zainstaluj certyfikat główny z miejsca, w którym utworzono Twoje certyfikaty, a potem włącz dla niego pełne zaufanie.",
+    "pt-BR": "O servidor não envia o certificado raiz da autoridade certificadora, então o Conduit não consegue salvá-lo. Instale o certificado raiz de onde você criou seus certificados e depois ative a confiança total nele.",
+    "ru": "Сервер не отправляет корневой сертификат своего центра сертификации, поэтому Conduit не может его сохранить. Установите корневой сертификат оттуда, где вы создавали свои сертификаты, затем включите полное доверие к нему.",
+    "tr": "Sunucu, sertifika yetkilisinin kök sertifikasını göndermiyor, bu yüzden Conduit onu kaydedemiyor. Kök sertifikayı sertifikalarınızı oluşturduğunuz yerden yükleyin, ardından onun için tam güveni açın.",
+    "zh-Hans": "服务器没有发送其证书颁发机构的根证书，因此 Conduit 无法保存。请从你制作证书的地方安装根证书，然后为其开启完全信任。",
+    "zh-Hant": "伺服器沒有傳送其憑證授權單位的根憑證，因此 Conduit 無法儲存。請從你製作憑證的地方安裝根憑證，然後為其開啟完全信任。"
   },
   "The setup key a site shows when you turn on two-factor sign-in, or its otpauth:// link. With it saved, Hermes makes the codes itself.": {
     "de": "Der Einrichtungsschlüssel, den eine Website beim Einschalten der Zwei-Faktor-Anmeldung zeigt, oder ihr otpauth://-Link. Ist er gespeichert, erzeugt Hermes die Codes selbst.",
