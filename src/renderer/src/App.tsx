@@ -75,6 +75,7 @@ import { GptLiveCall } from './components/GptLiveCall'
 import { GrokLiveCall } from './components/GrokLiveCall'
 import { LocalLiveCall } from './components/LocalLiveCall'
 import { GeminiLiveCall } from './components/GeminiLiveCall'
+import { HermesCallSettings } from './components/HermesCallSettings'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
@@ -1436,6 +1437,10 @@ function Settings({
             {t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}
           </p>
           <VoiceModeSettings profile={profile} />
+        </dd>
+        <dt>{t('Calls from Hermes')}</dt>
+        <dd>
+          <HermesCallSettings profile={profile} />
         </dd>
         <dt>{t('Appearance')}</dt>
         <dd>

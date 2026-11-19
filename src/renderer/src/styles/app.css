@@ -4445,6 +4445,45 @@ code.file-link:hover {
   font: inherit;
 }
 
+.pset-number {
+  width: 72px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: right;
+}
+
+.call-settings {
+  margin-top: 0;
+  align-self: stretch;
+}
+
+.call-settings .pset-rules {
+  align-self: stretch;
+  margin-left: 24px;
+}
+
+.pset-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pset-rules-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pset-rules textarea {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+}
+
 .pset-times {
   display: flex;
   flex-direction: column;
