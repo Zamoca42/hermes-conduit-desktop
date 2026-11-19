@@ -23,7 +23,7 @@ import { followedUpKeys } from '../state/predictive'
 import { ConnectionCardView } from './ConnectionCardView'
 import { PinnedReplyBar, type PinControls } from './PinnedReplies'
 import { barOrder, pinFor, pinForPassage, pinnedWhole, refreshed, resolved } from '../state/pinnedReplies'
-import { delivery, inbound, teammateName } from '../state/teammateMessages'
+import { delivery, inbound, teammateName, teammateReplies } from '../state/teammateMessages'
 
 export interface MessageMenuItem {
   label: string
@@ -369,6 +369,8 @@ interface ItemProps {
   pinToggle?: { label: string; onSelect: () => void }
   /** The bots, for a teammate's name on its messages. */
   teammates?: { name: string; title: string }[]
+  /** The teammate this reply answers: folded under "Replied to Atlas", since it isn't for the user. */
+  repliedTo?: string
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -506,7 +508,8 @@ function Item({
   onOpenCall,
   followedUp,
   pinToggle,
-  teammates
+  teammates,
+  repliedTo
 }: ItemProps) {
   switch (item.kind) {
     case 'user': {
@@ -556,8 +559,8 @@ function Item({
         </div>
       )
     }
-    case 'assistant':
-      return (
+    case 'assistant': {
+      const reply = (
         <div className={`assistant${item.streaming ? ' streaming' : ''}`} data-key={item.key}>
           {followedUp ? (
             <span className="followed-up">
@@ -580,6 +583,19 @@ function Item({
           ) : null}
         </div>
       )
+      // The bot answering a teammate, not the user: folded, the reply a click away, as the phone and Hermes Desktop show it.
+      if (repliedTo)
+        return (
+          <details className="teammate-reply">
+            <summary>
+              <Icon name="send" />
+              {t('Replied to {name}', { name: teammateName(repliedTo, teammates) })}
+            </summary>
+            {reply}
+          </details>
+        )
+      return reply
+    }
     case 'thinking':
       return (
         <details className="thinking">
@@ -840,6 +856,7 @@ export function Transcript({
   )
   const rows = useMemo(() => foldRuns(shown), [shown])
   const followedUpKeySet = useMemo(() => followedUpKeys(state.items, followedUp), [state.items, followedUp])
+  const repliesToTeammates = useMemo(() => teammateReplies(state.items), [state.items])
   const summaries = useStepSummaries(state, sessionId, profile)
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
@@ -958,6 +975,7 @@ export function Transcript({
       onOpenCall={onOpenCall}
       teammates={teammates}
       followedUp={followedUpKeySet.has(item.key)}
+      repliedTo={repliesToTeammates.get(item.key)}
       pinToggle={
         pins && item.kind === 'assistant' && !item.streaming
           ? { label: pinnedKeys.has(item.key) ? t('Unpin reply') : t('Pin reply'), onSelect: () => togglePin(item) }
