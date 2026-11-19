@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { underSource } from '../state/voiceList'
+import { profileGroups, readClosedSections, readGroupByProfile, writeClosedSections, writeGroupByProfile } from '../state/profileGroups'
 import { sectionRows, timeLabel, type ChatRow } from '../state/chats'
 import type { Bot } from '../state/bots'
 import { BotAvatar } from './BotsHome'
@@ -18,6 +19,15 @@ const FILTERS: { value: ChatFilter; label: () => string }[] = [
   { value: 'running', label: () => t('Running') },
   { value: 'waiting', label: () => t('Needs approval') }
 ]
+
+/** A section of the list: a date's (or Pinned), or a profile's when grouped by profile. */
+interface ListSection {
+  title: string
+  rows: ChatRow[]
+  profile?: string
+  hidden?: number
+  extra?: number
+}
 
 interface Props {
   rows: ChatRow[] | null
@@ -135,8 +145,21 @@ export function ChatList({
     if (save && row && title && title !== row.title) onRename?.(row, title)
   }
   const pinOrder = usePinnedOrder(searchScope, rows, prefsHttp)
-  // Pinned rows move while the list shows every pinned chat: not during a search or under a filter.
-  const canReorder = !query.trim() && filter === 'all' && !source
+  // All profiles, grouped by profile: a section per profile with its pinned chats and five newest (issue 1560, #1571).
+  // Offered under All with two or more profiles, as the profile strip is.
+  const canGroup = !profile && (bots?.length ?? 0) > 1
+  const [groupByProfile, setGroupByProfile] = useState(readGroupByProfile)
+  const grouped = canGroup && groupByProfile
+  const [showingAll, setShowingAll] = useState<Set<string>>(() => new Set())
+  const [closedSections, setClosedSections] = useState<string[]>(readClosedSections)
+  const toggleSection = (p: string) => {
+    const next = closedSections.includes(p) ? closedSections.filter(x => x !== p) : [...closedSections, p]
+    setClosedSections(next)
+    writeClosedSections(next)
+  }
+  const profileTitle = (p: string) => bots?.find(b => b.name.toLowerCase() === p)?.title ?? p
+  // Pinned rows move while the list shows every pinned chat: not during a search or under a filter, nor grouped by profile.
+  const canReorder = !query.trim() && filter === 'all' && !source && !grouped
   const { sections, listed, allowed, pinnedSection } = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
@@ -147,9 +170,21 @@ export function ChatList({
     // The Pinned section in the person's order, arranged from every pinned chat the profile shown has.
     const pinned = arrangePinned(sectionRows(inProfile.filter(r => r.pinned))[0]?.rows ?? [], pinOrder.orders)
     const shown = new Set(filtered.map(r => r.id))
-    const arranged = sections.map(section => (section.rows[0]?.pinned ? { ...section, rows: pinned.filter(r => shown.has(r.id)) } : section))
+    const arranged: ListSection[] = grouped
+      ? profileGroups(
+          filtered,
+          (bots ?? []).map(b => b.name),
+          {
+            // A search or a status or Starred filter lists every match; a source filter is still a browse.
+            capped: !q && filter === 'all',
+            showsAll: p => showingAll.has(p),
+            openId: selectedId,
+            pinnedOrder: list => arrangePinned(list, pinOrder.orders)
+          }
+        ).map(group => ({ title: profileTitle(group.profile), rows: group.rows, profile: group.profile, hidden: group.hidden, extra: group.extra }))
+      : sections.map(section => (section.rows[0]?.pinned ? { ...section, rows: pinned.filter(r => shown.has(r.id)) } : section))
     return { sections: arranged, listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined, pinnedSection: pinned }
-  }, [rows, query, profile, marks, filter, runningIds, waitingIds, source, pinOrder.orders])
+  }, [rows, query, profile, marks, filter, runningIds, waitingIds, source, pinOrder.orders, grouped, showingAll, selectedId, bots])
   const movePinned = (row: ChatRow, to: number) => {
     const from = pinnedSection.findIndex(r => r.id === row.id)
     const next = moved(pinnedSection, from, to)
@@ -225,6 +260,19 @@ export function ChatList({
               {label()}
             </button>
           ))}
+          {canGroup ? (
+            <button
+              role="switch"
+              aria-checked={groupByProfile}
+              className={groupByProfile ? 'on' : undefined}
+              onClick={() => {
+                setGroupByProfile(!groupByProfile)
+                writeGroupByProfile(!groupByProfile)
+              }}
+            >
+              {t('Group by profile')}
+            </button>
+          ) : null}
           {sources.length > 1 ? (
             <select
               className={`source-filter${source ? ' on' : ''}`}
@@ -259,9 +307,16 @@ export function ChatList({
           </div>
         ) : null}
         {sections.map(section => (
-          <div key={section.title} role="group" aria-label={section.title}>
-            <div className="sect">{section.title}</div>
-            {section.rows.map(row => {
+          <div key={section.profile ?? section.title} role="group" aria-label={section.title}>
+            {section.profile ? (
+              <button className="sect sect-profile" aria-expanded={!closedSections.includes(section.profile)} onClick={() => toggleSection(section.profile!)}>
+                <Icon name="chevronDown" className={closedSections.includes(section.profile) ? 'closed' : undefined} />
+                {section.title}
+              </button>
+            ) : (
+              <div className="sect">{section.title}</div>
+            )}
+            {(section.profile && closedSections.includes(section.profile) ? [] : section.rows).map(row => {
               const waits = waitingIds.has(row.id)
               const running = !waits && runningIds.has(row.id)
               return (
@@ -373,6 +428,21 @@ export function ChatList({
                 </div>
               )
             })}
+            {section.profile && !closedSections.includes(section.profile) && (section.hidden || section.extra) ? (
+              <button
+                className="row show-more"
+                onClick={() =>
+                  setShowingAll(current => {
+                    const next = new Set(current)
+                    if (section.hidden) next.add(section.profile!)
+                    else next.delete(section.profile!)
+                    return next
+                  })
+                }
+              >
+                {section.hidden ? t('Show {count} more', { count: section.hidden }) : t('Show fewer')}
+              </button>
+            ) : null}
           </div>
         ))}
         {query.trim() && (contentMatches.length || content.searching) ? (

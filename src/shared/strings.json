@@ -10439,6 +10439,21 @@
     "zh-Hans": "群组设置",
     "zh-Hant": "群組設定"
   },
+  "Group by profile": {
+    "de": "Nach Profil gruppieren",
+    "es": "Agrupar por perfil",
+    "fr": "Grouper par profil",
+    "id": "Kelompokkan per profil",
+    "it": "Raggruppa per profilo",
+    "ja": "プロファイルごとにまとめる",
+    "ko": "프로필별로 묶기",
+    "pl": "Grupuj według profilu",
+    "pt-BR": "Agrupar por perfil",
+    "ru": "Группировать по профилю",
+    "tr": "Profile göre grupla",
+    "zh-Hans": "按配置分组",
+    "zh-Hant": "依設定檔分組"
+  },
   "Group chat being started": {
     "de": "Gruppenchat wird gestartet",
     "es": "Chat de grupo en creación",
@@ -23969,6 +23984,21 @@
     "zh-Hans": "显示当前会话状态",
     "zh-Hant": "顯示目前工作階段的狀態"
   },
+  "Show fewer": {
+    "de": "Weniger anzeigen",
+    "es": "Mostrar menos",
+    "fr": "Afficher moins",
+    "id": "Tampilkan lebih sedikit",
+    "it": "Mostra meno",
+    "ja": "表示を減らす",
+    "ko": "간략히 보기",
+    "pl": "Pokaż mniej",
+    "pt-BR": "Mostrar menos",
+    "ru": "Показать меньше",
+    "tr": "Daha az göster",
+    "zh-Hans": "收起",
+    "zh-Hant": "收合"
+  },
   "Show in Chat": {
     "de": "Im Chat zeigen",
     "es": "Mostrar en el chat",
@@ -24133,6 +24163,21 @@
     "tr": "Konuşmalarda araç çağrılarını ve genişletilebilir ayrıntıları göster.",
     "zh-Hans": "在对话中显示工具调用及可展开的详情。",
     "zh-Hant": "在對話中顯示工具呼叫與可展開的詳細資訊。"
+  },
+  "Show {count} more": {
+    "de": "{count} weitere anzeigen",
+    "es": "Mostrar {count} más",
+    "fr": "Afficher {count} de plus",
+    "id": "Tampilkan {count} lainnya",
+    "it": "Mostra altri {count}",
+    "ja": "さらに{count}件を表示",
+    "ko": "{count}개 더 보기",
+    "pl": "Pokaż jeszcze {count}",
+    "pt-BR": "Mostrar mais {count}",
+    "ru": "Показать ещё {count}",
+    "tr": "{count} tane daha göster",
+    "zh-Hans": "显示更多 {count}",
+    "zh-Hant": "再顯示 {count} 個"
   },
   "Shown for providers that report a quota, such as subscription sign-ins. Hermes checks it in the background, so refresh if one is missing.": {
     "de": "Wird für Anbieter angezeigt, die ein Kontingent melden, etwa Abo-Anmeldungen. Hermes prüft es im Hintergrund – aktualisiere, wenn eines fehlt.",
