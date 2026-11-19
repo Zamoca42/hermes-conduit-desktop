@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -19,6 +20,9 @@ import { Icon } from './icons'
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const withProfile = (path: string, profile: string) => (profile && profile !== 'default' ? `${path}?profile=${encodeURIComponent(profile)}` : path)
+
+/** The config and its schema's keys, kept together so a row never comes or goes when Hermes answers. */
+const keptConfigKey = (profile: string) => withProfile('/api/config', profile)
 
 interface Props {
   title: string
@@ -48,6 +52,7 @@ export function ConfigPage({ title, subtitle, sections, bots, profile: initialPr
   const load = useCallback(async () => {
     const mine = ++generation.current
     setError(null)
+    const keep = answerKeeper(keptConfigKey(profile))
     try {
       const [read, keys] = await Promise.all([
         readConfig(http, profile),
@@ -56,13 +61,18 @@ export function ConfigPage({ title, subtitle, sections, bots, profile: initialPr
       if (generation.current !== mine) return
       setConfig(read)
       setSchema(keys)
+      keep({ config: read, schema: keys ? [...keys] : null })
     } catch (e) {
       if (generation.current === mine) setError(message(e))
     }
   }, [profile])
 
   useEffect(() => {
-    setConfig(null)
+    // The profile's rows as Hermes last gave them (credentials left out), until it answers again.
+    const kept = keptAnswer(keptConfigKey(profile)) as { config?: unknown; schema?: unknown } | undefined
+    const config = kept?.config && typeof kept.config === 'object' && !Array.isArray(kept.config) ? (kept.config as Record<string, unknown>) : null
+    setConfig(config)
+    setSchema(config && Array.isArray(kept?.schema) ? new Set(kept.schema.filter((k): k is string => typeof k === 'string')) : null)
     void load()
   }, [load])
 

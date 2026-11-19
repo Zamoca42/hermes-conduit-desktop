@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -48,6 +49,15 @@ function storedTab(): CapabilityTab {
     // Opens on Skills.
   }
   return 'skills'
+}
+
+
+/** Each list's route (Plugins has its own page and reads; it never loads here). */
+const LIST_ROUTES: Record<CapabilityTab, string> = {
+  skills: '/api/skills',
+  tools: '/api/tools/toolsets',
+  connectors: '/api/mcp/servers',
+  plugins: '/api/mcp/servers'
 }
 
 /** SKILL.md without its front matter, which the page shows as the title and description. */
@@ -119,16 +129,25 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, on
       const mine = generation.current
       setErrors(all => ({ ...all, [which]: undefined }))
       try {
+        const path = scoped(LIST_ROUTES[which], profile)
+        const keep = answerKeeper(path)
+        const raw = await gateway.http('GET', path)
         if (which === 'skills') {
-          const list = parseSkills(await gateway.http('GET', scoped('/api/skills', profile)))
-          if (generation.current === mine) setSkills(list)
+          const list = parseSkills(raw)
+          if (generation.current !== mine) return
+          setSkills(list)
+          keep(raw)
         } else if (which === 'tools') {
-          const list = parseToolsets(await gateway.http('GET', scoped('/api/tools/toolsets', profile)))
-          if (generation.current === mine) setToolsets(list)
+          const list = parseToolsets(raw)
+          if (generation.current !== mine) return
+          setToolsets(list)
+          // A Hermes still loading its plugins lists no toolsets; that isn't kept.
+          if (list.length) keep(raw)
         } else {
-          const list = parseServers(await gateway.http('GET', scoped('/api/mcp/servers', profile)))
+          const list = parseServers(raw)
           if (generation.current !== mine) return
           setServers(list)
+          keep(raw)
           // Each server that's on is tested as the tab opens, a few at a time.
           const on = list.filter(server => server.enabled)
           for (let i = 0; i < on.length; i += 3) {
@@ -143,12 +162,18 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, on
     [profile, test]
   )
 
-  // Another profile drops everything read for the last one.
+  // Another profile drops everything read for the last one, opening on what its tabs showed last time.
+  const asked = useRef(new Set<CapabilityTab>())
   useEffect(() => {
     generation.current++
-    setSkills(null)
-    setToolsets(null)
-    setServers(null)
+    asked.current = new Set()
+    const kept = (which: CapabilityTab) => keptAnswer(scoped(LIST_ROUTES[which], profile))
+    const skillsKept = kept('skills')
+    const toolsKept = kept('tools')
+    const serversKept = kept('connectors')
+    setSkills(skillsKept ? parseSkills(skillsKept) : null)
+    setToolsets(toolsKept ? parseToolsets(toolsKept) : null)
+    setServers(serversKept ? parseServers(serversKept) : null)
     setTests({})
     setOpen(null)
     setOpenServer(null)
@@ -171,11 +196,13 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, on
     // Each ask once.
   }, [apps?.n])
 
+  // Each tab asks Hermes once a visit as it shows, over what it kept.
   useEffect(() => {
-    if (tab === 'skills' && !skills) void load('skills')
-    if (tab === 'tools' && !toolsets) void load('tools')
-    if (tab === 'connectors' && !servers) void load('connectors')
-  }, [tab, skills, toolsets, servers, load])
+    if (tab !== 'skills' && tab !== 'tools' && tab !== 'connectors') return
+    if (asked.current.has(tab)) return
+    asked.current.add(tab)
+    void load(tab)
+  }, [tab, load])
 
   /** A switch: shown at once, sent after any flip before it; a refusal reads the list again. */
   const flip = (which: CapabilityTab, name: string, enabled: boolean) => {
