@@ -15494,6 +15494,21 @@
     "zh-Hans": "提及机器人",
     "zh-Hant": "提及機器人"
   },
+  "Mention {name}": {
+    "de": "{name} erwähnen",
+    "es": "Mencionar a {name}",
+    "fr": "Mentionner {name}",
+    "id": "Sebut {name}",
+    "it": "Menziona {name}",
+    "ja": "{name}をメンション",
+    "ko": "{name} 멘션",
+    "pl": "Wspomnij {name}",
+    "pt-BR": "Mencionar {name}",
+    "ru": "Упомянуть {name}",
+    "tr": "{name} adlı botu an",
+    "zh-Hans": "提及 {name}",
+    "zh-Hant": "提及 {name}"
+  },
   "Message": {
     "de": "Nachricht",
     "es": "Mensaje",
@@ -18478,6 +18493,21 @@
     "tr": "Yalnızca Koordine Eder",
     "zh-Hans": "只负责协调",
     "zh-Hant": "只負責協調"
+  },
+  "Only the bots you pick answer. With none picked, every bot can answer.": {
+    "de": "Nur die ausgewählten Bots antworten. Ist keiner ausgewählt, kann jeder Bot antworten.",
+    "es": "Solo responden los bots que elijas. Si no eliges ninguno, puede responder cualquier bot.",
+    "fr": "Seuls les bots choisis répondent. Si aucun n’est choisi, tous les bots peuvent répondre.",
+    "id": "Hanya bot yang kamu pilih yang menjawab. Jika tidak ada yang dipilih, semua bot bisa menjawab.",
+    "it": "Rispondono solo i bot che scegli. Se non ne scegli nessuno, può rispondere qualsiasi bot.",
+    "ja": "選んだボットだけが返答します。何も選ばないと、どのボットも返答できます。",
+    "ko": "선택한 봇만 답합니다. 아무것도 선택하지 않으면 모든 봇이 답할 수 있습니다.",
+    "pl": "Odpowiadają tylko wybrane boty. Jeśli żaden nie jest wybrany, może odpowiedzieć każdy bot.",
+    "pt-BR": "Só os bots escolhidos respondem. Sem nenhum escolhido, qualquer bot pode responder.",
+    "ru": "Отвечают только выбранные боты. Если никто не выбран, ответить может любой бот.",
+    "tr": "Yalnızca seçtiğin botlar yanıt verir. Hiçbiri seçilmezse her bot yanıt verebilir.",
+    "zh-Hans": "只有你选的机器人会回答。一个都不选时，所有机器人都可以回答。",
+    "zh-Hant": "只有你選的機器人會回答。一個都不選時，所有機器人都可以回答。"
   },
   "Only the start of this file is shown.": {
     "de": "Nur der Anfang dieser Datei wird angezeigt.",
@@ -29713,6 +29743,21 @@
     "tr": "Başlık",
     "zh-Hans": "标题",
     "zh-Hant": "標題"
+  },
+  "To": {
+    "de": "An",
+    "es": "Para",
+    "fr": "À",
+    "id": "Kepada",
+    "it": "A",
+    "ja": "宛先",
+    "ko": "받는 봇",
+    "pl": "Do",
+    "pt-BR": "Para",
+    "ru": "Кому",
+    "tr": "Kime",
+    "zh-Hans": "发给",
+    "zh-Hant": "傳給"
   },
   "To Do": {
     "de": "Zu erledigen",

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   addToDraft,
+  addressing,
+  pickableMembers,
   approveParams,
   approveResolved,
   roomApproval,
@@ -282,5 +284,33 @@ describe('room approvals', () => {
     expect(approveResolved({ resolved: 1 })).toBe(true)
     expect(approveResolved(null)).toBe(true)
     expect(roomCapabilities({ methods: ['groups.approve'] }).canApprove).toBe(true)
+  })
+})
+
+describe('the To row', () => {
+  const members = [
+    { memberId: 'furina', profile: 'furina', handle: 'furina', displayName: 'Furina' },
+    { memberId: 'zhongli', profile: 'zhongli', handle: 'Zhongli', displayName: 'Zhongli' },
+    { memberId: 'twin', profile: 'twin', handle: 'furina' },
+    { memberId: 'nobody', profile: 'nobody' },
+    { memberId: 'all', handle: 'all' }
+  ]
+
+  it('offers each routable handle once', () => {
+    expect(pickableMembers(members).map(m => m.memberId)).toEqual(['furina', 'zhongli'])
+  })
+
+  it('puts the picks the text doesn’t tag in front, in the order picked', () => {
+    expect(addressing('what now?', ['Zhongli', 'furina'], members)).toBe('@Zhongli @furina what now?')
+    expect(addressing('@furina what now?', ['zhongli', 'furina'], members)).toBe('@zhongli @furina what now?')
+  })
+
+  it('tags files sent alone and leaves out a pick that left', () => {
+    expect(addressing('', ['furina'], members)).toBe('@furina')
+    expect(addressing('hi', ['gone'], members)).toBe('hi')
+  })
+
+  it('leaves an @all message as it is', () => {
+    expect(addressing('@all hi', ['furina'], members)).toBe('@all hi')
   })
 })

@@ -651,6 +651,41 @@ export function roomMembers(bots: readonly Pick<Bot, 'name' | 'title'>[]): Recor
   return bots.map((bot, i) => ({ member_id: bot.name, profile: bot.name, handle: handles[i]!, display_name: bot.title }))
 }
 
+/** The members the composer's To row offers, as the phone's: those with a handle the host can route, each once. */
+export function pickableMembers(members: readonly RoomMember[]): RoomMember[] {
+  const seen = new Set(['all', 'everyone', 'user'])
+  return members.filter(member => {
+    const handle = member.handle?.trim().toLowerCase()
+    if (!handle || seen.has(handle)) return false
+    seen.add(handle)
+    return true
+  })
+}
+
+const MENTION = /@([A-Za-z0-9][A-Za-z0-9._:-]*)/g
+
+/**
+ * `text` addressed to the bots picked in the To row as well (the phone's
+ * GroupRoomRecipients.addressing): each pick the text doesn't already tag
+ * goes in front, in the order picked, so files sent alone carry them too.
+ */
+export function addressing(text: string, picked: readonly string[], members: readonly RoomMember[]): string {
+  const tagged = new Set([...text.matchAll(MENTION)].map(m => m[1]!.toLowerCase()))
+  // An @all or @everyone already reaches every bot.
+  if (tagged.has('all') || tagged.has('everyone')) return text
+  const routable = new Set(pickableMembers(members).map(m => m.handle!.trim().toLowerCase()))
+  const seen = new Set<string>()
+  const missing = picked.filter(handle => {
+    const key = handle.toLowerCase()
+    if (!routable.has(key) || tagged.has(key) || seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+  if (!missing.length) return text
+  const tags = missing.map(h => `@${h}`).join(' ')
+  return text ? `${tags} ${text}` : tags
+}
+
 /** The name a room gets when none is typed: its bots' names. */
 export function defaultRoomName(titles: readonly string[]): string {
   if (titles.length <= 1) return titles[0] ?? t('New room')
