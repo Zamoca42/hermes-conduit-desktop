@@ -4716,6 +4716,64 @@ code.file-link:hover {
 }
 
 /* A Classic voice call in the open chat, above the composer. */
+.screen-cards {
+  margin: 0 24px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.screen-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.08);
+  overflow: hidden;
+}
+
+.screen-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 8px 8px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.screen-card header button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--text-3);
+  display: grid;
+  place-items: center;
+}
+
+.screen-card header button:hover {
+  background: var(--accent-soft);
+}
+
+.screen-card-body {
+  max-height: 42vh;
+  overflow: auto;
+  padding: 4px 16px 12px;
+}
+
+.screen-card-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.screen-card-tabs .chip.on {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
 .voice-call {
   margin: 0 24px 10px;
   padding: 10px 12px 10px 16px;

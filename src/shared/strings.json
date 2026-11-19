@@ -15614,6 +15614,21 @@
     "zh-Hans": "按需显示",
     "zh-Hant": "需要時顯示"
   },
+  "On screen": {
+    "de": "Auf dem Bildschirm",
+    "es": "En pantalla",
+    "fr": "À l'écran",
+    "id": "Di layar",
+    "it": "Sullo schermo",
+    "ja": "画面上",
+    "ko": "화면에 표시 중",
+    "pl": "Na ekranie",
+    "pt-BR": "Na tela",
+    "ru": "На экране",
+    "tr": "Ekranda",
+    "zh-Hans": "在屏幕上",
+    "zh-Hant": "顯示在畫面上"
+  },
   "On the Pulse screen": {
     "de": "Auf dem Pulse-Bildschirm",
     "es": "En la pantalla de Pulse",

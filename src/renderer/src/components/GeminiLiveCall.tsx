@@ -18,7 +18,11 @@ import {
   chatContext,
   recallAnswer,
   pcmSamples,
-  readReply
+  readReply,
+  SHOW_ON_SCREEN,
+  screenCard,
+  withCard,
+  type ScreenCard
 } from '../state/liveCall'
 import {
   DEFAULT_MODEL,
@@ -61,6 +65,7 @@ import type { PendingRequest } from '@shared/ipc'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
+import { CallCards } from './CallCards'
 
 interface Props {
   profile?: string
@@ -134,6 +139,8 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   // The microphone, for the orb's level.
   const [micStream, setMicStream] = useState<MediaStream | null>(null)
   const [lines, setLines] = useState<Line[]>([])
+  const [cards, setCards] = useState<ScreenCard[]>([])
+  const cardId = useRef(0)
 
   const socket = useRef<string | null>(null)
   // Qwen's events in and out of the Gemini frames this call speaks.
@@ -303,6 +310,11 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         queue.current.push({ request, call: event.id })
         pump()
         return
+      }
+      case SHOW_ON_SCREEN: {
+        const { card, result } = screenCard(event.args, ++cardId.current)
+        if (card) setCards(current => withCard(current, card))
+        return answer(result)
       }
       case READ_LAST_REPLY: {
         const reply = live.current.lastReply?.trim()
@@ -600,46 +612,49 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
           : t('Interrupted')
 
   return (
-    <div
-      className={`voice-call live phase-${phase === 'starting' ? 'starting' : phase === 'failed' ? 'failed' : phase === 'speaking' ? 'speaking' : 'listening'}`}
-      role="region"
-      aria-label={t('Voice call')}
-    >
-      <div className="voice-call-status">
-        <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
-        <div className="voice-call-words">
-          <strong>{status}</strong>
-          {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{copy.name()}</span>}
+    <>
+      <CallCards cards={cards} />
+      <div
+        className={`voice-call live phase-${phase === 'starting' ? 'starting' : phase === 'failed' ? 'failed' : phase === 'speaking' ? 'speaking' : 'listening'}`}
+        role="region"
+        aria-label={t('Voice call')}
+      >
+        <div className="voice-call-status">
+          <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
+          <div className="voice-call-words">
+            <strong>{status}</strong>
+            {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{copy.name()}</span>}
+          </div>
+        </div>
+        {lines.length ? (
+          <ol className="voice-call-lines" aria-live="polite">
+            {lines.map(line => (
+              <li key={line.id} className={line.who === 'user' ? 'voice-call-line said' : 'voice-call-line'}>
+                {line.text}
+              </li>
+            ))}
+          </ol>
+        ) : null}
+        <div className="voice-call-buttons">
+          {phase === 'failed' ? (
+            <button className="secondary" onClick={onClassic}>
+              {t('Classic voice')}
+            </button>
+          ) : null}
+          <button
+            className={`voice-call-round${muted ? ' on' : ''}`}
+            aria-label={muted ? t('Unmute microphone') : t('Mute microphone')}
+            title={muted ? t('Unmute microphone') : t('Mute microphone')}
+            disabled={phase === 'failed'}
+            onClick={toggleMute}
+          >
+            <Icon name={muted ? 'micOff' : 'mic'} />
+          </button>
+          <button className="voice-call-round end" aria-label={t('End call')} title={t('End call')} onClick={finish}>
+            <Icon name="phoneDown" />
+          </button>
         </div>
       </div>
-      {lines.length ? (
-        <ol className="voice-call-lines" aria-live="polite">
-          {lines.map(line => (
-            <li key={line.id} className={line.who === 'user' ? 'voice-call-line said' : 'voice-call-line'}>
-              {line.text}
-            </li>
-          ))}
-        </ol>
-      ) : null}
-      <div className="voice-call-buttons">
-        {phase === 'failed' ? (
-          <button className="secondary" onClick={onClassic}>
-            {t('Classic voice')}
-          </button>
-        ) : null}
-        <button
-          className={`voice-call-round${muted ? ' on' : ''}`}
-          aria-label={muted ? t('Unmute microphone') : t('Mute microphone')}
-          title={muted ? t('Unmute microphone') : t('Mute microphone')}
-          disabled={phase === 'failed'}
-          onClick={toggleMute}
-        >
-          <Icon name={muted ? 'micOff' : 'mic'} />
-        </button>
-        <button className="voice-call-round end" aria-label={t('End call')} title={t('End call')} onClick={finish}>
-          <Icon name="phoneDown" />
-        </button>
-      </div>
-    </div>
+    </>
   )
 }

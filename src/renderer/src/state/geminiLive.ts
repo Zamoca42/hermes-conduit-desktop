@@ -116,7 +116,7 @@ export function functionDeclarations(recall = false, webSearch = false): Row[] {
     name: tool.name,
     description: tool.description,
     parameters: upper(tool.parameters),
-    behavior: tool.name === 'end_conversation' ? 'BLOCKING' : 'NON_BLOCKING'
+    behavior: tool.name === 'end_conversation' || tool.name === 'show_on_screen' ? 'BLOCKING' : 'NON_BLOCKING'
   }))
 }
 

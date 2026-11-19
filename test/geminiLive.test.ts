@@ -13,7 +13,7 @@ import {
   textTurn,
   toolResponse
 } from '../src/renderer/src/state/geminiLive'
-import { recallAnswer } from '../src/renderer/src/state/liveCall'
+import { MAX_SCREEN_CARD_CHARACTERS, recallAnswer, screenCard, withCard, type ScreenCard } from '../src/renderer/src/state/liveCall'
 
 describe('Gemini Live on the host', () => {
   it('reads the status and the minted socket', () => {
@@ -41,6 +41,7 @@ describe('Gemini Live session', () => {
       'ask_thread:NON_BLOCKING',
       'read_last_reply:NON_BLOCKING',
       'end_conversation:BLOCKING',
+      'show_on_screen:BLOCKING',
       'answer_approval:NON_BLOCKING',
       'answer_question:NON_BLOCKING',
       'recall_memory:NON_BLOCKING'
@@ -115,5 +116,24 @@ describe('resolvedSearch', () => {
     expect(resolvedSearch('google', true, 'qwen')).toBe('hermes')
     expect(resolvedSearch('hermes', false, 'gemini')).toBe('hermes')
     expect(resolvedSearch('off', true, 'gemini')).toBe('none')
+  })
+})
+
+describe('show_on_screen', () => {
+  it('shows Markdown, cuts a long card and refuses an empty one', () => {
+    const shown = screenCard({ title: ' Forecast ', markdown: '| a |\n|---|\n| 1 |' }, 1)
+    expect(shown.card).toEqual({ id: 1, title: 'Forecast', markdown: '| a |\n|---|\n| 1 |' })
+    expect(shown.result.status).toBe('shown')
+    const long = screenCard({ title: 'x', markdown: 'y'.repeat(MAX_SCREEN_CARD_CHARACTERS + 5) }, 2)
+    expect(long.card?.markdown.length).toBe(MAX_SCREEN_CARD_CHARACTERS)
+    expect(long.result.message).toMatch(/Only the start/)
+    expect(screenCard({ title: 'x', markdown: '  ' }, 3)).toEqual({ card: null, result: { status: 'error', error: 'markdown is required' } })
+  })
+
+  it('keeps the last 20 cards and offers the tool blocking on Gemini', () => {
+    let cards: ScreenCard[] = []
+    for (let i = 1; i <= 25; i++) cards = withCard(cards, { id: i, title: '', markdown: 'm' })
+    expect(cards.map(c => c.id)).toEqual(Array.from({ length: 20 }, (_, i) => i + 6))
+    expect(functionDeclarations().find(d => d.name === 'show_on_screen')?.behavior).toBe('BLOCKING')
   })
 })
