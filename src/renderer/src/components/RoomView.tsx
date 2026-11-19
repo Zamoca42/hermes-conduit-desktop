@@ -12,10 +12,11 @@ import {
   routingChoices,
   startsNewDay,
   type Room,
+  type RoomApproval,
 } from "../state/groups";
 import { RoomSettings } from "./RoomSettings";
 import { Fragment } from "react";
-import { useRoom } from "../state/useGroups";
+import { useRoom, type RoomApprovalAnswer } from "../state/useGroups";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
@@ -37,6 +38,59 @@ interface Props {
   canEditSettings?: boolean;
   /** The host takes `groups.continue`. */
   canContinueDiscussions?: boolean;
+  /** The host takes `groups.approve`: Run or Reject on a member's held tool call. */
+  canApprove?: boolean;
+}
+
+/** A member's tool call the room holds for the user, above the composer: who asks, why, the command, Run and Reject. */
+function RoomApprovalCard({
+  approval,
+  name,
+  answer,
+  canAnswer,
+  onAnswer,
+}: {
+  approval: RoomApproval;
+  name: string;
+  answer?: RoomApprovalAnswer;
+  canAnswer: boolean;
+  onAnswer: (choice: "once" | "deny") => void;
+}) {
+  const sending = answer?.state === "sending" || answer?.state === "sent";
+  const failure = answer?.state === "failed" ? answer.message : null;
+  return (
+    <section className="ask room-approval" aria-label={t("Approval needed")}>
+      <header className="ask-head">
+        <span className="ask-icon">
+          <Icon name="code" />
+        </span>
+        <span className="ask-title">
+          {t("Needs your OK")}
+          <span className="ask-chat"> · {name}</span>
+        </span>
+        {sending ? <Icon name="spinner" style={{ animation: "spin 1s linear infinite" }} /> : null}
+      </header>
+      {approval.description ? <p className="ask-text">{approval.description}</p> : null}
+      {approval.command ? <pre className="ask-command">{approval.command}</pre> : null}
+      <div className="ask-actions">
+        <button
+          className="ask-btn primary"
+          disabled={!canAnswer || sending || !approval.choices.includes("once")}
+          onClick={() => onAnswer("once")}
+        >
+          {t("Run")}
+        </button>
+        <button
+          className="ask-btn danger"
+          disabled={!canAnswer || sending || !approval.choices.includes("deny")}
+          onClick={() => onAnswer("deny")}
+        >
+          {t("Reject")}
+        </button>
+      </div>
+      {failure ? <p className="ask-error">{failure}</p> : null}
+    </section>
+  );
 }
 
 interface ShownFile {
@@ -93,8 +147,8 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions }: Props) {
-  const { events, status, loading, error, pending, send, stop, saveContext, continueDiscussion } = useRoom(
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove }: Props) {
+  const { events, status, loading, error, pending, send, stop, saveContext, continueDiscussion, approvals, answers, approve } = useRoom(
     room,
     connected,
   );
@@ -152,7 +206,9 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           <RoomFaces room={room} bots={bots} size={20} />
           <span className="room-title-name">{room.name}</span>
           <span className="room-title-count">
-            {choosing
+            {approvals.length
+              ? t("Approval needed")
+              : choosing
               ? choosing.lead
                 ? t("{name} is choosing who answers…", { name: choosing.lead })
                 : t("Choosing who answers…")
@@ -367,6 +423,20 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           ) : null}
         </div>
       </div>
+      {approvals.length ? (
+        <div className="room-approvals">
+          {approvals.map((approval) => (
+            <RoomApprovalCard
+              key={approval.id}
+              approval={approval}
+              name={room.members.find((m) => m.memberId === approval.memberId || m.profile === approval.memberId)?.displayName ?? memberBot(approval.memberId)?.title ?? (approval.memberId || t("A member"))}
+              answer={answers[approval.id]}
+              canAnswer={!!canApprove && connected && !status.disbanded}
+              onAnswer={(choice) => void approve(approval, choice)}
+            />
+          ))}
+        </div>
+      ) : null}
       <Composer
         placeholder={t('Message {name}…', { name: room.name })}
         running={canStop && status.working}

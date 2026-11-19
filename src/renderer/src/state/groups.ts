@@ -49,6 +49,8 @@ export interface RoomCapabilities {
   context?: boolean
   /** Continue on a discussion paused at its turn limit. */
   canContinue?: boolean
+  /** Run or Reject on a member's tool call the room holds (`groups.approve`). */
+  canApprove?: boolean
   maxLogLimit?: number
 }
 
@@ -66,6 +68,7 @@ export function roomCapabilities(result: unknown): RoomCapabilities {
     attachments: methods.has('groups.attachment.upload'),
     context: methods.has('groups.context'),
     canContinue: methods.has('groups.continue'),
+    canApprove: methods.has('groups.approve'),
     maxLogLimit: int(obj(result)?.max_log_limit)
   }
 }
@@ -387,6 +390,68 @@ export interface DriverStatus {
   activity?: { memberId: string; status: string }[]
   /** The members waiting on an approval (`pending_actions`). */
   approvals: string[]
+  /** The approvals themselves, each answered on its card above the composer. */
+  pendingApprovals?: RoomApproval[]
+}
+
+/**
+ * A member's tool call the room holds for the user, after the phone's
+ * GroupPendingApproval: driver state, not a log event, so it shows until
+ * it's answered or the gateway drops it. Rooms answer once or deny only.
+ */
+export interface RoomApproval {
+  /** Member, task, generation and request together: one card per request. */
+  id: string
+  memberId: string
+  taskId: string
+  executionGeneration: number
+  requestId: string
+  command: string
+  description: string
+  choices: ('once' | 'deny')[]
+}
+
+export function roomApproval(value: unknown): RoomApproval | null {
+  const action = obj(value)
+  if (action?.kind !== 'approval') return null
+  const memberId = str(action.member_id)
+  const taskId = str(action.task_id)
+  const executionGeneration = int(action.execution_generation)
+  const approval = obj(action.approval) ?? {}
+  // The driver copies the queue id to the row; the approval keeps its own.
+  const requestId = str(action.request_id) ?? str(approval.request_id)
+  if (!memberId || !taskId || executionGeneration === undefined || !requestId) return null
+  const offered = (Array.isArray(approval.choices) ? approval.choices : []).filter((c): c is 'once' | 'deny' => c === 'once' || c === 'deny')
+  return {
+    id: `${memberId}|${taskId}|${executionGeneration}|${requestId}`,
+    memberId,
+    taskId,
+    executionGeneration,
+    requestId,
+    command: typeof approval.command === 'string' ? approval.command : '',
+    description: typeof approval.description === 'string' ? approval.description.trim() : '',
+    choices: offered.length ? offered : ['once', 'deny']
+  }
+}
+
+/** `groups.approve`'s params for answering `approval` with `choice`. */
+export function approveParams(roomId: string, approval: RoomApproval, choice: 'once' | 'deny') {
+  return {
+    room_id: roomId,
+    member_id: approval.memberId,
+    task_id: approval.taskId,
+    execution_generation: approval.executionGeneration,
+    choice,
+    request_id: approval.requestId
+  }
+}
+
+/** Whether `groups.approve` reached the request: a receipt resolving none means it was no longer active. */
+export function approveResolved(result: unknown): boolean {
+  const resolved = obj(result)?.resolved
+  if (typeof resolved === 'number') return resolved > 0
+  if (typeof resolved === 'boolean') return resolved
+  return true
 }
 
 export function driverStatus(result: unknown): DriverStatus {
@@ -404,10 +469,13 @@ export function driverStatus(result: unknown): DriverStatus {
       })
     : undefined
   const approvals: string[] = []
+  const pendingApprovals: RoomApproval[] = []
   for (const raw of Array.isArray(driver?.pending_actions) ? (driver!.pending_actions as unknown[]) : []) {
     const action = obj(raw)
     const memberId = str(action?.member_id)
     if (action?.kind === 'approval' && memberId && !approvals.includes(memberId)) approvals.push(memberId)
+    const approval = roomApproval(raw)
+    if (approval && !pendingApprovals.some(a => a.id === approval.id)) pendingApprovals.push(approval)
   }
   const modes = Array.isArray(driver?.routing_modes) ? (driver!.routing_modes as unknown[]).filter((m): m is string => typeof m === 'string') : undefined
   return {
@@ -418,7 +486,8 @@ export function driverStatus(result: unknown): DriverStatus {
     routingModes: modes,
     maxContinues: int(driver?.max_continues),
     activity,
-    approvals
+    approvals,
+    pendingApprovals
   }
 }
 

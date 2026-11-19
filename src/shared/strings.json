@@ -329,6 +329,21 @@
     "zh-Hans": "由负责人选择谁回答",
     "zh-Hant": "由負責人選擇誰回答"
   },
+  "A member": {
+    "de": "Ein Mitglied",
+    "es": "Un miembro",
+    "fr": "Un membre",
+    "id": "Seorang anggota",
+    "it": "Un membro",
+    "ja": "メンバー",
+    "ko": "한 멤버",
+    "pl": "Uczestnik",
+    "pt-BR": "Um membro",
+    "ru": "Участник",
+    "tr": "Bir üye",
+    "zh-Hans": "某成员",
+    "zh-Hant": "某位成員"
+  },
   "A profile named {name} already exists.": {
     "de": "Ein Profil namens {name} existiert bereits.",
     "es": "Ya existe un perfil llamado {name}.",
@@ -20999,6 +21014,21 @@
     "zh-Hans": "刷新模型",
     "zh-Hant": "重新整理模型"
   },
+  "Reject": {
+    "de": "Ablehnen",
+    "es": "Rechazar",
+    "fr": "Refuser",
+    "id": "Tolak",
+    "it": "Rifiuta",
+    "ja": "拒否",
+    "ko": "거부",
+    "pl": "Odrzuć",
+    "pt-BR": "Rejeitar",
+    "ru": "Отклонить",
+    "tr": "Reddet",
+    "zh-Hans": "拒绝",
+    "zh-Hant": "拒絕"
+  },
   "Released {day}": {
     "de": "Veröffentlicht am {day}",
     "es": "Publicada el {day}",
@@ -28393,6 +28423,21 @@
     "tr": "Bu uygulama araç getirmiyor.",
     "zh-Hans": "这个应用不提供工具。",
     "zh-Hant": "這個 App 不提供工具。"
+  },
+  "This approval is no longer active.": {
+    "de": "Diese Freigabe ist nicht mehr aktiv.",
+    "es": "Esta aprobación ya no está activa.",
+    "fr": "Cette approbation n'est plus active.",
+    "id": "Persetujuan ini sudah tidak aktif.",
+    "it": "Questa approvazione non è più attiva.",
+    "ja": "この承認リクエストは無効になりました。",
+    "ko": "이 승인 요청은 더 이상 활성 상태가 아니에요.",
+    "pl": "Ta prośba o zatwierdzenie nie jest już aktywna.",
+    "pt-BR": "Esta aprovação não está mais ativa.",
+    "ru": "Этот запрос разрешения больше не активен.",
+    "tr": "Bu onay artık etkin değil.",
+    "zh-Hans": "此批准请求已失效。",
+    "zh-Hant": "此核准請求已失效。"
   },
   "This bot chat never resets. Remove the attachments to compact it instead.": {
     "de": "Dieser Bot-Chat wird nie zurückgesetzt. Entferne die Anhänge, um ihn stattdessen zu komprimieren.",

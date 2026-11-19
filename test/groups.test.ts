@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
   addToDraft,
+  approveParams,
+  approveResolved,
+  roomApproval,
   defaultRoomName,
   driverStatus,
   latestDiscussionSettled,
@@ -45,6 +48,7 @@ describe('rooms', () => {
       attachments: false,
       context: false,
       canContinue: false,
+      canApprove: false,
       maxLogLimit: 500
     })
     expect(roomCapabilities({ methods: ['groups.list', 'groups.attachment.upload'] }).attachments).toBe(true)
@@ -99,9 +103,10 @@ describe('rooms', () => {
         { memberId: 'furina', status: '' },
         { memberId: 'furina', status: '' }
       ],
-      approvals: []
+      approvals: [],
+      pendingApprovals: []
     })
-    expect(driverStatus({ room: { disbanded_at: 5 }, driver_status: { running: true } })).toEqual({ working: false, busy: [], disbanded: true, approvals: [] })
+    expect(driverStatus({ room: { disbanded_at: 5 }, driver_status: { running: true } })).toEqual({ working: false, busy: [], disbanded: true, approvals: [], pendingApprovals: [] })
   })
 })
 
@@ -239,5 +244,43 @@ describe('member statuses', () => {
     expect(status.activity).toEqual([{ memberId: 'm-ada', status: 'running' }])
     expect(status.approvals).toEqual(['m-bo'])
     expect(driverStatus({ driver_status: {} }).activity).toBeUndefined()
+  })
+})
+
+describe('room approvals', () => {
+  const action = {
+    kind: 'approval',
+    member_id: 'atlas',
+    task_id: 't1',
+    execution_generation: 2,
+    request_id: 'r9',
+    approval: { command: 'rm -rf build', description: 'Deletes files', choices: ['once', 'session', 'deny'] }
+  }
+
+  it('reads a held tool call from pending_actions, once or deny only', () => {
+    const approval = roomApproval(action)!
+    expect(approval).toMatchObject({ id: 'atlas|t1|2|r9', memberId: 'atlas', command: 'rm -rf build', description: 'Deletes files', choices: ['once', 'deny'] })
+    // The approval keeps its own request id when the row has none; nothing offered means both.
+    expect(roomApproval({ ...action, request_id: undefined, approval: { request_id: 'q1' } })).toMatchObject({ requestId: 'q1', choices: ['once', 'deny'] })
+    expect(roomApproval({ ...action, execution_generation: undefined })).toBeNull()
+    expect(roomApproval({ ...action, kind: 'question' })).toBeNull()
+    const status = driverStatus({ driver_status: { pending_actions: [action, action, { kind: 'approval', member_id: 'iris' }] } })
+    expect(status.approvals).toEqual(['atlas', 'iris'])
+    expect(status.pendingApprovals!.map(a => a.id)).toEqual(['atlas|t1|2|r9'])
+  })
+
+  it('answers through groups.approve and reads its receipt', () => {
+    expect(approveParams('room', roomApproval(action)!, 'deny')).toEqual({
+      room_id: 'room',
+      member_id: 'atlas',
+      task_id: 't1',
+      execution_generation: 2,
+      choice: 'deny',
+      request_id: 'r9'
+    })
+    expect(approveResolved({ resolved: 0 })).toBe(false)
+    expect(approveResolved({ resolved: 1 })).toBe(true)
+    expect(approveResolved(null)).toBe(true)
+    expect(roomCapabilities({ methods: ['groups.approve'] }).canApprove).toBe(true)
   })
 })
