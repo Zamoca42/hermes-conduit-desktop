@@ -30,6 +30,7 @@ import { Icon } from './components/icons'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar, hostName } from './components/TitleBar'
+import { setRunningCall, switchEndingCall } from './state/callSwitch'
 import { Transcript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { forgetSummaries } from './state/stepSummaries'
 import { useFollowUps, usePredictions } from './state/usePredictions'
@@ -154,7 +155,7 @@ export function App() {
         subtitle={signedOut ? undefined : status.hostLabel}
         hosts={status.hosts}
         currentUrl={status.url}
-        onSwitch={url => void window.conduit.switchHost(url)}
+        onSwitch={url => switchEndingCall(hostName(url)) && void window.conduit.switchHost(url)}
       />
       {status.phase === 'locked' ? (
         <LockedScreen />
@@ -167,7 +168,7 @@ export function App() {
       ) : (
         // Each host gets a fresh window state: its chats, bots and rooms are its own.
         <SummaryHost.Provider value={status.url ?? ''}>
-          <Shell key={status.url} status={status} onAddHost={() => setAdding(true)} />
+          <Shell key={status.url} status={status} onAddHost={() => switchEndingCall(null) && setAdding(true)} />
         </SummaryHost.Provider>
       )}
     </div>
@@ -358,6 +359,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // Each reply's end reads the open folders again: the agent may have changed files.
   const [turnsDone, setTurnsDone] = useState(0)
   const [calling, setCalling] = useState(false)
+  // A dashboard switch ends the call, so a pick asks first (state/callSwitch.ts).
+  useEffect(() => {
+    if (!calling) return
+    setRunningCall(() => setCalling(false))
+    return () => setRunningCall(null)
+  }, [calling])
   // The call's mode, read as it starts: Settings > Voice, or Classic after a GPT-Live call failed.
   const [callMode, setCallMode] = useState<VoiceMode>('classic')
   // A live mode asks once before sending the call to its company; Allow redraws with the call.
@@ -1852,7 +1859,7 @@ function Settings({
                   {host.url === status.url ? (
                     <span className="meta">{t('In use')}</span>
                   ) : (
-                    <button className="link" onClick={() => void window.conduit.switchHost(host.url)}>
+                    <button className="link" onClick={() => switchEndingCall(hostName(host.url)) && void window.conduit.switchHost(host.url)}>
                       {t('Switch')}
                     </button>
                   )}

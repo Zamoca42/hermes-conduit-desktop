@@ -8249,6 +8249,21 @@
     "zh-Hans": "结束安静时段",
     "zh-Hant": "結束安靜時段"
   },
+  "End the call and switch?": {
+    "de": "Anruf beenden und wechseln?",
+    "es": "¿Terminar la llamada y cambiar?",
+    "fr": "Terminer l'appel et changer ?",
+    "id": "Akhiri panggilan dan beralih?",
+    "it": "Terminare la chiamata e passare?",
+    "ja": "通話を終了して切り替えますか？",
+    "ko": "통화를 끝내고 전환할까요?",
+    "pl": "Zakończyć połączenie i przełączyć?",
+    "pt-BR": "Encerrar a chamada e trocar?",
+    "ru": "Завершить звонок и переключиться?",
+    "tr": "Arama bitirilip geçilsin mi?",
+    "zh-Hans": "结束通话并切换？",
+    "zh-Hant": "結束通話並切換？"
+  },
   "Ends this call and starts again in the mode you pick, in the same chat. Voice settings keep the new mode.": {
     "de": "Beendet diesen Anruf und startet ihn im gewählten Modus im selben Chat neu. Die Spracheinstellungen übernehmen den neuen Modus.",
     "es": "Termina esta llamada y vuelve a empezar en el modo que elijas, en el mismo chat. Los ajustes de voz conservan el nuevo modo.",
@@ -26218,6 +26233,21 @@
     "tr": "Bu yanıt bitince {model} modeline geçer.",
     "zh-Hans": "这条回复结束后切换到 {model}。",
     "zh-Hant": "這則回覆結束後切換到 {model}。"
+  },
+  "Switching to {destination} ends the call that's running.": {
+    "de": "Der Wechsel zu {destination} beendet den laufenden Anruf.",
+    "es": "Cambiar a {destination} termina la llamada en curso.",
+    "fr": "Passer à {destination} termine l'appel en cours.",
+    "id": "Beralih ke {destination} mengakhiri panggilan yang sedang berjalan.",
+    "it": "Passare a {destination} termina la chiamata in corso.",
+    "ja": "{destination}に切り替えると、進行中の通話が終了します。",
+    "ko": "{destination}(으)로 전환하면 진행 중인 통화가 끝납니다.",
+    "pl": "Przełączenie na {destination} zakończy trwające połączenie.",
+    "pt-BR": "Trocar para {destination} encerra a chamada em andamento.",
+    "ru": "Переключение на {destination} завершит текущий звонок.",
+    "tr": "{destination} öğesine geçmek süren aramayı bitirir.",
+    "zh-Hans": "切换到 {destination} 会结束正在进行的通话。",
+    "zh-Hant": "切換到 {destination} 會結束正在進行的通話。"
   },
   "System": {
     "de": "System",
