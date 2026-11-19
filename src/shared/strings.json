@@ -5909,6 +5909,21 @@
     "zh-Hans": "开启智能批准时，判断哪些命令无需询问即可安全运行。",
     "zh-Hant": "開啟智慧核准時，判斷哪些指令不必詢問即可安全執行。"
   },
+  "Decline": {
+    "de": "Ablehnen",
+    "es": "Rechazar",
+    "fr": "Refuser",
+    "id": "Tolak",
+    "it": "Rifiuta",
+    "ja": "辞退",
+    "ko": "거절",
+    "pl": "Odmów",
+    "pt-BR": "Recusar",
+    "ru": "Отказаться",
+    "tr": "Reddet",
+    "zh-Hans": "拒绝",
+    "zh-Hant": "拒絕"
+  },
   "Default": {
     "de": "Standard",
     "es": "Predeterminado",
@@ -10454,6 +10469,21 @@
     "zh-Hans": "Hermes 想运行一条命令。",
     "zh-Hant": "Hermes 想執行一條指令。"
   },
+  "Hermes wants to talk": {
+    "de": "Hermes möchte sprechen",
+    "es": "Hermes quiere hablar",
+    "fr": "Hermes veut vous parler",
+    "id": "Hermes ingin bicara",
+    "it": "Hermes vuole parlarti",
+    "ja": "Hermesが話したがっています",
+    "ko": "Hermes가 이야기하고 싶어 해요",
+    "pl": "Hermes chce porozmawiać",
+    "pt-BR": "O Hermes quer conversar",
+    "ru": "Hermes хочет поговорить",
+    "tr": "Hermes konuşmak istiyor",
+    "zh-Hans": "Hermes 想和你通话",
+    "zh-Hant": "Hermes 想跟你通話"
+  },
   "Hermes web search": {
     "de": "Hermes-Websuche",
     "es": "Búsqueda web de Hermes",
@@ -13453,6 +13483,36 @@
     "tr": "Dakika",
     "zh-Hans": "分钟",
     "zh-Hant": "分鐘"
+  },
+  "Missed call from Hermes": {
+    "de": "Verpasster Anruf von Hermes",
+    "es": "Llamada perdida de Hermes",
+    "fr": "Appel manqué de Hermes",
+    "id": "Panggilan tak terjawab dari Hermes",
+    "it": "Chiamata persa da Hermes",
+    "ja": "Hermesからの不在着信",
+    "ko": "Hermes의 부재중 전화",
+    "pl": "Nieodebrane połączenie od Hermesa",
+    "pt-BR": "Chamada perdida do Hermes",
+    "ru": "Пропущенный звонок от Hermes",
+    "tr": "Hermes'ten cevapsız arama",
+    "zh-Hans": "Hermes 的未接来电",
+    "zh-Hant": "Hermes 的未接來電"
+  },
+  "Missed call from {name}": {
+    "de": "Verpasster Anruf von {name}",
+    "es": "Llamada perdida de {name}",
+    "fr": "Appel manqué de {name}",
+    "id": "Panggilan tak terjawab dari {name}",
+    "it": "Chiamata persa da {name}",
+    "ja": "{name}からの不在着信",
+    "ko": "{name}의 부재중 전화",
+    "pl": "Nieodebrane połączenie: {name}",
+    "pt-BR": "Chamada perdida de {name}",
+    "ru": "Пропущенный звонок: {name}",
+    "tr": "Cevapsız arama: {name}",
+    "zh-Hans": "{name} 的未接来电",
+    "zh-Hant": "{name} 的未接來電"
   },
   "Missing or out of date on this dashboard's host, so features like taking chats over from Hermes Desktop won't work.": {
     "de": "Fehlt auf dem Host dieses Dashboards oder ist veraltet, daher funktionieren Funktionen wie das Übernehmen von Chats aus Hermes Desktop nicht.",
@@ -30148,6 +30208,21 @@
     "tr": "{name} eklentiyi güncel tutar.",
     "zh-Hans": "{name} 会保持插件为最新版本。",
     "zh-Hant": "{name} 會讓外掛保持最新版本。"
+  },
+  "{name} wants to talk": {
+    "de": "{name} möchte sprechen",
+    "es": "{name} quiere hablar",
+    "fr": "{name} veut vous parler",
+    "id": "{name} ingin bicara",
+    "it": "{name} vuole parlarti",
+    "ja": "{name}が話したがっています",
+    "ko": "{name}이(가) 이야기하고 싶어 해요",
+    "pl": "{name} chce porozmawiać",
+    "pt-BR": "{name} quer conversar",
+    "ru": "{name} хочет поговорить",
+    "tr": "{name} konuşmak istiyor",
+    "zh-Hans": "{name} 想和你通话",
+    "zh-Hant": "{name} 想跟你通話"
   },
   "{name}'s Screen": {
     "de": "Bildschirm von {name}",
