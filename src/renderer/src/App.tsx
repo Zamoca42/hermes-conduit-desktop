@@ -14,6 +14,7 @@ import { PulsePage } from './components/PulsePage'
 import { FilesPanel } from './components/FilesPanel'
 import { ColumnDivider } from './components/ColumnDivider'
 import { LastCallTrace } from './components/LastCallTrace'
+import { CrashReportBanner, DeviceReportsSetting } from './components/DeviceReports'
 import { GlowContext, useGlowColors } from './components/GlowColors'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { BesideChatPane, type BesideChat } from './components/BesideChat'
@@ -849,6 +850,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           {status.phase === 'reconnecting' ? <button onClick={() => void window.conduit.reconnect()}>{t('Try now')}</button> : null}
         </div>
       ) : null}
+      <CrashReportBanner />
       <div
         className="body"
         style={
@@ -1697,6 +1699,11 @@ function Settings({
         <dd>
           <LastCallTrace reading />
           <p className="meta">{t('How the last reply read aloud went: Hermes’ voice and playback, without the reply’s words, to paste into an issue.')}</p>
+        </dd>
+        <dt>{t('Device reports')}</dt>
+        <dd>
+          <DeviceReportsSetting />
+          <p className="meta">{t('When part of Conduit stops or the window stops responding, it keeps a report of which part and why, never your messages, and asks once before sending it to Conduit’s developer.')}</p>
         </dd>
         <dt>{t('Appearance')}</dt>
         <dd>
