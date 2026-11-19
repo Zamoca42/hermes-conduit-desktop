@@ -9,6 +9,7 @@ import {
   categoryTitle,
   directoryGroups,
   facetWord,
+  matches,
   needsReconnect,
   organizationLockedTools,
   policyRevision,
@@ -141,9 +142,22 @@ function Head({ title, onBack }: { title: string; onBack: () => void }) {
 }
 
 /** Every app Hermes can connect, by category, with a search. */
-export function HostedAppsDirectory({ apps, onOpenApp, onBack }: { apps: HostedApps; onOpenApp: (slug: string) => void; onBack: () => void }) {
+export function HostedAppsDirectory({
+  apps,
+  suggested = [],
+  onOpenApp,
+  onBack
+}: {
+  apps: HostedApps
+  /** Hermes' picks, from a chat's apps card: shown first. */
+  suggested?: string[]
+  onOpenApp: (slug: string) => void
+  onBack: () => void
+}) {
   const [query, setQuery] = useState('')
-  const groups = apps.snapshot ? directoryGroups(appsOf(apps.snapshot), query) : []
+  const all = apps.snapshot ? appsOf(apps.snapshot) : []
+  const groups = directoryGroups(all, query)
+  const picks = suggested.flatMap(slug => all.filter(app => app.slug === slug && matches(app, query)))
   return (
     <div className="pset">
       <Head title={t('Apps')} onBack={onBack} />
@@ -164,6 +178,14 @@ export function HostedAppsDirectory({ apps, onOpenApp, onBack }: { apps: HostedA
       {!apps.snapshot && !apps.error ? <p className="meta">{t('Loading…')}</p> : null}
       {apps.snapshot && !groups.length ? (
         <p className="meta">{query.trim() ? t('Nothing matches “{query}”.', { query: query.trim() }) : t('No apps listed')}</p>
+      ) : null}
+      {picks.length ? (
+        <section className="pset-section">
+          <h2>{t('Suggested')}</h2>
+          {picks.map(app => (
+            <AppRow key={app.slug} app={app} onOpen={() => onOpenApp(app.slug)} />
+          ))}
+        </section>
       ) : null}
       {groups.map(group => (
         <section key={group.category} className="pset-section">
