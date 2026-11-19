@@ -5834,6 +5834,36 @@
     "zh-Hans": "无法删除定时任务：{reason}",
     "zh-Hant": "無法刪除排程工作：{reason}"
   },
+  "Could not delete this room": {
+    "de": "Raum konnte nicht gelöscht werden",
+    "es": "No se pudo eliminar esta sala",
+    "fr": "Impossible de supprimer ce salon",
+    "id": "Tidak dapat menghapus ruang ini",
+    "it": "Impossibile eliminare questa stanza",
+    "ja": "このグループを削除できませんでした",
+    "ko": "이 방을 삭제하지 못했어요",
+    "pl": "Nie udało się usunąć tego pokoju",
+    "pt-BR": "Não foi possível apagar esta sala",
+    "ru": "Не удалось удалить эту комнату",
+    "tr": "Bu oda silinemedi",
+    "zh-Hans": "无法删除此群聊",
+    "zh-Hant": "無法刪除此群組聊天"
+  },
+  "Could not delete this room: {reason}": {
+    "de": "Raum konnte nicht gelöscht werden: {reason}",
+    "es": "No se pudo eliminar esta sala: {reason}",
+    "fr": "Impossible de supprimer ce salon : {reason}",
+    "id": "Tidak dapat menghapus ruang ini: {reason}",
+    "it": "Impossibile eliminare questa stanza: {reason}",
+    "ja": "このグループを削除できませんでした: {reason}",
+    "ko": "이 방을 삭제하지 못했어요: {reason}",
+    "pl": "Nie udało się usunąć tego pokoju: {reason}",
+    "pt-BR": "Não foi possível apagar esta sala: {reason}",
+    "ru": "Не удалось удалить эту комнату: {reason}",
+    "tr": "Bu oda silinemedi: {reason}",
+    "zh-Hans": "无法删除此群聊：{reason}",
+    "zh-Hant": "無法刪除此群組聊天：{reason}"
+  },
   "Could not join: {error}": {
     "de": "Beitreten nicht möglich: {error}",
     "es": "Error al unirse: {error}",
@@ -7814,6 +7844,21 @@
     "zh-Hans": "删除这段录音？其中的内容尚未转写。",
     "zh-Hant": "刪除這段錄音？其中的內容尚未轉寫。"
   },
+  "Delete this room?": {
+    "de": "Diesen Raum löschen?",
+    "es": "¿Eliminar esta sala?",
+    "fr": "Supprimer ce salon ?",
+    "id": "Hapus ruang ini?",
+    "it": "Eliminare questa stanza?",
+    "ja": "このグループを削除しますか？",
+    "ko": "이 방을 삭제할까요?",
+    "pl": "Usunąć ten pokój?",
+    "pt-BR": "Apagar esta sala?",
+    "ru": "Удалить эту комнату?",
+    "tr": "Bu oda silinsin mi?",
+    "zh-Hans": "删除此群聊？",
+    "zh-Hant": "要刪除此群組聊天嗎？"
+  },
   "Delete {name}?": {
     "de": "{name} löschen?",
     "es": "¿Eliminar {name}?",
@@ -8878,6 +8923,21 @@
     "tr": "Arama bitirilip geçilsin mi?",
     "zh-Hans": "结束通话并切换？",
     "zh-Hant": "結束通話並切換？"
+  },
+  "Ended": {
+    "de": "Beendet",
+    "es": "Terminada",
+    "fr": "Terminé",
+    "id": "Selesai",
+    "it": "Terminata",
+    "ja": "終了",
+    "ko": "종료됨",
+    "pl": "Zakończony",
+    "pt-BR": "Encerrada",
+    "ru": "Завершена",
+    "tr": "Bitti",
+    "zh-Hans": "已结束",
+    "zh-Hant": "已結束"
   },
   "Ends this call and starts again in the mode you pick, in the same chat. Voice settings keep the new mode.": {
     "de": "Beendet diesen Anruf und startet ihn im gewählten Modus im selben Chat neu. Die Spracheinstellungen übernehmen den neuen Modus.",
@@ -13033,6 +13093,96 @@
     "tr": "Kancalar",
     "zh-Hans": "钩子",
     "zh-Hant": "掛鉤"
+  },
+  "Hosted by {host}": {
+    "de": "Gastgeber: {host}",
+    "es": "Organizada por {host}",
+    "fr": "Organisé par {host}",
+    "id": "Diselenggarakan oleh {host}",
+    "it": "Ospitata da {host}",
+    "ja": "ホスト: {host}",
+    "ko": "{host} 님이 연 방",
+    "pl": "Gospodarz: {host}",
+    "pt-BR": "Organizada por {host}",
+    "ru": "Хозяин: {host}",
+    "tr": "Açan: {host}",
+    "zh-Hans": "由 {host} 主持",
+    "zh-Hant": "由 {host} 主持"
+  },
+  "Hosted by {host} · working…": {
+    "de": "Gastgeber: {host} · arbeitet…",
+    "es": "Organizada por {host} · trabajando…",
+    "fr": "Organisé par {host} · au travail…",
+    "id": "Diselenggarakan oleh {host} · sedang bekerja…",
+    "it": "Ospitata da {host} · al lavoro…",
+    "ja": "ホスト: {host}・作業中…",
+    "ko": "{host} 님이 연 방 · 작업 중…",
+    "pl": "Gospodarz: {host} · pracuje…",
+    "pt-BR": "Organizada por {host} · trabalhando…",
+    "ru": "Хозяин: {host} · работает…",
+    "tr": "Açan: {host} · çalışıyor…",
+    "zh-Hans": "由 {host} 主持 · 工作中…",
+    "zh-Hant": "由 {host} 主持 · 工作中…"
+  },
+  "Hosted by {host}. You can read it here.": {
+    "de": "Gastgeber: {host}. Du kannst ihn hier lesen.",
+    "es": "Organizada por {host}. Puedes leerla aquí.",
+    "fr": "Organisé par {host}. Vous pouvez le lire ici.",
+    "id": "Diselenggarakan oleh {host}. Anda dapat membacanya di sini.",
+    "it": "Ospitata da {host}. Puoi leggerla qui.",
+    "ja": "ホスト: {host}。ここで読むことができます。",
+    "ko": "{host} 님이 연 방이에요. 여기서 읽을 수 있어요.",
+    "pl": "Gospodarz: {host}. Możesz go tu czytać.",
+    "pt-BR": "Organizada por {host}. Você pode ler aqui.",
+    "ru": "Хозяин: {host}. Здесь её можно читать.",
+    "tr": "Açan: {host}. Burada okuyabilirsiniz.",
+    "zh-Hans": "由 {host} 主持。你可以在这里阅读。",
+    "zh-Hant": "由 {host} 主持。你可以在這裡閱讀。"
+  },
+  "Hosted elsewhere": {
+    "de": "Auf einem anderen Hermes",
+    "es": "En otro Hermes",
+    "fr": "Hébergé ailleurs",
+    "id": "Diselenggarakan di tempat lain",
+    "it": "Ospitata altrove",
+    "ja": "ほかの場所でホスト",
+    "ko": "다른 곳에서 열린 방",
+    "pl": "Na innym Hermesie",
+    "pt-BR": "Organizada em outro lugar",
+    "ru": "На другом Hermes",
+    "tr": "Başka bir yerde açıldı",
+    "zh-Hans": "在其他地方主持",
+    "zh-Hant": "在其他地方主持"
+  },
+  "Hosted elsewhere · working…": {
+    "de": "Auf einem anderen Hermes · arbeitet…",
+    "es": "En otro Hermes · trabajando…",
+    "fr": "Hébergé ailleurs · au travail…",
+    "id": "Diselenggarakan di tempat lain · sedang bekerja…",
+    "it": "Ospitata altrove · al lavoro…",
+    "ja": "ほかの場所でホスト・作業中…",
+    "ko": "다른 곳에서 열린 방 · 작업 중…",
+    "pl": "Na innym Hermesie · pracuje…",
+    "pt-BR": "Organizada em outro lugar · trabalhando…",
+    "ru": "На другом Hermes · работает…",
+    "tr": "Başka bir yerde açıldı · çalışıyor…",
+    "zh-Hans": "在其他地方主持 · 工作中…",
+    "zh-Hant": "在其他地方主持 · 工作中…"
+  },
+  "Hosted elsewhere. You can read it here.": {
+    "de": "Auf einem anderen Hermes. Du kannst ihn hier lesen.",
+    "es": "En otro Hermes. Puedes leerla aquí.",
+    "fr": "Hébergé ailleurs. Vous pouvez le lire ici.",
+    "id": "Diselenggarakan di tempat lain. Anda dapat membacanya di sini.",
+    "it": "Ospitata altrove. Puoi leggerla qui.",
+    "ja": "ほかの場所でホスト。ここで読むことができます。",
+    "ko": "다른 곳에서 열린 방이에요. 여기서 읽을 수 있어요.",
+    "pl": "Na innym Hermesie. Możesz go tu czytać.",
+    "pt-BR": "Organizada em outro lugar. Você pode ler aqui.",
+    "ru": "На другом Hermes. Здесь её можно читать.",
+    "tr": "Başka bir yerde açıldı. Burada okuyabilirsiniz.",
+    "zh-Hans": "在其他地方主持。你可以在这里阅读。",
+    "zh-Hant": "在其他地方主持。你可以在這裡閱讀。"
   },
   "Hours": {
     "de": "Stunden",
@@ -29399,6 +29549,21 @@
     "zh-Hans": "目标的条件已更改。请重新选择要移除的条件。",
     "zh-Hant": "目標的條件已變更。請重新選擇要移除的條件。"
   },
+  "The host": {
+    "de": "Der Gastgeber",
+    "es": "El anfitrión",
+    "fr": "L’hôte",
+    "id": "Penyelenggara",
+    "it": "L’host",
+    "ja": "ホスト",
+    "ko": "방장",
+    "pl": "Gospodarz",
+    "pt-BR": "O anfitrião",
+    "ru": "Хозяин",
+    "tr": "Odayı açan",
+    "zh-Hans": "主持人",
+    "zh-Hant": "主持人"
+  },
   "The host's sudo password": {
     "de": "Das sudo-Passwort des Hosts",
     "es": "La contraseña sudo del host",
@@ -34919,6 +35084,21 @@
     "zh-Hans": "打开 Conduit 时，用 Windows Hello 解锁已保存的登录信息。",
     "zh-Hant": "開啟 Conduit 時，用 Windows Hello 解鎖已儲存的登入資訊。"
   },
+  "With linked people": {
+    "de": "Mit verknüpften Personen",
+    "es": "Con personas vinculadas",
+    "fr": "Avec des personnes liées",
+    "id": "Dengan orang yang ditautkan",
+    "it": "Con persone collegate",
+    "ja": "リンクした人と",
+    "ko": "연결한 사람과 함께",
+    "pl": "Z połączonymi osobami",
+    "pt-BR": "Com pessoas vinculadas",
+    "ru": "Со связанными людьми",
+    "tr": "Bağlı kişilerle",
+    "zh-Hans": "有已关联的人",
+    "zh-Hant": "有已連結的人"
+  },
   "With nudging": {
     "de": "Wie beim Anstupsen",
     "es": "Según los recordatorios",
@@ -35834,6 +36014,21 @@
     "zh-Hans": "你的智能体已离开",
     "zh-Hant": "你的代理程式已離開"
   },
+  "Your agents were taken out": {
+    "de": "Deine Agenten wurden entfernt",
+    "es": "Sacaron a tus agentes",
+    "fr": "Vos agents ont été retirés",
+    "id": "Agen Anda dikeluarkan",
+    "it": "I tuoi agenti sono stati rimossi",
+    "ja": "あなたのエージェントは外されました",
+    "ko": "내 에이전트가 내보내졌어요",
+    "pl": "Twoi agenci zostali usunięci z pokoju",
+    "pt-BR": "Seus agentes foram tirados",
+    "ru": "Ваших агентов удалили",
+    "tr": "Ajanlarınız çıkarıldı",
+    "zh-Hans": "你的智能体已被移出群聊",
+    "zh-Hant": "你的代理程式已被移出群組"
+  },
   "Your answer": {
     "de": "Deine Antwort",
     "es": "Tu respuesta",
@@ -35893,6 +36088,21 @@
     "tr": "Metnin açık ve koyu modda okunabilir kalması için renginiz gerektiğinde ayarlanır.",
     "zh-Hans": "必要时会调整你的颜色，确保文字在浅色和深色模式下都清晰可读。",
     "zh-Hant": "必要時會調整你的顏色，確保文字在淺色和深色模式下都清楚易讀。"
+  },
+  "Your copy of it and your agents' chats for it are deleted from your Hermes. The others keep theirs.": {
+    "de": "Deine Kopie davon und die Chats deiner Agenten dafür werden von deinem Hermes gelöscht. Die anderen behalten ihre.",
+    "es": "Tu copia y los chats de tus agentes para ella se eliminan de tu Hermes. Los demás conservan los suyos.",
+    "fr": "Votre copie et les discussions de vos agents pour ce salon sont supprimées de votre Hermes. Les autres gardent les leurs.",
+    "id": "Salinan Anda dan obrolan agen Anda untuk ruang ini dihapus dari Hermes Anda. Yang lain tetap menyimpan milik mereka.",
+    "it": "La tua copia e le chat dei tuoi agenti per questa stanza vengono eliminate dal tuo Hermes. Gli altri tengono le loro.",
+    "ja": "このグループのコピーと、あなたのエージェントのこのグループ用チャットがあなたのHermesから削除されます。ほかの人の分はそのまま残ります。",
+    "ko": "이 방의 사본과 내 에이전트의 이 방 채팅이 내 Hermes에서 삭제돼요. 다른 사람들의 것은 그대로 남아요.",
+    "pl": "Twoja kopia i czaty twoich agentów dla tego pokoju zostaną usunięte z twojego Hermesa. Inni zachowają swoje.",
+    "pt-BR": "Sua cópia e os chats dos seus agentes para ela serão apagados do seu Hermes. Os outros mantêm os deles.",
+    "ru": "Ваша копия комнаты и чаты ваших агентов для неё будут удалены с вашего Hermes. Остальные сохранят свои.",
+    "tr": "Bu odanın kopyası ve ajanlarınızın bu odadaki sohbetleri Hermes'inizden silinir. Diğerleri kendi kopyalarını tutar.",
+    "zh-Hans": "此群聊的副本以及你的智能体在其中的聊天将从你的 Hermes 删除。其他人会保留各自的副本。",
+    "zh-Hant": "此群組聊天的副本以及你的代理程式在其中的聊天將從你的 Hermes 刪除。其他人會保留各自的副本。"
   },
   "Your dashboards": {
     "de": "Deine Dashboards",
@@ -36809,6 +37019,21 @@
     "zh-Hans": "{count} 小时",
     "zh-Hant": "{count} 小時"
   },
+  "{count} members": {
+    "de": "{count} Mitglieder",
+    "es": "{count} miembros",
+    "fr": "{count} membres",
+    "id": "{count} anggota",
+    "it": "{count} membri",
+    "ja": "メンバー{count}人",
+    "ko": "멤버 {count}명",
+    "pl": "{count} uczestnika",
+    "pt-BR": "{count} membros",
+    "ru": "{count} участника",
+    "tr": "{count} üye",
+    "zh-Hans": "{count} 名成员",
+    "zh-Hant": "{count} 位成員"
+  },
   "{count} min": {
     "de": "{count} Min.",
     "es": "{count} min",
@@ -37048,6 +37273,21 @@
     "tr": "{duration} · Transkripti aç",
     "zh-Hans": "{duration} · 打开文字记录",
     "zh-Hant": "{duration} · 打開逐字稿"
+  },
+  "{host} took your agents out": {
+    "de": "{host} hat deine Agenten entfernt",
+    "es": "{host} sacó a tus agentes",
+    "fr": "{host} a retiré vos agents",
+    "id": "{host} mengeluarkan agen Anda",
+    "it": "{host} ha rimosso i tuoi agenti",
+    "ja": "{host}があなたのエージェントを外しました",
+    "ko": "{host}이(가) 내 에이전트를 내보냈어요",
+    "pl": "{host} usunął(-ęła) Twoich agentów z pokoju",
+    "pt-BR": "{host} tirou seus agentes",
+    "ru": "{host} удалил(а) ваших агентов",
+    "tr": "{host} ajanlarınızı çıkardı",
+    "zh-Hans": "{host} 将你的智能体移出了群聊",
+    "zh-Hant": "{host} 將你的代理程式移出了群組"
   },
   "{input} in · {output} out": {
     "de": "{input} Eingabe · {output} Ausgabe",

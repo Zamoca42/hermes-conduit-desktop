@@ -18,6 +18,10 @@ export interface RoomMember {
   profile?: string
   handle?: string
   displayName?: string
+  /** On another Hermes (a peer route): never one of this Hermes' bots, whatever its id. */
+  peer?: boolean
+  /** Another person's agent, in a room over Links: whose it is. */
+  owner?: string
 }
 
 export interface Room {
@@ -38,6 +42,8 @@ export interface RoomEvent {
   actor: { kind: string; id: string; profile?: string; displayName?: string }
   payload: Record<string, unknown>
   createdAt?: number
+  /** A message the room's host posted for a person over Links: `by` names them, absent for yours. */
+  post?: { by?: string }
 }
 
 export interface RoomCapabilities {
@@ -83,8 +89,9 @@ export function roomFromWire(value: unknown): Room | null {
     const m = obj(raw)
     const memberId = str(m?.member_id) ?? str(m?.profile)
     if (!m || !memberId) continue
-    if (obj(m.target)?.kind === 'peer') linked = true
-    members.push({ memberId, profile: str(m.profile), handle: str(m.handle), displayName: str(m.display_name) })
+    const peer = obj(m.target)?.kind === 'peer'
+    if (peer) linked = true
+    members.push({ memberId, profile: str(m.profile), handle: str(m.handle), displayName: str(m.display_name), ...(peer ? { peer } : {}) })
   }
   return {
     roomId,
@@ -118,7 +125,8 @@ export function eventFromWire(value: unknown): RoomEvent | null {
     kind: str(row.kind) ?? 'unknown',
     actor: { kind: str(actor.kind) ?? 'unknown', id: str(actor.id) ?? '', profile: str(actor.profile), displayName: str(actor.display_name) },
     payload: obj(row.payload) ?? {},
-    createdAt: seconds(row.created_at)
+    createdAt: seconds(row.created_at),
+    ...(obj(row.post) ? { post: str(obj(row.post)!.by)?.trim() ? { by: str(obj(row.post)!.by)!.trim() } : {} } : {})
   }
 }
 
@@ -148,6 +156,8 @@ export function mergeEvents(existing: readonly RoomEvent[], incoming: readonly R
 export type RoomItem =
   | { kind: 'user'; key: string; text: string; files?: RoomFile[]; at?: number; pending?: boolean; failed?: boolean }
   | { kind: 'member'; key: string; text: string; memberId: string; name: string; at?: number }
+  /** A person's message in a room over Links that isn't yours: the host's own, or one the host posted for someone. */
+  | { kind: 'person'; key: string; text: string; name: string; files?: RoomFile[]; at?: number }
   | { kind: 'note'; key: string; text: string; tone?: 'error'; /** A discussion paused at its turn limit: Continue may reopen it. */ paused?: string }
 
 function memberName(room: Room | null, memberId: string, fallback?: string): string {
@@ -175,13 +185,36 @@ export function roomFiles(payload: Record<string, unknown>): RoomFile[] {
   return files
 }
 
-export function roomItems(room: Room | null, events: readonly RoomEvent[]): RoomItem[] {
+/**
+ * Whose the people's messages are in a room someone else hosts (a copy):
+ * the host's own, yours, or another person's, as each event's `post` says.
+ * `you` is what the host calls you, taken off your own posts' lines.
+ */
+export interface CopyAttribution {
+  host: string
+  you?: string
+}
+
+/** `text` without `name` and its colon on every line, as a room's host named it; as it is when any line isn't named. */
+export function unnamedPost(value: string, name?: string): string {
+  if (!name) return value
+  const prefix = `${name}: `
+  const lines = value.split('\n')
+  return lines.every(line => line.startsWith(prefix)) ? lines.map(line => line.slice(prefix.length)).join('\n') : value
+}
+
+export function roomItems(room: Room | null, events: readonly RoomEvent[], copy?: CopyAttribution): RoomItem[] {
   const items: RoomItem[] = []
   for (const event of events) {
     const text = typeof event.payload.text === 'string' ? event.payload.text : ''
     if (event.kind === 'message.user') {
       const files = roomFiles(event.payload)
-      if (text.trim() || files.length) items.push({ kind: 'user', key: event.eventId, text, ...(files.length ? { files } : {}), at: event.createdAt })
+      if (!text.trim() && !files.length) continue
+      const shown = files.length ? { files } : {}
+      if (copy && !event.post) items.push({ kind: 'person', key: event.eventId, text, name: copy.host, ...shown, at: event.createdAt })
+      else if (copy && event.post?.by)
+        items.push({ kind: 'person', key: event.eventId, text: unnamedPost(text, event.post.by), name: event.post.by, ...shown, at: event.createdAt })
+      else items.push({ kind: 'user', key: event.eventId, text: copy ? unnamedPost(text, copy.you) : text, ...shown, at: event.createdAt })
     } else if (event.kind === 'message.member') {
       const memberId = str(event.payload.member_id) ?? event.actor.id
       if (text.trim()) items.push({ kind: 'member', key: event.eventId, text, memberId, name: memberName(room, memberId, event.actor.displayName), at: event.createdAt })

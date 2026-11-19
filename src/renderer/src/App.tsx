@@ -86,6 +86,8 @@ import { AppearancePage } from './components/AppearancePage'
 import { MultiplayerPage } from './components/MultiplayerPage'
 import { RoomInviteCard } from './components/RoomInviteCard'
 import { useRoomInvites } from './state/useRoomInvites'
+import { useRoomCopies } from './state/useRoomCopies'
+import { copyRoom } from './state/roomCopies'
 import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
@@ -943,9 +945,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const roomInvites = useRoomInvites(connected, status.url ?? '')
   const [openInvite, setOpenInvite] = useState<string | null>(null)
   const shownInvite = openInvite ? roomInvites.invites.find(i => i.id === openInvite) : undefined
+  const roomCopies = useRoomCopies(connected, status.url ?? '', roomInvites.capabilities)
   const [openRoom, setOpenRoom] = useState<Room | null>(null)
+  /** The open room when someone else hosts it: read from this Hermes' copy, by its Link and room. */
+  const [openCopy, setOpenCopy] = useState<string | null>(null)
+  const shownCopy = openCopy ? roomCopies.copies.find(c => c.id === openCopy) : undefined
+  const shownCopyRoom = useMemo(() => (shownCopy ? copyRoom(shownCopy) : null), [shownCopy])
   const showRoom = useCallback((room: Room) => {
     setOpenRoom(room)
+    setOpenCopy(null)
     setSection('room')
   }, [])
   const runningProfiles = useMemo(() => {
@@ -1667,6 +1675,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onDismissNotice={() => setBotNotice(null)}
             invites={roomInvites.rows}
             onOpenInvite={invite => setOpenInvite(invite.id)}
+            copies={roomCopies.copies}
+            onOpenCopy={copy => {
+              setOpenCopy(copy.id)
+              setOpenRoom(null)
+              setSection('room')
+            }}
             work={workByBot}
             onWork={bot => {
               openBot(bot)
@@ -1713,6 +1727,29 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               if (draft) setQuote(quoteRequest({ draft }))
             }}
             onOpenBoard={() => setSection('tasks')}
+          />
+        ) : section === 'room' && shownCopy && shownCopyRoom ? (
+          <RoomView
+            key={shownCopy.id}
+            room={shownCopyRoom}
+            bots={roster.bots ?? []}
+            connected={connected}
+            canStop={false}
+            canAttach={false}
+            copy={shownCopy}
+            onRefreshCopies={roomCopies.refresh}
+            onDeleteCopy={
+              roomCopies.canForget
+                ? async () => {
+                    const invite = roomInvites.invites.find(i => i.id === shownCopy.id)
+                    await roomCopies.remove(shownCopy, invite)
+                    // Its invite, ended, would take its tile back.
+                    if (invite) void roomInvites.remove(invite)
+                    setOpenCopy(null)
+                    setSection('bots')
+                  }
+                : undefined
+            }
           />
         ) : section === 'room' && openRoom ? (
           <RoomView

@@ -15,6 +15,7 @@ import { useAvatar, useFace } from "../state/useBots";
 import { canDelete } from "../state/botActions";
 import { Icon } from "./icons";
 import { inviteRowLine, type RoomInvite } from "../state/roomInvites";
+import { copyLine, copyRoom, isOver, type RoomCopy } from "../state/roomCopies";
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 
@@ -66,7 +67,7 @@ export function RoomFaces({
   size: number;
 }) {
   const shown = room.members
-    .map((m) => bots.find((b) => b.name === (m.profile ?? m.memberId)))
+    .map((m) => (m.peer ? undefined : bots.find((b) => b.name === (m.profile ?? m.memberId))))
     .filter((b): b is Bot => !!b)
     .slice(0, 4);
   return (
@@ -109,6 +110,9 @@ interface Props {
   /** Invites to rooms people you've linked host, as Group chats lists them. */
   invites?: RoomInvite[];
   onOpenInvite?: (invite: RoomInvite) => void;
+  /** Rooms people you've linked host that your agents are in, from this Hermes' copies: each in its invite's place. */
+  copies?: RoomCopy[];
+  onOpenCopy?: (copy: RoomCopy) => void;
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -178,6 +182,8 @@ export function BotsHome({
   onDismissNotice,
   invites,
   onOpenInvite,
+  copies,
+  onOpenCopy,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -359,7 +365,7 @@ export function BotsHome({
               ))}
             </div>
           ) : null}
-          {rooms && (rooms.length > 0 || canDrag || (invites?.length ?? 0) > 0) ? (
+          {rooms && (rooms.length > 0 || canDrag || (invites?.length ?? 0) > 0 || (copies?.length ?? 0) > 0) ? (
             <section className="rooms">
               <h2>{t('Group chats')}</h2>
               {rooms.length === 0 && !draft ? (
@@ -368,7 +374,24 @@ export function BotsHome({
                 </p>
               ) : null}
               <div className="rooms-grid">
-                {(invites ?? []).map((invite) => (
+                {(copies ?? []).map((copy) => (
+                  <button
+                    key={copy.id}
+                    className={`room-tile copy-tile${isOver(copy) ? " over" : ""}`}
+                    onClick={() => onOpenCopy?.(copy)}
+                    aria-label={`${copy.name}, ${t("With linked people")}, ${copyLine(copy)}`}
+                  >
+                    <span className="copy-faces">
+                      <RoomFaces room={copyRoom(copy)} bots={bots ?? []} size={44} />
+                      <span className="copy-badge" title={t("With linked people")}>
+                        <Icon name="linked" />
+                      </span>
+                    </span>
+                    <span className="bot-name">{copy.name}</span>
+                    <span className="meta bot-time">{copyLine(copy)}</span>
+                  </button>
+                ))}
+                {(invites ?? []).filter((invite) => !copies?.some((c) => c.id === invite.id)).map((invite) => (
                   <button
                     key={invite.id}
                     className={`room-tile invite-tile ${invite.status}`}
