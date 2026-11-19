@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { BOTS_META_KEY, botsFromProfiles, keptColor, type Bot } from '../state/bots'
@@ -24,6 +24,9 @@ import {
 import { groupModels, type ModelProviderRow } from '../state/models'
 import { starterFace } from '../state/starterFaces'
 import { avatarChanged, useAvatar } from '../state/useBots'
+import { SummaryHost } from '../state/useStepSummaries'
+import { readPicks, savePick, subscribePicks } from '../state/glowColors'
+import { GlowContext } from './GlowColors'
 import { BotPluginRow } from './BotPluginRow'
 import { BotWorkSettings } from './BotWorkSettings'
 import { StarterFaceArt } from './StarterFaceArt'
@@ -91,6 +94,13 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
   const [warning, setWarning] = useState<string | null>(null)
   const picker = useRef<HTMLInputElement>(null)
   const stored = useAvatar(bot.name, bot.hasAvatar)
+  const host = useContext(SummaryHost)
+  const glowOf = useContext(GlowContext)
+  const [glowPicked, setGlowPicked] = useState(() => !!readPicks(host)[bot.name])
+  useEffect(() => subscribePicks((changed, picks) => changed === host && setGlowPicked(!!picks[bot.name])), [host, bot.name])
+  /** The color picker shows the glow now: picked, from the picture, or Hermes' color; a color it can't show as hex shows the face's. */
+  const glowShown = glowOf(bot.name)
+  const glowValue = /^#[0-9a-f]{6}$/i.test(glowShown) ? glowShown : faceHex(starterFace(draft.face ?? bot.face))
   const update = (patch: Partial<Draft>) => setDraft(current => ({ ...current, ...patch }))
 
   const loadDetails = async () => {
@@ -322,6 +332,24 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
             })}
           </div>
           <p className="meta">{t("Shown until the bot has a picture. Its color is the bot's color in Conduit.")}</p>
+        </section>
+
+        <section className="pset-section">
+          <h2>{t('Background glow')}</h2>
+          <div className="glow-pick">
+            <input
+              type="color"
+              aria-label={t('Background glow')}
+              value={glowValue}
+              onChange={e => savePick(host, bot.name, e.target.value)}
+            />
+            {glowPicked ? (
+              <button className="ask-btn" onClick={() => savePick(host, bot.name, null)}>
+                {t('Automatic')}
+              </button>
+            ) : null}
+          </div>
+          <p className="meta">{t("Kept on this computer. Automatic takes the picture's main color, else the bot's color.")}</p>
         </section>
 
         <section className="pset-section">

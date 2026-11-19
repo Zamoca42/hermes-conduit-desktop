@@ -1,7 +1,8 @@
-import { useEffect, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
+import { useContext, useEffect, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
 import type { BotWork } from "../state/useWork";
 import { timeLabel } from "../state/chats";
-import { botColor, homeLayout, keptColor, type Bot } from "../state/bots";
+import { homeLayout, keptColor, type Bot } from "../state/bots";
+import { GlowContext } from "./GlowColors";
 import {
   addToDraft,
   defaultRoomName,
@@ -24,7 +25,8 @@ export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delet
 /** A bot's picture, else its starter face (on the color Hermes keeps for it, when it has one). */
 export function BotAvatar({ bot, size }: { bot: Bot; size: number }) {
   const url = useAvatar(bot.name, bot.hasAvatar);
-  const color = botColor(bot);
+  // Its ring is its chat's glow color, as on the phone.
+  const color = useContext(GlowContext)(bot.name);
   return (
     <span
       className="bot-avatar"
