@@ -4,6 +4,7 @@ import { gateway } from '../gateway'
 import { delegateChain, fallbackList, isComplete, moved, sameList, savedValue, type Fallback } from '../state/fallbacks'
 import { groupModels, type ModelProviderRow } from '../state/models'
 import { readConfig, updateConfig, withValue, type Http } from '../state/profileConfig'
+import { ModelOptions } from './ModelOptions'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -139,15 +140,7 @@ export function FallbackModels({ profile, delegate = false }: Props) {
                       >
                         {!value ? <option value="">{t('Not set')}</option> : null}
                         {!listed ? <option value={value}>{entry.provider ? `${entry.provider} · ${entry.model}` : entry.model}</option> : null}
-                        {groups.map(group => (
-                          <optgroup key={group.slug} label={group.name}>
-                            {group.models.map(model => (
-                              <option key={model} value={`${group.slug}\n${model}`}>
-                                {model}
-                              </option>
-                            ))}
-                          </optgroup>
-                        ))}
+                        <ModelOptions providers={providers} groups={groups} />
                       </select>
                       <button
                         className="staged-remove"

@@ -20,6 +20,7 @@ import { starterFace } from '../state/starterFaces'
 import { avatarChanged } from '../state/useBots'
 import { StarterFaceArt } from './StarterFaceArt'
 import { Icon } from './icons'
+import { ModelOptions } from './ModelOptions'
 
 interface Props {
   /** Every bot, hidden ones too: a new name and face stay clear of them. */
@@ -245,15 +246,7 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
           <h2>{t('Model')}</h2>
           <select className="language-select" value={pick} aria-label={t('Model')} onChange={e => setPick(e.target.value)}>
             <option value="">{t('Default')}</option>
-            {groups.map(group => (
-              <optgroup key={group.slug} label={group.name}>
-                {group.models.map(model => (
-                  <option key={model} value={`${group.slug}\n${model}`}>
-                    {model}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
+            <ModelOptions providers={providers} groups={groups} />
           </select>
         </section>
 

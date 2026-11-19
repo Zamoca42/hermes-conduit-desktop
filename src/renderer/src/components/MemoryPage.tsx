@@ -20,6 +20,7 @@ import {
 import { FieldRow } from './ConfigPage'
 import { FallbackModels } from './FallbackModels'
 import { Icon } from './icons'
+import { ModelOptions } from './ModelOptions'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -197,15 +198,7 @@ function DelegateModel({
         <select className="language-select models-select" value={pick} disabled={busy} aria-label={t('Delegate model')} onChange={e => setPick(e.target.value)}>
           <option value="">{t('Inherit chat model')}</option>
           {!listed ? <option value={pick}>{pick.split('\n')[1]}</option> : null}
-          {groups.map(group => (
-            <optgroup key={group.slug} label={group.name}>
-              {group.models.map(model => (
-                <option key={model} value={`${group.slug}\n${model}`}>
-                  {model}
-                </option>
-              ))}
-            </optgroup>
-          ))}
+          <ModelOptions providers={providers} groups={groups} />
         </select>
       </div>
       <div className="pset-row">

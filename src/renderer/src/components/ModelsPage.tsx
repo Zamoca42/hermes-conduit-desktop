@@ -6,6 +6,7 @@ import { groupModels, type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
 import { FallbackModels } from './FallbackModels'
 import { ProvidersSection } from './ProvidersSection'
+import { ModelOptions } from './ModelOptions'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -93,15 +94,7 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
       >
         {sameAsChats ? <option value="">{t('Same as chats')}</option> : !current ? <option value="">{t('Default')}</option> : null}
         {current && !listed ? <option value={current}>{value.model}</option> : null}
-        {groups.map(group => (
-          <optgroup key={group.slug} label={group.name}>
-            {group.models.map(model => (
-              <option key={model} value={`${group.slug}\n${model}`}>
-                {model}
-              </option>
-            ))}
-          </optgroup>
-        ))}
+        <ModelOptions providers={providers} groups={groups} />
       </select>
     )
   }
