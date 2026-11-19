@@ -8115,3 +8115,19 @@ a.ask-btn[aria-disabled='true'] {
   white-space: pre-wrap;
   user-select: text;
 }
+
+/* The window while the saved hosts wait for Touch ID or Windows Hello. */
+.locked-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+}
+.locked-screen h1 {
+  margin: 0;
+  font-size: 20px;
+}

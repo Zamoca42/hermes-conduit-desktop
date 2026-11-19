@@ -28,6 +28,13 @@ export function QuickAsk() {
   }, [])
 
   if (!status) return <div className="quick" />
+  if (status.phase === 'locked') {
+    return (
+      <div className="quick">
+        <div className="quick-empty">{t('Unlock Conduit in its window first.')}</div>
+      </div>
+    )
+  }
   if (status.phase === 'signed-out' || !status.url) {
     return (
       <div className="quick">
