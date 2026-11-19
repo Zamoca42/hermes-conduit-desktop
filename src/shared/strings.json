@@ -374,6 +374,21 @@
     "zh-Hans": "那里正在进行的回复总会先完成。如果你回到那个应用，请在那里重新打开对话，才能看到你从 Conduit 发送的内容。",
     "zh-Hant": "那裡正在進行的回覆一律會先完成。如果你回到該 App，請在那裡重新打開聊天，才能看到你從 Conduit 傳送的內容。"
   },
+  "A short name tells this {app} account apart from your others, like work or home. You sign in next.": {
+    "de": "Ein kurzer Name unterscheidet dieses {app}-Konto von deinen anderen, etwa arbeit oder privat. Danach meldest du dich an.",
+    "es": "Un nombre corto distingue esta cuenta de {app} de las demás, como trabajo o casa. Después inicias sesión.",
+    "fr": "Un nom court distingue ce compte {app} de vos autres, comme travail ou maison. Vous vous connectez ensuite.",
+    "id": "Nama singkat membedakan akun {app} ini dari akun lainnya, misalnya kerja atau rumah. Setelah itu kamu masuk.",
+    "it": "Un nome breve distingue questo account {app} dagli altri, come lavoro o casa. Poi accedi.",
+    "ja": "短い名前で、この{app}アカウントをほかのアカウントと区別します（例: work、home）。このあとサインインします。",
+    "ko": "짧은 이름으로 이 {app} 계정을 다른 계정과 구분합니다(예: work, home). 그다음 로그인합니다.",
+    "pl": "Krótka nazwa odróżnia to konto {app} od pozostałych, np. praca lub dom. Potem się zalogujesz.",
+    "pt-BR": "Um nome curto diferencia esta conta do {app} das outras, como trabalho ou casa. Depois você entra.",
+    "ru": "Короткое имя отличает этот аккаунт {app} от других, например work или home. Затем вы войдёте.",
+    "tr": "Kısa bir ad bu {app} hesabını diğerlerinden ayırır, örneğin is veya ev. Ardından giriş yaparsın.",
+    "zh-Hans": "用一个简短的名称区分这个 {app} 账户和你的其他账户，例如 work 或 home。接下来登录。",
+    "zh-Hant": "用簡短的名稱區分這個 {app} 帳號和你的其他帳號，例如 work 或 home。接著登入。"
+  },
   "A worker picks it up as soon as it’s ready.": {
     "de": "Ein Worker übernimmt sie, sobald sie bereit ist.",
     "es": "Un trabajador la toma en cuanto está lista.",
@@ -524,6 +539,21 @@
     "zh-Hans": "账户 {number}",
     "zh-Hant": "帳號 {number}"
   },
+  "Accounts": {
+    "de": "Konten",
+    "es": "Cuentas",
+    "fr": "Comptes",
+    "id": "Akun",
+    "it": "Account",
+    "ja": "アカウント",
+    "ko": "계정",
+    "pl": "Konta",
+    "pt-BR": "Contas",
+    "ru": "Аккаунты",
+    "tr": "Hesaplar",
+    "zh-Hans": "账户",
+    "zh-Hant": "帳號"
+  },
   "Active": {
     "de": "Aktiv",
     "es": "Activo",
@@ -553,6 +583,36 @@
     "tr": "Ekle",
     "zh-Hans": "添加",
     "zh-Hant": "加入"
+  },
+  "Add Account": {
+    "de": "Konto hinzufügen",
+    "es": "Añadir cuenta",
+    "fr": "Ajouter un compte",
+    "id": "Tambah Akun",
+    "it": "Aggiungi account",
+    "ja": "アカウントを追加",
+    "ko": "계정 추가",
+    "pl": "Dodaj konto",
+    "pt-BR": "Adicionar conta",
+    "ru": "Добавить аккаунт",
+    "tr": "Hesap Ekle",
+    "zh-Hans": "添加账户",
+    "zh-Hant": "加入帳號"
+  },
+  "Add Another Account": {
+    "de": "Weiteres Konto hinzufügen",
+    "es": "Añadir otra cuenta",
+    "fr": "Ajouter un autre compte",
+    "id": "Tambah Akun Lain",
+    "it": "Aggiungi un altro account",
+    "ja": "別のアカウントを追加",
+    "ko": "다른 계정 추가",
+    "pl": "Dodaj kolejne konto",
+    "pt-BR": "Adicionar outra conta",
+    "ru": "Добавить ещё аккаунт",
+    "tr": "Başka Hesap Ekle",
+    "zh-Hans": "添加另一个账户",
+    "zh-Hant": "加入另一個帳號"
   },
   "Add a Gemini API key on your Hermes server.": {
     "de": "Füge auf deinem Hermes-Server einen Gemini-API-Schlüssel hinzu.",
@@ -1244,6 +1304,21 @@
     "zh-Hans": "另一个 Hermes 窗口仍在此对话中回复。请在回复结束后重试。",
     "zh-Hant": "另一個 Hermes 視窗仍在這個聊天中回覆。請等它完成後再試一次。"
   },
+  "Another account of this app already has that name.": {
+    "de": "Ein anderes Konto dieser App hat schon diesen Namen.",
+    "es": "Otra cuenta de esta app ya tiene ese nombre.",
+    "fr": "Un autre compte de cette app porte déjà ce nom.",
+    "id": "Akun lain dari aplikasi ini sudah memakai nama itu.",
+    "it": "Un altro account di questa app ha già quel nome.",
+    "ja": "このアプリの別のアカウントがすでにその名前を使っています。",
+    "ko": "이 앱의 다른 계정이 이미 그 이름을 쓰고 있습니다.",
+    "pl": "Inne konto tej aplikacji ma już tę nazwę.",
+    "pt-BR": "Outra conta deste app já tem esse nome.",
+    "ru": "Другой аккаунт этого приложения уже носит это имя.",
+    "tr": "Bu uygulamanın başka bir hesabı bu adı zaten kullanıyor.",
+    "zh-Hans": "这个应用的另一个账户已在使用该名称。",
+    "zh-Hant": "這個 App 的另一個帳號已在使用該名稱。"
+  },
   "Another bot": {
     "de": "Ein anderer Bot",
     "es": "Otro bot",
@@ -1528,6 +1603,21 @@
     "tr": "Onayla",
     "zh-Hans": "批准",
     "zh-Hant": "核准"
+  },
+  "Apps": {
+    "de": "Apps",
+    "es": "Apps",
+    "fr": "Apps",
+    "id": "Aplikasi",
+    "it": "App",
+    "ja": "アプリ",
+    "ko": "앱",
+    "pl": "Aplikacje",
+    "pt-BR": "Apps",
+    "ru": "Приложения",
+    "tr": "Uygulamalar",
+    "zh-Hans": "应用",
+    "zh-Hant": "App"
   },
   "Apps Hermes can use for you": {
     "de": "Apps, die Hermes für dich nutzen kann",
@@ -2819,6 +2909,21 @@
     "zh-Hans": "最近提过，之后没有变化",
     "zh-Hant": "最近提過，之後沒有變化"
   },
+  "Browse Apps": {
+    "de": "Apps durchsuchen",
+    "es": "Explorar apps",
+    "fr": "Parcourir les apps",
+    "id": "Jelajahi Aplikasi",
+    "it": "Sfoglia le app",
+    "ja": "アプリを見る",
+    "ko": "앱 둘러보기",
+    "pl": "Przeglądaj aplikacje",
+    "pt-BR": "Explorar apps",
+    "ru": "Все приложения",
+    "tr": "Uygulamalara Göz At",
+    "zh-Hans": "浏览应用",
+    "zh-Hant": "瀏覽 App"
+  },
   "Browse Skill Hub": {
     "de": "Skill-Hub durchsuchen",
     "es": "Explorar el centro de habilidades",
@@ -3508,6 +3613,21 @@
     "tr": "iPhone’unuzun aynı dört kelimeyi gösterdiğini kontrol edin.",
     "zh-Hans": "确认你的 iPhone 显示同样的四个单词。",
     "zh-Hant": "確認你的 iPhone 顯示同樣的四個單字。"
+  },
+  "Checking": {
+    "de": "Wird geprüft",
+    "es": "Comprobando",
+    "fr": "Vérification",
+    "id": "Memeriksa",
+    "it": "Verifica",
+    "ja": "確認中",
+    "ko": "확인 중",
+    "pl": "Sprawdzanie",
+    "pt-BR": "Verificando",
+    "ru": "Проверка",
+    "tr": "Denetleniyor",
+    "zh-Hans": "正在检查",
+    "zh-Hant": "正在檢查"
   },
   "Checking for updates…": {
     "de": "Suche nach Updates…",
@@ -4484,6 +4604,36 @@
     "zh-Hans": "连接",
     "zh-Hant": "連線"
   },
+  "Connect an App": {
+    "de": "App verbinden",
+    "es": "Conectar una app",
+    "fr": "Connecter une app",
+    "id": "Hubungkan Aplikasi",
+    "it": "Collega un'app",
+    "ja": "アプリを接続",
+    "ko": "앱 연결",
+    "pl": "Połącz aplikację",
+    "pt-BR": "Conectar um app",
+    "ru": "Подключить приложение",
+    "tr": "Uygulama Bağla",
+    "zh-Hans": "连接应用",
+    "zh-Hant": "連接 App"
+  },
+  "Connect an app once and Hermes can read and act in it for you, in any chat. You sign in on the app’s own page; Hermes and Nous Portal keep the sign-in, never Conduit.": {
+    "de": "Verbinde eine App einmal, und Hermes kann in jedem Chat für dich darin lesen und handeln. Du meldest dich auf der Seite der App an; Hermes und Nous Portal behalten die Anmeldung, nie Conduit.",
+    "es": "Conecta una app una vez y Hermes podrá leer y actuar en ella por ti, en cualquier chat. Inicias sesión en la página de la propia app; Hermes y Nous Portal guardan la sesión, nunca Conduit.",
+    "fr": "Connectez une app une fois et Hermes pourra y lire et agir pour vous, dans n’importe quel chat. Vous vous connectez sur la page de l’app elle-même ; Hermes et Nous Portal gardent la connexion, jamais Conduit.",
+    "id": "Hubungkan aplikasi sekali dan Hermes bisa membaca serta bertindak di dalamnya untukmu, di chat mana pun. Kamu masuk di halaman aplikasi itu sendiri; Hermes dan Nous Portal menyimpan proses masuknya, bukan Conduit.",
+    "it": "Collega un’app una volta e Hermes potrà leggere e agire al suo interno per te, in qualsiasi chat. Accedi sulla pagina dell’app stessa; Hermes e Nous Portal conservano l’accesso, mai Conduit.",
+    "ja": "アプリを一度接続すると、Hermesがどのチャットでもあなたの代わりにそのアプリを読み、操作できます。サインインはアプリ自身のページで行い、サインイン情報はHermesとNous Portalが保持します。Conduitが保持することはありません。",
+    "ko": "앱을 한 번 연결하면 Hermes가 어느 채팅에서든 대신 그 앱을 읽고 작업할 수 있습니다. 로그인은 앱의 자체 페이지에서 하며, 로그인 정보는 Hermes와 Nous Portal이 보관하고 Conduit은 보관하지 않습니다.",
+    "pl": "Połącz aplikację raz, a Hermes będzie mógł w niej czytać i działać za Ciebie, w każdym czacie. Logujesz się na stronie samej aplikacji; logowanie przechowują Hermes i Nous Portal, nigdy Conduit.",
+    "pt-BR": "Conecte um app uma vez e o Hermes poderá ler e agir nele por você, em qualquer chat. Você entra na página do próprio app; o Hermes e o Nous Portal guardam o login, nunca o Conduit.",
+    "ru": "Подключите приложение один раз, и Hermes сможет читать и действовать в нём за вас в любом чате. Вы входите на странице самого приложения; вход хранят Hermes и Nous Portal, но не Conduit.",
+    "tr": "Bir uygulamayı bir kez bağla, Hermes her sohbette senin için içinde okuyup işlem yapabilsin. Girişi uygulamanın kendi sayfasında yaparsın; girişi Conduit değil, Hermes ve Nous Portal saklar.",
+    "zh-Hans": "应用只需连接一次，Hermes 就能在任何聊天中替你读取并操作它。你在应用自己的页面登录；登录信息由 Hermes 和 Nous Portal 保管，Conduit 从不保管。",
+    "zh-Hant": "App 只要連接一次，Hermes 就能在任何聊天中替你讀取並操作它。你在 App 自己的頁面登入；登入資訊由 Hermes 和 Nous Portal 保管，Conduit 從不保管。"
+  },
   "Connect for Hermes": {
     "de": "Für Hermes verbinden",
     "es": "Conectar para Hermes",
@@ -4513,6 +4663,21 @@
     "tr": "Hermes’e bağlan",
     "zh-Hans": "连接到 Hermes",
     "zh-Hant": "連線到 Hermes"
+  },
+  "Connect {app}": {
+    "de": "{app} verbinden",
+    "es": "Conectar {app}",
+    "fr": "Connecter {app}",
+    "id": "Hubungkan {app}",
+    "it": "Collega {app}",
+    "ja": "{app}を接続",
+    "ko": "{app} 연결",
+    "pl": "Połącz {app}",
+    "pt-BR": "Conectar {app}",
+    "ru": "Подключить {app}",
+    "tr": "{app} Bağla",
+    "zh-Hans": "连接 {app}",
+    "zh-Hant": "連接 {app}"
   },
   "Connected": {
     "de": "Verbunden",
@@ -5759,6 +5924,21 @@
     "zh-Hans": "无法更改“{title}”：{reason}",
     "zh-Hant": "無法更改「{title}」：{reason}"
   },
+  "Couldn’t connect": {
+    "de": "Verbindung fehlgeschlagen",
+    "es": "No se pudo conectar",
+    "fr": "Connexion impossible",
+    "id": "Tidak dapat terhubung",
+    "it": "Connessione non riuscita",
+    "ja": "接続できませんでした",
+    "ko": "연결할 수 없음",
+    "pl": "Nie udało się połączyć",
+    "pt-BR": "Não foi possível conectar",
+    "ru": "Не удалось подключиться",
+    "tr": "Bağlanılamadı",
+    "zh-Hans": "无法连接",
+    "zh-Hant": "無法連線"
+  },
   "Couldn’t delete the project: {reason}": {
     "de": "Das Projekt konnte nicht gelöscht werden: {reason}",
     "es": "No se pudo eliminar el proyecto: {reason}",
@@ -6824,6 +7004,21 @@
     "zh-Hans": "删除“{name}”？此操作无法撤销。",
     "zh-Hant": "刪除「{name}」？此操作無法復原。"
   },
+  "Deletes": {
+    "de": "Löscht",
+    "es": "Elimina",
+    "fr": "Supprime",
+    "id": "Menghapus",
+    "it": "Elimina",
+    "ja": "削除",
+    "ko": "삭제함",
+    "pl": "Usuwa",
+    "pt-BR": "Exclui",
+    "ru": "Удаляет",
+    "tr": "Siler",
+    "zh-Hans": "删除",
+    "zh-Hant": "刪除"
+  },
   "Deliver to": {
     "de": "Senden an",
     "es": "Entregar en",
@@ -7003,6 +7198,36 @@
     "tr": "Kaydedilmemiş değişiklikler silinsin mi?",
     "zh-Hans": "放弃未保存的更改？",
     "zh-Hant": "要捨棄未儲存的變更嗎？"
+  },
+  "Disconnect": {
+    "de": "Trennen",
+    "es": "Desconectar",
+    "fr": "Déconnecter",
+    "id": "Putuskan",
+    "it": "Scollega",
+    "ja": "接続を解除",
+    "ko": "연결 해제",
+    "pl": "Odłącz",
+    "pt-BR": "Desconectar",
+    "ru": "Отключить",
+    "tr": "Bağlantıyı Kes",
+    "zh-Hans": "断开连接",
+    "zh-Hant": "中斷連接"
+  },
+  "Disconnect this account?": {
+    "de": "Dieses Konto trennen?",
+    "es": "¿Desconectar esta cuenta?",
+    "fr": "Déconnecter ce compte ?",
+    "id": "Putuskan akun ini?",
+    "it": "Scollegare questo account?",
+    "ja": "このアカウントの接続を解除しますか？",
+    "ko": "이 계정의 연결을 해제할까요?",
+    "pl": "Odłączyć to konto?",
+    "pt-BR": "Desconectar esta conta?",
+    "ru": "Отключить этот аккаунт?",
+    "tr": "Bu hesabın bağlantısı kesilsin mi?",
+    "zh-Hans": "断开这个账户？",
+    "zh-Hant": "要中斷這個帳號的連接嗎？"
   },
   "Dismiss": {
     "de": "Schließen",
@@ -8864,6 +9089,21 @@
     "zh-Hans": "已完成，但没有文字回复。",
     "zh-Hant": "已完成，但沒有文字回覆。"
   },
+  "Finishing sign-in": {
+    "de": "Anmeldung wird abgeschlossen",
+    "es": "Terminando el inicio de sesión",
+    "fr": "Connexion en cours de finalisation",
+    "id": "Menyelesaikan proses masuk",
+    "it": "Accesso in completamento",
+    "ja": "サインインを完了しています",
+    "ko": "로그인 마무리 중",
+    "pl": "Kończenie logowania",
+    "pt-BR": "Concluindo o login",
+    "ru": "Завершаем вход",
+    "tr": "Giriş tamamlanıyor",
+    "zh-Hans": "正在完成登录",
+    "zh-Hant": "正在完成登入"
+  },
   "Firm": {
     "de": "Bestimmt",
     "es": "Firme",
@@ -9644,6 +9884,21 @@
     "zh-Hans": "请填写标签。",
     "zh-Hant": "請填寫標籤。"
   },
+  "Gmail, Slack, Notion and more: sign in once and Hermes can use them.": {
+    "de": "Gmail, Slack, Notion und mehr: einmal anmelden, und Hermes kann sie nutzen.",
+    "es": "Gmail, Slack, Notion y más: inicia sesión una vez y Hermes podrá usarlas.",
+    "fr": "Gmail, Slack, Notion et plus : connectez-vous une fois et Hermes pourra les utiliser.",
+    "id": "Gmail, Slack, Notion, dan lainnya: masuk sekali dan Hermes bisa memakainya.",
+    "it": "Gmail, Slack, Notion e altre: accedi una volta e Hermes potrà usarle.",
+    "ja": "Gmail、Slack、Notionなど: 一度サインインすればHermesが使えます。",
+    "ko": "Gmail, Slack, Notion 등: 한 번 로그인하면 Hermes가 사용할 수 있습니다.",
+    "pl": "Gmail, Slack, Notion i inne: zaloguj się raz, a Hermes będzie mógł ich używać.",
+    "pt-BR": "Gmail, Slack, Notion e mais: entre uma vez e o Hermes poderá usá-los.",
+    "ru": "Gmail, Slack, Notion и другие: войдите один раз, и Hermes сможет ими пользоваться.",
+    "tr": "Gmail, Slack, Notion ve daha fazlası: bir kez giriş yap, Hermes kullanabilsin.",
+    "zh-Hans": "Gmail、Slack、Notion 等：登录一次，Hermes 就能使用。",
+    "zh-Hant": "Gmail、Slack、Notion 等：登入一次，Hermes 就能使用。"
+  },
   "Go to": {
     "de": "Gehe zu",
     "es": "Ir a",
@@ -10199,6 +10454,21 @@
     "zh-Hans": "Hermes 已经开始处理了。",
     "zh-Hant": "Hermes 已經開始處理了。"
   },
+  "Hermes and you call this account by its name, like work or home.": {
+    "de": "Hermes und du nennt dieses Konto bei seinem Namen, etwa arbeit oder privat.",
+    "es": "Hermes y tú llamáis a esta cuenta por su nombre, como trabajo o casa.",
+    "fr": "Hermes et vous appelez ce compte par son nom, comme travail ou maison.",
+    "id": "Kamu dan Hermes menyebut akun ini dengan namanya, misalnya kerja atau rumah.",
+    "it": "Tu e Hermes chiamate questo account con il suo nome, come lavoro o casa.",
+    "ja": "あなたとHermesは、このアカウントを名前で呼びます（例: work、home）。",
+    "ko": "나와 Hermes는 이 계정을 이름으로 부릅니다(예: work, home).",
+    "pl": "Ty i Hermes nazywacie to konto jego nazwą, np. praca lub dom.",
+    "pt-BR": "Você e o Hermes chamam esta conta pelo nome, como trabalho ou casa.",
+    "ru": "Вы и Hermes называете этот аккаунт по имени, например work или home.",
+    "tr": "Sen ve Hermes bu hesabı adıyla anarsınız, örneğin is veya ev.",
+    "zh-Hans": "你和 Hermes 都用名称称呼这个账户，例如 work 或 home。",
+    "zh-Hant": "你和 Hermes 都用名稱稱呼這個帳號，例如 work 或 home。"
+  },
   "Hermes answers on this server, so there's nothing to set up on it. The Conduit plugin runs each turn and has the server read the reply aloud.": {
     "de": "Auf diesem Server antwortet Hermes, dort ist also nichts einzurichten. Das Conduit-Plugin führt jede Runde aus und lässt den Server die Antwort vorlesen.",
     "es": "En este servidor responde Hermes, así que no hay nada que configurar en él. El plugin de Conduit lleva cada turno y hace que el servidor lea la respuesta en voz alta.",
@@ -10319,6 +10589,21 @@
     "zh-Hans": "Hermes 暂时还无法把它加入这条回复。它仍在队列中。",
     "zh-Hant": "Hermes 暫時還無法把它加入這則回覆。它仍在佇列中。"
   },
+  "Hermes can’t use a tool that’s off.": {
+    "de": "Ein ausgeschaltetes Werkzeug kann Hermes nicht nutzen.",
+    "es": "Hermes no puede usar una herramienta desactivada.",
+    "fr": "Hermes ne peut pas utiliser un outil désactivé.",
+    "id": "Hermes tidak bisa memakai alat yang nonaktif.",
+    "it": "Hermes non può usare uno strumento disattivato.",
+    "ja": "オフのツールはHermesが使えません。",
+    "ko": "꺼진 도구는 Hermes가 사용할 수 없습니다.",
+    "pl": "Hermes nie może używać wyłączonego narzędzia.",
+    "pt-BR": "O Hermes não pode usar uma ferramenta desativada.",
+    "ru": "Hermes не может использовать выключенный инструмент.",
+    "tr": "Hermes kapalı bir aracı kullanamaz.",
+    "zh-Hans": "Hermes 无法使用已关闭的工具。",
+    "zh-Hant": "Hermes 無法使用已關閉的工具。"
+  },
   "Hermes couldn't reach the server.": {
     "de": "Hermes hat den Server nicht erreicht.",
     "es": "Hermes no pudo conectar con el servidor.",
@@ -10408,6 +10693,51 @@
     "tr": "Hermes'e ulaşılamadı. Tekrar denemeden önce sırayı kontrol et.",
     "zh-Hans": "无法连接 Hermes。请先查看队列，再重试。",
     "zh-Hant": "無法連線 Hermes。請先查看佇列，再重試。"
+  },
+  "Hermes couldn’t open the sign-in page. Try again.": {
+    "de": "Hermes konnte die Anmeldeseite nicht öffnen. Versuch es noch einmal.",
+    "es": "Hermes no pudo abrir la página de inicio de sesión. Inténtalo de nuevo.",
+    "fr": "Hermes n’a pas pu ouvrir la page de connexion. Réessayez.",
+    "id": "Hermes tidak bisa membuka halaman masuk. Coba lagi.",
+    "it": "Hermes non è riuscito ad aprire la pagina di accesso. Riprova.",
+    "ja": "Hermesはサインインページを開けませんでした。もう一度お試しください。",
+    "ko": "Hermes가 로그인 페이지를 열지 못했습니다. 다시 시도하세요.",
+    "pl": "Hermes nie mógł otworzyć strony logowania. Spróbuj ponownie.",
+    "pt-BR": "O Hermes não conseguiu abrir a página de login. Tente de novo.",
+    "ru": "Hermes не смог открыть страницу входа. Попробуйте ещё раз.",
+    "tr": "Hermes giriş sayfasını açamadı. Yeniden dene.",
+    "zh-Hans": "Hermes 无法打开登录页面。请重试。",
+    "zh-Hant": "Hermes 無法開啟登入頁面。請再試一次。"
+  },
+  "Hermes couldn’t read the rules just now, so these switches can’t change.": {
+    "de": "Hermes konnte die Regeln gerade nicht lesen, daher lassen sich diese Schalter nicht ändern.",
+    "es": "Hermes no pudo leer las reglas ahora, así que estos interruptores no se pueden cambiar.",
+    "fr": "Hermes n’a pas pu lire les règles pour l’instant, ces interrupteurs ne peuvent donc pas changer.",
+    "id": "Hermes tidak bisa membaca aturannya saat ini, jadi sakelar ini tidak bisa diubah.",
+    "it": "Hermes non è riuscito a leggere le regole in questo momento, quindi questi interruttori non si possono cambiare.",
+    "ja": "Hermes が今ルールを読み取れなかったため、これらのスイッチは変更できません。",
+    "ko": "Hermes가 지금 규칙을 읽지 못해 이 스위치를 바꿀 수 없습니다.",
+    "pl": "Hermes nie mógł teraz odczytać reguł, więc tych przełączników nie można zmienić.",
+    "pt-BR": "O Hermes não conseguiu ler as regras agora, então esses interruptores não podem ser alterados.",
+    "ru": "Hermes не смог прочитать правила, поэтому эти переключатели сейчас нельзя изменить.",
+    "tr": "Hermes kuralları şu anda okuyamadı, bu yüzden bu anahtarlar değiştirilemez.",
+    "zh-Hans": "Hermes 暂时无法读取规则，因此这些开关无法更改。",
+    "zh-Hant": "Hermes 暫時無法讀取規則，因此這些開關無法更改。"
+  },
+  "Hermes couldn’t read your organization’s rules just now, so it can’t tell yet whether {app} is allowed.": {
+    "de": "Hermes konnte die Regeln deiner Organisation gerade nicht lesen und kann daher noch nicht sagen, ob {app} erlaubt ist.",
+    "es": "Hermes no pudo leer las reglas de tu organización ahora mismo, así que aún no sabe si {app} está permitido.",
+    "fr": "Hermes n’a pas pu lire les règles de votre organisation pour le moment, il ne peut donc pas encore savoir si {app} est autorisé.",
+    "id": "Hermes tidak dapat membaca aturan organisasi Anda saat ini, jadi belum dapat memastikan apakah {app} diizinkan.",
+    "it": "Hermes non è riuscito a leggere le regole della tua organizzazione in questo momento, quindi non sa ancora se {app} è consentito.",
+    "ja": "Hermes は今、組織のルールを読み取れなかったため、{app} が許可されているかどうかをまだ判断できません。",
+    "ko": "Hermes가 지금 조직의 규칙을 읽지 못해 {app}이(가) 허용되는지 아직 알 수 없습니다.",
+    "pl": "Hermes nie mógł teraz odczytać zasad Twojej organizacji, więc nie wie jeszcze, czy {app} jest dozwolone.",
+    "pt-BR": "O Hermes não conseguiu ler as regras da sua organização agora, então ainda não sabe se {app} é permitido.",
+    "ru": "Hermes сейчас не смог прочитать правила вашей организации, поэтому пока не знает, разрешено ли {app}.",
+    "tr": "Hermes kuruluşunuzun kurallarını şu anda okuyamadı, bu yüzden {app} uygulamasına izin verilip verilmediğini henüz bilemiyor.",
+    "zh-Hans": "Hermes 暂时无法读取你所在组织的规则，因此还不能确定是否允许使用 {app}。",
+    "zh-Hant": "Hermes 暫時無法讀取你所在組織的規則，因此還無法確定是否允許使用 {app}。"
   },
   "Hermes decides when to call": {
     "de": "Hermes entscheidet, wann er anruft",
@@ -11113,6 +11443,21 @@
     "tr": "Hermes tüm profillerde oturumu kapatır.",
     "zh-Hans": "Hermes 会在所有配置中退出登录。",
     "zh-Hant": "Hermes 會在所有設定檔中登出。"
+  },
+  "Hermes signs out of “{name}” and can’t use it until you connect it again.": {
+    "de": "Hermes meldet sich von „{name}“ ab und kann es erst wieder nutzen, wenn du es neu verbindest.",
+    "es": "Hermes cierra la sesión de «{name}» y no puede usarla hasta que la vuelvas a conectar.",
+    "fr": "Hermes se déconnecte de « {name} » et ne peut plus l’utiliser tant que vous ne le reconnectez pas.",
+    "id": "Hermes keluar dari “{name}” dan tidak bisa memakainya sampai kamu menghubungkannya lagi.",
+    "it": "Hermes esce da “{name}” e non può usarlo finché non lo ricolleghi.",
+    "ja": "Hermesは「{name}」からサインアウトし、もう一度接続するまで使えなくなります。",
+    "ko": "Hermes가 “{name}”에서 로그아웃하며, 다시 연결하기 전까지 사용할 수 없습니다.",
+    "pl": "Hermes wyloguje się z „{name}” i nie będzie mógł go używać, dopóki nie połączysz go ponownie.",
+    "pt-BR": "O Hermes sai de “{name}” e não pode usá-lo até você conectá-lo de novo.",
+    "ru": "Hermes выйдет из «{name}» и не сможет его использовать, пока вы не подключите его снова.",
+    "tr": "Hermes “{name}” hesabından çıkar ve yeniden bağlayana kadar kullanamaz.",
+    "zh-Hans": "Hermes 会退出“{name}”，在你重新连接之前无法使用它。",
+    "zh-Hant": "Hermes 會登出「{name}」，在你重新連接之前無法使用它。"
   },
   "Hermes starts no new delegate agents while this is on. Agents already working carry on. This applies to every profile on this Hermes.": {
     "de": "Solange dies aktiv ist, startet Hermes keine neuen delegierten Agenten. Bereits arbeitende Agenten machen weiter. Das gilt für jedes Profil auf diesem Hermes.",
@@ -13124,6 +13469,21 @@
     "zh-Hans": "允许 Hermes 主动跟进",
     "zh-Hant": "允許 Hermes 主動跟進"
   },
+  "Let Hermes use {app}": {
+    "de": "Hermes darf {app} nutzen",
+    "es": "Dejar que Hermes use {app}",
+    "fr": "Autoriser Hermes à utiliser {app}",
+    "id": "Izinkan Hermes memakai {app}",
+    "it": "Consenti a Hermes di usare {app}",
+    "ja": "Hermesに{app}の使用を許可",
+    "ko": "Hermes가 {app} 사용 허용",
+    "pl": "Pozwól Hermesowi używać {app}",
+    "pt-BR": "Deixar o Hermes usar {app}",
+    "ru": "Разрешить Hermes использовать {app}",
+    "tr": "Hermes {app} kullanabilsin",
+    "zh-Hans": "允许 Hermes 使用 {app}",
+    "zh-Hant": "允許 Hermes 使用 {app}"
+  },
   "Let a delegate agent start and coordinate its own delegates, up to the depth above.": {
     "de": "Lass einen delegierten Agenten eigene Delegierte starten und koordinieren, bis zur obigen Tiefe.",
     "es": "Permite que un agente delegado inicie y coordine sus propios delegados, hasta la profundidad de arriba.",
@@ -14909,6 +15269,21 @@
     "zh-Hans": "名称",
     "zh-Hant": "名稱"
   },
+  "Name Account": {
+    "de": "Konto benennen",
+    "es": "Poner nombre a la cuenta",
+    "fr": "Nommer le compte",
+    "id": "Beri Nama Akun",
+    "it": "Dai un nome all'account",
+    "ja": "アカウントに名前を付ける",
+    "ko": "계정 이름 지정",
+    "pl": "Nazwij konto",
+    "pt-BR": "Dar nome à conta",
+    "ru": "Назвать аккаунт",
+    "tr": "Hesaba Ad Ver",
+    "zh-Hans": "为账户命名",
+    "zh-Hant": "為帳號命名"
+  },
   "Name and site": {
     "de": "Name und Website",
     "es": "Nombre y sitio",
@@ -15613,6 +15988,21 @@
     "tr": "Bu profil için yüklü ajan eklentisi yok.",
     "zh-Hans": "此档案未安装任何智能体插件。",
     "zh-Hant": "此設定檔未安裝任何代理程式外掛。"
+  },
+  "No apps listed": {
+    "de": "Keine Apps aufgeführt",
+    "es": "No hay apps",
+    "fr": "Aucune app listée",
+    "id": "Tidak ada aplikasi",
+    "it": "Nessuna app elencata",
+    "ja": "アプリがありません",
+    "ko": "목록에 앱이 없음",
+    "pl": "Brak aplikacji",
+    "pt-BR": "Nenhum app listado",
+    "ru": "Нет приложений",
+    "tr": "Listelenen uygulama yok",
+    "zh-Hans": "没有列出的应用",
+    "zh-Hant": "沒有列出的 App"
   },
   "No chats yet": {
     "de": "Noch keine Chats",
@@ -16829,6 +17219,36 @@
     "zh-Hans": "关闭",
     "zh-Hant": "關閉"
   },
+  "Off by your organization": {
+    "de": "Von deiner Organisation ausgeschaltet",
+    "es": "Desactivada por tu organización",
+    "fr": "Désactivée par votre organisation",
+    "id": "Dinonaktifkan oleh organisasimu",
+    "it": "Disattivata dalla tua organizzazione",
+    "ja": "組織によりオフ",
+    "ko": "조직에서 끔",
+    "pl": "Wyłączone przez Twoją organizację",
+    "pt-BR": "Desativado pela sua organização",
+    "ru": "Выключено вашей организацией",
+    "tr": "Kuruluşun tarafından kapatıldı",
+    "zh-Hans": "已被你的组织关闭",
+    "zh-Hant": "已被你的組織關閉"
+  },
+  "Off keeps the sign-in but hides the app’s tools.": {
+    "de": "Aus behält die Anmeldung, blendet aber die Werkzeuge der App aus.",
+    "es": "Desactivada conserva la sesión, pero oculta las herramientas de la app.",
+    "fr": "Désactiver garde la connexion mais masque les outils de l’app.",
+    "id": "Nonaktif tetap menyimpan proses masuk, tetapi menyembunyikan alat aplikasi.",
+    "it": "Disattivata mantiene l’accesso ma nasconde gli strumenti dell’app.",
+    "ja": "オフにするとサインインは残りますが、アプリのツールは使われなくなります。",
+    "ko": "끄면 로그인은 유지되지만 앱의 도구는 숨겨집니다.",
+    "pl": "Wyłączenie zachowuje logowanie, ale ukrywa narzędzia aplikacji.",
+    "pt-BR": "Desativado mantém o login, mas oculta as ferramentas do app.",
+    "ru": "Выключение сохраняет вход, но скрывает инструменты приложения.",
+    "tr": "Kapalı, girişi korur ama uygulamanın araçlarını gizler.",
+    "zh-Hans": "关闭后保留登录，但会隐藏应用的工具。",
+    "zh-Hant": "關閉後保留登入，但會隱藏 App 的工具。"
+  },
   "Official": {
     "de": "Offiziell",
     "es": "Oficial",
@@ -17158,6 +17578,21 @@
     "tr": "Giriş sayfasını aç",
     "zh-Hans": "打开登录页面",
     "zh-Hant": "開啟登入頁面"
+  },
+  "Open the Page Again": {
+    "de": "Seite erneut öffnen",
+    "es": "Abrir la página de nuevo",
+    "fr": "Rouvrir la page",
+    "id": "Buka Halaman Lagi",
+    "it": "Riapri la pagina",
+    "ja": "ページをもう一度開く",
+    "ko": "페이지 다시 열기",
+    "pl": "Otwórz stronę ponownie",
+    "pt-BR": "Abrir a página de novo",
+    "ru": "Открыть страницу снова",
+    "tr": "Sayfayı Yeniden Aç",
+    "zh-Hans": "再次打开页面",
+    "zh-Hant": "再次開啟頁面"
   },
   "Open the chat": {
     "de": "Chat öffnen",
@@ -19484,6 +19919,21 @@
     "zh-Hans": "正在读取网页",
     "zh-Hant": "正在讀取網頁"
   },
+  "Reading the tool list…": {
+    "de": "Tool-Liste wird gelesen…",
+    "es": "Leyendo la lista de herramientas…",
+    "fr": "Lecture de la liste des outils…",
+    "id": "Membaca daftar alat…",
+    "it": "Lettura dell'elenco degli strumenti…",
+    "ja": "ツール一覧を読み込み中…",
+    "ko": "도구 목록을 읽는 중…",
+    "pl": "Odczytywanie listy narzędzi…",
+    "pt-BR": "Lendo a lista de ferramentas…",
+    "ru": "Чтение списка инструментов…",
+    "tr": "Araç listesi okunuyor…",
+    "zh-Hans": "正在读取工具列表…",
+    "zh-Hant": "正在讀取工具清單…"
+  },
   "Reads pictures and screenshots for a chat model that can't see them.": {
     "de": "Liest Bilder und Screenshots für ein Chatmodell, das sie nicht sehen kann.",
     "es": "Lee imágenes y capturas para un modelo de chat que no puede verlas.",
@@ -20068,6 +20518,21 @@
     "tr": "Yeniden Adlandır",
     "zh-Hans": "重命名…",
     "zh-Hant": "重新命名"
+  },
+  "Rename Account": {
+    "de": "Konto umbenennen",
+    "es": "Renombrar cuenta",
+    "fr": "Renommer le compte",
+    "id": "Ganti Nama Akun",
+    "it": "Rinomina account",
+    "ja": "アカウント名を変更",
+    "ko": "계정 이름 변경",
+    "pl": "Zmień nazwę konta",
+    "pt-BR": "Renomear conta",
+    "ru": "Переименовать аккаунт",
+    "tr": "Hesabı Yeniden Adlandır",
+    "zh-Hans": "重命名账户",
+    "zh-Hant": "重新命名帳號"
   },
   "Renamed to {name}": {
     "de": "Umbenannt in {name}",
@@ -21719,6 +22184,21 @@
     "zh-Hans": "搜索",
     "zh-Hant": "搜尋"
   },
+  "Search apps": {
+    "de": "Apps suchen",
+    "es": "Buscar apps",
+    "fr": "Rechercher des apps",
+    "id": "Cari aplikasi",
+    "it": "Cerca app",
+    "ja": "アプリを検索",
+    "ko": "앱 검색",
+    "pl": "Szukaj aplikacji",
+    "pt-BR": "Buscar apps",
+    "ru": "Поиск приложений",
+    "tr": "Uygulama ara",
+    "zh-Hans": "搜索应用",
+    "zh-Hant": "搜尋 App"
+  },
   "Search chats": {
     "de": "Chats durchsuchen",
     "es": "Buscar chats",
@@ -22934,6 +23414,36 @@
     "zh-Hans": "侧边面板宽度",
     "zh-Hant": "側邊面板寬度"
   },
+  "Sign In": {
+    "de": "Anmelden",
+    "es": "Iniciar sesión",
+    "fr": "Se connecter",
+    "id": "Masuk",
+    "it": "Accedi",
+    "ja": "サインイン",
+    "ko": "로그인",
+    "pl": "Zaloguj się",
+    "pt-BR": "Fazer Login",
+    "ru": "Войти",
+    "tr": "Giriş Yap",
+    "zh-Hans": "登录",
+    "zh-Hant": "登入"
+  },
+  "Sign In Again": {
+    "de": "Erneut anmelden",
+    "es": "Volver a iniciar sesión",
+    "fr": "Se reconnecter",
+    "id": "Masuk Lagi",
+    "it": "Accedi di nuovo",
+    "ja": "もう一度サインイン",
+    "ko": "다시 로그인",
+    "pl": "Zaloguj się ponownie",
+    "pt-BR": "Fazer Login de Novo",
+    "ru": "Войти снова",
+    "tr": "Tekrar Giriş Yap",
+    "zh-Hans": "重新登录",
+    "zh-Hant": "重新登入"
+  },
   "Sign in": {
     "de": "Anmelden",
     "es": "Iniciar sesión",
@@ -22948,6 +23458,21 @@
     "tr": "Giriş yap",
     "zh-Hans": "登录",
     "zh-Hant": "登入"
+  },
+  "Sign in again": {
+    "de": "Erneut anmelden",
+    "es": "Volver a iniciar sesión",
+    "fr": "Se reconnecter",
+    "id": "Masuk lagi",
+    "it": "Accedi di nuovo",
+    "ja": "もう一度サインイン",
+    "ko": "다시 로그인",
+    "pl": "Zaloguj się ponownie",
+    "pt-BR": "Entrar de novo",
+    "ru": "Войти снова",
+    "tr": "Yeniden giriş yap",
+    "zh-Hans": "重新登录",
+    "zh-Hant": "重新登入"
   },
   "Sign in on the host with": {
     "de": "Auf dem Host anmelden mit",
@@ -23098,6 +23623,21 @@
     "tr": "Giriş yapıldı",
     "zh-Hans": "已登录",
     "zh-Hant": "已登入"
+  },
+  "Signed in through Nous Portal. Hermes keeps the sign-ins; changes apply to new chats.": {
+    "de": "Angemeldet über Nous Portal. Hermes behält die Anmeldungen; Änderungen gelten für neue Chats.",
+    "es": "Sesión iniciada mediante Nous Portal. Hermes guarda las sesiones; los cambios se aplican a los chats nuevos.",
+    "fr": "Connecté via Nous Portal. Hermes garde les connexions ; les changements s'appliquent aux nouveaux chats.",
+    "id": "Masuk melalui Nous Portal. Hermes menyimpan proses masuknya; perubahan berlaku untuk chat baru.",
+    "it": "Accesso tramite Nous Portal. Hermes conserva gli accessi; le modifiche valgono per le nuove chat.",
+    "ja": "Nous Portal経由でサインインしています。サインイン情報はHermesが保持し、変更は新しいチャットに適用されます。",
+    "ko": "Nous Portal로 로그인했습니다. 로그인 정보는 Hermes가 보관하며 변경 사항은 새 채팅에 적용됩니다.",
+    "pl": "Zalogowano przez Nous Portal. Hermes przechowuje logowania; zmiany dotyczą nowych czatów.",
+    "pt-BR": "Login feito pelo Nous Portal. O Hermes guarda os logins; as mudanças valem para novos chats.",
+    "ru": "Вход через Nous Portal. Входы хранит Hermes; изменения действуют в новых чатах.",
+    "tr": "Nous Portal üzerinden giriş yapıldı. Girişleri Hermes saklar; değişiklikler yeni sohbetlerde geçerli olur.",
+    "zh-Hans": "通过 Nous Portal 登录。登录信息由 Hermes 保管；更改对新聊天生效。",
+    "zh-Hant": "透過 Nous Portal 登入。登入資訊由 Hermes 保管；更改會套用到新聊天。"
   },
   "Signed in with": {
     "de": "Angemeldet mit",
@@ -24133,6 +24673,21 @@
     "tr": "Ekranı Durdur",
     "zh-Hans": "停止屏幕",
     "zh-Hant": "停止螢幕"
+  },
+  "Stop Waiting": {
+    "de": "Nicht mehr warten",
+    "es": "Dejar de esperar",
+    "fr": "Arrêter d'attendre",
+    "id": "Berhenti Menunggu",
+    "it": "Smetti di attendere",
+    "ja": "待機を中止",
+    "ko": "대기 중지",
+    "pl": "Przestań czekać",
+    "pt-BR": "Parar de esperar",
+    "ru": "Не ждать",
+    "tr": "Beklemeyi Durdur",
+    "zh-Hans": "停止等待",
+    "zh-Hant": "停止等待"
   },
   "Stop agent": {
     "de": "Agent stoppen",
@@ -25994,6 +26549,21 @@
     "zh-Hans": "登录未完成。",
     "zh-Hant": "登入未完成。"
   },
+  "The sign-in didn’t finish. Try again.": {
+    "de": "Die Anmeldung wurde nicht abgeschlossen. Versuch es noch einmal.",
+    "es": "El inicio de sesión no terminó. Inténtalo de nuevo.",
+    "fr": "La connexion n’a pas abouti. Réessayez.",
+    "id": "Proses masuk tidak selesai. Coba lagi.",
+    "it": "L’accesso non è terminato. Riprova.",
+    "ja": "サインインが完了しませんでした。もう一度お試しください。",
+    "ko": "로그인이 끝나지 않았습니다. 다시 시도하세요.",
+    "pl": "Logowanie nie zostało ukończone. Spróbuj ponownie.",
+    "pt-BR": "O login não terminou. Tente de novo.",
+    "ru": "Вход не завершился. Попробуйте ещё раз.",
+    "tr": "Giriş tamamlanmadı. Yeniden dene.",
+    "zh-Hans": "登录未完成。请重试。",
+    "zh-Hant": "登入未完成。請再試一次。"
+  },
   "The sign-in was cancelled.": {
     "de": "Die Anmeldung wurde abgebrochen.",
     "es": "Se canceló el inicio de sesión.",
@@ -26023,6 +26593,21 @@
     "tr": "Giriş reddedildi.",
     "zh-Hans": "登录被拒绝。",
     "zh-Hant": "登入遭拒。"
+  },
+  "The sign-in wasn’t finished.": {
+    "de": "Die Anmeldung wurde nicht beendet.",
+    "es": "El inicio de sesión no se completó.",
+    "fr": "La connexion n’a pas été terminée.",
+    "id": "Proses masuk belum diselesaikan.",
+    "it": "L’accesso non è stato completato.",
+    "ja": "サインインは完了していません。",
+    "ko": "로그인을 마치지 않았습니다.",
+    "pl": "Logowanie nie zostało dokończone.",
+    "pt-BR": "O login não foi concluído.",
+    "ru": "Вход не был завершён.",
+    "tr": "Giriş bitirilmedi.",
+    "zh-Hans": "登录没有完成。",
+    "zh-Hant": "登入沒有完成。"
   },
   "The site is asking for a one-time code from a text message, email or authenticator app. Hermes types it into the page; the model never sees it.": {
     "de": "Die Website fragt nach einem Einmalcode aus einer SMS, E-Mail oder Authenticator-App. Hermes tippt ihn in die Seite ein; das Modell sieht ihn nie.",
@@ -26068,6 +26653,21 @@
     "tr": "Son Grok Live, Qwen Live, Local Live veya GPT-Live aramasının adımları; söylenenler olmadan, bir soruna yapıştırmak için.",
     "zh-Hans": "上次 Grok Live、Qwen Live、Local Live 或 GPT-Live 通话的步骤，不含说话内容，可粘贴到问题报告中。",
     "zh-Hant": "上次 Grok Live、Qwen Live、Local Live 或 GPT-Live 通話的步驟，不含說話內容，可貼到問題回報中。"
+  },
+  "The switches changed somewhere else. They show what’s set now; try again.": {
+    "de": "Die Schalter wurden anderswo geändert. Sie zeigen jetzt den aktuellen Stand; versuch es noch einmal.",
+    "es": "Los interruptores cambiaron en otro sitio. Muestran lo que hay ahora; inténtalo de nuevo.",
+    "fr": "Les interrupteurs ont changé ailleurs. Ils montrent l’état actuel ; réessayez.",
+    "id": "Sakelar diubah di tempat lain. Sekarang menampilkan pengaturan terbaru; coba lagi.",
+    "it": "Gli interruttori sono cambiati altrove. Mostrano lo stato attuale; riprova.",
+    "ja": "スイッチがほかの場所で変更されました。現在の設定を表示しています。もう一度お試しください。",
+    "ko": "스위치가 다른 곳에서 변경되었습니다. 지금 설정을 보여 줍니다. 다시 시도하세요.",
+    "pl": "Przełączniki zmieniono gdzie indziej. Pokazują obecny stan; spróbuj ponownie.",
+    "pt-BR": "Os botões mudaram em outro lugar. Eles mostram o que está definido agora; tente de novo.",
+    "ru": "Переключатели изменили в другом месте. Сейчас они показывают текущие настройки; попробуйте ещё раз.",
+    "tr": "Anahtarlar başka bir yerde değişti. Şu anki ayarları gösteriyorlar; yeniden dene.",
+    "zh-Hans": "开关已在别处更改。现在显示的是当前设置；请重试。",
+    "zh-Hant": "開關已在別處更改。現在顯示的是目前設定；請再試一次。"
   },
   "The turn failed.": {
     "de": "Der Durchgang ist fehlgeschlagen.",
@@ -26459,6 +27059,21 @@
     "zh-Hans": "此 Hermes 无法从 Conduit 更新",
     "zh-Hant": "此 Hermes 無法從 Conduit 更新"
   },
+  "This Hermes can’t connect apps yet. Update Hermes to use them.": {
+    "de": "Dieses Hermes kann noch keine Apps verbinden. Aktualisiere Hermes, um sie zu nutzen.",
+    "es": "Este Hermes aún no puede conectar apps. Actualiza Hermes para usarlas.",
+    "fr": "Ce Hermes ne peut pas encore connecter d’apps. Mettez Hermes à jour pour les utiliser.",
+    "id": "Hermes ini belum bisa menghubungkan aplikasi. Perbarui Hermes untuk memakainya.",
+    "it": "Questo Hermes non può ancora collegare app. Aggiorna Hermes per usarle.",
+    "ja": "このHermesはまだアプリを接続できません。使うにはHermesをアップデートしてください。",
+    "ko": "이 Hermes는 아직 앱을 연결할 수 없습니다. 사용하려면 Hermes를 업데이트하세요.",
+    "pl": "Ten Hermes nie może jeszcze łączyć aplikacji. Zaktualizuj Hermesa, aby ich używać.",
+    "pt-BR": "Este Hermes ainda não pode conectar apps. Atualize o Hermes para usá-los.",
+    "ru": "Этот Hermes пока не умеет подключать приложения. Обновите Hermes, чтобы ими пользоваться.",
+    "tr": "Bu Hermes henüz uygulama bağlayamıyor. Kullanmak için Hermes’i güncelle.",
+    "zh-Hans": "这个 Hermes 还不能连接应用。请更新 Hermes 后使用。",
+    "zh-Hant": "這個 Hermes 還不能連接 App。請更新 Hermes 後使用。"
+  },
   "This Hermes doesn't report usage. Update Hermes to see it here.": {
     "de": "Dieses Hermes meldet keine Nutzung. Aktualisiere Hermes, um sie hier zu sehen.",
     "es": "Este Hermes no informa del uso. Actualiza Hermes para verlo aquí.",
@@ -26548,6 +27163,21 @@
     "tr": "Bu ajan zaten bitirdi.",
     "zh-Hans": "此智能体已经完成。",
     "zh-Hant": "此代理程式已經完成。"
+  },
+  "This app brings no tools.": {
+    "de": "Diese App bringt keine Werkzeuge mit.",
+    "es": "Esta app no trae herramientas.",
+    "fr": "Cette app n'apporte aucun outil.",
+    "id": "Aplikasi ini tidak membawa alat.",
+    "it": "Questa app non porta strumenti.",
+    "ja": "このアプリにはツールがありません。",
+    "ko": "이 앱에는 도구가 없습니다.",
+    "pl": "Ta aplikacja nie ma narzędzi.",
+    "pt-BR": "Este app não traz ferramentas.",
+    "ru": "У этого приложения нет инструментов.",
+    "tr": "Bu uygulama araç getirmiyor.",
+    "zh-Hans": "这个应用不提供工具。",
+    "zh-Hant": "這個 App 不提供工具。"
   },
   "This bot is answering a message from another bot. Conduit sends yours when it finishes.": {
     "de": "Dieser Bot beantwortet gerade eine Nachricht von einem anderen Bot. Conduit sendet deine, wenn er fertig ist.",
@@ -28949,6 +29579,21 @@
     "zh-Hans": "密钥使用方式",
     "zh-Hant": "金鑰使用方式"
   },
+  "Use lowercase letters, digits and dashes, up to 32, starting with a letter or digit.": {
+    "de": "Nutze Kleinbuchstaben, Ziffern und Bindestriche, bis zu 32, beginnend mit einem Buchstaben oder einer Ziffer.",
+    "es": "Usa minúsculas, dígitos y guiones, hasta 32, empezando por una letra o un dígito.",
+    "fr": "Utilisez des minuscules, des chiffres et des tirets, jusqu'à 32, en commençant par une lettre ou un chiffre.",
+    "id": "Gunakan huruf kecil, angka, dan tanda hubung, maksimal 32, diawali huruf atau angka.",
+    "it": "Usa lettere minuscole, cifre e trattini, fino a 32, iniziando con una lettera o una cifra.",
+    "ja": "小文字、数字、ハイフンを32文字まで使い、先頭は文字か数字にしてください。",
+    "ko": "소문자, 숫자, 하이픈을 32자까지 쓰고, 문자나 숫자로 시작하세요.",
+    "pl": "Użyj małych liter, cyfr i myślników, do 32 znaków, zaczynając od litery lub cyfry.",
+    "pt-BR": "Use letras minúsculas, dígitos e hifens, até 32, começando com uma letra ou um dígito.",
+    "ru": "Используйте строчные буквы, цифры и дефисы, до 32 символов, начиная с буквы или цифры.",
+    "tr": "Küçük harf, rakam ve tire kullan, en çok 32, harf veya rakamla başlasın.",
+    "zh-Hans": "请使用小写字母、数字和连字符，最多 32 个，以字母或数字开头。",
+    "zh-Hant": "請使用小寫字母、數字和連字號，最多 32 個，以字母或數字開頭。"
+  },
   "Use my real browser profile": {
     "de": "Mein echtes Browserprofil verwenden",
     "es": "Usar mi perfil real del navegador",
@@ -30449,6 +31094,21 @@
     "zh-Hans": "每个请求头单独一行，格式为“名称: 值”。这一行不是：{line}",
     "zh-Hant": "每個標頭單獨一行，格式為「名稱: 值」。這一行不是：{line}"
   },
+  "Writes": {
+    "de": "Schreibt",
+    "es": "Escribe",
+    "fr": "Écrit",
+    "id": "Menulis",
+    "it": "Scrive",
+    "ja": "書き込み",
+    "ko": "작성함",
+    "pl": "Zapisuje",
+    "pt-BR": "Escreve",
+    "ru": "Изменяет",
+    "tr": "Yazar",
+    "zh-Hans": "写入",
+    "zh-Hant": "寫入"
+  },
   "Writes a profile's description.": {
     "de": "Schreibt die Beschreibung eines Profils.",
     "es": "Escribe la descripción de un perfil.",
@@ -30974,6 +31634,36 @@
     "zh-Hans": "你的消息",
     "zh-Hant": "你的訊息"
   },
+  "Your organization manages these switches.": {
+    "de": "Deine Organisation verwaltet diese Schalter.",
+    "es": "Tu organización gestiona estos interruptores.",
+    "fr": "Votre organisation gère ces interrupteurs.",
+    "id": "Organisasimu mengelola sakelar ini.",
+    "it": "La tua organizzazione gestisce questi interruttori.",
+    "ja": "これらのスイッチは組織が管理しています。",
+    "ko": "조직에서 이 스위치를 관리합니다.",
+    "pl": "Twoja organizacja zarządza tymi przełącznikami.",
+    "pt-BR": "Sua organização gerencia estes botões.",
+    "ru": "Этими переключателями управляет ваша организация.",
+    "tr": "Bu anahtarları kuruluşun yönetiyor.",
+    "zh-Hans": "这些开关由你的组织管理。",
+    "zh-Hant": "這些開關由你的組織管理。"
+  },
+  "Your organization turned {app} off for Hermes.": {
+    "de": "Deine Organisation hat {app} für Hermes ausgeschaltet.",
+    "es": "Tu organización desactivó {app} para Hermes.",
+    "fr": "Votre organisation a désactivé {app} pour Hermes.",
+    "id": "Organisasimu menonaktifkan {app} untuk Hermes.",
+    "it": "La tua organizzazione ha disattivato {app} per Hermes.",
+    "ja": "組織がHermesの{app}をオフにしました。",
+    "ko": "조직에서 Hermes의 {app}을(를) 껐습니다.",
+    "pl": "Twoja organizacja wyłączyła {app} dla Hermesa.",
+    "pt-BR": "Sua organização desativou {app} para o Hermes.",
+    "ru": "Ваша организация выключила {app} для Hermes.",
+    "tr": "Kuruluşun Hermes için {app} uygulamasını kapattı.",
+    "zh-Hans": "你的组织已为 Hermes 关闭 {app}。",
+    "zh-Hant": "你的組織已為 Hermes 關閉 {app}。"
+  },
   "Your phone sends its sign-ins sealed to this computer. Nobody in between can read them. The code works for {time} more.": {
     "de": "Dein Handy sendet seine Anmeldungen versiegelt an diesen Computer. Niemand dazwischen kann sie lesen. Der Code gilt noch {time}.",
     "es": "Tu teléfono envía sus inicios de sesión sellados a este ordenador. Nadie en medio puede leerlos. El código funciona {time} más.",
@@ -31334,6 +32024,21 @@
     "zh-Hans": "你的位置",
     "zh-Hant": "你的位置"
   },
+  "work": {
+    "de": "arbeit",
+    "es": "trabajo",
+    "fr": "travail",
+    "id": "kerja",
+    "it": "lavoro",
+    "ja": "work",
+    "ko": "work",
+    "pl": "praca",
+    "pt-BR": "trabalho",
+    "ru": "work",
+    "tr": "is",
+    "zh-Hans": "work",
+    "zh-Hant": "work"
+  },
   "your calendar": {
     "de": "dein Kalender",
     "es": "tu calendario",
@@ -31604,6 +32309,36 @@
     "zh-Hans": "{bot} 的工作 · {ref} · {status}",
     "zh-Hant": "{bot} 的工作 · {ref} · {status}"
   },
+  "{count} accounts": {
+    "de": "{count} Konten",
+    "es": "{count} cuentas",
+    "fr": "{count} comptes",
+    "id": "{count} akun",
+    "it": "{count} account",
+    "ja": "{count}件のアカウント",
+    "ko": "계정 {count}개",
+    "pl": "{count} konta",
+    "pt-BR": "{count} contas",
+    "ru": "{count} аккаунта",
+    "tr": "{count} hesap",
+    "zh-Hans": "{count} 个账户",
+    "zh-Hant": "{count} 個帳號"
+  },
+  "{count} apps": {
+    "de": "{count} Apps",
+    "es": "{count} apps",
+    "fr": "{count} apps",
+    "id": "{count} aplikasi",
+    "it": "{count} app",
+    "ja": "{count}件のアプリ",
+    "ko": "앱 {count}개",
+    "pl": "{count} aplikacji",
+    "pt-BR": "{count} apps",
+    "ru": "{count} приложения",
+    "tr": "{count} uygulama",
+    "zh-Hans": "{count} 个应用",
+    "zh-Hant": "{count} 個 App"
+  },
   "{count} background agents finished": {
     "de": "{count} Hintergrundagenten fertig",
     "es": "{count} agentes en segundo plano terminaron",
@@ -31843,6 +32578,36 @@
     "tr": "{count} token",
     "zh-Hans": "{count} 个令牌",
     "zh-Hant": "{count} 個 token"
+  },
+  "{count} tools off": {
+    "de": "{count} Werkzeuge aus",
+    "es": "{count} herramientas desactivadas",
+    "fr": "{count} outils désactivés",
+    "id": "{count} alat nonaktif",
+    "it": "{count} strumenti disattivati",
+    "ja": "{count}件のツールがオフ",
+    "ko": "도구 {count}개 꺼짐",
+    "pl": "{count} narzędzia wyłączonego",
+    "pt-BR": "{count} ferramentas desativadas",
+    "ru": "{count} инструмента выключено",
+    "tr": "{count} araç kapalı",
+    "zh-Hans": "{count} 个工具已关闭",
+    "zh-Hant": "{count} 個工具已關閉"
+  },
+  "{count} tools on": {
+    "de": "{count} Werkzeuge an",
+    "es": "{count} herramientas activadas",
+    "fr": "{count} outils activés",
+    "id": "{count} alat aktif",
+    "it": "{count} strumenti attivi",
+    "ja": "{count}件のツールがオン",
+    "ko": "도구 {count}개 켜짐",
+    "pl": "{count} narzędzia włączonego",
+    "pt-BR": "{count} ferramentas ativadas",
+    "ru": "{count} инструмента включено",
+    "tr": "{count} araç açık",
+    "zh-Hans": "{count} 个工具已开启",
+    "zh-Hant": "{count} 個工具已開啟"
   },
   "{count} working": {
     "de": "{count} in Arbeit",
