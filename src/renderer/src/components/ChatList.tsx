@@ -37,6 +37,8 @@ interface Props {
   onToggleRead?: (row: ChatRow) => void
   /** Opens Projects, the phone's Chats › Projects. */
   onProjects?: () => void
+  /** Opens every pinned reply; left out while there are none. */
+  onPinnedReplies?: () => void
   /** Move to Project: the projects a chat can move into (its profile's, each with its folder), read when asked. */
   moveTargets?: (row: ChatRow) => Promise<MoveTarget[]>
   onMove?: (row: ChatRow, target: MoveTarget) => void
@@ -71,6 +73,7 @@ export function ChatList({
   onStar,
   onToggleRead,
   onProjects,
+  onPinnedReplies,
   moveTargets,
   onMove,
   onOpenBeside,
@@ -148,6 +151,11 @@ export function ChatList({
     <section className="chatlist" aria-label={t('Chats')}>
       <div className="chatlist-head">
         <h1>{t('Chats')}</h1>
+        {onPinnedReplies ? (
+          <button className="round" aria-label={t('Pinned replies')} title={t('Pinned replies')} onClick={onPinnedReplies}>
+            <Icon name="pin" />
+          </button>
+        ) : null}
         {onProjects ? (
           <button className="round" aria-label={t('Projects')} title={t('Projects')} onClick={onProjects}>
             <Icon name="folder" />
