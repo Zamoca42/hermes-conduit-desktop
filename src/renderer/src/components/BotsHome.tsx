@@ -21,9 +21,12 @@ import { lookPictureUrl, memberLook, type RoomLook, type RoomLooks } from "../st
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 import type { HostBadge, OtherBot } from "../state/keptHosts";
+import { mixedBotKey, mixedTiles, neighbour, type MixedTile } from "../state/botOrder";
 import { HostBadgeMark } from "./CombinedDashboards";
 
 const BOT_DRAG = "application/x-conduit-bot";
+/** A portrait carried to another place: its tile key (the bot's name, or the mixed grid's key). */
+const BOT_MOVE = "application/x-conduit-bot-move";
 
 /** What a bot's right-click menu can do, besides Edit Bot. */
 export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delete";
@@ -160,8 +163,16 @@ interface Props {
   onNewGroup?: () => void;
   /** How the rooms over Links look, by room id: other people's agents' faces. */
   roomLooks?: Record<string, RoomLooks>;
-  /** Combined dashboards: the other hosts' bots after this host's, badged, each opening through a switch. */
+  /** Combined dashboards: the other hosts' bots mixed in with this host's, badged, each opening through a switch. */
   otherBots?: OtherBot[];
+  /** Saved Dashboards' order, by address: the mixed grid's until it's arranged. */
+  savedHosts?: string[];
+  /** The mixed grid's order (botOrder.ts mixedBotKey), kept on this computer. */
+  mixedOrder?: string[];
+  /** A mixed grid's portrait dropped on another's place (null: at the end), by their keys. */
+  onMoveMixed?: (dragged: string, target: string | null, shown: string[]) => void;
+  /** This host's portrait dropped on another's place (null: at the end), by bot name, among `shown`. */
+  onMoveBot?: (moved: string, target: string | null, shown: string[]) => void;
   badgeFor?: (url: string) => HostBadge | null;
   onOpenOther?: (other: OtherBot) => void;
   /** The host on screen: in a combined group its bots carry its badge too, so the group reads as one set. */
@@ -246,6 +257,10 @@ export function BotsHome({
   badgeFor,
   onOpenOther,
   hostUrl,
+  savedHosts = [],
+  mixedOrder = [],
+  onMoveMixed,
+  onMoveBot,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -280,6 +295,27 @@ export function BotsHome({
     : undefined;
   const layout = homeLayout((bots?.length ?? 0) + otherBots.length);
   const tileCount = (bots?.length ?? 0) + otherBots.length;
+  // One grid: this host's bots in their order, or in a combined group every
+  // dashboard's mixed in the group's order.
+  const mixed = otherBots.length > 0 && !!hostUrl;
+  const tiles: MixedTile[] = mixed
+    ? mixedTiles(hostUrl!, bots ?? [], otherBots, savedHosts, mixedOrder)
+    : (bots ?? []).map((bot) => ({ key: bot.name, host: hostUrl ?? "", bot, own: true }));
+  const shownKeys = tiles.map((tile) => tile.key);
+  const canMove = tiles.length > 1 && !!(mixed ? onMoveMixed : onMoveBot);
+  const move = (dragged: string, target: string | null) => {
+    if (mixed) onMoveMixed?.(dragged, target, shownKeys);
+    else onMoveBot?.(dragged, target, shownKeys);
+  };
+  /** Move Earlier or Move Later from a bot's menu, or null at that end. */
+  const step = (bot: Bot, by: -1 | 1): (() => void) | null => {
+    if (!canMove) return null;
+    const key = mixed ? mixedBotKey(hostUrl!, bot.name) : bot.name;
+    const next = neighbour(shownKeys, key, by);
+    return next ? () => move(key, next) : null;
+  };
+  const [dragging, setDragging] = useState<string | null>(null);
+  const [moveTarget, setMoveTarget] = useState<string | null>(null);
   const ownBadge = hostUrl && badgeFor ? badgeFor(hostUrl) : null;
   const [draft, setDraft] = useState<Draft | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
@@ -337,31 +373,76 @@ export function BotsHome({
     }
   };
 
-  const tileDrag = (bot: Bot) =>
-    canDrag
-      ? {
-          draggable: true,
-          onDragStart: (e: DragEvent) => {
-            e.dataTransfer.setData(BOT_DRAG, bot.name);
-            e.dataTransfer.effectAllowed = "copy";
-          },
-          onDragOver: (e: DragEvent) => {
-            if (!e.dataTransfer.types.includes(BOT_DRAG)) return;
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "copy";
-            if (dropTarget !== bot.name) setDropTarget(bot.name);
-          },
-          onDragLeave: () => setDropTarget((t) => (t === bot.name ? null : t)),
-          onDrop: (e: DragEvent) => {
-            e.preventDefault();
-            setDropTarget(null);
-            const dragged = e.dataTransfer.getData(BOT_DRAG);
-            if (dragged && dragged !== bot.name) join(bot.name, dragged);
-            else if (dragged && draft) join(dragged);
-          },
-          onDragEnd: () => setDropTarget(null),
+  // A portrait dropped on another's face starts a room (this host's bots,
+  // when it can make one); dropped anywhere else on its cell, it takes that
+  // place, as an app does on the Home Screen.
+  const overFace = (e: DragEvent) => !!(e.target as Element | null)?.closest?.(".bot-tile-face");
+  const endDrag = () => {
+    setDropTarget(null);
+    setMoveTarget(null);
+    setDragging(null);
+  };
+  const tileDrag = (tile: MixedTile) => {
+    const { bot, key } = tile;
+    const roomsHere = canDrag && tile.own;
+    if (!roomsHere && !canMove) return {};
+    return {
+      draggable: true,
+      onDragStart: (e: DragEvent) => {
+        if (tile.own && canDrag) e.dataTransfer.setData(BOT_DRAG, bot.name);
+        if (canMove) e.dataTransfer.setData(BOT_MOVE, key);
+        e.dataTransfer.effectAllowed = "copyMove";
+        setDragging(key);
+      },
+      onDragOver: (e: DragEvent) => {
+        const types = e.dataTransfer.types;
+        const room = roomsHere && types.includes(BOT_DRAG) && overFace(e) && dragging !== key;
+        const moves = canMove && types.includes(BOT_MOVE) && !room;
+        if (!room && !moves && !(roomsHere && types.includes(BOT_DRAG))) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = room ? "copy" : "move";
+        setDropTarget(room ? bot.name : null);
+        setMoveTarget(moves && dragging !== key ? key : null);
+      },
+      onDragLeave: () => {
+        setDropTarget((t) => (t === bot.name ? null : t));
+        setMoveTarget((t) => (t === key ? null : t));
+      },
+      onDrop: (e: DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        endDrag();
+        const dragged = e.dataTransfer.getData(BOT_DRAG);
+        const moved = e.dataTransfer.getData(BOT_MOVE);
+        if (roomsHere && dragged && (overFace(e) || !moved)) {
+          if (dragged !== bot.name) join(bot.name, dragged);
+          else if (draft) join(dragged);
+          return;
         }
-      : {};
+        if (moved && moved !== key) move(moved, key);
+      },
+      onDragEnd: endDrag,
+    };
+  };
+  /** A drop past the last portrait, in the grid's empty space, goes to the end. */
+  const gridDrop = canMove
+    ? {
+        onDragOver: (e: DragEvent) => {
+          if (e.target !== e.currentTarget || !e.dataTransfer.types.includes(BOT_MOVE)) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+        },
+        onDrop: (e: DragEvent) => {
+          if (e.target !== e.currentTarget) return;
+          const moved = e.dataTransfer.getData(BOT_MOVE);
+          endDrag();
+          if (moved) {
+            e.preventDefault();
+            move(moved, null);
+          }
+        },
+      }
+    : {};
 
   const openOrPick = (bot: Bot) => {
     if (!draft) return onOpen(bot);
@@ -409,40 +490,45 @@ export function BotsHome({
           ) : null}
           {bots && (layout !== "one" || !bots[0]) && tileCount ? (
             <div
+              {...gridDrop}
               className={layout === "two" ? "bots-two" : "bots-grid"}
               style={layout === "two" ? undefined : ({ "--bot-column": `${gridStep(tileCount).column}px` } as CSSProperties)}
             >
-              {bots.map((bot) => (
-                <BotTile
-                  key={bot.name}
-                  bot={bot}
-                  large={layout === "two"}
-                  face={layout === "two" ? 128 : gridStep(tileCount).face}
-                  running={runningProfiles.has(bot.name)}
-                  picked={draft?.members.includes(bot.name) ?? false}
-                  target={dropTarget === bot.name}
-                  onClick={() => openOrPick(bot)}
-                  onMenu={openMenu?.(bot)}
-                  pill={<WorkPill bot={bot} work={work?.get(bot.name)} onWork={onWork} />}
-                  drag={tileDrag(bot)}
-                  badge={ownBadge ? <HostBadgeMark badge={ownBadge} /> : null}
-                />
-              ))}
-              {otherBots.map((other) => {
-                const badge = badgeFor?.(other.host) ?? null;
+              {tiles.map((tile) => {
+                const { bot } = tile;
+                if (tile.own)
+                  return (
+                    <BotTile
+                      key={tile.key}
+                      bot={bot}
+                      large={layout === "two"}
+                      face={layout === "two" ? 128 : gridStep(tileCount).face}
+                      running={runningProfiles.has(bot.name)}
+                      picked={draft?.members.includes(bot.name) ?? false}
+                      target={dropTarget === bot.name}
+                      moveTarget={moveTarget === tile.key}
+                      onClick={() => openOrPick(bot)}
+                      onMenu={openMenu?.(bot)}
+                      pill={<WorkPill bot={bot} work={work?.get(bot.name)} onWork={onWork} />}
+                      drag={tileDrag(tile)}
+                      badge={ownBadge ? <HostBadgeMark badge={ownBadge} /> : null}
+                    />
+                  );
+                const badge = badgeFor?.(tile.host) ?? null;
                 return (
                   <BotTile
-                    key={`${other.host}\n${other.bot.name}`}
-                    bot={other.bot}
+                    key={tile.key}
+                    bot={bot}
                     large={layout === "two"}
                     face={layout === "two" ? 128 : gridStep(tileCount).face}
                     running={false}
                     picked={false}
                     target={false}
-                    onClick={() => onOpenOther?.(other)}
+                    moveTarget={moveTarget === tile.key}
+                    onClick={() => onOpenOther?.({ host: tile.host, bot })}
                     badge={badge ? <HostBadgeMark badge={badge} /> : null}
-                    host={other.host}
-                    drag={{}}
+                    host={tile.host}
+                    drag={tileDrag(tile)}
                   />
                 );
               })}
@@ -660,12 +746,22 @@ export function BotsHome({
           role="menu"
           style={{
             left: Math.min(menu.x, window.innerWidth - 200),
-            top: Math.min(menu.y, window.innerHeight - (onAction ? 220 : 80)),
+            top: Math.min(menu.y, window.innerHeight - (onAction ? 220 : 80) - (canMove ? 72 : 0)),
           }}
         >
           <button role="menuitem" onClick={() => onEdit(menu.bot)}>
             {t("Edit Bot")}
           </button>
+          {canMove ? (
+            <>
+              <button role="menuitem" disabled={!step(menu.bot, -1)} onClick={() => step(menu.bot, -1)?.()}>
+                {t("Move Earlier")}
+              </button>
+              <button role="menuitem" disabled={!step(menu.bot, 1)} onClick={() => step(menu.bot, 1)?.()}>
+                {t("Move Later")}
+              </button>
+            </>
+          ) : null}
           {onAction ? (
             <>
               <button role="menuitem" disabled={busy} onClick={() => act(menu.bot.pinned ? "unpin" : "pin", menu.bot)}>
@@ -765,6 +861,8 @@ interface TileProps {
   running: boolean;
   picked: boolean;
   target: boolean;
+  /** A portrait carried here takes this one's place. */
+  moveTarget?: boolean;
   onClick: () => void;
   onMenu?: (e: MouseEvent) => void;
   pill?: ReactNode;
@@ -782,6 +880,7 @@ function BotTile({
   running,
   picked,
   target,
+  moveTarget,
   onClick,
   onMenu,
   pill,
@@ -791,7 +890,7 @@ function BotTile({
 }: TileProps) {
   return (
     <button
-      className={`bot-tile${large ? " large" : ""}${picked ? " picked" : ""}${target ? " drop-target" : ""}`}
+      className={`bot-tile${large ? " large" : ""}${picked ? " picked" : ""}${target ? " drop-target" : ""}${moveTarget ? " move-target" : ""}`}
       onClick={onClick}
       onContextMenu={onMenu}
       aria-pressed={picked || undefined}

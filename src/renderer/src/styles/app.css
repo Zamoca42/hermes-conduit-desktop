@@ -1900,6 +1900,12 @@ html[data-window='quick'] body {
   border-color: var(--accent);
 }
 
+/* A portrait carried here takes this one's place. */
+.bot-tile.move-target {
+  border-color: var(--accent);
+  border-style: dashed;
+}
+
 .bot-tile.picked {
   border-color: var(--accent);
   background: var(--accent-soft);
