@@ -14,6 +14,33 @@
 import { gateway } from '../gateway'
 import { namingFiles } from './media'
 import { correctTurn, type Correction } from './localLive'
+import { STATUS_PATH, pluginStatus, serves } from './plugin'
+
+const withProfile = (path: string, profile?: string) => (profile && profile !== 'default' ? `${path}?profile=${encodeURIComponent(profile)}` : path)
+
+/** The plugin keeps a voice call's jobs in its bot's Work panel (notifier `work-adopt`). */
+export const ADOPT_CAPABILITY = 'work-adopt'
+export const ADOPT_PATH = '/api/plugins/conduit_push/workstreams/adopt'
+
+/**
+ * Keeps a job in its bot's registry once Hermes took its request, fire and
+ * forget, sent once more after a failure, as the phone does: the Work panel
+ * lists it as a voice call's. The plugin knows calls as "phone" or "watch".
+ */
+export async function adoptJob(profile: string | undefined, sessionId: string, title: string, goal: string): Promise<boolean> {
+  const status = await gateway.http('GET', withProfile(STATUS_PATH, profile), undefined, 15_000).then(pluginStatus, () => null)
+  if (!status || !serves(status, [ADOPT_CAPABILITY])) return false
+  const body = { session_id: sessionId, title, via: 'phone', goal: goal.slice(0, 2_000) }
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      await gateway.http('POST', withProfile(ADOPT_PATH, profile), body, 15_000)
+      return true
+    } catch {
+      if (attempt === 1) await new Promise(resolve => setTimeout(resolve, 3_000))
+    }
+  }
+  return false
+}
 
 export const START_JOB = 'start_job'
 export const LIST_JOBS = 'list_jobs'
@@ -171,7 +198,8 @@ export class VoiceJobs {
     private onOutcome: (notice: string, job: VoiceJob) => void,
     private rpc: Rpc = (method, params) => gateway.rpc(method, params),
     listen: (handler: (event: { type: string; session_id?: string; payload?: unknown }) => void) => () => void = handler => window.conduit.onEvent(handler),
-    private correct: (sessionId: string, text: string, profile?: string) => Promise<Correction> = correctTurn
+    private correct: (sessionId: string, text: string, profile?: string) => Promise<Correction> = correctTurn,
+    private adopt: (profile: string | undefined, sessionId: string, title: string, goal: string) => Promise<boolean> = adoptJob
   ) {
     this.unsubscribe = listen(event => this.event(event))
   }
@@ -206,6 +234,8 @@ export class VoiceJobs {
       const submit: Row = { session_id: sid, text: task }
       if (this.profile) submit.profile = this.profile
       await this.rpc('prompt.submit', submit)
+      // Hermes took the request: its bot's Work panel keeps it as a call's.
+      void this.adopt(this.profile, str(made.stored_session_id) ?? sid, job.title, task).catch(() => false)
     } catch (e) {
       this.update(id, { status: 'failed', error: message(e) })
       return { status: 'error', error: `The job couldn't start: ${message(e)}. Tell the user in a few words.` }
