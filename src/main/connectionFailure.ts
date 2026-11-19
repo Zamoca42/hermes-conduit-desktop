@@ -6,6 +6,7 @@
  * stays refused, and the message says what to fix.
  */
 import { t } from '../shared/i18n'
+import type { TroubleshootingTopic } from '../shared/ipc'
 
 export type ConnectionFailureKind = 'timedOut' | 'hostNotFound' | 'unreachable' | 'tlsUntrusted' | 'tlsBadDate' | 'tlsHostnameMismatch' | 'tlsFailure'
 
@@ -70,6 +71,17 @@ export function connectionFailureMessage(kind: ConnectionFailureKind): string {
     case 'tlsFailure':
       return t('Conduit could not establish a secure connection to the dashboard. The server’s TLS certificate may be misconfigured.')
   }
+}
+
+/**
+ * The troubleshooting page a failure opens, after the phone's: a certificate
+ * failure opens HTTPS & certificates; a timeout, an unknown host or an
+ * unreachable server opens Network & reachability.
+ */
+export function troubleshootingTopic(kind: unknown): TroubleshootingTopic | null {
+  if (typeof kind !== 'string') return null
+  if (kind.startsWith('tls')) return 'tls'
+  return kind === 'timedOut' || kind === 'hostNotFound' || kind === 'unreachable' ? 'network' : null
 }
 
 /** `error` in the phone's words when it's a network or TLS failure, else null. */

@@ -15,7 +15,7 @@
 import type { HostProbe, SignInMethod } from '../shared/ipc'
 import { t } from '../shared/i18n'
 import { httpsIssue, proxyFetch, type ProxyHeaders } from './proxyHeaders'
-import { accessDeniedMessage, connectionFailureKind, connectionFailureMessage } from './connectionFailure'
+import { accessDeniedMessage, connectionFailureKind, connectionFailureMessage, troubleshootingTopic } from './connectionFailure'
 
 export type Fetch = typeof fetch
 
@@ -144,7 +144,7 @@ export async function probeHost(input: string, fetchImpl: Fetch, headers?: Proxy
       }
     }
     // No credentials went with this read, so a 401 or 403 is something in front of the dashboard turning this computer away.
-    if (response.status === 401 || response.status === 403) return { ok: false, error: accessDeniedMessage() }
+    if (response.status === 401 || response.status === 403) return { ok: false, error: accessDeniedMessage(), help: 'network' }
     if (!response.ok) {
       return { ok: false, error: t('This isn’t answering like a Hermes dashboard ({detail}).', { detail: await errorDetail(response) }) }
     }
@@ -157,8 +157,8 @@ export async function probeHost(input: string, fetchImpl: Fetch, headers?: Proxy
     // A certificate this computer doesn't trust: offer to read and save its root.
     const kind = (error as { kind?: unknown }).kind
     const untrusted = kind === 'tlsUntrusted' && url.startsWith('https:')
-    const tls = typeof kind === 'string' && kind.startsWith('tls')
-    return { ok: false, error: (error as Error).message, ...(untrusted ? { untrusted: url } : {}), ...(tls ? { help: 'tls' as const } : {}) }
+    const help = troubleshootingTopic(kind)
+    return { ok: false, error: (error as Error).message, ...(untrusted ? { untrusted: url } : {}), ...(help ? { help } : {}) }
   }
 }
 

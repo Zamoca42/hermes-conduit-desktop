@@ -10101,6 +10101,34 @@ button.secondary.danger {
   align-self: stretch;
 }
 
+.reach-method {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.reach-method h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.reach-method h3 {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.reach-method p {
+  margin: 0;
+}
+
+.reach-method-note {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
 .troubleshooting-checks {
   margin: 0;
   padding-left: 20px;
