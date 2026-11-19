@@ -470,6 +470,8 @@ interface ItemProps {
   repliedTo?: string
   /** React on a reply Hermes can address now; the chips show either way. */
   onReact?: (emoji: string | null) => void
+  /** ⋯'s Branch: a new chat with the turns through this reply. */
+  onBranch?: () => void
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -609,7 +611,8 @@ function Item({
   pinToggle,
   teammates,
   repliedTo,
-  onReact
+  onReact,
+  onBranch
 }: ItemProps) {
   switch (item.kind) {
     case 'user': {
@@ -677,6 +680,7 @@ function Item({
               react={onReact ? { reactions: item.reactions ?? [], onPick: onReact } : undefined}
               menu={[
                 ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []),
+                ...(onBranch ? [{ label: t('Branch'), onSelect: onBranch }] : []),
                 ...(onRetry ? [{ label: t('Retry'), onSelect: onRetry }] : []),
                 ...(pinToggle ? [pinToggle] : []),
                 ...(thinkingToggle ? [thinkingToggle] : [])
@@ -906,7 +910,8 @@ export function Transcript({
   followedUp,
   pins,
   teammates,
-  onReact
+  onReact,
+  onBranch
 }: {
   state: TranscriptState
   loading: boolean
@@ -936,6 +941,8 @@ export function Transcript({
   teammates?: { name: string; title: string }[]
   /** Saves your reaction on a reply (null takes it back); left out where replies can't take one. */
   onReact?: (key: string, emoji: string | null) => void
+  /** ⋯'s Branch on a reply; left out while a turn runs or the chat isn't open. */
+  onBranch?: (key: string) => void
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -1086,6 +1093,7 @@ export function Transcript({
       followedUp={followedUpKeySet.has(item.key)}
       repliedTo={repliesToTeammates.get(item.key)}
       onReact={onReact && reactable(item) ? emoji => onReact(item.key, emoji) : undefined}
+      onBranch={onBranch && item.kind === 'assistant' && !item.streaming ? () => onBranch(item.key) : undefined}
       pinToggle={
         pins && item.kind === 'assistant' && !item.streaming
           ? { label: pinnedKeys.has(item.key) ? t('Unpin reply') : t('Pin reply'), onSelect: () => togglePin(item) }
