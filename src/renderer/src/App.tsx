@@ -1316,7 +1316,7 @@ function Settings({
             {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(
               host => (
                 <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
-                  <span className="host-label">{hostName(host.url)}</span>
+                  <span className="host-label" title={host.url}>{hostName(host.url)}</span>
                   {host.username ? <span className="meta">{host.username}</span> : null}
                   <span className="spacer" />
                   {host.url === status.url ? (
