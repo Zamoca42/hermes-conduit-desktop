@@ -3,7 +3,8 @@ import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
-import { arrange, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
+import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
+import { arrange, farBotFor, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
@@ -1089,6 +1090,32 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   const combinedCount = savedHosts ? savedHosts.filter(h => h.combined).length : null
   const mixedBotOrder = useMixedBotOrder(combinedCount === null ? null : combinedCount > 1)
   const savedHostUrls = useMemo(() => (savedHosts ?? []).map(h => h.url), [savedHosts])
+  // A room started by dragging across dashboards brings the other's bots over your own Link to it.
+  const farFor = useCallback(
+    (host: string, name: string) =>
+      farBotFor(
+        name,
+        otherBots.filter(o => o.host === host).map(o => o.bot.name),
+        roomDrafts.ownBots
+      ),
+    [otherBots, roomDrafts.ownBots]
+  )
+  const hasOtherBots = otherBots.length > 0
+  useEffect(() => {
+    if (section === 'bots' && hasOtherBots) void roomDrafts.refreshPeople()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [section, hasOtherBots])
+  const createFarDraft = useCallback(
+    async (name: string, bots: Bot[], far: OwnHermesBot[]): Promise<'made' | 'sending'> => {
+      const agents = draftAgents(bots)
+      if (!agents) throw new Error(t('Two of these bots would have the same @handle. Rename one, then try again.'))
+      const bring: Record<string, string[]> = {}
+      for (const bot of far) (bring[bot.linkId] ??= []).push(bot.profile)
+      const outcome = await roomDrafts.create(name, agents, Object.keys(bring).sort(), chatProfile ?? 'default', bring)
+      return outcome.kind === 'made' ? 'made' : 'sending'
+    },
+    [roomDrafts, chatProfile]
+  )
   // ...and New Bot's choice of where the bot is made: this one, then each other kept connected.
   const newBotDashboards = useMemo<NewBotDashboard[] | undefined>(() => {
     if (!status.url || !badgeFor(status.url)) return undefined
@@ -2019,6 +2046,8 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             onMoveMixed={mixedBotOrder.drop}
             onMoveBot={botOrder.drop}
             onMoveRoom={roomOrder.drop}
+            farFor={farFor}
+            onCreateFarDraft={roomDrafts.ownBots.length ? createFarDraft : undefined}
             onNewGroup={
               connected && groupRooms.capabilities?.supported === true
                 ? () => {

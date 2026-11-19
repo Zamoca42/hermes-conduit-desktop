@@ -2040,6 +2040,15 @@ html[data-window='quick'] body {
   display: flex;
 }
 
+/* Another dashboard's bot in the room being started: its dashboard's badge. */
+.draft-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: flex;
+  transform: scale(0.8);
+}
+
 .room-draft input {
   height: 38px;
   padding: 0 14px;

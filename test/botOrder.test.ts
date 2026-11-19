@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   arrange,
+  canAddFar,
+  farBotFor,
   cleanOrder,
   dropping,
   droppingMixed,
@@ -100,5 +102,31 @@ describe('the group chats order', () => {
   it('takes the target place, with unnamed rooms before the order', () => {
     expect(dropping(['r2'], 'r1', 'r2', ['r1', 'R3', 'r2'], 'rooms')).toEqual(['R3', 'r2', 'r1'])
     expect(hostOrder({ values: { 'groups.order': { value: ['x', 'X'] } } }, 'groups.order', 'rooms')).toEqual(['x', 'X'])
+  })
+})
+
+describe('rooms across the group dashboards', () => {
+  const own = [
+    { linkId: 'L1', profile: 'default', ready: true },
+    { linkId: 'L1', profile: 'Furina', ready: true },
+    { linkId: 'L1', profile: 'nahida', ready: false },
+    { linkId: 'L2', profile: 'furina', ready: true }
+  ]
+
+  it('brings another dashboard bot over the own Link whose bots are most of that dashboard', () => {
+    expect(farBotFor('furina', ['default', 'furina', 'nahida'], own)?.linkId).toBe('L1')
+    expect(farBotFor('nahida', ['default', 'furina', 'nahida'], own)).toBeNull() // not set up to join
+    expect(farBotFor('zhongli', ['zhongli'], own)).toBeNull()
+  })
+
+  it('takes them from one other Hermes, beside a bot here once two are in, six at most', () => {
+    const a = { linkId: 'L1', profile: 'a', ready: true }
+    const b = { linkId: 'L1', profile: 'b', ready: true }
+    const c = { linkId: 'L2', profile: 'c', ready: true }
+    expect(canAddFar(1, [], [a])).toBe(true)
+    expect(canAddFar(1, [a], [c])).toBe(false)
+    expect(canAddFar(0, [], [a, b])).toBe(false)
+    expect(canAddFar(1, [a], [a])).toBe(false)
+    expect(canAddFar(5, [a], [b])).toBe(false)
   })
 })

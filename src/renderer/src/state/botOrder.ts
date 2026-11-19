@@ -298,3 +298,44 @@ export function useMixedBotOrder(grouped: boolean | null) {
   }, [])
   return { order, drop }
 }
+
+// Rooms across the group's dashboards.
+
+/** One of your other Hermes' bots, as an own Link brings it: its Link, profile and readiness. */
+export interface FarCandidate {
+  linkId: string
+  profile: string
+  ready: boolean
+}
+
+/**
+ * The bot of another combined dashboard as your own other Hermes brings it
+ * into a room this one hosts (the phone's ownHermesBot): over the own Link
+ * whose bots are most of that dashboard's, by profile name, and only once
+ * it's set up to join (Linked Rooms on for it there). Null when no own Link
+ * brings it, so a drop only moves it.
+ */
+export function farBotFor<T extends FarCandidate>(name: string, dashboardBots: readonly string[], own: readonly T[]): T | null {
+  const names = new Set(dashboardBots.map(n => n.toLowerCase()))
+  const counts = new Map<string, number>()
+  for (const bot of own) if (names.has(bot.profile.toLowerCase())) counts.set(bot.linkId, (counts.get(bot.linkId) ?? 0) + 1)
+  let link: string | null = null
+  let most = 0
+  for (const [id, n] of [...counts].sort(([a], [b]) => a.localeCompare(b))) if (n > most) [link, most] = [id, n]
+  if (!link) return null
+  return own.find(b => b.linkId === link && b.profile.toLowerCase() === name.toLowerCase() && b.ready) ?? null
+}
+
+/**
+ * Whether `adding` of your other Hermes' bots can join a room being started
+ * that holds `own` of this Hermes' bots and `far` of another's: they come
+ * from one other Hermes, beside at least one bot here once two of theirs
+ * are in, at most 6 in all.
+ */
+export function canAddFar(own: number, far: readonly FarCandidate[], adding: readonly FarCandidate[], max = 6): boolean {
+  const all = [...far, ...adding]
+  if (!adding.length || new Set(all.map(b => b.linkId)).size > 1) return false
+  if (new Set(all.map(b => `${b.linkId}/${b.profile.toLowerCase()}`)).size < all.length) return false
+  if (own === 0 && all.length > 1) return false
+  return own + all.length <= max
+}
