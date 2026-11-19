@@ -4,6 +4,7 @@ import { GatewayError, gateway } from '../gateway'
 import { KEY_PATH, PLUGIN_MISSING, STATUS_PATH, agentSetupText, localStatus, serverFlags, type LocalStatus } from '../state/localLive'
 import { relativeTime } from '../state/pulseLook'
 import { LocalLiveAgentSettings } from './LocalLiveAgentSettings'
+import { SpeechServerSettings } from './SpeechServerSettings'
 import { dashboardProfilePath } from '../state/dashboardProfile'
 
 function CopyRow({ title, value }: { title: string; value: string }) {
@@ -12,11 +13,7 @@ function CopyRow({ title, value }: { title: string; value: string }) {
     <div className="local-live-copy">
       <span className="meta">{title}</span>
       <code>{value}</code>
-      <button
-        className="secondary"
-        aria-label={t('Copy {title}', { title })}
-        onClick={() => void navigator.clipboard.writeText(value).then(() => setCopied(true))}
-      >
+      <button className="secondary" aria-label={t('Copy {title}', { title })} onClick={() => void navigator.clipboard.writeText(value).then(() => setCopied(true))}>
         {copied ? t('Copied') : t('Copy')}
       </button>
     </div>
@@ -38,7 +35,9 @@ export function LocalLiveSettings({ profile }: { profile?: string }) {
       .then(([body, host]) => live && setStatus(localStatus(body, host.url)))
       .catch((e: unknown) => {
         if (!live) return
-        setStatus({ failed: e instanceof GatewayError && e.code === 404 ? PLUGIN_MISSING() : e instanceof Error ? e.message : String(e) })
+        setStatus({
+          failed: e instanceof GatewayError && e.code === 404 ? PLUGIN_MISSING() : e instanceof Error ? e.message : String(e)
+        })
       })
     return () => {
       live = false
@@ -68,6 +67,9 @@ export function LocalLiveSettings({ profile }: { profile?: string }) {
           "A hands-free call through a speech server you run, such as Hugging Face speech-to-speech. Everything you say goes to Hermes as a turn in the call's chat, and Hermes' reply is spoken as it is written."
         )}
       </p>
+      <strong className="local-live-step">{t('1. Your speech server')}</strong>
+      <SpeechServerSettings key={profile ?? 'default'} profile={profile} onChanged={() => setLoad(n => n + 1)} />
+      <strong className="local-live-step">{t('2. Point the server at Hermes')}</strong>
       {status === 'checking' ? <p className="meta settings-caption">{t('Checking…')}</p> : null}
       {status && status !== 'checking' && 'failed' in status ? <p className="meta settings-caption voice-call-problem">{status.failed}</p> : null}
       {ready ? (
@@ -92,9 +94,7 @@ export function LocalLiveSettings({ profile }: { profile?: string }) {
                 <button className="secondary" onClick={() => void navigator.clipboard.writeText(setup).then(() => setSetupCopied(true))}>
                   {setupCopied ? t('Copied') : t('Copy setup for your agent')}
                 </button>
-                <p className="meta settings-caption">
-                  {t('One block with the address, key and flags, written for whoever sets up the server, such as your Hermes agent.')}
-                </p>
+                <p className="meta settings-caption">{t('One block with the address, key and flags, written for whoever sets up the server, such as your Hermes agent.')}</p>
               </>
             ) : null}
             <CopyRow title={t('Model address')} value={ready.modelAddress} />
@@ -126,7 +126,7 @@ export function LocalLiveSettings({ profile }: { profile?: string }) {
       {ready && (!ready.available || (!ready.modelAddress && !ready.drivesTurns)) ? (
         <p className="meta settings-caption voice-call-problem">{ready.reason ?? t("Your Hermes host didn't send a key.")}</p>
       ) : null}
-      {ready ? <LocalLiveAgentSettings profile={profile} front={ready.front} onSaved={() => setLoad(n => n + 1)} /> : null}
+      {ready ? <LocalLiveAgentSettings profile={profile} front={ready.front} ownModel={ready.ownModelSetting} onSaved={() => setLoad(n => n + 1)} /> : null}
     </>
   )
 }

@@ -59,6 +59,36 @@
     "zh-Hans": "0 9 * * 1 或 every monday 9am",
     "zh-Hant": "0 9 * * 1 或 every monday 9am"
   },
+  "1. Your speech server": {
+    "de": "1. Dein Sprachserver",
+    "es": "1. Tu servidor de voz",
+    "fr": "1. Votre serveur vocal",
+    "id": "1. Server suara Anda",
+    "it": "1. Il tuo server vocale",
+    "ja": "1. 音声サーバー",
+    "ko": "1. 음성 서버",
+    "pl": "1. Twój serwer mowy",
+    "pt-BR": "1. Seu servidor de voz",
+    "ru": "1. Ваш речевой сервер",
+    "tr": "1. Konuşma sunucunuz",
+    "zh-Hans": "1. 你的语音服务器",
+    "zh-Hant": "1. 你的語音伺服器"
+  },
+  "2. Point the server at Hermes": {
+    "de": "2. Den Server auf Hermes richten",
+    "es": "2. Apunta el servidor a Hermes",
+    "fr": "2. Diriger le serveur vers Hermes",
+    "id": "2. Arahkan server ke Hermes",
+    "it": "2. Collega il server a Hermes",
+    "ja": "2. サーバーを Hermes に向ける",
+    "ko": "2. 서버를 Hermes에 연결",
+    "pl": "2. Skieruj serwer na Hermesa",
+    "pt-BR": "2. Aponte o servidor para o Hermes",
+    "ru": "2. Направьте сервер на Hermes",
+    "tr": "2. Sunucuyu Hermes'e yönlendirin",
+    "zh-Hans": "2. 让服务器指向 Hermes",
+    "zh-Hant": "2. 讓伺服器指向 Hermes"
+  },
   "2FA codes": {
     "de": "2FA-Codes",
     "es": "Códigos 2FA",
@@ -73,6 +103,21 @@
     "tr": "2FA kodları",
     "zh-Hans": "2FA 验证码",
     "zh-Hant": "2FA 驗證碼"
+  },
+  "3. Your fast model": {
+    "de": "3. Dein schnelles Modell",
+    "es": "3. Tu modelo rápido",
+    "fr": "3. Votre modèle rapide",
+    "id": "3. Model cepat Anda",
+    "it": "3. Il tuo modello veloce",
+    "ja": "3. 高速モデル",
+    "ko": "3. 빠른 모델",
+    "pl": "3. Twój szybki model",
+    "pt-BR": "3. Seu modelo rápido",
+    "ru": "3. Быстрая модель",
+    "tr": "3. Hızlı modeliniz",
+    "zh-Hans": "3. 你的快速模型",
+    "zh-Hant": "3. 你的快速模型"
   },
   "30 days": {
     "de": "30 Tage",
@@ -5069,6 +5114,21 @@
     "zh-Hans": "已连接",
     "zh-Hant": "已連線"
   },
+  "Connected to your speech server.": {
+    "de": "Mit deinem Sprachserver verbunden.",
+    "es": "Conectado a tu servidor de voz.",
+    "fr": "Connecté à votre serveur vocal.",
+    "id": "Terhubung ke server suara Anda.",
+    "it": "Connesso al tuo server vocale.",
+    "ja": "音声サーバーに接続しました。",
+    "ko": "음성 서버에 연결되었어요.",
+    "pl": "Połączono z Twoim serwerem mowy.",
+    "pt-BR": "Conectado ao seu servidor de voz.",
+    "ru": "Подключено к вашему речевому серверу.",
+    "tr": "Konuşma sunucunuza bağlanıldı.",
+    "zh-Hans": "已连接到你的语音服务器。",
+    "zh-Hant": "已連線到你的語音伺服器。"
+  },
   "Connected to {host}": {
     "de": "Mit {host} verbunden",
     "es": "Conectado a {host}",
@@ -5098,6 +5158,21 @@
     "tr": "Bağlandı ama araçları yüklenmedi",
     "zh-Hans": "已连接，但其工具未能加载",
     "zh-Hant": "已連線，但其工具未能載入"
+  },
+  "Connected. Your speech server answered in {ms} ms.": {
+    "de": "Verbunden. Dein Sprachserver hat in {ms} ms geantwortet.",
+    "es": "Conectado. Tu servidor de voz respondió en {ms} ms.",
+    "fr": "Connecté. Votre serveur vocal a répondu en {ms} ms.",
+    "id": "Terhubung. Server suara Anda menjawab dalam {ms} ms.",
+    "it": "Connesso. Il tuo server vocale ha risposto in {ms} ms.",
+    "ja": "接続しました。音声サーバーは {ms} ミリ秒で応答しました。",
+    "ko": "연결되었어요. 음성 서버가 {ms}ms 만에 응답했어요.",
+    "pl": "Połączono. Twój serwer mowy odpowiedział w {ms} ms.",
+    "pt-BR": "Conectado. Seu servidor de voz respondeu em {ms} ms.",
+    "ru": "Подключено. Ваш речевой сервер ответил за {ms} мс.",
+    "tr": "Bağlanıldı. Konuşma sunucunuz {ms} ms içinde yanıt verdi.",
+    "zh-Hans": "已连接。你的语音服务器在 {ms} 毫秒内响应。",
+    "zh-Hant": "已連線。你的語音伺服器在 {ms} 毫秒內回應。"
   },
   "Connecting to Hermes…": {
     "de": "Verbindung mit Hermes…",
@@ -5698,6 +5773,21 @@
     "tr": "Zamanlanmış iş duraklatılamadı: {reason}",
     "zh-Hans": "无法暂停定时任务：{reason}",
     "zh-Hant": "無法暫停排程工作：{reason}"
+  },
+  "Could not reach your speech server.": {
+    "de": "Dein Sprachserver ist nicht erreichbar.",
+    "es": "No se pudo acceder a tu servidor de voz.",
+    "fr": "Impossible de joindre votre serveur vocal.",
+    "id": "Tidak dapat menjangkau server suara Anda.",
+    "it": "Impossibile raggiungere il tuo server vocale.",
+    "ja": "音声サーバーに接続できませんでした。",
+    "ko": "음성 서버에 연결할 수 없어요.",
+    "pl": "Nie można połączyć się z Twoim serwerem mowy.",
+    "pt-BR": "Não foi possível acessar seu servidor de voz.",
+    "ru": "Не удалось связаться с вашим речевым сервером.",
+    "tr": "Konuşma sunucunuza ulaşılamadı.",
+    "zh-Hans": "无法连接到你的语音服务器。",
+    "zh-Hant": "無法連線到你的語音伺服器。"
   },
   "Could not resume scheduled job: {reason}": {
     "de": "Der geplante Job konnte nicht fortgesetzt werden: {reason}",
@@ -9524,6 +9614,21 @@
     "zh-Hans": "完成更新",
     "zh-Hant": "完成更新"
   },
+  "Finish the address: put your own workspace or host in place of the example.": {
+    "de": "Vervollständige die Adresse: Ersetze das Beispiel durch deinen eigenen Workspace oder Host.",
+    "es": "Completa la dirección: sustituye el ejemplo por tu propio espacio de trabajo o host.",
+    "fr": "Complète l’adresse : remplace l’exemple par ton propre espace de travail ou hôte.",
+    "id": "Lengkapi alamatnya: ganti contoh dengan workspace atau host milikmu.",
+    "it": "Completa l’indirizzo: sostituisci l’esempio con il tuo workspace o host.",
+    "ja": "アドレスを完成させてください。例の部分を自分のワークスペースまたはホストに置き換えます。",
+    "ko": "주소를 완성하세요. 예시 부분을 내 워크스페이스나 호스트로 바꾸세요.",
+    "pl": "Uzupełnij adres: wstaw własny obszar roboczy lub host w miejsce przykładu.",
+    "pt-BR": "Complete o endereço: troque o exemplo pelo seu próprio workspace ou host.",
+    "ru": "Допишите адрес: замените пример своим рабочим пространством или хостом.",
+    "tr": "Adresi tamamla: örneğin yerine kendi çalışma alanını veya ana makineni yaz.",
+    "zh-Hans": "请补全地址：把示例换成你自己的工作空间或主机。",
+    "zh-Hant": "請補全位址：把範例換成你自己的工作區或主機。"
+  },
   "Finish the update?": {
     "de": "Update abschließen?",
     "es": "¿Terminar la actualización?",
@@ -9748,6 +9853,36 @@
     "tr": "Cloudflare Access veya üst bilgileri denetleyen başka bir proxy’nin arkasındaki pano için. Yalnızca bu adrese, HTTPS üzerinden gönderilir.",
     "zh-Hans": "适用于位于 Cloudflare Access 或其他检查请求头的代理后面的控制台。它们只会通过 HTTPS 发送到此地址。",
     "zh-Hant": "適用於位於 Cloudflare Access 或其他檢查標頭的代理伺服器後面的控制台。它們只會透過 HTTPS 傳送到此位址。"
+  },
+  "For a hosted realtime model, such as OpenAI Realtime or Qwen: it holds the call itself with Conduit's instructions and tools, and hands the work to Hermes as jobs. The call's instructions are sent to that server, with this profile's SOUL.md when the personality switch below is on. Classic voice and Apple Watch calls still get Hermes' replies, read aloud by it. Off, your fast model answers.": {
+    "de": "Für ein gehostetes Echtzeitmodell wie OpenAI Realtime oder Qwen: Es führt das Gespräch selbst, mit den Anweisungen und Werkzeugen von Conduit, und gibt die Arbeit als Aufträge an Hermes weiter. Die Anweisungen des Gesprächs werden an diesen Server gesendet, zusammen mit der SOUL.md dieses Profils, wenn der Persönlichkeitsschalter unten an ist. Klassische Sprachanrufe und Anrufe von der Apple Watch erhalten weiterhin die Antworten von Hermes, von ihm vorgelesen. Ist der Schalter aus, antwortet dein schnelles Modell.",
+    "es": "Para un modelo en tiempo real alojado, como OpenAI Realtime o Qwen: lleva la llamada él mismo, con las instrucciones y herramientas de Conduit, y pasa el trabajo a Hermes como tareas. Las instrucciones de la llamada se envían a ese servidor, junto con el SOUL.md de este perfil cuando el interruptor de personalidad de abajo está activado. La voz clásica y las llamadas del Apple Watch siguen recibiendo las respuestas de Hermes, que el servidor lee en voz alta. Si está desactivado, responde tu modelo rápido.",
+    "fr": "Pour un modèle temps réel hébergé, comme OpenAI Realtime ou Qwen : il mène l'appel lui-même, avec les instructions et les outils de Conduit, et confie le travail à Hermes sous forme de tâches. Les instructions de l'appel sont envoyées à ce serveur, avec le SOUL.md de ce profil lorsque le réglage de personnalité ci-dessous est activé. La voix classique et les appels depuis l'Apple Watch reçoivent toujours les réponses de Hermes, lues à voix haute par ce serveur. Désactivé, c'est votre modèle rapide qui répond.",
+    "id": "Untuk model realtime yang di-hosting, seperti OpenAI Realtime atau Qwen: model itu sendiri yang memegang panggilan, dengan instruksi dan alat dari Conduit, dan menyerahkan pekerjaan ke Hermes sebagai tugas. Instruksi panggilan dikirim ke server itu, beserta SOUL.md profil ini jika sakelar kepribadian di bawah menyala. Suara Klasik dan panggilan dari Apple Watch tetap mendapat balasan Hermes, yang dibacakan oleh server itu. Jika mati, model cepat Anda yang menjawab.",
+    "it": "Per un modello in tempo reale ospitato, come OpenAI Realtime o Qwen: gestisce la chiamata da sé, con le istruzioni e gli strumenti di Conduit, e passa il lavoro a Hermes sotto forma di attività. Le istruzioni della chiamata vengono inviate a quel server, insieme al SOUL.md di questo profilo quando l'interruttore della personalità qui sotto è attivo. La voce classica e le chiamate da Apple Watch continuano a ricevere le risposte di Hermes, lette ad alta voce dal server. Se è disattivato, risponde il tuo modello veloce.",
+    "ja": "OpenAI RealtimeやQwenなどのホスト型リアルタイムモデル向けです。Conduitの指示とツールを使ってモデル自身が通話を進め、作業はジョブとしてHermesに渡します。通話の指示はそのサーバーに送信され、下のパーソナリティのスイッチがオンの場合はこのプロファイルのSOUL.mdも送信されます。クラシック音声とApple Watchの通話では、引き続きHermesの返答をこのサーバーが読み上げます。オフの場合は高速モデルが応答します。",
+    "ko": "OpenAI Realtime이나 Qwen 같은 호스팅형 실시간 모델용입니다. Conduit의 지침과 도구로 모델이 직접 통화를 이끌고, 작업은 작업(job)으로 Hermes에 넘깁니다. 통화 지침은 해당 서버로 전송되며, 아래의 성격 스위치가 켜져 있으면 이 프로필의 SOUL.md도 함께 전송됩니다. 클래식 음성과 Apple Watch 통화는 계속 Hermes의 답변을 받고, 이 서버가 읽어 줍니다. 끄면 빠른 모델이 응답합니다.",
+    "pl": "Dla hostowanego modelu czasu rzeczywistego, takiego jak OpenAI Realtime lub Qwen: sam prowadzi rozmowę, korzystając z instrukcji i narzędzi Conduit, a pracę przekazuje Hermesowi jako zadania. Instrukcje rozmowy są wysyłane na ten serwer, razem z plikiem SOUL.md tego profilu, gdy przełącznik osobowości poniżej jest włączony. Głos klasyczny i połączenia z Apple Watch nadal otrzymują odpowiedzi Hermesa, czytane na głos przez ten serwer. Gdy przełącznik jest wyłączony, odpowiada twój szybki model.",
+    "pt-BR": "Para um modelo em tempo real hospedado, como OpenAI Realtime ou Qwen: ele conduz a chamada sozinho, com as instruções e ferramentas do Conduit, e passa o trabalho ao Hermes como tarefas. As instruções da chamada são enviadas a esse servidor, junto com o SOUL.md deste perfil quando a opção de personalidade abaixo está ativada. A voz clássica e as chamadas do Apple Watch continuam recebendo as respostas do Hermes, lidas em voz alta por ele. Desativado, seu modelo rápido responde.",
+    "ru": "Для размещённой модели реального времени, такой как OpenAI Realtime или Qwen: она сама ведёт звонок с инструкциями и инструментами Conduit и передаёт работу Hermes в виде заданий. Инструкции звонка отправляются на этот сервер вместе с SOUL.md этого профиля, если переключатель личности ниже включён. Классический голос и звонки с Apple Watch по-прежнему получают ответы Hermes, которые сервер читает вслух. Если выключено, отвечает ваша быстрая модель.",
+    "tr": "OpenAI Realtime veya Qwen gibi barındırılan bir gerçek zamanlı model için: aramayı Conduit'in talimatları ve araçlarıyla kendisi yürütür, işi de görev olarak Hermes'e devreder. Aramanın talimatları o sunucuya gönderilir; aşağıdaki kişilik anahtarı açıksa bu profilin SOUL.md dosyası da gönderilir. Klasik ses ve Apple Watch aramaları yine Hermes'in yanıtlarını alır; yanıtları bu sunucu sesli okur. Kapalıyken hızlı modeliniz yanıtlar.",
+    "zh-Hans": "适用于托管的实时模型，例如 OpenAI Realtime 或 Qwen：它使用 Conduit 的指令和工具自行进行通话，并把工作作为任务交给 Hermes。通话的指令会发送到该服务器；如果下方的个性开关已打开，还会发送此配置文件的 SOUL.md。经典语音和 Apple Watch 通话仍由 Hermes 回答，并由它朗读。关闭时，由你的快速模型回答。",
+    "zh-Hant": "適用於託管的即時模型，例如 OpenAI Realtime 或 Qwen：它使用 Conduit 的指令和工具自行進行通話，並把工作作為任務交給 Hermes。通話的指令會傳送到該伺服器；如果下方的個性開關已打開，還會傳送此設定檔的 SOUL.md。經典語音和 Apple Watch 通話仍由 Hermes 回答，並由它朗讀。關閉時，由你的快速模型回答。"
+  },
+  "For a server with a model of its own, such as a hosted realtime model: it then only listens and reads Hermes' replies aloud. Leave it off for a server you point at Conduit, such as speech-to-speech.": {
+    "de": "Für einen Server mit eigenem Modell, etwa ein gehostetes Echtzeitmodell: Er hört dann nur zu und liest die Antworten von Hermes vor. Lass es aus für einen Server, den du auf Conduit richtest, etwa speech-to-speech.",
+    "es": "Para un servidor con modelo propio, como un modelo en tiempo real alojado: entonces solo escucha y lee en voz alta las respuestas de Hermes. Déjalo desactivado para un servidor que apuntas a Conduit, como speech-to-speech.",
+    "fr": "Pour un serveur doté de son propre modèle, comme un modèle temps réel hébergé : il se contente alors d'écouter et de lire à voix haute les réponses de Hermes. Laissez désactivé pour un serveur que vous pointez vers Conduit, comme speech-to-speech.",
+    "id": "Untuk server yang punya model sendiri, seperti model realtime yang di-host: server itu lalu hanya mendengarkan dan membacakan balasan Hermes. Biarkan mati untuk server yang kamu arahkan ke Conduit, seperti speech-to-speech.",
+    "it": "Per un server con un modello proprio, come un modello realtime ospitato: in quel caso ascolta soltanto e legge ad alta voce le risposte di Hermes. Lascialo disattivato per un server che punti a Conduit, come speech-to-speech.",
+    "ja": "ホスト型のリアルタイムモデルなど、独自のモデルを持つサーバー向けです。オンにすると、サーバーは聞き取りとHermesの返答の読み上げだけを行います。speech-to-speechのようにConduitに向けて設定するサーバーではオフのままにしてください。",
+    "ko": "호스팅된 실시간 모델처럼 자체 모델이 있는 서버용입니다. 켜면 서버는 듣기와 Hermes 답변 읽어 주기만 합니다. speech-to-speech처럼 Conduit을 가리키도록 설정하는 서버에서는 꺼 두세요.",
+    "pl": "Dla serwera z własnym modelem, na przykład hostowanego modelu czasu rzeczywistego: wtedy tylko słucha i czyta na głos odpowiedzi Hermesa. Zostaw wyłączone dla serwera, który kierujesz na Conduit, na przykład speech-to-speech.",
+    "pt-BR": "Para um servidor com modelo próprio, como um modelo em tempo real hospedado: ele passa a apenas ouvir e ler em voz alta as respostas do Hermes. Deixe desativado para um servidor que você aponta para o Conduit, como o speech-to-speech.",
+    "ru": "Для сервера с собственной моделью, например размещённой модели реального времени: тогда он только слушает и читает вслух ответы Hermes. Оставьте выключенным для сервера, который вы направляете на Conduit, например speech-to-speech.",
+    "tr": "Barındırılan bir gerçek zamanlı model gibi kendi modeli olan bir sunucu için: sunucu o zaman yalnızca dinler ve Hermes'in yanıtlarını sesli okur. speech-to-speech gibi Conduit'e yönlendirdiğin bir sunucu için kapalı bırak.",
+    "zh-Hans": "适用于自带模型的服务器，例如托管的实时模型：开启后它只负责聆听并朗读 Hermes 的回复。对于指向 Conduit 的服务器（例如 speech-to-speech），请保持关闭。",
+    "zh-Hant": "適用於自帶模型的伺服器，例如託管的即時模型：開啟後它只負責聆聽並朗讀 Hermes 的回覆。對於指向 Conduit 的伺服器（例如 speech-to-speech），請保持關閉。"
   },
   "For example: only if production is down or a deploy fails. Never before 9 am.": {
     "de": "Zum Beispiel: nur wenn die Produktion ausfällt oder ein Deploy fehlschlägt. Nie vor 9 Uhr.",
@@ -11008,6 +11143,21 @@
     "tr": "Sen ve Hermes bu hesabı adıyla anarsınız, örneğin is veya ev.",
     "zh-Hans": "你和 Hermes 都用名称称呼这个账户，例如 work 或 home。",
     "zh-Hant": "你和 Hermes 都用名稱稱呼這個帳號，例如 work 或 home。"
+  },
+  "Hermes answers": {
+    "de": "Hermes antwortet",
+    "es": "Hermes responde",
+    "fr": "Hermes répond",
+    "id": "Hermes yang menjawab",
+    "it": "Risponde Hermes",
+    "ja": "Hermesが応答",
+    "ko": "Hermes가 응답",
+    "pl": "Odpowiada Hermes",
+    "pt-BR": "Hermes responde",
+    "ru": "Отвечает Hermes",
+    "tr": "Hermes yanıtlar",
+    "zh-Hans": "由 Hermes 回答",
+    "zh-Hant": "由 Hermes 回答"
   },
   "Hermes answers on this server, so there's nothing to set up on it. The Conduit plugin runs each turn and has the server read the reply aloud.": {
     "de": "Auf diesem Server antwortet Hermes, dort ist also nichts einzurichten. Das Conduit-Plugin führt jede Runde aus und lässt den Server die Antwort vorlesen.",
@@ -13798,6 +13948,21 @@
     "tr": "Bilinen sorunlar",
     "zh-Hans": "已知问题",
     "zh-Hant": "已知問題"
+  },
+  "Known servers": {
+    "de": "Bekannte Server",
+    "es": "Servidores conocidos",
+    "fr": "Serveurs connus",
+    "id": "Server yang dikenal",
+    "it": "Server noti",
+    "ja": "既知のサーバー",
+    "ko": "알려진 서버",
+    "pl": "Znane serwery",
+    "pt-BR": "Servidores conhecidos",
+    "ru": "Известные серверы",
+    "tr": "Bilinen sunucular",
+    "zh-Hans": "已知服务器",
+    "zh-Hant": "已知伺服器"
   },
   "Korean": {
     "de": "Koreanisch",
@@ -18584,6 +18749,36 @@
     "zh-Hans": "可选，用于托管模型",
     "zh-Hant": "選用，適用於託管模型"
   },
+  "Optional, for a server behind a login": {
+    "de": "Optional, für einen Server mit Anmeldung",
+    "es": "Opcional, para un servidor con inicio de sesión",
+    "fr": "Facultatif, pour un serveur protégé par une connexion",
+    "id": "Opsional, untuk server yang memerlukan login",
+    "it": "Facoltativa, per un server protetto da accesso",
+    "ja": "任意。ログインが必要なサーバー用",
+    "ko": "선택 사항, 로그인이 필요한 서버용",
+    "pl": "Opcjonalny, dla serwera wymagającego logowania",
+    "pt-BR": "Opcional, para um servidor com login",
+    "ru": "Необязательно, для сервера со входом",
+    "tr": "İsteğe bağlı, giriş gerektiren bir sunucu için",
+    "zh-Hans": "可选，用于需要登录的服务器",
+    "zh-Hant": "選填，用於需要登入的伺服器"
+  },
+  "Optional. A hosted server may need its model, a voice and a transcription model named. Leave them empty for a server that needs none, such as speech-to-speech.": {
+    "de": "Optional. Ein gehosteter Server braucht eventuell die Angabe seines Modells, einer Stimme und eines Transkriptionsmodells. Lass die Felder leer bei einem Server, der nichts davon braucht, etwa speech-to-speech.",
+    "es": "Opcional. Un servidor alojado puede necesitar que se indiquen su modelo, una voz y un modelo de transcripción. Déjalos vacíos para un servidor que no necesita ninguno, como speech-to-speech.",
+    "fr": "Facultatif. Un serveur hébergé peut avoir besoin qu’on lui indique son modèle, une voix et un modèle de transcription. Laisse ces champs vides pour un serveur qui n’en a pas besoin, comme speech-to-speech.",
+    "id": "Opsional. Server yang di-hosting mungkin perlu diberi nama model, suara, dan model transkripsinya. Biarkan kosong untuk server yang tidak memerlukannya, seperti speech-to-speech.",
+    "it": "Facoltativo. Un server ospitato può richiedere che vengano indicati il modello, una voce e un modello di trascrizione. Lasciali vuoti per un server che non ne ha bisogno, come speech-to-speech.",
+    "ja": "任意。ホスト型のサーバーでは、モデル、声、文字起こしモデルの指定が必要なことがあります。speech-to-speechのように不要なサーバーでは空のままにしてください。",
+    "ko": "선택 사항입니다. 호스팅 서버는 모델, 음성, 전사 모델을 지정해야 할 수 있습니다. speech-to-speech처럼 필요 없는 서버라면 비워 두세요.",
+    "pl": "Opcjonalne. Serwer hostowany może wymagać podania modelu, głosu i modelu transkrypcji. Zostaw pola puste dla serwera, który ich nie potrzebuje, na przykład speech-to-speech.",
+    "pt-BR": "Opcional. Um servidor hospedado pode precisar que você informe o modelo, uma voz e um modelo de transcrição. Deixe em branco para um servidor que não precisa de nenhum, como o speech-to-speech.",
+    "ru": "Необязательно. Размещённому серверу может потребоваться указать модель, голос и модель транскрипции. Оставьте поля пустыми для сервера, которому они не нужны, например speech-to-speech.",
+    "tr": "İsteğe bağlı. Barındırılan bir sunucu için modelin, bir sesin ve bir yazıya dökme modelinin belirtilmesi gerekebilir. speech-to-speech gibi bunlara ihtiyaç duymayan bir sunucu için boş bırak.",
+    "zh-Hans": "可选。托管的服务器可能需要指定模型、声音和转写模型。像 speech-to-speech 这样不需要的服务器，留空即可。",
+    "zh-Hant": "選填。託管的伺服器可能需要指定模型、聲音和轉寫模型。像 speech-to-speech 這類不需要的伺服器，留空即可。"
+  },
   "Optional. Leave empty to start from a short identity built from the name and description.": {
     "de": "Optional. Lass das Feld leer, um mit einer kurzen Identität aus Name und Beschreibung zu beginnen.",
     "es": "Opcional. Déjalo vacío para empezar con una identidad breve creada a partir del nombre y la descripción.",
@@ -19468,6 +19663,21 @@
     "tr": "Korsan",
     "zh-Hans": "海盗",
     "zh-Hant": "海盜"
+  },
+  "Plain ws:// works for home network and Tailscale addresses. A server on the internet needs wss://.": {
+    "de": "Einfaches ws:// funktioniert für Adressen im Heimnetz und in Tailscale. Ein Server im Internet braucht wss://.",
+    "es": "ws:// sin cifrar funciona con direcciones de tu red doméstica y de Tailscale. Un servidor en internet necesita wss://.",
+    "fr": "Un simple ws:// fonctionne pour les adresses du réseau domestique et de Tailscale. Un serveur sur Internet nécessite wss://.",
+    "id": "ws:// biasa berfungsi untuk alamat jaringan rumah dan Tailscale. Server di internet memerlukan wss://.",
+    "it": "Un semplice ws:// funziona per gli indirizzi della rete di casa e di Tailscale. Un server su Internet richiede wss://.",
+    "ja": "暗号化なしの ws:// はホームネットワークと Tailscale のアドレスで使えます。インターネット上のサーバーには wss:// が必要です。",
+    "ko": "일반 ws://는 홈 네트워크와 Tailscale 주소에서 사용할 수 있어요. 인터넷에 있는 서버는 wss://가 필요해요.",
+    "pl": "Zwykłe ws:// działa dla adresów w sieci domowej i Tailscale. Serwer w internecie wymaga wss://.",
+    "pt-BR": "ws:// simples funciona com endereços da rede de casa e do Tailscale. Um servidor na internet precisa de wss://.",
+    "ru": "Обычный ws:// подходит для адресов домашней сети и Tailscale. Серверу в интернете нужен wss://.",
+    "tr": "Düz ws:// ev ağı ve Tailscale adreslerinde çalışır. İnternetteki bir sunucu wss:// gerektirir.",
+    "zh-Hans": "家庭网络和 Tailscale 地址可以直接使用 ws://。互联网上的服务器需要 wss://。",
+    "zh-Hant": "家用網路和 Tailscale 位址可以直接使用 ws://。網際網路上的伺服器需要 wss://。"
   },
   "Plan": {
     "de": "Vorhaben",
@@ -26789,6 +26999,21 @@
     "zh-Hans": "测试连接",
     "zh-Hant": "測試連線"
   },
+  "Test connection": {
+    "de": "Verbindung testen",
+    "es": "Probar conexión",
+    "fr": "Tester la connexion",
+    "id": "Uji koneksi",
+    "it": "Verifica connessione",
+    "ja": "接続をテスト",
+    "ko": "연결 테스트",
+    "pl": "Testuj połączenie",
+    "pt-BR": "Testar conexão",
+    "ru": "Проверить подключение",
+    "tr": "Bağlantıyı test et",
+    "zh-Hans": "测试连接",
+    "zh-Hant": "測試連線"
+  },
   "Testing…": {
     "de": "Wird getestet…",
     "es": "Probando…",
@@ -28049,6 +28274,21 @@
     "zh-Hans": "技能、工具或 MCP 选择未保存。",
     "zh-Hant": "技能、工具或 MCP 選擇未儲存。"
   },
+  "The speech server's own model answers": {
+    "de": "Das eigene Modell des Sprachservers antwortet",
+    "es": "Responde el modelo propio del servidor de voz",
+    "fr": "Le modèle du serveur vocal répond lui-même",
+    "id": "Model milik server suara yang menjawab",
+    "it": "Risponde il modello del server vocale",
+    "ja": "音声サーバー自身のモデルが応答",
+    "ko": "음성 서버의 자체 모델이 응답",
+    "pl": "Odpowiada własny model serwera mowy",
+    "pt-BR": "O modelo do próprio servidor de voz responde",
+    "ru": "Отвечает собственная модель речевого сервера",
+    "tr": "Konuşma sunucusunun kendi modeli yanıtlar",
+    "zh-Hans": "由语音服务器自己的模型回答",
+    "zh-Hant": "由語音伺服器自己的模型回答"
+  },
   "The steps of the last Grok Live, Qwen Live, Local Live or GPT-Live call, without what was said, to paste into an issue.": {
     "de": "Die Schritte des letzten Anrufs mit Grok Live, Qwen Live, Local Live oder GPT-Live, ohne das Gesagte, zum Einfügen in ein Issue.",
     "es": "Los pasos de la última llamada de Grok Live, Qwen Live, Local Live o GPT-Live, sin lo que se dijo, para pegarlos en una incidencia.",
@@ -29294,6 +29534,21 @@
     "zh-Hans": "此聊天室按较新的 App 中设置的方式回答。除非你选择其他方式，否则保持不变。",
     "zh-Hant": "此聊天室依較新的 App 中設定的方式回答。除非你選擇其他方式，否則維持不變。"
   },
+  "This server has a model of its own. Turn on Hermes answers to have Hermes answer your calls on it.": {
+    "de": "Dieser Server hat ein eigenes Modell. Aktiviere „Hermes antwortet“, damit Hermes deine Anrufe darauf beantwortet.",
+    "es": "Este servidor tiene un modelo propio. Activa «Hermes responde» para que Hermes conteste tus llamadas en él.",
+    "fr": "Ce serveur a son propre modèle. Active « Hermes répond » pour que Hermes réponde à tes appels sur ce serveur.",
+    "id": "Server ini punya model sendiri. Aktifkan “Hermes yang menjawab” agar Hermes yang menjawab panggilanmu di server ini.",
+    "it": "Questo server ha un modello proprio. Attiva “Risponde Hermes” perché sia Hermes a rispondere alle tue chiamate su questo server.",
+    "ja": "このサーバーには独自のモデルがあります。「Hermesが応答」をオンにすると、このサーバーでの通話にHermesが応答します。",
+    "ko": "이 서버에는 자체 모델이 있습니다. ‘Hermes가 응답’을 켜면 이 서버에서의 통화에 Hermes가 응답합니다.",
+    "pl": "Ten serwer ma własny model. Włącz „Odpowiada Hermes”, aby to Hermes odpowiadał na twoje połączenia na tym serwerze.",
+    "pt-BR": "Este servidor tem um modelo próprio. Ative “Hermes responde” para que o Hermes atenda suas chamadas nele.",
+    "ru": "У этого сервера есть собственная модель. Включите «Отвечает Hermes», чтобы на ваши звонки на нём отвечал Hermes.",
+    "tr": "Bu sunucunun kendi modeli var. Bu sunucudaki aramalarını Hermes’in yanıtlaması için “Hermes yanıtlar” seçeneğini aç.",
+    "zh-Hans": "此服务器有自己的模型。打开“由 Hermes 回答”，让 Hermes 在这台服务器上回答你的通话。",
+    "zh-Hant": "此伺服器有自己的模型。打開「由 Hermes 回答」，讓 Hermes 在這台伺服器上回答你的通話。"
+  },
   "This server's own model answers Live calls, and the Conduit plugin runs every other call's turns on it, so there's nothing to set up on it.": {
     "de": "Bei Live-Anrufen antwortet das eigene Modell dieses Servers, und bei allen anderen Anrufen führt das Conduit-Plugin die Runden darauf aus, dort ist also nichts einzurichten.",
     "es": "En las llamadas Live responde el modelo propio de este servidor, y el plugin de Conduit lleva los turnos de todas las demás llamadas en él, así que no hay nada que configurar en él.",
@@ -29728,6 +29983,21 @@
     "tr": "Metne dönüştürülüyor",
     "zh-Hans": "正在转录",
     "zh-Hant": "正在轉寫"
+  },
+  "Transcription model": {
+    "de": "Transkriptionsmodell",
+    "es": "Modelo de transcripción",
+    "fr": "Modèle de transcription",
+    "id": "Model transkripsi",
+    "it": "Modello di trascrizione",
+    "ja": "文字起こしモデル",
+    "ko": "전사 모델",
+    "pl": "Model transkrypcji",
+    "pt-BR": "Modelo de transcrição",
+    "ru": "Модель транскрипции",
+    "tr": "Yazıya dökme modeli",
+    "zh-Hans": "转写模型",
+    "zh-Hant": "轉寫模型"
   },
   "Triage": {
     "de": "Triage",
@@ -30718,6 +30988,21 @@
     "tr": "Hızlı model kullanmak için Hermes sunucunuzdaki Conduit eklentisini güncelleyin.",
     "zh-Hans": "请更新 Hermes 主机上的 Conduit 插件以使用快速模型。",
     "zh-Hant": "請更新 Hermes 主機上的 Conduit 外掛以使用快速模型。"
+  },
+  "Update the Conduit plugin on your Hermes host to use your own speech server.": {
+    "de": "Aktualisiere das Conduit-Plug-in auf deinem Hermes-Host, um deinen eigenen Sprachserver zu verwenden.",
+    "es": "Actualiza el plugin de Conduit en tu host de Hermes para usar tu propio servidor de voz.",
+    "fr": "Mettez à jour le plugin Conduit sur votre hôte Hermes pour utiliser votre propre serveur vocal.",
+    "id": "Perbarui plugin Conduit di host Hermes Anda untuk menggunakan server suara Anda sendiri.",
+    "it": "Aggiorna il plugin Conduit sul tuo host Hermes per usare il tuo server vocale.",
+    "ja": "自分の音声サーバーを使うには、Hermes ホストの Conduit プラグインをアップデートしてください。",
+    "ko": "내 음성 서버를 사용하려면 Hermes 호스트의 Conduit 플러그인을 업데이트하세요.",
+    "pl": "Zaktualizuj wtyczkę Conduit na swoim hoście Hermes, aby używać własnego serwera mowy.",
+    "pt-BR": "Atualize o plugin do Conduit no seu host do Hermes para usar seu próprio servidor de voz.",
+    "ru": "Обновите плагин Conduit на вашем хосте Hermes, чтобы использовать свой речевой сервер.",
+    "tr": "Kendi konuşma sunucunuzu kullanmak için Hermes ana makinenizdeki Conduit eklentisini güncelleyin.",
+    "zh-Hans": "请更新 Hermes 主机上的 Conduit 插件，以使用你自己的语音服务器。",
+    "zh-Hant": "請更新 Hermes 主機上的 Conduit 外掛，以使用你自己的語音伺服器。"
   },
   "Update the Conduit plugin?": {
     "de": "Conduit-Plugin aktualisieren?",
@@ -33433,6 +33718,21 @@
     "tr": "Sesiniz {company} şirketine gider",
     "zh-Hans": "你的语音将发送给 {company}",
     "zh-Hant": "你的語音將傳送給 {company}"
+  },
+  "Your voice is recognized by a server you run, such as Hugging Face speech-to-speech or the one Hermes Live Voice starts. Hermes connects to it for Conduit, so it can run on another machine on your network.": {
+    "de": "Deine Stimme wird von einem Server erkannt, den du selbst betreibst, etwa Hugging Face speech-to-speech oder dem, den Hermes Live Voice startet. Hermes verbindet sich für Conduit damit, daher kann er auf einem anderen Gerät in deinem Netzwerk laufen.",
+    "es": "Tu voz la reconoce un servidor que tú mismo ejecutas, como Hugging Face speech-to-speech o el que inicia Hermes Live Voice. Hermes se conecta a él para Conduit, así que puede estar en otra máquina de tu red.",
+    "fr": "Votre voix est reconnue par un serveur que vous gérez vous-même, comme Hugging Face speech-to-speech ou celui que lance Hermes Live Voice. Hermes s’y connecte pour Conduit, il peut donc tourner sur une autre machine de votre réseau.",
+    "id": "Suara Anda dikenali oleh server yang Anda jalankan sendiri, seperti Hugging Face speech-to-speech atau yang dijalankan Hermes Live Voice. Hermes terhubung ke server itu untuk Conduit, jadi server bisa berjalan di mesin lain di jaringan Anda.",
+    "it": "La tua voce viene riconosciuta da un server che gestisci tu, come Hugging Face speech-to-speech o quello avviato da Hermes Live Voice. Hermes si collega per conto di Conduit, quindi può girare su un’altra macchina della tua rete.",
+    "ja": "あなたの声は、自分で運用するサーバー（Hugging Face speech-to-speech や Hermes Live Voice が起動するものなど）で認識されます。Hermes が Conduit の代わりに接続するので、ネットワーク内の別のマシンで動かせます。",
+    "ko": "직접 운영하는 서버가 목소리를 인식해요. 예를 들어 Hugging Face speech-to-speech나 Hermes Live Voice가 실행하는 서버를 쓸 수 있어요. Conduit 대신 Hermes가 연결하므로 네트워크의 다른 기기에서 실행해도 돼요.",
+    "pl": "Twój głos rozpoznaje serwer, który sam uruchamiasz, na przykład Hugging Face speech-to-speech albo ten, który uruchamia Hermes Live Voice. Hermes łączy się z nim w imieniu Conduit, więc może działać na innym komputerze w Twojej sieci.",
+    "pt-BR": "Sua voz é reconhecida por um servidor que você mesmo roda, como o Hugging Face speech-to-speech ou o que o Hermes Live Voice inicia. O Hermes se conecta a ele pelo Conduit, então ele pode rodar em outra máquina da sua rede.",
+    "ru": "Ваш голос распознаёт сервер, который вы запускаете сами, например Hugging Face speech-to-speech или тот, что запускает Hermes Live Voice. Hermes подключается к нему за Conduit, поэтому он может работать на другом компьютере в вашей сети.",
+    "tr": "Sesiniz kendi çalıştırdığınız bir sunucu tarafından tanınır; örneğin Hugging Face speech-to-speech ya da Hermes Live Voice'un başlattığı sunucu. Hermes, Conduit adına ona bağlanır, bu yüzden ağınızdaki başka bir makinede çalışabilir.",
+    "zh-Hans": "你的语音由你自己运行的服务器识别，例如 Hugging Face speech-to-speech 或 Hermes Live Voice 启动的服务器。Hermes 代 Conduit 连接它，所以它可以运行在你网络中的另一台机器上。",
+    "zh-Hant": "你的語音由你自己執行的伺服器辨識，例如 Hugging Face speech-to-speech 或 Hermes Live Voice 啟動的伺服器。Hermes 代 Conduit 連線到它，所以它可以在你網路中的另一部機器上執行。"
   },
   "Your {duration} dictation wasn't transcribed. Its recording is saved.": {
     "de": "Dein {duration} langes Diktat wurde nicht transkribiert. Die Aufnahme ist gespeichert.",

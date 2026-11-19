@@ -125,6 +125,8 @@ export interface LocalStatus {
   /** The plugin runs each turn itself (or the server's own model answers): nothing to set up on the server. */
   drivesTurns: boolean
   ownModel: boolean
+  /** The own model switch as set; null from a plugin before it (0.175.0), which shows no switch. */
+  ownModelSetting: boolean | null
   answersAlone: boolean
   /** Agent mode's fast model on the host; null from a plugin without it. */
   front: FrontModel | null
@@ -153,6 +155,7 @@ export function localStatus(response: unknown, dashboard: string | null | undefi
     speechServerUrl: str(server.url),
     drivesTurns: server.drive_turns === true || ownModel,
     ownModel,
+    ownModelSetting: typeof server.own_model === 'boolean' ? server.own_model : null,
     answersAlone: r.answers_alone === true,
     front: frontModel(r)
   }
