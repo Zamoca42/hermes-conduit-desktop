@@ -9564,6 +9564,26 @@ button.secondary.danger {
   color: var(--text);
   text-align: left;
 }
+.room-people-sheet {
+  max-height: min(640px, 85vh);
+  overflow-y: auto;
+}
+.room-person-row {
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.room-person-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.agent-choices .agent-note {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  text-align: left;
+}
 .invite-choices {
   display: flex;
   flex-direction: column;

@@ -1,3 +1,5 @@
+import { ROOM_RULES_CAPABILITY } from './state/roomChoices'
+import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
@@ -1156,6 +1158,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // Files in rooms with other people's agents go through the plugin, which reads their pictures back.
   const roomFilesStored = roomInvites.capabilities.includes(ROOM_FILES_CAPABILITY)
   const roomFilePictures = roomInvites.capabilities.includes(ROOM_FILE_PICTURES_CAPABILITY)
+  const roomChoicesServed = roomInvites.capabilities.includes(ROOM_RULES_CAPABILITY)
   // What Hermes waits on in each bot's profile: its confirmations, and rooms' and linked people's asks.
   const presentProfiles = useMemo(() => (roster.bots?.length ? roster.bots.map(b => b.name) : ['default']), [roster.bots])
   const presented = usePresented(connected, status.url ?? '', roomInvites.capabilities, presentProfiles)
@@ -1886,6 +1889,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             key={shownCopy.id}
             room={shownCopyRoom}
             readsStoredFiles={roomFilePictures && roomInvites.capabilities.includes(ROOM_FILES_LINKED_CAPABILITY)}
+            people={{ canSetChoices: roomChoicesServed, freeBusy: roomInvites.freeBusy, canLeave: roomCopies.canLeave, onChanged: () => void roomCopies.refresh() }}
             looks={roomLooks.looks[shownCopy.roomId]}
             onOpenRoomChat={roomChatsServed ? (agent, wrapUp) => openRoomChatWith(shownCopyRoom, agent, wrapUp) : undefined}
             bots={roster.bots ?? []}
@@ -1925,6 +1929,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             key={openRoom.roomId}
             room={openRoom}
             storesFiles={roomFilesStored}
+            people={{
+              canSetChoices: roomChoicesServed,
+              freeBusy: roomInvites.freeBusy,
+              canLeave: roomInvites.capabilities.includes(ROOM_LEAVE_CAPABILITY),
+              onChanged: () => void groupRooms.refresh()
+            }}
             readsStoredFiles={roomFilePictures}
             looks={roomLooks.looks[openRoom.roomId]}
             onOpenRoomChat={roomChatsServed ? (agent, wrapUp) => openRoomChatWith(openRoom, agent, wrapUp) : undefined}
