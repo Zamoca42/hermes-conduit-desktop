@@ -9,12 +9,14 @@ import {
   badgeColor,
   BADGE_PALETTE,
   hostBadge,
+  launchRows,
   openAfterSwitch,
   openBotAfterSwitch,
   openChatAfterSwitch,
   otherHostsChats,
   otherHostsWaiting,
   profileNames,
+  pulseChips,
   takeBotAfterSwitch,
   takeChatAfterSwitch,
   takeOpenAfterSwitch,
@@ -232,5 +234,24 @@ describe('combined dashboards in the window', () => {
     expect(takeBotAfterSwitch('https://home.example', [bot])).toBeNull()
     expect(takeBotAfterSwitch('https://studio.example', [bot])).toBe(bot)
     expect(takeBotAfterSwitch('https://studio.example', [bot])).toBeNull()
+  })
+
+  it('gives Pulse a chip per combined host that answers, only when another has one', () => {
+    const counts = new Map([['https://studio.example', 3]])
+    const chips = pulseChips(hosts, 'https://home.example', 1, counts, name)
+    expect(chips.map(c => [c.badge.letter, c.count, c.current])).toEqual([
+      ['H', 1, true],
+      ['S', 3, false]
+    ])
+    expect(pulseChips(hosts, 'https://home.example', 1, new Map(), name)).toEqual([])
+    // A host left out of the group gets no chip, so one other host alone has none.
+    expect(pulseChips(hosts, 'https://alone.example', 0, counts, name)).toEqual([])
+  })
+
+  it('lists the group as one row where its first member stands, opening the one used last', () => {
+    const rows = launchRows(hosts, 'https://studio.example')
+    expect(rows.map(r => (r.kind === 'group' ? `group:${r.members.length}>${r.opens}` : r.host.url))).toEqual(['group:2>https://studio.example', 'https://alone.example'])
+    expect(launchRows(hosts, null)[0]).toMatchObject({ kind: 'group', opens: 'https://home.example' })
+    expect(launchRows([hosts[0]!, hosts[1]!], null).every(r => r.kind === 'host')).toBe(true)
   })
 })

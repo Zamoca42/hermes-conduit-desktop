@@ -11,6 +11,7 @@ import { t } from '../../../shared/i18n'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 import { CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
 import { rosterFromProfiles, type Bot } from './bots'
+import { PULSE, parseFeed } from './pulse'
 
 export const keptStateLabel = (state: KeptHostState): string =>
   state === 'live'
@@ -321,4 +322,112 @@ export function takeBotAfterSwitch(host: string, bots: readonly Bot[] | null): B
   const name = pendingBot.name
   pendingBot = null
   return bots.find(b => b.name === name) ?? null
+}
+
+/**
+ * How many Pulse cards are new on each live kept host, read with the page's
+ * minute read while Pulse is on screen. A host whose Pulse doesn't answer has
+ * no count (and no chip).
+ */
+export function useKeptPulse(kept: readonly KeptHost[], on: boolean): Map<string, number> {
+  const [counts, setCounts] = useState<Map<string, number>>(() => new Map())
+  const live = on
+    ? kept
+        .filter(h => h.state === 'live')
+        .map(h => h.url)
+        .join('\n')
+    : ''
+  useEffect(() => {
+    const urls = live ? live.split('\n') : []
+    setCounts(current => new Map([...current].filter(([url]) => urls.includes(url))))
+    if (!urls.length) return
+    let stopped = false
+    const read = async () => {
+      if (document.hidden) return
+      const read = await Promise.all(
+        urls.map(async url => {
+          const outcome = await window.conduit.keptHttp(url, `${PULSE}/feed`)
+          return [url, outcome.ok ? parseFeed(outcome.result).unseen : null] as const
+        })
+      )
+      if (stopped) return
+      setCounts(new Map(read.filter((entry): entry is readonly [string, number] => entry[1] !== null)))
+    }
+    void read()
+    const timer = setInterval(() => void read(), KEPT_CHATS_POLL_MS)
+    return () => {
+      stopped = true
+      clearInterval(timer)
+    }
+  }, [live])
+  return counts
+}
+
+export interface PulseChip {
+  url: string
+  badge: HostBadge
+  /** New cards there; the host on screen's own count. */
+  count: number
+  current: boolean
+}
+
+/** A chip per combined host whose Pulse answers, in the saved order; none unless another one has a chip. */
+export function pulseChips(hosts: readonly HostSummary[], current: string, currentCount: number, counts: ReadonlyMap<string, number>, name: (url: string) => string): PulseChip[] {
+  const chips: PulseChip[] = []
+  for (const host of hosts) {
+    const badge = hostBadge(hosts, host.url, name)
+    if (!badge) continue
+    if (host.url === current) chips.push({ url: host.url, badge, count: currentCount, current: true })
+    else if (counts.has(host.url)) chips.push({ url: host.url, badge, count: counts.get(host.url)!, current: false })
+  }
+  return chips.length > 1 ? chips : []
+}
+
+/** A page picked on another host (Pulse's chip): the new host's window opens on it. */
+let pendingPage: { host: string; page: string } | null = null
+
+export function openPageAfterSwitch(host: string, page: string): void {
+  pendingPage = { host, page }
+}
+
+export function takePageAfterSwitch(host: string): string | null {
+  if (!pendingPage || pendingPage.host !== host) return null
+  const page = pendingPage.page
+  pendingPage = null
+  return page
+}
+
+/** The launch list's rows: the combined group, two or more, is one row where its first member stands. */
+export type LaunchRow = { kind: 'host'; host: HostSummary } | { kind: 'group'; members: HostSummary[]; opens: string }
+
+export function launchRows(hosts: readonly HostSummary[], lastUsed: string | null): LaunchRow[] {
+  const group = hosts.filter(h => h.combined)
+  if (group.length < 2) return hosts.map(host => ({ kind: 'host', host }))
+  // A tap opens the member used last, else the first.
+  const opens = group.find(h => h.url === lastUsed)?.url ?? group[0]!.url
+  const rows: LaunchRow[] = []
+  for (const host of hosts) {
+    if (!host.combined) rows.push({ kind: 'host', host })
+    else if (host === group[0]) rows.push({ kind: 'group', members: group, opens })
+  }
+  return rows
+}
+
+const LAST_HOST_KEY = 'conduit.lastHost'
+
+/** The host used last, for the launch list's group row; kept on this computer. */
+export function readLastHost(): string | null {
+  try {
+    return localStorage.getItem(LAST_HOST_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function writeLastHost(url: string): void {
+  try {
+    localStorage.setItem(LAST_HOST_KEY, url)
+  } catch {
+    // Not kept: the group's row opens its first member.
+  }
 }

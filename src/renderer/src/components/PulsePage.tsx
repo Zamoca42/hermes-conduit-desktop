@@ -33,6 +33,8 @@ import { askAction, drawsBody, extraActions, lookStyle, type LookAction } from '
 import { PulseBriefParts, PulseDateColumn, PulseLookBody } from './PulseLook'
 import type { PulseState } from '../state/usePulse'
 import { Icon } from './icons'
+import type { PulseChip } from '../state/keptHosts'
+import { HostBadgeMark } from './CombinedDashboards'
 import { Markdown } from './Markdown'
 import { PulseLearnedView, PulseLeftOutView } from './PulseLearned'
 import { PulseSettings } from './PulseSettings'
@@ -43,6 +45,9 @@ interface Props {
   onOpenChat: (target: { id: string | null; profile: string; title?: string }, draft?: string) => void
   /** Opens Tasks > Board, for a card from a Kanban task's worker. */
   onOpenBoard: () => void
+  /** Combined dashboards: a chip per host, the one on screen picked; another switches there, since a card's steps are its own host's. */
+  chips?: PulseChip[]
+  onPickHost?: (url: string) => void
 }
 
 type Menu = { kind: 'down' | 'later'; card: PulseCard; x: number; y: number }
@@ -52,7 +57,7 @@ type Menu = { kind: 'down' | 'later'; card: PulseCard; x: number; y: number }
  * earlier cards, and Done and cleared, each card with its Why?, Do it, Done,
  * Not now and thumbs. Opening it marks every card seen.
  */
-export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
+export function PulsePage({ pulse, onOpenChat, onOpenBoard, chips = [], onPickHost }: Props) {
   const { feed, error, availability } = pulse
   const language = locale()
   // The cards unseen when the screen opened stay New until it's left.
@@ -428,6 +433,23 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard }: Props) {
         </div>
       ) : (
         <div className="needs-inner">
+          {chips.length ? (
+            <div className="pulse-hosts" role="tablist" aria-label={t('Combine Dashboards')}>
+              {chips.map(chip => (
+                <button
+                  key={chip.url}
+                  role="tab"
+                  aria-selected={chip.current}
+                  className={chip.current ? 'on' : undefined}
+                  onClick={() => !chip.current && onPickHost?.(chip.url)}
+                >
+                  <HostBadgeMark badge={chip.badge} />
+                  {chip.badge.name}
+                  {chip.count ? <span className="pulse-host-count">{chip.count > 99 ? "99+" : chip.count}</span> : null}
+                </button>
+              ))}
+            </div>
+          ) : null}
           <div className="pulse-head">
             <h1>{t('Pulse')}</h1>
             <span className="spacer" />
