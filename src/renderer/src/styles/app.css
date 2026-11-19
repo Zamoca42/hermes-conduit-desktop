@@ -6895,6 +6895,11 @@ button.cap-row-text {
   gap: 8px;
   margin-top: 14px;
 }
+/* .primary is sized for the sign-in's full-width button: here it matches Not Now. */
+.consent-actions .primary {
+  height: 34px;
+  padding: 0 18px;
+}
 .consent-row {
   display: flex;
   align-items: center;
