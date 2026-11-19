@@ -56,6 +56,19 @@ export function avatarChanged(name: string): void {
   window.dispatchEvent(new CustomEvent(AVATAR_CHANGED, { detail: name }))
 }
 
+/** A bot's picture as an image URL, read once per launch and again after avatarChanged. */
+export function readAvatar(name: string): Promise<string | null> {
+  let pending = avatarCache.get(name)
+  if (!pending) {
+    pending = gateway
+      .rpc('profiles.get_asset', { name, asset: 'avatar' })
+      .then(avatarUrl)
+      .catch(() => null)
+    avatarCache.set(name, pending)
+  }
+  return pending
+}
+
 /** A bot's picture from its profile's asset store, read once per launch and again when Edit Bot changes it. */
 export function useAvatar(name: string, hasAvatar: boolean): string | null {
   const [url, setUrl] = useState<string | null>(null)
@@ -73,15 +86,7 @@ export function useAvatar(name: string, hasAvatar: boolean): string | null {
       return
     }
     let live = true
-    let pending = avatarCache.get(name)
-    if (!pending) {
-      pending = gateway
-        .rpc('profiles.get_asset', { name, asset: 'avatar' })
-        .then(avatarUrl)
-        .catch(() => null)
-      avatarCache.set(name, pending)
-    }
-    void pending.then(value => {
+    void readAvatar(name).then(value => {
       if (live) setUrl(value)
     })
     return () => {

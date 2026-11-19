@@ -13,6 +13,7 @@ import { Tasks } from './components/Tasks'
 import { PulsePage } from './components/PulsePage'
 import { FilesPanel } from './components/FilesPanel'
 import { ColumnDivider } from './components/ColumnDivider'
+import { GlowContext, useGlowColors } from './components/GlowColors'
 import { LIST_COLUMN, PANEL_COLUMN, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { absolutePath, pathForDraft } from './state/workspace'
 import { FileLinks } from './components/Markdown'
@@ -254,6 +255,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }, [transcript.running, chat.storedId])
 
   const roster = useBots(connected)
+  const glowBots = useMemo(() => [...(roster.bots ?? []), ...roster.hidden], [roster.bots, roster.hidden])
   // Thinking and Tool cards as the profile's settings say; read again after a visit to Settings.
   const chatDisplay = useChatDisplay(selected.profile, connected, section === 'chats')
   const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
@@ -778,8 +780,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setSelected({ id, profile: known?.profile ?? call.profile, title: known?.title ?? call.title })
     setSection('chats')
   }
+  // The backdrop glows in the open chat's agent's color, and elsewhere in the profile in use's.
+  const glowOf = useGlowColors(glowBots, status.url ?? '')
+  const glow = glowOf(section === 'chats' ? (selected.profile ?? chatProfile) : chatProfile)
+  useEffect(() => {
+    document.documentElement.style.setProperty('--glow', glow)
+  }, [glow])
+  useEffect(
+    () => () => {
+      document.documentElement.style.removeProperty('--glow')
+    },
+    []
+  )
   return (
-    <>
+    <GlowContext.Provider value={glowOf}>
       {ring ? <IncomingCall key={ring.id} ring={ring} onAnswer={() => answerRing(ring)} onDecline={missed => declineRing(ring, missed)} /> : null}
       {status.phase !== 'open' ? (
         <div className="banner" role="status">
@@ -1333,7 +1347,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         )}
       </div>
       {shortcutsOpen ? <ShortcutsSheet onClose={closeShortcuts} /> : null}
-    </>
+    </GlowContext.Provider>
   )
 }
 

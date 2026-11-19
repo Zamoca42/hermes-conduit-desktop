@@ -2204,6 +2204,21 @@
     "zh-Hans": "后台委派代理逐个汇报结果，而不是在最后一起汇报。",
     "zh-Hant": "背景委派代理程式逐一回報結果，而不是在最後一起回報。"
   },
+  "Background glow": {
+    "de": "Hintergrundleuchten",
+    "es": "Brillo de fondo",
+    "fr": "Halo d’arrière-plan",
+    "id": "Cahaya latar",
+    "it": "Bagliore di sfondo",
+    "ja": "背景のグロー",
+    "ko": "배경 글로우",
+    "pl": "Poświata tła",
+    "pt-BR": "Brilho do fundo",
+    "ru": "Свечение фона",
+    "tr": "Arka plan parıltısı",
+    "zh-Hans": "背景光晕",
+    "zh-Hant": "背景光暈"
+  },
   "Background process finished": {
     "de": "Hintergrundprozess abgeschlossen",
     "es": "El proceso en segundo plano terminó",
@@ -12313,6 +12328,21 @@
     "tr": "Kopya saklandı",
     "zh-Hans": "已保留副本",
     "zh-Hant": "已保留副本"
+  },
+  "Kept on this computer. Automatic takes the picture's main color, else the bot's color.": {
+    "de": "Auf diesem Computer gespeichert. „Automatisch“ nimmt die Hauptfarbe des Bildes, sonst die Farbe des Bots.",
+    "es": "Se guarda en este ordenador. Automático usa el color principal de la imagen o, si no, el color del bot.",
+    "fr": "Conservé sur cet ordinateur. Automatique prend la couleur principale de l’image, sinon celle du bot.",
+    "id": "Disimpan di komputer ini. Otomatis memakai warna utama gambar, atau warna bot.",
+    "it": "Salvato su questo computer. Automatico usa il colore principale dell’immagine, altrimenti quello del bot.",
+    "ja": "このコンピュータに保存されます。「自動」では画像のメインカラー、なければボットの色を使います。",
+    "ko": "이 컴퓨터에 저장됩니다. 자동은 사진의 주요 색상을, 없으면 봇의 색상을 사용합니다.",
+    "pl": "Zapisane na tym komputerze. Automatycznie bierze główny kolor obrazu, a w przeciwnym razie kolor bota.",
+    "pt-BR": "Fica salvo neste computador. Automático usa a cor principal da imagem ou, se não houver, a cor do bot.",
+    "ru": "Хранится на этом компьютере. «Автоматически» берёт основной цвет картинки, иначе цвет бота.",
+    "tr": "Bu bilgisayarda saklanır. Otomatik, resmin ana rengini, yoksa botun rengini kullanır.",
+    "zh-Hans": "保存在这台电脑上。“自动”使用图片的主色，否则使用机器人的颜色。",
+    "zh-Hant": "儲存在這台電腦上。「自動」使用圖片的主色，否則使用機器人的顏色。"
   },
   "Kept out by what you taught Pulse": {
     "de": "Durch das ausgelassen, was du Pulse beigebracht hast",

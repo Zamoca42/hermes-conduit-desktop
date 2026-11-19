@@ -8031,3 +8031,20 @@ a.ask-btn[aria-disabled='true'] {
 .connection-continue .meta {
   margin: 0;
 }
+
+/* Edit Bot's Background glow: a color kept on this computer, or Automatic. */
+.glow-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.glow-pick input[type='color'] {
+  width: 44px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+}
