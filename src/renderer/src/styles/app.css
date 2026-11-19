@@ -10141,3 +10141,22 @@ button.secondary.danger {
   gap: 8px;
   line-height: 1.4;
 }
+
+/* Settings > Wake phrase */
+.wake-settings .warns {
+  color: var(--warning, #c77700);
+}
+.wake-download {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wake-download progress {
+  width: 160px;
+}
+.wake-settings .pset-rules {
+  width: 100%;
+}
+.wake-settings .meta {
+  white-space: normal;
+}

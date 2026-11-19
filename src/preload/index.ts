@@ -40,6 +40,16 @@ const api: ConduitApi = {
   setAppLock: on => ipcRenderer.invoke(IPC.setAppLock, on),
   askHostAtLaunch: () => ipcRenderer.invoke(IPC.askHost),
   setAskHostAtLaunch: on => ipcRenderer.invoke(IPC.setAskHost, on),
+  wake: {
+    models: () => ipcRenderer.invoke(IPC.wakeModels),
+    download: lang => ipcRenderer.invoke(IPC.wakeDownload, lang),
+    cancelDownload: () => ipcRenderer.send(IPC.wakeCancel),
+    remove: () => ipcRenderer.invoke(IPC.wakeRemove),
+    onModels: listener => listen(IPC.wakeModelsChanged, listener),
+    listen: phrases => ipcRenderer.send(IPC.wakeListen, phrases),
+    onHeard: listener => listen(IPC.wakeHeard, listener),
+    onListener: listener => listen(IPC.wakeListener, listener)
+  },
   deviceReports: () => ipcRenderer.invoke(IPC.deviceReports),
   sendDeviceReports: ids => ipcRenderer.invoke(IPC.sendDeviceReports, ids),
   declineDeviceReports: ids => ipcRenderer.invoke(IPC.declineDeviceReports, ids),

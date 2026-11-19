@@ -12,6 +12,7 @@ import {
   shell,
   type MenuItemConstructorOptions
 } from 'electron'
+import { registerWake } from './wake'
 import { join, resolve } from 'node:path'
 import WebSocket from 'ws'
 import { LINK_SCHEME, linkUrl, linkUrlFromArgs } from '../shared/linkUrls'
@@ -259,6 +260,7 @@ function registerIpc(): void {
   })
   ipcMain.handle(IPC.appLock, async () => ({ kind: await lockKind(), on: lockOnLaunch() }))
   const ids = (value: unknown) => (Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string') : [])
+  registerWake(() => mainWindow)
   ipcMain.handle(IPC.deviceReports, () => deviceReports())
   ipcMain.handle(IPC.sendDeviceReports, (_event, value: unknown) => sendDeviceReports(ids(value)))
   ipcMain.handle(IPC.declineDeviceReports, (_event, value: unknown) => declineDeviceReports(ids(value)))

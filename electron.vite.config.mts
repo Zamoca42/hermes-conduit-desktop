@@ -10,7 +10,11 @@ export default defineConfig({
   },
   preload: {
     build: {
-      externalizeDeps: true
+      externalizeDeps: true,
+      // The wake listener's window gets a preload of its own (src/main/wake.ts).
+      rollupOptions: {
+        input: { index: resolve(__dirname, 'src/preload/index.ts'), wake: resolve(__dirname, 'src/preload/wake.ts') }
+      }
     }
   },
   renderer: {
@@ -18,6 +22,11 @@ export default defineConfig({
     resolve: {
       alias: { '@shared': resolve(__dirname, 'src/shared') }
     },
-    plugins: [react()]
+    plugins: [react()],
+    build: {
+      rollupOptions: {
+        input: { index: resolve(__dirname, 'src/renderer/index.html'), wake: resolve(__dirname, 'src/renderer/wake.html') }
+      }
+    }
   }
 })
