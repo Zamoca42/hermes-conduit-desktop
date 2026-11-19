@@ -9755,3 +9755,63 @@ button.secondary.danger {
   gap: 8px;
   margin: 8px 0;
 }
+/* What Hermes waits on: a confirmation, or a room's or linked person's ask. */
+.confirm-panel {
+  position: fixed;
+  right: 20px;
+  top: 56px;
+  z-index: 990;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100vh - 100px);
+  padding: 16px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  background: var(--composer);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  animation: incoming-call-in 0.2s ease-out;
+}
+.confirm-panel h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.confirm-asker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 600;
+}
+.confirm-asker svg {
+  width: 14px;
+  height: 14px;
+}
+.confirm-more {
+  margin-left: auto;
+  font-weight: 500;
+}
+.confirm-preview {
+  max-height: 220px;
+  overflow: auto;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-hover);
+  font-size: 13px;
+}
+.confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.confirm-actions .spacer {
+  flex: 1;
+}
+.confirm-instead textarea {
+  width: 100%;
+  resize: vertical;
+  margin-bottom: 8px;
+}
