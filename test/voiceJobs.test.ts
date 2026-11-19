@@ -5,6 +5,7 @@ type Event = { type: string; session_id?: string; payload?: unknown }
 
 function setup(fail = false, correction: 'redirected' | 'queued' | 'rejected' = 'redirected') {
   const corrected: [string, string, string | undefined][] = []
+  const adopted: [string | undefined, string, string, string][] = []
   const calls: [string, Record<string, unknown>][] = []
   let handler: (event: Event) => void = () => {}
   const changes: VoiceJob[][] = []
@@ -17,7 +18,7 @@ function setup(fail = false, correction: 'redirected' | 'queued' | 'rejected' = 
     async (method, params) => {
       calls.push([method, params])
       if (fail && method === 'prompt.submit') throw new Error('HTTP 500')
-      return method === 'session.create' ? { session_id: `s${++n}` } : {}
+      return method === 'session.create' ? { session_id: `s${++n}`, stored_session_id: `stored${n}` } : {}
     },
     h => {
       handler = h
@@ -26,20 +27,25 @@ function setup(fail = false, correction: 'redirected' | 'queued' | 'rejected' = 
     async (sid, text, profile) => {
       corrected.push([sid, text, profile])
       return correction
+    },
+    async (profile, sid, title, goal) => {
+      adopted.push([profile, sid, title, goal])
+      return true
     }
   )
-  return { jobs, calls, changes, told, corrected, emit: (e: Event) => handler(e) }
+  return { jobs, calls, changes, told, corrected, adopted, emit: (e: Event) => handler(e) }
 }
 
 describe('background jobs from a call', () => {
   it('starts a job in a chat of its own and tells its reply', async () => {
-    const { jobs, calls, told, emit } = setup()
+    const { jobs, calls, told, adopted, emit } = setup()
     const started = await jobs.start('Research the best GPU for training')
     expect(started).toMatchObject({ status: 'started', job_id: 'job-1' })
     expect(calls).toEqual([
       ['session.create', { cols: 96, source: 'desktop', title: 'Research the best GPU for training', profile: 'work' }],
       ['prompt.submit', { session_id: 's1', text: 'Research the best GPU for training', profile: 'work' }]
     ])
+    expect(adopted).toEqual([['work', 'stored1', 'Research the best GPU for training', 'Research the best GPU for training']])
     emit({ type: 'message.delta', session_id: 'other', payload: { text: 'nope' } })
     emit({ type: 'message.delta', session_id: 's1', payload: { text: 'The 5090, ' } })
     emit({ type: 'message.delta', session_id: 's1', payload: { text: 'see MEDIA:/tmp/x/gpus.csv' } })
