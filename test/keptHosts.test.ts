@@ -5,7 +5,22 @@ import { KEPT_BACKOFF, KeptHosts, MAX_KEPT } from '../src/main/keptHosts'
 import type { SavedConnection } from '../src/main/connection'
 import type { ConnectionStatus, KeptHost } from '../src/shared/ipc'
 import type { WebSocketLike } from '../src/vendor/hermes-shared/json-rpc-gateway'
-import { badgeColor, BADGE_PALETTE, hostBadge, openAfterSwitch, otherHostsWaiting, profileNames, takeOpenAfterSwitch, type KeptWaitingRow } from '../src/renderer/src/state/keptHosts'
+import {
+  badgeColor,
+  BADGE_PALETTE,
+  hostBadge,
+  openAfterSwitch,
+  openBotAfterSwitch,
+  openChatAfterSwitch,
+  otherHostsChats,
+  otherHostsWaiting,
+  profileNames,
+  takeBotAfterSwitch,
+  takeChatAfterSwitch,
+  takeOpenAfterSwitch,
+  type KeptWaitingRow,
+  type OtherChatRow
+} from '../src/renderer/src/state/keptHosts'
 import type { WaitingRow } from '../src/renderer/src/state/needsYou'
 
 class FakeSocket extends EventTarget {
@@ -89,6 +104,9 @@ describe('combined dashboards in the main process', () => {
     expect(h.sockets.map(s => new URL(s.url).host)).toEqual(['b.example', 'c.example'])
     // Reads go through the kept connection.
     expect(await h.kept.http('https://b.example', '/api/profiles')).toEqual({ profiles: [{ name: 'default' }, { name: 'mira' }] })
+    // Only reads go over a kept socket.
+    await expect(h.kept.rpc('https://b.example', 'prompt.submit', {})).rejects.toThrow(/Only reads/)
+    await expect(h.kept.rpc('https://d.example', 'profiles.list')).rejects.toThrow(/Not connected/)
   })
 
   it('needs two in the group, keeps at most three beside the one on screen, and connects beside one left out', async () => {
@@ -190,5 +208,29 @@ describe('combined dashboards in the window', () => {
     expect(takeOpenAfterSwitch('https://home.example')).toBeNull()
     expect(takeOpenAfterSwitch('https://studio.example')).toEqual(row('w9'))
     expect(takeOpenAfterSwitch('https://studio.example')).toBeNull()
+  })
+
+  const chat = (id: string, host?: string) => ({ id, title: id, pinned: false, ...(host ? { host } : {}) })
+
+  it('lists another host’s chat once, and not one this host lists too', () => {
+    const other = [chat('c1', 'https://studio.example'), chat('c2', 'https://studio.example'), chat('c2', 'https://third.example')] as OtherChatRow[]
+    expect(otherHostsChats(other, [chat('c1')]).map(r => `${r.id}@${r.host}`)).toEqual(['c2@https://studio.example'])
+    expect(otherHostsChats(other, null)).toHaveLength(2)
+  })
+
+  it('opens another host’s chat in that host’s window after the switch', () => {
+    openChatAfterSwitch(chat('c3', 'https://studio.example') as OtherChatRow)
+    expect(takeChatAfterSwitch('https://home.example')).toBeNull()
+    expect(takeChatAfterSwitch('https://studio.example')).toEqual(chat('c3'))
+    expect(takeChatAfterSwitch('https://studio.example')).toBeNull()
+  })
+
+  it('opens another host’s bot once that host’s bots are read', () => {
+    const bot = { name: 'mira', title: 'Mira' } as never
+    openBotAfterSwitch({ host: 'https://studio.example', bot })
+    expect(takeBotAfterSwitch('https://studio.example', null)).toBeNull()
+    expect(takeBotAfterSwitch('https://home.example', [bot])).toBeNull()
+    expect(takeBotAfterSwitch('https://studio.example', [bot])).toBe(bot)
+    expect(takeBotAfterSwitch('https://studio.example', [bot])).toBeNull()
   })
 })

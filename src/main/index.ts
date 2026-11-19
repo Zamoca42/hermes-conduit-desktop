@@ -318,6 +318,15 @@ function registerIpc(): void {
     hostStore.setCombined?.(url, on)
     connection.hostsChanged()
   })
+  ipcMain.handle(IPC.keptRpc, async (_e, url: unknown, method: unknown, params: unknown): Promise<RpcOutcome> => {
+    if (typeof url !== 'string' || typeof method !== 'string') return { ok: false, error: 'Bad request.' }
+    try {
+      const given = params && typeof params === 'object' && !Array.isArray(params) ? (params as Record<string, unknown>) : {}
+      return { ok: true, result: await keptHosts.rpc(url, method, given) }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
+  })
   ipcMain.handle(IPC.keptHttp, async (_e, url: unknown, path: unknown): Promise<RpcOutcome> => {
     if (typeof url !== 'string' || typeof path !== 'string' || !path.startsWith('/api/')) return { ok: false, error: 'Only dashboard API paths can be read.' }
     try {
