@@ -1089,6 +1089,11 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
       }))
     ]
   }, [status.url, badgeFor, keptHosts, otherBots])
+  // ...and the Artifacts page's chips: this one, then each other kept connected.
+  const artifactDashboards = useMemo(
+    () => (newBotDashboards ? newBotDashboards.map(({ url, name, badge }) => ({ url, name, badge })) : undefined),
+    [newBotDashboards]
+  )
   // ...and a Pulse chip each, with how many cards are new there.
   const keptPulse = useKeptPulse(keptHosts, section === 'pulse')
   const pulseUnseen = pulse.feed?.unseen ?? 0
@@ -2040,6 +2045,11 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
                 page
                 profile={chatProfile ?? undefined}
                 sessionIds={[]}
+                kept={keptHosts}
+                dashboards={artifactDashboards}
+                onOpenOtherChat={item =>
+                  openOtherChat({ host: item.dashboard, id: item.sessionId, title: item.sessionTitle ?? '', profile: item.dashboardProfile, pinned: false })
+                }
                 onOpenChat={item => {
                   setSelected({ id: item.sessionId, profile: chatProfile ?? undefined, title: item.sessionTitle })
                   setSection('chats')
