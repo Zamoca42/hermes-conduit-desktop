@@ -23,6 +23,7 @@ import {
   type SignIn
 } from '../state/providers'
 import { readConfig, updateConfig, valueAt, withValue, type Http } from '../state/profileConfig'
+import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
 
 const request = (method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number) => gateway.http(method, path, body, timeoutMs)
@@ -139,6 +140,7 @@ export function ProvidersSection({ profile, profileName, profiles, defaultProvid
               {connected.map(e => (
                 <li key={e.id}>
                   <button className="provider-row" onClick={() => setOpen(e.id)}>
+                    <ProviderLogo slug={e.id} title={e.name} />
                     <strong>{e.name}</strong>
                     <span className="spacer" />
                     <span className={`meta${providerStatus(e) === 'oldCopy' ? ' pset-warn' : ''}`}>{statusTitle(e)}</span>
@@ -204,6 +206,7 @@ function AddProvider({ entries, onBack, onPick }: { entries: ProviderEntry[]; on
         {shown.map(e => (
           <li key={e.id}>
             <button className="provider-row" onClick={() => onPick(e.id)}>
+              <ProviderLogo slug={e.id} title={e.name} />
               <strong>{e.name}</strong>
               <span className="spacer" />
               <span className="meta">{e.account ? t('Account') : t('API key')}</span>

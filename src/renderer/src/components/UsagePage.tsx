@@ -28,6 +28,7 @@ import {
   type UsageFailure,
   type UsageReport
 } from '../state/usage'
+import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
 
 interface Props {
@@ -74,7 +75,10 @@ function WindowBar({ window: w, language }: { window: QuotaWindow; language?: st
 function Quota({ quota, language }: { quota: ProviderQuota; language?: string }) {
   return (
     <div className="usage-quota">
-      <strong>{quota.title}</strong>
+      <strong className="usage-quota-title">
+        <ProviderLogo slug={quota.slug} title={quota.title} />
+        {quota.title}
+      </strong>
       {quota.limit?.scope === 'account' ? (
         <div className="usage-limit">
           {quota.limit.resetsAt ? t('Rate limited until {time}', { time: absoluteLabel(quota.limit.resetsAt, language) }) : t('Rate limited')}
