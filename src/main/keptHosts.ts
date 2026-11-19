@@ -7,9 +7,9 @@
  * Their events are dropped here; the window reads what it shows of them
  * (Needs you) through `http`. One whose sign-in is refused waits until it's
  * opened, and one that can't connect is tried again after 30 s, doubling to
- * 5 minutes.
+ * 5 minutes. Switching to one takes up its open socket.
  */
-import { Connection, type ConnectionStore, type SocketFactory } from './connection'
+import { Connection, type ConnectionStore, type HandedSocket, type SocketFactory } from './connection'
 import type { Fetch } from './auth'
 import type { ConnectionStatus, KeptHost, KeptHostState } from '../shared/ipc'
 
@@ -59,6 +59,21 @@ export class KeptHosts {
     if (!this.kept.size) return
     for (const url of [...this.kept.keys()]) this.stop(url)
     this.deps.onChange([])
+  }
+
+  /**
+   * A switch to a kept host takes up its open socket rather than dialing
+   * again (the phone's promotion of a live combined host). Null when it isn't
+   * kept or isn't connected, and the switch dials as usual.
+   */
+  take(url: string): HandedSocket | null {
+    const kept = this.kept.get(url)
+    if (!kept || kept.state !== 'live') return null
+    const handed = kept.connection.handOver()
+    this.kept.delete(url)
+    kept.connection.close()
+    this.deps.onChange(this.list())
+    return handed
   }
 
   /** A read through a kept host's connection; only GETs, since what it shows only opens through a switch. */
