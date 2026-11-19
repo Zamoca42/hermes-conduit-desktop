@@ -25,6 +25,8 @@ const dbfs = (rms: number) => (rms > 0 ? `${Math.max(-120, Math.round(20 * Math.
 
 export class CallTrace {
   readonly name: string
+  /** What the trace follows: a call, or a Read Aloud reading. */
+  readonly noun: string
   readonly startedAt: number
   private head: TraceStep[] = []
   private tail: TraceStep[] = []
@@ -38,8 +40,9 @@ export class CallTrace {
   private audioSinceEdge = 0
   private toldSilence = false
 
-  constructor(name: string, now = Date.now()) {
+  constructor(name: string, now = Date.now(), noun = 'call') {
     this.name = name
+    this.noun = noun
     this.startedAt = now
   }
 
@@ -119,9 +122,12 @@ export class CallTrace {
 
   /** The trace as text to paste into an issue. */
   report(): string {
-    const started = new Date(this.startedAt).toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC')
+    const started = new Date(this.startedAt)
+      .toISOString()
+      .replace('T', ' ')
+      .replace(/\.\d+Z$/, ' UTC')
     const lines = this.steps.map(step => `+${(step.at / 1000).toFixed(1)}s ${step.text}`)
-    return [`${this.name} call, started ${started}`, ...lines].join('\n')
+    return [`${this.name} ${this.noun}, started ${started}`, ...lines].join('\n')
   }
 }
 
@@ -138,6 +144,22 @@ export function startCallTrace(name: string): CallTrace {
 }
 
 export const lastCallTrace = () => last
+
+let lastReading: CallTrace | null = null
+
+/**
+ * Starts the trace of a Read Aloud reading, after the phone's (issue 1641):
+ * how Hermes' voice answered and how playback went, never the reply's words.
+ * It replaces the last reading's and stays apart from the calls'.
+ */
+export function startReadingTrace(first: string): CallTrace {
+  lastReading?.end('another reading started')
+  lastReading = new CallTrace('Read Aloud', Date.now(), 'reading')
+  lastReading.step(first)
+  return lastReading
+}
+
+export const lastReadingTrace = () => lastReading
 
 export function subscribeCallTrace(listener: () => void): () => void {
   listeners.add(listener)

@@ -11969,6 +11969,21 @@
     "zh-Hans": "频率",
     "zh-Hant": "頻率"
   },
+  "How the last reply read aloud went: Hermes’ voice and playback, without the reply’s words, to paste into an issue.": {
+    "de": "Wie das letzte Vorlesen lief: Hermes’ Stimme und die Wiedergabe, ohne die Worte der Antwort, zum Einfügen in ein Issue.",
+    "es": "Cómo fue la última respuesta leída en voz alta: la voz de Hermes y la reproducción, sin las palabras de la respuesta, para pegar en un issue.",
+    "fr": "Comment s’est passée la dernière réponse lue à voix haute : la voix de Hermes et la lecture, sans les mots de la réponse, à coller dans un ticket.",
+    "id": "Bagaimana balasan terakhir dibacakan: suara Hermes dan pemutarannya, tanpa kata-kata balasan, untuk ditempel ke issue.",
+    "it": "Com’è andata l’ultima risposta letta ad alta voce: la voce di Hermes e la riproduzione, senza le parole della risposta, da incollare in una segnalazione.",
+    "ja": "最後に読み上げた返信の様子です。Hermesの音声と再生の状況を、返信の言葉なしで記録します。Issueに貼り付けられます。",
+    "ko": "마지막으로 소리 내어 읽은 답장이 어땠는지: Hermes의 음성과 재생 상황을 답장 내용 없이 보여 주며, 이슈에 붙여 넣을 수 있습니다.",
+    "pl": "Jak poszło ostatnie czytanie odpowiedzi na głos: głos Hermesa i odtwarzanie, bez słów odpowiedzi, do wklejenia w zgłoszeniu.",
+    "pt-BR": "Como foi a última resposta lida em voz alta: a voz do Hermes e a reprodução, sem as palavras da resposta, para colar em uma issue.",
+    "ru": "Как прошло последнее чтение ответа вслух: голос Hermes и воспроизведение, без слов ответа, чтобы вставить в issue.",
+    "tr": "Son sesli okunan yanıtın nasıl gittiği: Hermes’in sesi ve oynatma, yanıtın sözcükleri olmadan, bir issue’ya yapıştırmak için.",
+    "zh-Hans": "上次朗读回复的情况：Hermes 的语音和播放，不含回复内容，可粘贴到 issue 中。",
+    "zh-Hant": "上次朗讀回覆的情況：Hermes 的語音和播放，不含回覆內容，可貼到 issue 中。"
+  },
   "Hub": {
     "de": "Hub",
     "es": "Hub",
@@ -13258,6 +13273,21 @@
     "tr": "Dil",
     "zh-Hans": "语言",
     "zh-Hant": "語言"
+  },
+  "Last Read Aloud": {
+    "de": "Letztes Vorlesen",
+    "es": "Última lectura en voz alta",
+    "fr": "Dernière lecture à voix haute",
+    "id": "Bacakan Terakhir",
+    "it": "Ultima lettura ad alta voce",
+    "ja": "最後の読み上げ",
+    "ko": "마지막 소리 내어 읽기",
+    "pl": "Ostatnie czytanie na głos",
+    "pt-BR": "Última leitura em voz alta",
+    "ru": "Последнее чтение вслух",
+    "tr": "Son Sesli Okuma",
+    "zh-Hans": "上次朗读",
+    "zh-Hant": "上次朗讀"
   },
   "Last error": {
     "de": "Letzter Fehler",
@@ -17053,6 +17083,21 @@
     "tr": "“{wanted}” ile eşleşen bir şey yok.",
     "zh-Hans": "没有与“{wanted}”匹配的内容。",
     "zh-Hant": "沒有與「{wanted}」相符的內容。"
+  },
+  "Nothing read aloud since Conduit opened.": {
+    "de": "Seit dem Öffnen von Conduit wurde nichts vorgelesen.",
+    "es": "No se ha leído nada en voz alta desde que se abrió Conduit.",
+    "fr": "Rien n’a été lu à voix haute depuis l’ouverture de Conduit.",
+    "id": "Belum ada yang dibacakan sejak Conduit dibuka.",
+    "it": "Niente letto ad alta voce da quando Conduit è aperto.",
+    "ja": "Conduitを開いてから読み上げたものはありません。",
+    "ko": "Conduit를 연 뒤 소리 내어 읽은 것이 없습니다.",
+    "pl": "Od otwarcia Conduit nic nie przeczytano na głos.",
+    "pt-BR": "Nada foi lido em voz alta desde que o Conduit abriu.",
+    "ru": "С момента запуска Conduit ничего не читалось вслух.",
+    "tr": "Conduit açıldığından beri hiçbir şey sesli okunmadı.",
+    "zh-Hans": "自打开 Conduit 以来还没有朗读过内容。",
+    "zh-Hant": "自開啟 Conduit 以來還沒有朗讀過內容。"
   },
   "Nothing resolved yet.": {
     "de": "Noch nichts erledigt.",
