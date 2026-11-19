@@ -38,7 +38,9 @@ export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewCh
       .rpc('projects.tree', withProfile({ preview_limit: 3 }))
       .then(response => {
         if (!live) return
-        setProjects(parseProjects(response, profile ?? undefined).filter(p => !p.isHome))
+        // Home, the chats in no project, leads the list as on the phone, with its own dot.
+        const list = parseProjects(response, profile ?? undefined)
+        setProjects([...list.filter(p => p.isHome), ...list.filter(p => !p.isHome)])
         setError(null)
       })
       .catch(e => live && setError(reason(e)))
@@ -95,7 +97,7 @@ export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewCh
       <div className="chatlist-scroll">
         {projects === null && !error ? <div className="empty">{t('Loading projects…')}</div> : null}
         {error ? <div className="empty">{`${t('Couldn’t Load Projects')} ${error}`}</div> : null}
-        {projects && !projects.length && !creating ? <div className="empty">{t('Projects you make here or in Hermes Desktop show here.')}</div> : null}
+        {projects && !projects.some(p => !p.isHome) && !creating ? <div className="empty">{t('Projects you make here or in Hermes Desktop show here.')}</div> : null}
         {projects?.map(project => {
           // The dot while any chat the tree lists for it is unread, and the Running line beside it (issue 1496).
           const unread = !!isUnread && project.previews.some(chat => chat.id !== selectedId && isUnread(chat))
@@ -105,7 +107,7 @@ export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewCh
               <span className="row-top">
                 <span className="row-title">
                   <span className="project-icon">
-                    <Icon name="folder" className="row-pin" />
+                    <Icon name={project.isHome ? 'house' : 'folder'} className="row-pin" />
                     {unread ? <span className="unread-dot project-dot" role="img" aria-label={t('Unread')} /> : null}
                   </span>
                   {project.title}
@@ -272,13 +274,19 @@ function ProjectPage({
             {project.title}
           </h1>
         )}
-        <button className="round" aria-label={t('New chat in this project')} title={t('New chat in this project')} disabled={!project.path} onClick={onNewChat}>
+        <button
+          className="round"
+          aria-label={t('New chat in this project')}
+          title={t('New chat in this project')}
+          disabled={!project.path && !project.isHome}
+          onClick={onNewChat}
+        >
           <Icon name="plus" />
         </button>
       </div>
       <div className="project-meta">
         {project.path ? <span className="meta project-path">{project.path}</span> : null}
-        {!project.isAuto ? (
+        {!project.isAuto && !project.isHome ? (
           <span className="project-actions">
             <button className="link" onClick={() => setRenaming(project.title)}>
               {t('Rename')}
