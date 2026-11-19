@@ -5,6 +5,7 @@ import {
   dropping,
   droppingMixed,
   hostBotOrder,
+  hostOrder,
   mixedBotKey,
   mixedTiles,
   neighbour,
@@ -79,5 +80,25 @@ describe('the combined group mixed order', () => {
     const gone = mixedBotKey('https://gone', 'z')
     const shown = [mixedBotKey('https://one', 'a'), mixedBotKey('https://one', 'b')]
     expect(droppingMixed([gone, ...shown], shown[1]!, shown[0]!, shown)).toEqual([shown[1], shown[0]])
+  })
+})
+
+describe('the group chats order', () => {
+  const rooms = [{ roomId: 'r1' }, { roomId: 'r2' }, { roomId: 'R3' }]
+  const ids = (list: { roomId: string }[]) => list.map(r => r.roomId)
+
+  it('puts a room it does not name yet first, where Hermes lists one just made', () => {
+    expect(ids(arrange(rooms, ['r2', 'R3', 'r1'], r => r.roomId, 'rooms'))).toEqual(['r2', 'R3', 'r1'])
+    expect(ids(arrange([{ roomId: 'new' }, ...rooms], ['r2', 'R3', 'r1'], r => r.roomId, 'rooms'))).toEqual(['new', 'r2', 'R3', 'r1'])
+  })
+
+  it('matches room ids exactly', () => {
+    expect(ids(arrange(rooms, ['r3', 'r2'], r => r.roomId, 'rooms'))).toEqual(['r1', 'R3', 'r2'])
+    expect(cleanOrder(['a', 'A'], 'rooms')).toEqual(['a', 'A'])
+  })
+
+  it('takes the target place, with unnamed rooms before the order', () => {
+    expect(dropping(['r2'], 'r1', 'r2', ['r1', 'R3', 'r2'], 'rooms')).toEqual(['R3', 'r2', 'r1'])
+    expect(hostOrder({ values: { 'groups.order': { value: ['x', 'X'] } } }, 'groups.order', 'rooms')).toEqual(['x', 'X'])
   })
 })

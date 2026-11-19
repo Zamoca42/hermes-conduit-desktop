@@ -3,7 +3,7 @@ import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
-import { orderedBots, useBotOrder, useMixedBotOrder } from './state/botOrder'
+import { arrange, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
@@ -399,6 +399,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   const roster = useBots(connected)
   // The bots in the person's order (synced as bots.order), which every list of bots follows.
   const botOrder = useBotOrder(status.url ?? '', connected, prefsHttp)
+  const roomOrder = useSyncedOrder(status.url ?? '', connected, prefsHttp, 'rooms')
   const orderedRoster = useMemo(() => (roster.bots ? orderedBots(roster.bots, botOrder.order) : null), [roster.bots, botOrder.order])
   const glowBots = useMemo(() => [...(roster.bots ?? []), ...roster.hidden], [roster.bots, roster.hidden])
   // Thinking and Tool cards as the profile's settings say; read again after a visit to Settings.
@@ -1019,6 +1020,8 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
     void onSend(ask.text)
   }, [selected, loading, error, chat.liveId, chat.storedId, onSend])
   const groupRooms = useRooms(connected)
+  // The group chats in the person's order (synced as groups.order), a room it doesn't name first.
+  const orderedRooms = useMemo(() => (groupRooms.rooms ? arrange(groupRooms.rooms, roomOrder.order, r => r.roomId, 'rooms') : groupRooms.rooms), [groupRooms.rooms, roomOrder.order])
   const roomInvites = useRoomInvites(connected, status.url ?? '')
   const [openInvite, setOpenInvite] = useState<string | null>(null)
   const shownInvite = openInvite ? roomInvites.invites.find(i => i.id === openInvite) : undefined
@@ -1990,7 +1993,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             bots={orderedRoster}
             error={roster.error}
             runningProfiles={runningProfiles}
-            rooms={groupRooms.rooms}
+            rooms={orderedRooms}
             canStartRooms={groupRooms.capabilities?.supported === true && connected}
             onOpen={openBot}
             onAsk={askBot}
@@ -2015,6 +2018,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             mixedOrder={mixedBotOrder.order}
             onMoveMixed={mixedBotOrder.drop}
             onMoveBot={botOrder.drop}
+            onMoveRoom={roomOrder.drop}
             onNewGroup={
               connected && groupRooms.capabilities?.supported === true
                 ? () => {
