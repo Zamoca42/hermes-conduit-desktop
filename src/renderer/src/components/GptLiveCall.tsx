@@ -46,7 +46,7 @@ import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { answerApproval, answerQuestion, answerWords, isApprove, isDeny, requestUpdate } from '../state/liveRequests'
 import { chatFinder, delegatedRead, delegatedSearch, findChatMarker, readChatMarker } from '../state/chatFinder'
-import { JOB_STARTED, VoiceJobs, asksForBackground, type VoiceJob } from '../state/voiceJobs'
+import { JOB_STARTED, VoiceJobs, asksForBackground, jobFollowUpMarker, type VoiceJob } from '../state/voiceJobs'
 import { CallCards } from './CallCards'
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
@@ -261,6 +261,14 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
     const number = readChatMarker(text)
     if (number !== null) {
       void finder.current.read(number).then(result => !ended.current && append(delegatedRead(result), 'speakable', id))
+      return
+    }
+    // Words for a running background job.
+    const followUp = jobFollowUpMarker(text)
+    if (followUp) {
+      void jobs.current?.followUp(followUp.jobId, followUp.words).then(result => {
+        if (!ended.current) append(`[${result.message ?? result.error ?? ''}]`, 'speakable', id)
+      })
       return
     }
     if (isReadBack(text)) {

@@ -13,10 +13,12 @@
  */
 import { gateway } from '../gateway'
 import { namingFiles } from './media'
+import { correctTurn, type Correction } from './localLive'
 
 export const START_JOB = 'start_job'
 export const LIST_JOBS = 'list_jobs'
 export const CANCEL_JOB = 'cancel_job'
+export const INTERRUPT_JOB = 'interrupt_job'
 export const MAX_ACTIVE_JOBS = 3
 const MAX_RESULT_CHARACTERS = 6_000
 const MAX_TITLE = 60
@@ -41,6 +43,24 @@ export const JOB_TOOL_SPECS = [
     name: CANCEL_JOB,
     description: 'Cancel a background job when the user asks. Pass job_id from list_jobs to cancel one job, or omit it to cancel every running job.',
     parameters: { type: 'object', properties: { job_id: { type: 'string', description: "The job's id from list_jobs. Omit to cancel all running jobs." } } }
+  },
+  {
+    name: INTERRUPT_JOB,
+    description:
+      'Pass the user\'s words into a background job Hermes is still working on, when they correct it, change it, pause it or call it off (for example "wait, make it Alex", "hold that for a minute", "never mind"). Hermes takes them in at once, keeps its work so far and decides what they mean; the job\'s result still arrives later on this call. Pass job_id from list_jobs and the user\'s words as they said them. Not for new requests.',
+    parameters: {
+      type: 'object',
+      properties: {
+        job_id: { type: 'string', description: "The job's id from list_jobs." },
+        message: { type: 'string', description: "The user's words about the job, as they said them." },
+        kind: {
+          type: 'string',
+          enum: ['add', 'change'],
+          description: 'add when the user adds to the work without changing it; change when they correct, pause, or cancel it. Omit when uncertain.'
+        }
+      },
+      required: ['job_id', 'message']
+    }
   }
 ]
 
@@ -67,6 +87,16 @@ export const asksForBackground = (text: string) => {
 /** GPT-Live delegates; its words decide where the work goes. */
 export const DELEGATED_JOBS_RULE =
   'Each delegation goes to the chat this call is attached to, unless the user asks for the work in the background or in a separate chat: then say "in the background" or "in a separate chat" in the delegation, and Conduit runs it as a background job in a chat of its own. Its result arrives later on that delegation.'
+
+/** GPT-Live's follow-ups to a running job: "Job 2: make it Alex", or "Add to job 2: …". */
+export const DELEGATED_JOB_FOLLOW_UPS =
+  'When the user corrects, changes, pauses or calls off a background job that is still running ("wait, make it Alex", "hold that", "never mind"), delegate their words right away, starting with "Job" and its number, like "Job 2: make it Alex": Conduit puts them into that job at once, Hermes decides what they mean, and the job\'s result still arrives on its earlier delegation. When the user only adds to the running job without changing it, start the delegation "Add to job 2:" with its number instead.'
+
+/** The job id and words of "Job 2: …" or "Add to job 2: …" at the start of a delegation; null when it isn't one. */
+export function jobFollowUpMarker(request: string): { jobId: string; words: string } | null {
+  const m = /^\s*(?:add\s+to\s+)?job\s*#?\s*(\d{1,2})\s*:([\s\S]*)$/i.exec(request)
+  return m ? { jobId: `job-${Number(m[1])}`, words: m[2]!.trim() } : null
+}
 
 /** Said on a delegation that started a job. */
 export const JOB_STARTED =
@@ -140,7 +170,8 @@ export class VoiceJobs {
     private onChange: (jobs: VoiceJob[]) => void,
     private onOutcome: (notice: string, job: VoiceJob) => void,
     private rpc: Rpc = (method, params) => gateway.rpc(method, params),
-    listen: (handler: (event: { type: string; session_id?: string; payload?: unknown }) => void) => () => void = handler => window.conduit.onEvent(handler)
+    listen: (handler: (event: { type: string; session_id?: string; payload?: unknown }) => void) => () => void = handler => window.conduit.onEvent(handler),
+    private correct: (sessionId: string, text: string, profile?: string) => Promise<Correction> = correctTurn
   ) {
     this.unsubscribe = listen(event => this.event(event))
   }
@@ -198,6 +229,34 @@ export class VoiceJobs {
       if (job.sid) await this.rpc('session.interrupt', { session_id: job.sid, ...(this.profile ? { profile: this.profile } : {}) }).catch(() => undefined)
     }
     return { message: targets.length === 1 ? `Cancelled ${targets[0]!.title}.` : `Cancelled ${targets.length} background jobs.` }
+  }
+
+  /** The user's words put into a running job: redirected now, or taken after the step Hermes is finishing. */
+  async followUp(jobId: string, words: string): Promise<Record<string, string>> {
+    const text = words.trim()
+    const job = this.jobs.find(j => j.id === jobId.trim())
+    if (!job) return { status: 'error', error: 'Unknown job_id. Call list_jobs for the jobs\u2019 ids. For work in the attached chat, use ask_thread.' }
+    if (!text) return { status: 'error', error: 'message is required' }
+    const quoted = `"${job.title}"`
+    if (job.status !== 'running' || !job.sid)
+      return { status: 'not_sent', message: `${quoted} had already finished, so Hermes didn't get this. Tell the user, and ask what they want instead.` }
+    let outcome: Correction
+    try {
+      outcome = await this.correct(job.sid, `(voice) ${text}`, this.profile)
+    } catch (e) {
+      return { status: 'not_sent', error: message(e) }
+    }
+    if (outcome === 'redirected')
+      return {
+        status: 'sent',
+        message: `Hermes took the user's words into ${quoted} at once and changes course now. Tell the user in a few words; the result still comes back later on this call, so don't guess it.`
+      }
+    if (outcome === 'queued')
+      return {
+        status: 'sent',
+        message: `Hermes takes the user's words into ${quoted} right after the step it is finishing. Tell the user in a few words; the result still comes back later on this call, so don't guess it.`
+      }
+    return { status: 'not_sent', message: `${quoted} had already finished, so Hermes didn't get this. Tell the user, and ask what they want instead.` }
   }
 
   private event(event: { type: string; session_id?: string; payload?: unknown }) {
