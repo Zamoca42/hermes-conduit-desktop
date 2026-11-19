@@ -1,5 +1,5 @@
 import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { CallBacks, callMeMarker, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -68,6 +68,8 @@ interface Props {
   /** The chat's newest reply. */
   lastReply: string | null
   onEnd: () => void
+  /** The mode menu under the call's status, which moves the call to another mode. */
+  modeMenu?: ReactNode
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
   /** The approvals and questions the chat waits on, which the call can answer by voice. */
@@ -98,7 +100,7 @@ const GOODBYE =
  * you talk with GPT-Live, and what you ask it to do goes to Hermes as the chat's
  * next message, with Hermes' reply told back to you in the call.
  */
-export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [], resume }: Props) {
+export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, modeMenu, onClassic, requests = [], resume }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -595,6 +597,7 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
             ) : (
               <span className="meta">{note ? `${t('GPT-Live')} · ${badge} · ${note}` : `${t('GPT-Live')} · ${badge}`}</span>
             )}
+            {modeMenu}
           </div>
         </div>
         {lines.length ? (

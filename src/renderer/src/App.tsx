@@ -84,6 +84,7 @@ import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
 import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
+import { VoiceModeCapsule } from './components/VoiceModeCapsule'
 import { GptLiveCall } from './components/GptLiveCall'
 import { GrokLiveCall } from './components/GrokLiveCall'
 import { LocalLiveCall } from './components/LocalLiveCall'
@@ -341,6 +342,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setCallMode(voiceMode())
     setCalling(true)
   }
+  // A call's mode menu, or the picker beside the call button during a call: Voice settings keep the
+  // mode picked, and the call ends and starts again in it, in the same chat. Its own mode leaves it be.
+  const switchCallMode = (mode: VoiceMode) => {
+    setVoiceMode(mode)
+    if (!calling || mode === callMode) return
+    setResume(null)
+    setCallMode(mode)
+  }
+  const modeMenu = <VoiceModeCapsule mode={callMode} onPick={switchCallMode} />
   // The mode the next call takes, picked beside the call button or in Settings > Voice.
   const [nextMode, setNextMode] = useState<VoiceMode>(voiceMode)
   useEffect(() => {
@@ -1095,8 +1105,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     aria-label={t('Voice mode')}
                     title={t('Voice mode')}
                     value={calling ? callMode : nextMode}
-                    disabled={calling}
-                    onChange={e => setVoiceMode(e.target.value as VoiceMode)}
+                    onChange={e => switchCallMode(e.target.value as VoiceMode)}
                   >
                     {VOICE_MODES.map(mode => (
                       <option key={mode} value={mode}>
@@ -1221,6 +1230,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 <ProviderConsentSheet mode={callMode} onAllow={() => setConsentGiven(n => n + 1)} onCancel={() => setCalling(false)} />
               ) : calling && callMode === 'gpt' ? (
                 <GptLiveCall
+                  key={callMode}
+                  modeMenu={modeMenu}
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
@@ -1235,6 +1246,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 />
               ) : calling && (callMode === 'gemini' || callMode === 'qwen') ? (
                 <GeminiLiveCall
+                  key={callMode}
+                  modeMenu={modeMenu}
                   provider={callMode}
                   profile={selected.profile}
                   chatId={selected.id}
@@ -1250,6 +1263,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 />
               ) : calling && callMode === 'grok' ? (
                 <GrokLiveCall
+                  key={callMode}
+                  modeMenu={modeMenu}
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
@@ -1264,6 +1279,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 />
               ) : calling && callMode === 'local' ? (
                 <LocalLiveCall
+                  key={callMode}
+                  modeMenu={modeMenu}
                   profile={selected.profile}
                   chatId={selected.id}
                   liveId={chat.liveId}
@@ -1280,6 +1297,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 />
               ) : calling ? (
                 <VoiceCall
+                  key={callMode}
+                  modeMenu={modeMenu}
                   profile={selected.profile}
                   onSay={words => void onSend(words, [], { takeOver: true })}
                   running={transcript.running}

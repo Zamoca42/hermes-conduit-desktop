@@ -1,5 +1,5 @@
 import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import type { PendingRequest } from '@shared/ipc'
@@ -95,6 +95,8 @@ interface Props {
   /** The chat's newest reply. */
   lastReply: string | null
   onEnd: () => void
+  /** The mode menu under the call's status, which moves the call to another mode. */
+  modeMenu?: ReactNode
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
   /** The approvals and questions the chat waits on, which a spoken yes, no or answer takes. */
@@ -153,6 +155,7 @@ export function LocalLiveCall({
   turnsDone,
   lastReply,
   onEnd,
+  modeMenu,
   onClassic,
   requests = [],
   resume
@@ -900,7 +903,8 @@ export function LocalLiveCall({
           <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
           <div className="voice-call-words">
             <strong>{status}</strong>
-            {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{t('Local Live')}</span>}
+            {problem ? <span className="voice-call-problem">{problem}</span> : modeMenu ? null : <span className="meta">{t('Local Live')}</span>}
+            {modeMenu}
           </div>
         </div>
         {lines.length ? (

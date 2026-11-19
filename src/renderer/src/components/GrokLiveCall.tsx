@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
@@ -59,6 +59,8 @@ interface Props {
   /** The chat's newest reply. */
   lastReply: string | null
   onEnd: () => void
+  /** The mode menu under the call's status, which moves the call to another mode. */
+  modeMenu?: ReactNode
   /** Ends this call and starts a Classic one in its place. */
   onClassic: () => void
   /** The approvals and questions the chat waits on, which the call can answer by voice. */
@@ -95,7 +97,7 @@ const SILENCE = new Float32Array(Math.round(SAMPLE_RATE * 0.8))
  * goes to Hermes as the chat's next message, with Hermes' reply told back to
  * you in the call. Audio goes both ways as 24 kHz PCM over the plugin's relay.
  */
-export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [], resume }: Props) {
+export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, modeMenu, onClassic, requests = [], resume }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -606,7 +608,8 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
           <MicOrb stream={micStream} active={phase === 'listening' && !muted} />
           <div className="voice-call-words">
             <strong>{status}</strong>
-            {problem ? <span className="voice-call-problem">{problem}</span> : <span className="meta">{t('Grok Live')}</span>}
+            {problem ? <span className="voice-call-problem">{problem}</span> : modeMenu ? null : <span className="meta">{t('Grok Live')}</span>}
+            {modeMenu}
           </div>
         </div>
         {lines.length ? (
