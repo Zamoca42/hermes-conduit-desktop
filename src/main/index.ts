@@ -32,7 +32,17 @@ import { Pairing } from './pairing'
 import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
-import { chooseLanguage, chooseLock, chooseTheme, languageChoice, lockOnLaunch, resolvedLanguage, themeChoice } from './settings'
+import {
+  askHostAtLaunch,
+  chooseAskHost,
+  chooseLanguage,
+  chooseLock,
+  chooseTheme,
+  languageChoice,
+  lockOnLaunch,
+  resolvedLanguage,
+  themeChoice
+} from './settings'
 import { lockKind, promptUnlock } from './appLock'
 import { declineDeviceReports, deviceReports, sendDeviceReports, watchDeviceReports, watchWindowFreezes } from './deviceReports'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
@@ -101,7 +111,7 @@ function unlock(): Promise<boolean> {
   if (!connection.isLocked) return Promise.resolve(true)
   unlocking ??= promptUnlock(t('open your Hermes sign-ins'))
     .then(async given => {
-      if (given) await connection.unlocked()
+      if (given) await connection.unlocked({ askWhich: askHostAtLaunch() })
       return given
     })
     .finally(() => (unlocking = null))
@@ -115,7 +125,7 @@ async function openSavedHosts(): Promise<void> {
     void unlock()
     return
   }
-  await connection.restore()
+  await connection.restore({ askWhich: askHostAtLaunch() })
 }
 
 function createWindow(): void {
@@ -212,6 +222,8 @@ function registerIpc(): void {
     return chooseLock(on)
   })
   ipcMain.handle(IPC.unlock, () => unlock())
+  ipcMain.handle(IPC.askHost, () => askHostAtLaunch())
+  ipcMain.handle(IPC.setAskHost, (_event, on: unknown) => typeof on === 'boolean' && chooseAskHost(on))
   ipcMain.on(IPC.openChat, (_event, chat: OpenChatRequest) => {
     quickAsk.hide()
     showWindow()

@@ -11,9 +11,9 @@ import type { LanguageChoice, ThemeChoice } from '../shared/ipc'
 
 const path = () => join(app.getPath('userData'), 'settings.json')
 
-function read(): { language?: unknown; theme?: unknown; lock?: unknown } {
+function read(): { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown } {
   try {
-    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown; lock?: unknown }
+    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown }
   } catch {
     return {}
   }
@@ -69,6 +69,18 @@ export const lockOnLaunch = (): boolean => read().lock === true
 export function chooseLock(on: boolean): boolean {
   try {
     writeFileSync(path(), JSON.stringify({ ...read(), lock: on }, null, 2))
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** Ask Which Dashboard at Launch: with two or more hosts saved, a launch lists them instead of opening the last one. */
+export const askHostAtLaunch = (): boolean => read().askHost === true
+
+export function chooseAskHost(on: boolean): boolean {
+  try {
+    writeFileSync(path(), JSON.stringify({ ...read(), askHost: on }, null, 2))
     return true
   } catch {
     return false

@@ -34,6 +34,12 @@ import { cleanHeaders, httpsIssue, proxyFetch, withProxyHeaders, type ProxyHeade
 import { t } from '../shared/i18n'
 
 /** What we keep between launches. Secrets are encrypted by the store. */
+/** How a launch opens the saved hosts. */
+export interface RestoreOptions {
+  /** Ask Which Dashboard at Launch: list two or more hosts instead of opening the last one. */
+  askWhich?: boolean
+}
+
 export interface SavedConnection {
   url: string
   method: SignInMethod
@@ -135,17 +141,22 @@ export class Connection {
     return this.locked
   }
 
-  /** The lock was given: opens the host that was open last time. */
-  async unlocked(): Promise<void> {
+  /** The lock was given: opens the host that was open last time, or lists them for a pick. */
+  async unlocked(options: RestoreOptions = {}): Promise<void> {
     if (!this.locked) return
     this.locked = false
-    await this.restore()
+    await this.restore(options)
     if (this.status.phase === 'locked') this.setStatus({ phase: 'signed-out', hosts: this.hosts() })
   }
 
-  /** Reconnects with what was saved last time, if anything. */
-  async restore(): Promise<void> {
+  /**
+   * Reconnects with what was saved last time, if anything. With `askWhich`
+   * and two or more hosts saved, it signs in to none and lists them; a pick
+   * (switchHost), a sign-in or Add another ends the wait.
+   */
+  async restore(options: RestoreOptions = {}): Promise<void> {
     if (this.locked) return
+    if (options.askWhich && this.hosts().length > 1) return this.setStatus({ phase: 'signed-out', hosts: this.hosts(), choosing: true })
     const saved = this.deps.store.load()
     if (!saved) return
     this.saved = saved
