@@ -306,6 +306,9 @@ function registerIpc(): void {
     return probeHost(url, globalThis.fetch.bind(globalThis), cleaned.headers)
   })
   ipcMain.handle(IPC.signIn, (_event, request: SignInRequest) => connection.signIn(request))
+  ipcMain.handle(IPC.editHost, (_event, from: unknown, request: SignInRequest) =>
+    typeof from === 'string' && request && typeof request.url === 'string' ? connection.editHost(from, request) : { ok: false, error: t('Bad request.') }
+  )
   ipcMain.handle(IPC.signOut, () => connection.signOut())
   ipcMain.handle(IPC.pairStart, () => pairing.start())
   ipcMain.handle(IPC.pairConfirm, () => pairing.confirm())

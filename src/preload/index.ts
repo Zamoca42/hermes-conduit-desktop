@@ -49,6 +49,7 @@ const api: ConduitApi = {
   checkCertificate: url => ipcRenderer.invoke(IPC.checkCertificate, url),
   saveCertificate: url => ipcRenderer.invoke(IPC.saveCertificate, url),
   signIn: request => ipcRenderer.invoke(IPC.signIn, request),
+  editHost: (from, request) => ipcRenderer.invoke(IPC.editHost, from, request),
   signOut: () => ipcRenderer.invoke(IPC.signOut),
   switchHost: (url: string) => ipcRenderer.invoke(IPC.switchHost, url),
   removeHost: (url: string) => ipcRenderer.invoke(IPC.removeHost, url),

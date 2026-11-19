@@ -70,6 +70,8 @@ export interface ConnectionStore {
   /** Saves a host's new cookies without making it the open one. */
   update?(connection: SavedConnection): void
   setCombined?(url: string, on: boolean): void
+  /** Edit Connection: puts `connection` where `from` was, keeping its place and its group, and makes it the open one. */
+  replace?(from: string, connection: SavedConnection): void
 }
 
 /** Hermes' Bot Screen stream (RFB), admitted by a `display.observe` ticket. */
@@ -186,7 +188,37 @@ export class Connection {
     return result
   }
 
-  private async trySignIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }> {
+  /**
+   * Edit Connection, after the phone's: signs the open host in again at the
+   * address and with the sign-in given, in its place. An address already
+   * saved as another host is refused before anything is sent, and nothing of
+   * that host is written (the two never merge). A sign-in that fails leaves
+   * the host as it was. The proxy's headers stay when none are given.
+   */
+  async editHost(from: string, request: SignInRequest): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+    if (this.locked) return { ok: false, error: t('Unlock Conduit first.') }
+    const previous = this.deps.store.get?.(from) ?? (this.saved?.url === from ? this.saved : null)
+    if (!previous) return { ok: false, error: t('That dashboard is no longer saved.') }
+    let url: string
+    try {
+      url = normalizeBaseUrl(request.url)
+    } catch (error) {
+      return { ok: false, error: (error as Error).message }
+    }
+    if (url !== from && this.deps.store.get?.(url)) {
+      return { ok: false, error: t('That address is already saved as another dashboard, so the connection was not changed. Switch to it, or sign out of it first.') }
+    }
+    const keepHeaders = request.headers === undefined && previous.headers && new URL(url).origin === new URL(from).origin
+    const result = await this.trySignIn({ ...request, url, headers: keepHeaders ? previous.headers : request.headers }, from)
+    if (!result.ok) {
+      // The sign-in tore the open connection down: open the host as it was.
+      if (!this.saved || this.saved.url === from) this.open(previous)
+      return result
+    }
+    return { ok: true, url }
+  }
+
+  private async trySignIn(request: SignInRequest, replacing?: string): Promise<{ ok: true } | { ok: false; error: string }> {
     const generation = ++this.generation
     this.teardown()
     let url: string
@@ -225,7 +257,8 @@ export class Connection {
       this.setStatus({ phase: 'signed-out', hosts: this.hosts() })
       return { ok: false, error }
     }
-    this.deps.store.save(saved)
+    if (replacing && this.deps.store.replace) this.deps.store.replace(replacing, saved)
+    else this.deps.store.save(saved)
     // The host list now holds it.
     this.setStatus({ ...this.status, hosts: this.hosts() })
     return { ok: true }

@@ -45,6 +45,16 @@ export class DraftStore {
     for (const key of [...this.drafts.keys()]) if (key.startsWith(`${host}\u0000`)) this.drafts.delete(key)
   }
 
+  /** Edit Connection moved a host to a new address: its drafts go with it. */
+  moveHost(from: string, to: string): void {
+    if (from === to) return
+    for (const [key, draft] of [...this.drafts]) {
+      if (!key.startsWith(`${from}\u0000`)) continue
+      this.drafts.delete(key)
+      this.drafts.set(`${to}\u0000${key.slice(from.length + 1)}`, draft)
+    }
+  }
+
   get size(): number {
     return this.drafts.size
   }

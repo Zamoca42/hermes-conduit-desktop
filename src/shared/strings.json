@@ -2984,6 +2984,21 @@
     "zh-Hans": "已停止的后台进程：{count}",
     "zh-Hant": "已停止的背景程序：{count}"
   },
+  "Bad request.": {
+    "de": "Ungültige Anfrage.",
+    "es": "Solicitud no válida.",
+    "fr": "Requête non valide.",
+    "id": "Permintaan tidak valid.",
+    "it": "Richiesta non valida.",
+    "ja": "不正なリクエストです。",
+    "ko": "잘못된 요청입니다.",
+    "pl": "Nieprawidłowe żądanie.",
+    "pt-BR": "Solicitação inválida.",
+    "ru": "Неверный запрос.",
+    "tr": "Geçersiz istek.",
+    "zh-Hans": "请求无效。",
+    "zh-Hant": "請求無效。"
+  },
   "Balanced": {
     "de": "Ausgewogen",
     "es": "Equilibrado",
@@ -4018,6 +4033,21 @@
     "tr": "Değiştir",
     "zh-Hans": "修改",
     "zh-Hant": "修改"
+  },
+  "Change this dashboard’s address or how Conduit signs in. Conduit signs in again before it keeps the change, and leaves the connection as it was if that fails.": {
+    "de": "Ändere die Adresse dieses Dashboards oder wie Conduit sich anmeldet. Conduit meldet sich erneut an, bevor es die Änderung übernimmt, und lässt die Verbindung unverändert, wenn das fehlschlägt.",
+    "es": "Cambia la dirección de este panel o cómo inicia sesión Conduit. Conduit vuelve a iniciar sesión antes de guardar el cambio y deja la conexión como estaba si falla.",
+    "fr": "Modifiez l’adresse de ce tableau de bord ou la façon dont Conduit se connecte. Conduit se reconnecte avant de garder la modification, et laisse la connexion telle quelle en cas d’échec.",
+    "id": "Ubah alamat dasbor ini atau cara Conduit masuk. Conduit masuk lagi sebelum menyimpan perubahan, dan membiarkan koneksi seperti semula jika gagal.",
+    "it": "Cambia l’indirizzo di questa dashboard o il modo in cui Conduit accede. Conduit accede di nuovo prima di tenere la modifica e lascia la connessione com’era se non riesce.",
+    "ja": "このダッシュボードのアドレスや Conduit のサインイン方法を変更します。Conduit は変更を保存する前にもう一度サインインし、失敗した場合は接続を元のままにします。",
+    "ko": "이 대시보드의 주소나 Conduit의 로그인 방식을 변경합니다. Conduit는 변경을 유지하기 전에 다시 로그인하며, 실패하면 연결을 그대로 둡니다.",
+    "pl": "Zmień adres tego pulpitu lub sposób logowania Conduit. Conduit loguje się ponownie, zanim zachowa zmianę, a jeśli się nie uda, zostawia połączenie bez zmian.",
+    "pt-BR": "Altere o endereço deste painel ou como o Conduit entra. O Conduit entra de novo antes de manter a mudança e deixa a conexão como estava se falhar.",
+    "ru": "Измените адрес этой панели или способ входа Conduit. Conduit входит заново, прежде чем сохранить изменение, а если не получится, оставляет подключение как было.",
+    "tr": "Bu panonun adresini veya Conduit’in nasıl oturum açtığını değiştirin. Conduit, değişikliği tutmadan önce yeniden oturum açar ve başarısız olursa bağlantıyı olduğu gibi bırakır.",
+    "zh-Hans": "更改此仪表板的地址或 Conduit 的登录方式。Conduit 会在保留更改前重新登录，如果失败，连接将保持原样。",
+    "zh-Hant": "變更此儀表板的位址或 Conduit 的登入方式。Conduit 會在保留變更前重新登入，若失敗，連線將維持原樣。"
   },
   "Change what rooms may use?": {
     "de": "Ändern, was Räume nutzen dürfen?",
@@ -5833,6 +5863,21 @@
     "tr": "Bağlantı",
     "zh-Hans": "连接",
     "zh-Hant": "連線"
+  },
+  "Connection Setup": {
+    "de": "Verbindung einrichten",
+    "es": "Configuración de la conexión",
+    "fr": "Configuration de la connexion",
+    "id": "Penyiapan Koneksi",
+    "it": "Configurazione connessione",
+    "ja": "接続設定",
+    "ko": "연결 설정",
+    "pl": "Konfiguracja połączenia",
+    "pt-BR": "Configuração da Conexão",
+    "ru": "Настройка подключения",
+    "tr": "Bağlantı Kurulumu",
+    "zh-Hans": "连接设置",
+    "zh-Hant": "連線設定"
   },
   "Connectors": {
     "de": "Konnektoren",
@@ -16048,6 +16093,21 @@
     "tr": "Odadan Çık",
     "zh-Hans": "退出群聊",
     "zh-Hant": "退出群組聊天"
+  },
+  "Leave the proxy sign-in empty to keep the one saved for this address.": {
+    "de": "Lass die Proxy-Anmeldung leer, um die für diese Adresse gespeicherte zu behalten.",
+    "es": "Deja vacío el inicio de sesión del proxy para conservar el guardado para esta dirección.",
+    "fr": "Laissez la connexion au proxy vide pour garder celle enregistrée pour cette adresse.",
+    "id": "Biarkan info masuk proxy kosong untuk mempertahankan yang tersimpan untuk alamat ini.",
+    "it": "Lascia vuoto l’accesso al proxy per mantenere quello salvato per questo indirizzo.",
+    "ja": "このアドレスに保存されているものを使い続けるには、プロキシのサインインを空のままにしてください。",
+    "ko": "이 주소에 저장된 것을 유지하려면 프록시 로그인을 비워 두세요.",
+    "pl": "Zostaw logowanie do proxy puste, aby zachować to zapisane dla tego adresu.",
+    "pt-BR": "Deixe o login do proxy vazio para manter o salvo para este endereço.",
+    "ru": "Оставьте вход для прокси пустым, чтобы сохранить тот, что сохранён для этого адреса.",
+    "tr": "Bu adres için kayıtlı olanı korumak üzere proxy oturum açma bilgisini boş bırakın.",
+    "zh-Hans": "将代理登录留空，以保留为此地址保存的登录信息。",
+    "zh-Hant": "將代理登入留空，以保留為此位址儲存的登入資訊。"
   },
   "Leave this room?": {
     "de": "Diesen Raum verlassen?",
@@ -30389,6 +30449,21 @@
     "zh-Hans": "要发送的消息",
     "zh-Hant": "要傳送的訊息"
   },
+  "That address is already saved as another dashboard, so the connection was not changed. Switch to it, or sign out of it first.": {
+    "de": "Diese Adresse ist bereits als anderes Dashboard gespeichert, daher wurde die Verbindung nicht geändert. Wechsle zu ihm oder melde dich zuerst davon ab.",
+    "es": "Esa dirección ya está guardada como otro panel, así que la conexión no se cambió. Cambia a ese panel o cierra sesión en él primero.",
+    "fr": "Cette adresse est déjà enregistrée comme un autre tableau de bord, la connexion n’a donc pas été modifiée. Passez à celui-ci, ou déconnectez-vous-en d’abord.",
+    "id": "Alamat itu sudah tersimpan sebagai dasbor lain, jadi koneksi tidak diubah. Beralihlah ke dasbor itu, atau keluar darinya terlebih dahulu.",
+    "it": "Questo indirizzo è già salvato come un’altra dashboard, quindi la connessione non è stata modificata. Passa a quella, oppure esci prima da quella.",
+    "ja": "そのアドレスは別のダッシュボードとして保存済みのため、接続は変更されませんでした。そちらに切り替えるか、先にそちらからサインアウトしてください。",
+    "ko": "그 주소는 이미 다른 대시보드로 저장되어 있어 연결을 변경하지 않았습니다. 그 대시보드로 전환하거나 먼저 로그아웃하세요.",
+    "pl": "Ten adres jest już zapisany jako inny pulpit, więc połączenie nie zostało zmienione. Przełącz się na niego albo najpierw się z niego wyloguj.",
+    "pt-BR": "Esse endereço já está salvo como outro painel, então a conexão não foi alterada. Mude para ele ou saia dele primeiro.",
+    "ru": "Этот адрес уже сохранён как другая панель, поэтому подключение не изменено. Переключитесь на неё или сначала выйдите из неё.",
+    "tr": "Bu adres zaten başka bir pano olarak kayıtlı, bu yüzden bağlantı değiştirilmedi. Ona geçin veya önce ondan çıkış yapın.",
+    "zh-Hans": "该地址已保存为另一个仪表板，因此连接未更改。请切换到它，或先从它退出登录。",
+    "zh-Hant": "該位址已儲存為另一個儀表板，因此連線未變更。請切換到它，或先從它登出。"
+  },
   "That animation is too large. Try a shorter or simpler clip.": {
     "de": "Diese Animation ist zu groß. Versuche einen kürzeren oder einfacheren Clip.",
     "es": "Esa animación es demasiado grande. Prueba con un clip más corto o más sencillo.",
@@ -30418,6 +30493,21 @@
     "tr": "Bu aramanın transkripti artık kullanılamıyor.",
     "zh-Hans": "该通话的记录已不可用。",
     "zh-Hant": "該通話的逐字稿已無法使用。"
+  },
+  "That dashboard is no longer saved.": {
+    "de": "Dieses Dashboard ist nicht mehr gespeichert.",
+    "es": "Ese panel ya no está guardado.",
+    "fr": "Ce tableau de bord n’est plus enregistré.",
+    "id": "Dasbor itu sudah tidak tersimpan.",
+    "it": "Questa dashboard non è più salvata.",
+    "ja": "そのダッシュボードはもう保存されていません。",
+    "ko": "그 대시보드는 더 이상 저장되어 있지 않습니다.",
+    "pl": "Ten pulpit nie jest już zapisany.",
+    "pt-BR": "Esse painel não está mais salvo.",
+    "ru": "Эта панель больше не сохранена.",
+    "tr": "Bu pano artık kayıtlı değil.",
+    "zh-Hans": "该仪表板已不再保存。",
+    "zh-Hant": "該儀表板已不再儲存。"
   },
   "That doesn’t look like a web address.": {
     "de": "Das sieht nicht nach einer Webadresse aus.",

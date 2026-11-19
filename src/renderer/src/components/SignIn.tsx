@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react'
-import type { SignInMethod } from '@shared/ipc'
+import type { HostSummary, SignInMethod } from '@shared/ipc'
 import { t } from '@shared/i18n'
 import { ServerCertificate } from './ServerCertificate'
 import { PairWithPhone } from './PairWithPhone'
+import { composerDrafts } from '../state/composerDrafts'
+import { copyHostData, finishHostMove, undoHostCopy } from '../state/hostData'
 
 /** "Name: value" lines into headers, or the first line that isn't one. */
 export function parseHeaderLines(text: string): { ok: true; headers: Record<string, string> } | { ok: false; line: string } {
@@ -25,12 +27,13 @@ const methodLabels = (): Record<SignInMethod, string> => ({
 
 /** Connect to a Hermes dashboard: its address first, then whatever sign-in it asks for. */
 /** `onCancel`, when adding another host, goes back to the one that's open. */
-export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () => void }) {
-  const [address, setAddress] = useState('')
+/** `editing`: Edit Connection for the open host, its address and user name filled in; `onDone` after it signs in. */
+export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string; onCancel?: () => void; editing?: HostSummary; onDone?: () => void }) {
+  const [address, setAddress] = useState(editing?.url ?? '')
   const [url, setUrl] = useState<string | null>(null)
   const [methods, setMethods] = useState<SignInMethod[]>([])
   const [method, setMethod] = useState<SignInMethod>('password')
-  const [username, setUsername] = useState('')
+  const [username, setUsername] = useState(editing?.username ?? '')
   const [password, setPassword] = useState('')
   const [token, setToken] = useState('')
   const [busy, setBusy] = useState(false)
@@ -75,7 +78,7 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
     }
     setUrl(probe.url)
     setMethods(probe.methods)
-    setMethod(probe.methods[0] ?? 'password')
+    setMethod(editing && probe.methods.includes(editing.method) ? editing.method : (probe.methods[0] ?? 'password'))
     // An open dashboard needs nothing more.
     if (probe.methods.length === 1 && probe.methods[0] === 'open') {
       await signIn(probe.url, 'open')
@@ -87,6 +90,21 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
     setError(null)
     const proxy = proxyHeaders()
     const headers = proxy.ok ? proxy.headers : undefined
+    if (editing) {
+      // What this computer keeps for the host goes to its new address before that window opens.
+      const copied = copyHostData(editing.url, target)
+      const result = await window.conduit.editHost(editing.url, { url: target, method: chosen, username, password, token, headers })
+      setBusy(false)
+      if (!result.ok) {
+        undoHostCopy(copied)
+        setError(result.error)
+        return
+      }
+      finishHostMove(editing.url, result.url)
+      composerDrafts.moveHost(editing.url, result.url)
+      onDone?.()
+      return
+    }
     const result = await window.conduit.signIn({ url: target, method: chosen, username, password, token, headers })
     setBusy(false)
     if (!result.ok) setError(result.error)
@@ -109,8 +127,12 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
     <div className="signin">
       {url === null ? (
         <form className="signin-card" onSubmit={findHost}>
-          <h1>{onCancel ? t('Add another Hermes') : t('Connect to Hermes')}</h1>
-          <p>{t('Enter the address of your Hermes dashboard, the same one the Conduit app on your phone uses.')}</p>
+          <h1>{editing ? t('Connection Setup') : onCancel ? t('Add another Hermes') : t('Connect to Hermes')}</h1>
+          <p>
+            {editing
+              ? t('Change this dashboard’s address or how Conduit signs in. Conduit signs in again before it keeps the change, and leaves the connection as it was if that fails.')
+              : t('Enter the address of your Hermes dashboard, the same one the Conduit app on your phone uses.')}
+          </p>
           <label className="field">
             {t('Dashboard address')}
             <input
@@ -157,10 +179,16 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
               {t('Behind Cloudflare Access or another proxy?')}
             </button>
           ) : null}
-          <div className="or-line">{t('or')}</div>
-          <button className="secondary pair-button" type="button" onClick={() => setPairing(true)}>
-            {t('Pair with your iPhone')}
-          </button>
+          {editing ? (
+            proxyOpen ? <p className="hint">{t('Leave the proxy sign-in empty to keep the one saved for this address.')}</p> : null
+          ) : (
+            <>
+              <div className="or-line">{t('or')}</div>
+              <button className="secondary pair-button" type="button" onClick={() => setPairing(true)}>
+                {t('Pair with your iPhone')}
+              </button>
+            </>
+          )}
           {onCancel ? (
             <button className="link-button" type="button" onClick={onCancel}>
               {t('Cancel')}

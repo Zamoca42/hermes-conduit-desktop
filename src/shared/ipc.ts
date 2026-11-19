@@ -191,6 +191,8 @@ export interface ConduitApi {
   /** Saves the root certificate last read for `url` where the person picks; false when they didn't. */
   saveCertificate(url: string): Promise<boolean>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
+  /** Edit Connection: the open host signs in again at a new address or with a new sign-in, in its place. */
+  editHost(from: string, request: SignInRequest): Promise<{ ok: true; url: string } | { ok: false; error: string }>
   signOut(): Promise<void>
   /** Opens another signed-in host in place of this one. */
   switchHost(url: string): Promise<boolean>
@@ -341,6 +343,7 @@ export const IPC = {
   windowShow: 'conduit:window-show',
   probe: 'conduit:probe',
   signIn: 'conduit:sign-in',
+  editHost: 'conduit:edit-host',
   signOut: 'conduit:sign-out',
   switchHost: 'conduit:switch-host',
   pairStart: 'conduit:pair-start',

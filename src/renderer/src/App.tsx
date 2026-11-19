@@ -4,7 +4,7 @@ import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
-import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
+import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
 import { BotScreen } from './components/BotScreen'
@@ -182,6 +182,8 @@ export function App() {
   }, [])
 
   const [adding, setAdding] = useState(false)
+  // Edit Connection: the open host's address and sign-in, on the sign-in card.
+  const [editing, setEditing] = useState<HostSummary | null>(null)
   // A new host signed in (or the sign-in screen otherwise left): back to the app.
   const url = status?.url
   useEffect(() => setAdding(false), [url])
@@ -212,6 +214,8 @@ export function App() {
       />
       {status.phase === 'locked' ? (
         <LockedScreen />
+      ) : editing ? (
+        <SignIn editing={editing} onCancel={() => setEditing(null)} onDone={() => setEditing(null)} />
       ) : adding ? (
         <SignIn onCancel={() => setAdding(false)} />
       ) : status.phase === 'signed-out' && status.choosing && status.hosts?.length ? (
@@ -221,7 +225,12 @@ export function App() {
       ) : (
         // Each host gets a fresh window state: its chats, bots and rooms are its own.
         <SummaryHost.Provider value={status.url ?? ''}>
-          <Shell key={status.url} status={status} onAddHost={() => switchEndingCall(null) && setAdding(true)} />
+          <Shell
+            key={status.url}
+            status={status}
+            onAddHost={() => switchEndingCall(null) && setAdding(true)}
+            onEditHost={host => switchEndingCall(null) && setEditing(host)}
+          />
         </SummaryHost.Provider>
       )}
     </div>
@@ -258,7 +267,7 @@ function reopenedSection(): Section {
   }
 }
 
-function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () => void }) {
+function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; onAddHost: () => void; onEditHost: (host: HostSummary) => void }) {
   // Before any picture is read for this host.
   useState(forgetAvatars)
   const connected = status.phase === 'open'
@@ -2096,6 +2105,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <Settings
             status={status}
             onAddHost={onAddHost}
+            onEditHost={onEditHost}
             bots={(roster.bots ?? []).map(bot => ({ name: bot.name, title: bot.title }))}
             profile={selected.profile ?? 'default'}
             chatScale={chatScale}
@@ -2154,6 +2164,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
 function Settings({
   status,
   onAddHost,
+  onEditHost,
   bots,
   profile,
   chatScale,
@@ -2167,6 +2178,7 @@ function Settings({
 }: {
   status: ConnectionStatus
   onAddHost: () => void
+  onEditHost: (host: HostSummary) => void
   bots: { name: string; title: string }[]
   profile: string
   chatScale: number
@@ -2337,7 +2349,12 @@ function Settings({
                   {host.username ? <span className="meta">{host.username}</span> : null}
                   <span className="spacer" />
                   {host.url === status.url ? (
-                    <span className="meta">{t('In use')}</span>
+                    <>
+                      <span className="meta">{t('In use')}</span>
+                      <button className="link" onClick={() => onEditHost(host)}>
+                        {t('Connection Setup')}
+                      </button>
+                    </>
                   ) : keptState(host.url) ? (
                     <span className="meta">{keptStateLabel(keptState(host.url)!)}</span>
                   ) : null}

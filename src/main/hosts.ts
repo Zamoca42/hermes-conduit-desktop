@@ -39,6 +39,15 @@ export function createHostList(persist: (hosts: SavedConnection[], active: strin
       write()
       return true
     },
+    replace(from, connection) {
+      const at = hosts.findIndex(h => h.url === from)
+      if (at < 0) return store.save(connection)
+      const moved = { ...connection, combined: connection.combined ?? hosts[at]!.combined }
+      // Never two entries for one address: another one saved there was refused before this.
+      hosts = hosts.filter((h, i) => i === at || h.url !== connection.url).map(h => (h.url === from ? moved : h))
+      active = connection.url
+      write()
+    },
     remove(url) {
       hosts = hosts.filter(h => h.url !== url)
       if (active === url) active = hosts[0]?.url ?? null

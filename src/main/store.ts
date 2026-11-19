@@ -103,6 +103,7 @@ export function createFileStore(): ConnectionStore {
     remove: url => hosts().remove!(url),
     get: url => hosts().get!(url),
     update: connection => hosts().update!(connection),
-    setCombined: (url, on) => hosts().setCombined!(url, on)
+    setCombined: (url, on) => hosts().setCombined!(url, on),
+    replace: (from, connection) => hosts().replace!(from, connection)
   }
 }
