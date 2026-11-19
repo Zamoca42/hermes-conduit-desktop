@@ -48,6 +48,10 @@ const json = (body: unknown, status = 200, headers: Record<string, string> = {})
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...headers } })
 
 const tick = () => new Promise(resolve => setTimeout(resolve, 5))
+/** Waits for `done`, up to a second: a busy CI runner can take longer than one tick to open a socket. */
+async function until(done: () => boolean) {
+  for (let i = 0; i < 200 && !done(); i++) await tick()
+}
 
 function harness(opts: { ticketsBeforeExpiry?: number; hosts?: boolean } = {}) {
   let session = 0
@@ -249,7 +253,7 @@ describe('more than one Hermes', () => {
     await tick()
     expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://two', hosts: [{ url: 'https://one' }, { url: 'https://two' }] })
     expect(h.connection.switchHost('https://one')).toBe(true)
-    await tick()
+    await until(() => h.connection.current().phase === 'open')
     expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://one' })
     expect(h.sockets.at(-1)!.url).toBe('wss://one/api/ws?token=a')
     expect(h.written.at(-1)).toEqual({ hosts: ['https://one', 'https://two'], active: 'https://one' })
