@@ -39,6 +39,7 @@ import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
 import { jsonRpcErrorReason } from '../vendor/hermes-shared/json-rpc-channel'
 import { LIVE_TOKEN_PATHS, mintedSocket, type LiveSocketEvent } from '../shared/ipc'
 import { setLanguage, t } from '../shared/i18n'
+import { STALLED_CLOSE_CODE, STALLED_REASON, liveSendDecision } from './liveBacklog'
 
 const isMac = process.platform === 'darwin'
 let mainWindow: BrowserWindow | null = null
@@ -268,6 +269,8 @@ function registerIpc(): void {
   // Live calls' sockets: opened here, where the sign-in and a proxy's headers are (Grok Live's relay),
   // or with a single-use token the host minted that never reaches the window (Gemini Live).
   const liveSockets = new Map<string, WebSocketLike>()
+  /** Each live socket's way to end itself when it stops taking frames. */
+  const liveStalls = new Map<string, () => void>()
   // The ws library hands over a Buffer, an ArrayBuffer or a list of Buffers.
   const binaryFrame = (data: unknown): Uint8Array =>
     Array.isArray(data)
@@ -292,8 +295,17 @@ function registerIpc(): void {
     socket.onerror = error => report({ id, type: 'error', message: (error as { message?: string }).message ?? 'Socket error' })
     socket.onclose = close => {
       liveSockets.delete(id)
+      liveStalls.delete(id)
       report({ id, type: 'close', code: close.code, reason: close.reason })
     }
+    // A socket that stopped taking frames: the call hears it closed now, not when a closing handshake gives up.
+    liveStalls.set(id, () => {
+      socket.onclose = null
+      liveSockets.delete(id)
+      liveStalls.delete(id)
+      socket.close(STALLED_CLOSE_CODE, STALLED_REASON)
+      report({ id, type: 'close', code: STALLED_CLOSE_CODE, reason: STALLED_REASON })
+    })
     // A window that goes away takes its call with it.
     sender.once('destroyed', () => liveSockets.get(id)?.close())
     return id
@@ -326,8 +338,13 @@ function registerIpc(): void {
   ipcMain.on(IPC.liveSend, (_event, id: unknown, data: unknown) => {
     const socket = typeof id === 'string' ? liveSockets.get(id) : undefined
     if (!socket || socket.readyState !== 1) return
+    if (typeof data !== 'string' && !(data instanceof Uint8Array)) return
+    // A socket that stopped taking frames: late audio is dropped, and anything else closes it (liveBacklog.ts).
+    const decision = liveSendDecision(socket.bufferedAmount, data)
+    if (decision === 'drop') return
+    if (decision === 'stalled') return liveStalls.get(id as string)?.()
     if (typeof data === 'string') socket.send(data)
-    else if (data instanceof Uint8Array) socket.send(Uint8Array.from(data))
+    else socket.send(Uint8Array.from(data))
   })
   // A bot's screen: its RFB stream, binary both ways.
   ipcMain.handle(IPC.screenOpen, async (event, path: unknown, ticket: unknown) => {
