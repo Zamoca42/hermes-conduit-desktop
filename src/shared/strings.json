@@ -15614,6 +15614,21 @@
     "zh-Hans": "需要你处理",
     "zh-Hant": "需要你處理"
   },
+  "Needs approval": {
+    "de": "Braucht Freigabe",
+    "es": "Necesita aprobación",
+    "fr": "Approbation requise",
+    "id": "Perlu persetujuan",
+    "it": "Da approvare",
+    "ja": "承認待ち",
+    "ko": "승인 필요",
+    "pl": "Wymaga zatwierdzenia",
+    "pt-BR": "Precisa de aprovação",
+    "ru": "Нужно подтверждение",
+    "tr": "Onay bekliyor",
+    "zh-Hans": "需要批准",
+    "zh-Hant": "需要核准"
+  },
   "Needs keys": {
     "de": "Schlüssel nötig",
     "es": "Faltan claves",
@@ -16228,6 +16243,21 @@
     "tr": "Listelenen uygulama yok",
     "zh-Hans": "没有列出的应用",
     "zh-Hant": "沒有列出的 App"
+  },
+  "No chat is waiting on your answer.": {
+    "de": "Kein Chat wartet auf deine Antwort.",
+    "es": "Ningún chat espera tu respuesta.",
+    "fr": "Aucune discussion n'attend votre réponse.",
+    "id": "Tidak ada obrolan yang menunggu jawaban Anda.",
+    "it": "Nessuna chat è in attesa della tua risposta.",
+    "ja": "回答を待っているチャットはありません。",
+    "ko": "답변을 기다리는 채팅이 없어요.",
+    "pl": "Żaden czat nie czeka na Twoją odpowiedź.",
+    "pt-BR": "Nenhum chat está aguardando sua resposta.",
+    "ru": "Ни один чат не ждёт вашего ответа.",
+    "tr": "Yanıtınızı bekleyen sohbet yok.",
+    "zh-Hans": "没有等待你回复的聊天。",
+    "zh-Hant": "沒有等待你回覆的聊天。"
   },
   "No chats yet": {
     "de": "Noch keine Chats",
