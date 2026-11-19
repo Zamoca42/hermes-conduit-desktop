@@ -42,6 +42,8 @@ describe('Gemini Live session', () => {
       'read_last_reply:NON_BLOCKING',
       'end_conversation:BLOCKING',
       'show_on_screen:BLOCKING',
+      'find_chat:NON_BLOCKING',
+      'read_chat:NON_BLOCKING',
       'answer_approval:NON_BLOCKING',
       'answer_question:NON_BLOCKING',
       'recall_memory:NON_BLOCKING'
@@ -125,7 +127,7 @@ describe('show_on_screen', () => {
     expect(shown.card).toEqual({ id: 1, title: 'Forecast', markdown: '| a |\n|---|\n| 1 |' })
     expect(shown.result.status).toBe('shown')
     const long = screenCard({ title: 'x', markdown: 'y'.repeat(MAX_SCREEN_CARD_CHARACTERS + 5) }, 2)
-    expect(long.card?.markdown.length).toBe(MAX_SCREEN_CARD_CHARACTERS)
+    expect(long.card?.markdown.length).toBe(MAX_SCREEN_CARD_CHARACTERS - 4)
     expect(long.result.message).toMatch(/Only the start/)
     expect(screenCard({ title: 'x', markdown: '  ' }, 3)).toEqual({ card: null, result: { status: 'error', error: 'markdown is required' } })
   })

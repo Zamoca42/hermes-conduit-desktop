@@ -66,6 +66,7 @@ import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, reque
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
+import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 
 interface Props {
   profile?: string
@@ -141,6 +142,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const [lines, setLines] = useState<Line[]>([])
   const [cards, setCards] = useState<ScreenCard[]>([])
   const cardId = useRef(0)
+  const finder = useRef(chatFinder(profile))
 
   const socket = useRef<string | null>(null)
   // Qwen's events in and out of the Gemini frames this call speaks.
@@ -311,6 +313,12 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         pump()
         return
       }
+      case FIND_CHAT:
+        void finder.current.find(event.args.query ?? '').then(result => !ended.current && answer(result))
+        return
+      case READ_CHAT:
+        void finder.current.read(event.args.number ?? '').then(result => !ended.current && answer(result))
+        return
       case SHOW_ON_SCREEN: {
         const { card, result } = screenCard(event.args, ++cardId.current)
         if (card) setCards(current => withCard(current, card))

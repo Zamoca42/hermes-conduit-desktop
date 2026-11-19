@@ -7,6 +7,7 @@
  */
 import { ACKNOWLEDGEMENT, ANSWER_LENGTH, languageRule } from './gptLive'
 import { REQUESTS_RULE, REQUEST_TOOL_SPECS } from './liveRequests'
+import { FIND_CHAT_RULE, FIND_CHAT_SPEC, READ_CHAT_SPEC } from './chatFinder'
 
 export const ASK_THREAD = 'ask_thread'
 export const READ_LAST_REPLY = 'read_last_reply'
@@ -52,6 +53,9 @@ export const TOOL_SPECS: { name: string; description: string; parameters: Record
       required: ['title', 'markdown']
     }
   },
+  // Finding and reading the user's earlier chats.
+  FIND_CHAT_SPEC,
+  READ_CHAT_SPEC,
   // Answering the chat's approvals and questions by voice.
   ...REQUEST_TOOL_SPECS
 ]
@@ -69,6 +73,12 @@ export const MAX_SCREEN_CARD_CHARACTERS = 20_000
 export const SHOW_ON_SCREEN_RULE =
   "\nUse show_on_screen for anything better seen than heard: tables, forecasts, recipes and other steps, comparisons, code, images and links. Put the full detail there; once it's shown, say in a sentence that it's on their screen and give the gist: the screen takes the place of a long spoken answer."
 
+/** A cut that leaves a code fence open gets it closed, so the rest doesn't render as code. */
+export function closingFence(cut: string): string {
+  const fences = cut.split('\n').filter(line => /^\s*```/.test(line)).length
+  return fences % 2 ? `${cut}\n\`\`\`` : cut
+}
+
 /** show_on_screen's card and its answer for the model; no card when there's nothing to show. */
 export function screenCard(args: Record<string, string | undefined>, id: number): { card: ScreenCard | null; result: Record<string, string> } {
   const markdown = (args.markdown ?? '').trim()
@@ -76,7 +86,7 @@ export function screenCard(args: Record<string, string | undefined>, id: number)
   const cut = markdown.length > MAX_SCREEN_CARD_CHARACTERS
   const title = (args.title ?? '').trim().slice(0, 120)
   return {
-    card: { id, title, markdown: cut ? markdown.slice(0, MAX_SCREEN_CARD_CHARACTERS) : markdown },
+    card: { id, title, markdown: cut ? closingFence(markdown.slice(0, MAX_SCREEN_CARD_CHARACTERS - 4)) : markdown },
     result: {
       status: 'shown',
       message: cut
@@ -195,7 +205,7 @@ Never speak while the user is speaking. If they interrupt you, stop and listen. 
 Answer quick questions yourself. ${options.lookups}
 Call ask_thread for work that needs the user's Hermes agent: their files, code, systems, accounts, questions about this chat, follow-ups, or longer multi-step research. Pass the complete request. It goes to Hermes as the chat's next message, so Hermes has the chat's earlier turns; while Hermes is still answering one, the next waits and goes once it's done. ${options.announces ? 'Every time you call ask_thread, first acknowledge it out loud.' : 'Call ask_thread without announcing it first, and only once it returns, acknowledge it out loud.'} ${ACKNOWLEDGEMENT} Then carry on with the conversation; Hermes' reply arrives later on this call. When it arrives, tell the user what Hermes found or did, with the details that matter.
 When the user asks to hear a reply again, word for word or in full (Hermes' last reply), don't answer from memory: call read_last_reply and read what it returns word for word, all of it, once.
-${REQUESTS_RULE}${SHOW_ON_SCREEN_RULE}
+${REQUESTS_RULE}${SHOW_ON_SCREEN_RULE}${FIND_CHAT_RULE}
 When the user says goodbye to you, or asks to end, hang up or close the call, say a short goodbye, then call end_conversation.`
   return (
     rules +
