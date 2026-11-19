@@ -128,6 +128,8 @@ export function useRoomInvites(connected: boolean, host: string) {
     served,
     freeBusy: capabilities.includes(FREE_BUSY_CAPABILITY),
     invites: served && invites ? invites : [],
+    /** The list has been read from this host. */
+    loaded: served && invites !== null,
     rows: served && invites ? inviteRows(invites, dismissed) : [],
     refresh,
     answer,

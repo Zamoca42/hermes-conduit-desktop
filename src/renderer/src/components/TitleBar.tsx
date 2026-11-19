@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import type { HostSummary } from '@shared/ipc'
 import { Icon } from './icons'
 import { t } from '@shared/i18n'
+import { hostBadge, keptStateLabel, useKeptHosts } from '../state/keptHosts'
+import { HostBadgeMark } from './CombinedDashboards'
 
 export function hostName(url: string): string {
   try {
@@ -23,6 +25,8 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
   const { platform, window: win } = window.conduit
   const [open, setOpen] = useState(false)
   const switchable = hosts.length > 1 && !!onSwitch
+  // Combined dashboards: how each one beside this one is doing.
+  const kept = useKeptHosts()
 
   useEffect(() => {
     if (!open) return
@@ -59,7 +63,10 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
             </button>
             {open ? (
               <div className="host-menu" role="menu">
-                {hosts.map(host => (
+                {hosts.map(host => {
+                  const state = host.url === currentUrl ? null : (kept.find(k => k.url === host.url)?.state ?? null)
+                  const badge = hostBadge(hosts, host.url, hostName)
+                  return (
                   <button
                     key={host.url}
                     role="menuitemradio"
@@ -70,10 +77,15 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
                     }}
                   >
                     <span className="host-check">{host.url === currentUrl ? '✓' : ''}</span>
-                    <span className="host-label">{hostName(host.url)}</span>
+                    {badge ? <HostBadgeMark badge={badge} /> : null}
+                    <span className="host-text">
+                      <span className="host-label">{hostName(host.url)}</span>
+                      {state ? <span className="meta">{keptStateLabel(state)}</span> : null}
+                    </span>
                     {host.username ? <span className="meta">{host.username}</span> : null}
                   </button>
-                ))}
+                  )
+                })}
               </div>
             ) : null}
           </span>

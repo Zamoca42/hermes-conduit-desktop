@@ -87,6 +87,16 @@ export interface HostSummary {
   url: string
   method: SignInMethod
   username?: string
+  /** In the combined group (Combine Dashboards). */
+  combined?: boolean
+}
+
+/** How a combined host beside the open one is doing, in the phone's words. */
+export type KeptHostState = 'live' | 'connecting' | 'down' | 'signIn'
+
+export interface KeptHost {
+  url: string
+  state: KeptHostState
 }
 
 /** One gateway `event` notification, as the window receives it. */
@@ -175,6 +185,12 @@ export interface ConduitApi {
   /** Forgets a signed-in host (the open one signs out). */
   removeHost(url: string): Promise<void>
   status(): Promise<ConnectionStatus>
+  /** Combine Dashboards: the group's hosts kept beside the open one, and how each is doing. */
+  keptHosts(): Promise<KeptHost[]>
+  onKeptHosts(listener: (hosts: KeptHost[]) => void): () => void
+  setCombined(url: string, on: boolean): Promise<void>
+  /** A GET through a kept host's connection. */
+  keptHttp<T = unknown>(url: string, path: string): Promise<RpcOutcome<T>>
   /** Pairing from the phone: the QR code's link, then events as the phone answers. */
   pairStart(): Promise<{ ok: true; link: string; expires: number } | { ok: false; error: string }>
   pairConfirm(): Promise<void>
@@ -319,6 +335,10 @@ export const IPC = {
   pairEvent: 'conduit:pair-event',
   removeHost: 'conduit:remove-host',
   status: 'conduit:status',
+  keptHosts: 'conduit:kept-hosts',
+  keptHostsChanged: 'conduit:kept-hosts-changed',
+  setCombined: 'conduit:set-combined',
+  keptHttp: 'conduit:kept-http',
   reconnect: 'conduit:reconnect',
   rpc: 'conduit:rpc',
   http: 'conduit:http',

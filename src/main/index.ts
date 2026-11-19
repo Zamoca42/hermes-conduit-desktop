@@ -29,6 +29,7 @@ import { probeHost } from './auth'
 import { isPageUrl, pageUrl, registerPageScheme, servePages } from './pages'
 import { pluginRelease } from './pluginRelease'
 import { cleanHeaders } from './proxyHeaders'
+import { KeptHosts } from './keptHosts'
 import { Connection, DISPLAY_SOCKET_PATH } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
@@ -109,13 +110,25 @@ const chatWindows = new ChatWindowSet(createChatWindow, ids => send(IPC.chatWind
 /** The dashboard the chat windows belong to: another one closes them. */
 let chatWindowsHost: string | null = null
 
+const hostStore = createFileStore()
+// Browsers' WebSocket can't set headers; `ws` can, and has the same shape.
+const createSocket = (url: string, headers: Record<string, string>) => new WebSocket(url, { headers }) as unknown as WebSocketLike
+
+/** Combine Dashboards: the group's other hosts, connected beside the one on screen. */
+const keptHosts = new KeptHosts({
+  fetch: globalThis.fetch.bind(globalThis),
+  store: hostStore,
+  createSocket,
+  onChange: hosts => send(IPC.keptHostsChanged, hosts)
+})
+
 const connection = new Connection({
   fetch: globalThis.fetch.bind(globalThis),
-  store: createFileStore(),
-  // Browsers' WebSocket can't set headers; `ws` can, and has the same shape.
-  createSocket: (url, headers) => new WebSocket(url, { headers }) as unknown as WebSocketLike,
+  store: hostStore,
+  createSocket,
   onStatus: status => {
     send(IPC.statusChanged, status)
+    keptHosts.sync(status)
     const host = status.url ?? null
     if (host !== chatWindowsHost) {
       chatWindowsHost = host
@@ -299,6 +312,21 @@ function registerIpc(): void {
     if (typeof url === 'string') connection.removeHost(url)
   })
   ipcMain.handle(IPC.status, () => connection.current())
+  ipcMain.handle(IPC.keptHosts, () => keptHosts.list())
+  ipcMain.handle(IPC.setCombined, (_e, url: unknown, on: unknown) => {
+    if (typeof url !== 'string' || typeof on !== 'boolean') return
+    hostStore.setCombined?.(url, on)
+    connection.hostsChanged()
+  })
+  ipcMain.handle(IPC.keptHttp, async (_e, url: unknown, path: unknown): Promise<RpcOutcome> => {
+    if (typeof url !== 'string' || typeof path !== 'string' || !path.startsWith('/api/')) return { ok: false, error: 'Only dashboard API paths can be read.' }
+    try {
+      return { ok: true, result: await keptHosts.http(url, path) }
+    } catch (error) {
+      const code = (error as { code?: unknown }).code
+      return { ok: false, error: error instanceof Error ? error.message : String(error), ...(typeof code === 'number' ? { code } : {}) }
+    }
+  })
   ipcMain.handle(IPC.reconnect, () => connection.reconnectNow())
   ipcMain.handle(IPC.rpc, async (_event, method: string, params?: Record<string, unknown>): Promise<RpcOutcome> => {
     try {
