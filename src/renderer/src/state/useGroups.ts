@@ -20,6 +20,7 @@ import {
 } from './groups'
 import type { Bot } from './bots'
 import { t } from '../../../shared/i18n'
+import { everyWhileVisible } from './visibility'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const uuid = () => crypto.randomUUID()
@@ -53,8 +54,8 @@ export function useRooms(connected: boolean) {
   useEffect(() => {
     if (!connected) return
     void load()
-    const timer = setInterval(() => void load(), 30_000)
-    return () => clearInterval(timer)
+    // Every 30 s while the window shows, and at once when it shows again.
+    return everyWhileVisible(() => void load(), 30_000)
   }, [connected, load])
 
   /** Make a room of these bots; `roomId` is reused on a retry so Hermes never makes a twin. */
@@ -144,11 +145,8 @@ export function useRoom(room: Room | null, connected: boolean) {
       .finally(() => {
         if (mine === ticket.current) setLoading(false)
       })
-    const timer = setInterval(() => {
-      if (document.hidden) return
-      void Promise.all([readLog(roomId, mine), readState(roomId, mine)]).catch(() => undefined)
-    }, ROOM_POLL_MS)
-    return () => clearInterval(timer)
+    // Only while the window shows; showing it again reads at once.
+    return everyWhileVisible(() => void Promise.all([readLog(roomId, mine), readState(roomId, mine)]).catch(() => undefined), ROOM_POLL_MS)
   }, [roomId, connected, readLog, readState])
 
   const send = useCallback(

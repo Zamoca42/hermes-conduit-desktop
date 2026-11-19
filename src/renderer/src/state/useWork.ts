@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
 import { WORK, parseWork, workPath, type WorkSnapshot } from './work'
+import { everyWhileVisible } from './visibility'
 
 /**
  * A bot's work, read when its profile opens and again as turns end, and
@@ -49,8 +50,8 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
 
   useEffect(() => {
     if (!connected || !live) return
-    const every = window.setInterval(() => void load(), 6000)
-    return () => window.clearInterval(every)
+    // Only while the window shows; showing it again reads at once.
+    return everyWhileVisible(() => void load(), 6000)
   }, [connected, live, load])
 
   return { snapshot, error, reload: load }
