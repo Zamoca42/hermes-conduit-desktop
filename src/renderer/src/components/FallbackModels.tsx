@@ -6,7 +6,7 @@ import { groupModels } from '../state/models'
 import { readConfig, updateConfig, withValue, type Http } from '../state/profileConfig'
 import { ModelOptions } from './ModelOptions'
 import { useModelCatalog } from '../state/modelCatalog'
-import { ModelCatalogNote } from './ModelCatalogNote'
+import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -81,7 +81,10 @@ export function FallbackModels({ profile, delegate = false }: Props) {
 
   return (
     <section className="pset-section">
-      <h2>{delegate ? t('Delegate fallback models') : t('Fallback models')}</h2>
+      <h2 className="model-section-title">
+        {delegate ? t('Delegate fallback models') : t('Fallback models')}
+        {own ? <RefreshModelsButton catalog={catalog} /> : null}
+      </h2>
       <p className="meta">
         {delegate
           ? t(

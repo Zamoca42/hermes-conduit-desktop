@@ -22,7 +22,7 @@ import { FallbackModels } from './FallbackModels'
 import { Icon } from './icons'
 import { ModelOptions } from './ModelOptions'
 import { useModelCatalog } from '../state/modelCatalog'
-import { ModelCatalogNote } from './ModelCatalogNote'
+import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -186,7 +186,10 @@ function DelegateModel({
   const changed = pick !== (savedModel ? `${savedProvider}\n${savedModel}` : '') || reasoning !== savedReasoning
   return (
     <section className="pset-section">
-      <h2>{t('Delegate model')}</h2>
+      <h2 className="model-section-title">
+        {t('Delegate model')}
+        <RefreshModelsButton catalog={catalog} />
+      </h2>
       <div className="pset-row">
         <span>{t('Model')}</span>
         <select
