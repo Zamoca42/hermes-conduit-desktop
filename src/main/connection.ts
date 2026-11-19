@@ -96,9 +96,20 @@ export interface ConnectionDeps {
   backoff?: { baseDelayMs: number; capMs: number; jitter?: boolean }
 }
 
+/** An open socket one Connection hands another: a kept combined host's, taken up by a switch to it. */
+export interface HandedSocket {
+  url: string
+  client: JsonRpcGatewayClient
+  openToken: string | null
+  sessionAuthority?: boolean
+  pending: { request: ServerRequest; entry: PendingRequest }[]
+}
+
 export class Connection {
   private saved: SavedConnection | null = null
   private client: JsonRpcGatewayClient | null = null
+  /** Takes this connection's handlers off its client, so the client can be handed on. */
+  private unbind: (() => void)[] = []
   private status: ConnectionStatus = { phase: 'signed-out' }
   private attempt = 0
   private openedAt: number | null = null
@@ -282,15 +293,63 @@ export class Connection {
     return this.deps.store.list?.() ?? (this.saved ? [{ url: this.saved.url, method: this.saved.method, username: this.saved.username }] : [])
   }
 
-  /** Opens another saved host in place of this one. */
-  switchHost(url: string): boolean {
+  /**
+   * Opens another saved host in place of this one. `take` hands over that
+   * host's socket when it's already open (a kept combined host), so the
+   * switch takes it up rather than dialing again.
+   */
+  switchHost(url: string, take?: (url: string) => HandedSocket | null): boolean {
     if (this.locked) return false
     if (this.saved?.url === url) return true
     if (!this.deps.store.activate?.(url)) return false
     const next = this.deps.store.load()
     if (!next) return false
-    this.open(next)
+    const handed = take?.(next.url) ?? null
+    if (handed && handed.url === next.url) this.adopt(next, handed)
+    else {
+      handed?.client.close()
+      this.open(next)
+    }
     return true
+  }
+
+  /**
+   * Gives up this connection's open socket, its waiting requests and what
+   * the socket said of itself, for another Connection to take up; this one
+   * is left closed. Null unless the socket is open.
+   */
+  handOver(): HandedSocket | null {
+    const { client, saved } = this
+    if (this.status.phase !== 'open' || !client || !saved) return null
+    const handed: HandedSocket = { url: saved.url, client, openToken: this.openToken, sessionAuthority: this.status.sessionAuthority, pending: [...this.pending.values()] }
+    this.unbindClient()
+    this.client = null
+    this.pending.clear()
+    this.close()
+    return handed
+  }
+
+  /** Takes up a socket another Connection handed over; dials afresh if it closed meanwhile. */
+  private adopt(saved: SavedConnection, handed: HandedSocket): void {
+    const generation = ++this.generation
+    this.teardown()
+    this.saved = saved
+    this.openToken = handed.openToken
+    this.attempt = 0
+    for (const each of handed.pending) this.pending.set(each.entry.id, each)
+    // Not sent: the client's state, read as soon as it's attached, says open.
+    this.status = { phase: 'connecting', ...this.identityOf(saved), sessionAuthority: handed.sessionAuthority }
+    this.client = handed.client
+    this.attach(handed.client, generation)
+    if (this.status.phase !== 'open') {
+      this.unbindClient()
+      this.client = null
+      this.pending.clear()
+      handed.client.close()
+      this.open(saved)
+      return
+    }
+    if (this.pending.size) this.deps.onRequests?.(this.requests())
   }
 
   /** Forgets a saved host; the open one signs out (and the next opens). */
@@ -435,7 +494,23 @@ export class Connection {
       requestIdPrefix: 'c'
     })
     this.client = client
-    client.onAny(event => {
+    this.attach(client, generation)
+    try {
+      await client.connect(wsUrl)
+      if (generation !== this.generation) return 'Cancelled.'
+      return null
+    } catch (error) {
+      if (generation !== this.generation) return 'Cancelled.'
+      return this.failed(generation, error)
+    }
+  }
+
+  /** What this connection hears from its client, until it's torn down or handed on. */
+  private attach(client: JsonRpcGatewayClient, generation: number): void {
+    this.unbindClient()
+    const unbind: (() => void)[] = []
+    this.unbind = unbind
+    unbind.push(client.onAny(event => {
       if (this.client !== client) return
       if (event.type === 'gateway.ready') {
         const ready = event.payload as { session_authority?: boolean | null } | undefined
@@ -455,11 +530,11 @@ export class Connection {
         replayed: event.replayed,
         ...(typeof admission === 'string' && admission ? { admission_id: admission } : {})
       })
-    })
+    }))
     // Approvals and questions wait in Needs you. Anything else (the TUI's
     // own prompts) is left to the clients that show it: a backend that
     // counts declines hears that no window here does.
-    client.onRequest(request => {
+    unbind.push(client.onRequest(request => {
       if (this.client !== client) return true
       if (!ANSWERED_REQUEST_METHODS.includes(request.method as AnsweredRequestMethod)) {
         request.decline?.('Conduit desktop doesn’t answer this kind of request')
@@ -478,8 +553,8 @@ export class Connection {
       })
       this.deps.onRequests?.(this.requests())
       return true
-    })
-    client.onState(state => {
+    }))
+    unbind.push(client.onState(state => {
       if (this.client !== client) return
       if (state === 'open') {
         this.openedAt = Date.now()
@@ -489,15 +564,13 @@ export class Connection {
         this.openedAt = null
         this.scheduleRetry(generation, t('The connection to Hermes dropped.'))
       }
-    })
-    try {
-      await client.connect(wsUrl)
-      if (generation !== this.generation) return 'Cancelled.'
-      return null
-    } catch (error) {
-      if (generation !== this.generation) return 'Cancelled.'
-      return this.failed(generation, error)
-    }
+    }))
+  }
+
+  private unbindClient(): void {
+    const unbind = this.unbind
+    this.unbind = []
+    for (const off of unbind) off()
   }
 
   private failed(generation: number, error: unknown): string {
@@ -574,6 +647,7 @@ export class Connection {
     this.retryTimer = null
     const client = this.client
     this.client = null
+    this.unbindClient()
     client?.close()
     this.openedAt = null
   }

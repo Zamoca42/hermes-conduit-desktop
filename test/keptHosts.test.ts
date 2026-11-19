@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Fetch } from '../src/main/auth'
 import { createHostList } from '../src/main/hosts'
 import { KEPT_BACKOFF, KeptHosts, MAX_KEPT } from '../src/main/keptHosts'
-import type { SavedConnection } from '../src/main/connection'
+import { Connection, type SavedConnection } from '../src/main/connection'
 import type { ConnectionStatus, KeptHost } from '../src/shared/ipc'
 import type { WebSocketLike } from '../src/vendor/hermes-shared/json-rpc-gateway'
 import {
@@ -40,6 +40,9 @@ class FakeSocket extends EventTarget {
     if (this.readyState === 3) return
     this.readyState = 3
     this.dispatchEvent(Object.assign(new Event('close'), { code: 1000 }))
+  }
+  serverSends(frame: unknown) {
+    this.dispatchEvent(Object.assign(new Event('message'), { data: JSON.stringify(frame) }))
   }
   drop() {
     this.readyState = 3
@@ -168,6 +171,71 @@ describe('combined dashboards in the main process', () => {
     expect(h.store.get!('https://b.example')).toMatchObject({ cookies: { s: '2' }, combined: true })
     h.store.save({ url: 'https://b.example', method: 'token', token: 'new' })
     expect(h.store.list!().find(x => x.url === 'https://b.example')).toMatchObject({ combined: true })
+  })
+})
+
+describe('switching to a kept combined host', () => {
+  /** The window's connection beside the kept hosts, sharing their store and sockets, wired as index.ts wires them. */
+  function windowHarness(hosts: SavedConnection[]) {
+    const h = harness(hosts)
+    const statuses: ConnectionStatus[] = []
+    const events: string[] = []
+    const requests: string[][] = []
+    const connection = new Connection({
+      fetch: async () => json({}),
+      store: h.store,
+      createSocket: url => {
+        const socket = new FakeSocket(url)
+        h.sockets.push(socket)
+        return socket as unknown as WebSocketLike
+      },
+      onStatus: status => {
+        statuses.push(status)
+        h.kept.sync(status)
+      },
+      onEvent: event => events.push(event.type),
+      onRequests: list => requests.push(list.map(r => r.id))
+    })
+    return { ...h, connection, statuses, events, requests }
+  }
+
+  it('takes up the kept socket rather than dialing again, and keeps the one left beside it', async () => {
+    const h = windowHarness([host('https://a.example'), host('https://b.example')])
+    await h.connection.restore()
+    await until(() => h.connection.current().phase === 'open' && h.state('https://b.example') === 'live')
+    const bSocket = h.sockets.find(s => new URL(s.url).host === 'b.example')!
+    const aSocket = h.sockets.find(s => new URL(s.url).host === 'a.example')!
+    // A question asked on B while it was kept comes along.
+    bSocket.serverSends({ jsonrpc: '2.0', id: 'srq-b', method: 'approval', params: { session_id: 's1' } })
+    const before = h.sockets.length
+    expect(h.connection.switchHost('https://b.example', url => h.kept.take(url))).toBe(true)
+    // Open at once, on B's own socket, with no dial for B.
+    expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://b.example' })
+    expect(h.statuses.filter(s => s.url === 'https://b.example').map(s => s.phase)).toEqual(['open'])
+    expect(h.sockets.slice(before).some(s => new URL(s.url).host === 'b.example')).toBe(false)
+    expect(h.requests.at(-1)).toEqual(['srq-b'])
+    expect(aSocket.readyState).toBe(3)
+    // B's events now reach the window.
+    bSocket.serverSends({ jsonrpc: '2.0', method: 'event', params: { type: 'message.delta', session_id: 's1', payload: {} } })
+    expect(h.events).toContain('message.delta')
+    // A is kept beside it now, on a socket of its own.
+    await until(() => h.state('https://a.example') === 'live')
+    expect(h.kept.list()).toEqual([{ url: 'https://a.example', state: 'live' }])
+    // B dropping is the window's to redial.
+    bSocket.drop()
+    expect(h.connection.current()).toMatchObject({ phase: 'reconnecting', url: 'https://b.example' })
+  })
+
+  it('dials as usual when the kept host isn’t connected', async () => {
+    const h = windowHarness([host('https://a.example'), host('https://b.example')])
+    await h.connection.restore()
+    await until(() => h.connection.current().phase === 'open')
+    // B hasn't connected yet.
+    expect(h.kept.take('https://b.example')).toBeNull()
+    expect(h.connection.switchHost('https://b.example', url => h.kept.take(url))).toBe(true)
+    expect(h.connection.current()).toMatchObject({ phase: 'connecting', url: 'https://b.example' })
+    await until(() => h.connection.current().phase === 'open')
+    expect(h.connection.current().url).toBe('https://b.example')
   })
 })
 

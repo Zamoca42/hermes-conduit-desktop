@@ -147,7 +147,7 @@ const pairing = new Pairing({
   mailbox: process.env.CONDUIT_PAIR_MAILBOX || undefined,
   onEvent: event => send(IPC.pairEvent, event),
   signIn: request => connection.signIn(request),
-  switchHost: url => connection.switchHost(url)
+  switchHost: url => connection.switchHost(url, taken => keptHosts.take(taken))
 })
 
 let unlocking: Promise<boolean> | null = null
@@ -313,7 +313,7 @@ function registerIpc(): void {
   ipcMain.handle(IPC.pairStart, () => pairing.start())
   ipcMain.handle(IPC.pairConfirm, () => pairing.confirm())
   ipcMain.handle(IPC.pairCancel, () => pairing.cancel())
-  ipcMain.handle(IPC.switchHost, (_e, url: unknown) => typeof url === 'string' && connection.switchHost(url))
+  ipcMain.handle(IPC.switchHost, (_e, url: unknown) => typeof url === 'string' && connection.switchHost(url, taken => keptHosts.take(taken)))
   ipcMain.handle(IPC.removeHost, (_e, url: unknown) => {
     if (typeof url === 'string') connection.removeHost(url)
   })
