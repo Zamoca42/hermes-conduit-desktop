@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { BOTS_META_KEY, keptColor, rosterFromProfiles, type Bot } from '../state/bots'
@@ -15,13 +15,15 @@ import {
   type NewBotDraft
 } from '../state/botActions'
 import { FACE_COUNT, faceHex, faceName, metaOutcome, normalizedPicture } from '../state/botEditor'
-import { groupModels, type ModelProviderRow } from '../state/models'
+import { groupModels } from '../state/models'
 import { starterFace } from '../state/starterFaces'
 import { avatarChanged } from '../state/useBots'
 import { turnOnPluginForNewBot } from '../state/botPlugin'
 import { StarterFaceArt } from './StarterFaceArt'
 import { Icon } from './icons'
 import { ModelOptions } from './ModelOptions'
+import { useModelCatalog } from '../state/modelCatalog'
+import { ModelCatalogNote } from './ModelCatalogNote'
 
 interface Props {
   /** Every bot, hidden ones too: a new name and face stay clear of them. */
@@ -51,23 +53,14 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
   const [cloneFrom, setCloneFrom] = useState(MAIN_PROFILE)
   const [shareAuth, setShareAuth] = useState(true)
   const [noSkills, setNoSkills] = useState(false)
-  const [providers, setProviders] = useState<ModelProviderRow[]>([])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const picker = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    let live = true
-    const params: Record<string, unknown> = { explicit_only: true }
-    if (cloneFrom && cloneFrom !== MAIN_PROFILE) params.profile = cloneFrom
-    gateway
-      .rpc<{ providers?: ModelProviderRow[] }>('model.options', params)
-      .then(answer => live && setProviders(answer?.providers ?? []))
-      .catch(() => live && setProviders([]))
-    return () => {
-      live = false
-    }
-  }, [cloneFrom])
+  const catalog = useModelCatalog(
+    useMemo(() => (cloneFrom && cloneFrom !== MAIN_PROFILE ? { explicit_only: true, profile: cloneFrom } : { explicit_only: true }), [cloneFrom])
+  )
+  const providers = catalog.providers ?? []
   const groups = useMemo(() => groupModels(providers, ''), [providers])
 
   const slug = slugFrom(name)
@@ -248,10 +241,11 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
 
         <section className="pset-section">
           <h2>{t('Model')}</h2>
-          <select className="language-select" value={pick} aria-label={t('Model')} onChange={e => setPick(e.target.value)}>
+          <select className="language-select" value={pick} aria-label={t('Model')} disabled={!catalog.answered} onChange={e => setPick(e.target.value)}>
             <option value="">{t('Default')}</option>
             <ModelOptions providers={providers} groups={groups} />
           </select>
+          <ModelCatalogNote catalog={catalog} />
         </section>
 
         <section className="pset-section">

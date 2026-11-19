@@ -16724,6 +16724,21 @@
     "zh-Hans": "此机器人还没有可用的模型，因此跳过了自我介绍。请编辑机器人并选择一个模型。",
     "zh-Hant": "此機器人還沒有可用的模型，因此跳過了自我介紹。請編輯機器人並選擇一個模型。"
   },
+  "No models are available from this gateway.": {
+    "de": "Von diesem Gateway sind keine Modelle verfügbar.",
+    "es": "Esta pasarela no ofrece ningún modelo.",
+    "fr": "Aucun modèle n'est disponible sur cette passerelle.",
+    "id": "Tidak ada model yang tersedia dari gateway ini.",
+    "it": "Nessun modello disponibile da questo gateway.",
+    "ja": "このゲートウェイで利用できるモデルがありません。",
+    "ko": "이 게이트웨이에서 사용할 수 있는 모델이 없어요.",
+    "pl": "Ta brama nie udostępnia żadnych modeli.",
+    "pt-BR": "Nenhum modelo disponível neste gateway.",
+    "ru": "Этот шлюз не предоставляет ни одной модели.",
+    "tr": "Bu ağ geçidinde kullanılabilir model yok.",
+    "zh-Hans": "此网关没有可用模型。",
+    "zh-Hant": "此閘道沒有可用的模型。"
+  },
   "No pinned replies": {
     "de": "Keine angehefteten Antworten",
     "es": "No hay respuestas fijadas",
@@ -20698,6 +20713,21 @@
     "tr": "Yenile",
     "zh-Hans": "刷新",
     "zh-Hant": "重新整理"
+  },
+  "Refresh models": {
+    "de": "Modelle aktualisieren",
+    "es": "Actualizar modelos",
+    "fr": "Actualiser les modèles",
+    "id": "Segarkan model",
+    "it": "Aggiorna modelli",
+    "ja": "モデルを更新",
+    "ko": "모델 새로 고침",
+    "pl": "Odśwież modele",
+    "pt-BR": "Atualizar modelos",
+    "ru": "Обновить модели",
+    "tr": "Modelleri yenile",
+    "zh-Hans": "刷新模型",
+    "zh-Hant": "重新整理模型"
   },
   "Released {day}": {
     "de": "Veröffentlicht am {day}",

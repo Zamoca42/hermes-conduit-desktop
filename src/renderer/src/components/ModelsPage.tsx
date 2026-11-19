@@ -7,6 +7,8 @@ import { Icon } from './icons'
 import { FallbackModels } from './FallbackModels'
 import { ProvidersSection } from './ProvidersSection'
 import { ModelOptions } from './ModelOptions'
+import { useModelCatalog } from '../state/modelCatalog'
+import { ModelCatalogNote } from './ModelCatalogNote'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -24,7 +26,11 @@ const withProfile = (path: string, profile: string) => (profile && profile !== '
 export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
   const [profile, setProfile] = useState(initialProfile)
   const [settings, setSettings] = useState<ModelSettings | null>(null)
-  const [providers, setProviders] = useState<ModelProviderRow[]>([])
+  const modelCatalog = useModelCatalog(
+    useMemo(() => (profile !== 'default' ? { explicit_only: true, profile } : { explicit_only: true }), [profile]),
+    { quietReadAgain: true }
+  )
+  const providers = modelCatalog.providers ?? []
   const [catalog, setCatalog] = useState<string[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -40,10 +46,6 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
     } catch (e) {
       if (generation.current === mine) setError(e instanceof Error ? e.message : String(e))
     }
-    const params: Record<string, unknown> = { explicit_only: true }
-    if (profile !== 'default') params.profile = profile
-    const options = await gateway.rpc<{ providers?: ModelProviderRow[] }>('model.options', params).catch(() => null)
-    if (generation.current === mine) setProviders(options?.providers ?? [])
     // Every provider Hermes knows, connected or not: a new endpoint's name stays clear of them.
     const all = await gateway.rpc<{ providers?: ModelProviderRow[] }>('model.options', profile !== 'default' ? { profile } : {}).catch(() => null)
     if (generation.current === mine) setCatalog(all?.providers ? all.providers.flatMap(p => [p.slug, p.name]) : null)
@@ -85,7 +87,7 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
       <select
         className="language-select models-select"
         value={current}
-        disabled={saving !== null}
+        disabled={saving !== null || !modelCatalog.answered}
         aria-label={key}
         onChange={e => {
           const [provider = '', model = ''] = e.target.value.split('\n')
@@ -139,6 +141,7 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
                 if (model) void assign('main', { scope: 'main', provider, model })
               })}
             </div>
+            <ModelCatalogNote catalog={modelCatalog} />
             <p className="meta">{t('New chats start on this model. A chat that’s already open keeps its own until you change it there.')}</p>
           </section>
           <section className="pset-section">

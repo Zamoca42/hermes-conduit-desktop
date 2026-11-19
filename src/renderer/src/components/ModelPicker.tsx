@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { gateway } from '../gateway'
 import { t } from '@shared/i18n'
 import type { ModelSwitch, OpenChat } from '../state/useChat'
 import { REASONING_LEVELS, groupModels, reasoningTitle, type ModelProviderRow } from '../state/models'
@@ -7,6 +6,8 @@ import { Icon } from './icons'
 import { isPinned, pinnedRows, recentRows, type ModelPick } from '../state/modelQuickPicks'
 import { ProviderLogo } from './ProviderLogo'
 import { useModelQuickPicks } from './ModelOptions'
+import { useModelCatalog } from '../state/modelCatalog'
+import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
 interface Props {
   chat: OpenChat
@@ -24,28 +25,21 @@ interface Props {
  * stays open. Esc or a click outside closes it.
  */
 export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, setSpeed, setYolo }: Props) {
-  const [providers, setProviders] = useState<ModelProviderRow[] | null>(null)
-  const [loadError, setLoadError] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [busy, setBusy] = useState<string | null>(null)
   const [note, setNote] = useState<{ text: string; tone: 'error' | 'info' } | null>(null)
   const panel = useRef<HTMLDivElement>(null)
   const search = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    let live = true
+  const params = useMemo(() => {
     const params: Record<string, unknown> = { explicit_only: true }
     if (chat.liveId) params.session_id = chat.liveId
     if (profile) params.profile = profile
-    gateway
-      .rpc<{ providers?: ModelProviderRow[] }>('model.options', params)
-      .then(result => live && setProviders(result.providers ?? []))
-      .catch(e => live && setLoadError(e instanceof Error ? e.message : String(e)))
-    search.current?.focus()
-    return () => {
-      live = false
-    }
+    return params
   }, [chat.liveId, profile])
+  const catalog = useModelCatalog(params)
+  const providers = catalog.providers
+  useEffect(() => search.current?.focus(), [])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -75,7 +69,8 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
   const current = (model: string, provider: string) => model === chat.model && (!chat.provider || provider === chat.provider)
 
   async function pick(model: string, provider: string) {
-    if (busy || current(model, provider)) return
+    // Kept models wait for Hermes' answer before one is picked.
+    if (busy || !catalog.answered || current(model, provider)) return
     setBusy(`${provider}/${model}`)
     setNote(null)
     let outcome = await setModel(model, provider)
@@ -110,7 +105,12 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
     const pin = isPinned(quick.picks, { model, provider })
     return (
       <div key={key} className={`model-row-wrap${pin ? ' pinned' : ''}`}>
-        <button className={`model-row${on ? ' on' : ''}`} aria-pressed={on} disabled={!!busy && busy !== key} onClick={() => void pick(model, provider)}>
+        <button
+          className={`model-row${on ? ' on' : ''}`}
+          aria-pressed={on}
+          disabled={(!!busy && busy !== key) || !catalog.answered}
+          onClick={() => void pick(model, provider)}
+        >
           <span className="model-row-name">{model}</span>
           {quickPick ? <span className="meta model-row-provider">{providerName(providers, provider)}</span> : null}
           {busy === key ? <Icon name="spinner" style={{ animation: 'spin 1s linear infinite' }} /> : on ? <Icon name="check" /> : null}
@@ -134,6 +134,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
       <div className="model-current">
         <span className="model-current-name">{chat.model || t('Model')}</span>
         {chat.provider ? <span className="meta">{providerName(providers, chat.provider)}</span> : null}
+        <RefreshModelsButton catalog={catalog} />
         <button className="staged-remove" aria-label={t('Close')} onClick={onClose}>
           <Icon name="close" />
         </button>
@@ -214,15 +215,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
         }}
       />
       <div className="model-list">
-        {loadError ? (
-          <div className="model-note error">
-            {t('Could not load models.')} {loadError}
-          </div>
-        ) : null}
-        {!providers && !loadError ? <div className="model-note">{t('Loading…')}</div> : null}
-        {providers && !groups.length ? (
-          <div className="model-note">{query.trim() ? t('Nothing matches “{query}”.', { query: query.trim() }) : t('Could not load models.')}</div>
-        ) : null}
+        {providers && query.trim() && !groups.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
         {pinned.length || recent.length ? (
           <section className="model-group model-quick" aria-label={t('Quick picks')}>
             {pinned.length ? <div className="model-group-name">{t('Pinned')}</div> : null}
@@ -231,6 +224,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
             {recent.map(p => row(p.model, p.provider, true))}
           </section>
         ) : null}
+        <ModelCatalogNote catalog={catalog} />
         {groups.map(group => (
           <section key={group.slug} className="model-group">
             <div className="model-group-name">
