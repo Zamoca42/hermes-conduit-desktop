@@ -3,7 +3,7 @@
  * profile, newest activity first), with the gateway's `session.list` as the
  * fallback an older dashboard needs, grouped the way the phone groups them.
  */
-import { locale, t } from '../../../shared/i18n'
+import { formatDate, t } from '../../../shared/i18n'
 import { cleanTitle, previewText } from './text'
 import { classifySource, type ChatSource } from './chatSources'
 
@@ -160,8 +160,7 @@ export function sectionRows(rows: ChatRow[], now = Date.now()): ChatSection[] {
 export function timeLabel(ms: number | undefined, now = Date.now()): string {
   if (!ms) return ''
   const today = startOfDay(now)
-  const date = new Date(ms)
-  if (ms >= today) return date.toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' })
-  if (ms >= today - 6 * 86_400_000) return date.toLocaleDateString(locale(), { weekday: 'short' })
-  return date.toLocaleDateString(locale(), { month: 'short', day: 'numeric' })
+  if (ms >= today) return formatDate(ms, { hour: 'numeric', minute: '2-digit' })
+  if (ms >= today - 6 * 86_400_000) return formatDate(ms, { weekday: 'short' })
+  return formatDate(ms, { month: 'short', day: 'numeric' })
 }
