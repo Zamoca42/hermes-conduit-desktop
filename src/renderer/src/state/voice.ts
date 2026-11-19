@@ -7,6 +7,7 @@
  */
 import { t } from '../../../shared/i18n'
 import { gateway } from '../gateway'
+import { withSpokenCards } from './desktopCards'
 
 /** The file name a voice message gets, as the phone names it, so the chat shows it as one. */
 export const VOICE_FILE_PREFIX = 'voice-message-'
@@ -71,7 +72,7 @@ export async function transcribe(base64: string, mime: string, profile?: string)
 
 /** A reply as Hermes' speech says it: the words, without Markdown's marks, code or links' addresses. */
 export function spokenText(markdown: string): string {
-  return markdown
+  return withSpokenCards(markdown)
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')

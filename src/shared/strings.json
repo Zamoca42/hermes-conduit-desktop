@@ -1,4 +1,19 @@
 {
+  "(There’s a card here for Hermes Desktop.)": {
+    "de": "(Hier ist eine Karte für Hermes Desktop.)",
+    "es": "(Aquí hay una tarjeta para Hermes Desktop.)",
+    "fr": "(Il y a ici une carte pour Hermes Desktop.)",
+    "id": "(Ada kartu untuk Hermes Desktop di sini.)",
+    "it": "(Qui c’è una scheda per Hermes Desktop.)",
+    "ja": "（ここに Hermes Desktop 用のカードがあります。）",
+    "ko": "(여기에 Hermes Desktop용 카드가 있습니다.)",
+    "pl": "(Tu jest karta dla Hermes Desktop.)",
+    "pt-BR": "(Aqui há um cartão para o Hermes Desktop.)",
+    "ru": "(Здесь карточка для Hermes Desktop.)",
+    "tr": "(Burada Hermes Desktop için bir kart var.)",
+    "zh-Hans": "（这里有一张 Hermes Desktop 卡片。）",
+    "zh-Hant": "（這裡有一張 Hermes Desktop 卡片。）"
+  },
   "(invalid item)": {
     "de": "(ungültiger Eintrag)",
     "es": "(elemento no válido)",
@@ -3358,6 +3373,21 @@
     "tr": "Kapasite",
     "zh-Hans": "容量",
     "zh-Hant": "容量"
+  },
+  "Card for Hermes Desktop": {
+    "de": "Karte für Hermes Desktop",
+    "es": "Tarjeta para Hermes Desktop",
+    "fr": "Carte pour Hermes Desktop",
+    "id": "Kartu untuk Hermes Desktop",
+    "it": "Scheda per Hermes Desktop",
+    "ja": "Hermes Desktop 用のカード",
+    "ko": "Hermes Desktop용 카드",
+    "pl": "Karta dla Hermes Desktop",
+    "pt-BR": "Cartão para o Hermes Desktop",
+    "ru": "Карточка для Hermes Desktop",
+    "tr": "Hermes Desktop için kart",
+    "zh-Hans": "Hermes Desktop 卡片",
+    "zh-Hant": "Hermes Desktop 卡片"
   },
   "Card number": {
     "de": "Kartennummer",
@@ -9793,6 +9823,21 @@
     "tr": "Tam Ekran",
     "zh-Hans": "全屏",
     "zh-Hant": "全螢幕"
+  },
+  "Full card in Hermes Desktop": {
+    "de": "Ganze Karte in Hermes Desktop",
+    "es": "Tarjeta completa en Hermes Desktop",
+    "fr": "Carte complète dans Hermes Desktop",
+    "id": "Kartu lengkap di Hermes Desktop",
+    "it": "Scheda completa in Hermes Desktop",
+    "ja": "カード全体は Hermes Desktop で",
+    "ko": "전체 카드는 Hermes Desktop에서",
+    "pl": "Pełna karta w Hermes Desktop",
+    "pt-BR": "Cartão completo no Hermes Desktop",
+    "ru": "Полная карточка в Hermes Desktop",
+    "tr": "Kartın tamamı Hermes Desktop'ta",
+    "zh-Hans": "完整卡片在 Hermes Desktop 中",
+    "zh-Hant": "完整卡片在 Hermes Desktop 中"
   },
   "GPT-Live": {
     "de": "GPT-Live",
@@ -18149,6 +18194,21 @@
     "zh-Hans": "打开聊天",
     "zh-Hant": "打開聊天"
   },
+  "Open this chat in Hermes Desktop to see it.": {
+    "de": "Öffne diesen Chat in Hermes Desktop, um sie zu sehen.",
+    "es": "Abre este chat en Hermes Desktop para verla.",
+    "fr": "Ouvrez ce chat dans Hermes Desktop pour la voir.",
+    "id": "Buka chat ini di Hermes Desktop untuk melihatnya.",
+    "it": "Apri questa chat in Hermes Desktop per vederla.",
+    "ja": "表示するには、このチャットを Hermes Desktop で開いてください。",
+    "ko": "보려면 이 채팅을 Hermes Desktop에서 여세요.",
+    "pl": "Otwórz ten czat w Hermes Desktop, aby ją zobaczyć.",
+    "pt-BR": "Abra este chat no Hermes Desktop para vê-lo.",
+    "ru": "Откройте этот чат в Hermes Desktop, чтобы её увидеть.",
+    "tr": "Görmek için bu sohbeti Hermes Desktop'ta açın.",
+    "zh-Hans": "在 Hermes Desktop 中打开此聊天即可查看。",
+    "zh-Hant": "在 Hermes Desktop 中打開此聊天即可查看。"
+  },
   "Open {name}": {
     "de": "{name} öffnen",
     "es": "Abrir {name}",
@@ -24208,6 +24268,21 @@
     "tr": "Botun bir resmi olana kadar gösterilir. Rengi, botun Conduit'teki rengidir.",
     "zh-Hans": "在机器人有头像之前显示。它的颜色就是机器人在 Conduit 中的颜色。",
     "zh-Hant": "在機器人有圖片之前顯示。它的顏色就是機器人在 Conduit 中的顏色。"
+  },
+  "Shows the card’s full summary and the line Hermes wrote.": {
+    "de": "Zeigt die ganze Zusammenfassung der Karte und die Zeile, die Hermes geschrieben hat.",
+    "es": "Muestra el resumen completo de la tarjeta y la línea que escribió Hermes.",
+    "fr": "Affiche le résumé complet de la carte et la ligne écrite par Hermes.",
+    "id": "Menampilkan ringkasan lengkap kartu dan baris yang ditulis Hermes.",
+    "it": "Mostra il riepilogo completo della scheda e la riga scritta da Hermes.",
+    "ja": "カードの要約全体と Hermes が書いた行を表示します。",
+    "ko": "카드의 전체 요약과 Hermes가 쓴 줄을 보여 줍니다.",
+    "pl": "Pokazuje pełne podsumowanie karty i wiersz napisany przez Hermesa.",
+    "pt-BR": "Mostra o resumo completo do cartão e a linha que o Hermes escreveu.",
+    "ru": "Показывает полное описание карточки и строку, которую написал Hermes.",
+    "tr": "Kartın tam özetini ve Hermes’in yazdığı satırı gösterir.",
+    "zh-Hans": "显示卡片的完整摘要和 Hermes 写下的那一行。",
+    "zh-Hant": "顯示卡片的完整摘要和 Hermes 寫下的那一行。"
   },
   "Shows this bot’s work": {
     "de": "Zeigt die Arbeit dieses Bots",
