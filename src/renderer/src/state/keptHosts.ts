@@ -10,6 +10,7 @@ import type { HostSummary, KeptHost, KeptHostState } from '../../../shared/ipc'
 import { t } from '../../../shared/i18n'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 import { CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
+import { rosterFromProfiles, type Bot } from './bots'
 
 export const keptStateLabel = (state: KeptHostState): string =>
   state === 'live'
@@ -257,4 +258,67 @@ export function takeChatAfterSwitch(host: string): ChatRow | null {
   const row = pendingChat.row
   pendingChat = null
   return row
+}
+
+/** A bot on another combined host: its starter face (its picture is that host's), opening through a switch. */
+export interface OtherBot {
+  host: string
+  bot: Bot
+}
+
+/** Every live kept host's bots, read on Bots Home once a minute; a failed read keeps what the host showed. */
+export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] {
+  const [bots, setBots] = useState<OtherBot[]>([])
+  const byHost = useRef(new Map<string, OtherBot[]>())
+  const live = on
+    ? kept
+        .filter(h => h.state === 'live')
+        .map(h => h.url)
+        .join('\n')
+    : ''
+
+  useEffect(() => {
+    const urls = live ? live.split('\n') : []
+    for (const url of [...byHost.current.keys()]) if (!urls.includes(url)) byHost.current.delete(url)
+    const show = () => setBots([...byHost.current.values()].flat())
+    show()
+    if (!urls.length) return
+    let stopped = false
+    const read = async () => {
+      if (document.hidden) return
+      await Promise.all(
+        urls.map(async url => {
+          const outcome = await window.conduit.keptRpc(url, 'profiles.list', { include_sessions: true })
+          if (!outcome.ok || stopped) return
+          byHost.current.set(
+            url,
+            rosterFromProfiles(outcome.result).bots.map(bot => ({ host: url, bot: { ...bot, hasAvatar: false } }))
+          )
+        })
+      )
+      if (!stopped) show()
+    }
+    void read()
+    const timer = setInterval(() => void read(), KEPT_CHATS_POLL_MS)
+    return () => {
+      stopped = true
+      clearInterval(timer)
+    }
+  }, [live])
+
+  return bots
+}
+
+/** A bot opened on another host: the new host's window opens it once its bots are read. */
+let pendingBot: { host: string; name: string } | null = null
+
+export function openBotAfterSwitch(other: OtherBot): void {
+  pendingBot = { host: other.host, name: other.bot.name }
+}
+
+export function takeBotAfterSwitch(host: string, bots: readonly Bot[] | null): Bot | null {
+  if (!pendingBot || pendingBot.host !== host || !bots) return null
+  const name = pendingBot.name
+  pendingBot = null
+  return bots.find(b => b.name === name) ?? null
 }

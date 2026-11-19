@@ -112,15 +112,19 @@ import {
   hostBadge,
   keptStateLabel,
   openAfterSwitch,
+  openBotAfterSwitch,
   openChatAfterSwitch,
   otherHostsChats,
   otherHostsWaiting,
+  takeBotAfterSwitch,
   takeChatAfterSwitch,
   takeOpenAfterSwitch,
+  useKeptBots,
   useKeptChats,
   useKeptHosts,
   useKeptWaiting,
   type KeptWaitingRow,
+  type OtherBot,
   type OtherChatRow
 } from './state/keptHosts'
 import { StepSummarySettings } from './components/StepSummarySettings'
@@ -1046,6 +1050,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // ...and their chats, in All.
   const keptChats = useKeptChats(keptHosts, section === 'chats')
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
+  // ...and their bots, on Bots Home.
+  const otherBots = useKeptBots(keptHosts, section === 'bots')
   const needsCount = requests.length + waitingRows.length + otherWaiting.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
   // Running and Needs approval on the list's rows: the gateway's live registry while the list shows, the
@@ -1157,6 +1163,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setSelected({ id: row.id, profile: row.profile, title: row.title })
     setSection('chats')
   }, [connected, statusUrl])
+  const openOtherBot = useCallback((other: OtherBot) => {
+    if (!switchEndingCall(hostName(other.host))) return
+    openBotAfterSwitch(other)
+    void window.conduit.switchHost(other.host)
+  }, [])
+  useEffect(() => {
+    const bot = takeBotAfterSwitch(statusUrl, roster.bots)
+    if (bot) openBot(bot)
+  }, [statusUrl, roster.bots, openBot])
   // A wait opened on another host before the switch: open it here once connected.
   useEffect(() => {
     if (!connected || list.rows === undefined) return
@@ -1908,6 +1923,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             drafts={roomDrafts.rows}
             onOpenDraft={draft => setOpenDraft(draft.id)}
             roomLooks={roomLooks.looks}
+            otherBots={otherBots}
+            badgeFor={badgeFor}
+            onOpenOther={openOtherBot}
+            hostUrl={statusUrl}
             onNewGroup={
               connected && groupRooms.capabilities?.supported === true
                 ? () => {

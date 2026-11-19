@@ -10,10 +10,12 @@ import {
   BADGE_PALETTE,
   hostBadge,
   openAfterSwitch,
+  openBotAfterSwitch,
   openChatAfterSwitch,
   otherHostsChats,
   otherHostsWaiting,
   profileNames,
+  takeBotAfterSwitch,
   takeChatAfterSwitch,
   takeOpenAfterSwitch,
   type KeptWaitingRow,
@@ -102,6 +104,9 @@ describe('combined dashboards in the main process', () => {
     expect(h.sockets.map(s => new URL(s.url).host)).toEqual(['b.example', 'c.example'])
     // Reads go through the kept connection.
     expect(await h.kept.http('https://b.example', '/api/profiles')).toEqual({ profiles: [{ name: 'default' }, { name: 'mira' }] })
+    // Only reads go over a kept socket.
+    await expect(h.kept.rpc('https://b.example', 'prompt.submit', {})).rejects.toThrow(/Only reads/)
+    await expect(h.kept.rpc('https://d.example', 'profiles.list')).rejects.toThrow(/Not connected/)
   })
 
   it('needs two in the group, keeps at most three beside the one on screen, and connects beside one left out', async () => {
@@ -218,5 +223,14 @@ describe('combined dashboards in the window', () => {
     expect(takeChatAfterSwitch('https://home.example')).toBeNull()
     expect(takeChatAfterSwitch('https://studio.example')).toEqual(chat('c3'))
     expect(takeChatAfterSwitch('https://studio.example')).toBeNull()
+  })
+
+  it('opens another host’s bot once that host’s bots are read', () => {
+    const bot = { name: 'mira', title: 'Mira' } as never
+    openBotAfterSwitch({ host: 'https://studio.example', bot })
+    expect(takeBotAfterSwitch('https://studio.example', null)).toBeNull()
+    expect(takeBotAfterSwitch('https://home.example', [bot])).toBeNull()
+    expect(takeBotAfterSwitch('https://studio.example', [bot])).toBe(bot)
+    expect(takeBotAfterSwitch('https://studio.example', [bot])).toBeNull()
   })
 })

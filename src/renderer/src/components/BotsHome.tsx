@@ -20,6 +20,8 @@ import { draftLine, type RoomDraft } from "../state/roomDrafts";
 import { lookPictureUrl, memberLook, type RoomLook, type RoomLooks } from "../state/roomLooks";
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
+import type { HostBadge, OtherBot } from "../state/keptHosts";
+import { HostBadgeMark } from "./CombinedDashboards";
 
 const BOT_DRAG = "application/x-conduit-bot";
 
@@ -158,6 +160,12 @@ interface Props {
   onNewGroup?: () => void;
   /** How the rooms over Links look, by room id: other people's agents' faces. */
   roomLooks?: Record<string, RoomLooks>;
+  /** Combined dashboards: the other hosts' bots after this host's, badged, each opening through a switch. */
+  otherBots?: OtherBot[];
+  badgeFor?: (url: string) => HostBadge | null;
+  onOpenOther?: (other: OtherBot) => void;
+  /** The host on screen: in a combined group its bots carry its badge too, so the group reads as one set. */
+  hostUrl?: string;
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -234,6 +242,10 @@ export function BotsHome({
   onOpenDraft,
   onNewGroup,
   roomLooks,
+  otherBots = [],
+  badgeFor,
+  onOpenOther,
+  hostUrl,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -266,7 +278,9 @@ export function BotsHome({
         setMenu({ bot, x: e.clientX, y: e.clientY });
       }
     : undefined;
-  const layout = homeLayout(bots?.length ?? 0);
+  const layout = homeLayout((bots?.length ?? 0) + otherBots.length);
+  const tileCount = (bots?.length ?? 0) + otherBots.length;
+  const ownBadge = hostUrl && badgeFor ? badgeFor(hostUrl) : null;
   const [draft, setDraft] = useState<Draft | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
   const canDrag = canStartRooms && (bots?.length ?? 0) >= ROOM_MIN_MEMBERS;
@@ -393,17 +407,17 @@ export function BotsHome({
               pill={<WorkPill bot={bots[0]} work={work?.get(bots[0].name)} onWork={onWork} />}
             />
           ) : null}
-          {bots && layout !== "one" ? (
+          {bots && (layout !== "one" || !bots[0]) && tileCount ? (
             <div
               className={layout === "two" ? "bots-two" : "bots-grid"}
-              style={layout === "two" ? undefined : ({ "--bot-column": `${gridStep(bots.length).column}px` } as CSSProperties)}
+              style={layout === "two" ? undefined : ({ "--bot-column": `${gridStep(tileCount).column}px` } as CSSProperties)}
             >
               {bots.map((bot) => (
                 <BotTile
                   key={bot.name}
                   bot={bot}
                   large={layout === "two"}
-                  face={layout === "two" ? 128 : gridStep(bots.length).face}
+                  face={layout === "two" ? 128 : gridStep(tileCount).face}
                   running={runningProfiles.has(bot.name)}
                   picked={draft?.members.includes(bot.name) ?? false}
                   target={dropTarget === bot.name}
@@ -411,8 +425,26 @@ export function BotsHome({
                   onMenu={openMenu?.(bot)}
                   pill={<WorkPill bot={bot} work={work?.get(bot.name)} onWork={onWork} />}
                   drag={tileDrag(bot)}
+                  badge={ownBadge ? <HostBadgeMark badge={ownBadge} /> : null}
                 />
               ))}
+              {otherBots.map((other) => {
+                const badge = badgeFor?.(other.host) ?? null;
+                return (
+                  <BotTile
+                    key={`${other.host}\n${other.bot.name}`}
+                    bot={other.bot}
+                    large={layout === "two"}
+                    face={layout === "two" ? 128 : gridStep(tileCount).face}
+                    running={false}
+                    picked={false}
+                    target={false}
+                    onClick={() => onOpenOther?.(other)}
+                    badge={badge ? <HostBadgeMark badge={badge} /> : null}
+                    drag={{}}
+                  />
+                );
+              })}
             </div>
           ) : null}
           {rooms && (rooms.length > 0 || canDrag || !!onNewGroup || (invites?.length ?? 0) > 0 || (copies?.length ?? 0) > 0 || (drafts?.length ?? 0) > 0) ? (
@@ -735,6 +767,8 @@ interface TileProps {
   onClick: () => void;
   onMenu?: (e: MouseEvent) => void;
   pill?: ReactNode;
+  /** Another combined dashboard's bot: its badge on the face's corner. */
+  badge?: ReactNode;
   drag: Record<string, unknown>;
 }
 
@@ -748,6 +782,7 @@ function BotTile({
   onClick,
   onMenu,
   pill,
+  badge,
   drag,
 }: TileProps) {
   return (
@@ -767,6 +802,7 @@ function BotTile({
         ) : null}
         {/* On the face's lower edge, so the tiles in a row keep one height (1b). */}
         {pill ? <span className="bot-tile-pill">{pill}</span> : null}
+        {badge ? <span className="bot-tile-badge">{badge}</span> : null}
       </span>
       <span className="bot-name">
         {bot.pinned ? (

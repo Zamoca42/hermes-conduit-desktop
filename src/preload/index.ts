@@ -55,6 +55,7 @@ const api: ConduitApi = {
   onKeptHosts: listener => listen<KeptHost[]>(IPC.keptHostsChanged, listener),
   setCombined: (url, on) => ipcRenderer.invoke(IPC.setCombined, url, on),
   keptHttp: (url, path) => ipcRenderer.invoke(IPC.keptHttp, url, path),
+  keptRpc: (url, method, params) => ipcRenderer.invoke(IPC.keptRpc, url, method, params),
   reconnect: () => ipcRenderer.invoke(IPC.reconnect),
   async rpc<T>(method: string, params?: Record<string, unknown>) {
     const outcome = (await ipcRenderer.invoke(IPC.rpc, method, params)) as RpcOutcome<T>

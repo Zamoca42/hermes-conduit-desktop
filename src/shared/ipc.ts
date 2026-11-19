@@ -191,6 +191,8 @@ export interface ConduitApi {
   setCombined(url: string, on: boolean): Promise<void>
   /** A GET through a kept host's connection. */
   keptHttp<T = unknown>(url: string, path: string): Promise<RpcOutcome<T>>
+  /** A read over a kept host's socket (its bots: `profiles.list`). */
+  keptRpc<T = unknown>(url: string, method: string, params?: Record<string, unknown>): Promise<RpcOutcome<T>>
   /** Pairing from the phone: the QR code's link, then events as the phone answers. */
   pairStart(): Promise<{ ok: true; link: string; expires: number } | { ok: false; error: string }>
   pairConfirm(): Promise<void>
@@ -339,6 +341,7 @@ export const IPC = {
   keptHostsChanged: 'conduit:kept-hosts-changed',
   setCombined: 'conduit:set-combined',
   keptHttp: 'conduit:kept-http',
+  keptRpc: 'conduit:kept-rpc',
   reconnect: 'conduit:reconnect',
   rpc: 'conduit:rpc',
   http: 'conduit:http',

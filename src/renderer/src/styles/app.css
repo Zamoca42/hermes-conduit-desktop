@@ -9896,3 +9896,17 @@ button.secondary.danger {
   margin-right: 6px;
   vertical-align: -2px;
 }
+
+/* Another combined dashboard's bot: its badge on the face's corner. */
+.bot-tile-badge {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  line-height: 0;
+}
+
+.bot-tile-badge .host-badge {
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+}
