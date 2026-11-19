@@ -4,7 +4,9 @@
  * new ones every few seconds, per profile. A call rings here beside the
  * iPhone; answering here opens its chat and starts a call in the voice mode
  * picked in Settings. The relay's pushes reach phones only, so this is how a
- * computer hears of a call.
+ * computer hears of a call. A ring settled on another device (answered on
+ * the iPhone, declined) stops here at the next ask; a decline here tells
+ * Hermes, as the iPhone's does.
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
@@ -38,7 +40,11 @@ export interface Ring {
   sessionIds: string[]
   /** When it went out, by the host's clock. */
   at: number
+  /** Still ringing, or settled on some device: answered (a call started anywhere), declined or missed. */
+  state: 'ringing' | 'answered' | 'declined' | 'missed'
 }
+
+const STATES = ['ringing', 'answered', 'declined', 'missed'] as const
 
 const str = (v: unknown) => (typeof v === 'string' ? v : '')
 
@@ -60,7 +66,8 @@ export function ringsFrom(body: unknown, profile?: string): { rings: Ring[]; now
         reason: str(e.reason),
         title: str(e.title),
         sessionIds: Array.isArray(e.session_ids) ? e.session_ids.filter((s): s is string => typeof s === 'string' && !!s) : [],
-        at: e.at
+        at: e.at,
+        state: (STATES as readonly string[]).includes(str(e.state)) ? (e.state as Ring['state']) : 'ringing'
       }
     ]
   })
@@ -68,7 +75,67 @@ export function ringsFrom(body: unknown, profile?: string): { rings: Ring[]; now
 }
 
 /** Which of a first answer's rings still ring: the ones that just went out. */
-export const freshRings = (rings: Ring[], now: number | null) => (now === null ? [] : rings.filter(ring => now - ring.at <= FRESH_S))
+export const freshRings = (rings: Ring[], now: number | null) =>
+  now === null ? [] : rings.filter(ring => ring.state === 'ringing' && now - ring.at <= FRESH_S)
+
+/** What an answer changes: the rings to start, and the ids settled elsewhere (answered on the iPhone, declined) that stop. */
+export function ringChanges(rings: Ring[], seen: ReadonlySet<string>): { added: Ring[]; settled: string[] } {
+  return {
+    added: rings.filter(ring => ring.state === 'ringing' && !seen.has(ring.id)),
+    settled: rings.filter(ring => ring.state !== 'ringing').map(ring => ring.id)
+  }
+}
+
+export const OUTCOMES_PATH = '/api/plugins/conduit_push/calls/outcomes'
+export const PRESENCE_PATH = '/api/plugins/conduit_push/calls/presence'
+export const PRESENCE_CAPABILITY = 'hermes-call-presence'
+const PRESENCE_S = 90
+const PRESENCE_RENEW_MS = 30_000
+
+/** The decline Hermes hears in that chat's next turn, as the iPhone reports one; it also stops this ring wherever it still rings on a computer. */
+export const declineBody = (ring: Ring) => ({
+  call_id: ring.id,
+  session_ids: ring.sessionIds,
+  outcome: 'declined',
+  kind: ring.kind,
+  title: ring.title,
+  reason: ring.reason,
+  age_s: 0
+})
+
+export function declineOnHost(ring: Ring): void {
+  if (!ring.sessionIds.length) return
+  void gateway.http('POST', withProfile(OUTCOMES_PATH, ring.profile), declineBody(ring), 10_000).catch(() => undefined)
+}
+
+/**
+ * While a call runs here, the host holds the user's call presence, as the
+ * iPhone does for its calls: nothing Hermes calls about rings over it, and a
+ * call from Hermes answered here counts as answered on every device.
+ * 90 seconds, renewed every 30, let go at hang-up.
+ */
+export function useCallPresence(calling: boolean, profile: string | undefined) {
+  useEffect(() => {
+    if (!calling) return
+    let live = true
+    let held = false
+    const hold = (seconds: number) => gateway.http('PUT', withProfile(PRESENCE_PATH, profile), { hold_s: seconds }, 10_000)
+    void (async () => {
+      const status = await gateway.http('GET', withProfile(STATUS_PATH, profile), undefined, 12_000).then(pluginStatus, () => null)
+      if (!live || !status || !serves(status, [PRESENCE_CAPABILITY])) return
+      held = true
+      await hold(PRESENCE_S).catch(() => undefined)
+    })()
+    const timer = window.setInterval(() => {
+      if (held) void hold(PRESENCE_S).catch(() => undefined)
+    }, PRESENCE_RENEW_MS)
+    return () => {
+      live = false
+      window.clearInterval(timer)
+      if (held) void hold(0).catch(() => undefined)
+    }
+  }, [calling, profile])
+}
 
 /** The calls ringing on this computer, newest last, and a way to let one go. */
 export function useRings(connected: boolean, profiles: readonly string[]) {
@@ -103,10 +170,11 @@ export function useRings(connected: boolean, profiles: readonly string[]) {
         }
         if (answer.now !== null) after.current.set(name, answer.now)
         const fresh = since === undefined ? freshRings(answer.rings, answer.now) : answer.rings
-        const added = fresh.filter(ring => !seen.current.has(ring.id))
-        if (!added.length) return
+        const { added, settled } = ringChanges(fresh, seen.current)
+        if (!added.length && !settled.length) return
         added.forEach(ring => seen.current.add(ring.id))
-        setRinging(current => [...current.filter(ring => !added.some(a => a.id === ring.id)), ...added])
+        settled.forEach(id => seen.current.add(id))
+        setRinging(current => [...current.filter(ring => !added.some(a => a.id === ring.id) && !settled.includes(ring.id)), ...added])
       })
     )
   }, [profileKey])

@@ -77,7 +77,7 @@ import { LocalLiveCall } from './components/LocalLiveCall'
 import { GeminiLiveCall } from './components/GeminiLiveCall'
 import { HermesCallSettings } from './components/HermesCallSettings'
 import { IncomingCall } from './components/IncomingCall'
-import { useRings, type Ring } from './state/rings'
+import { declineOnHost, useCallPresence, useRings, type Ring } from './state/rings'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
@@ -690,6 +690,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
 
   // Calls from Hermes ring here too.
   const rings = useRings(connected, profiles)
+  useCallPresence(connected && calling, selected.profile)
   const ring = rings.ringing.at(-1)
   const answerRing = (call: Ring) => {
     rings.dismiss(call.id)
@@ -711,6 +712,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }
   const declineRing = (call: Ring, missed: boolean) => {
     rings.dismiss(call.id)
+    // A miss is the iPhone's to report (it may still be answered there); a decline is the user's, from here.
+    if (!missed) declineOnHost(call)
     if (missed && notificationsEnabled() && typeof Notification !== 'undefined')
       new Notification(call.name ? t('Missed call from {name}', { name: call.name }) : t('Missed call from Hermes'), {
         body: call.body || call.reason,
