@@ -18134,6 +18134,21 @@
     "zh-Hans": "快速提问",
     "zh-Hant": "快速提問"
   },
+  "Quick picks": {
+    "de": "Schnellauswahl",
+    "es": "Selección rápida",
+    "fr": "Accès rapide",
+    "id": "Pilihan cepat",
+    "it": "Scelte rapide",
+    "ja": "クイック選択",
+    "ko": "빠른 선택",
+    "pl": "Szybki wybór",
+    "pt-BR": "Escolhas rápidas",
+    "ru": "Быстрый выбор",
+    "tr": "Hızlı seçimler",
+    "zh-Hans": "快速选择",
+    "zh-Hant": "快速選擇"
+  },
   "Quiet days": {
     "de": "Ruhetage",
     "es": "Días de silencio",

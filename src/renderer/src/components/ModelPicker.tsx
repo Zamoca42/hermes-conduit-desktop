@@ -4,6 +4,8 @@ import { t } from '@shared/i18n'
 import type { ModelSwitch, OpenChat } from '../state/useChat'
 import { REASONING_LEVELS, groupModels, reasoningTitle, type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
+import { isPinned, pinnedRows, recentRows, type ModelPick } from '../state/modelQuickPicks'
+import { useModelQuickPicks } from './ModelOptions'
 
 interface Props {
   chat: OpenChat
@@ -65,6 +67,10 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
   }, [onClose])
 
   const groups = useMemo(() => groupModels(providers ?? [], query), [providers, query])
+  const quick = useModelQuickPicks()
+  const inUse: ModelPick | null = chat.model ? { model: chat.model, provider: chat.provider ?? '' } : null
+  const pinned = query.trim() ? [] : pinnedRows(quick.picks, providers ?? [])
+  const recent = query.trim() ? [] : recentRows(quick.picks, providers ?? [], inUse)
   const current = (model: string, provider: string) => model === chat.model && (!chat.provider || provider === chat.provider)
 
   async function pick(model: string, provider: string) {
@@ -76,6 +82,8 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
     if (outcome.kind === 'confirm') {
       outcome = window.confirm(outcome.message) ? await setModel(model, provider, true) : { kind: 'switched', deferred: false }
     }
+    // A switch leads the recent models, with the one left a click away.
+    if (outcome.kind === 'switched') quick.switched({ model, provider }, inUse)
     if (outcome.kind === 'failed') setNote({ text: outcome.message, tone: 'error' })
     else if (outcome.kind === 'switched' && outcome.deferred) setNote({ text: t('Switches to {model} when this reply finishes.', { model }), tone: 'info' })
     setBusy(null)
@@ -92,6 +100,31 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
     } finally {
       setBusy(null)
     }
+  }
+
+  /** A model's row, with Pin or Unpin beside it. Quick picks name the provider too. */
+  function row(model: string, provider: string, quickPick: boolean) {
+    const on = current(model, provider)
+    const key = `${provider}/${model}`
+    const pin = isPinned(quick.picks, { model, provider })
+    return (
+      <div key={key} className={`model-row-wrap${pin ? ' pinned' : ''}`}>
+        <button className={`model-row${on ? ' on' : ''}`} aria-pressed={on} disabled={!!busy && busy !== key} onClick={() => void pick(model, provider)}>
+          <span className="model-row-name">{model}</span>
+          {quickPick ? <span className="meta model-row-provider">{providerName(providers, provider)}</span> : null}
+          {busy === key ? <Icon name="spinner" style={{ animation: 'spin 1s linear infinite' }} /> : on ? <Icon name="check" /> : null}
+        </button>
+        <button
+          className="model-pin"
+          aria-label={pin ? t('Unpin') : t('Pin')}
+          title={pin ? t('Unpin') : t('Pin')}
+          aria-pressed={pin}
+          onClick={() => quick.toggle({ model, provider })}
+        >
+          <Icon name="pin" />
+        </button>
+      </div>
+    )
   }
 
   const reasoning = (chat.reasoning ?? '').toLowerCase()
@@ -154,7 +187,10 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
               {t('Fast mode')}
             </label>
           )}
-          <label className="toggle" title={t('YOLO automatically approves tool actions for this conversation only. Set the profile default in Workspace & safety.')}>
+          <label
+            className="toggle"
+            title={t('YOLO automatically approves tool actions for this conversation only. Set the profile default in Workspace & safety.')}
+          >
             <input type="checkbox" checked={chat.yolo === true} disabled={!!busy} onChange={e => void apply('yolo', () => setYolo(e.target.checked))} />
             {t('YOLO mode')}
           </label>
@@ -177,29 +213,27 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
         }}
       />
       <div className="model-list">
-        {loadError ? <div className="model-note error">{t('Could not load models.')} {loadError}</div> : null}
+        {loadError ? (
+          <div className="model-note error">
+            {t('Could not load models.')} {loadError}
+          </div>
+        ) : null}
         {!providers && !loadError ? <div className="model-note">{t('Loading…')}</div> : null}
         {providers && !groups.length ? (
           <div className="model-note">{query.trim() ? t('Nothing matches “{query}”.', { query: query.trim() }) : t('Could not load models.')}</div>
         ) : null}
+        {pinned.length || recent.length ? (
+          <section className="model-group model-quick" aria-label={t('Quick picks')}>
+            {pinned.length ? <div className="model-group-name">{t('Pinned')}</div> : null}
+            {pinned.map(p => row(p.model, p.provider, true))}
+            {recent.length ? <div className="model-group-name">{t('Recent')}</div> : null}
+            {recent.map(p => row(p.model, p.provider, true))}
+          </section>
+        ) : null}
         {groups.map(group => (
           <section key={group.slug} className="model-group">
             <div className="model-group-name">{group.name}</div>
-            {group.models.map(model => {
-              const on = current(model, group.slug)
-              return (
-                <button
-                  key={model}
-                  className={`model-row${on ? ' on' : ''}`}
-                  aria-pressed={on}
-                  disabled={!!busy && busy !== `${group.slug}/${model}`}
-                  onClick={() => void pick(model, group.slug)}
-                >
-                  <span className="model-row-name">{model}</span>
-                  {busy === `${group.slug}/${model}` ? <Icon name="spinner" style={{ animation: 'spin 1s linear infinite' }} /> : on ? <Icon name="check" /> : null}
-                </button>
-              )
-            })}
+            {group.models.map(model => row(model, group.slug, false))}
           </section>
         ))}
       </div>

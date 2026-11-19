@@ -27,6 +27,7 @@ import { avatarChanged, useAvatar } from '../state/useBots'
 import { BotWorkSettings } from './BotWorkSettings'
 import { StarterFaceArt } from './StarterFaceArt'
 import { Icon } from './icons'
+import { ModelOptions } from './ModelOptions'
 
 interface Props {
   bot: Bot
@@ -383,15 +384,7 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
             >
               {!modelValue ? <option value="">{t('Default')}</option> : null}
               {modelValue && !listed ? <option value={modelValue}>{draft.model}</option> : null}
-              {groups.map(group => (
-                <optgroup key={group.slug} label={group.name}>
-                  {group.models.map(model => (
-                    <option key={model} value={`${group.slug}\n${model}`}>
-                      {model}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
+              <ModelOptions providers={providers ?? []} groups={groups} />
             </select>
           ) : (
             <p className="meta">{detailsError ? '—' : t('Loading…')}</p>

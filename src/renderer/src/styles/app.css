@@ -2820,6 +2820,60 @@ html[data-window='quick'] body {
   flex: none;
 }
 
+.model-row-wrap {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.model-row-provider {
+  flex: none;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+.model-pin {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-3);
+  opacity: 0;
+}
+
+.model-pin svg {
+  width: 14px;
+  height: 14px;
+}
+
+.model-row-wrap:hover .model-pin,
+.model-pin:focus-visible,
+.model-row-wrap.pinned .model-pin {
+  opacity: 1;
+}
+
+.model-row-wrap.pinned .model-pin {
+  color: var(--accent);
+}
+
+.model-pin:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.model-quick {
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
 .chip-button {
   cursor: pointer;
 }
