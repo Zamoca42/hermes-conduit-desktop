@@ -9764,6 +9764,21 @@
     "zh-Hans": "来自你的评分、“去做”和“完成”",
     "zh-Hant": "來自你的評分、「去做」和「完成」"
   },
+  "From {name}": {
+    "de": "Aus {name}",
+    "es": "Desde {name}",
+    "fr": "Depuis {name}",
+    "id": "Dari {name}",
+    "it": "Da {name}",
+    "ja": "{name}から",
+    "ko": "출처: {name}",
+    "pl": "Z czatu „{name}”",
+    "pt-BR": "De {name}",
+    "ru": "Из чата «{name}»",
+    "tr": "Kaynak: {name}",
+    "zh-Hans": "来自 {name}",
+    "zh-Hant": "來自 {name}"
+  },
   "Full Screen": {
     "de": "Vollbild",
     "es": "Pantalla completa",
@@ -30853,6 +30868,21 @@
     "tr": "Ses",
     "zh-Hans": "语音",
     "zh-Hant": "語音"
+  },
+  "Voice Jobs": {
+    "de": "Sprachjobs",
+    "es": "Trabajos de voz",
+    "fr": "Jobs vocaux",
+    "id": "Pekerjaan Suara",
+    "it": "Job vocali",
+    "ja": "音声ジョブ",
+    "ko": "음성 작업",
+    "pl": "Zlecenia głosowe",
+    "pt-BR": "Trabalhos de Voz",
+    "ru": "Голосовые задания",
+    "tr": "Sesli İşler",
+    "zh-Hans": "语音任务",
+    "zh-Hant": "語音工作"
   },
   "Voice call": {
     "de": "Sprachanruf",

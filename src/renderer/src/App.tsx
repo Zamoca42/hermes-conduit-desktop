@@ -16,6 +16,7 @@ import { ColumnDivider } from './components/ColumnDivider'
 import { LastCallTrace } from './components/LastCallTrace'
 import { CrashReportBanner, DeviceReportsSetting } from './components/DeviceReports'
 import { GlowContext, useGlowColors } from './components/GlowColors'
+import { archiveClassicChat, tagVoiceSession, useVoiceList, withVoice } from './state/voiceList'
 import { setCatalogHost } from './state/modelCatalog'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { BesideChatPane, type BesideChat } from './components/BesideChat'
@@ -460,6 +461,22 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     if (was !== null && was !== selected.id) setCalling(false)
   }, [selected.id])
   useEffect(() => setCalling(false), [selected.profile, section])
+  // A chat a Classic call made (started with no chat open) is filed under Voice, and archived when the
+  // call ends so Hermes Desktop's list keeps the chats people work in; this list shows it still.
+  const classicFresh = useRef<{ fresh: boolean; chat: { id: string; profile?: string } | null }>({ fresh: false, chat: null })
+  useEffect(() => {
+    const kept = classicFresh.current
+    if (calling && callMode === 'classic') {
+      if (!kept.fresh && !kept.chat && !selected.id) kept.fresh = true
+      if (kept.fresh && !kept.chat && selected.id) {
+        kept.chat = { id: selected.id, profile: selected.profile }
+        void tagVoiceSession(selected.profile, selected.id, 'classic').catch(() => undefined)
+      }
+      return
+    }
+    if (kept.chat) void archiveClassicChat(kept.chat.profile, kept.chat.id).catch(() => undefined)
+    classicFresh.current = { fresh: false, chat: null }
+  }, [calling, callMode, selected.id, selected.profile])
   // A call from Hermes answered here: its chat opens, then the call starts in it (after the resets above).
   const answeredCall = useRef<string | null>(null)
   useEffect(() => {
@@ -498,10 +515,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // Workstreams' chats stay with their bots, as on the phone.
   const botNames = useMemo(() => (roster.bots ?? []).map(bot => bot.name), [roster.bots])
   const { sessions: workSessions, byBot: workByBot } = useWorkSessions(botNames, connected)
-  const listedRows = useMemo(
-    () => (list.rows && (pulseChat || workSessions.size) ? list.rows.filter(row => row.id !== pulseChat && !workSessions.has(row.id)) : list.rows),
-    [list.rows, pulseChat, workSessions]
-  )
+  // Voice's rows: calls, Classic's chats and voice jobs under Voice, the plugin's archived ones listed again.
+  const voiceProfiles = useMemo(() => [...new Set((list.rows ?? []).map(r => r.profile ?? ''))].sort(), [list.rows])
+  const voice = useVoiceList(connected, voiceProfiles, `${list.rows?.length ?? 0}\t${list.archived.length}\t${list.rows?.[0]?.activeAt ?? 0}`)
+  const listedRows = useMemo(() => {
+    const rows = list.rows ? withVoice(list.rows, list.archived, voice) : list.rows
+    return rows && (pulseChat || workSessions.size) ? rows.filter(row => row.id !== pulseChat && !workSessions.has(row.id)) : rows
+  }, [list.rows, list.archived, voice, pulseChat, workSessions])
   // The open chat's bot's work: its Bot Chat shows a line under its title, and a workstream's chat goes back to it.
   const [workOpen, setWorkOpen] = useState(false)
   const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined

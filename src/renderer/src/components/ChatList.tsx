@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { underSource } from '../state/voiceList'
 import { sectionRows, timeLabel, type ChatRow } from '../state/chats'
 import type { Bot } from '../state/bots'
 import { BotAvatar } from './BotsHome'
@@ -140,7 +141,7 @@ export function ChatList({
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
     const marked = marks ? filterRows(inProfile, filter, marks, runningIds, waitingIds) : inProfile
-    const sourced = source ? marked.filter(r => (r.sourceKind ?? 'chat') === source) : marked
+    const sourced = source ? marked.filter(r => underSource(r, source)) : marked
     const filtered = q ? sourced.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : sourced
     const sections = sectionRows(filtered)
     // The Pinned section in the person's order, arranged from every pinned chat the profile shown has.

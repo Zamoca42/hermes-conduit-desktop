@@ -18,6 +18,7 @@
  * a running one is read from its chat until its reply is there.
  */
 import { gateway } from '../gateway'
+import { tagVoiceSession } from './voiceList'
 import { namingFiles } from './media'
 import { correctTurn, type Correction } from './localLive'
 import { STATUS_PATH, pluginStatus, serves } from './plugin'
@@ -319,6 +320,14 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
  * One call's jobs. `onChange` redraws the call screen; `onOutcome` hands a
  * settled job's notice to the call, which tells it at the next quiet moment.
  */
+/**
+ * A job's request as Hermes reads it, the phone's VoiceBackgroundJobSupervisor.jobPrompt
+ * word for word: the plugin knows a voice job's chat by it, and archives the chat once
+ * Hermes has answered (Voice in the chats list).
+ */
+export const jobPrompt = (instructions: string) =>
+  `[Background job started from a Conduit voice conversation. Nobody is watching this chat live, so work on it on your own. When you are done, end your final message with a plain-language summary that can be read aloud: what you found or did, with the key details.]\n\n${instructions}`
+
 export class VoiceJobs {
   jobs: VoiceJob[] = []
   private count = 0
@@ -336,7 +345,8 @@ export class VoiceJobs {
     private rpc: Rpc = (method, params) => gateway.rpc(method, params),
     listen: (handler: (event: { type: string; session_id?: string; payload?: unknown }) => void) => () => void = handler => window.conduit.onEvent(handler),
     private correct: (sessionId: string, text: string, profile?: string) => Promise<Correction> = correctTurn,
-    private adopt: (profile: string | undefined, sessionId: string, title: string, goal: string) => Promise<boolean> = adoptJob
+    private adopt: (profile: string | undefined, sessionId: string, title: string, goal: string) => Promise<boolean> = adoptJob,
+    private tag: typeof tagVoiceSession = tagVoiceSession
   ) {
     this.unsubscribe = listen(event => this.event(event))
   }
@@ -452,9 +462,11 @@ export class VoiceJobs {
       const sid = str(made?.session_id)
       if (!sid) throw new Error('Hermes made no session for the job.')
       this.update(id, { sid, stored: str(made.stored_session_id) ?? sid, sentAt: Date.now() })
-      const submit: Row = { session_id: sid, text: task }
+      const submit: Row = { session_id: sid, text: jobPrompt(task) }
       if (this.profile) submit.profile = this.profile
       await this.rpc('prompt.submit', submit)
+      // Filed under Voice Jobs, beneath the call's chat; the plugin archives it once Hermes answers.
+      void this.tag(this.profile, str(made.stored_session_id) ?? sid, 'job', this.chat).catch(() => undefined)
       // Hermes took the request: its bot's Work panel keeps it as a call's.
       void this.adopt(this.profile, str(made.stored_session_id) ?? sid, job.title, task).catch(() => false)
     } catch (e) {

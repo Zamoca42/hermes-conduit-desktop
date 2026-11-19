@@ -23,6 +23,12 @@ export interface ChatRow {
   /** Where the chat came from, for its badge and the Sources filter. */
   sourceKind?: ChatSource
   messageCount?: number
+  /** Hermes' auto-archive stamp: archived by a sweep (the plugin's voice archiving), not by the user. */
+  autoArchived?: boolean
+  /** Hermes' end_reason for an ended row. */
+  endReason?: string
+  /** A voice call was kept with this chat, so it's under Voice too. */
+  hasVoiceCalls?: boolean
 }
 
 export interface ChatSection {
@@ -39,8 +45,8 @@ export const CHAT_LIST_PAGE = 200
 /** Pages read at most, so a host with years of chats doesn't read them all at once. */
 export const CHAT_LIST_MAX_PAGES = 25
 
-export function chatListPath(offset = 0): string {
-  return `/api/profiles/sessions?limit=${CHAT_LIST_PAGE}&offset=${offset}&min_messages=1&archived=exclude&order=recent&exclude_sources=${CHAT_LIST_EXCLUDED_SOURCES}`
+export function chatListPath(offset = 0, archived: 'exclude' | 'only' = 'exclude'): string {
+  return `/api/profiles/sessions?limit=${CHAT_LIST_PAGE}&offset=${offset}&min_messages=1&archived=${archived}&order=recent&exclude_sources=${CHAT_LIST_EXCLUDED_SOURCES}`
 }
 
 export const CHAT_LIST_PATH = chatListPath(0)
@@ -113,7 +119,9 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
       unread: obj.unread === true || obj.unread === 1 || undefined,
       source,
       sourceKind: classifySource(obj),
-      messageCount: typeof obj.message_count === 'number' ? obj.message_count : undefined
+      messageCount: typeof obj.message_count === 'number' ? obj.message_count : undefined,
+      autoArchived: obj.auto_archived === true || obj.auto_archived === 1 || undefined,
+      endReason: typeof obj.end_reason === 'string' && obj.end_reason ? obj.end_reason : undefined
     })
   }
   return rows

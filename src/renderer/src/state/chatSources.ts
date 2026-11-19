@@ -8,6 +8,8 @@ import { t } from '../../../shared/i18n'
 
 export type ChatSource =
   | 'chat'
+  | 'voice'
+  | 'voice_job'
   | 'discord'
   | 'telegram'
   | 'slack'
@@ -41,6 +43,8 @@ export type ChatSource =
 /** The Sources filter's default order: Chat, Discord and Telegram, the other platforms, then the rest. */
 export const SOURCE_ORDER: ChatSource[] = [
   'chat',
+  'voice',
+  'voice_job',
   'discord',
   'telegram',
   'slack',
@@ -104,6 +108,10 @@ export function sourceName(source: ChatSource): string {
   switch (source) {
     case 'chat':
       return t('Chat')
+    case 'voice':
+      return t('Voice')
+    case 'voice_job':
+      return t('Voice Jobs')
     case 'email':
       return t('Email')
     case 'webhook':
@@ -170,7 +178,9 @@ export function classifySource(row: Record<string, unknown>): ChatSource {
 }
 
 /** The sources the rows come from, in the filter's order. */
-export function sourcesIn(rows: { sourceKind?: ChatSource }[]): ChatSource[] {
+export function sourcesIn(rows: { sourceKind?: ChatSource; hasVoiceCalls?: boolean }[]): ChatSource[] {
   const present = new Set(rows.map(row => row.sourceKind ?? 'chat'))
+  // A chat a call was kept with is under Voice too.
+  if (rows.some(row => row.hasVoiceCalls)) present.add('voice')
   return SOURCE_ORDER.filter(source => present.has(source))
 }
