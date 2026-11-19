@@ -7895,3 +7895,74 @@ button.cap-row-text {
   font-size: 14px;
   outline: none;
 }
+
+/* The card Hermes waits on while the model connects something. */
+.connection-card.settled {
+  opacity: 0.85;
+}
+.connection-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.connection-row .meta {
+  margin: 0;
+}
+.connection-row .meta.connected {
+  color: var(--success, #2e9e5b);
+}
+.connection-row .meta.warns {
+  color: var(--warning, #c77700);
+}
+.connection-row-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.connection-glyph {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--field);
+  color: var(--accent);
+}
+.connection-glyph svg {
+  width: 16px;
+  height: 16px;
+}
+.connection-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.connection-actions {
+  display: flex;
+  gap: 6px;
+}
+a.ask-btn {
+  text-decoration: none;
+}
+a.ask-btn[aria-disabled='true'] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.connection-suggested {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+.connection-continue {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-top: 8px;
+}
+.connection-continue .meta {
+  margin: 0;
+}

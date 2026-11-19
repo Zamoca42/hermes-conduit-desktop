@@ -20,6 +20,7 @@ import { foldRuns, isStep, span, spanText, type Row } from '../state/runs'
 import { useStepSummaries, type StepSummaries } from '../state/useStepSummaries'
 import { callLength, withCalls, type ChatCall } from '../state/voiceCalls'
 import { followedUpKeys } from '../state/predictive'
+import { ConnectionCardView } from './ConnectionCardView'
 
 export interface MessageMenuItem {
   label: string
@@ -507,6 +508,8 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
       )
     case 'notice':
       return <div className={`notice${item.tone === 'error' ? ' error' : ''}`}>{item.text}</div>
+    case 'connection':
+      return <ConnectionCardView card={item.card} />
     case 'output':
       return (
         <div className="command-output" data-key={item.key}>

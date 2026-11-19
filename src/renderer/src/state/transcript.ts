@@ -9,6 +9,7 @@ import { t } from '../../../shared/i18n'
 import { sideAgentNote } from './slash'
 import { isQuestion } from './stepSummaries'
 import { SHOW_TOOL, boardFrom, type Board } from './boards'
+import { appliedOver, connectionFrom, type ConnectionCard } from './connections'
 import { TIMELINE_KINDS, delegationReport, timelineNotice, type DelegationEntry } from './timeline'
 
 export interface UserItem {
@@ -84,6 +85,13 @@ export interface NoticeItem {
   tone: 'error' | 'info'
 }
 
+/** The card Hermes waits on while the model connects something: Hermes' latest snapshot of the operation. */
+export interface ConnectionItem {
+  kind: 'connection'
+  key: string
+  card: ConnectionCard
+}
+
 /** What a slash command printed, or a side agent's answer: beside the turn, not part of it. */
 export interface OutputItem {
   kind: 'output'
@@ -131,7 +139,18 @@ export interface CallItem {
   endedAt: number
 }
 
-export type TranscriptItem = UserItem | AssistantItem | ThinkingItem | ToolItem | NoticeItem | OutputItem | ReviewItem | CronReportItem | DelegationItem | CallItem
+export type TranscriptItem =
+  | UserItem
+  | AssistantItem
+  | ThinkingItem
+  | ToolItem
+  | NoticeItem
+  | OutputItem
+  | ReviewItem
+  | CronReportItem
+  | DelegationItem
+  | CallItem
+  | ConnectionItem
 
 const CRON_PREFIX = '[Cron job "'
 const CRON_SUFFIX = '" report: shown in the chat, no reply asked for]'
@@ -327,9 +346,14 @@ function payloadOf(event: { payload?: unknown }): Record<string, unknown> {
 
 const str = (value: unknown): string | undefined => (typeof value === 'string' ? value : undefined)
 
-export function applyEvent(state: TranscriptState, event: { type: string; payload?: unknown }): TranscriptState {
+export function applyEvent(state: TranscriptState, event: { type: string; payload?: unknown; session_id?: string }): TranscriptState {
   const payload = payloadOf(event)
   switch (event.type) {
+    case 'connection.request':
+    case 'connection.update': {
+      const card = connectionFrom(payload, event.session_id ?? '')
+      return card ? showConnection(state, card) : state
+    }
     case 'message.start':
       return { ...state, running: true, status: undefined, items: confirmPending(state.items) }
     case 'message.delta': {
@@ -439,6 +463,31 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     default:
       return state
   }
+}
+
+/**
+ * A connection frame: it updates the card it belongs to (an older frame
+ * changes nothing), or opens one when it's still open. A settled operation
+ * this chat never showed opens no card (#1988, #1993).
+ */
+export function showConnection(state: TranscriptState, card: ConnectionCard): TranscriptState {
+  const index = state.items.findIndex(item => item.kind === 'connection' && item.card.opId === card.opId)
+  if (index < 0) return card.settled ? state : { ...state, items: [...state.items, { kind: 'connection', key: nextKey('c'), card }] }
+  const shown = state.items[index] as ConnectionItem
+  const next = appliedOver(card, shown.card)
+  if (!next) return state
+  const items = [...state.items]
+  items[index] = { ...shown, card: next }
+  return { ...state, items }
+}
+
+/** The connection card still waiting on the user, if any. */
+export function openConnection(state: TranscriptState): ConnectionCard | null {
+  for (let i = state.items.length - 1; i >= 0; i--) {
+    const item = state.items[i]!
+    if (item.kind === 'connection' && !item.card.settled) return item.card
+  }
+  return null
 }
 
 /** A command's output or a note, after what's there (a live reply's words stay above it). */

@@ -9,6 +9,7 @@ import {
   takesOverAutomatically,
   takingOverMessage
 } from './chatTakeover'
+import { connectionFrom, connectionOwner, type ConnectionCard } from './connections'
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { contextFromUsage, parseBreakdown, type ContextWindow } from './context'
@@ -22,6 +23,8 @@ import {
   emptyTranscript,
   failPendingUser,
   withdrawPendingUser,
+  openConnection,
+  showConnection,
   fromHistory,
   missingDetails,
   toolArgs,
@@ -87,6 +90,14 @@ interface ResumeResult {
   info?: ChatInfo
   /** The agent's plan (Hermes 0.21+), for a chat whose last plan is older than the loaded page. */
   todo_state?: unknown
+  /** A connection card still waiting on the user: reopening the chat brings it back. */
+  pending_connection?: unknown
+}
+
+/** An open connection card the resume brought back. */
+function withPendingConnection(state: TranscriptState, result: ResumeResult): TranscriptState {
+  const card = result.pending_connection ? connectionFrom(result.pending_connection, result.session_id) : null
+  return card ? showConnection(state, card) : state
 }
 
 interface CreateResult {
@@ -214,6 +225,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         if (result.running && result.inflight?.assistant) {
           state = applyEvent(state, { type: 'message.delta', payload: { text: result.inflight.assistant } })
         }
+        state = withPendingConnection(state, result)
         dispatch({ type: 'reset', state })
         void loadBoards(state, result.stored_session_id ?? storedId, profile, () => ticket === request.current, dispatch)
         // How full the window is, before the first reply ticks it.
@@ -292,13 +304,48 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       if (ticket !== request.current) return
       liveId.current = result.session_id
       setChat(c => ({ ...c, liveId: result.session_id, title: result.info?.title ?? c.title }))
-      const state = { items: fromHistory(result.messages ?? []), running: result.running === true, plan: parsePlan(result.todo_state) }
+      const state = withPendingConnection(
+        { items: fromHistory(result.messages ?? []), running: result.running === true, plan: parsePlan(result.todo_state) },
+        result
+      )
       dispatch({ type: 'reset', state })
       void loadBoards(state, result.stored_session_id ?? stored, profile, () => ticket === request.current, dispatch)
     } catch {
       // The chat as drawn stays; the next open reads it.
     }
   }, [profile, sessionAuthority])
+
+  /** The connection card's answers: rows approved or skipped, or Continue without what isn't connected. */
+  const respondConnection = useCallback(
+    async (card: ConnectionCard, targets: Record<string, unknown>[], continues = false) => {
+      const result: Record<string, unknown> = { targets }
+      if (continues) result.settled_by = 'continue'
+      const params: Record<string, unknown> = { owner: connectionOwner(card.sessionId), op_id: card.opId, result }
+      if (profile) params.profile = profile
+      await gateway.rpc('connection.respond', params)
+    },
+    [profile]
+  )
+  /** Try Again on an app whose sign-in page went dead: Hermes makes a new one on the open operation. */
+  const reissueConnection = useCallback(
+    async (card: ConnectionCard, name: string) => {
+      const params: Record<string, unknown> = { owner: connectionOwner(card.sessionId), connectors: [name], reconnect: true }
+      if (profile) params.profile = profile
+      await gateway.rpc('connectors.connect', params)
+    },
+    [profile]
+  )
+  /** Signed in on the page: Hermes looks at the account now rather than at its next check. */
+  const wakeConnection = useCallback(
+    async (card: ConnectionCard) => {
+      const params: Record<string, unknown> = { owner: connectionOwner(card.sessionId), op_id: card.opId }
+      if (profile) params.profile = profile
+      await gateway.rpc('connectors.operation.wake', params)
+    },
+    [profile]
+  )
+  const transcriptRef = useRef(transcript)
+  transcriptRef.current = transcript
 
   /** Asks the plugin to drop another app's claim on this chat, under every id it goes by. */
   const takeOverChat = useCallback(
@@ -358,6 +405,9 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         if (profile) params.profile = profile
         if (sessionAuthority) params.submission_id = uuid()
         if (uploaded?.images.length) params.attachments = uploaded.images
+        // A message sent while a connection card waits continues it first, as in Hermes Desktop, so the message doesn't wait behind it.
+        const waiting = openConnection(transcriptRef.current)
+        if (waiting && waiting.sessionId === sid) await respondConnection(waiting, [], true).catch(() => undefined)
         const preview = titlePreview(attachments)
         if (preview) params.title_preview = preview
         const submit = async () => {
@@ -403,7 +453,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         return false
       }
     },
-    [profile, sessionAuthority, createSession, takeOverChat]
+    [profile, sessionAuthority, createSession, takeOverChat, respondConnection]
   )
 
   const stop = useCallback(async () => {
@@ -602,5 +652,23 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     [configure]
   )
 
-  return { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection, takeover, takeOver }
+  return {
+    transcript,
+    chat,
+    loading,
+    error,
+    send,
+    stop,
+    command,
+    setModel,
+    setReasoning,
+    setSpeed,
+    setYolo,
+    noteCorrection,
+    takeover,
+    takeOver,
+    respondConnection,
+    reissueConnection,
+    wakeConnection
+  }
 }

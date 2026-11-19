@@ -60,6 +60,7 @@ import { useAgents } from './state/useAgents'
 import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
 import { TakeoverSettings } from './components/TakeoverSettings'
+import { ConnectionActionsContext } from './components/ConnectionCardView'
 import { NewBot } from './components/NewBot'
 import { useChatDisplay } from './state/display'
 import { ConfigPage } from './components/ConfigPage'
@@ -163,14 +164,25 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean; folder?: string }>({ id: null })
   const [projectsOpen, setProjectsOpen] = useState(false)
   const list = useChatList(connected)
-  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection, takeover, takeOver } = useChat(
-    selected.id,
-    selected.profile,
-    status.sessionAuthority === true,
-    connected,
-    selected.botChat === true,
-    selected.id ? undefined : selected.folder
-  )
+  const {
+    transcript,
+    chat,
+    loading,
+    error,
+    send,
+    stop,
+    command,
+    setModel,
+    setReasoning,
+    setSpeed,
+    setYolo,
+    noteCorrection,
+    takeover,
+    takeOver,
+    respondConnection,
+    reissueConnection,
+    wakeConnection
+  } = useChat(selected.id, selected.profile, status.sessionAuthority === true, connected, selected.botChat === true, selected.id ? undefined : selected.folder)
 
   // The chat list's profile: a new chat starts in it.
   const [chatProfile, setChatProfile] = useState<string | null>(null)
@@ -499,6 +511,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       if (unread ? row.unread : !row.unread) writeUnread(row, !unread)
     },
     [marks, updateMarks, writeUnread]
+  )
+  const connectionActions = useMemo(
+    () => ({ respond: respondConnection, reissue: reissueConnection, wake: wakeConnection }),
+    [respondConnection, reissueConnection, wakeConnection]
   )
   /** Bumped when a tapped takeover makes the chat Conduit's: the composer sends what's in it. */
   const [sendNow, setSendNow] = useState(0)
@@ -959,21 +975,23 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               </div>
               {screenOpen ? <BotScreen profile={screenProfile} botName={botTitle} onClose={() => setScreenOpen(false)} /> : null}
               <FileLinks.Provider value={openPath}>
-                <Transcript
-                  state={transcript}
-                  loading={loading}
-                  error={error}
-                  requests={openRequests}
-                  profile={selected.profile}
-                  author={botTitle}
-                  onQuote={setQuote}
-                  onCommand={text => void onSend(text)}
-                  display={chatDisplay}
-                  sessionId={chat.liveId ?? undefined}
-                  calls={chatCallList}
-                  onOpenCall={setOpenCall}
-                  followedUp={followedUp}
-                />
+                <ConnectionActionsContext.Provider value={connectionActions}>
+                  <Transcript
+                    state={transcript}
+                    loading={loading}
+                    error={error}
+                    requests={openRequests}
+                    profile={selected.profile}
+                    author={botTitle}
+                    onQuote={setQuote}
+                    onCommand={text => void onSend(text)}
+                    display={chatDisplay}
+                    sessionId={chat.liveId ?? undefined}
+                    calls={chatCallList}
+                    onOpenCall={setOpenCall}
+                    followedUp={followedUp}
+                  />
+                </ConnectionActionsContext.Provider>
               </FileLinks.Provider>
               {openCall && selected.id ? (
                 <CallTranscriptSheet profile={selected.profile} chatId={selected.id} callId={openCall} onClose={() => setOpenCall(null)} />
