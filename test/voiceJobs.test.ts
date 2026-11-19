@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  jobPrompt,
   MAX_SAVED_JOBS,
   SAVED_JOB_MAX_AGE_MS,
   VoiceJobs,
@@ -56,7 +57,7 @@ describe('background jobs from a call', () => {
     expect(started).toMatchObject({ status: 'started', job_id: 'job-1' })
     expect(calls).toEqual([
       ['session.create', { cols: 96, source: 'desktop', title: 'Research the best GPU for training', profile: 'work' }],
-      ['prompt.submit', { session_id: 's1', text: 'Research the best GPU for training', profile: 'work' }]
+      ['prompt.submit', { session_id: 's1', text: jobPrompt('Research the best GPU for training'), profile: 'work' }]
     ])
     expect(adopted).toEqual([['work', 'stored1', 'Research the best GPU for training', 'Research the best GPU for training']])
     emit({ type: 'message.delta', session_id: 'other', payload: { text: 'nope' } })

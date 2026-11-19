@@ -6,6 +6,8 @@ import { CHAT_LIST_MAX_PAGES, CHAT_LIST_PAGE, chatListPath, mergeRows, refreshFi
 export function useChatList(connected: boolean) {
   const [rows, setRows] = useState<ChatRow[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  /** Archived rows Hermes stamped auto-archived: voice's (see voiceList.ts) are listed with the chats. */
+  const [archived, setArchived] = useState<ChatRow[]>([])
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const dashboardList = useRef(true)
 
@@ -39,7 +41,9 @@ export function useChatList(connected: boolean) {
       setRows(all)
       setError(null)
       shown = true
-      if (!full || !dashboardList.current) return
+      if (!dashboardList.current) return
+      void readArchived(ticket, full)
+      if (!full) return
       for (let page = 1; page < CHAT_LIST_MAX_PAGES && responseCount(body) >= CHAT_LIST_PAGE; page++) {
         body = await gateway.http('GET', chatListPath(page * CHAT_LIST_PAGE))
         if (ticket !== generation.current) return
@@ -53,6 +57,25 @@ export function useChatList(connected: boolean) {
       setError(e instanceof Error ? e.message : String(e))
     }
   }, [])
+
+  /** The archived pages' auto-archived rows, as deep as the list reads; a refresh reads the first page only. */
+  const archivedRef = useRef<ChatRow[]>([])
+  const readArchived = async (ticket: number, full: boolean) => {
+    try {
+      let found: ChatRow[] = []
+      for (let page = 0; page < (full ? CHAT_LIST_MAX_PAGES : 1); page++) {
+        const body = await gateway.http('GET', chatListPath(page * CHAT_LIST_PAGE, 'only'))
+        if (ticket !== generation.current) return
+        found = [...found, ...rowsFromResponse(body).filter(r => r.autoArchived)]
+        if (responseCount(body) < CHAT_LIST_PAGE) break
+      }
+      const next = full ? found : mergeRows(archivedRef.current, found)
+      archivedRef.current = next
+      setArchived(next)
+    } catch {
+      // Voice's archived rows wait for the next read.
+    }
+  }
 
   const refreshSoon = useCallback(() => {
     if (timer.current) clearTimeout(timer.current)
@@ -82,5 +105,5 @@ export function useChatList(connected: boolean) {
     setRows(next)
   }, [])
 
-  return { rows, error, refresh: refreshSoon, patchRow }
+  return { rows, archived, error, refresh: refreshSoon, patchRow }
 }
