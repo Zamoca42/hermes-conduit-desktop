@@ -29698,5 +29698,20 @@
     "tr": "“{kind}” kartları",
     "zh-Hans": "“{kind}”卡片",
     "zh-Hant": "「{kind}」卡片"
+  },
+  "Runs on {model}": {
+    "de": "Läuft mit {model}",
+    "es": "Usa {model}",
+    "fr": "Tourne sur {model}",
+    "id": "Berjalan dengan {model}",
+    "it": "Usa {model}",
+    "ja": "{model}で実行",
+    "ko": "{model}에서 실행",
+    "pl": "Działa na {model}",
+    "pt-BR": "Roda em {model}",
+    "ru": "Работает на {model}",
+    "tr": "{model} ile çalışıyor",
+    "zh-Hans": "使用 {model} 运行",
+    "zh-Hant": "使用 {model} 執行"
   }
 }

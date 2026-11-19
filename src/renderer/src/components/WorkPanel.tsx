@@ -88,6 +88,7 @@ function WorkCard({
         <span className="work-status-word">{statusText(item)}</span>
         {now ? <span className="meta"> · {now}</span> : null}
       </div>
+      {item.model ? <div className="meta work-model">{t('Runs on {model}', { model: item.model })}</div> : null}
       {item.checklist.length ? (
         <div className="work-progress" aria-label={t('{done} of {all}', { done: String(doneCount(item)), all: String(item.checklist.length) })}>
           <span className="usage-meter">
