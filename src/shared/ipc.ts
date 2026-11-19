@@ -27,6 +27,31 @@ export type HostProbe =
       help?: TroubleshootingTopic
     }
 
+/** A language's offline speech model for the wake phrase, from Vosk's list. */
+export interface WakeModelChoice {
+  /** Vosk's language code: en-us, de, cn… */
+  lang: string
+  name: string
+  /** Vosk's name for the language. */
+  label: string
+  bytes?: number
+  md5?: string
+}
+
+/** The wake phrase's model: the languages offered, the one kept, and a download running. */
+export interface WakeModelsState {
+  /** Null until Vosk's list is read, or when it couldn't be. */
+  choices: WakeModelChoice[] | null
+  installed: { lang: string; name: string; label: string } | null
+  downloading: { lang: string; received: number; total?: number } | null
+  error?: string
+  /** The listener as it last reported. */
+  listener?: WakeListenerState
+}
+
+/** The listener: off, starting (the model loading), listening, or stopped by a problem. */
+export type WakeListenerState = { state: 'off' | 'starting' | 'listening' } | { state: 'failed'; error: string }
+
 /** The phone's troubleshooting topics a sign-in failure can point to. */
 export type TroubleshootingTopic = 'network' | 'tls' | 'cloudflare'
 
@@ -183,6 +208,18 @@ export interface ConduitApi {
   /** Asks for Touch ID or Windows Hello and, once given, opens the saved hosts. */
   unlock(): Promise<boolean>
   /** Crash and freeze reports kept on this computer, and those Conduit still asks about. */
+  /** The wake phrase: its offline model and the listener (hidden window, on this computer only). */
+  wake: {
+    models(): Promise<WakeModelsState>
+    download(lang: string): Promise<void>
+    cancelDownload(): void
+    remove(): Promise<void>
+    onModels(listener: (state: WakeModelsState) => void): () => void
+    /** The phrases to listen for, or null to stop (the microphone closes). */
+    listen(phrases: string[] | null): void
+    onHeard(listener: (index: number) => void): () => void
+    onListener(listener: (state: WakeListenerState) => void): () => void
+  }
   deviceReports(): Promise<{ reports: DeviceReport[]; offered: DeviceReport[] }>
   /** Posts the reports to Conduit's relay; true when it kept every one. */
   sendDeviceReports(ids: string[]): Promise<boolean>
@@ -381,6 +418,18 @@ export const IPC = {
   askHost: 'conduit:ask-host',
   setAskHost: 'conduit:set-ask-host',
   unlock: 'conduit:unlock',
+  wakeModels: 'conduit:wake-models',
+  wakeDownload: 'conduit:wake-download',
+  wakeCancel: 'conduit:wake-cancel',
+  wakeRemove: 'conduit:wake-remove',
+  wakeModelsChanged: 'conduit:wake-models-changed',
+  wakeListen: 'conduit:wake-listen',
+  wakeHeard: 'conduit:wake-heard',
+  wakeListener: 'conduit:wake-listener',
+  /** The listener window's own: its model, its phrases, and what it hears. */
+  wakeModelBytes: 'conduit:wake-model-bytes',
+  wakePhrases: 'conduit:wake-phrases',
+  wakeReport: 'conduit:wake-report',
   deviceReports: 'conduit:device-reports',
   sendDeviceReports: 'conduit:send-device-reports',
   declineDeviceReports: 'conduit:decline-device-reports',

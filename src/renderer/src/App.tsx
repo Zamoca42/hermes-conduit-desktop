@@ -40,6 +40,7 @@ import { TitleBar, hostName } from './components/TitleBar'
 import { setRunningCall, switchEndingCall } from './state/callSwitch'
 import { Transcript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { forgetSummaries } from './state/stepSummaries'
+import { WAKE_EVENT, wakeBindings, wakeChat, wakeProfiles, type WakeBinding } from './state/wakeSettings'
 import { forgetChatLists } from './state/savedChatList'
 import { keepTabs, launchPage, syncedTabs } from './state/launchTab'
 import { PREFS_PATH } from './state/pinnedOrder'
@@ -157,6 +158,7 @@ import { GrokLiveCall } from './components/GrokLiveCall'
 import { LocalLiveCall } from './components/LocalLiveCall'
 import { GeminiLiveCall } from './components/GeminiLiveCall'
 import { HermesCallSettings } from './components/HermesCallSettings'
+import { WakePhraseSettings } from './components/WakePhraseSettings'
 import { IncomingCall } from './components/IncomingCall'
 import { declineOnHost, useCallPresence, useRings, type Ring } from './state/rings'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
@@ -1385,6 +1387,62 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   const rings = useRings(connected, profiles)
   useCallPresence(connected && calling, selected.profile)
   const ring = rings.ringing.at(-1)
+  // The wake phrase: heard offline while Conduit is connected and showing, never during a call or a ring.
+  const [wakeRevision, setWakeRevision] = useState(0)
+  useEffect(() => {
+    const changed = () => setWakeRevision(n => n + 1)
+    window.addEventListener(WAKE_EVENT, changed)
+    return () => window.removeEventListener(WAKE_EVENT, changed)
+  }, [])
+  const [showing, setShowing] = useState(() => document.visibilityState === 'visible')
+  useEffect(() => {
+    const changed = () => setShowing(document.visibilityState === 'visible')
+    document.addEventListener('visibilitychange', changed)
+    return () => document.removeEventListener('visibilitychange', changed)
+  }, [])
+  const wakeList = useMemo(
+    () => wakeBindings(wakeProfiles(status.url ?? ''), glowBots.map(bot => bot.name)),
+    // wakeRevision: Settings changed the phrases.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [status.url, glowBots, wakeRevision]
+  )
+  const wakePhrases = connected && showing && !calling && !ring && wakeList.length ? JSON.stringify(wakeList.map(b => b.phrase)) : ''
+  useEffect(() => window.conduit.wake.listen(wakePhrases ? (JSON.parse(wakePhrases) as string[]) : null), [wakePhrases])
+  useEffect(() => () => window.conduit.wake.listen(null), [])
+  // A phrase heard: voice on its profile, in a new chat or the one it continues, once that chat is open.
+  const wakeCall = useRef<{ id: string | null; profile: string } | null>(null)
+  const sameProfile = (a?: string, b?: string) => (a || 'default') === (b || 'default')
+  useEffect(() => {
+    const pending = wakeCall.current
+    if (!pending || section !== 'chats' || selected.id !== pending.id || !sameProfile(selected.profile, pending.profile)) return
+    wakeCall.current = null
+    setCallMode(voiceMode())
+    setCalling(true)
+  }, [selected.id, selected.profile, section])
+  const heardWake = useRef<(binding: WakeBinding) => void>(() => undefined)
+  heardWake.current = binding => {
+    if (calling) return
+    const id = binding.fresh ? null : wakeChat(binding.profile, selected, list.rows)
+    if (section === 'chats' && selected.id === id && sameProfile(selected.profile, binding.profile)) {
+      setCallMode(voiceMode())
+      setCalling(true)
+      return
+    }
+    wakeCall.current = { id, profile: binding.profile }
+    const row = id ? list.rows?.find(r => r.id === id) : undefined
+    setSelected(id ? { id, profile: binding.profile, title: row?.title } : { id: null, profile: binding.profile })
+    setSection('chats')
+  }
+  const wakeListRef = useRef(wakeList)
+  wakeListRef.current = wakeList
+  useEffect(
+    () =>
+      window.conduit.wake.onHeard(index => {
+        const binding = wakeListRef.current[index]
+        if (binding) heardWake.current(binding)
+      }),
+    []
+  )
   const answerRing = (call: Ring) => {
     rings.dismiss(call.id)
     window.conduit.window.show()
@@ -2705,6 +2763,14 @@ function Settings({
           </p>
           <VoiceModeSettings profile={profile} />
         </dd>
+        {status.url ? (
+          <>
+            <dt>{t('Wake phrase')}</dt>
+            <dd>
+              <WakePhraseSettings host={status.url} profile={profile} />
+            </dd>
+          </>
+        ) : null}
         <dt>{t('Calls from Hermes')}</dt>
         <dd>
           <HermesCallSettings profile={profile} />
