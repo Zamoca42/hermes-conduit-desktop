@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ageText, boardPath, columnTitle, defaultAssignee, matchesTask, parseBoard, parseBoards, parseTaskDetail, priorityTitle } from '../src/renderer/src/state/kanban'
+import { ageText, boardPath, boardPollDelay, failedInTransit, columnTitle, defaultAssignee, matchesTask, parseBoard, parseBoards, parseTaskDetail, priorityTitle } from '../src/renderer/src/state/kanban'
 
 describe('the task board', () => {
   it('reads the lanes in the phone’s order, a lane it doesn’t know last', () => {
@@ -60,5 +60,17 @@ describe('the task board', () => {
     expect(ageText(now - 2 * 86_400_000, now)).toBe('2 d')
     expect(defaultAssignee({ resolved_default_assignee: ' atlas ' })).toBe('atlas')
     expect(defaultAssignee(null)).toBe('default')
+  })
+})
+
+describe('how often the board is read', () => {
+  it('spaces the poll out while reads find nothing new, as the phone does', () => {
+    expect([0, 14, 15, 44, 45, 200].map(boardPollDelay)).toEqual([8000, 8000, 15_000, 15_000, 30_000, 30_000])
+  })
+
+  it('asks again only for a read lost in transit, never for Hermes’ own refusal', () => {
+    expect(failedInTransit(new Error('fetch failed'))).toBe(true)
+    expect([408, 429, 500, 502, 503].map(code => failedInTransit({ code }))).toEqual([true, true, true, true, true])
+    expect([400, 401, 403, 404, 409].map(code => failedInTransit({ code }))).toEqual([false, false, false, false, false])
   })
 })

@@ -1,10 +1,8 @@
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { boardPath, defaultAssignee, parseBoard, parseBoards, parseTask, parseTaskDetail, type KanbanBoard, type KanbanBoardRow, type KanbanTask, type KanbanTaskDetail } from './kanban'
+import { boardPath, boardPollDelay, defaultAssignee, failedInTransit, FIRST_READ_RETRY_MS, parseBoard, parseBoards, parseTask, parseTaskDetail, type KanbanBoard, type KanbanBoardRow, type KanbanTask, type KanbanTaskDetail } from './kanban'
 
 const BOARD_KEY = 'conduit.kanbanBoard'
-/** How often the shown board is read again: Hermes' workers move tasks on their own. */
-const POLL_MS = 8000
 
 const savedBoard = (): string | null => {
   try {
@@ -49,20 +47,43 @@ export function useKanban(connected: boolean, shown: boolean) {
   const [assignee, setAssignee] = useState('default')
   const generation = useRef(0)
 
+  /** Reads in a row that found the board as it was, which space the poll out. */
+  const unchanged = useRef(0)
+
+  /**
+   * Reads the board. While nothing of it shows yet, a read lost in transit
+   * asks once more after a second before the failure shows, as the phone
+   * does; with a board on screen the poll's pace carries it.
+   */
   const load = useCallback(async () => {
     const mine = ++generation.current
-    try {
-      const raw = await gateway.http('GET', boardPath('/board', slug))
-      if (mine !== generation.current) return
-      const read = parseBoard(raw)
-      kept.set(keptKey(slug), read)
-      setBoard(read)
-      setError(null)
-      setUnavailable(false)
-    } catch (e) {
-      if (mine !== generation.current) return
-      if (missing(e) && !slug) setUnavailable(true)
-      else setError(e instanceof Error ? e.message : String(e))
+    const key = keptKey(slug)
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const raw = await gateway.http('GET', boardPath('/board', slug))
+        if (mine !== generation.current) return
+        const read = parseBoard(raw)
+        const before = kept.get(key)
+        const same = before !== undefined && JSON.stringify(before) === JSON.stringify(read)
+        unchanged.current = same ? unchanged.current + 1 : 0
+        kept.set(key, read)
+        // The same read keeps the board drawn, unless a move shown at once is still on it.
+        setBoard(current => (same && current === before ? current : read))
+        setError(null)
+        setUnavailable(false)
+        return
+      } catch (e) {
+        if (mine !== generation.current) return
+        if (attempt === 0 && !kept.has(key) && failedInTransit(e)) {
+          await new Promise(resolve => setTimeout(resolve, FIRST_READ_RETRY_MS))
+          if (mine !== generation.current) return
+          continue
+        }
+        unchanged.current = 0
+        if (missing(e) && !slug) setUnavailable(true)
+        else setError(e instanceof Error ? e.message : String(e))
+        return
+      }
     }
   }, [slug])
 
@@ -85,11 +106,18 @@ export function useKanban(connected: boolean, shown: boolean) {
 
   useEffect(() => {
     if (!connected || !shown) return
-    void load()
-    const timer = setInterval(() => {
-      if (document.visibilityState === 'visible') void load()
-    }, POLL_MS)
-    return () => clearInterval(timer)
+    let stopped = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+    unchanged.current = 0
+    const tick = async (first: boolean) => {
+      if (first || document.visibilityState === 'visible') await load()
+      if (!stopped) timer = setTimeout(() => void tick(false), boardPollDelay(unchanged.current))
+    }
+    void tick(true)
+    return () => {
+      stopped = true
+      clearTimeout(timer)
+    }
   }, [connected, shown, load])
 
   useEffect(() => {

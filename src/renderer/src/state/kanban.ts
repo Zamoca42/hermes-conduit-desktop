@@ -230,3 +230,31 @@ export function ageText(ms: number, now = Date.now()): string {
   if (seconds < 86_400) return t('{count} h', { count: Math.round(seconds / 3600) })
   return t('{count} d', { count: Math.round(seconds / 86_400) })
 }
+
+/** The board's read while it shows, as the phone paces it without the live stream. */
+export const BOARD_POLL_MS = 8000
+
+/**
+ * How long until the board is read again: a board whose reads keep finding
+ * nothing new is read less often, 15 s after 15 such reads and 30 s after
+ * 45, as the phone does; a read that finds a change or fails starts over.
+ */
+export function boardPollDelay(unchangedReads: number): number {
+  if (unchangedReads >= 45) return 30_000
+  if (unchangedReads >= 15) return 15_000
+  return BOARD_POLL_MS
+}
+
+/** How long a first read lost in transit waits before asking once more. */
+export const FIRST_READ_RETRY_MS = 1000
+
+/**
+ * A read that failed on the way rather than by Hermes' answer: no
+ * connection or a timeout (no status), a 408, a 429 or a 5xx. Hermes' own
+ * refusals (a 404, a 403, a 400) aren't asked again.
+ */
+export function failedInTransit(error: unknown): boolean {
+  const code = (error as { code?: unknown } | null)?.code
+  if (typeof code !== 'number') return true
+  return code === 408 || code === 429 || code >= 500
+}
