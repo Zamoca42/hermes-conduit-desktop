@@ -8845,3 +8845,34 @@ button.secondary.danger {
 .model-current .refresh-models + .staged-remove {
   margin-left: 0;
 }
+
+/*
+ * A wide chat shows bigger text rather than longer lines, after the phone's
+ * Readable width on wide windows: the column stays 780 px until the chat
+ * passes about 1180 px, then the column and everything in it (text, cards,
+ * the composer, their buttons) steps up one text size at a time, 17 to 19,
+ * 21 and 23 pt at the default size, while each size's lines still hold as
+ * many words as the 780 px column. The chat's header keeps its size, and a
+ * bot's Screen keeps its pixels for the remote pointer.
+ */
+.chat {
+  container: chat / inline-size;
+}
+
+@container chat (min-width: 1180px) {
+  .chat > :not(.chat-head, .screen-sheet) {
+    zoom: 1.1176;
+  }
+}
+
+@container chat (min-width: 1304px) {
+  .chat > :not(.chat-head, .screen-sheet) {
+    zoom: 1.2353;
+  }
+}
+
+@container chat (min-width: 1428px) {
+  .chat > :not(.chat-head, .screen-sheet) {
+    zoom: 1.3529;
+  }
+}
