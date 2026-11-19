@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { doing, parseWork, sections, statusText, stripText, workPath, needsYou } from '../src/renderer/src/state/work'
+import { doing, parseItem, parseWork, sections, statusText, stripText, workPath, needsYou } from '../src/renderer/src/state/work'
 
 const answer = {
   policy: 'on',
@@ -63,5 +63,15 @@ describe('workstreams', () => {
     expect(workPath('/x')).toBe('/x')
     expect(workPath('/x', 'default')).toBe('/x')
     expect(workPath('/x?resolved=1', 'nahida')).toBe('/x?resolved=1&conduit_profile=nahida')
+  })
+})
+
+describe('a workstream on a model the bot named (app issue 2788)', () => {
+  it('names the model and its reasoning, and nothing for the Workstream Model', () => {
+    const named = parseItem({ ref: 'W1', kind: 'workstream', model: { model: 'claude-opus-5-5', provider: 'anthropic', reasoning_effort: 'xhigh' } })
+    expect(named?.model).toBe('claude-opus-5-5 · xhigh')
+    expect(parseItem({ ref: 'W2', kind: 'workstream', model: { model: 'gpt-5.5' } })?.model).toBe('gpt-5.5')
+    expect(parseItem({ ref: 'W3', kind: 'workstream', model: null })?.model).toBe('')
+    expect(parseItem({ ref: 'W4', kind: 'workstream' })?.model).toBe('')
   })
 })

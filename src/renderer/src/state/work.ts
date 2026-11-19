@@ -49,6 +49,9 @@ export interface WorkItem {
   step: string
   agents: number
   branch: string
+  /** The model the bot named for this workstream at its start, as the user's words asked (app issue 2788),
+   *  with its reasoning ("claude-opus-5-5 · xhigh"); "" when it runs on the Workstream Model. */
+  model: string
   bot: string
   screenAsk: string
   approval: WorkApproval | null
@@ -77,6 +80,14 @@ const KINDS: WorkKind[] = ['workstream', 'ask_out', 'ask_in']
 const ACTIONS: WorkAction[] = ['send', 'stop', 'continue', 'check']
 const MANAGE: WorkManage[] = ['pin', 'unpin', 'resolve', 'reopen', 'leave_alone', 'coordinate']
 
+function modelLabel(value: unknown): string {
+  if (!value || typeof value !== 'object') return ''
+  const picked = value as Row
+  const model = str(picked.model).trim()
+  const effort = str(picked.reasoning_effort).trim()
+  return model ? (effort ? `${model} · ${effort}` : model) : ''
+}
+
 export function parseItem(row: Row): WorkItem | null {
   const ref = str(row.ref).trim()
   if (!ref) return null
@@ -100,6 +111,7 @@ export function parseItem(row: Row): WorkItem | null {
     step: str(row.step),
     agents: Math.max(0, Math.round(num(row.agents))),
     branch: str(row.branch),
+    model: modelLabel(row.model),
     bot: str(row.bot),
     screenAsk: str(row.screen_ask),
     approval:
