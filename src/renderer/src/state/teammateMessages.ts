@@ -97,3 +97,53 @@ export function teammateName(key: string, roster: { name: string; title: string 
   const bot = (roster ?? []).find(b => (b.name.toLowerCase() === 'default' ? 'hermes' : b.name.toLowerCase()) === wanted || b.name.toLowerCase() === wanted)
   return bot?.title || fallback
 }
+
+/** What the fold reads of a transcript row. */
+export interface FoldableItem {
+  kind: string
+  key: string
+  text?: string
+  name?: string
+  args?: string
+  streaming?: boolean
+}
+
+/**
+ * The bot's replies to a teammate's delivery, by row key, with the
+ * teammate's name, after the phone's teammateReplies: they answer the
+ * teammate, not the user, so they fold under "Replied to Atlas" (Hermes
+ * Desktop's `dispatchedTo`). Not a reply the bot asked for: when it
+ * messaged that teammate first, the delivery is the teammate's answer and
+ * what follows is the report to the user. A reply still streaming stays open.
+ */
+export function teammateReplies(items: readonly FoldableItem[]): Map<string, string> {
+  const replies = new Map<string, string>()
+  let answering: string | null = null
+  items.forEach((item, index) => {
+    if (item.kind === 'user') {
+      answering = null
+      const from = inbound(item.text ?? '')
+      if (from && !dispatched(items.slice(0, index), [from.handle, from.sender])) answering = from.sender
+    } else if (item.kind === 'assistant' && answering && !item.streaming) {
+      replies.set(item.key, answering)
+    }
+  })
+  return replies
+}
+
+/** Whether the bot messaged one of `keys` since the user last wrote (or that teammate's last delivery). */
+function dispatched(earlier: readonly FoldableItem[], keys: string[]): boolean {
+  const wanted = new Set(keys.map(agentKey).filter(Boolean))
+  if (!wanted.size) return false
+  for (let i = earlier.length - 1; i >= 0; i--) {
+    const item = earlier[i]!
+    if (item.kind === 'user') {
+      const from = inbound(item.text ?? '')
+      if (!from || wanted.has(agentKey(from.handle)) || wanted.has(agentKey(from.sender))) return false
+    } else if (item.kind === 'tool' && item.name) {
+      const sent = delivery(item.name, item.args)
+      if (sent && wanted.has(sent.target)) return true
+    }
+  }
+  return false
+}

@@ -9228,3 +9228,32 @@ button.secondary.danger {
 .room-approval {
   margin: 0;
 }
+
+/* The bot's reply to a teammate's delivery: folded to "Replied to Atlas", the reply a click away. */
+.teammate-reply {
+  align-self: stretch;
+}
+
+.teammate-reply > summary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-2);
+  list-style: none;
+}
+
+.teammate-reply > summary::-webkit-details-marker {
+  display: none;
+}
+
+.teammate-reply > summary svg {
+  width: 12px;
+  height: 12px;
+}
+
+.teammate-reply[open] > summary {
+  margin-bottom: 8px;
+}

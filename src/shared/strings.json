@@ -21524,6 +21524,21 @@
     "zh-Hans": "用你的更改替换它？",
     "zh-Hant": "以你的變更取代它？"
   },
+  "Replied to {name}": {
+    "de": "Antwort an {name}",
+    "es": "Respondió a {name}",
+    "fr": "A répondu à {name}",
+    "id": "Membalas {name}",
+    "it": "Ha risposto a {name}",
+    "ja": "{name} に返信",
+    "ko": "{name}에게 답장함",
+    "pl": "Odpowiedź dla {name}",
+    "pt-BR": "Respondeu a {name}",
+    "ru": "Ответ для {name}",
+    "tr": "{name} yanıtlandı",
+    "zh-Hans": "已回复 {name}",
+    "zh-Hant": "已回覆 {name}"
+  },
   "Replied.": {
     "de": "Beantwortet.",
     "es": "Respondido.",
