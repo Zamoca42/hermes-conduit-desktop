@@ -32,6 +32,7 @@ import {
 } from './auth'
 import { cleanHeaders, httpsIssue, proxyFetch, withProxyHeaders, type ProxyHeaders } from './proxyHeaders'
 import { t } from '../shared/i18n'
+import { describeConnectionFailure } from './connectionFailure'
 
 /** What we keep between launches. Secrets are encrypted by the store. */
 /** How a launch opens the saved hosts. */
@@ -443,7 +444,7 @@ export class Connection {
   }
 
   private failed(generation: number, error: unknown): string {
-    const message = error instanceof Error ? error.message : String(error)
+    const message = describeConnectionFailure(error) ?? (error instanceof Error ? error.message : String(error))
     if (error instanceof AuthError && error.signedOut && this.saved?.method !== 'password') {
       // A token that stopped working won't start again: ask to sign in.
       this.teardown()

@@ -50,6 +50,7 @@ import { jsonRpcErrorReason } from '../vendor/hermes-shared/json-rpc-channel'
 import { LIVE_TOKEN_PATHS, mintedSocket, type LiveSocketEvent } from '../shared/ipc'
 import { setLanguage, t } from '../shared/i18n'
 import { STALLED_CLOSE_CODE, STALLED_REASON, liveSendDecision } from './liveBacklog'
+import { trustSystemRoots } from './systemRoots'
 
 const isMac = process.platform === 'darwin'
 let mainWindow: BrowserWindow | null = null
@@ -400,6 +401,8 @@ if (!app.requestSingleInstanceLock()) {
   app.on('will-quit', () => globalShortcut.unregisterAll())
   app.setAppUserModelId('dev.conduit.desktop')
   registerPageScheme()
+  // A root installed on this computer covers the dashboard's calls and sockets, as on the phone.
+  trustSystemRoots()
   void app.whenReady().then(() => {
     servePages()
     setLanguage(resolvedLanguage())
