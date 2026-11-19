@@ -8686,4 +8686,27 @@ button.secondary.danger {
 
 .row-wrap.drop-after {
   box-shadow: inset 0 -2px 0 var(--accent);
+
+/* Mention a Bot beside Attach: an @ that opens the bots a chat can tag, above the composer. */
+.composer-mention {
+  position: relative;
+}
+
+.mention-button {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mention-menu {
+  top: auto;
+  bottom: calc(100% + 4px);
+  left: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.mention-menu button {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }

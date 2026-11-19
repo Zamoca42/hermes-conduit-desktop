@@ -14894,6 +14894,21 @@
     "zh-Hans": "实时语音中的记忆、个性和网页搜索",
     "zh-Hant": "即時語音中的記憶、個性和網頁搜尋"
   },
+  "Mention a Bot": {
+    "de": "Bot erwähnen",
+    "es": "Mencionar un bot",
+    "fr": "Mentionner un bot",
+    "id": "Sebut bot",
+    "it": "Menziona un bot",
+    "ja": "ボットをメンション",
+    "ko": "봇 멘션",
+    "pl": "Wspomnij bota",
+    "pt-BR": "Mencionar um bot",
+    "ru": "Упомянуть бота",
+    "tr": "Bottan bahset",
+    "zh-Hans": "提及机器人",
+    "zh-Hant": "提及機器人"
+  },
   "Message": {
     "de": "Nachricht",
     "es": "Mensaje",
