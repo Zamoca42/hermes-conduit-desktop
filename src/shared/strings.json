@@ -6644,6 +6644,21 @@
     "zh-Hans": "不再显示",
     "zh-Hant": "不再顯示"
   },
+  "Don't save": {
+    "de": "Nicht speichern",
+    "es": "No guardar",
+    "fr": "Ne pas enregistrer",
+    "id": "Jangan simpan",
+    "it": "Non salvare",
+    "ja": "保存しない",
+    "ko": "저장 안 함",
+    "pl": "Nie zapisuj",
+    "pt-BR": "Não salvar",
+    "ru": "Не сохранять",
+    "tr": "Kaydetme",
+    "zh-Hans": "不保存",
+    "zh-Hant": "不儲存"
+  },
   "Done": {
     "de": "Fertig",
     "es": "Hecho",
@@ -7124,6 +7139,21 @@
     "zh-Hans": "邮件",
     "zh-Hant": "郵件"
   },
+  "Email or username": {
+    "de": "E-Mail oder Benutzername",
+    "es": "Correo o nombre de usuario",
+    "fr": "E-mail ou nom d’utilisateur",
+    "id": "Email atau nama pengguna",
+    "it": "Email o nome utente",
+    "ja": "メールアドレスまたはユーザ名",
+    "ko": "이메일 또는 사용자 이름",
+    "pl": "E-mail lub nazwa użytkownika",
+    "pt-BR": "E-mail ou nome de usuário",
+    "ru": "Эл. почта или имя пользователя",
+    "tr": "E-posta veya kullanıcı adı",
+    "zh-Hans": "电子邮件或用户名",
+    "zh-Hant": "電子郵件或使用者名稱"
+  },
   "Empty Folder": {
     "de": "Leerer Ordner",
     "es": "Carpeta vacía",
@@ -7198,6 +7228,21 @@
     "tr": "Bir üstbilgi adı girin.",
     "zh-Hans": "请输入请求头名称。",
     "zh-Hant": "輸入標頭名稱。"
+  },
+  "Enter code": {
+    "de": "Code eingeben",
+    "es": "Introducir código",
+    "fr": "Saisir le code",
+    "id": "Masukkan kode",
+    "it": "Inserisci codice",
+    "ja": "コードを入力",
+    "ko": "코드 입력",
+    "pl": "Wpisz kod",
+    "pt-BR": "Inserir código",
+    "ru": "Ввести код",
+    "tr": "Kodu gir",
+    "zh-Hans": "输入验证码",
+    "zh-Hant": "輸入驗證碼"
   },
   "Enter sends · Shift Enter new line": {
     "de": "Eingabe sendet · Umschalt+Eingabe neue Zeile",
@@ -10109,6 +10154,21 @@
     "zh-Hans": "要将 {title} 标记为完成，Hermes 需要一条说明完成了什么的备注。打开任务，写下备注，然后选择“标记为完成”。",
     "zh-Hant": "要將 {title} 標記為完成，Hermes 需要一則說明完成了什麼的備註。開啟任務，寫下備註，然後選擇「標記為完成」。"
   },
+  "Hermes needs a secret value": {
+    "de": "Hermes benötigt einen geheimen Wert",
+    "es": "Hermes necesita un valor secreto",
+    "fr": "Hermes a besoin d'une valeur secrète",
+    "id": "Hermes memerlukan nilai rahasia",
+    "it": "Hermes ha bisogno di un valore segreto",
+    "ja": "Hermesがシークレット値を求めています",
+    "ko": "Hermes에 비밀 값이 필요해요",
+    "pl": "Hermes potrzebuje tajnej wartości",
+    "pt-BR": "O Hermes precisa de um valor secreto",
+    "ru": "Hermes нужно секретное значение",
+    "tr": "Hermes'in gizli bir değere ihtiyacı var",
+    "zh-Hans": "Hermes 需要一个密钥值",
+    "zh-Hant": "Hermes 需要一個機密值"
+  },
   "Hermes needs your OK to go on: {what}. Say yes to allow it once, or no.": {
     "de": "Hermes braucht dein OK, um weiterzumachen: {what}. Sag Ja, um es einmal zu erlauben, oder Nein.",
     "es": "Hermes necesita tu visto bueno para seguir: {what}. Di sí para permitirlo una vez, o no.",
@@ -10183,6 +10243,21 @@
     "tr": "Hermes yeni sürümü çeker ve yeniden başlar. Geri gelene kadar sohbetler ve mesajlaşma kanalları duraklar.",
     "zh-Hans": "Hermes 会拉取新版本并重启。在恢复之前，聊天和消息渠道会暂停。",
     "zh-Hant": "Hermes 會取得新版本並重新啟動。在恢復之前，聊天和訊息頻道會暫停。"
+  },
+  "Hermes reached this sign-in page and has no login for it. It's saved encrypted where Hermes runs and filled into the page; the model never sees the password.": {
+    "de": "Hermes ist auf dieser Anmeldeseite und hat keine Anmeldung dafür. Sie wird verschlüsselt dort gespeichert, wo Hermes läuft, und in die Seite eingetragen; das Modell sieht das Passwort nie.",
+    "es": "Hermes llegó a esta página de inicio de sesión y no tiene credenciales para ella. Se guardan cifradas donde se ejecuta Hermes y se rellenan en la página; el modelo nunca ve la contraseña.",
+    "fr": "Hermes est arrivé sur cette page de connexion et n’a pas d’identifiant pour elle. Il est enregistré chiffré là où tourne Hermes et rempli dans la page ; le modèle ne voit jamais le mot de passe.",
+    "id": "Hermes tiba di halaman masuk ini dan belum punya login untuknya. Login disimpan terenkripsi di tempat Hermes berjalan dan diisikan ke halaman; model tidak pernah melihat kata sandinya.",
+    "it": "Hermes è arrivato a questa pagina di accesso e non ha credenziali per essa. Vengono salvate cifrate dove gira Hermes e inserite nella pagina; il modello non vede mai la password.",
+    "ja": "Hermes はこのサインインページに到達しましたが、ログイン情報がありません。Hermes が動くマシンに暗号化して保存し、ページに入力します。モデルがパスワードを見ることはありません。",
+    "ko": "Hermes가 이 로그인 페이지에 도달했지만 로그인 정보가 없습니다. Hermes가 실행되는 곳에 암호화해 저장하고 페이지에 입력합니다. 모델은 암호를 보지 못합니다.",
+    "pl": "Hermes dotarł do tej strony logowania i nie ma do niej loginu. Login jest zapisywany w postaci zaszyfrowanej tam, gdzie działa Hermes, i wpisywany na stronie; model nigdy nie widzi hasła.",
+    "pt-BR": "O Hermes chegou a esta página de login e não tem um login para ela. Ele é salvo criptografado onde o Hermes roda e preenchido na página; o modelo nunca vê a senha.",
+    "ru": "Hermes открыл эту страницу входа, и у него нет для неё учётных данных. Они сохраняются в зашифрованном виде там, где работает Hermes, и вписываются на странице; модель никогда не видит пароль.",
+    "tr": "Hermes bu giriş sayfasına ulaştı ve bunun için bir girişi yok. Giriş, Hermes'in çalıştığı yerde şifrelenmiş olarak kaydedilir ve sayfaya doldurulur; model parolayı asla görmez.",
+    "zh-Hans": "Hermes 到达了这个登录页面,但没有它的登录信息。登录信息会加密保存在 Hermes 运行的地方并填入页面;模型永远看不到密码。",
+    "zh-Hant": "Hermes 到達了這個登入頁面,但沒有它的登入資訊。登入資訊會加密儲存在 Hermes 執行的地方並填入頁面;模型永遠看不到密碼。"
   },
   "Hermes reads this before each call it decides to make, and calls only if the news fits. Calls you ask for don't depend on it.": {
     "de": "Hermes liest das vor jedem Anruf, den er selbst beschließt, und ruft nur an, wenn die Neuigkeit dazu passt. Anrufe, um die du bittest, hängen nicht davon ab.",
@@ -11248,6 +11323,21 @@
     "tr": "Girdi",
     "zh-Hans": "输入",
     "zh-Hant": "輸入"
+  },
+  "Input needed": {
+    "de": "Eingabe erforderlich",
+    "es": "Respuesta necesaria",
+    "fr": "Saisie requise",
+    "id": "Perlu input",
+    "it": "Input richiesto",
+    "ja": "入力が必要",
+    "ko": "입력 필요",
+    "pl": "Wymagana odpowiedź",
+    "pt-BR": "Entrada necessária",
+    "ru": "Нужен ввод",
+    "tr": "Girdi gerekiyor",
+    "zh-Hans": "需要输入",
+    "zh-Hant": "需要輸入"
   },
   "Install": {
     "de": "Installieren",
@@ -20114,6 +20204,21 @@
     "zh-Hans": "保存",
     "zh-Hant": "儲存"
   },
+  "Save & sign in": {
+    "de": "Speichern & anmelden",
+    "es": "Guardar e iniciar sesión",
+    "fr": "Enregistrer et se connecter",
+    "id": "Simpan & masuk",
+    "it": "Salva e accedi",
+    "ja": "保存してサインイン",
+    "ko": "저장 후 로그인",
+    "pl": "Zapisz i zaloguj się",
+    "pt-BR": "Salvar e entrar",
+    "ru": "Сохранить и войти",
+    "tr": "Kaydet ve giriş yap",
+    "zh-Hans": "保存并登录",
+    "zh-Hant": "儲存並登入"
+  },
   "Save Settings": {
     "de": "Einstellungen sichern",
     "es": "Guardar ajustes",
@@ -20233,6 +20338,21 @@
     "tr": "Yalnızca kaydet",
     "zh-Hans": "仅保存",
     "zh-Hant": "僅儲存"
+  },
+  "Save your {site} login?": {
+    "de": "Deine Anmeldung für {site} speichern?",
+    "es": "¿Guardar tu inicio de sesión de {site}?",
+    "fr": "Enregistrer vos identifiants pour {site} ?",
+    "id": "Simpan login {site} kamu?",
+    "it": "Salvare il tuo accesso a {site}?",
+    "ja": "{site} のログイン情報を保存しますか?",
+    "ko": "{site} 로그인 정보를 저장할까요?",
+    "pl": "Zapisać Twój login do {site}?",
+    "pt-BR": "Salvar seu login de {site}?",
+    "ru": "Сохранить данные для входа на {site}?",
+    "tr": "{site} girişin kaydedilsin mi?",
+    "zh-Hans": "要保存你的 {site} 登录信息吗?",
+    "zh-Hant": "要儲存你的 {site} 登入資訊嗎?"
   },
   "Saved": {
     "de": "Gespeichert",
@@ -20878,6 +20998,21 @@
     "tr": "Her çağrıda sıkıştırma modelinin bekleneceği saniye. Yavaş yerel modeller için artırın.",
     "zh-Hans": "每次调用等待压缩模型的秒数。本地模型较慢时请调高。",
     "zh-Hant": "每次呼叫等待壓縮模型的秒數。本機模型較慢時請調高。"
+  },
+  "Secret value": {
+    "de": "Geheimer Wert",
+    "es": "Valor secreto",
+    "fr": "Valeur secrète",
+    "id": "Nilai rahasia",
+    "it": "Valore segreto",
+    "ja": "シークレット値",
+    "ko": "비밀 값",
+    "pl": "Tajna wartość",
+    "pt-BR": "Valor secreto",
+    "ru": "Секретное значение",
+    "tr": "Gizli değer",
+    "zh-Hans": "密钥值",
+    "zh-Hant": "機密值"
   },
   "Sections": {
     "de": "Bereiche",
@@ -24449,6 +24584,21 @@
     "zh-Hans": "登录被拒绝。",
     "zh-Hant": "登入遭拒。"
   },
+  "The site is asking for a one-time code from a text message, email or authenticator app. Hermes types it into the page; the model never sees it.": {
+    "de": "Die Website fragt nach einem Einmalcode aus einer SMS, E-Mail oder Authenticator-App. Hermes tippt ihn in die Seite ein; das Modell sieht ihn nie.",
+    "es": "El sitio pide un código de un solo uso de un SMS, un correo o una app de autenticación. Hermes lo escribe en la página; el modelo nunca lo ve.",
+    "fr": "Le site demande un code à usage unique reçu par SMS, e-mail ou app d’authentification. Hermes le tape dans la page ; le modèle ne le voit jamais.",
+    "id": "Situs meminta kode sekali pakai dari SMS, email, atau aplikasi autentikator. Hermes mengetikkannya ke halaman; model tidak pernah melihatnya.",
+    "it": "Il sito chiede un codice monouso da un SMS, un’email o un’app di autenticazione. Hermes lo digita nella pagina; il modello non lo vede mai.",
+    "ja": "サイトが SMS、メール、または認証アプリのワンタイムコードを求めています。Hermes がページに入力します。モデルがコードを見ることはありません。",
+    "ko": "사이트에서 문자, 이메일 또는 인증 앱의 일회용 코드를 요청합니다. Hermes가 페이지에 입력하며, 모델은 코드를 보지 못합니다.",
+    "pl": "Strona prosi o jednorazowy kod z SMS-a, e-maila lub aplikacji uwierzytelniającej. Hermes wpisuje go na stronie; model nigdy go nie widzi.",
+    "pt-BR": "O site está pedindo um código de uso único de uma mensagem de texto, e-mail ou app autenticador. O Hermes o digita na página; o modelo nunca o vê.",
+    "ru": "Сайт просит одноразовый код из SMS, письма или приложения-аутентификатора. Hermes впишет его на странице; модель никогда его не видит.",
+    "tr": "Site; SMS, e-posta veya doğrulayıcı uygulamadan gelen tek kullanımlık bir kod istiyor. Hermes kodu sayfaya yazar; model kodu asla görmez.",
+    "zh-Hans": "该网站要求输入来自短信、电子邮件或身份验证 App 的一次性验证码。Hermes 会将其填入页面;模型永远看不到它。",
+    "zh-Hant": "此網站要求輸入來自簡訊、電子郵件或驗證 App 的一次性驗證碼。Hermes 會將其填入頁面;模型永遠看不到它。"
+  },
   "The skills, tools or MCP choices were not saved.": {
     "de": "Die Auswahl für Skills, Tools oder MCP wurde nicht gespeichert.",
     "es": "No se guardaron las opciones de habilidades, herramientas o MCP.",
@@ -25424,6 +25574,21 @@
     "zh-Hans": "这会将 {title} 从看板中永久删除。",
     "zh-Hant": "這會將 {title} 從看板中永久刪除。"
   },
+  "This request is no longer active.": {
+    "de": "Diese Anfrage ist nicht mehr aktiv.",
+    "es": "Esta solicitud ya no está activa.",
+    "fr": "Cette demande n'est plus active.",
+    "id": "Permintaan ini sudah tidak aktif.",
+    "it": "Questa richiesta non è più attiva.",
+    "ja": "このリクエストは無効になりました。",
+    "ko": "이 요청은 더 이상 활성 상태가 아니에요.",
+    "pl": "Ta prośba nie jest już aktywna.",
+    "pt-BR": "Este pedido não está mais ativo.",
+    "ru": "Этот запрос больше не активен.",
+    "tr": "Bu istek artık etkin değil.",
+    "zh-Hans": "此请求已失效。",
+    "zh-Hant": "此請求已失效。"
+  },
   "This server's own model answers Live calls, and the Conduit plugin runs every other call's turns on it, so there's nothing to set up on it.": {
     "de": "Bei Live-Anrufen antwortet das eigene Modell dieses Servers, und bei allen anderen Anrufen führt das Conduit-Plugin die Runden darauf aus, dort ist also nichts einzurichten.",
     "es": "En las llamadas Live responde el modelo propio de este servidor, y el plugin de Conduit lleva los turnos de todas las demás llamadas en él, así que no hay nada que configurar en él.",
@@ -26263,6 +26428,21 @@
     "tr": "Kilidi aç",
     "zh-Hans": "解锁",
     "zh-Hant": "解鎖"
+  },
+  "Unlock your password manager": {
+    "de": "Entsperre deinen Passwortmanager",
+    "es": "Desbloquea tu gestor de contraseñas",
+    "fr": "Déverrouillez votre gestionnaire de mots de passe",
+    "id": "Buka kunci pengelola kata sandi Anda",
+    "it": "Sblocca il tuo gestore di password",
+    "ja": "パスワードマネージャのロックを解除",
+    "ko": "암호 관리자 잠금 해제",
+    "pl": "Odblokuj menedżer haseł",
+    "pt-BR": "Desbloquear seu gerenciador de senhas",
+    "ru": "Разблокируйте менеджер паролей",
+    "tr": "Parola yöneticinizin kilidini açın",
+    "zh-Hans": "解锁你的密码管理器",
+    "zh-Hant": "解鎖你的密碼管理工具"
   },
   "Unlock {name}": {
     "de": "{name} entsperren",
@@ -27268,6 +27448,36 @@
     "tr": "Tatil",
     "zh-Hans": "休假",
     "zh-Hant": "休假"
+  },
+  "Verification code": {
+    "de": "Bestätigungscode",
+    "es": "Código de verificación",
+    "fr": "Code de vérification",
+    "id": "Kode verifikasi",
+    "it": "Codice di verifica",
+    "ja": "確認コード",
+    "ko": "인증 코드",
+    "pl": "Kod weryfikacyjny",
+    "pt-BR": "Código de verificação",
+    "ru": "Код подтверждения",
+    "tr": "Doğrulama kodu",
+    "zh-Hans": "验证码",
+    "zh-Hant": "驗證碼"
+  },
+  "Verification code for {site}": {
+    "de": "Bestätigungscode für {site}",
+    "es": "Código de verificación de {site}",
+    "fr": "Code de vérification pour {site}",
+    "id": "Kode verifikasi untuk {site}",
+    "it": "Codice di verifica per {site}",
+    "ja": "{site} の確認コード",
+    "ko": "{site} 인증 코드",
+    "pl": "Kod weryfikacyjny dla {site}",
+    "pt-BR": "Código de verificação de {site}",
+    "ru": "Код подтверждения для {site}",
+    "tr": "{site} için doğrulama kodu",
+    "zh-Hans": "{site} 的验证码",
+    "zh-Hant": "{site} 的驗證碼"
   },
   "Verified": {
     "de": "Verifiziert",
@@ -29203,6 +29413,21 @@
     "tr": "oturum yetkisi",
     "zh-Hans": "会话管理",
     "zh-Hant": "工作階段管理"
+  },
+  "sudo password": {
+    "de": "sudo-Passwort",
+    "es": "contraseña de sudo",
+    "fr": "mot de passe sudo",
+    "id": "kata sandi sudo",
+    "it": "password sudo",
+    "ja": "sudoパスワード",
+    "ko": "sudo 암호",
+    "pl": "hasło sudo",
+    "pt-BR": "senha do sudo",
+    "ru": "пароль sudo",
+    "tr": "sudo parolası",
+    "zh-Hans": "sudo 密码",
+    "zh-Hant": "sudo 密碼"
   },
   "the web": {
     "de": "das Web",

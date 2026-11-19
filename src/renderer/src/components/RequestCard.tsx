@@ -2,16 +2,15 @@ import { useState } from 'react'
 import { gateway } from '../gateway'
 import type { PendingRequest } from '@shared/ipc'
 import { approvalView, clarifyQuestions, lockedAnswers, type ClarifyQuestion } from '../state/needsYou'
+import { inputAnswer, inputPromptView, type InputPromptView } from '../state/inputPrompts'
 import { Icon } from './icons'
 import { t } from '@shared/i18n'
 
 /** An approval or a question Hermes is waiting on, answered here. */
 export function RequestCard({ request, chatTitle }: { request: PendingRequest; chatTitle?: string }) {
-  return request.method === 'approval' ? (
-    <ApprovalCard request={request} chatTitle={chatTitle} />
-  ) : (
-    <ClarifyCard request={request} chatTitle={chatTitle} />
-  )
+  const input = inputPromptView(request)
+  if (input) return <InputPromptCard request={request} view={input} chatTitle={chatTitle} />
+  return request.method === 'approval' ? <ApprovalCard request={request} chatTitle={chatTitle} /> : <ClarifyCard request={request} chatTitle={chatTitle} />
 }
 
 function ApprovalCard({ request, chatTitle }: { request: PendingRequest; chatTitle?: string }) {
@@ -34,7 +33,8 @@ function ApprovalCard({ request, chatTitle }: { request: PendingRequest; chatTit
           <Icon name="code" />
         </span>
         <span className="ask-title">
-          {t('Needs your OK')}{chatTitle ? <span className="ask-chat"> · {chatTitle}</span> : null}
+          {t('Needs your OK')}
+          {chatTitle ? <span className="ask-chat"> · {chatTitle}</span> : null}
         </span>
       </header>
       <p className="ask-text">{view.description}</p>
@@ -173,5 +173,85 @@ function Question({
         </>
       )}
     </div>
+  )
+}
+
+/** A password, secret, login or code Hermes asks for: typed here and sent once to the request, never into the chat. */
+function InputPromptCard({ request, view, chatTitle }: { request: PendingRequest; view: InputPromptView; chatTitle?: string }) {
+  const [value, setValue] = useState('')
+  const [identifier, setIdentifier] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const answer = inputAnswer(view.kind, value, identifier)
+
+  const respond = async (sent: string) => {
+    setBusy(true)
+    setError(null)
+    const ok = await window.conduit.answerRequest(request.id, { value: sent })
+    // What was typed goes with the card either way.
+    setValue('')
+    setIdentifier('')
+    if (!ok) setError(t('This request is no longer active.'))
+    setBusy(false)
+  }
+
+  return (
+    <section className="ask input-ask" aria-label={view.title}>
+      <header className="ask-head">
+        <span className="ask-icon">
+          <Icon name="lock" />
+        </span>
+        <span className="ask-title">
+          {t('Input needed')}
+          {chatTitle ? <span className="ask-chat"> · {chatTitle}</span> : null}
+        </span>
+      </header>
+      <p className="ask-text">
+        <strong>{view.title}</strong>
+      </p>
+      {view.note ? <p className="meta">{view.note}</p> : null}
+      {view.detail ? <pre className="ask-command">{view.detail}</pre> : null}
+      <form
+        className="input-ask-fields"
+        onSubmit={e => {
+          e.preventDefault()
+          if (answer !== null && !busy) void respond(answer)
+        }}
+      >
+        {view.login ? (
+          <input
+            className="input-ask-field"
+            type="text"
+            autoComplete="off"
+            spellCheck={false}
+            placeholder={t('Email or username')}
+            aria-label={t('Email or username')}
+            value={identifier}
+            disabled={busy}
+            onChange={e => setIdentifier(e.target.value)}
+          />
+        ) : null}
+        <input
+          className="input-ask-field"
+          type={view.masked ? 'password' : 'text'}
+          autoComplete={view.kind === 'vault.code' ? 'one-time-code' : 'off'}
+          spellCheck={false}
+          placeholder={view.placeholder}
+          aria-label={view.placeholder}
+          value={value}
+          disabled={busy}
+          onChange={e => setValue(e.target.value)}
+        />
+        <div className="ask-actions">
+          <button type="button" className="ask-btn" disabled={busy} onClick={() => void respond('')}>
+            {view.skip}
+          </button>
+          <button type="submit" className="ask-btn primary" disabled={busy || answer === null}>
+            {busy ? '…' : view.send}
+          </button>
+        </div>
+      </form>
+      {error ? <p className="ask-error">{error}</p> : null}
+    </section>
   )
 }

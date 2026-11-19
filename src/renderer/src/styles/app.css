@@ -7782,3 +7782,24 @@ button.cap-row-text {
     animation: none;
   }
 }
+
+/* A password, login or code Hermes asks for. */
+.input-ask-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.input-ask-field {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
