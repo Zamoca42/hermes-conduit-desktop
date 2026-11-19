@@ -1,5 +1,5 @@
 /**
- * The bots in the order the person sets on Bots Home, after the phone's
+ * The bots, and the group chats, in the order the person sets on Bots Home, after the phone's
  * BotOrder: a portrait dragged in place, or moved from its menu. Hermes
  * keeps whether a bot is pinned, not where it sits, so the order is kept
  * here per host by profile name (matched in any case) and goes to the
@@ -7,7 +7,9 @@
  * devices on reads and writes too. Until it's set the bots follow Hermes'
  * order; a bot it doesn't name yet goes at the end, and a hidden or deleted
  * one keeps its name for when it's back. Pinned bots show first, each group
- * in the person's order.
+ * in the person's order. The group chats keep an order of their own the
+ * same way, by room id, synced as `groups.order`; a room it doesn't name
+ * yet goes first, where Hermes lists one just made.
  *
  * In a combined group, Bots Home mixes every dashboard's bots in one order
  * the person arranges (the phone's CombinedBotsHomeOrder), by host and bot,
@@ -19,24 +21,39 @@ import type { Bot } from './bots'
 import { installationId, PREFS_PATH } from './pinnedOrder'
 
 export const BOTS_SYNC_KEY = 'bots.order'
+export const ROOMS_SYNC_KEY = 'groups.order'
 
-const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
+/**
+ * What an order holds: bots by profile name, matched in any case, with the
+ * ones it doesn't name last; or group chats by room id, matched exactly
+ * (the gateway's are case-sensitive), with the ones it doesn't name first,
+ * where Hermes lists a room just made.
+ */
+export type OrderKind = 'bots' | 'rooms'
 
-/** Names without blanks or repeats (in any case), as the phone keeps them. */
-export function cleanOrder(names: unknown): string[] {
-  if (!Array.isArray(names)) return []
-  const seen = new Set<string>()
-  return names.filter((n): n is string => typeof n === 'string' && !!n && !seen.has(n.toLowerCase()) && !!seen.add(n.toLowerCase()))
+const keyOf = (kind: OrderKind) => (kind === 'rooms' ? (s: string) => s : (s: string) => s.toLowerCase())
+const sameIn = (kind: OrderKind) => {
+  const key = keyOf(kind)
+  return (a: string, b: string) => key(a) === key(b)
 }
 
-/** `bots` in `order`: the ones it names as it names them, then the rest as they came. */
-export function arrange<T>(bots: readonly T[], order: readonly string[], name: (bot: T) => string): T[] {
-  if (!order.length) return [...bots]
-  const place = new Map(order.map((n, i) => [n.toLowerCase(), i]))
-  return bots
-    .map((bot, i) => ({ bot, rank: place.get(name(bot).toLowerCase()) ?? order.length + i }))
+/** Names without blanks or repeats, as the phone keeps them. */
+export function cleanOrder(names: unknown, kind: OrderKind = 'bots'): string[] {
+  if (!Array.isArray(names)) return []
+  const key = keyOf(kind)
+  const seen = new Set<string>()
+  return names.filter((n): n is string => typeof n === 'string' && !!n && !seen.has(key(n)) && !!seen.add(key(n)))
+}
+
+/** `items` in `order`: the ones it names as it names them, the rest as they came, after them (bots) or before them (rooms). */
+export function arrange<T>(items: readonly T[], order: readonly string[], name: (item: T) => string, kind: OrderKind = 'bots'): T[] {
+  if (!order.length) return [...items]
+  const key = keyOf(kind)
+  const place = new Map(order.map((n, i) => [key(n), i]))
+  return items
+    .map((item, i) => ({ item, rank: place.get(key(name(item))) ?? (kind === 'rooms' ? i - items.length : order.length + i) }))
     .sort((a, b) => a.rank - b.rank)
-    .map(r => r.bot)
+    .map(r => r.item)
 }
 
 /** The roster as Bots Home shows it: in the person's order, pinned bots first. */
@@ -45,14 +62,17 @@ export function orderedBots(bots: readonly Bot[], order: readonly string[]): Bot
   return [...arranged.filter(b => b.pinned), ...arranged.filter(b => !b.pinned)]
 }
 
-/** The order with every shown name in it, the ones it doesn't name yet after it. */
-function filled(order: readonly string[], shown: readonly string[]): string[] {
-  return [...order, ...shown.filter(s => !order.some(n => same(n, s)))]
+/** The order with every shown name in it, the ones it doesn't name yet where `arrange` shows them. */
+function filled(order: readonly string[], shown: readonly string[], kind: OrderKind): string[] {
+  const same = sameIn(kind)
+  const missing = shown.filter(s => !order.some(n => same(n, s)))
+  return kind === 'rooms' ? [...missing, ...order] : [...order, ...missing]
 }
 
-function movingBefore(order: readonly string[], moved: string, target: string | null, shown: readonly string[]): string[] {
+function movingBefore(order: readonly string[], moved: string, target: string | null, shown: readonly string[], kind: OrderKind): string[] {
+  const same = sameIn(kind)
   if (target && same(moved, target)) return [...order]
-  const full = filled(order, shown).filter(n => !same(n, moved))
+  const full = filled(order, shown, kind).filter(n => !same(n, moved))
   const at = target ? full.findIndex(n => same(n, target)) : -1
   if (at >= 0) full.splice(at, 0, moved)
   else {
@@ -61,7 +81,7 @@ function movingBefore(order: readonly string[], moved: string, target: string | 
     if (after >= 0) full.splice(after + 1, 0, moved)
     else full.push(moved)
   }
-  return cleanOrder(full)
+  return cleanOrder(full, kind)
 }
 
 /**
@@ -70,45 +90,52 @@ function movingBefore(order: readonly string[], moved: string, target: string | 
  * goes after the one it lands on; carried back, before it. So neighbours
  * swap. Names the order holds that aren't shown keep their places.
  */
-export function dropping(order: readonly string[], moved: string, target: string | null, shown: readonly string[]): string[] {
+export function dropping(order: readonly string[], moved: string, target: string | null, shown: readonly string[], kind: OrderKind = 'bots'): string[] {
+  const same = sameIn(kind)
   const from = shown.findIndex(s => same(s, moved))
   const to = target ? shown.findIndex(s => same(s, target)) : -1
-  if (!target || from < 0 || to < 0 || from >= to) return movingBefore(order, moved, target, shown)
-  const full = filled(order, shown).filter(n => !same(n, moved))
+  if (!target || from < 0 || to < 0 || from >= to) return movingBefore(order, moved, target, shown, kind)
+  const full = filled(order, shown, kind).filter(n => !same(n, moved))
   const at = full.findIndex(n => same(n, target))
-  if (at < 0) return movingBefore(order, moved, null, shown)
+  if (at < 0) return movingBefore(order, moved, null, shown, kind)
   full.splice(at + 1, 0, moved)
-  return cleanOrder(full)
+  return cleanOrder(full, kind)
 }
 
-/** The bot `step` places from `name` among `shown` (Move Earlier is -1), or null at either end. */
+/** The item `step` places from `name` among `shown` (Move Earlier is -1), or null at either end. */
 export function neighbour(shown: readonly string[], name: string, step: -1 | 1): string | null {
-  const at = shown.findIndex(s => same(s, name))
+  const at = shown.findIndex(s => s.toLowerCase() === name.toLowerCase())
   if (at < 0) return null
   return shown[at + step] ?? null
 }
 
-/** The host's synced `bots.order`, or null when it keeps none. */
-export function hostBotOrder(response: unknown): string[] | null {
+/** The host's synced order under `key`, or null when it keeps none. */
+export function hostOrder(response: unknown, key: string = BOTS_SYNC_KEY, kind: OrderKind = 'bots'): string[] | null {
   const values = (response as { values?: Record<string, { value?: unknown }> } | null)?.values
-  const value = values?.[BOTS_SYNC_KEY]?.value
-  return Array.isArray(value) ? cleanOrder(value) : null
+  const value = values?.[key]?.value
+  return Array.isArray(value) ? cleanOrder(value, kind) : null
 }
 
-const storageKey = (host: string) => `conduit.botOrder.${host}`
+/** The host's synced `bots.order`, or null when it keeps none. */
+export const hostBotOrder = (response: unknown) => hostOrder(response)
 
-export function loadBotOrder(host: string): string[] {
+const STORAGE: Record<OrderKind, string> = { bots: 'conduit.botOrder', rooms: 'conduit.groupRoomOrder' }
+const SYNC: Record<OrderKind, string> = { bots: BOTS_SYNC_KEY, rooms: ROOMS_SYNC_KEY }
+
+export function loadOrder(host: string, kind: OrderKind = 'bots'): string[] {
   try {
-    return cleanOrder(JSON.parse(localStorage.getItem(storageKey(host)) ?? '[]'))
+    return cleanOrder(JSON.parse(localStorage.getItem(`${STORAGE[kind]}.${host}`) ?? '[]'), kind)
   } catch {
     return []
   }
 }
 
-function saveBotOrder(host: string, order: string[]): void {
+export const loadBotOrder = (host: string) => loadOrder(host)
+
+function saveOrder(host: string, order: string[], kind: OrderKind): void {
   try {
-    if (order.length) localStorage.setItem(storageKey(host), JSON.stringify(order))
-    else localStorage.removeItem(storageKey(host))
+    if (order.length) localStorage.setItem(`${STORAGE[kind]}.${host}`, JSON.stringify(order))
+    else localStorage.removeItem(`${STORAGE[kind]}.${host}`)
   } catch {
     // Kept for this window only.
   }
@@ -117,30 +144,31 @@ function saveBotOrder(host: string, order: string[]): void {
 type Http = (method: 'GET' | 'PUT', path: string, body?: unknown) => Promise<unknown>
 
 /**
- * This host's order: read from this computer, then the host's synced copy
+ * This host's order of its bots (`bots.order`) or its group chats
+ * (`groups.order`): read from this computer, then the host's synced copy
  * once per connection, which wins (the phone's merge is replace). A move
  * saves here and sends the order to the host; a host without the route
- * keeps it here. The roster is the gateway's, so the main profile's copy
- * holds it.
+ * keeps it here. Bots and rooms are the gateway's, so the main profile's
+ * copy holds them.
  */
-export function useBotOrder(host: string, connected: boolean, http: Http) {
-  const [order, setOrder] = useState<string[]>(() => loadBotOrder(host))
+export function useSyncedOrder(host: string, connected: boolean, http: Http, kind: OrderKind) {
+  const [order, setOrder] = useState<string[]>(() => loadOrder(host, kind))
   const asked = useRef('')
   useEffect(() => {
-    setOrder(loadBotOrder(host))
+    setOrder(loadOrder(host, kind))
     asked.current = ''
-  }, [host])
+  }, [host, kind])
   useEffect(() => {
     if (!host || !connected || asked.current === host) return
     asked.current = host
     let live = true
     http('GET', PREFS_PATH).then(
       response => {
-        const names = hostBotOrder(response)
+        const names = hostOrder(response, SYNC[kind], kind)
         if (!live || !names) return
         setOrder(current => {
           if (current.length === names.length && current.every((n, i) => n === names[i])) return current
-          saveBotOrder(host, names)
+          saveOrder(host, names, kind)
           return names
         })
       },
@@ -149,24 +177,26 @@ export function useBotOrder(host: string, connected: boolean, http: Http) {
     return () => {
       live = false
     }
-  }, [host, connected, http])
-  /** A portrait dropped on `target` (null: past the last one), among the bots `shown` in their order. */
+  }, [host, connected, http, kind])
+  /** An item dropped on `target` (null: past the last one), among the ones `shown` in their order. */
   const drop = useCallback(
     (moved: string, target: string | null, shown: string[]) => {
-      const next = dropping(order, moved, target, shown)
+      const next = dropping(order, moved, target, shown, kind)
       if (next.length === order.length && next.every((n, i) => n === order[i])) return
       setOrder(next)
-      saveBotOrder(host, next)
+      saveOrder(host, next, kind)
       void http('PUT', PREFS_PATH, {
         installation_id: installationId(),
         device: 'Conduit for desktop',
-        changes: { [BOTS_SYNC_KEY]: next }
+        changes: { [SYNC[kind]]: next }
       }).catch(() => undefined)
     },
-    [order, host, http]
+    [order, host, http, kind]
   )
   return { order, drop }
 }
+
+export const useBotOrder = (host: string, connected: boolean, http: Http) => useSyncedOrder(host, connected, http, 'bots')
 
 // The combined group's mixed order.
 

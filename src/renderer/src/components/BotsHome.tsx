@@ -27,6 +27,8 @@ import { HostBadgeMark } from "./CombinedDashboards";
 const BOT_DRAG = "application/x-conduit-bot";
 /** A portrait carried to another place: its tile key (the bot's name, or the mixed grid's key). */
 const BOT_MOVE = "application/x-conduit-bot-move";
+/** A group chat's tile carried to another place: its room id. */
+const ROOM_MOVE = "application/x-conduit-room-move";
 
 /** What a bot's right-click menu can do, besides Edit Bot. */
 export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delete";
@@ -173,6 +175,8 @@ interface Props {
   onMoveMixed?: (dragged: string, target: string | null, shown: string[]) => void;
   /** This host's portrait dropped on another's place (null: at the end), by bot name, among `shown`. */
   onMoveBot?: (moved: string, target: string | null, shown: string[]) => void;
+  /** A group chat's tile dropped on another's place (null: at the end), by room id, among `shown`. */
+  onMoveRoom?: (moved: string, target: string | null, shown: string[]) => void;
   badgeFor?: (url: string) => HostBadge | null;
   onOpenOther?: (other: OtherBot) => void;
   /** The host on screen: in a combined group its bots carry its badge too, so the group reads as one set. */
@@ -261,6 +265,7 @@ export function BotsHome({
   mixedOrder = [],
   onMoveMixed,
   onMoveBot,
+  onMoveRoom,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -444,6 +449,54 @@ export function BotsHome({
       }
     : {};
 
+  // A group chat's tile dropped on another's takes its place, as a bot does.
+  const [roomTarget, setRoomTarget] = useState<string | null>(null);
+  const roomIds = (rooms ?? []).map((room) => room.roomId);
+  const canMoveRooms = !!onMoveRoom && roomIds.length > 1;
+  const roomDrag = (roomId: string) =>
+    canMoveRooms
+      ? {
+          draggable: true,
+          onDragStart: (e: DragEvent) => {
+            e.dataTransfer.setData(ROOM_MOVE, roomId);
+            e.dataTransfer.effectAllowed = "move";
+          },
+          onDragOver: (e: DragEvent) => {
+            if (!e.dataTransfer.types.includes(ROOM_MOVE)) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            if (roomTarget !== roomId) setRoomTarget(roomId);
+          },
+          onDragLeave: () => setRoomTarget((t) => (t === roomId ? null : t)),
+          onDrop: (e: DragEvent) => {
+            const moved = e.dataTransfer.getData(ROOM_MOVE);
+            setRoomTarget(null);
+            if (!moved) return;
+            e.preventDefault();
+            e.stopPropagation();
+            if (moved !== roomId) onMoveRoom?.(moved, roomId, roomIds);
+          },
+          onDragEnd: () => setRoomTarget(null),
+        }
+      : {};
+  /** A tile dropped in the rooms' empty space goes to the end. */
+  const roomsGridDrop = canMoveRooms
+    ? {
+        onDragOver: (e: DragEvent) => {
+          if (e.target !== e.currentTarget || !e.dataTransfer.types.includes(ROOM_MOVE)) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+        },
+        onDrop: (e: DragEvent) => {
+          const moved = e.dataTransfer.getData(ROOM_MOVE);
+          setRoomTarget(null);
+          if (e.target !== e.currentTarget || !moved) return;
+          e.preventDefault();
+          onMoveRoom?.(moved, null, roomIds);
+        },
+      }
+    : {};
+
   const openOrPick = (bot: Bot) => {
     if (!draft) return onOpen(bot);
     if (draft.members.includes(bot.name)) leave(bot.name);
@@ -550,7 +603,7 @@ export function BotsHome({
                   {t('Drag one bot onto another to start a group chat.')}
                 </p>
               ) : null}
-              <div className="rooms-grid">
+              <div className="rooms-grid" {...roomsGridDrop}>
                 {(drafts ?? []).map((draft) => (
                   <button
                     key={draft.id}
@@ -599,8 +652,9 @@ export function BotsHome({
                 {rooms.map((room) => (
                   <button
                     key={room.roomId}
-                    className="room-tile"
+                    className={`room-tile${roomTarget === room.roomId ? " move-target" : ""}`}
                     onClick={() => onOpenRoom(room)}
+                    {...roomDrag(room.roomId)}
                   >
                     {room.linked ? (
                       // With people you've linked: the two-people mark, as rooms hosted by others carry.
