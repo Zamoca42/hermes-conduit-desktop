@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent, type RefObject } from 'react'
+import { useContext, useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent, type RefObject } from 'react'
 import type { ContextWindow } from '../state/context'
 import { Icon } from './icons'
 import { t } from '@shared/i18n'
@@ -8,6 +8,8 @@ import { useRecorder } from '../state/useRecorder'
 import { blobToBase64, durationLabel, transcribe, voiceFileName, voicePromptText } from '../state/voice'
 import { suggestCommands, type SlashCommand } from '../state/slash'
 import { TAP_GUARD_MS, askable, pauseDelay, type DraftGuesses } from '../state/predictive'
+import { composerDrafts, draftStoreKey, isEmptyDraft, type ComposerDraft } from '../state/composerDrafts'
+import { SummaryHost } from '../state/useStepSummaries'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
 /** The last folder of a path, the way the phone's chip shows it. */
@@ -27,10 +29,11 @@ interface Props {
   disabled: boolean
   model?: string
   cwd?: string
-  onSend: (text: string, attachments: StagedAttachment[]) => void
+  /** Sends the message. A promise of false means it didn't go: its words, files and reply come back to the draft. */
+  onSend: (text: string, attachments: StagedAttachment[]) => void | Promise<boolean | void>
   onStop: () => void
   focusKey: string
-  /** Which draft this is: its staged files go when it changes. Defaults to `focusKey`. */
+  /** Which chat's draft this is: words, files and a reply wait here for that chat until sent. Defaults to `focusKey`. */
   draftKey?: string
   /** Pictures and files can go with the message: the Attach button, a pasted picture, a long paste, a drop. */
   canAttach?: boolean
@@ -109,13 +112,22 @@ export function Composer({
     area.current?.focus()
   }, [focusKey])
 
-  // A draft's files belong to the chat they were staged in, and so does a recording.
+  // A draft belongs to the chat it was typed in (the phone's ComposerDraftStore): leaving keeps it, coming back brings it.
+  const host = useContext(SummaryHost)
+  const storeKey = draftStoreKey(host, draftKey ?? focusKey)
+  const shownDraft = useRef<ComposerDraft>({ text: '', attachments: [], replyTo: null })
+  shownDraft.current = { text, attachments, replyTo }
+  const shownKey = useRef(storeKey)
+  shownKey.current = storeKey
   useEffect(() => {
     recorder.cancel()
-    setAttachments([])
+    const kept = composerDrafts.peek(storeKey)
+    setText(kept?.text ?? '')
+    setAttachments(kept?.attachments ?? [])
     setNotice(null)
-    setReplyTo(null)
-  }, [draftKey ?? focusKey])
+    setReplyTo(kept?.replyTo ?? null)
+    return () => composerDrafts.save(storeKey, shownDraft.current)
+  }, [storeKey])
 
   // A quote lands once per request.
   const quoted = useRef<number | null>(null)
@@ -303,12 +315,27 @@ export function Composer({
       return
     }
     const replying = replyTo && carriesReply(text, attachments.length > 0)
-    onSend(replying ? wrapReply(replyTo, text.trim()) : text, attachments)
+    const sent: ComposerDraft = { text, attachments, replyTo }
+    const sentKey = storeKey
+    const outcome = onSend(replying ? wrapReply(replyTo, text.trim()) : text, attachments)
+    if (outcome) void outcome.then(went => went === false && returnDraft(sentKey, sent))
     setText('')
     setAttachments([])
     setNotice(null)
     // A slash command leaves the reply attached for the next message.
     if (replying) setReplyTo(null)
+  }
+
+  /** A send that didn't go comes back to its draft, unless something new was typed there meanwhile. */
+  function returnDraft(key: string, draft: ComposerDraft) {
+    if (key !== shownKey.current) {
+      if (!composerDrafts.peek(key)) composerDrafts.save(key, draft)
+      return
+    }
+    if (!isEmptyDraft(shownDraft.current)) return
+    setText(draft.text)
+    setAttachments(draft.attachments)
+    setReplyTo(draft.replyTo)
   }
 
   useEffect(() => {

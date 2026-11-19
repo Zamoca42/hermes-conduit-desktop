@@ -109,7 +109,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
         disabled={!connected}
         model={chat.model}
         onSend={(text, attachments) => {
-          if (!looksLikeSlashCommand(text) || attachments.length) return void send(text, attachments)
+          if (!looksLikeSlashCommand(text) || attachments.length) return send(text, attachments).then(went => went !== false)
           void command(text, commands).then(outcome => {
             if (outcome.kind === 'new') onNew()
             else if (outcome.kind === 'prefill') setQuote(prefillRequest(outcome.text, 'Hermes'))
