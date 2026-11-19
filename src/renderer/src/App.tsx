@@ -161,6 +161,7 @@ import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle,
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { useCommands } from './state/useCommands'
 import { authorityMutation, moveChat, mutateSession, sessionPath } from './state/chatActions'
+import { branchPlan } from './state/branch'
 import { ROOM_CHATS_CAPABILITY, openRoomChat, roomChatsClient, wrapUpPrompt, type RoomChatAgent } from './state/roomChats'
 import { parseProjects, type ProjectChat } from './state/projects'
 import { useLiveStatus } from './state/liveStatus'
@@ -901,6 +902,60 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
       ? selected.title
       : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
 
+  /**
+   * ⋯'s Branch on a reply, as the phone's: a new chat with the turns through
+   * it, titled "Branch of …", made in this chat's profile and opened. The
+   * authority branches its own rows (through the reply's row); `hermes
+   * dashboard` makes a chat from a copy of them.
+   */
+  const branching = useRef(false)
+  const branchFrom = useCallback(
+    async (key: string) => {
+      const parent = chat.liveId
+      if (!parent || branching.current) return
+      const plan = branchPlan(transcript.items, key)
+      if (!plan) return notice(t('There is no message history to branch from.'), 'error')
+      const profile = selected.profile
+      const scoped = profile && profile !== 'default' ? { profile } : {}
+      const branchTitle = t('Branch of {title}', { title: title || t('New chat') })
+      branching.current = true
+      try {
+        let id: string
+        if (status.sessionAuthority) {
+          // Without the reply's row the branch would keep what came after it too.
+          if (!plan.rowId && !plan.newest) throw new Error(t('Open the chat again to branch from this reply.'))
+          const result = await authorityMutation<{ branched_session_id?: string }>(gateway.rpc, gateway.http, parent, profile, 'branch', {
+            title: branchTitle,
+            ...(plan.rowId ? { through_message_id: plan.rowId } : {})
+          })
+          if (!result?.branched_session_id) throw new Error(t('The chat didn’t open. Try again.'))
+          id = result.branched_session_id
+        } else {
+          const made = await gateway.rpc<{ session_id?: string; stored_session_id?: string | null }>('session.create', {
+            cols: 96,
+            source: 'desktop',
+            // The stored chat: Hermes keeps the branch under it, and a runtime id names no stored row.
+            parent_session_id: chat.storedId ?? selected.id ?? parent,
+            title: branchTitle,
+            messages: plan.messages,
+            ...scoped,
+            ...(chat.cwd ? { cwd: chat.cwd } : {})
+          })
+          if (!made?.session_id) throw new Error(t('The chat didn’t open. Try again.'))
+          await gateway.rpc('session.title', { session_id: made.session_id, title: branchTitle, ...scoped }).catch(() => undefined)
+          // Hermes resumes a chat by its stored id, never the runtime one.
+          id = made.stored_session_id || made.session_id
+        }
+        setSelected({ id, profile, title: branchTitle })
+        void list.refresh()
+      } catch (e) {
+        notice(t('Could not branch conversation: {error}', { error: e instanceof Error ? e.message : String(e) }), 'error')
+      } finally {
+        branching.current = false
+      }
+    },
+    [chat.liveId, chat.storedId, chat.cwd, transcript.items, selected.id, selected.profile, title, status.sessionAuthority, notice, list]
+  )
   // Pinned replies in the open chat: ⋯'s Pin reply, the bar, and the list from the bar or the Chats list.
   const pinChat = chat.storedId ?? selected.id
   const chatPins = useMemo(() => pinsOfChat(pins, selected.profile, pinChat), [pins, selected.profile, pinChat])
@@ -1727,6 +1782,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
                     followedUp={followedUp}
                     pins={pinControls}
                     onReact={chat.liveId ? reactTo : undefined}
+                    onBranch={chat.liveId && !transcript.running ? branchFrom : undefined}
                   />
                 </ConnectionActionsContext.Provider>
               </FileLinks.Provider>
