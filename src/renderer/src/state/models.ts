@@ -44,6 +44,24 @@ export function reasoningTitle(level: string): string {
  * the provider's name or the model's id. A provider whose name matches
  * keeps all its models. Models Hermes says can't run are left out.
  */
+/**
+ * The search text as a model id Hermes doesn't list (hermes-conduit issue
+ * 2841): a model a provider serves but doesn't list, or a snapshot id. One
+ * word only, as a model id never has a space; null otherwise.
+ */
+export function typedModelId(query: string): string | null {
+  const id = query.trim()
+  return id && !/\s/.test(id) ? id : null
+}
+
+/** The providers a typed id can be put on: each that doesn't list it already, the chat's provider first. */
+export function typedModelProviders(providers: ModelProviderRow[], id: string, preferred?: string | null): ModelProviderRow[] {
+  const wanted = id.toLowerCase()
+  const offered = providers.filter(provider => !(provider.models ?? []).some(model => model.toLowerCase() === wanted))
+  const first = preferred ? offered.find(provider => provider.slug === preferred) : undefined
+  return first ? [first, ...offered.filter(provider => provider !== first)] : offered
+}
+
 export function groupModels(providers: ModelProviderRow[], query: string): { slug: string; name: string; models: string[] }[] {
   const words = query.toLowerCase().split(/\s+/).filter(Boolean)
   const groups: { slug: string; name: string; models: string[] }[] = []

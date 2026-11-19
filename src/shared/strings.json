@@ -35534,6 +35534,21 @@
     "zh-Hans": "使用这台电脑的时区（{zone}）",
     "zh-Hant": "使用這台電腦的時區（{zone}）"
   },
+  "Use “{id}” as a model ID": {
+    "de": "„{id}“ als Modell-ID verwenden",
+    "es": "Usar «{id}» como ID del modelo",
+    "fr": "Utiliser « {id} » comme ID de modèle",
+    "id": "Gunakan “{id}” sebagai ID model",
+    "it": "Usa “{id}” come ID del modello",
+    "ja": "「{id}」をモデル ID として使う",
+    "ko": "“{id}”을(를) 모델 ID로 사용",
+    "pl": "Użyj „{id}” jako ID modelu",
+    "pt-BR": "Usar “{id}” como ID do modelo",
+    "ru": "Использовать «{id}» как ID модели",
+    "tr": "“{id}” model kimliği olarak kullan",
+    "zh-Hans": "将“{id}”用作模型 ID",
+    "zh-Hant": "將「{id}」用作模型 ID"
+  },
   "Used": {
     "de": "Belegt",
     "es": "Usado",

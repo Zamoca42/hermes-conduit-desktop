@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import type { ModelSwitch, OpenChat } from '../state/useChat'
-import { REASONING_LEVELS, groupModels, reasoningTitle, type ModelProviderRow } from '../state/models'
+import { REASONING_LEVELS, groupModels, reasoningTitle, typedModelId, typedModelProviders, type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
 import { isPinned, pinnedRows, recentRows, type ModelPick } from '../state/modelQuickPicks'
 import { ProviderLogo } from './ProviderLogo'
@@ -62,6 +62,9 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
   }, [onClose])
 
   const groups = useMemo(() => groupModels(providers ?? [], query), [providers, query])
+  // A model Hermes doesn't list, typed as its id, on any provider (issue 2841).
+  const typedId = typedModelId(query)
+  const typedProviders = typedId && catalog.answered ? typedModelProviders(providers ?? [], typedId, chat.provider) : []
   const quick = useModelQuickPicks()
   const inUse: ModelPick | null = chat.model ? { model: chat.model, provider: chat.provider ?? '' } : null
   const pinned = query.trim() ? [] : pinnedRows(quick.picks, providers ?? [])
@@ -234,6 +237,12 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
             {group.models.map(model => row(model, group.slug, false))}
           </section>
         ))}
+        {typedId && typedProviders.length ? (
+          <section className="model-group model-typed" aria-label={t('Use “{id}” as a model ID', { id: typedId })}>
+            <div className="model-group-name">{t('Use “{id}” as a model ID', { id: typedId })}</div>
+            {typedProviders.map(provider => row(typedId, provider.slug, true))}
+          </section>
+        ) : null}
       </div>
     </div>
   )
