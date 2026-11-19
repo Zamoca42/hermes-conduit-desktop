@@ -8892,3 +8892,33 @@ button.secondary.danger {
   margin: 0;
   box-shadow: 0 0 0 1.5px var(--surface);
 }
+
+/* All profiles grouped by profile: a section per profile, closed from its title, with Show more under it. */
+.sect.sect-profile {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sect-profile svg {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.15s;
+}
+
+.sect-profile svg.closed {
+  transform: rotate(-90deg);
+}
+
+.row.show-more {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
