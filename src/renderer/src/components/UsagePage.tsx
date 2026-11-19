@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { locale, t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -149,6 +150,9 @@ function DailyBars({ report, language }: { report: UsageReport; language?: strin
  * Read only, from what Hermes already keeps; refreshed by hand, never
  * polled, since a provider's quota check can be rate-limited on the host.
  */
+/** Where the quotas' `model.options` answer is kept: an RPC, so a name of its own. */
+const quotasKey = (profile?: string) => `rpc:model.options:quotas:${profile || 'default'}`
+
 export function UsagePage({ bots, profile: initialProfile, onBack }: Props) {
   const language = locale()
   const [days, setDays] = useState(30)
@@ -163,11 +167,14 @@ export function UsagePage({ bots, profile: initialProfile, onBack }: Props) {
     const mine = ++generation.current
     setLoading(true)
     try {
-      const usage = await gateway.http('GET', withProfile(`/api/analytics/usage?days=${days}`, profile))
+      const path = withProfile(`/api/analytics/usage?days=${days}`, profile)
+      const keep = answerKeeper(path)
+      const usage = await gateway.http('GET', path)
       // The per-model route splits better, but the page stands without it.
       const models = await gateway.http('GET', withProfile(`/api/analytics/models?days=${days}`, profile)).catch(() => null)
       if (generation.current !== mine) return
       setReport(parseUsage(usage, models, days))
+      keep({ usage, models })
       setFailure(null)
     } catch (e) {
       if (generation.current !== mine) return
@@ -177,15 +184,20 @@ export function UsagePage({ bots, profile: initialProfile, onBack }: Props) {
     }
     const params: Record<string, unknown> = { explicit_only: true }
     if (profile && profile !== 'default') params.profile = profile
+    const keepQuotas = answerKeeper(quotasKey(profile))
     const options = await gateway.rpc('model.options', params).catch(() => null)
     if (generation.current !== mine) return
     // A quota that couldn't be read goes rather than stay up as current.
     setQuotas(options ? parseQuotas(options) : null)
+    if (options) keepQuotas(options)
   }, [days, profile])
 
   useEffect(() => {
-    // Another period or profile: never the old one's numbers under it.
-    setReport(null)
+    // Another period or profile: never the old one's numbers under it, but its own from last time while Hermes answers.
+    const kept = keptAnswer(withProfile(`/api/analytics/usage?days=${days}`, profile)) as { usage?: unknown; models?: unknown } | undefined
+    setReport(kept?.usage ? parseUsage(kept.usage, kept.models ?? null, days) : null)
+    const keptOptions = keptAnswer(quotasKey(profile))
+    setQuotas(keptOptions ? parseQuotas(keptOptions) : null)
     setFailure(null)
     void load()
   }, [load])

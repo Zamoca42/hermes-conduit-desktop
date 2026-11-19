@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -41,8 +42,14 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
     const mine = ++generation.current
     setError(null)
     try {
-      const answer = parseModelSettings(await gateway.http('GET', withProfile('/api/model/auxiliary', profile)))
-      if (generation.current === mine) setSettings(answer)
+      const path = withProfile('/api/model/auxiliary', profile)
+      const keep = answerKeeper(path)
+      const raw = await gateway.http('GET', path)
+      const answer = parseModelSettings(raw)
+      if (generation.current === mine) {
+        setSettings(answer)
+        keep(raw)
+      }
     } catch (e) {
       if (generation.current === mine) setError(e instanceof Error ? e.message : String(e))
     }
@@ -52,7 +59,9 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
   }, [profile])
 
   useEffect(() => {
-    setSettings(null)
+    // The profile's settings as Hermes last gave them, until it answers again.
+    const kept = keptAnswer(withProfile('/api/model/auxiliary', profile))
+    setSettings(kept ? parseModelSettings(kept) : null)
     void load()
   }, [load])
 

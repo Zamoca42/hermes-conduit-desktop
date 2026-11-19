@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { locale, t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -32,7 +33,11 @@ const NOTE_LIMIT = 1500
  * Save.
  */
 export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onChanged: () => void }) {
-  const [state, setState] = useState<State | null>(null)
+  // Opens on Pulse's state as it last answered on this dashboard (Screens that open on their last answer).
+  const [state, setState] = useState<State | null>(() => {
+    const kept = keptAnswer(PULSE)
+    return kept ? parseSettings(kept) : null
+  })
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
@@ -43,7 +48,10 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
 
   const load = useCallback(async () => {
     try {
-      setState(parseSettings(await gateway.http('GET', PULSE)))
+      const keep = answerKeeper(PULSE)
+      const raw = await gateway.http('GET', PULSE)
+      setState(parseSettings(raw))
+      keep(raw)
       setError(null)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
@@ -59,7 +67,10 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
       setSaving(true)
       setError(null)
       try {
-        setState(parseSettings(await gateway.http('PUT', PULSE, body)))
+        const keep = answerKeeper(PULSE)
+        const raw = await gateway.http('PUT', PULSE, body)
+        setState(parseSettings(raw))
+        keep(raw)
         onChanged()
         return true
       } catch (e) {
@@ -562,12 +573,18 @@ function ReportTimes({ times, saving, onSave }: { times: string[]; saving: boole
 
 /** What Pulse remembers: the open items by kind, each one to forget. */
 function PulseMemory({ onBack, onChanged }: { onBack: () => void; onChanged: () => void }) {
-  const [items, setItems] = useState<MemoryItem[] | null>(null)
+  const [items, setItems] = useState<MemoryItem[] | null>(() => {
+    const kept = keptAnswer(`${PULSE}/memory`)
+    return kept ? parseMemory(kept) : null
+  })
   const [error, setError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     try {
-      setItems(parseMemory(await gateway.http('GET', `${PULSE}/memory`)))
+      const keep = answerKeeper(`${PULSE}/memory`)
+      const raw = await gateway.http('GET', `${PULSE}/memory`)
+      setItems(parseMemory(raw))
+      keep(raw)
       setError(null)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))

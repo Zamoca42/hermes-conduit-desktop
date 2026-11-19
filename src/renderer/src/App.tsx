@@ -42,6 +42,7 @@ import { Transcript, prefillRequest, quoteRequest, revealMessage } from './compo
 import { forgetSummaries } from './state/stepSummaries'
 import { WAKE_EVENT, wakeBindings, wakeChat, wakeProfiles, type WakeBinding } from './state/wakeSettings'
 import { forgetChatLists } from './state/savedChatList'
+import { forgetKeptAnswers, setKeptAnswersHost } from './state/keptAnswers'
 import { keepTabs, launchPage, syncedTabs } from './state/launchTab'
 import { PREFS_PATH } from './state/pinnedOrder'
 import { useFollowUps, usePredictions } from './state/usePredictions'
@@ -207,6 +208,7 @@ export function App() {
   }, [url])
   // Model pickers open on the catalog kept from this host's last answer, never another host's.
   setCatalogHost(url ?? '')
+  setKeptAnswersHost(url ?? '')
   setTurnSurfaceHost(url ?? '')
   setDesktopCardsHost(url ?? '')
   setKanbanHost(url ?? '')
@@ -216,6 +218,7 @@ export function App() {
     if (hostList === undefined) return
     forgetSummaries(hostList ? hostList.split('\n') : [])
     forgetChatLists(hostList ? hostList.split('\n') : [])
+    forgetKeptAnswers(hostList ? hostList.split('\n') : [])
   }, [hostList])
 
   if (!status) return <div className="app" />
