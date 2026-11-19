@@ -461,6 +461,13 @@ export function addPendingUser(state: TranscriptState, text: string, attachments
   return { ...state, items: [...state.items, { ...item, ...(all.length ? { attachments: all } : {}), pending: true }] }
 }
 
+/** A pending message taken back whole: its words went back to the composer, so it leaves the transcript. */
+export function withdrawPendingUser(state: TranscriptState): TranscriptState {
+  const index = state.items.map(i => i.kind === 'user' && i.pending).lastIndexOf(true)
+  if (index < 0) return state
+  return { ...state, items: state.items.filter((_, i) => i !== index) }
+}
+
 /** A send that failed: its bubble goes, with the reason in its place. */
 export function failPendingUser(state: TranscriptState, error: string): TranscriptState {
   const index = state.items.map(i => i.kind === 'user' && i.pending).lastIndexOf(true)

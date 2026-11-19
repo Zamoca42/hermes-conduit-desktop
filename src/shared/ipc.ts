@@ -109,7 +109,8 @@ export interface PendingRequest {
   receivedAt: number
 }
 
-export type RpcOutcome<T = unknown> = { ok: true; result: T } | { ok: false; error: string; code?: number }
+/** A failure carries Hermes' code and, for a gateway refusal, its machine-readable `data.reason` (SESSION_NOT_OWNED, say). */
+export type RpcOutcome<T = unknown> = { ok: true; result: T } | { ok: false; error: string; code?: number; reason?: string }
 
 /** What main of hermes-conduit-notifier holds: nulls when GitHub didn't answer. */
 export interface PluginRelease {

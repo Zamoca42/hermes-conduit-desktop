@@ -24,6 +24,7 @@ import { forgetSummaries } from './state/stepSummaries'
 import { useFollowUps, usePredictions } from './state/usePredictions'
 import { SummaryHost } from './state/useStepSummaries'
 import { chatDraft, composerDrafts } from './state/composerDrafts'
+import { openElsewhereMessage, owner } from './state/chatTakeover'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
 import { forgetAvatars, useBots } from './state/useBots'
@@ -58,6 +59,7 @@ import { ControlDock } from './components/ControlDock'
 import { useAgents } from './state/useAgents'
 import { planFromChecklist } from './state/plan'
 import { BotEditor } from './components/BotEditor'
+import { TakeoverSettings } from './components/TakeoverSettings'
 import { NewBot } from './components/NewBot'
 import { useChatDisplay } from './state/display'
 import { ConfigPage } from './components/ConfigPage'
@@ -161,7 +163,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean; folder?: string }>({ id: null })
   const [projectsOpen, setProjectsOpen] = useState(false)
   const list = useChatList(connected)
-  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection } = useChat(
+  const { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection, takeover, takeOver } = useChat(
     selected.id,
     selected.profile,
     status.sessionAuthority === true,
@@ -498,9 +500,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     },
     [marks, updateMarks, writeUnread]
   )
+  /** Bumped when a tapped takeover makes the chat Conduit's: the composer sends what's in it. */
+  const [sendNow, setSendNow] = useState(0)
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
-    async (text: string, attachments: StagedAttachment[] = []) => {
+    async (text: string, attachments: StagedAttachment[] = [], options: { takeOver?: boolean } = {}) => {
       let created: string | null | false
       if (looksLikeSlashCommand(text) && !attachments.length) {
         const outcome = await command(text, commands)
@@ -509,7 +513,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         if (outcome.kind === 'prefill') setQuote(prefillRequest(outcome.text, botTitle))
         created = outcome.created
       } else {
-        created = await send(text, attachments)
+        created = await send(text, attachments, undefined, options)
         if (created === false) return false
       }
       if (created) {
@@ -1001,7 +1005,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
-                  onSay={words => void onSend(words)}
+                  onSay={words => void onSend(words, [], { takeOver: true })}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1015,7 +1019,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
-                  onSay={words => void onSend(words)}
+                  onSay={words => void onSend(words, [], { takeOver: true })}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1028,7 +1032,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   profile={selected.profile}
                   chatId={selected.id}
                   items={transcript.items}
-                  onSay={words => void onSend(words)}
+                  onSay={words => void onSend(words, [], { takeOver: true })}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1043,7 +1047,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   liveId={chat.liveId}
                   onCorrected={noteCorrection}
                   items={transcript.items}
-                  onSay={words => void onSend(words)}
+                  onSay={words => void onSend(words, [], { takeOver: true })}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1054,7 +1058,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
               ) : calling ? (
                 <VoiceCall
                   profile={selected.profile}
-                  onSay={words => void onSend(words)}
+                  onSay={words => void onSend(words, [], { takeOver: true })}
                   running={transcript.running}
                   turnsDone={turnsDone}
                   lastReply={lastReply}
@@ -1074,7 +1078,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 kill={delegates.kill}
               />
               <PlanDock plan={shownPlan} running={transcript.running} chatKey={selected.id ?? 'new'} />
+              {takeover ? (
+                <div className="takeover-offer" role="status">
+                  <span>{openElsewhereMessage(owner(takeover.surface))}</span>
+                  <button
+                    className="primary"
+                    disabled={takeover.busy || !connected}
+                    onClick={() => void takeOver().then(ready => ready && setSendNow(n => n + 1))}
+                  >
+                    {t('Take over this chat')}
+                  </button>
+                </div>
+              ) : null}
               <Composer
+                sendNow={sendNow}
                 placeholder={t('Message {name}…', { name: botTitle })}
                 quote={quote}
                 commands={commands}
@@ -1328,6 +1345,7 @@ function Settings({
           profile={profile}
           onBack={() => setPage('main')}
         >
+          <TakeoverSettings />
           <StepSummarySettings />
           <PredictiveSettings />
         </ConfigPage>
