@@ -4364,6 +4364,21 @@
     "zh-Hans": "确认你的 iPhone 显示同样的四个单词。",
     "zh-Hant": "確認你的 iPhone 顯示同樣的四個單字。"
   },
+  "Check the server certificate’s expiration and validity dates.": {
+    "de": "Prüfe Ablauf- und Gültigkeitsdatum des Serverzertifikats.",
+    "es": "Comprueba las fechas de caducidad y validez del certificado del servidor.",
+    "fr": "Vérifiez les dates d'expiration et de validité du certificat du serveur.",
+    "id": "Periksa tanggal kedaluwarsa dan masa berlaku sertifikat server.",
+    "it": "Controlla le date di scadenza e validità del certificato del server.",
+    "ja": "サーバ証明書の有効期限と有効期間を確認してください。",
+    "ko": "서버 인증서의 만료일과 유효 기간을 확인하세요.",
+    "pl": "Sprawdź datę wygaśnięcia i okres ważności certyfikatu serwera.",
+    "pt-BR": "Verifique as datas de validade e expiração do certificado do servidor.",
+    "ru": "Проверьте срок действия и даты действительности сертификата сервера.",
+    "tr": "Sunucu sertifikasının son kullanma ve geçerlilik tarihlerini denetleyin.",
+    "zh-Hans": "检查服务器证书的有效期和有效性。",
+    "zh-Hant": "檢查伺服器憑證的到期日和有效日期。"
+  },
   "Check this server’s certificate": {
     "de": "Zertifikat dieses Servers prüfen",
     "es": "Comprobar el certificado de este servidor",
@@ -4468,6 +4483,36 @@
     "tr": "Kontrol noktası sınırı",
     "zh-Hans": "检查点上限",
     "zh-Hant": "檢查點上限"
+  },
+  "Checks for Cloudflare Access service-token problems when connecting to your dashboard.": {
+    "de": "Prüft beim Verbinden mit deinem Dashboard auf Probleme mit dem Cloudflare-Access-Diensttoken.",
+    "es": "Comprueba si hay problemas con el token de servicio de Cloudflare Access al conectarse a tu panel.",
+    "fr": "Recherche les problèmes de jeton de service Cloudflare Access lors de la connexion à votre tableau de bord.",
+    "id": "Memeriksa masalah token layanan Cloudflare Access saat menghubungkan ke dasbor Anda.",
+    "it": "Verifica eventuali problemi con il token di servizio di Cloudflare Access durante la connessione alla tua dashboard.",
+    "ja": "ダッシュボードへの接続時に、Cloudflare Accessのサービストークンの問題を確認します。",
+    "ko": "대시보드에 연결할 때 Cloudflare Access 서비스 토큰 문제를 확인해요.",
+    "pl": "Sprawdza problemy z tokenem usługi Cloudflare Access podczas łączenia z panelem.",
+    "pt-BR": "Verifica problemas com o token de serviço do Cloudflare Access ao conectar ao seu painel.",
+    "ru": "Проверяет проблемы с сервисным токеном Cloudflare Access при подключении к дашборду.",
+    "tr": "Panelinize bağlanırken Cloudflare Access hizmet token'ı sorunlarını denetler.",
+    "zh-Hans": "连接仪表盘时检查 Cloudflare Access 服务令牌问题。",
+    "zh-Hant": "連線到儀表板時，檢查 Cloudflare Access 服務權杖的問題。"
+  },
+  "Checks for HTTPS and certificate problems when connecting to your dashboard.": {
+    "de": "Prüft beim Verbinden mit deinem Dashboard auf HTTPS- und Zertifikatsprobleme.",
+    "es": "Comprueba si hay problemas de HTTPS y certificados al conectarse a tu panel.",
+    "fr": "Recherche les problèmes HTTPS et de certificat lors de la connexion à votre tableau de bord.",
+    "id": "Memeriksa masalah HTTPS dan sertifikat saat menghubungkan ke dasbor Anda.",
+    "it": "Verifica eventuali problemi HTTPS e di certificato durante la connessione alla tua dashboard.",
+    "ja": "ダッシュボードへの接続時に、HTTPSと証明書の問題を確認します。",
+    "ko": "대시보드에 연결할 때 HTTPS 및 인증서 문제를 확인해요.",
+    "pl": "Sprawdza problemy z HTTPS i certyfikatem podczas łączenia z panelem.",
+    "pt-BR": "Verifica problemas de HTTPS e de certificado ao conectar ao seu painel.",
+    "ru": "Проверяет проблемы с HTTPS и сертификатами при подключении к дашборду.",
+    "tr": "Panelinize bağlanırken HTTPS ve sertifika sorunlarını denetler.",
+    "zh-Hans": "连接仪表盘时检查 HTTPS 与证书问题。",
+    "zh-Hant": "連線到儀表板時，檢查 HTTPS 和憑證的問題。"
   },
   "Cheerful": {
     "de": "Fröhlich",
@@ -5638,6 +5683,21 @@
     "tr": "Bağlayıcı yeniden yüklemesini onayla",
     "zh-Hans": "确认重新加载连接器",
     "zh-Hant": "確認重新載入連接器"
+  },
+  "Confirm this device’s date and time are correct.": {
+    "de": "Prüfe, ob Datum und Uhrzeit auf diesem Gerät stimmen.",
+    "es": "Confirma que la fecha y la hora de este dispositivo son correctas.",
+    "fr": "Vérifiez que la date et l'heure de cet appareil sont correctes.",
+    "id": "Pastikan tanggal dan waktu perangkat ini benar.",
+    "it": "Verifica che data e ora di questo dispositivo siano corrette.",
+    "ja": "このデバイスの日付と時刻が正しいことを確認してください。",
+    "ko": "이 기기의 날짜와 시간이 올바른지 확인하세요.",
+    "pl": "Upewnij się, że data i godzina na tym urządzeniu są prawidłowe.",
+    "pt-BR": "Confirme se a data e a hora deste aparelho estão corretas.",
+    "ru": "Убедитесь, что дата и время на этом устройстве установлены правильно.",
+    "tr": "Bu cihazın tarih ve saatinin doğru olduğundan emin olun.",
+    "zh-Hans": "确认本设备的日期和时间正确无误。",
+    "zh-Hant": "確認此裝置的日期與時間正確。"
   },
   "Connect": {
     "de": "Verbinden",
@@ -7709,6 +7769,21 @@
     "zh-Hans": "创建",
     "zh-Hant": "建立"
   },
+  "Create switches to {host} and makes the bot there, from its main profile with its default model, skills and tools.": {
+    "de": "„Erstellen“ wechselt zu {host} und erstellt den Bot dort, ausgehend vom Hauptprofil mit dessen Standardmodell, -Skills und -Tools.",
+    "es": "Crear cambia a {host} y crea el bot allí, a partir de su perfil principal con su modelo, habilidades y herramientas predeterminados.",
+    "fr": "Créer passe à {host} et y crée le bot, à partir de son profil principal avec son modèle, ses compétences et ses outils par défaut.",
+    "id": "Buat beralih ke {host} dan membuat bot di sana, dari profil utamanya dengan model, keterampilan, dan alat bawaannya.",
+    "it": "Crea passa a {host} e crea lì il bot, dal suo profilo principale con il modello, le competenze e gli strumenti predefiniti.",
+    "ja": "作成すると {host} に切り替わり、そのメインプロファイルから既定のモデル、スキル、ツールでボットを作成します。",
+    "ko": "만들기를 누르면 {host}(으)로 전환되어 그곳의 기본 프로필에서 기본 모델, 스킬, 도구로 봇을 만듭니다.",
+    "pl": "Utwórz przełącza na {host} i tworzy tam bota z jego profilu głównego, z domyślnym modelem, umiejętnościami i narzędziami.",
+    "pt-BR": "Criar muda para {host} e cria o bot lá, a partir do perfil principal com o modelo, as habilidades e as ferramentas padrão.",
+    "ru": "«Создать» переключает на {host} и создаёт бота там из основного профиля с моделью, навыками и инструментами по умолчанию.",
+    "tr": "Oluştur, {host} panosuna geçer ve botu orada, ana profilinden varsayılan modeli, becerileri ve araçlarıyla oluşturur.",
+    "zh-Hans": "“创建”会切换到 {host}，并在那里从其主配置文件以默认模型、技能和工具创建机器人。",
+    "zh-Hant": "「建立」會切換到 {host}，並在那裡從其主設定檔以預設模型、技能與工具建立機器人。"
+  },
   "Created {time}": {
     "de": "Erstellt {time}",
     "es": "Creada {time}",
@@ -9193,6 +9268,21 @@
     "tr": "Her aramanın transkripti Hermes sunucunuzun geçmişine kaydedilir ve Oturumlar'da Ses altında görünür; orada okuyabilir veya aramayı sürdürebilirsiniz. Güncel bir Hermes bildirim eklentisi gerekir. Tüm canlı ses modları için ortaktır. Sonraki konuşmada geçerli olur.",
     "zh-Hans": "每次通话的转写会保存到你的 Hermes 服务器历史记录中，并显示在“会话”的“语音”下，你可以在那里阅读或继续通话。需要最新的 Hermes 通知插件。所有实时语音模式共用此设置。将在下一次对话中生效。",
     "zh-Hant": "每次通話的逐字稿都會儲存到你 Hermes 伺服器的記錄中，並顯示在「工作階段」的「語音」下，你可以在那裡閱讀或繼續通話。需要最新的 Hermes 通知外掛程式。所有即時語音模式共用此設定。下次對話起生效。"
+  },
+  "Each computer and phone keeps its own trust: trust the certificate on every device you connect from, even if another one already works.": {
+    "de": "Jeder Computer und jedes Telefon verwaltet sein eigenes Vertrauen: Vertraue dem Zertifikat auf jedem Gerät, von dem aus du dich verbindest, auch wenn ein anderes bereits funktioniert.",
+    "es": "Cada ordenador y cada teléfono guardan su propia confianza: confía en el certificado en cada dispositivo desde el que te conectes, aunque otro ya funcione.",
+    "fr": "Chaque ordinateur et chaque téléphone gère sa propre confiance : faites confiance au certificat sur chaque appareil depuis lequel vous vous connectez, même si un autre fonctionne déjà.",
+    "id": "Setiap komputer dan ponsel menyimpan kepercayaannya sendiri: percayai sertifikat di setiap perangkat yang kamu gunakan untuk terhubung, meskipun perangkat lain sudah berfungsi.",
+    "it": "Ogni computer e ogni telefono gestisce la propria attendibilità: considera attendibile il certificato su ogni dispositivo da cui ti connetti, anche se un altro funziona già.",
+    "ja": "コンピュータと電話はそれぞれ独自に信頼を管理します。別のデバイスで動作していても、接続するすべてのデバイスで証明書を信頼してください。",
+    "ko": "컴퓨터와 휴대폰은 각자 신뢰를 따로 관리합니다. 다른 기기에서 이미 작동하더라도 연결하는 모든 기기에서 인증서를 신뢰하세요.",
+    "pl": "Każdy komputer i telefon ma własne ustawienia zaufania: zaufaj certyfikatowi na każdym urządzeniu, z którego się łączysz, nawet jeśli na innym już działa.",
+    "pt-BR": "Cada computador e telefone mantém a própria confiança: confie no certificado em cada dispositivo de onde você se conecta, mesmo que outro já funcione.",
+    "ru": "Каждый компьютер и телефон хранит собственное доверие: доверьтесь сертификату на каждом устройстве, с которого вы подключаетесь, даже если на другом всё уже работает.",
+    "tr": "Her bilgisayar ve telefon kendi güvenini tutar: başka bir cihaz zaten çalışsa bile bağlandığın her cihazda sertifikaya güven.",
+    "zh-Hans": "每台电脑和手机都各自管理信任：请在你用来连接的每台设备上信任该证书，即使另一台设备已经可以使用。",
+    "zh-Hant": "每台電腦和手機都各自管理信任：請在你用來連線的每台裝置上信任該憑證，即使另一台裝置已經可以使用。"
   },
   "Each guess is a short extra request to your agent's model, on a copy of the chat that can't use tools. Nothing is saved to the chat, and only this device sees the guesses.": {
     "de": "Jede Vermutung ist eine kurze zusätzliche Anfrage an das Modell deines Agenten, auf einer Kopie des Chats ohne Werkzeuge. Nichts wird im Chat gespeichert, und nur dieses Gerät sieht die Vermutungen.",
@@ -12194,6 +12284,21 @@
     "zh-Hans": "HERMES 正在等待",
     "zh-Hant": "HERMES 正在等待"
   },
+  "HTTPS & certificates": {
+    "de": "HTTPS & Zertifikate",
+    "es": "HTTPS y certificados",
+    "fr": "HTTPS et certificats",
+    "id": "HTTPS & sertifikat",
+    "it": "HTTPS e certificati",
+    "ja": "HTTPSと証明書",
+    "ko": "HTTPS 및 인증서",
+    "pl": "HTTPS i certyfikaty",
+    "pt-BR": "HTTPS e certificados",
+    "ru": "HTTPS и сертификаты",
+    "tr": "HTTPS ve sertifikalar",
+    "zh-Hans": "HTTPS 与证书",
+    "zh-Hant": "HTTPS 與憑證"
+  },
   "Hand Back": {
     "de": "Zurückgeben",
     "es": "Devolver",
@@ -14233,6 +14338,36 @@
     "tr": "Varsayılan model başarısız olursa Hermes bunları sırayla dener.",
     "zh-Hans": "如果默认模型失败，Hermes 会按顺序尝试这些模型。",
     "zh-Hant": "如果預設模型失敗，Hermes 會依序嘗試這些模型。"
+  },
+  "If you use your own certificate authority, add its root certificate to Keychain Access, then set it to Always Trust.": {
+    "de": "Wenn du eine eigene Zertifizierungsstelle verwendest, füge ihr Stammzertifikat zur Schlüsselbundverwaltung hinzu und stelle es auf „Immer vertrauen“.",
+    "es": "Si usas tu propia autoridad de certificación, añade su certificado raíz a Acceso a Llaveros y configúralo como Confiar siempre.",
+    "fr": "Si vous utilisez votre propre autorité de certification, ajoutez son certificat racine au Trousseau d’accès, puis réglez-le sur Toujours approuver.",
+    "id": "Jika kamu menggunakan otoritas sertifikat sendiri, tambahkan sertifikat root-nya ke Akses Rantai Kunci, lalu atur ke Selalu Percayai.",
+    "it": "Se usi una tua autorità di certificazione, aggiungi il suo certificato radice ad Accesso Portachiavi, poi impostalo su Fidati sempre.",
+    "ja": "独自の認証局を使っている場合は、そのルート証明書をキーチェーンアクセスに追加し、「常に信頼」に設定してください。",
+    "ko": "자체 인증 기관을 사용한다면 해당 루트 인증서를 키체인 접근에 추가한 다음 '항상 신뢰'로 설정하세요.",
+    "pl": "Jeśli używasz własnego urzędu certyfikacji, dodaj jego certyfikat główny do Pęku kluczy, a następnie ustaw opcję Zawsze ufaj.",
+    "pt-BR": "Se você usa sua própria autoridade certificadora, adicione o certificado raiz dela ao Acesso às Chaves e defina como Sempre Confiar.",
+    "ru": "Если вы используете собственный центр сертификации, добавьте его корневой сертификат в «Связку ключей» и выберите «Всегда доверять».",
+    "tr": "Kendi sertifika yetkilini kullanıyorsan, kök sertifikasını Anahtar Zinciri Erişimi'ne ekle ve Her Zaman Güven olarak ayarla.",
+    "zh-Hans": "如果你使用自己的证书颁发机构，请将其根证书添加到“钥匙串访问”，然后设为“始终信任”。",
+    "zh-Hant": "如果你使用自己的憑證授權單位，請將其根憑證加入「鑰匙圈存取」，然後設為「永遠信任」。"
+  },
+  "If you use your own certificate authority, install its root certificate in Trusted Root Certification Authorities.": {
+    "de": "Wenn du eine eigene Zertifizierungsstelle verwendest, installiere ihr Stammzertifikat unter „Vertrauenswürdige Stammzertifizierungsstellen“.",
+    "es": "Si usas tu propia autoridad de certificación, instala su certificado raíz en Entidades de certificación raíz de confianza.",
+    "fr": "Si vous utilisez votre propre autorité de certification, installez son certificat racine dans Autorités de certification racines de confiance.",
+    "id": "Jika kamu menggunakan otoritas sertifikat sendiri, pasang sertifikat root-nya di Trusted Root Certification Authorities.",
+    "it": "Se usi una tua autorità di certificazione, installa il suo certificato radice in Autorità di certificazione radice attendibili.",
+    "ja": "独自の認証局を使っている場合は、そのルート証明書を「信頼されたルート証明機関」にインストールしてください。",
+    "ko": "자체 인증 기관을 사용한다면 해당 루트 인증서를 '신뢰할 수 있는 루트 인증 기관'에 설치하세요.",
+    "pl": "Jeśli używasz własnego urzędu certyfikacji, zainstaluj jego certyfikat główny w magazynie Zaufane główne urzędy certyfikacji.",
+    "pt-BR": "Se você usa sua própria autoridade certificadora, instale o certificado raiz dela em Autoridades de Certificação Raiz Confiáveis.",
+    "ru": "Если вы используете собственный центр сертификации, установите его корневой сертификат в «Доверенные корневые центры сертификации».",
+    "tr": "Kendi sertifika yetkilini kullanıyorsan, kök sertifikasını Güvenilen Kök Sertifika Yetkilileri'ne yükle.",
+    "zh-Hans": "如果你使用自己的证书颁发机构，请将其根证书安装到“受信任的根证书颁发机构”。",
+    "zh-Hant": "如果你使用自己的憑證授權單位，請將其根憑證安裝到「受信任的根憑證授權單位」。"
   },
   "If your dashboard uses its own certificate authority or a self-signed certificate, Conduit can save its root certificate for you to trust on this computer.": {
     "de": "Wenn dein Dashboard eine eigene Zertifizierungsstelle oder ein selbstsigniertes Zertifikat verwendet, kann Conduit sein Root-Zertifikat sichern, damit du ihm auf diesem Computer vertrauen kannst.",
@@ -17308,6 +17443,21 @@
     "tr": "Davet oluştur",
     "zh-Hans": "创建邀请",
     "zh-Hant": "建立邀請"
+  },
+  "Make sure a Service Auth policy allows that token to reach this Access application.": {
+    "de": "Stelle sicher, dass eine Service-Auth-Richtlinie diesem Token den Zugriff auf diese Access-Anwendung erlaubt.",
+    "es": "Asegúrate de que una política Service Auth permita que ese token llegue a esta aplicación de Access.",
+    "fr": "Vérifiez qu'une stratégie Service Auth autorise ce jeton à accéder à cette application Access.",
+    "id": "Pastikan kebijakan Service Auth mengizinkan token tersebut menjangkau aplikasi Access ini.",
+    "it": "Assicurati che una policy Service Auth consenta a quel token di raggiungere questa applicazione Access.",
+    "ja": "Service Authポリシーで、そのトークンがこのAccessアプリケーションにアクセスできるよう許可されていることを確認してください。",
+    "ko": "Service Auth 정책에서 해당 토큰이 이 Access 애플리케이션에 접근하도록 허용하는지 확인하세요.",
+    "pl": "Upewnij się, że zasada Service Auth zezwala temu tokenowi na dostęp do tej aplikacji Access.",
+    "pt-BR": "Verifique se uma política Service Auth permite que esse token acesse este aplicativo Access.",
+    "ru": "Убедитесь, что политика Service Auth разрешает этому токену доступ к этому приложению Access.",
+    "tr": "Bir Service Auth politikasının bu token'ın bu Access uygulamasına ulaşmasına izin verdiğinden emin olun.",
+    "zh-Hans": "确保某条 Service Auth 策略允许该令牌访问此 Access 应用。",
+    "zh-Hant": "請確認有 Service Auth 政策允許該權杖存取此 Access 應用程式。"
   },
   "Making a code…": {
     "de": "Code wird erstellt…",
@@ -30854,6 +31004,21 @@
     "zh-Hans": "机器人的沙盒需要桌面镜像",
     "zh-Hant": "機器人的沙盒需要桌面映像"
   },
+  "The certificate must name the exact address you entered, as a host name or IP address in its Subject Alternative Name.": {
+    "de": "Das Zertifikat muss genau die eingegebene Adresse nennen, als Hostname oder IP-Adresse im Subject Alternative Name.",
+    "es": "El certificado debe incluir exactamente la dirección que escribiste, como nombre de host o dirección IP en su Subject Alternative Name.",
+    "fr": "Le certificat doit indiquer exactement l’adresse saisie, sous forme de nom d’hôte ou d’adresse IP dans son Subject Alternative Name.",
+    "id": "Sertifikat harus mencantumkan alamat persis yang Anda masukkan, sebagai nama host atau alamat IP di Subject Alternative Name-nya.",
+    "it": "Il certificato deve indicare esattamente l’indirizzo inserito, come nome host o indirizzo IP nel suo Subject Alternative Name.",
+    "ja": "証明書には、入力したアドレスそのものが、Subject Alternative Nameのホスト名またはIPアドレスとして含まれている必要があります。",
+    "ko": "인증서에는 입력한 주소가 Subject Alternative Name의 호스트 이름이나 IP 주소로 정확히 포함되어야 합니다.",
+    "pl": "Certyfikat musi zawierać dokładnie wpisany adres, jako nazwę hosta lub adres IP w polu Subject Alternative Name.",
+    "pt-BR": "O certificado precisa conter exatamente o endereço digitado, como nome de host ou endereço IP no Subject Alternative Name.",
+    "ru": "Сертификат должен содержать именно тот адрес, который вы ввели, как имя хоста или IP-адрес в Subject Alternative Name.",
+    "tr": "Sertifika, girdiğiniz adresi tam olarak, Subject Alternative Name içinde ana bilgisayar adı veya IP adresi olarak içermelidir.",
+    "zh-Hans": "证书必须在其 Subject Alternative Name 中以主机名或 IP 地址的形式包含你输入的确切地址。",
+    "zh-Hant": "憑證必須在其 Subject Alternative Name 中，以主機名稱或 IP 位址的形式包含你輸入的確切位址。"
+  },
   "The chat didn’t open. Try again.": {
     "de": "Der Chat wurde nicht geöffnet. Versuch es noch einmal.",
     "es": "El chat no se abrió. Inténtalo de nuevo.",
@@ -33959,6 +34124,21 @@
     "zh-Hans": "出行与旅行",
     "zh-Hant": "出行與旅行"
   },
+  "Troubleshoot Connection": {
+    "de": "Verbindungsprobleme beheben",
+    "es": "Solucionar problemas de conexión",
+    "fr": "Dépanner la connexion",
+    "id": "Pecahkan Masalah Koneksi",
+    "it": "Risolvi problemi di connessione",
+    "ja": "接続のトラブルシューティング",
+    "ko": "연결 문제 해결",
+    "pl": "Rozwiąż problem z połączeniem",
+    "pt-BR": "Solucionar Problemas de Conexão",
+    "ru": "Устранить неполадки подключения",
+    "tr": "Bağlantı Sorunlarını Gider",
+    "zh-Hans": "排查连接",
+    "zh-Hant": "排解連線問題"
+  },
   "Trusted": {
     "de": "Vertrauenswürdig",
     "es": "De confianza",
@@ -35743,6 +35923,21 @@
     "tr": "Doğrulanmış",
     "zh-Hans": "已验证",
     "zh-Hant": "已驗證"
+  },
+  "Verify the Client ID and Secret belong to a Cloudflare Access service token for this application.": {
+    "de": "Prüfe, ob Client-ID und -Secret zu einem Cloudflare-Access-Diensttoken für diese Anwendung gehören.",
+    "es": "Verifica que el ID y el secreto de cliente pertenezcan a un token de servicio de Cloudflare Access para esta aplicación.",
+    "fr": "Vérifiez que l'ID client et le secret correspondent à un jeton de service Cloudflare Access pour cette application.",
+    "id": "Pastikan ID Klien dan Rahasia Klien merupakan milik token layanan Cloudflare Access untuk aplikasi ini.",
+    "it": "Verifica che l'ID client e il segreto appartengano a un token di servizio Cloudflare Access per questa applicazione.",
+    "ja": "Client IDとSecretが、このアプリケーション用のCloudflare Accessサービストークンのものであることを確認してください。",
+    "ko": "클라이언트 ID와 시크릿이 이 애플리케이션의 Cloudflare Access 서비스 토큰에 속하는지 확인하세요.",
+    "pl": "Sprawdź, czy ID klienta i klucz tajny należą do tokenu usługi Cloudflare Access dla tej aplikacji.",
+    "pt-BR": "Verifique se o ID do Cliente e o Segredo pertencem a um token de serviço do Cloudflare Access deste aplicativo.",
+    "ru": "Убедитесь, что ID и секрет клиента относятся к сервисному токену Cloudflare Access для этого приложения.",
+    "tr": "İstemci Kimliği ve Gizli Anahtarın bu uygulama için bir Cloudflare Access hizmet token'ına ait olduğunu doğrulayın.",
+    "zh-Hans": "确认 Client ID 和 Secret 属于此应用的 Cloudflare Access 服务令牌。",
+    "zh-Hant": "請確認用戶端 ID 和密鑰屬於此應用程式的 Cloudflare Access 服務權杖。"
   },
   "Version": {
     "de": "Version",
@@ -40543,20 +40738,5 @@
     "tr": "“{kind}” kartları",
     "zh-Hans": "“{kind}”卡片",
     "zh-Hant": "「{kind}」卡片"
-  },
-  "Create switches to {host} and makes the bot there, from its main profile with its default model, skills and tools.": {
-    "de": "„Erstellen“ wechselt zu {host} und erstellt den Bot dort, ausgehend vom Hauptprofil mit dessen Standardmodell, -Skills und -Tools.",
-    "es": "Crear cambia a {host} y crea el bot allí, a partir de su perfil principal con su modelo, habilidades y herramientas predeterminados.",
-    "fr": "Créer passe à {host} et y crée le bot, à partir de son profil principal avec son modèle, ses compétences et ses outils par défaut.",
-    "id": "Buat beralih ke {host} dan membuat bot di sana, dari profil utamanya dengan model, keterampilan, dan alat bawaannya.",
-    "it": "Crea passa a {host} e crea lì il bot, dal suo profilo principale con il modello, le competenze e gli strumenti predefiniti.",
-    "ja": "作成すると {host} に切り替わり、そのメインプロファイルから既定のモデル、スキル、ツールでボットを作成します。",
-    "ko": "만들기를 누르면 {host}(으)로 전환되어 그곳의 기본 프로필에서 기본 모델, 스킬, 도구로 봇을 만듭니다.",
-    "pl": "Utwórz przełącza na {host} i tworzy tam bota z jego profilu głównego, z domyślnym modelem, umiejętnościami i narzędziami.",
-    "pt-BR": "Criar muda para {host} e cria o bot lá, a partir do perfil principal com o modelo, as habilidades e as ferramentas padrão.",
-    "ru": "«Создать» переключает на {host} и создаёт бота там из основного профиля с моделью, навыками и инструментами по умолчанию.",
-    "tr": "Oluştur, {host} panosuna geçer ve botu orada, ana profilinden varsayılan modeli, becerileri ve araçlarıyla oluşturur.",
-    "zh-Hans": "“创建”会切换到 {host}，并在那里从其主配置文件以默认模型、技能和工具创建机器人。",
-    "zh-Hant": "「建立」會切換到 {host}，並在那裡從其主設定檔以預設模型、技能與工具建立機器人。"
   }
 }

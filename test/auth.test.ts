@@ -91,6 +91,21 @@ describe('sign-in methods', () => {
     expect(await reason(failing('ERR_TLS_CERT_ALTNAME_INVALID'))).toMatch(/isn’t issued for this address/)
   })
 
+  it('points a certificate failure to HTTPS & certificates, and others to no troubleshooting page', async () => {
+    const failing = (code: string) => async (): Promise<Response> => {
+      throw new TypeError('fetch failed', { cause: Object.assign(new Error(code), { code }) })
+    }
+    const help = async (code: string) => {
+      const probe = await probeHost('https://example.com', failing(code))
+      return probe.ok ? 'ok' : probe.help
+    }
+    expect(await help('SELF_SIGNED_CERT_IN_CHAIN')).toBe('tls')
+    expect(await help('CERT_HAS_EXPIRED')).toBe('tls')
+    expect(await help('ERR_TLS_CERT_ALTNAME_INVALID')).toBe('tls')
+    expect(await help('ENOTFOUND')).toBeUndefined()
+    expect(await help('ECONNREFUSED')).toBeUndefined()
+  })
+
   it('says a 401 or 403 on the status read is something in front of the dashboard refusing this computer', async () => {
     for (const status of [401, 403]) {
       const { fetchImpl } = dashboard({ '/api/status': () => new Response('nope', { status }) })
@@ -167,7 +182,7 @@ describe('a dashboard behind Cloudflare Access', () => {
   it('says so, and sends the service token only to the dashboard', async () => {
     const access = (url: string) => Object.defineProperty(new Response('<html>login</html>', { status: 200 }), 'url', { value: url })
     const turnedAway = await probeHost('https://hermes.example.com', async () => access('https://team.cloudflareaccess.com/cdn-cgi/access/login'))
-    expect(turnedAway).toEqual({ ok: false, error: 'This dashboard is behind Cloudflare Access. Add its service token under Proxy sign-in.' })
+    expect(turnedAway).toEqual({ ok: false, help: 'cloudflare', error: 'This dashboard is behind Cloudflare Access. Add its service token under Proxy sign-in.' })
 
     const seen: [string, string | null][] = []
     const passes = await probeHost(
