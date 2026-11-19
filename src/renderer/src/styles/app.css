@@ -9852,3 +9852,41 @@ button.secondary.danger {
   resize: vertical;
   margin-bottom: 8px;
 }
+
+/* Combined dashboards: a host's badge, the first letter of its name on its color. */
+.host-badge {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.needs-kind {
+  position: relative;
+}
+
+.needs-kind .host-badge {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+}
+
+.host-menu .host-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.combine-dashboards {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

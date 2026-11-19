@@ -4,6 +4,7 @@ import {
   type ConduitApi,
   type ConnectionStatus,
   type GatewayEventMessage,
+  type KeptHost,
   type LiveSocketEvent,
   type MenuAction,
   type OpenChatRequest,
@@ -50,6 +51,10 @@ const api: ConduitApi = {
   switchHost: (url: string) => ipcRenderer.invoke(IPC.switchHost, url),
   removeHost: (url: string) => ipcRenderer.invoke(IPC.removeHost, url),
   status: () => ipcRenderer.invoke(IPC.status),
+  keptHosts: () => ipcRenderer.invoke(IPC.keptHosts),
+  onKeptHosts: listener => listen<KeptHost[]>(IPC.keptHostsChanged, listener),
+  setCombined: (url, on) => ipcRenderer.invoke(IPC.setCombined, url, on),
+  keptHttp: (url, path) => ipcRenderer.invoke(IPC.keptHttp, url, path),
   reconnect: () => ipcRenderer.invoke(IPC.reconnect),
   async rpc<T>(method: string, params?: Record<string, unknown>) {
     const outcome = (await ipcRenderer.invoke(IPC.rpc, method, params)) as RpcOutcome<T>

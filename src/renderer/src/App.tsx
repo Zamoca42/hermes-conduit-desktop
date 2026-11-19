@@ -107,6 +107,8 @@ import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
 import { AskDashboardSetting, DashboardChoice } from './components/AskDashboard'
+import { CombineDashboardsSetting } from './components/CombinedDashboards'
+import { hostBadge, keptStateLabel, openAfterSwitch, otherHostsWaiting, takeOpenAfterSwitch, useKeptHosts, useKeptWaiting, type KeptWaitingRow } from './state/keptHosts'
 import { StepSummarySettings } from './components/StepSummarySettings'
 import { PredictiveSettings } from './components/PredictiveSettings'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
@@ -1021,7 +1023,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const profiles = useMemo(() => [...new Set((list.rows ?? []).map(r => r.profile ?? ''))].sort(), [list.rows])
   const waiting = useWaiting(connected, profiles)
   const waitingRows = useMemo(() => unmatchedWaiting(waiting.rows, requests), [waiting.rows, requests])
-  const needsCount = requests.length + waitingRows.length
+  // Combined dashboards: the other hosts' waits, badged, each opening through a switch.
+  const keptHosts = useKeptHosts()
+  const keptWaiting = useKeptWaiting(keptHosts)
+  const otherWaiting = useMemo(() => otherHostsWaiting(keptWaiting, waiting.rows), [keptWaiting, waiting.rows])
+  const needsCount = requests.length + waitingRows.length + otherWaiting.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
   // Running and Needs approval on the list's rows: the gateway's live registry while the list shows, the
   // plugin's waiting list, and the open chat's own turn and requests.
@@ -1113,6 +1119,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     },
     [list.rows]
   )
+
+  const openOtherWaiting = useCallback((row: KeptWaitingRow) => {
+    if (!switchEndingCall(hostName(row.host))) return
+    openAfterSwitch(row)
+    void window.conduit.switchHost(row.host)
+  }, [])
+  // A wait opened on another host before the switch: open it here once connected.
+  const statusUrl = status.url ?? ''
+  useEffect(() => {
+    if (!connected || list.rows === undefined) return
+    const row = takeOpenAfterSwitch(statusUrl)
+    if (row) openWaiting(row)
+  }, [connected, list.rows, statusUrl, openWaiting])
 
   // Calls from Hermes ring here too.
   const rings = useRings(connected, profiles)
@@ -1984,6 +2003,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           <NeedsYou
             requests={requests}
             waiting={waitingRows}
+            otherWaiting={otherWaiting}
+            badgeFor={url => hostBadge(status.hosts ?? [], url, hostName)}
+            onOpenOther={openOtherWaiting}
             listAvailable={waiting.available}
             titleFor={titleFor}
             onOpen={openWaiting}
@@ -2080,6 +2102,8 @@ function Settings({
   /** The picture you show in rooms over Links. */
   personPicture: PersonPicture
 }) {
+  const kept = useKeptHosts()
+  const keptState = (url: string) => kept.find(h => h.url === url)?.state ?? null
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
   const [page, setPage] = useState<
@@ -2236,7 +2260,10 @@ function Settings({
                   <span className="spacer" />
                   {host.url === status.url ? (
                     <span className="meta">{t('In use')}</span>
-                  ) : (
+                  ) : keptState(host.url) ? (
+                    <span className="meta">{keptStateLabel(keptState(host.url)!)}</span>
+                  ) : null}
+                  {host.url === status.url ? null : (
                     <button className="link" onClick={() => switchEndingCall(hostName(host.url)) && void window.conduit.switchHost(host.url)}>
                       {t('Switch')}
                     </button>
@@ -2272,6 +2299,7 @@ function Settings({
         {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
         <AppLockSetting />
         <AskDashboardSetting hosts={status.hosts?.length ?? 0} />
+        <CombineDashboardsSetting hosts={status.hosts ?? []} />
         <dt>{t('Models')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>

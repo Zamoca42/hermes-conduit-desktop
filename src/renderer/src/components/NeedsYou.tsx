@@ -1,6 +1,8 @@
 import type { PendingRequest } from '@shared/ipc'
 import { timeLabel } from '../state/chats'
 import type { WaitingRow } from '../state/needsYou'
+import type { HostBadge, KeptWaitingRow } from '../state/keptHosts'
+import { HostBadgeMark } from './CombinedDashboards'
 import { Icon } from './icons'
 import { RequestCard } from './RequestCard'
 import { t } from '@shared/i18n'
@@ -13,12 +15,17 @@ interface Props {
   listAvailable: boolean
   titleFor: (sessionId: string) => string | undefined
   onOpen: (row: WaitingRow) => void
+  /** Combined dashboards: the other hosts' waits, each with its host's badge; one opens by switching there. */
+  otherWaiting?: KeptWaitingRow[]
+  badgeFor?: (url: string) => HostBadge | null
+  onOpenOther?: (row: KeptWaitingRow) => void
   onOpenLive: (sessionId: string) => void
   openLiveId: string | null
 }
 
-export function NeedsYou({ requests, waiting, listAvailable, titleFor, onOpen, onOpenLive, openLiveId }: Props) {
-  const empty = requests.length === 0 && waiting.length === 0
+export function NeedsYou({ requests, waiting, listAvailable, titleFor, onOpen, otherWaiting = [], badgeFor, onOpenOther, onOpenLive, openLiveId }: Props) {
+  const empty = requests.length === 0 && waiting.length === 0 && otherWaiting.length === 0
+  const rows: (WaitingRow | KeptWaitingRow)[] = [...waiting, ...otherWaiting].sort((a, b) => b.at - a.at)
   return (
     <main className="needs">
       <div className="needs-inner">
@@ -45,10 +52,13 @@ export function NeedsYou({ requests, waiting, listAvailable, titleFor, onOpen, o
             ) : null}
           </div>
         ))}
-        {waiting.map(row => (
-          <button key={row.id} className="needs-row" onClick={() => onOpen(row)}>
+        {rows.map(row => {
+          const badge = 'host' in row ? (badgeFor?.(row.host) ?? null) : null
+          return (
+          <button key={'host' in row ? `${row.host}\n${row.id}` : row.id} className="needs-row" onClick={() => ('host' in row ? onOpenOther?.(row) : onOpen(row))}>
             <span className={`needs-kind ${row.kind}`}>
               <Icon name={row.kind === 'approval' ? 'code' : 'chats'} />
+              {badge ? <HostBadgeMark badge={badge} /> : null}
             </span>
             <span className="needs-body">
               <span className="needs-top">
@@ -64,7 +74,8 @@ export function NeedsYou({ requests, waiting, listAvailable, titleFor, onOpen, o
               </span>
             </span>
           </button>
-        ))}
+          )
+        })}
       </div>
     </main>
   )

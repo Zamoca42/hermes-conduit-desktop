@@ -9,7 +9,9 @@ export function createHostList(persist: (hosts: SavedConnection[], active: strin
     load: () => hosts.find(h => h.url === active) ?? null,
     save(connection) {
       const at = hosts.findIndex(h => h.url === connection.url)
-      hosts = at >= 0 ? hosts.map((h, i) => (i === at ? connection : h)) : [...hosts, connection]
+      // A sign-in again keeps the host in the combined group.
+      const kept = at >= 0 && connection.combined === undefined && hosts[at]!.combined ? { ...connection, combined: true } : connection
+      hosts = at >= 0 ? hosts.map((h, i) => (i === at ? kept : h)) : [...hosts, kept]
       active = connection.url
       write()
     },
@@ -18,7 +20,19 @@ export function createHostList(persist: (hosts: SavedConnection[], active: strin
       active = hosts[0]?.url ?? null
       write()
     },
-    list: () => hosts.map(h => ({ url: h.url, method: h.method, username: h.username })),
+    list: () => hosts.map(h => ({ url: h.url, method: h.method, username: h.username, ...(h.combined ? { combined: true } : {}) })),
+    get: url => hosts.find(h => h.url === url) ?? null,
+    update(connection) {
+      const at = hosts.findIndex(h => h.url === connection.url)
+      if (at < 0) return
+      hosts = hosts.map((h, i) => (i === at ? { ...connection, combined: connection.combined ?? h.combined } : h))
+      write()
+    },
+    setCombined(url, on) {
+      if (!hosts.some(h => h.url === url)) return
+      hosts = hosts.map(h => (h.url === url ? { ...h, combined: on || undefined } : h))
+      write()
+    },
     activate(url) {
       if (!hosts.some(h => h.url === url)) return false
       active = url

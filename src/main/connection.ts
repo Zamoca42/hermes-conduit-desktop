@@ -50,6 +50,8 @@ export interface SavedConnection {
   cookies?: CookieJar
   /** For a proxy in front of the dashboard (Cloudflare Access, Pangolin…); sent over HTTPS only. */
   headers?: ProxyHeaders
+  /** In the combined group: kept connected while another host is open. */
+  combined?: boolean
 }
 
 export interface ConnectionStore {
@@ -63,6 +65,11 @@ export interface ConnectionStore {
   list?(): HostSummary[]
   activate?(url: string): boolean
   remove?(url: string): void
+  /** A saved host by its address, with its secrets. */
+  get?(url: string): SavedConnection | null
+  /** Saves a host's new cookies without making it the open one. */
+  update?(connection: SavedConnection): void
+  setCombined?(url: string, on: boolean): void
 }
 
 /** Hermes' Bot Screen stream (RFB), admitted by a `display.observe` ticket. */
@@ -81,6 +88,10 @@ export interface ConnectionDeps {
   /** Timers, replaceable in tests. */
   setTimeout?: (fn: () => void, ms: number) => unknown
   clearTimeout?: (handle: unknown) => void
+  /** A combined host kept beside the open one: a refused sign-in waits for a tap rather than trying again. */
+  refusedWaits?: boolean
+  /** The redial's backoff; 1 s doubling to 30 s by default. */
+  backoff?: { baseDelayMs: number; capMs: number; jitter?: boolean }
 }
 
 export class Connection {
@@ -267,6 +278,19 @@ export class Connection {
     void this.dial(generation)
   }
 
+  /** Lets this connection go: no socket, no retry, nothing saved. */
+  close(): void {
+    this.generation++
+    this.teardown()
+    this.saved = null
+    this.openToken = null
+  }
+
+  /** The saved hosts changed (one combined): the window hears the new list. */
+  hostsChanged(): void {
+    this.setStatus({ ...this.status, hosts: this.hosts() })
+  }
+
   /** Dials now instead of waiting for the next retry. */
   reconnectNow(): void {
     if (!this.saved || this.status.phase === 'open' || this.status.phase === 'connecting') return
@@ -445,7 +469,7 @@ export class Connection {
 
   private failed(generation: number, error: unknown): string {
     const message = describeConnectionFailure(error) ?? (error instanceof Error ? error.message : String(error))
-    if (error instanceof AuthError && error.signedOut && this.saved?.method !== 'password') {
+    if (error instanceof AuthError && error.signedOut && (this.saved?.method !== 'password' || this.deps.refusedWaits)) {
       // A token that stopped working won't start again: ask to sign in.
       this.teardown()
       this.setStatus({ ...this.identity(), phase: 'failed', error: t('Hermes signed this computer out. Sign in again.') })
@@ -459,7 +483,7 @@ export class Connection {
     if (generation !== this.generation) return
     this.client?.close()
     this.client = null
-    const delay = reconnectBackoffDelayMs(this.attempt++, { baseDelayMs: 1_000, capMs: 30_000 })
+    const delay = reconnectBackoffDelayMs(this.attempt++, this.deps.backoff ?? { baseDelayMs: 1_000, capMs: 30_000 })
     this.setStatus({ ...this.identity(), phase: 'reconnecting', error, retryInSeconds: Math.ceil(delay / 1000) })
     if (this.retryTimer) this.clearTimer(this.retryTimer)
     this.retryTimer = this.setTimer(() => {
@@ -505,7 +529,9 @@ export class Connection {
   private keepCookies(saved: SavedConnection, jar: CookieJar): void {
     if (cookieHeader(jar) === cookieHeader(saved.cookies ?? {})) return
     saved.cookies = jar
-    if (this.saved === saved && this.deps.store.load()) this.deps.store.save(saved)
+    if (this.saved !== saved) return
+    if (this.deps.store.update) this.deps.store.update(saved)
+    else if (this.deps.store.load()) this.deps.store.save(saved)
   }
 
   private teardown(): void {

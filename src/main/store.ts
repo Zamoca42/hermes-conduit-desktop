@@ -15,6 +15,7 @@ interface StoredHost {
   url: string
   method: SavedConnection['method']
   username?: string
+  combined?: boolean
   /** base64 of safeStorage-encrypted JSON `{ password?, token?, cookies? }`. */
   secrets?: string
 }
@@ -34,7 +35,7 @@ export function createFileStore(): ConnectionStore {
 
   const decode = (stored: StoredHost): SavedConnection | null => {
     if (typeof stored.url !== 'string') return null
-    const saved: SavedConnection = { url: stored.url, method: stored.method, username: stored.username }
+    const saved: SavedConnection = { url: stored.url, method: stored.method, username: stored.username, ...(stored.combined ? { combined: true } : {}) }
     if (stored.secrets && safeStorage.isEncryptionAvailable()) {
       try {
         const secrets = JSON.parse(safeStorage.decryptString(Buffer.from(stored.secrets, 'base64'))) as Partial<SavedConnection>
@@ -53,7 +54,7 @@ export function createFileStore(): ConnectionStore {
   }
 
   const encode = (connection: SavedConnection): StoredHost | null => {
-    const stored: StoredHost = { url: connection.url, method: connection.method, username: connection.username }
+    const stored: StoredHost = { url: connection.url, method: connection.method, username: connection.username, ...(connection.combined ? { combined: true } : {}) }
     if (connection.method !== 'open' || connection.headers) {
       // Without the keychain the secrets stay in memory for this launch only.
       if (!safeStorage.isEncryptionAvailable()) return null
@@ -99,6 +100,9 @@ export function createFileStore(): ConnectionStore {
     clear: () => hosts().clear(),
     list: () => hosts().list!(),
     activate: url => hosts().activate!(url),
-    remove: url => hosts().remove!(url)
+    remove: url => hosts().remove!(url),
+    get: url => hosts().get!(url),
+    update: connection => hosts().update!(connection),
+    setCombined: (url, on) => hosts().setCombined!(url, on)
   }
 }
