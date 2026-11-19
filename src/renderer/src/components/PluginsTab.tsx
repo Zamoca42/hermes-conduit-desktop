@@ -19,6 +19,8 @@ import {
   type InstalledPlugin
 } from '../state/plugins'
 import { scoped } from '../state/capabilities'
+import { settingsRow } from '../state/pluginSettings'
+import { PluginSettingsForm } from './PluginSettingsForm'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const restartRequest = (method: 'GET' | 'POST', path: string) => gateway.http(method, path, method === 'POST' ? {} : undefined, 30_000)
@@ -48,11 +50,18 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
   const [open, setOpen] = useState<string | null>(null)
   const [restart, setRestart] = useState(false)
   const [note, setNote] = useState<string | null>(null)
+  // Hermes' own plugin list, for each plugin's settings form; none on a Hermes without it.
+  const [manage, setManage] = useState<unknown>(null)
   const canManage = profile === 'default'
 
   const load = useCallback(async () => {
     setError(null)
-    const [hub, list] = await Promise.allSettled([gateway.http('GET', scoped(HUB_PATH, profile)), gateway.http('GET', CATALOG_PATH, undefined, 30_000)])
+    const [hub, list, rows] = await Promise.allSettled([
+      gateway.http('GET', scoped(HUB_PATH, profile)),
+      gateway.http('GET', CATALOG_PATH, undefined, 30_000),
+      gateway.rpc('plugins.manage', { action: 'list', profile })
+    ])
+    setManage(rows.status === 'fulfilled' ? rows.value : null)
     if (hub.status === 'fulfilled') {
       try {
         setInstalled(parseInstalled(hub.value))
@@ -196,6 +205,18 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
                     </div>
                   ) : null}
                   {entry ? <CatalogFacts entry={entry} /> : null}
+                  {(() => {
+                    const row = settingsRow(manage, plugin.name, plugin.folder)
+                    return row ? (
+                      <PluginSettingsForm
+                        pluginKey={typeof row.key === 'string' && row.key ? row.key : plugin.name}
+                        row={row}
+                        profile={profile}
+                        canManage={canManage}
+                        onSaved={() => void load()}
+                      />
+                    ) : null
+                  })()}
                   {canManage && (plugin.canUpdate || plugin.canRemove) ? (
                     <div className="pset-actions">
                       {plugin.canUpdate ? (

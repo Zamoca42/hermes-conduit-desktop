@@ -5422,6 +5422,72 @@ button.cap-row-text {
 .cap-detail {
   padding: 0 0 10px;
 }
+.plugin-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.plugin-settings h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.plugin-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.plugin-setting-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.plugin-setting-check input {
+  accent-color: var(--accent);
+}
+.plugin-setting-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.plugin-setting-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.plugin-setting-required {
+  margin-left: 3px;
+  color: var(--warning, #e8a33d);
+}
+.plugin-setting input[type='text'],
+.plugin-setting input[type='password'],
+.plugin-setting select,
+.plugin-setting textarea {
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  padding: 6px 10px;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+}
+.plugin-setting input[type='text'],
+.plugin-setting input[type='password'],
+.plugin-setting select {
+  height: 34px;
+}
+.plugin-setting textarea {
+  font: 400 13px/18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  resize: vertical;
+}
+.plugin-setting input:focus,
+.plugin-setting select:focus,
+.plugin-setting textarea:focus {
+  border-color: var(--accent);
+}
 .cap-detail code,
 .cap-tool-list code {
   overflow-wrap: anywhere;
