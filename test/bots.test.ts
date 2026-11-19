@@ -54,7 +54,21 @@ describe('botsFromProfiles', () => {
     })
     expect(bot!.title).toBe('Hermes')
     expect(bot!.lastLine).toBe('It printed hello a b')
-    expect(botsFromProfiles({ profiles: [profile({ name: 'work' })] })[0]!.title).toBe('work')
+    expect(botsFromProfiles({ profiles: [profile({ name: 'work' })] })[0]!.title).toBe('Work')
+  })
+
+  it('names a profile by its title, else its display name, else its id capitalized, as the phone does', () => {
+    const titles = botsFromProfiles({
+      profiles: [
+        profile({ name: 'a', display_name: 'Ayaka', ui_meta: { 'hermes-bots': { title: 'Lady Ayaka' } } }),
+        profile({ name: 'b', display_name: 'Barbara' }),
+        profile({ name: 'coder', display_name: 'coder' }),
+        profile({ name: 'default', is_default: true, display_name: 'Default' }),
+        profile({ name: 'main', is_default: true, display_name: 'main' }),
+        profile({ name: 'default', ui_meta: { 'hermes-bots': { title: 'Paimon' } } })
+      ]
+    }).map(b => b.title)
+    expect(titles).toEqual(['Lady Ayaka', 'Barbara', 'Coder', 'Hermes', 'Hermes', 'Paimon'])
   })
 
   it('skips a system or scheduled-job note for the last line, falling back to the newest chat', () => {
