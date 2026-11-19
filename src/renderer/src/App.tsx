@@ -41,6 +41,8 @@ import { setRunningCall, switchEndingCall } from './state/callSwitch'
 import { Transcript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { forgetSummaries } from './state/stepSummaries'
 import { forgetChatLists } from './state/savedChatList'
+import { keepTabs, launchPage, syncedTabs } from './state/launchTab'
+import { PREFS_PATH } from './state/pinnedOrder'
 import { useFollowUps, usePredictions } from './state/usePredictions'
 import { SummaryHost } from './state/useStepSummaries'
 import { chatDraft, composerDrafts } from './state/composerDrafts'
@@ -268,22 +270,23 @@ type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'pulse' | 'artifacts' | 'ne
 
 const REOPEN_SECTION = 'conduit.reopen-section'
 
-/** Settings after a language change reloads the window, else Chats. */
-function reopenedSection(): Section {
+/** Settings after a language change reloads the window, else the first tab the phone's layout shows (Bots until it's reordered). */
+function reopenedSection(host: string): Section {
   try {
     const saved = sessionStorage.getItem(REOPEN_SECTION)
     sessionStorage.removeItem(REOPEN_SECTION)
-    return saved === 'settings' ? 'settings' : 'chats'
+    if (saved === 'settings') return 'settings'
   } catch {
-    return 'chats'
+    // A launch.
   }
+  return launchPage(host)
 }
 
 function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; onAddHost: () => void; onEditHost: (host: HostSummary) => void }) {
   // Before any picture is read for this host.
   useState(forgetAvatars)
   const connected = status.phase === 'open'
-  const [section, setSection] = useState<Section>(reopenedSection)
+  const [section, setSection] = useState<Section>(() => reopenedSection(status.url ?? ''))
   /** Chats has been open: from then on its pane stays mounted, only hidden. */
   const [chatsSeen, setChatsSeen] = useState(section === 'chats')
   if (section === 'chats' && !chatsSeen) setChatsSeen(true)
@@ -403,6 +406,15 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   }, [])
 
   const roster = useBots(connected)
+  // The phone's tab layout, kept for this dashboard's next launch (not this one: the page is already open).
+  useEffect(() => {
+    if (!connected || !status.url) return
+    const host = status.url
+    prefsHttp('GET', PREFS_PATH).then(
+      response => keepTabs(host, syncedTabs(response)),
+      () => undefined
+    )
+  }, [connected, status.url])
   // The bots in the person's order (synced as bots.order), which every list of bots follows.
   const botOrder = useBotOrder(status.url ?? '', connected, prefsHttp)
   const roomOrder = useSyncedOrder(status.url ?? '', connected, prefsHttp, 'rooms')
