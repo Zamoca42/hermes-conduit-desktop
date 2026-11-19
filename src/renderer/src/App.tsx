@@ -76,6 +76,8 @@ import { GrokLiveCall } from './components/GrokLiveCall'
 import { LocalLiveCall } from './components/LocalLiveCall'
 import { GeminiLiveCall } from './components/GeminiLiveCall'
 import { HermesCallSettings } from './components/HermesCallSettings'
+import { IncomingCall } from './components/IncomingCall'
+import { useRings, type Ring } from './state/rings'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { VOICE_MODE_EVENT, VOICE_MODES, setVoiceMode, voiceMode, voiceModeTitle, type VoiceMode } from './state/gptLive'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
@@ -326,6 +328,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     if (was !== null && was !== selected.id) setCalling(false)
   }, [selected.id])
   useEffect(() => setCalling(false), [selected.profile, section])
+  // A call from Hermes answered here: its chat opens, then the call starts in it (after the resets above).
+  const answeredCall = useRef<string | null>(null)
+  useEffect(() => {
+    if (!answeredCall.current || answeredCall.current !== selected.id || section !== 'chats') return
+    answeredCall.current = null
+    setCallMode(voiceMode())
+    setCalling(true)
+  }, [selected.id, selected.profile, section])
   // Edit Bot closes when another section opens.
   useEffect(() => setEditingBot(null), [section])
   // Read replies aloud: the open chat's reply, as its turn ends, unless a call speaks it.
@@ -677,8 +687,49 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     },
     [list.rows]
   )
+
+  // Calls from Hermes ring here too.
+  const rings = useRings(connected, profiles)
+  const ring = rings.ringing.at(-1)
+  const answerRing = (call: Ring) => {
+    rings.dismiss(call.id)
+    window.conduit.window.show()
+    const known = (list.rows ?? []).find(r => call.sessionIds.includes(r.id))
+    const id = known?.id ?? call.sessionIds.at(-1) ?? null
+    if (!id) return
+    const profile = known?.profile ?? call.profile
+    if (selected.id === id && section === 'chats' && (selected.profile ?? '') === (profile ?? '')) {
+      if (!calling) {
+        setCallMode(voiceMode())
+        setCalling(true)
+      }
+      return
+    }
+    answeredCall.current = id
+    setSelected({ id, profile, title: known?.title ?? call.title })
+    setSection('chats')
+  }
+  const declineRing = (call: Ring, missed: boolean) => {
+    rings.dismiss(call.id)
+    if (missed && notificationsEnabled() && typeof Notification !== 'undefined')
+      new Notification(call.name ? t('Missed call from {name}', { name: call.name }) : t('Missed call from Hermes'), {
+        body: call.body || call.reason,
+        tag: `missed-${call.id}`
+      }).onclick = () => {
+        window.conduit.window.show()
+        answerRingChat(call)
+      }
+  }
+  const answerRingChat = (call: Ring) => {
+    const known = (list.rows ?? []).find(r => call.sessionIds.includes(r.id))
+    const id = known?.id ?? call.sessionIds.at(-1) ?? null
+    if (!id) return
+    setSelected({ id, profile: known?.profile ?? call.profile, title: known?.title ?? call.title })
+    setSection('chats')
+  }
   return (
     <>
+      {ring ? <IncomingCall key={ring.id} ring={ring} onAnswer={() => answerRing(ring)} onDecline={missed => declineRing(ring, missed)} /> : null}
       {status.phase !== 'open' ? (
         <div className="banner" role="status">
           <span className="dot warn" />
@@ -1316,7 +1367,9 @@ function Settings({
             {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(
               host => (
                 <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
-                  <span className="host-label" title={host.url}>{hostName(host.url)}</span>
+                  <span className="host-label" title={host.url}>
+                    {hostName(host.url)}
+                  </span>
                   {host.username ? <span className="meta">{host.username}</span> : null}
                   <span className="spacer" />
                   {host.url === status.url ? (
