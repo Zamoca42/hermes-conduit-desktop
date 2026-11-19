@@ -2,18 +2,12 @@ import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type 
 import type { ContextWindow } from '../state/context'
 import { Icon } from './icons'
 import { t } from '@shared/i18n'
-import {
-  ATTACHMENT_LIMIT_BYTES,
-  LONG_PASTE_CHARACTERS,
-  displayName,
-  stagePaste,
-  tooLargeMessage,
-  type StagedAttachment
-} from '../state/attachments'
+import { ATTACHMENT_LIMIT_BYTES, LONG_PASTE_CHARACTERS, displayName, stagePaste, tooLargeMessage, type StagedAttachment } from '../state/attachments'
 import { stageFile } from '../state/picture'
 import { useRecorder } from '../state/useRecorder'
 import { blobToBase64, durationLabel, transcribe, voiceFileName, voicePromptText } from '../state/voice'
 import { suggestCommands, type SlashCommand } from '../state/slash'
+import { TAP_GUARD_MS } from '../state/predictive'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
 /** The last folder of a path, the way the phone's chip shows it. */
@@ -48,6 +42,10 @@ interface Props {
   checkAttachments?: (attachments: StagedAttachment[]) => string | null
   /** A quote from the transcript: words go in the draft, a whole message becomes the "Replying to" chip. */
   quote?: QuoteRequest | null
+  /** Suggested replies, best first: shown while the draft is empty and nothing is staged. */
+  replies?: string[]
+  /** A suggested reply clicked: sent as the next message. */
+  onSuggestion?: (text: string) => void
   /** The model chip's click: the Model panel. Without it the chip only shows the model. */
   onModel?: () => void
   /** How full the chat's context window is; the ring opens the Context panel. */
@@ -64,7 +62,30 @@ interface Props {
 const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
-export function Composer({ placeholder, running, disabled, model, cwd, onSend, onStop, focusKey, draftKey, canAttach, dropZone, onStagedChange, checkAttachments, quote, wrapReply = chatReply, commands, onModel, context, onContext, voice }: Props) {
+export function Composer({
+  placeholder,
+  running,
+  disabled,
+  model,
+  cwd,
+  onSend,
+  onStop,
+  focusKey,
+  draftKey,
+  canAttach,
+  dropZone,
+  onStagedChange,
+  checkAttachments,
+  quote,
+  replies: guessed,
+  onSuggestion,
+  wrapReply = chatReply,
+  commands,
+  onModel,
+  context,
+  onContext,
+  voice
+}: Props) {
   const [text, setText] = useState('')
   const [attachments, setAttachments] = useState<StagedAttachment[]>([])
   const [notice, setNotice] = useState<string | null>(null)
@@ -149,7 +170,6 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
       area.current?.focus()
     }
   }
-
 
   // Files dropped on the chat around the composer attach too.
   const stageRef = useRef(stage)
@@ -366,8 +386,25 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
     }
   }
 
+  const chips = guessed?.length && onSuggestion && !text.trim() && !staged && !running && !disabled ? guessed : null
   return (
     <div className="composer-wrap">
+      {chips ? (
+        <SuggestedReplies
+          replies={chips}
+          onSend={onSuggestion!}
+          onEdit={reply => {
+            setText(reply)
+            requestAnimationFrame(() => {
+              const field = area.current
+              if (field) {
+                field.focus()
+                field.setSelectionRange(reply.length, reply.length)
+              }
+            })
+          }}
+        />
+      ) : null}
       <div className={`composer${dragging ? ' dropping' : ''}`}>
         {dragging ? (
           <div className="drop-hint">
@@ -379,11 +416,7 @@ export function Composer({ placeholder, running, disabled, model, cwd, onSend, o
           <div className="staged">
             {attachments.map(a => (
               <span key={a.id} className="staged-chip" title={a.pastedText !== undefined ? t('Click to put the text back in the message') : a.name}>
-                {a.kind === 'image' ? (
-                  <img src={`data:${a.mime};base64,${a.base64}`} alt="" />
-                ) : (
-                  <Icon name="file" />
-                )}
+                {a.kind === 'image' ? <img src={`data:${a.mime};base64,${a.base64}`} alt="" /> : <Icon name="file" />}
                 {a.pastedText !== undefined ? (
                   <button className="staged-name link" onClick={() => unpaste(a)}>
                     {displayName(a.name)}
@@ -564,5 +597,36 @@ export function ContextRing({ percent, size = 14 }: { percent: number; size?: nu
         transform={`rotate(-90 ${size / 2} ${size / 2})`}
       />
     </svg>
+  )
+}
+
+/** One row of suggested replies, after the phone's PredictiveRow: click sends, right-click (or Alt-click) puts it in the draft to edit first. */
+function SuggestedReplies({ replies, onSend, onEdit }: { replies: string[]; onSend: (text: string) => void; onEdit: (text: string) => void }) {
+  const shownAt = useRef(performance.now())
+  const joined = replies.join('\n')
+  useEffect(() => {
+    shownAt.current = performance.now()
+  }, [joined])
+  return (
+    <div className="suggested-replies" role="group" aria-label={t('Suggested replies')}>
+      {replies.map(reply => (
+        <button
+          key={reply}
+          className="suggested-reply"
+          title={t('Click to send. Right-click to edit it first.')}
+          onClick={e => {
+            if (performance.now() - shownAt.current < TAP_GUARD_MS) return
+            if (e.altKey) onEdit(reply)
+            else onSend(reply)
+          }}
+          onContextMenu={e => {
+            e.preventDefault()
+            onEdit(reply)
+          }}
+        >
+          {reply}
+        </button>
+      ))}
+    </div>
   )
 }
