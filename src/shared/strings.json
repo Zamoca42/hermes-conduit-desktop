@@ -4529,6 +4529,21 @@
     "zh-Hans": "选择 Conduit 跟随 Hermes、始终显示还是从不显示维护动态。",
     "zh-Hant": "選擇 Conduit 要跟隨 Hermes、一律顯示，還是永不顯示維護更新。"
   },
+  "Choose which of your agents join, or decline.": {
+    "de": "Wähle, welche deiner Agenten beitreten, oder lehne ab.",
+    "es": "Elige qué agentes tuyos se unen, o rechaza.",
+    "fr": "Choisissez lesquels de vos agents rejoignent, ou refusez.",
+    "id": "Pilih agen Anda yang bergabung, atau tolak.",
+    "it": "Scegli quali dei tuoi agenti entrano, o rifiuta.",
+    "ja": "参加させるエージェントを選ぶか、辞退してください。",
+    "ko": "참여할 에이전트를 고르거나 거절하세요.",
+    "pl": "Wybierz, którzy z Twoich agentów dołączą, albo odmów.",
+    "pt-BR": "Escolha quais dos seus agentes entram, ou recuse.",
+    "ru": "Выберите, какие ваши агенты присоединятся, или откажитесь.",
+    "tr": "Hangi ajanlarınızın katılacağını seçin ya da reddedin.",
+    "zh-Hans": "选择让你的哪些智能体加入，或者拒绝。",
+    "zh-Hant": "選擇讓你的哪些代理程式加入，或者拒絕。"
+  },
   "Choosing who answers…": {
     "de": "Wählt aus, wer antwortet …",
     "es": "Eligiendo quién responde…",
@@ -28499,6 +28514,21 @@
     "zh-Hans": "其他人接管了屏幕控制。",
     "zh-Hant": "其他人接管了螢幕控制。"
   },
+  "Someone invited you to {room}": {
+    "de": "Jemand hat dich zu {room} eingeladen",
+    "es": "Alguien te invitó a {room}",
+    "fr": "Quelqu'un vous a invité à {room}",
+    "id": "Seseorang mengundang Anda ke {room}",
+    "it": "Qualcuno ti ha invitato a {room}",
+    "ja": "「{room}」に招待されました",
+    "ko": "누군가가 {room}에 초대했어요",
+    "pl": "Ktoś zaprosił Cię do pokoju {room}",
+    "pt-BR": "Alguém convidou você para {room}",
+    "ru": "Вас пригласили в «{room}»",
+    "tr": "Biri sizi {room} odasına davet etti",
+    "zh-Hans": "有人邀请你加入 {room}",
+    "zh-Hant": "有人邀請你加入 {room}"
+  },
   "Someone opening your invite sees these four words. Read them to each other: if theirs match, the invite is yours.": {
     "de": "Wer deine Einladung öffnet, sieht diese vier Wörter. Lest sie euch gegenseitig vor: Stimmen sie überein, ist die Einladung von dir.",
     "es": "Quien abra tu invitación verá estas cuatro palabras. Léelas en voz alta con la otra persona: si coinciden con las suyas, la invitación es tuya.",
@@ -39418,6 +39448,21 @@
     "tr": "{name} sizi davet etti",
     "zh-Hans": "{name} 邀请了你",
     "zh-Hant": "{name} 邀請了你"
+  },
+  "{name} invited you to {room}": {
+    "de": "{name} hat dich zu {room} eingeladen",
+    "es": "{name} te invitó a {room}",
+    "fr": "{name} vous a invité à {room}",
+    "id": "{name} mengundang Anda ke {room}",
+    "it": "{name} ti ha invitato a {room}",
+    "ja": "{name}から「{room}」に招待されました",
+    "ko": "{name}이(가) {room}에 초대했어요",
+    "pl": "{name} zaprosił(a) Cię do pokoju {room}",
+    "pt-BR": "{name} convidou você para {room}",
+    "ru": "{name} пригласил(а) вас в «{room}»",
+    "tr": "{name} sizi {room} odasına davet etti",
+    "zh-Hans": "{name} 邀请你加入 {room}",
+    "zh-Hant": "{name} 邀請你加入 {room}"
   },
   "{name} invited you, answer by {date}": {
     "de": "{name} hat dich eingeladen, antworte bis {date}",

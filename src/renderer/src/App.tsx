@@ -53,7 +53,10 @@ import { useChatList } from './state/useChatList'
 import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
 import { useRequests, useWaiting } from './state/useNeedsYou'
 import {
+  askNotification,
+  inviteNotification,
   isWatching,
+  newlyArrived,
   notificationsEnabled,
   requestNotification,
   setNotificationsEnabled,
@@ -62,6 +65,7 @@ import {
   type NotificationSpec
 } from './state/notifications'
 import { cleanTitle } from './state/text'
+import { askerLine } from './state/presented'
 import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
 import { isResetCommand, looksLikeSlashCommand } from './state/slash'
@@ -1163,6 +1167,36 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const presentProfiles = useMemo(() => (roster.bots?.length ? roster.bots.map(b => b.name) : ['default']), [roster.bots])
   const presented = usePresented(connected, status.url ?? '', roomInvites.capabilities, presentProfiles)
   const shownConfirm = presented.waiting[0]
+  // A new room invite, and an ask Hermes waits on while the window isn't in front, as the phone's pushes.
+  const inviteIds = roomInvites.loaded ? roomInvites.invites.filter(i => i.status === 'waiting' && !i.removed).map(i => i.id).join('\n') : null
+  useEffect(() => {
+    if (inviteIds === null || !status.url) return
+    const fresh = newlyArrived(`conduit.notified.invites.${status.url}`, inviteIds ? inviteIds.split('\n') : [])
+    if (!fresh.length || !notificationsEnabled() || typeof Notification === 'undefined') return
+    for (const id of fresh) {
+      const invite = roomInvites.invites.find(i => i.id === id)
+      if (!invite) continue
+      const spec = inviteNotification(invite)
+      const n = new Notification(spec.title, { body: spec.body, tag: spec.tag, silent: false })
+      n.onclick = () => {
+        window.conduit.window.show()
+        setOpenInvite(id)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inviteIds, status.url])
+  const askedAbout = useRef(new Set<string>())
+  useEffect(() => {
+    for (const item of presented.waiting) {
+      if (askedAbout.current.has(item.prompt.id)) continue
+      askedAbout.current.add(item.prompt.id)
+      if (document.hasFocus() || !notificationsEnabled() || typeof Notification === 'undefined') continue
+      const spec = askNotification(item.prompt, askerLine(item.prompt))
+      const n = new Notification(spec.title, { body: spec.body, tag: spec.tag, silent: false })
+      n.onclick = () => window.conduit.window.show()
+    }
+  }, [presented.waiting])
+
   /** A room's private chat with one of your agents: kept, or made and told its room; Wrap Up asks it for notes once it's open. */
   const openRoomChatWith = useCallback(
     async (room: Room, agent: RoomChatAgent, wrapUp: boolean) => {

@@ -82,3 +82,39 @@ export function requestNotification(request: PendingRequest, chat: ChatRef | und
 export function isWatching(sessionId: string, openLiveId: string | null, onChats: boolean): boolean {
   return onChats && sessionId === openLiveId && !document.hidden && document.hasFocus()
 }
+
+/** What a new room invite says, as the plugin's room.invite push does (room_invites.notify_invite). */
+export function inviteNotification(invite: { id: string; from: string; name: string }): NotificationSpec {
+  return {
+    title: invite.from ? t('{name} invited you to {room}', { name: invite.from, room: invite.name }) : t('Someone invited you to {room}', { room: invite.name }),
+    body: t('Choose which of your agents join, or decline.'),
+    tag: `room-invite-${invite.id}`
+  }
+}
+
+/** What a new ask Hermes waits on says: who asks, and what. */
+export function askNotification(ask: { id: string; title: string }, asker: string): NotificationSpec {
+  return { title: asker, body: ask.title, tag: `ask-${ask.id}` }
+}
+
+/**
+ * The ids not told about yet, kept per host across launches so a relaunch
+ * doesn't tell again; the first read of a host only marks what's there.
+ */
+export function newlyArrived(key: string, ids: readonly string[], storage: Pick<Storage, 'getItem' | 'setItem'> = localStorage): string[] {
+  let seen: string[] | null = null
+  try {
+    const raw = storage.getItem(key)
+    seen = raw ? (JSON.parse(raw) as string[]) : null
+  } catch {
+    seen = null
+  }
+  const fresh = seen ? ids.filter(id => !seen!.includes(id)) : []
+  try {
+    // Only what's still listed is kept, so the list never grows past it.
+    storage.setItem(key, JSON.stringify([...ids]))
+  } catch {
+    // Kept for this run only.
+  }
+  return fresh
+}
