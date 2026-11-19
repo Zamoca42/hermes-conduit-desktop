@@ -404,6 +404,21 @@
     "zh-Hans": "已关联的人的 Hermes 在问",
     "zh-Hant": "已連結的人的 Hermes 在問"
   },
+  "A linked person's Hermes can ask yours whether you're free on a date, or ask you a question. You choose how each is answered. Nothing else they send is answered.": {
+    "de": "Der Hermes einer verknüpften Person kann deinen fragen, ob du an einem Tag frei bist, oder dir eine Frage stellen. Du wählst, wie beides beantwortet wird. Auf nichts anderes, was sie senden, wird geantwortet.",
+    "es": "El Hermes de una persona vinculada puede preguntarle al tuyo si estás libre un día, o hacerte una pregunta. Tú eliges cómo se responde cada cosa. Nada más de lo que envíen recibe respuesta.",
+    "fr": "Le Hermes d'une personne liée peut demander au tien si tu es libre un jour, ou te poser une question. Tu choisis comment chacun est répondu. Rien d'autre de ce qu'elle envoie ne reçoit de réponse.",
+    "id": "Hermes milik orang yang tertaut bisa bertanya ke Hermes-mu apakah kamu luang pada suatu tanggal, atau mengajukan pertanyaan kepadamu. Kamu memilih cara menjawab masing-masing. Hal lain yang mereka kirim tidak dijawab.",
+    "it": "L'Hermes di una persona collegata può chiedere al tuo se sei libero in una data, o farti una domanda. Scegli tu come rispondere a ciascuna. Nient'altro di ciò che invia riceve risposta.",
+    "ja": "リンクした相手の Hermes は、あなたの Hermes にある日に空いているかを聞いたり、あなたに質問したりできます。それぞれの答え方はあなたが選びます。それ以外に送られてきたものには答えません。",
+    "ko": "연결된 사람의 Hermes는 내 Hermes에게 어떤 날짜에 시간이 되는지 묻거나, 나에게 질문할 수 있어요. 각각 어떻게 답할지는 내가 정해요. 그 밖에 보낸 것에는 답하지 않아요.",
+    "pl": "Hermes połączonej osoby może zapytać twojego, czy masz czas w danym dniu, albo zadać ci pytanie. Ty wybierasz, jak odpowiadać na każde z nich. Na nic innego, co przyśle, nie ma odpowiedzi.",
+    "pt-BR": "O Hermes de uma pessoa vinculada pode perguntar ao seu se você está livre em uma data, ou fazer uma pergunta a você. Você escolhe como cada um é respondido. Nada mais que enviarem é respondido.",
+    "ru": "Hermes связанного человека может спросить твоего, свободен ли ты в какой-то день, или задать тебе вопрос. Ты выбираешь, как отвечать на каждое. На всё остальное, что он присылает, ответа нет.",
+    "tr": "Bağlı bir kişinin Hermes'i seninkine bir tarihte müsait olup olmadığını sorabilir ya da sana bir soru sorabilir. Her birinin nasıl yanıtlanacağını sen seçersin. Gönderdikleri başka hiçbir şey yanıtlanmaz.",
+    "zh-Hans": "已关联的人的 Hermes 可以问你的 Hermes 你某天是否有空，或向你提一个问题。每种怎么回答由你决定。对方发来的其他内容都不会回答。",
+    "zh-Hant": "已連結的人的 Hermes 可以問你的 Hermes 你某天是否有空，或向你提一個問題。每種怎麼回答由你決定。對方傳來的其他內容都不會回答。"
+  },
   "A member": {
     "de": "Ein Mitglied",
     "es": "Un miembro",
@@ -1694,6 +1709,21 @@
     "zh-Hans": "已回答",
     "zh-Hant": "已回答"
   },
+  "Answered by": {
+    "de": "Beantwortet von",
+    "es": "Respondido por",
+    "fr": "Répondu par",
+    "id": "Dijawab oleh",
+    "it": "Risposto da",
+    "ja": "答えるプロフィール",
+    "ko": "답하는 프로필",
+    "pl": "Odpowiedź od",
+    "pt-BR": "Respondido por",
+    "ru": "Отвечает профиль",
+    "tr": "Yanıtlayan",
+    "zh-Hans": "由谁回答",
+    "zh-Hant": "由誰回答"
+  },
   "Answering from a snapshot of this chat. The answer will appear here.": {
     "de": "Antwort anhand eines Schnappschusses dieses Chats. Sie erscheint hier.",
     "es": "Respondiendo a partir de una instantánea de este chat. La respuesta aparecerá aquí.",
@@ -2159,6 +2189,21 @@
     "zh-Hans": "在 Hermes 重新加载 MCP 连接器前先询问。",
     "zh-Hant": "在 Hermes 重新載入 MCP 連接器前先詢問。"
   },
+  "Ask me": {
+    "de": "Mich fragen",
+    "es": "Preguntarme",
+    "fr": "Me demander",
+    "id": "Tanya aku",
+    "it": "Chiedimelo",
+    "ja": "私に聞く",
+    "ko": "나에게 묻기",
+    "pl": "Pytaj mnie",
+    "pt-BR": "Perguntar a mim",
+    "ru": "Спрашивать меня",
+    "tr": "Bana sor",
+    "zh-Hans": "问我",
+    "zh-Hant": "問我"
+  },
   "Ask me first": {
     "de": "Erst mich fragen",
     "es": "Pregúntame primero",
@@ -2248,6 +2293,51 @@
     "tr": "{name} içinde soruldu",
     "zh-Hans": "来自 {name} 的询问",
     "zh-Hant": "來自 {name} 的詢問"
+  },
+  "Asked whether you're free on a date, you see what your Hermes would answer from the calendar your phone shares with {name}, and Share it, say something else, or don't.": {
+    "de": "Wird gefragt, ob du an einem Tag frei bist, siehst du, was dein Hermes aus dem Kalender, den dein Telefon mit {name} teilt, antworten würde, und teilst es, sagst etwas anderes oder nicht.",
+    "es": "Si le preguntan si estás libre un día, ves lo que respondería tu Hermes según el calendario que tu teléfono comparte con {name}, y lo compartes, dices otra cosa o no.",
+    "fr": "Quand on lui demande si tu es libre un jour, tu vois ce que ton Hermes répondrait d'après le calendrier que ton téléphone partage avec {name}, et tu le partages, dis autre chose, ou non.",
+    "id": "Saat ditanya apakah kamu luang pada suatu tanggal, kamu melihat jawaban Hermes-mu dari kalender yang dibagikan ponselmu dengan {name}, lalu membagikannya, mengatakan hal lain, atau tidak.",
+    "it": "Se gli chiedono se sei libero in una data, vedi cosa risponderebbe il tuo Hermes dal calendario che il tuo telefono condivide con {name}, e lo condividi, dici altro o no.",
+    "ja": "ある日に空いているか聞かれると、電話が {name} と共有しているカレンダーから Hermes が答える内容が表示され、それを共有するか、別のことを伝えるか、伝えないかを選べます。",
+    "ko": "어떤 날짜에 시간이 되는지 물으면, 휴대폰이 {name}와 공유하는 캘린더를 바탕으로 Hermes가 할 답이 보이고, 그걸 공유하거나 다르게 말하거나 공유하지 않을 수 있어요.",
+    "pl": "Gdy ktoś zapyta, czy masz czas w danym dniu, widzisz, co twój Hermes odpowiedziałby na podstawie kalendarza, który twój telefon udostępnia {name}, i udostępniasz to, mówisz coś innego albo nie.",
+    "pt-BR": "Quando perguntam se você está livre em uma data, você vê o que seu Hermes responderia pelo calendário que seu telefone compartilha com {name}, e compartilha, diz outra coisa ou não.",
+    "ru": "Когда спрашивают, свободен ли ты в какой-то день, ты видишь, что ответил бы твой Hermes по календарю, которым твой телефон делится с {name}, и делишься этим, говоришь другое или нет.",
+    "tr": "Bir tarihte müsait olup olmadığın sorulduğunda, telefonunun {name} ile paylaştığı takvime göre Hermes'inin vereceği yanıtı görürsün; onu paylaşır, başka bir şey söyler ya da paylaşmazsın.",
+    "zh-Hans": "被问到你某天是否有空时，你会看到你的 Hermes 根据你的手机与 {name} 共享的日历会怎么回答，然后选择分享、改说别的，或不分享。",
+    "zh-Hant": "被問到你某天是否有空時，你會看到你的 Hermes 根據你的手機與 {name} 共享的行事曆會怎麼回答，然後選擇分享、改說別的，或不分享。"
+  },
+  "Asked whether you're free on a date, your Hermes says free or busy from the calendar your phone shares with {name}, without asking you.": {
+    "de": "Wird gefragt, ob du an einem Tag frei bist, sagt dein Hermes frei oder beschäftigt, aus dem Kalender, den dein Telefon mit {name} teilt, ohne dich zu fragen.",
+    "es": "Si le preguntan si estás libre un día, tu Hermes dice libre u ocupado según el calendario que tu teléfono comparte con {name}, sin preguntarte.",
+    "fr": "Quand on lui demande si tu es libre un jour, ton Hermes répond libre ou occupé d'après le calendrier que ton téléphone partage avec {name}, sans te demander.",
+    "id": "Saat ditanya apakah kamu luang pada suatu tanggal, Hermes-mu menjawab luang atau sibuk dari kalender yang dibagikan ponselmu dengan {name}, tanpa bertanya padamu.",
+    "it": "Se gli chiedono se sei libero in una data, il tuo Hermes risponde libero o impegnato dal calendario che il tuo telefono condivide con {name}, senza chiedertelo.",
+    "ja": "ある日に空いているか聞かれると、あなたの Hermes は、電話が {name} と共有しているカレンダーから、空いているか忙しいかをあなたに聞かずに答えます。",
+    "ko": "어떤 날짜에 시간이 되는지 물으면, Hermes가 휴대폰이 {name}와 공유하는 캘린더를 바탕으로 나에게 묻지 않고 되는지 바쁜지 답해요.",
+    "pl": "Zapytany, czy masz czas w danym dniu, twój Hermes odpowiada „wolny” lub „zajęty” na podstawie kalendarza, który twój telefon udostępnia {name}, bez pytania cię.",
+    "pt-BR": "Quando perguntam se você está livre em uma data, seu Hermes responde livre ou ocupado pelo calendário que seu telefone compartilha com {name}, sem perguntar a você.",
+    "ru": "Когда спрашивают, свободен ли ты в какой-то день, твой Hermes отвечает «свободен» или «занят» по календарю, которым твой телефон делится с {name}, не спрашивая тебя.",
+    "tr": "Bir tarihte müsait olup olmadığın sorulduğunda Hermes'in, telefonunun {name} ile paylaştığı takvime bakarak sana sormadan müsait ya da meşgul der.",
+    "zh-Hans": "被问到你某天是否有空时，你的 Hermes 会根据你的手机与 {name} 共享的日历，直接回答有空或忙，不会问你。",
+    "zh-Hant": "被問到你某天是否有空時，你的 Hermes 會根據你的手機與 {name} 共享的行事曆，直接回答有空或忙，不會問你。"
+  },
+  "Asked whether you're free on a date, your Hermes says so from the calendar your phone shares with {name}, and when you're busy then (the times only), without asking you.": {
+    "de": "Wird gefragt, ob du an einem Tag frei bist, sagt dein Hermes es aus dem Kalender, den dein Telefon mit {name} teilt, und wann du dann beschäftigt bist (nur die Zeiten), ohne dich zu fragen.",
+    "es": "Si le preguntan si estás libre un día, tu Hermes lo dice según el calendario que tu teléfono comparte con {name}, y cuándo estás ocupado ese día (solo las horas), sin preguntarte.",
+    "fr": "Quand on lui demande si tu es libre un jour, ton Hermes le dit d'après le calendrier que ton téléphone partage avec {name}, et quand tu es occupé ce jour-là (seulement les horaires), sans te demander.",
+    "id": "Saat ditanya apakah kamu luang pada suatu tanggal, Hermes-mu menjawabnya dari kalender yang dibagikan ponselmu dengan {name}, beserta kapan kamu sibuk saat itu (hanya waktunya), tanpa bertanya padamu.",
+    "it": "Se gli chiedono se sei libero in una data, il tuo Hermes lo dice dal calendario che il tuo telefono condivide con {name}, e quando sei impegnato quel giorno (solo gli orari), senza chiedertelo.",
+    "ja": "ある日に空いているか聞かれると、あなたの Hermes は、電話が {name} と共有しているカレンダーから、空いているかと、その日の忙しい時間（時間だけ）をあなたに聞かずに答えます。",
+    "ko": "어떤 날짜에 시간이 되는지 물으면, Hermes가 휴대폰이 {name}와 공유하는 캘린더를 바탕으로 나에게 묻지 않고 되는지와 그날 바쁜 시간(시간만)을 답해요.",
+    "pl": "Zapytany, czy masz czas w danym dniu, twój Hermes odpowiada na podstawie kalendarza, który twój telefon udostępnia {name}, i podaje, kiedy jesteś wtedy zajęty (tylko godziny), bez pytania cię.",
+    "pt-BR": "Quando perguntam se você está livre em uma data, seu Hermes responde pelo calendário que seu telefone compartilha com {name}, e diz quando você está ocupado nesse dia (só os horários), sem perguntar a você.",
+    "ru": "Когда спрашивают, свободен ли ты в какой-то день, твой Hermes отвечает по календарю, которым твой телефон делится с {name}, и говорит, когда ты занят в этот день (только время), не спрашивая тебя.",
+    "tr": "Bir tarihte müsait olup olmadığın sorulduğunda Hermes'in, telefonunun {name} ile paylaştığı takvime bakarak bunu ve o gün ne zaman meşgul olduğunu (yalnızca saatleri) sana sormadan söyler.",
+    "zh-Hans": "被问到你某天是否有空时，你的 Hermes 会根据你的手机与 {name} 共享的日历回答，并说出你那天忙的时间（只说时间），不会问你。",
+    "zh-Hant": "被問到你某天是否有空時，你的 Hermes 會根據你的手機與 {name} 共享的行事曆回答，並說出你那天忙的時間（只說時間），不會問你。"
   },
   "Asking Hermes to restart the gateway…": {
     "de": "Hermes wird gebeten, das Gateway neu zu starten …",
@@ -5969,6 +6059,21 @@
     "zh-Hans": "无法更改委派暂停设置。",
     "zh-Hant": "無法變更委派暫停設定。"
   },
+  "Could not change what {name}'s Hermes can ask: {reason}": {
+    "de": "Konnte nicht ändern, was der Hermes von {name} fragen kann: {reason}",
+    "es": "No se pudo cambiar qué puede preguntar el Hermes de {name}: {reason}",
+    "fr": "Impossible de changer ce que le Hermes de {name} peut demander : {reason}",
+    "id": "Tidak bisa mengubah apa yang boleh ditanyakan Hermes milik {name}: {reason}",
+    "it": "Impossibile cambiare cosa può chiedere l'Hermes di {name}: {reason}",
+    "ja": "{name} の Hermes が聞けることを変更できませんでした：{reason}",
+    "ko": "{name}의 Hermes가 물어볼 수 있는 것을 바꾸지 못했어요: {reason}",
+    "pl": "Nie udało się zmienić, o co może pytać Hermes {name}: {reason}",
+    "pt-BR": "Não foi possível mudar o que o Hermes de {name} pode perguntar: {reason}",
+    "ru": "Не удалось изменить, о чём может спрашивать Hermes {name}: {reason}",
+    "tr": "{name} kişisinin Hermes'inin neler sorabileceği değiştirilemedi: {reason}",
+    "zh-Hans": "无法更改 {name} 的 Hermes 可以问什么：{reason}",
+    "zh-Hant": "無法更改 {name} 的 Hermes 可以問什麼：{reason}"
+  },
   "Could not create the bot: {error}": {
     "de": "Der Bot konnte nicht erstellt werden: {error}",
     "es": "No se pudo crear el bot: {error}",
@@ -6343,6 +6448,21 @@
     "tr": "Bu ayar ana makineden okunamadı: {error}",
     "zh-Hans": "无法从主机读取此设置：{error}",
     "zh-Hant": "無法從主機讀取此設定：{error}"
+  },
+  "Could not read what they can ask: {reason}": {
+    "de": "Konnte nicht lesen, was sie fragen können: {reason}",
+    "es": "No se pudo leer qué pueden preguntar: {reason}",
+    "fr": "Impossible de lire ce qu'ils peuvent demander : {reason}",
+    "id": "Tidak bisa membaca apa yang boleh mereka tanyakan: {reason}",
+    "it": "Impossibile leggere cosa possono chiedere: {reason}",
+    "ja": "聞けることを読み込めませんでした：{reason}",
+    "ko": "물어볼 수 있는 것을 읽지 못했어요: {reason}",
+    "pl": "Nie udało się odczytać, o co mogą pytać: {reason}",
+    "pt-BR": "Não foi possível ler o que podem perguntar: {reason}",
+    "ru": "Не удалось прочитать, о чём могут спрашивать: {reason}",
+    "tr": "Neler sorabilecekleri okunamadı: {reason}",
+    "zh-Hans": "无法读取对方可以问什么：{reason}",
+    "zh-Hant": "無法讀取對方可以問什麼：{reason}"
   },
   "Could not read your Links: {error}": {
     "de": "Deine Verknüpfungen konnten nicht gelesen werden: {error}",
@@ -10858,6 +10978,21 @@
     "tr": "Sıkıştırmadan sonra korunan oran.",
     "zh-Hans": "压缩后保留的比例。",
     "zh-Hant": "壓縮後保留的比例。"
+  },
+  "Free on a date": {
+    "de": "An einem Tag frei",
+    "es": "Libre un día",
+    "fr": "Libre un jour",
+    "id": "Luang pada tanggal",
+    "it": "Libero in una data",
+    "ja": "ある日に空いているか",
+    "ko": "특정 날짜에 시간이 되는지",
+    "pl": "Czy masz czas w danym dniu",
+    "pt-BR": "Livre em uma data",
+    "ru": "Свободен ли в день",
+    "tr": "Bir tarihte müsait mi",
+    "zh-Hans": "某天是否有空",
+    "zh-Hant": "某天是否有空"
   },
   "Fresh Profile": {
     "de": "Neues Profil",
@@ -22859,6 +22994,36 @@
     "zh-Hans": "问题：{summary}",
     "zh-Hant": "問題：{summary}"
   },
+  "Questions": {
+    "de": "Fragen",
+    "es": "Preguntas",
+    "fr": "Questions",
+    "id": "Pertanyaan",
+    "it": "Domande",
+    "ja": "質問",
+    "ko": "질문",
+    "pl": "Pytania",
+    "pt-BR": "Perguntas",
+    "ru": "Вопросы",
+    "tr": "Sorular",
+    "zh-Hans": "问题",
+    "zh-Hant": "問題"
+  },
+  "Questions from {name}'s Hermes wait for you: only you answer them, never an agent.": {
+    "de": "Fragen vom Hermes von {name} warten auf dich: Nur du beantwortest sie, nie ein Agent.",
+    "es": "Las preguntas del Hermes de {name} te esperan: solo tú las respondes, nunca un agente.",
+    "fr": "Les questions du Hermes de {name} t'attendent : toi seul y réponds, jamais un agent.",
+    "id": "Pertanyaan dari Hermes milik {name} menunggumu: hanya kamu yang menjawabnya, tidak pernah agen.",
+    "it": "Le domande dell'Hermes di {name} aspettano te: rispondi solo tu, mai un agente.",
+    "ja": "{name} の Hermes からの質問はあなたを待ちます。答えるのはあなただけで、エージェントは答えません。",
+    "ko": "{name}의 Hermes가 보낸 질문은 나를 기다려요. 답하는 건 나뿐이고, 에이전트는 답하지 않아요.",
+    "pl": "Pytania od Hermesa {name} czekają na ciebie: odpowiadasz na nie tylko ty, nigdy agent.",
+    "pt-BR": "As perguntas do Hermes de {name} esperam por você: só você as responde, nunca um agente.",
+    "ru": "Вопросы от Hermes {name} ждут тебя: отвечаешь на них только ты, никогда не агент.",
+    "tr": "{name} kişisinin Hermes'inden gelen sorular seni bekler: onları yalnızca sen yanıtlarsın, asla bir ajan değil.",
+    "zh-Hans": "来自 {name} 的 Hermes 的问题会等你：只有你来回答，绝不由智能体回答。",
+    "zh-Hant": "來自 {name} 的 Hermes 的問題會等你：只有你來回答，絕不由代理回答。"
+  },
   "Queue": {
     "de": "Einreihen",
     "es": "En cola",
@@ -25769,6 +25934,21 @@
     "zh-Hans": "精明",
     "zh-Hant": "精明"
   },
+  "Say if you're free": {
+    "de": "Sagen, ob du frei bist",
+    "es": "Decir si estás libre",
+    "fr": "Dire si tu es libre",
+    "id": "Bilang apakah kamu luang",
+    "it": "Dire se sei libero",
+    "ja": "空いているかを伝える",
+    "ko": "시간이 되는지 알려 주기",
+    "pl": "Powiedz, czy masz czas",
+    "pt-BR": "Dizer se você está livre",
+    "ru": "Сообщать, свободен ли ты",
+    "tr": "Müsait olup olmadığını söyle",
+    "zh-Hans": "告诉对方你是否有空",
+    "zh-Hant": "告訴對方你是否有空"
+  },
   "Say instead": {
     "de": "Stattdessen sagen",
     "es": "Decir otra cosa",
@@ -25813,6 +25993,21 @@
     "tr": "Seçtiğin numaraları söyle, birden fazla seçebilirsin, ya da kendi sözlerinle yanıtla.",
     "zh-Hans": "说出你选择的编号，可以选多个，或用你自己的话回答。",
     "zh-Hant": "說出你選擇的編號，可以選多個，或用你自己的話回答。"
+  },
+  "Say when you're busy": {
+    "de": "Sagen, wann du beschäftigt bist",
+    "es": "Decir cuándo estás ocupado",
+    "fr": "Dire quand tu es occupé",
+    "id": "Bilang kapan kamu sibuk",
+    "it": "Dire quando sei impegnato",
+    "ja": "忙しい時間も伝える",
+    "ko": "언제 바쁜지도 알려 주기",
+    "pl": "Powiedz, kiedy jesteś zajęty",
+    "pt-BR": "Dizer quando você está ocupado",
+    "ru": "Сообщать, когда ты занят",
+    "tr": "Ne zaman meşgul olduğunu söyle",
+    "zh-Hans": "告诉对方你何时忙",
+    "zh-Hant": "告訴對方你何時忙"
   },
   "Say “call me when it's done” during a live call, or ask Hermes in a chat to call you. Hermes calls about that job once the call has ended; if it finishes while you're still talking, you hear about it in the call instead.": {
     "de": "Sag während eines Live-Anrufs „Ruf mich an, wenn es fertig ist“ oder bitte Hermes in einem Chat, dich anzurufen. Hermes ruft wegen dieses Jobs an, sobald der Anruf beendet ist. Wird er fertig, während ihr noch sprecht, erfährst du es stattdessen im Anruf.",
@@ -35639,6 +35834,21 @@
     "zh-Hans": "改为做什么",
     "zh-Hant": "改為做什麼"
   },
+  "What they can ask": {
+    "de": "Was sie fragen können",
+    "es": "Qué pueden preguntar",
+    "fr": "Ce qu'ils peuvent demander",
+    "id": "Apa yang boleh mereka tanyakan",
+    "it": "Cosa possono chiedere",
+    "ja": "聞けること",
+    "ko": "물어볼 수 있는 것",
+    "pl": "O co mogą pytać",
+    "pt-BR": "O que podem perguntar",
+    "ru": "О чём могут спрашивать",
+    "tr": "Neler sorabilirler",
+    "zh-Hans": "对方可以问什么",
+    "zh-Hant": "對方可以問什麼"
+  },
   "What this bot is for": {
     "de": "Wofür dieser Bot da ist",
     "es": "Para qué sirve este bot",
@@ -35743,6 +35953,21 @@
     "tr": "Pulse'tan ne istediğin",
     "zh-Hans": "你希望 Pulse 做什么",
     "zh-Hant": "你希望 Pulse 做什麼"
+  },
+  "What {name}'s Hermes can ask": {
+    "de": "Was der Hermes von {name} fragen kann",
+    "es": "Qué puede preguntar el Hermes de {name}",
+    "fr": "Ce que le Hermes de {name} peut demander",
+    "id": "Apa yang boleh ditanyakan Hermes milik {name}",
+    "it": "Cosa può chiedere l'Hermes di {name}",
+    "ja": "{name} の Hermes が聞けること",
+    "ko": "{name}의 Hermes가 물어볼 수 있는 것",
+    "pl": "O co może pytać Hermes {name}",
+    "pt-BR": "O que o Hermes de {name} pode perguntar",
+    "ru": "О чём может спрашивать Hermes {name}",
+    "tr": "{name} kişisinin Hermes'i neler sorabilir",
+    "zh-Hans": "{name} 的 Hermes 可以问什么",
+    "zh-Hant": "{name} 的 Hermes 可以問什麼"
   },
   "What's new": {
     "de": "Was ist neu",
@@ -37004,6 +37229,21 @@
     "zh-Hans": "你的 Hermes 无法开始它",
     "zh-Hant": "你的 Hermes 無法開始它"
   },
+  "Your Hermes doesn't say whether you're free.": {
+    "de": "Dein Hermes sagt nicht, ob du frei bist.",
+    "es": "Tu Hermes no dice si estás libre.",
+    "fr": "Ton Hermes ne dit pas si tu es libre.",
+    "id": "Hermes-mu tidak memberi tahu apakah kamu luang.",
+    "it": "Il tuo Hermes non dice se sei libero.",
+    "ja": "あなたの Hermes は、空いているかを伝えません。",
+    "ko": "Hermes는 시간이 되는지 알려 주지 않아요.",
+    "pl": "Twój Hermes nie mówi, czy masz czas.",
+    "pt-BR": "Seu Hermes não diz se você está livre.",
+    "ru": "Твой Hermes не сообщает, свободен ли ты.",
+    "tr": "Hermes'in müsait olup olmadığını söylemez.",
+    "zh-Hans": "你的 Hermes 不会说你是否有空。",
+    "zh-Hant": "你的 Hermes 不會說你是否有空。"
+  },
   "Your Hermes gets its four words when it first makes or accepts an invite.": {
     "de": "Dein Hermes bekommt seine vier Wörter, wenn er zum ersten Mal eine Einladung erstellt oder annimmt.",
     "es": "Tu Hermes recibe sus cuatro palabras la primera vez que crea o acepta una invitación.",
@@ -37108,6 +37348,21 @@
     "tr": "Hermes sunucunuz {requested} yerine {applied} sesini kullandı.",
     "zh-Hans": "你的 Hermes 服务器使用了声音 {applied}，而不是 {requested}。",
     "zh-Hant": "你的 Hermes 伺服器使用了聲音 {applied}，而不是 {requested}。"
+  },
+  "Your Hermes turns {name}'s questions away.": {
+    "de": "Dein Hermes weist die Fragen von {name} ab.",
+    "es": "Tu Hermes rechaza las preguntas de {name}.",
+    "fr": "Ton Hermes refuse les questions de {name}.",
+    "id": "Hermes-mu menolak pertanyaan dari {name}.",
+    "it": "Il tuo Hermes rifiuta le domande di {name}.",
+    "ja": "あなたの Hermes は {name} の質問を断ります。",
+    "ko": "Hermes는 {name}의 질문을 거절해요.",
+    "pl": "Twój Hermes odrzuca pytania od {name}.",
+    "pt-BR": "Seu Hermes recusa as perguntas de {name}.",
+    "ru": "Твой Hermes отклоняет вопросы от {name}.",
+    "tr": "Hermes'in {name} kişisinin sorularını geri çevirir.",
+    "zh-Hans": "你的 Hermes 会拒绝 {name} 的问题。",
+    "zh-Hant": "你的 Hermes 會拒絕 {name} 的問題。"
   },
   "Your Hermes' words": {
     "de": "Die Wörter deines Hermes",

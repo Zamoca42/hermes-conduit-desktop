@@ -9412,6 +9412,19 @@ button.secondary.danger {
   flex: 1;
   min-width: 0;
 }
+.link-asks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.link-asks-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
 .link-row {
   display: flex;
   align-items: baseline;
