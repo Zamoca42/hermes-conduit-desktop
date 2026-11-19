@@ -31,6 +31,11 @@ describe('newBotStep', () => {
     expect(newBotStep(reported(['session-usage']), false)).toBe('nothing')
     expect(newBotStep({ state: 'unknown' }, true)).toBe('nothing')
   })
+  it('never asks a host that keeps the plugin itself to update', () => {
+    const managed = (managedBy: string): PluginStatus => ({ ...(reported(['session-usage']) as Extract<PluginStatus, { state: 'reported' }>), managedBy })
+    expect(newBotStep(managed(''), true)).toBe('nothing')
+    expect(newBotStep(managed('Hermes Cloud'), true)).toBe('nothing')
+  })
   it('counts a plugin too old to say what it serves as older', () => {
     expect(newBotStep({ state: 'missing' }, true)).toBe('askForUpdate')
     expect(newBotStep({ state: 'missing' }, false)).toBe('nothing')

@@ -41,6 +41,8 @@ export function newBotStep(status: PluginStatus, startsFresh: boolean): NewBotSt
   if (status.state === 'unknown') return 'nothing'
   if (status.state === 'reported' && status.capabilities.includes(BOT_PLUGIN)) return 'turnOn'
   // An older plugin, one too old to say what it serves (or none) included.
+  // Never asked of a host that keeps the plugin itself: an update can't help.
+  if (status.state === 'reported' && status.managedBy !== null) return 'nothing'
   return startsFresh ? 'askForUpdate' : 'nothing'
 }
 
