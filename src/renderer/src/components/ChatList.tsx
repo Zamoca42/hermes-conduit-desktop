@@ -7,6 +7,7 @@ import { Icon } from './icons'
 import { filterRows, isStarred, isUnread, type ChatFilter, type ChatMarks } from '../state/chatMarks'
 import { sourceName, sourcesIn, type ChatSource } from '../state/chatSources'
 import { contentRows, useContentSearch } from '../state/contentSearch'
+import { arrangePinned, moved, usePinnedOrder } from '../state/pinnedOrder'
 import { gateway } from '../gateway'
 
 const FILTERS: { value: ChatFilter; label: () => string }[] = [
@@ -64,6 +65,7 @@ export interface MoveTarget {
 const MAX_SEARCH_PROFILES = 8
 const NONE: ReadonlySet<string> = new Set()
 const searchHttp = (path: string) => gateway.http('GET', path)
+const prefsHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
 
 const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').toLowerCase() === name.toLowerCase()
 
@@ -131,14 +133,29 @@ export function ChatList({
     setRenaming(null)
     if (save && row && title && title !== row.title) onRename?.(row, title)
   }
-  const { sections, listed, allowed } = useMemo(() => {
+  const pinOrder = usePinnedOrder(searchScope, rows, prefsHttp)
+  // Pinned rows move while the list shows every pinned chat: not during a search or under a filter.
+  const canReorder = !query.trim() && filter === 'all' && !source
+  const { sections, listed, allowed, pinnedSection } = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? [])
     const marked = marks ? filterRows(inProfile, filter, marks, runningIds, waitingIds) : inProfile
     const sourced = source ? marked.filter(r => (r.sourceKind ?? 'chat') === source) : marked
     const filtered = q ? sourced.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : sourced
-    return { sections: sectionRows(filtered), listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined }
-  }, [rows, query, profile, marks, filter, runningIds, waitingIds, source])
+    const sections = sectionRows(filtered)
+    // The Pinned section in the person's order, arranged from every pinned chat the profile shown has.
+    const pinned = arrangePinned(sectionRows(inProfile.filter(r => r.pinned))[0]?.rows ?? [], pinOrder.orders)
+    const shown = new Set(filtered.map(r => r.id))
+    const arranged = sections.map(section => (section.rows[0]?.pinned ? { ...section, rows: pinned.filter(r => shown.has(r.id)) } : section))
+    return { sections: arranged, listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined, pinnedSection: pinned }
+  }, [rows, query, profile, marks, filter, runningIds, waitingIds, source, pinOrder.orders])
+  const movePinned = (row: ChatRow, to: number) => {
+    const from = pinnedSection.findIndex(r => r.id === row.id)
+    const next = moved(pinnedSection, from, to)
+    if (next !== pinnedSection) pinOrder.reorder(next)
+  }
+  const [dragging, setDragging] = useState<string | null>(null)
+  const [dropAt, setDropAt] = useState<{ id: string; after: boolean } | null>(null)
   // In messages: Hermes' full-text search, on the profile shown or every profile the list holds.
   const searchProfiles = useMemo(
     () => (profile ? [profile] : [...new Set((rows ?? []).map(r => r.profile || 'default'))].sort().slice(0, MAX_SEARCH_PROFILES)),
@@ -249,7 +266,45 @@ export function ChatList({
               return (
                 <div
                   key={row.id}
-                  className="row-wrap"
+                  className={`row-wrap${dragging === row.id ? ' dragging' : ''}${dropAt?.id === row.id ? (dropAt.after ? ' drop-after' : ' drop-before') : ''}`}
+                  draggable={canReorder && row.pinned && !renaming ? true : undefined}
+                  onDragStart={
+                    canReorder && row.pinned
+                      ? e => {
+                          e.dataTransfer.effectAllowed = 'move'
+                          e.dataTransfer.setData('text/plain', row.title)
+                          setDragging(row.id)
+                        }
+                      : undefined
+                  }
+                  onDragOver={
+                    dragging && row.pinned
+                      ? e => {
+                          e.preventDefault()
+                          const box = e.currentTarget.getBoundingClientRect()
+                          const after = e.clientY > box.top + box.height / 2
+                          if (dropAt?.id !== row.id || dropAt.after !== after) setDropAt({ id: row.id, after })
+                        }
+                      : undefined
+                  }
+                  onDrop={
+                    dragging && row.pinned
+                      ? e => {
+                          e.preventDefault()
+                          const moving = pinnedSection.find(r => r.id === dragging)
+                          const from = pinnedSection.findIndex(r => r.id === dragging)
+                          let to = pinnedSection.findIndex(r => r.id === row.id) + (dropAt?.after ? 1 : 0)
+                          if (from < to) to -= 1
+                          if (moving) movePinned(moving, to)
+                          setDragging(null)
+                          setDropAt(null)
+                        }
+                      : undefined
+                  }
+                  onDragEnd={() => {
+                    setDragging(null)
+                    setDropAt(null)
+                  }}
                   onContextMenu={
                     hasActions
                       ? e => {
@@ -385,10 +440,35 @@ export function ChatList({
                 </button>
               ) : null}
               {onPin ? (
-                <button role="menuitem" onClick={() => onPin(menu.row)}>
+                <button
+                  role="menuitem"
+                  onClick={() => {
+                    if (menu.row.pinned) pinOrder.drop(menu.row)
+                    onPin(menu.row)
+                  }}
+                >
                   {menu.row.pinned ? t('Unpin') : t('Pin')}
                 </button>
               ) : null}
+              {canReorder && menu.row.pinned && pinnedSection.length > 1
+                ? (() => {
+                    const at = pinnedSection.findIndex(r => r.id === menu.row.id)
+                    return (
+                      <>
+                        {at > 0 ? (
+                          <button role="menuitem" onClick={() => movePinned(menu.row, at - 1)}>
+                            {t('Move Earlier')}
+                          </button>
+                        ) : null}
+                        {at >= 0 && at < pinnedSection.length - 1 ? (
+                          <button role="menuitem" onClick={() => movePinned(menu.row, at + 1)}>
+                            {t('Move Later')}
+                          </button>
+                        ) : null}
+                      </>
+                    )
+                  })()
+                : null}
               {onStar && marks ? (
                 <button role="menuitem" onClick={() => onStar(menu.row)}>
                   {isStarred(marks, menu.row) ? t('Unstar') : t('Star')}

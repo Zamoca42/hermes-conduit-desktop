@@ -15,6 +15,8 @@ export interface ChatRow {
   activeAt?: number
   profile?: string
   pinned: boolean
+  /** The conversation's first session, which a compacted chat keeps: its pin id. */
+  lineageRoot?: string
   /** Hermes' shared read flag (Hermes Desktop's Mark as unread sets it). */
   unread?: boolean
   source?: string
@@ -77,7 +79,6 @@ export function toMillis(value: unknown): number | undefined {
   return n * 1000
 }
 
-
 export function rowsFromResponse(body: unknown): ChatRow[] {
   const list = Array.isArray(body)
     ? body
@@ -108,6 +109,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
       activeAt,
       profile: typeof obj.profile === 'string' ? obj.profile : undefined,
       pinned: obj.pinned === true || obj.pinned === 1,
+      lineageRoot: typeof obj._lineage_root_id === 'string' && obj._lineage_root_id.trim() ? obj._lineage_root_id.trim() : undefined,
       unread: obj.unread === true || obj.unread === 1 || undefined,
       source,
       sourceKind: classifySource(obj),
@@ -131,15 +133,7 @@ export function sectionRows(rows: ChatRow[], now = Date.now()): ChatSection[] {
   const sorted = [...rows].sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))
   for (const row of sorted) {
     const at = row.activeAt ?? 0
-    const bucket = row.pinned
-      ? 'Pinned'
-      : at >= today
-        ? 'Today'
-        : at >= yesterday
-          ? 'Yesterday'
-          : at >= week
-            ? 'Previous 7 days'
-            : 'Older'
+    const bucket = row.pinned ? 'Pinned' : at >= today ? 'Today' : at >= yesterday ? 'Yesterday' : at >= week ? 'Previous 7 days' : 'Older'
     buckets[bucket]!.push(row)
   }
   const titles: Record<string, string> = {

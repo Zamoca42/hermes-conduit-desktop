@@ -15419,6 +15419,36 @@
     "zh-Hans": "单个委派代理可用的最大轮次。",
     "zh-Hant": "單一委派代理程式可用的最大回合數。"
   },
+  "Move Earlier": {
+    "de": "Nach vorne",
+    "es": "Mover antes",
+    "fr": "Avancer",
+    "id": "Pindahkan ke depan",
+    "it": "Sposta prima",
+    "ja": "前へ移動",
+    "ko": "앞으로 이동",
+    "pl": "Przesuń wcześniej",
+    "pt-BR": "Mover para antes",
+    "ru": "Переместить раньше",
+    "tr": "Öne taşı",
+    "zh-Hans": "前移",
+    "zh-Hant": "前移"
+  },
+  "Move Later": {
+    "de": "Nach hinten",
+    "es": "Mover después",
+    "fr": "Reculer",
+    "id": "Pindahkan ke belakang",
+    "it": "Sposta dopo",
+    "ja": "後ろへ移動",
+    "ko": "뒤로 이동",
+    "pl": "Przesuń później",
+    "pt-BR": "Mover para depois",
+    "ru": "Переместить позже",
+    "tr": "Geriye taşı",
+    "zh-Hans": "后移",
+    "zh-Hant": "後移"
+  },
   "Move down": {
     "de": "Nach unten",
     "es": "Bajar",
