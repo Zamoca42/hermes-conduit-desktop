@@ -397,6 +397,29 @@ export function takePageAfterSwitch(host: string): string | null {
   return page
 }
 
+/** New Bot made on another combined host: the sheet's words and look, carried over the switch. */
+export interface NewBotCarry {
+  name: string
+  description: string
+  soul: string
+  face: number
+  picture: string | null
+  shareAuth: boolean
+}
+
+let pendingNewBot: { host: string; bot: NewBotCarry } | null = null
+
+export function newBotAfterSwitch(host: string, bot: NewBotCarry): void {
+  pendingNewBot = { host, bot }
+}
+
+export function takeNewBotAfterSwitch(host: string): NewBotCarry | null {
+  if (!pendingNewBot || pendingNewBot.host !== host) return null
+  const bot = pendingNewBot.bot
+  pendingNewBot = null
+  return bot
+}
+
 /** The launch list's rows: the combined group, two or more, is one row where its first member stands. */
 export type LaunchRow = { kind: 'host'; host: HostSummary } | { kind: 'group'; members: HostSummary[]; opens: string }
 
