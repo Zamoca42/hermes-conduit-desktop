@@ -9764,6 +9764,21 @@
     "zh-Hans": "Hermes 尚未恢复",
     "zh-Hant": "Hermes 尚未恢復"
   },
+  "Hermes keeps plugin settings for the host's default profile. Switch to it to change them.": {
+    "de": "Hermes speichert Plugin-Einstellungen für das Standardprofil des Hosts. Wechsle zu ihm, um sie zu ändern.",
+    "es": "Hermes guarda los ajustes de los plugins en el perfil predeterminado del host. Cámbiate a él para modificarlos.",
+    "fr": "Hermes conserve les réglages des plugins pour le profil par défaut de l'hôte. Passez-y pour les modifier.",
+    "id": "Hermes menyimpan pengaturan plugin untuk profil default host. Beralihlah ke profil itu untuk mengubahnya.",
+    "it": "Hermes conserva le impostazioni dei plugin per il profilo predefinito dell'host. Passa a quel profilo per modificarle.",
+    "ja": "Hermes はプラグイン設定をホストのデフォルトプロファイルに保存します。変更するにはそのプロファイルに切り替えてください。",
+    "ko": "Hermes는 플러그인 설정을 호스트의 기본 프로필에 보관합니다. 변경하려면 그 프로필로 전환하세요.",
+    "pl": "Hermes przechowuje ustawienia wtyczek dla domyślnego profilu hosta. Przełącz się na niego, aby je zmienić.",
+    "pt-BR": "O Hermes guarda as configurações dos plugins no perfil padrão do host. Mude para ele para alterá-las.",
+    "ru": "Hermes хранит настройки плагинов в профиле хоста по умолчанию. Переключитесь на него, чтобы изменить их.",
+    "tr": "Hermes eklenti ayarlarını sunucunun varsayılan profilinde tutar. Değiştirmek için o profile geçin.",
+    "zh-Hans": "Hermes 将插件设置保存在主机的默认配置文件中。切换到该配置文件即可更改。",
+    "zh-Hant": "Hermes 將外掛設定保存在主機的預設設定檔中。切換到該設定檔即可變更。"
+  },
   "Hermes needs a note on what was done before {title} can be marked done. Open the task, write it, and choose Mark done.": {
     "de": "Hermes braucht eine Notiz dazu, was erledigt wurde, bevor {title} als erledigt markiert werden kann. Öffne die Aufgabe, schreib sie und wähle „Als erledigt markieren“.",
     "es": "Hermes necesita una nota sobre lo que se hizo antes de marcar {title} como hecha. Abre la tarea, escríbela y elige Marcar como hecha.",
@@ -9853,6 +9868,21 @@
     "tr": "Hermes yeni sürümü çeker ve yeniden başlar. Geri gelene kadar sohbetler ve mesajlaşma kanalları duraklar.",
     "zh-Hans": "Hermes 会拉取新版本并重启。在恢复之前，聊天和消息渠道会暂停。",
     "zh-Hant": "Hermes 會取得新版本並重新啟動。在恢復之前，聊天和訊息頻道會暫停。"
+  },
+  "Hermes refused the settings.": {
+    "de": "Hermes hat die Einstellungen abgelehnt.",
+    "es": "Hermes rechazó los ajustes.",
+    "fr": "Hermes a refusé les réglages.",
+    "id": "Hermes menolak pengaturan tersebut.",
+    "it": "Hermes ha rifiutato le impostazioni.",
+    "ja": "Hermes が設定を拒否しました。",
+    "ko": "Hermes가 설정을 거부했습니다.",
+    "pl": "Hermes odrzucił ustawienia.",
+    "pt-BR": "O Hermes recusou as configurações.",
+    "ru": "Hermes отклонил настройки.",
+    "tr": "Hermes ayarları reddetti.",
+    "zh-Hans": "Hermes 拒绝了这些设置。",
+    "zh-Hant": "Hermes 拒絕了這些設定。"
   },
   "Hermes replies like this.": {
     "de": "So antwortet Hermes.",
@@ -18599,6 +18629,21 @@
     "zh-Hans": "报告",
     "zh-Hant": "報告"
   },
+  "Required": {
+    "de": "Erforderlich",
+    "es": "Obligatorio",
+    "fr": "Obligatoire",
+    "id": "Wajib",
+    "it": "Obbligatorio",
+    "ja": "必須",
+    "ko": "필수",
+    "pl": "Wymagane",
+    "pt-BR": "Obrigatório",
+    "ru": "Обязательно",
+    "tr": "Zorunlu",
+    "zh-Hans": "必填",
+    "zh-Hant": "必填"
+  },
   "Reset": {
     "de": "Zurücksetzen",
     "es": "Restablecer",
@@ -19514,6 +19559,21 @@
     "zh-Hans": "保存",
     "zh-Hant": "儲存"
   },
+  "Save Settings": {
+    "de": "Einstellungen sichern",
+    "es": "Guardar ajustes",
+    "fr": "Enregistrer les réglages",
+    "id": "Simpan pengaturan",
+    "it": "Salva impostazioni",
+    "ja": "設定を保存",
+    "ko": "설정 저장",
+    "pl": "Zapisz ustawienia",
+    "pt-BR": "Salvar configurações",
+    "ru": "Сохранить настройки",
+    "tr": "Ayarları kaydet",
+    "zh-Hans": "保存设置",
+    "zh-Hant": "儲存設定"
+  },
   "Save an artifact with its star to keep it here. Hermes keeps a copy of each file, so it still opens after its chat is gone.": {
     "de": "Speichere ein Artefakt mit seinem Stern, um es hier zu behalten. Hermes behält eine Kopie jeder Datei, damit sie sich auch nach dem Ende ihres Chats öffnen lässt.",
     "es": "Guarda un artefacto con su estrella para tenerlo aquí. Hermes guarda una copia de cada archivo, así que se abre aunque su chat ya no exista.",
@@ -19724,6 +19784,21 @@
     "zh-Hans": "已保存，但无法移除此配置文件的旧密钥，因此它可能仍会被优先使用。",
     "zh-Hant": "已儲存，但無法移除此設定檔的舊金鑰，因此它可能仍會被優先使用。"
   },
+  "Saved. Enter a new one to replace it.": {
+    "de": "Gespeichert. Gib einen neuen ein, um ihn zu ersetzen.",
+    "es": "Guardada. Introduce una nueva para reemplazarla.",
+    "fr": "Enregistrée. Saisissez-en une nouvelle pour la remplacer.",
+    "id": "Tersimpan. Masukkan yang baru untuk menggantinya.",
+    "it": "Salvata. Inseriscine una nuova per sostituirla.",
+    "ja": "保存済み。置き換えるには新しい値を入力してください。",
+    "ko": "저장됨. 바꾸려면 새 값을 입력하세요.",
+    "pl": "Zapisano. Wpisz nową, aby ją zastąpić.",
+    "pt-BR": "Salva. Insira uma nova para substituí-la.",
+    "ru": "Сохранено. Введите новое значение, чтобы заменить его.",
+    "tr": "Kaydedildi. Değiştirmek için yenisini girin.",
+    "zh-Hans": "已保存。输入新的值即可替换。",
+    "zh-Hant": "已儲存。輸入新的值即可取代。"
+  },
   "Saved. Hermes couldn't reach the provider to check the key.": {
     "de": "Gespeichert. Hermes konnte den Anbieter nicht erreichen, um den Schlüssel zu prüfen.",
     "es": "Guardada. Hermes no pudo contactar con el proveedor para comprobar la clave.",
@@ -19738,6 +19813,21 @@
     "tr": "Kaydedildi. Hermes anahtarı denetlemek için sağlayıcıya ulaşamadı.",
     "zh-Hans": "已保存。Hermes 无法连接提供方来检查密钥。",
     "zh-Hant": "已儲存。Hermes 無法連線到供應商來檢查金鑰。"
+  },
+  "Saved. The plugin reads its new settings.": {
+    "de": "Gespeichert. Das Plugin liest seine neuen Einstellungen.",
+    "es": "Guardado. El plugin lee sus nuevos ajustes.",
+    "fr": "Enregistré. Le plugin lit ses nouveaux réglages.",
+    "id": "Tersimpan. Plugin membaca pengaturan barunya.",
+    "it": "Salvato. Il plugin legge le nuove impostazioni.",
+    "ja": "保存しました。プラグインが新しい設定を読み込みます。",
+    "ko": "저장했습니다. 플러그인이 새 설정을 읽습니다.",
+    "pl": "Zapisano. Wtyczka odczyta nowe ustawienia.",
+    "pt-BR": "Salvo. O plugin lê as novas configurações.",
+    "ru": "Сохранено. Плагин прочитает новые настройки.",
+    "tr": "Kaydedildi. Eklenti yeni ayarlarını okur.",
+    "zh-Hans": "已保存。插件会读取新的设置。",
+    "zh-Hant": "已儲存。外掛會讀取新的設定。"
   },
   "Saving…": {
     "de": "Wird gespeichert …",
@@ -23278,6 +23368,21 @@
     "tr": "Kurulum tamamlanmadı. Günlüğü aşağıda.",
     "zh-Hans": "安装未完成。日志如下。",
     "zh-Hant": "安裝未完成。記錄如下。"
+  },
+  "The keys were saved, but the other settings weren't: {reason}": {
+    "de": "Die Schlüssel wurden gespeichert, die anderen Einstellungen aber nicht: {reason}",
+    "es": "Las claves se guardaron, pero los demás ajustes no: {reason}",
+    "fr": "Les clés ont été enregistrées, mais pas les autres réglages : {reason}",
+    "id": "Kunci sudah disimpan, tetapi pengaturan lainnya tidak: {reason}",
+    "it": "Le chiavi sono state salvate, ma le altre impostazioni no: {reason}",
+    "ja": "キーは保存されましたが、ほかの設定は保存されませんでした: {reason}",
+    "ko": "키는 저장되었지만 다른 설정은 저장되지 않았습니다: {reason}",
+    "pl": "Klucze zostały zapisane, ale pozostałe ustawienia nie: {reason}",
+    "pt-BR": "As chaves foram salvas, mas as outras configurações não: {reason}",
+    "ru": "Ключи сохранены, но остальные настройки — нет: {reason}",
+    "tr": "Anahtarlar kaydedildi ancak diğer ayarlar kaydedilmedi: {reason}",
+    "zh-Hans": "密钥已保存，但其他设置未保存：{reason}",
+    "zh-Hant": "金鑰已儲存，但其他設定未儲存：{reason}"
   },
   "The look ahead passed over it": {
     "de": "Die Vorausschau hat es übergangen",
@@ -29024,6 +29129,21 @@
     "zh-Hans": "{kind}：{level}",
     "zh-Hant": "{kind}：{level}"
   },
+  "{label} is required.": {
+    "de": "{label} ist erforderlich.",
+    "es": "{label} es obligatorio.",
+    "fr": "{label} est obligatoire.",
+    "id": "{label} wajib diisi.",
+    "it": "{label} è obbligatorio.",
+    "ja": "{label} は必須です。",
+    "ko": "{label}은(는) 필수입니다.",
+    "pl": "Pole {label} jest wymagane.",
+    "pt-BR": "{label} é obrigatório.",
+    "ru": "Поле «{label}» обязательно.",
+    "tr": "{label} zorunludur.",
+    "zh-Hans": "{label} 为必填项。",
+    "zh-Hant": "{label} 為必填項目。"
+  },
   "{label} updated": {
     "de": "{label} aktualisiert",
     "es": "Actualización: {label}",
@@ -29038,6 +29158,51 @@
     "tr": "{label} güncellendi",
     "zh-Hans": "{label} 已更新",
     "zh-Hant": "{label} 已更新"
+  },
+  "{label}: enter a JSON list or object.": {
+    "de": "{label}: Gib eine JSON-Liste oder ein JSON-Objekt ein.",
+    "es": "{label}: introduce una lista u objeto JSON.",
+    "fr": "{label} : saisissez une liste ou un objet JSON.",
+    "id": "{label}: masukkan daftar atau objek JSON.",
+    "it": "{label}: inserisci una lista o un oggetto JSON.",
+    "ja": "{label}: JSON のリストまたはオブジェクトを入力してください。",
+    "ko": "{label}: JSON 목록이나 객체를 입력하세요.",
+    "pl": "{label}: wpisz listę lub obiekt JSON.",
+    "pt-BR": "{label}: insira uma lista ou um objeto JSON.",
+    "ru": "{label}: введите список или объект JSON.",
+    "tr": "{label}: bir JSON listesi veya nesnesi girin.",
+    "zh-Hans": "{label}：请输入 JSON 列表或对象。",
+    "zh-Hant": "{label}：請輸入 JSON 清單或物件。"
+  },
+  "{label}: enter a number.": {
+    "de": "{label}: Gib eine Zahl ein.",
+    "es": "{label}: introduce un número.",
+    "fr": "{label} : saisissez un nombre.",
+    "id": "{label}: masukkan angka.",
+    "it": "{label}: inserisci un numero.",
+    "ja": "{label}: 数値を入力してください。",
+    "ko": "{label}: 숫자를 입력하세요.",
+    "pl": "{label}: wpisz liczbę.",
+    "pt-BR": "{label}: insira um número.",
+    "ru": "{label}: введите число.",
+    "tr": "{label}: bir sayı girin.",
+    "zh-Hans": "{label}：请输入数字。",
+    "zh-Hant": "{label}：請輸入數字。"
+  },
+  "{label}: pick one of the choices.": {
+    "de": "{label}: Wähle eine der Optionen.",
+    "es": "{label}: elige una de las opciones.",
+    "fr": "{label} : choisissez l'une des options.",
+    "id": "{label}: pilih salah satu opsi.",
+    "it": "{label}: scegli una delle opzioni.",
+    "ja": "{label}: 選択肢から選んでください。",
+    "ko": "{label}: 선택지 중 하나를 고르세요.",
+    "pl": "{label}: wybierz jedną z opcji.",
+    "pt-BR": "{label}: escolha uma das opções.",
+    "ru": "{label}: выберите один из вариантов.",
+    "tr": "{label}: seçeneklerden birini seçin.",
+    "zh-Hans": "{label}：请从选项中选择一个。",
+    "zh-Hant": "{label}：請從選項中選擇一個。"
   },
   "{model} limited": {
     "de": "{model} begrenzt",
