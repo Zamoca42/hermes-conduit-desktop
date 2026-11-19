@@ -1200,6 +1200,10 @@ body.resizing-columns {
   max-width: min(560px, 85%);
 }
 
+.room-person .attachments {
+  justify-content: flex-start;
+  align-self: flex-start;
+}
 .attachments .chip {
   display: inline-flex;
   align-items: center;

@@ -6404,6 +6404,21 @@
     "zh-Hans": "无法暂停定时任务：{reason}",
     "zh-Hant": "無法暫停排程工作：{reason}"
   },
+  "Could not prepare {name} for upload.": {
+    "de": "{name} konnte nicht zum Hochladen vorbereitet werden.",
+    "es": "No se pudo preparar {name} para subirlo.",
+    "fr": "Impossible de préparer {name} pour l'envoi.",
+    "id": "Tidak dapat menyiapkan {name} untuk diunggah.",
+    "it": "Impossibile preparare {name} per il caricamento.",
+    "ja": "{name}をアップロード用に準備できませんでした。",
+    "ko": "{name} 파일을 업로드용으로 준비할 수 없어요.",
+    "pl": "Nie udało się przygotować do wysłania: {name}.",
+    "pt-BR": "Não foi possível preparar {name} para envio.",
+    "ru": "Не удалось подготовить {name} к загрузке.",
+    "tr": "{name} yüklemeye hazırlanamadı.",
+    "zh-Hans": "无法准备 {name} 以便上传。",
+    "zh-Hant": "無法準備上傳 {name}。"
+  },
   "Could not reach your speech server.": {
     "de": "Dein Sprachserver ist nicht erreichbar.",
     "es": "No se pudo acceder a tu servidor de voz.",
@@ -30659,6 +30674,21 @@
     "zh-Hans": "主持人",
     "zh-Hant": "主持人"
   },
+  "The host's answer couldn't be read. Update the Conduit plugin and try again.": {
+    "de": "Die Antwort des Hosts konnte nicht gelesen werden. Aktualisiere das Conduit-Plugin und versuche es erneut.",
+    "es": "No se pudo leer la respuesta del host. Actualiza el plugin de Conduit y vuelve a intentarlo.",
+    "fr": "La réponse de l'hôte est illisible. Mets à jour le plugin Conduit et réessaie.",
+    "id": "Jawaban host tidak dapat dibaca. Perbarui plugin Conduit lalu coba lagi.",
+    "it": "Impossibile leggere la risposta dell'host. Aggiorna il plugin Conduit e riprova.",
+    "ja": "ホストの応答を読み取れませんでした。Conduit プラグインを更新してもう一度お試しください。",
+    "ko": "호스트의 응답을 읽을 수 없어요. Conduit 플러그인을 업데이트한 후 다시 시도하세요.",
+    "pl": "Nie udało się odczytać odpowiedzi hosta. Zaktualizuj wtyczkę Conduit i spróbuj ponownie.",
+    "pt-BR": "Não foi possível ler a resposta do host. Atualize o plugin do Conduit e tente novamente.",
+    "ru": "Не удалось прочитать ответ хоста. Обновите плагин Conduit и попробуйте ещё раз.",
+    "tr": "Ana makinenin yanıtı okunamadı. Conduit eklentisini güncelleyip tekrar dene.",
+    "zh-Hans": "无法读取主机的响应。请更新 Conduit 插件后重试。",
+    "zh-Hant": "無法讀取主機的回應。請更新 Conduit 外掛程式後再試一次。"
+  },
   "The host's sudo password": {
     "de": "Das sudo-Passwort des Hosts",
     "es": "La contraseña sudo del host",
@@ -31633,6 +31663,21 @@
     "tr": "Ardından yeni eklentiyi kullanması için Hermes panelini yeniden başlatın.",
     "zh-Hans": "然后重启 Hermes 仪表板，让它使用新插件。",
     "zh-Hant": "然後重新啟動 Hermes 儀表板，讓它使用新外掛程式。"
+  },
+  "These files are larger than the {limit} MB a room with other people's agents can share with them: {names}.": {
+    "de": "Diese Dateien sind größer als die {limit} MB, die ein Raum mit Agenten anderer Personen mit ihnen teilen kann: {names}.",
+    "es": "Estos archivos superan los {limit} MB que una sala con agentes de otras personas puede compartir con ellas: {names}.",
+    "fr": "Ces fichiers dépassent les {limit} Mo qu'un salon avec les agents d'autres personnes peut partager avec elles : {names}.",
+    "id": "File ini lebih besar dari {limit} MB yang bisa dibagikan ruang berisi agen orang lain kepada mereka: {names}.",
+    "it": "Questi file superano i {limit} MB che una stanza con agenti di altre persone può condividere con loro: {names}.",
+    "ja": "これらのファイルは、ほかの人のエージェントがいるグループで共有できる{limit} MBを超えています: {names}。",
+    "ko": "이 파일들은 다른 사람의 에이전트가 있는 방에서 공유할 수 있는 {limit}MB보다 커요: {names}.",
+    "pl": "Te pliki przekraczają {limit} MB, które pokój z agentami innych osób może im udostępnić: {names}.",
+    "pt-BR": "Estes arquivos são maiores que os {limit} MB que uma sala com agentes de outras pessoas pode compartilhar com elas: {names}.",
+    "ru": "Эти файлы больше {limit} МБ, которыми комната с агентами других людей может с ними поделиться: {names}.",
+    "tr": "Bu dosyalar, başka kişilerin ajanlarının olduğu bir odanın onlarla paylaşabileceği {limit} MB'tan büyük: {names}.",
+    "zh-Hans": "这些文件超过了有其他人智能体的群聊可与他们共享的 {limit} MB：{names}。",
+    "zh-Hant": "這些檔案超過了有其他人代理程式的群組可與他們分享的 {limit} MB：{names}。"
   },
   "These files are larger than the {limit} MB attachment limit: {names}.": {
     "de": "Diese Dateien überschreiten das Anhanglimit von {limit} MB: {names}.",
@@ -39298,6 +39343,21 @@
     "tr": "{name} yüklendi. Çalışması için {keys} ayarlanmalı.",
     "zh-Hans": "已安装 {name}。需要先设置 {keys} 才能使用。",
     "zh-Hant": "已安裝 {name}。需要先設定 {keys} 才能使用。"
+  },
+  "{name} is larger than the {limit} MB a room with other people's agents can share with them.": {
+    "de": "{name} ist größer als die {limit} MB, die ein Raum mit Agenten anderer Personen mit ihnen teilen kann.",
+    "es": "{name} supera los {limit} MB que una sala con agentes de otras personas puede compartir con ellas.",
+    "fr": "{name} dépasse les {limit} Mo qu'un salon avec les agents d'autres personnes peut partager avec elles.",
+    "id": "{name} lebih besar dari {limit} MB yang bisa dibagikan ruang berisi agen orang lain kepada mereka.",
+    "it": "{name} supera i {limit} MB che una stanza con agenti di altre persone può condividere con loro.",
+    "ja": "{name}は、ほかの人のエージェントがいるグループで共有できる{limit} MBを超えています。",
+    "ko": "{name}은(는) 다른 사람의 에이전트가 있는 방에서 공유할 수 있는 {limit}MB보다 커요.",
+    "pl": "{name} przekracza {limit} MB, które pokój z agentami innych osób może im udostępnić.",
+    "pt-BR": "{name} é maior que os {limit} MB que uma sala com agentes de outras pessoas pode compartilhar com elas.",
+    "ru": "{name} больше {limit} МБ, которыми комната с агентами других людей может с ними поделиться.",
+    "tr": "{name}, başka kişilerin ajanlarının olduğu bir odanın onlarla paylaşabileceği {limit} MB'tan büyük.",
+    "zh-Hans": "{name} 超过了有其他人智能体的群聊可与他们共享的 {limit} MB。",
+    "zh-Hant": "{name} 超過了有其他人代理程式的群組可與他們分享的 {limit} MB。"
   },
   "{name} is larger than the {limit} MB attachment limit.": {
     "de": "{name} überschreitet das Anhanglimit von {limit} MB.",

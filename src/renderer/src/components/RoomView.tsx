@@ -30,11 +30,16 @@ import { blockquote, copyableReply, parseRoomReply, roomReplyText, sameQuotedTex
 import { Icon } from "./icons";
 import { PictureImage, PictureProfile } from "./Picture";
 import { displayName, roomUploadProblem } from "../state/attachments";
-import { keptPictures, readRoomPicture } from "../state/roomPictures";
+import { keptPictures, keptStoredPicture, readRoomPicture, readStoredPicture } from "../state/roomPictures";
+import { isStoredRoomFile, linkedRoomFilesProblem } from "../state/roomFiles";
 import { t } from "@shared/i18n";
 
 interface Props {
   room: Room;
+  /** The plugin stores room files (`room-files`): a room with other people's agents takes them that way. */
+  storesFiles?: boolean;
+  /** The plugin reads back the pictures it stored (and, in a copy, your host's copies of them). */
+  readsStoredFiles?: boolean;
   bots: Bot[];
   connected: boolean;
   canStop: boolean;
@@ -126,26 +131,34 @@ interface ShownFile {
   attachmentId?: string;
   /** A picture's bytes already here (the sender's own, while it sends). */
   dataUrl?: string;
+  /** Where the plugin stored it, for one an `@file:` line names. */
+  path?: string;
 }
 
-/** A picture in a room message, read back from Hermes; its name if it won't load. */
-function RoomPicture({ roomId, eventId, file }: { roomId: string; eventId?: string; file: ShownFile }) {
+/**
+ * A picture in a room message, read back from Hermes, or from the plugin
+ * for one it stored (`readsStored`); its name if it won't load.
+ */
+function RoomPicture({ roomId, eventId, file, readsStored }: { roomId: string; eventId?: string; file: ShownFile; readsStored?: boolean }) {
+  const stored = file.path && readsStored && isStoredRoomFile(file.path) ? file.path : null;
   const [src, setSrc] = useState<string | null | undefined>(
-    file.dataUrl ?? (file.attachmentId ? keptPictures.get(file.attachmentId) : null),
+    file.dataUrl ?? (stored ? keptStoredPicture(stored) : file.attachmentId ? keptPictures.get(file.attachmentId) : null),
   );
   useEffect(() => {
-    if (src !== undefined || !file.attachmentId || !eventId) return;
+    if (src !== undefined) return;
     let live = true;
-    void readRoomPicture(roomId, eventId, file.attachmentId).then((url) => {
+    const read = stored ? readStoredPicture(stored) : file.attachmentId && eventId ? readRoomPicture(roomId, eventId, file.attachmentId) : null;
+    if (!read) return;
+    void read.then((url) => {
       if (live) setSrc(url);
     });
     return () => {
       live = false;
     };
-  }, [src, roomId, eventId, file.attachmentId]);
+  }, [src, roomId, eventId, file.attachmentId, stored]);
   if (!src) {
     return (
-      <span className="chip" title={file.name}>
+      <span className="chip" title={file.path ?? file.name}>
         <Icon name="image" />
         <span>{displayName(file.name)}</span>
       </span>
@@ -155,14 +168,14 @@ function RoomPicture({ roomId, eventId, file }: { roomId: string; eventId?: stri
 }
 
 /** A room message's files: pictures as themselves, the rest by name. */
-function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: string; eventId?: string }) {
+function FileChips({ files, roomId, eventId, readsStored }: { files: ShownFile[]; roomId: string; eventId?: string; readsStored?: boolean }) {
   return (
     <div className="attachments">
       {files.map((f, i) =>
         f.kind === "image" ? (
-          <RoomPicture key={i} roomId={roomId} eventId={eventId} file={f} />
+          <RoomPicture key={i} roomId={roomId} eventId={eventId} file={f} readsStored={readsStored} />
         ) : (
-          <span key={i} className="chip" title={f.name}>
+          <span key={i} className="chip" title={f.path ?? f.name}>
             <Icon name="file" />
             <span>{displayName(f.name)}</span>
           </span>
@@ -173,9 +186,9 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy, looks, onOpenRoomChat }: Props) {
+export function RoomView({ room, storesFiles = false, readsStoredFiles = false, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy, looks, onOpenRoomChat }: Props) {
   // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
-  const hosted = useRoom(copy ? null : room, connected);
+  const hosted = useRoom(copy ? null : room, connected, storesFiles);
   const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
   const { pending, send, stop, saveContext, continueDiscussion, approvals, answers, approve } = hosted;
   const { events, status, loading, error } = copy ? copied : hosted;
@@ -485,7 +498,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                         onJump={jump(replies.get(item.key)!.quote)}
                       />
                     ) : null}
-                    {item.files ? <FileChips files={shownFiles(item.files)} roomId={room.roomId} eventId={item.key} /> : null}
+                    {item.files ? <FileChips files={shownFiles(item.files)} roomId={room.roomId} eventId={item.key} readsStored={readsStoredFiles} /> : null}
                     {ownWords(item).trim() ? <div className="bubble">{ownWords(item)}</div> : null}
                     <span className="time">{clock(item.at)}</span>
                     {ownWords(item).trim() ? (
@@ -509,7 +522,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                         {item.name}
                         <span className="time">{clock(item.at)}</span>
                       </div>
-                      {item.files ? <FileChips files={shownFiles(item.files)} roomId={room.roomId} eventId={item.key} /> : null}
+                      {item.files ? <FileChips files={shownFiles(item.files)} roomId={room.roomId} eventId={item.key} readsStored={readsStoredFiles} /> : null}
                       {ownWords(item).trim() ? (
                         <div className="assistant">
                           <div className="bubble person-bubble">{ownWords(item)}</div>
@@ -802,9 +815,9 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
         }}
         onStop={() => void stop()}
         focusKey={room.roomId}
-        canAttach={canAttach && !room.linked && !copy}
+        canAttach={!copy && (room.linked ? storesFiles : canAttach)}
         dropZone={pane}
-        checkAttachments={roomUploadProblem}
+        checkAttachments={room.linked ? linkedRoomFilesProblem : roomUploadProblem}
         quote={quote}
         wrapReply={(reply, draft) => roomReplyText(reply.text, reply.author, draft)}
         address={(draft) => addressing(draft, picked, room.members)}
