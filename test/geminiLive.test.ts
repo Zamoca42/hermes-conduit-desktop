@@ -46,6 +46,7 @@ describe('Gemini Live session', () => {
       'list_jobs:BLOCKING',
       'cancel_job:BLOCKING',
       'interrupt_job:NON_BLOCKING',
+      'call_me_when_done:BLOCKING',
       'find_chat:NON_BLOCKING',
       'read_chat:NON_BLOCKING',
       'answer_approval:NON_BLOCKING',
