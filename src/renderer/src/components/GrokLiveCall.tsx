@@ -39,6 +39,7 @@ import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, reque
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
+import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 
 interface Props {
   profile?: string
@@ -98,6 +99,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   const [lines, setLines] = useState<Line[]>([])
   const [cards, setCards] = useState<ScreenCard[]>([])
   const cardId = useRef(0)
+  const finder = useRef(chatFinder(profile))
 
   const socket = useRef<string | null>(null)
   const context = useRef<AudioContext | null>(null)
@@ -282,6 +284,13 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
         pump()
         return answer(event.id, waits ? QUEUED : SENT)
       }
+      case FIND_CHAT:
+        // Grok holds its turn on every call: one search, not three.
+        void finder.current.find(event.args.query ?? '', false).then(result => !ended.current && answer(event.id, result))
+        return
+      case READ_CHAT:
+        void finder.current.read(event.args.number ?? '').then(result => !ended.current && answer(event.id, result))
+        return
       case SHOW_ON_SCREEN: {
         const { card, result } = screenCard(event.args, ++cardId.current)
         if (card) setCards(current => withCard(current, card))

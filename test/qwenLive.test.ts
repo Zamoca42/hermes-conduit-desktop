@@ -61,7 +61,7 @@ describe('Qwen Live session', () => {
     expect(update.session.audio.output).toEqual({ format: { type: 'pcm', sample_rate: 24000 }, voice: 'Serena' })
     expect(update.session.turn_detection.type).toBe('server_vad')
     const names = update.session.tools.map((tool: any) => tool.function.name)
-    expect(names).toEqual(['ask_thread', 'read_last_reply', 'end_conversation', 'show_on_screen', 'answer_approval', 'answer_question', 'recall_memory', 'web_search'])
+    expect(names).toEqual(['ask_thread', 'read_last_reply', 'end_conversation', 'show_on_screen', 'find_chat', 'read_chat', 'answer_approval', 'answer_question', 'recall_memory', 'web_search'])
     expect(update.session.tools[0].function.parameters.type).toBe('object')
     expect(update.session.tools[0].function.parameters.properties.request.type).toBe('string')
   })
