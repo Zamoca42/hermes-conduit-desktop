@@ -127,6 +127,7 @@ import {
   pulseChips,
   useKeptHosts,
   useKeptWaiting,
+  writeLastHost,
   type KeptWaitingRow,
   type OtherBot,
   type OtherChatRow
@@ -184,6 +185,10 @@ export function App() {
   // A new host signed in (or the sign-in screen otherwise left): back to the app.
   const url = status?.url
   useEffect(() => setAdding(false), [url])
+  // The launch list's combined row opens the member used last.
+  useEffect(() => {
+    if (url) writeLastHost(url)
+  }, [url])
   // Model pickers open on the catalog kept from this host's last answer, never another host's.
   setCatalogHost(url ?? '')
   setTurnSurfaceHost(url ?? '')

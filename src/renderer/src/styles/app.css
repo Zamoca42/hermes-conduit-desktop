@@ -9951,3 +9951,8 @@ button.secondary.danger {
   line-height: 18px;
   text-align: center;
 }
+
+.launch-group-badges {
+  display: inline-flex;
+  gap: 2px;
+}

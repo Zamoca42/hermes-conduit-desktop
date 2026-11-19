@@ -396,3 +396,38 @@ export function takePageAfterSwitch(host: string): string | null {
   pendingPage = null
   return page
 }
+
+/** The launch list's rows: the combined group, two or more, is one row where its first member stands. */
+export type LaunchRow = { kind: 'host'; host: HostSummary } | { kind: 'group'; members: HostSummary[]; opens: string }
+
+export function launchRows(hosts: readonly HostSummary[], lastUsed: string | null): LaunchRow[] {
+  const group = hosts.filter(h => h.combined)
+  if (group.length < 2) return hosts.map(host => ({ kind: 'host', host }))
+  // A tap opens the member used last, else the first.
+  const opens = group.find(h => h.url === lastUsed)?.url ?? group[0]!.url
+  const rows: LaunchRow[] = []
+  for (const host of hosts) {
+    if (!host.combined) rows.push({ kind: 'host', host })
+    else if (host === group[0]) rows.push({ kind: 'group', members: group, opens })
+  }
+  return rows
+}
+
+const LAST_HOST_KEY = 'conduit.lastHost'
+
+/** The host used last, for the launch list's group row; kept on this computer. */
+export function readLastHost(): string | null {
+  try {
+    return localStorage.getItem(LAST_HOST_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function writeLastHost(url: string): void {
+  try {
+    localStorage.setItem(LAST_HOST_KEY, url)
+  } catch {
+    // Not kept: the group's row opens its first member.
+  }
+}
