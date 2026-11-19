@@ -3179,6 +3179,21 @@
     "zh-Hans": "聊天检查",
     "zh-Hant": "聊天檢查"
   },
+  "Chat list width": {
+    "de": "Breite der Chatliste",
+    "es": "Ancho de la lista de chats",
+    "fr": "Largeur de la liste des discussions",
+    "id": "Lebar daftar chat",
+    "it": "Larghezza elenco chat",
+    "ja": "チャット一覧の幅",
+    "ko": "채팅 목록 너비",
+    "pl": "Szerokość listy czatów",
+    "pt-BR": "Largura da lista de conversas",
+    "ru": "Ширина списка чатов",
+    "tr": "Sohbet listesi genişliği",
+    "zh-Hans": "聊天列表宽度",
+    "zh-Hant": "聊天列表寬度"
+  },
   "Chat model": {
     "de": "Chat-Modell",
     "es": "Modelo del chat",
@@ -22213,6 +22228,21 @@
     "tr": "Bu botun işini gösterir",
     "zh-Hans": "显示此机器人的工作",
     "zh-Hant": "顯示此機器人的工作"
+  },
+  "Side panel width": {
+    "de": "Breite der Seitenleiste",
+    "es": "Ancho del panel lateral",
+    "fr": "Largeur du panneau latéral",
+    "id": "Lebar panel samping",
+    "it": "Larghezza pannello laterale",
+    "ja": "サイドパネルの幅",
+    "ko": "사이드 패널 너비",
+    "pl": "Szerokość panelu bocznego",
+    "pt-BR": "Largura do painel lateral",
+    "ru": "Ширина боковой панели",
+    "tr": "Yan panel genişliği",
+    "zh-Hans": "侧边面板宽度",
+    "zh-Hant": "側邊面板寬度"
   },
   "Sign in": {
     "de": "Anmelden",
