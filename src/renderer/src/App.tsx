@@ -108,7 +108,21 @@ import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
 import { AskDashboardSetting, DashboardChoice } from './components/AskDashboard'
 import { CombineDashboardsSetting } from './components/CombinedDashboards'
-import { hostBadge, keptStateLabel, openAfterSwitch, otherHostsWaiting, takeOpenAfterSwitch, useKeptHosts, useKeptWaiting, type KeptWaitingRow } from './state/keptHosts'
+import {
+  hostBadge,
+  keptStateLabel,
+  openAfterSwitch,
+  openChatAfterSwitch,
+  otherHostsChats,
+  otherHostsWaiting,
+  takeChatAfterSwitch,
+  takeOpenAfterSwitch,
+  useKeptChats,
+  useKeptHosts,
+  useKeptWaiting,
+  type KeptWaitingRow,
+  type OtherChatRow
+} from './state/keptHosts'
 import { StepSummarySettings } from './components/StepSummarySettings'
 import { PredictiveSettings } from './components/PredictiveSettings'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
@@ -1027,6 +1041,11 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const keptHosts = useKeptHosts()
   const keptWaiting = useKeptWaiting(keptHosts)
   const otherWaiting = useMemo(() => otherHostsWaiting(keptWaiting, waiting.rows), [keptWaiting, waiting.rows])
+  const savedHosts = status.hosts
+  const badgeFor = useCallback((url: string) => hostBadge(savedHosts ?? [], url, hostName), [savedHosts])
+  // ...and their chats, in All.
+  const keptChats = useKeptChats(keptHosts, section === 'chats')
+  const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   const needsCount = requests.length + waitingRows.length + otherWaiting.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
   // Running and Needs approval on the list's rows: the gateway's live registry while the list shows, the
@@ -1125,8 +1144,20 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     openAfterSwitch(row)
     void window.conduit.switchHost(row.host)
   }, [])
-  // A wait opened on another host before the switch: open it here once connected.
   const statusUrl = status.url ?? ''
+  const openOtherChat = useCallback((row: OtherChatRow) => {
+    if (!switchEndingCall(hostName(row.host))) return
+    openChatAfterSwitch(row)
+    void window.conduit.switchHost(row.host)
+  }, [])
+  useEffect(() => {
+    if (!connected) return
+    const row = takeChatAfterSwitch(statusUrl)
+    if (!row) return
+    setSelected({ id: row.id, profile: row.profile, title: row.title })
+    setSection('chats')
+  }, [connected, statusUrl])
+  // A wait opened on another host before the switch: open it here once connected.
   useEffect(() => {
     if (!connected || list.rows === undefined) return
     const row = takeOpenAfterSwitch(statusUrl)
@@ -1452,6 +1483,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onPinnedReplies={pins.length ? () => setPinSheet({ scope: 'all' }) : undefined}
                 moveTargets={moveTargets}
                 onMove={(row, target) => void moveToProject(row, target)}
+                otherRows={otherChats}
+                badgeFor={badgeFor}
+                onOpenOther={openOtherChat}
               />
             )}
             <ColumnDivider label={t('Chat list width')} bounds={LIST_COLUMN} sign={1} width={listWidth} onLive={setListLive} onCommit={commitList} />
@@ -2004,7 +2038,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             requests={requests}
             waiting={waitingRows}
             otherWaiting={otherWaiting}
-            badgeFor={url => hostBadge(status.hosts ?? [], url, hostName)}
+            badgeFor={badgeFor}
             onOpenOther={openOtherWaiting}
             listAvailable={waiting.available}
             titleFor={titleFor}

@@ -9890,3 +9890,9 @@ button.secondary.danger {
   flex-direction: column;
   gap: 4px;
 }
+
+.row-title .host-badge,
+.sect .host-badge {
+  margin-right: 6px;
+  vertical-align: -2px;
+}

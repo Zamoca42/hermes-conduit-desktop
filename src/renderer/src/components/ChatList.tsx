@@ -12,6 +12,8 @@ import { sourceName, sourcesIn, type ChatSource } from '../state/chatSources'
 import { contentRows, useContentSearch } from '../state/contentSearch'
 import { arrangePinned, moved, usePinnedOrder } from '../state/pinnedOrder'
 import { gateway } from '../gateway'
+import type { HostBadge, OtherChatRow } from '../state/keptHosts'
+import { HostBadgeMark } from './CombinedDashboards'
 
 const FILTERS: { value: ChatFilter; label: () => string }[] = [
   { value: 'all', label: () => t('All') },
@@ -75,6 +77,10 @@ interface Props {
   /** Open Beside: the row opens and the chat on screen stays beside it; only in a window wide enough for both. */
   onOpenBeside?: (row: ChatRow) => void
   canOpenBeside?: (row: ChatRow) => boolean
+  /** Combined dashboards: the other hosts' chats, only in All, each opening through a switch. */
+  otherRows?: OtherChatRow[]
+  badgeFor?: (url: string) => HostBadge | null
+  onOpenOther?: (row: OtherChatRow) => void
 }
 
 export interface MoveTarget {
@@ -86,6 +92,10 @@ export interface MoveTarget {
 /** Profiles In messages asks at most, one request each. */
 const MAX_SEARCH_PROFILES = 8
 const NONE: ReadonlySet<string> = new Set()
+const NO_ROWS: OtherChatRow[] = []
+/** Grouped by profile, another host's section shows its newest five until Show more. */
+const OTHER_HOST_ROWS = 5
+const isOther = (row: ChatRow): row is OtherChatRow => typeof (row as Partial<OtherChatRow>).host === 'string'
 const searchHttp = (path: string) => gateway.http('GET', path)
 const prefsHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
 
@@ -118,7 +128,10 @@ export function ChatList({
   moveTargets,
   onMove,
   onOpenBeside,
-  canOpenBeside
+  canOpenBeside,
+  otherRows = NO_ROWS,
+  badgeFor,
+  onOpenOther
 }: Props) {
   const [query, setQuery] = useState('')
   const [menu, setMenu] = useState<{ row: ChatRow; x: number; y: number } | null>(null)
@@ -194,7 +207,12 @@ export function ChatList({
     const marked = marks ? filterRows(inProfile, isDone || !DONE_FILTERS.some(f => f.value === filter) ? filter : 'all', marks, runningIds, waitingIds, isDone) : inProfile
     const sourced = source ? marked.filter(r => underSource(r, source)) : marked
     const filtered = q ? sourced.filter(r => `${r.title} ${r.preview ?? ''}`.toLowerCase().includes(q)) : sourced
-    const sections = sectionRows(filtered)
+    // Another combined host's chats, only in All with no filter: found by title or by the host's name.
+    const others =
+      !profile && filter === 'all' && !source
+        ? otherRows.filter(r => !q || `${r.title} ${r.preview ?? ''} ${badgeFor?.(r.host)?.name ?? ''}`.toLowerCase().includes(q))
+        : []
+    const sections = sectionRows(grouped ? filtered : [...filtered, ...others])
     // The Pinned section in the person's order, arranged from every pinned chat the profile shown has.
     const pinned = arrangePinned(sectionRows(inProfile.filter(r => r.pinned))[0]?.rows ?? [], pinOrder.orders)
     const shown = new Set(filtered.map(r => r.id))
@@ -211,8 +229,23 @@ export function ChatList({
           }
         ).map(group => ({ title: profileTitle(group.profile), rows: group.rows, profile: group.profile, hidden: group.hidden, extra: group.extra }))
       : sections.map(section => (section.rows[0]?.pinned ? { ...section, rows: pinned.filter(r => shown.has(r.id)) } : section))
+    if (grouped) {
+      // A section per other host, after this host's profiles.
+      for (const host of [...new Set(others.map(r => r.host))]) {
+        const key = `host:${host}`
+        const all = others.filter(r => r.host === host).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))
+        const capped = !q && !showingAll.has(key) && all.length > OTHER_HOST_ROWS
+        arranged.push({
+          title: badgeFor?.(host)?.name ?? host,
+          rows: capped ? all.slice(0, OTHER_HOST_ROWS) : all,
+          profile: key,
+          hidden: capped ? all.length - OTHER_HOST_ROWS : 0,
+          extra: !capped && !q && all.length > OTHER_HOST_ROWS ? all.length - OTHER_HOST_ROWS : 0
+        })
+      }
+    }
     return { sections: arranged, listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined, pinnedSection: pinned }
-  }, [rows, query, profile, marks, filter, runningIds, waitingIds, isDone, source, pinOrder.orders, grouped, showingAll, selectedId, bots, botNames, allLeftOut])
+  }, [rows, query, profile, marks, filter, runningIds, waitingIds, isDone, source, pinOrder.orders, grouped, showingAll, selectedId, bots, botNames, allLeftOut, otherRows, badgeFor])
   /**
    * The pins a pinned row moves among: the Pinned section, or grouped by
    * profile its own section's, so a move there orders only that profile's
@@ -373,12 +406,35 @@ export function ChatList({
             {section.profile ? (
               <button className="sect sect-profile" aria-expanded={!closedSections.includes(section.profile)} onClick={() => toggleSection(section.profile!)}>
                 <Icon name="chevronDown" className={closedSections.includes(section.profile) ? 'closed' : undefined} />
+                {section.profile.startsWith('host:') && badgeFor?.(section.profile.slice(5)) ? <HostBadgeMark badge={badgeFor(section.profile.slice(5))!} /> : null}
                 {section.title}
               </button>
             ) : (
               <div className="sect">{section.title}</div>
             )}
             {(section.profile && closedSections.includes(section.profile) ? [] : section.rows).map(row => {
+              if (isOther(row)) {
+                const badge = badgeFor?.(row.host) ?? null
+                return (
+                  <div key={`${row.host}\n${row.id}`} className="row-wrap">
+                    <button className="row" onClick={() => onOpenOther?.(row)}>
+                      <span className="row-top">
+                        <span className="row-title">
+                          {badge ? <HostBadgeMark badge={badge} /> : null}
+                          {row.title}
+                        </span>
+                        <span className="meta row-time">{timeLabel(row.activeAt)}</span>
+                      </span>
+                      {row.preview || (row.profile && row.profile !== 'default') ? (
+                        <span className="meta">
+                          {row.profile && row.profile !== 'default' ? `${row.profile} · ` : ''}
+                          {row.preview ?? ''}
+                        </span>
+                      ) : null}
+                    </button>
+                  </div>
+                )
+              }
               const waits = waitingIds.has(row.id)
               const running = !waits && runningIds.has(row.id)
               return (

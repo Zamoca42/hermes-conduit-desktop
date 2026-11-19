@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { HostSummary, KeptHost, KeptHostState } from '../../../shared/ipc'
 import { t } from '../../../shared/i18n'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
+import { CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
 
 export const keptStateLabel = (state: KeptHostState): string =>
   state === 'live'
@@ -175,5 +176,85 @@ export function takeOpenAfterSwitch(host: string): WaitingRow | null {
   if (!pending || pending.host !== host) return null
   const row = pending.row
   pending = null
+  return row
+}
+
+/** A chat on another combined host: it only opens, through a switch. */
+export type OtherChatRow = ChatRow & { host: string }
+
+/** How often the other hosts' chats are read while the window is on screen, at most (the phone's minute). */
+export const KEPT_CHATS_POLL_MS = 60_000
+
+/**
+ * Every live kept host's newest chats (one page of the list, every profile),
+ * read once a minute while the window is on screen. A failed read keeps what
+ * the host showed; a host let go shows nothing more.
+ */
+export function useKeptChats(kept: readonly KeptHost[], on: boolean): OtherChatRow[] {
+  const [rows, setRows] = useState<OtherChatRow[]>([])
+  const byHost = useRef(new Map<string, OtherChatRow[]>())
+  const live = on
+    ? kept
+        .filter(h => h.state === 'live')
+        .map(h => h.url)
+        .join('\n')
+    : ''
+
+  useEffect(() => {
+    const urls = live ? live.split('\n') : []
+    for (const url of [...byHost.current.keys()]) if (!urls.includes(url)) byHost.current.delete(url)
+    const show = () => setRows([...byHost.current.values()].flat())
+    show()
+    if (!urls.length) return
+    let stopped = false
+    const read = async () => {
+      if (document.hidden) return
+      await Promise.all(
+        urls.map(async url => {
+          const outcome = await window.conduit.keptHttp(url, CHAT_LIST_PATH)
+          if (!outcome.ok || stopped) return
+          byHost.current.set(
+            url,
+            rowsFromResponse(outcome.result).map(row => ({ ...row, pinned: false, host: url }))
+          )
+        })
+      )
+      if (!stopped) show()
+    }
+    void read()
+    const timer = setInterval(() => void read(), KEPT_CHATS_POLL_MS)
+    const onVisible = () => {
+      if (!document.hidden) void read()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      stopped = true
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [live])
+
+  return rows
+}
+
+/** Other hosts' chats this list doesn't hold already: one Hermes saved at two addresses lists a chat once, as this host's. */
+export function otherHostsChats(other: readonly OtherChatRow[], here: readonly ChatRow[] | null): OtherChatRow[] {
+  const ids = new Set((here ?? []).map(r => r.id))
+  const seen = new Set<string>()
+  return other.filter(r => !ids.has(r.id) && !seen.has(r.id) && !!seen.add(r.id))
+}
+
+/** A chat opened on another host: the switch remounts the window, and the new host's window opens it. */
+let pendingChat: { host: string; row: ChatRow } | null = null
+
+export function openChatAfterSwitch(row: OtherChatRow): void {
+  const { host, ...rest } = row
+  pendingChat = { host, row: rest }
+}
+
+export function takeChatAfterSwitch(host: string): ChatRow | null {
+  if (!pendingChat || pendingChat.host !== host) return null
+  const row = pendingChat.row
+  pendingChat = null
   return row
 }
