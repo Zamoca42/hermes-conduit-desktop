@@ -76,6 +76,7 @@ const paths = {
   chevronDown: <path d="M5 9l7 7 7-7" />,
   send: <path d="M12 19V5M6 11l6-6 6 6" />,
   stop: <rect x="7" y="7" width="10" height="10" rx="2" />,
+  speaker: <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11" />,
   code: <path d="M8 8l-4 4 4 4M16 8l4 4-4 4" />,
   bell: <path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15zM10 20a2 2 0 004 0" />,
   file: <path d="M7 3h7l4 4v14H7zM14 3v4h4" />,

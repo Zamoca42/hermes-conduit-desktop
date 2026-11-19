@@ -30,8 +30,14 @@ export interface MessageMenuItem {
   onSelect: () => void
 }
 
-/** Copy, and ⋯ with the rest (Quote, Retry…), under a message on hover. */
-export function MessageActions({ copy, menu = [], react }: { copy: string; menu?: MessageMenuItem[]; react?: ReactControls }) {
+/** Read aloud's button in a reply's row: playing turns it into Stop. */
+export interface ReadControls {
+  reading: boolean
+  onToggle: () => void
+}
+
+/** React, Copy, Read aloud, and ⋯ with the rest (Quote, Retry…), under a message on hover: the phone's reply row. */
+export function MessageActions({ copy, menu = [], react, read }: { copy: string; menu?: MessageMenuItem[]; react?: ReactControls; read?: ReadControls }) {
   const [copied, setCopied] = useState(false)
   const [open, setOpen] = useState(false)
   const [picking, setPicking] = useState(false)
@@ -64,7 +70,7 @@ export function MessageActions({ copy, menu = [], react }: { copy: string; menu?
   }, [picking])
   const mine = react?.reactions.find(r => r.author === 'user')?.emoji
   return (
-    <div className={`message-actions${open || picking ? ' open' : ''}`}>
+    <div className={`message-actions${open || picking || read?.reading ? ' open' : ''}`}>
       {react ? (
         <span className="message-more">
           <button
@@ -114,6 +120,17 @@ export function MessageActions({ copy, menu = [], react }: { copy: string; menu?
       >
         <Icon name={copied ? 'check' : 'copy'} />
       </button>
+      {read ? (
+        <button
+          className={`message-action${read.reading ? ' active' : ''}`}
+          aria-label={read.reading ? t('Stop reading response') : t('Read Aloud')}
+          title={read.reading ? t('Stop reading response') : t('Read Aloud')}
+          aria-pressed={read.reading}
+          onClick={read.onToggle}
+        >
+          <Icon name={read.reading ? 'stop' : 'speaker'} />
+        </button>
+      ) : null}
       {menu.length ? (
         <span className="message-more">
           <button
@@ -576,9 +593,9 @@ function ReplyActions({ messageKey, text, menu, react }: { messageKey: string; t
   const reading = useReadingKey() === messageKey
   const profile = useContext(PictureProfile)
   const [problem, setProblem] = useState<string | null>(null)
-  const read = {
-    label: reading ? t('Stop reading response') : t('Read Aloud'),
-    onSelect: () => {
+  const read: ReadControls = {
+    reading,
+    onToggle: () => {
       setProblem(null)
       if (reading) return stopReading()
       readAloud(messageKey, text, profile).catch(e => setProblem(e instanceof Error ? e.message : String(e)))
@@ -586,7 +603,7 @@ function ReplyActions({ messageKey, text, menu, react }: { messageKey: string; t
   }
   return (
     <>
-      <MessageActions copy={copyableReply(text)} menu={[...menu, read]} react={react} />
+      <MessageActions copy={copyableReply(text)} menu={menu} react={react} read={read} />
       {problem ? (
         <div className="read-problem" role="status">
           {t("Hermes couldn't read this aloud: {error}", { error: problem })}

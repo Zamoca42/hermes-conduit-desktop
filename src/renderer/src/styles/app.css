@@ -2600,6 +2600,10 @@ html[data-window='quick'] body {
   margin-bottom: -10px;
 }
 
+.message-action.active {
+  color: var(--accent);
+}
+
 .message-action {
   border: 0;
   background: transparent;
