@@ -2774,6 +2774,36 @@
     "zh-Hans": "日历",
     "zh-Hant": "行事曆"
   },
+  "Call about approvals and questions": {
+    "de": "Bei Freigaben und Fragen anrufen",
+    "es": "Llamar por aprobaciones y preguntas",
+    "fr": "Appeler pour les approbations et les questions",
+    "id": "Telepon untuk persetujuan dan pertanyaan",
+    "it": "Chiama per approvazioni e domande",
+    "ja": "承認や質問があるときに電話",
+    "ko": "승인과 질문이 있을 때 전화",
+    "pl": "Dzwoń w sprawie zgód i pytań",
+    "pt-BR": "Ligar sobre aprovações e perguntas",
+    "ru": "Звонить по одобрениям и вопросам",
+    "tr": "Onaylar ve sorular için ara",
+    "zh-Hans": "需要批准或回答时来电",
+    "zh-Hant": "需要核准或回答時來電"
+  },
+  "Call when I ask": {
+    "de": "Anrufen, wenn ich darum bitte",
+    "es": "Llamar cuando lo pida",
+    "fr": "Appeler quand je le demande",
+    "id": "Telepon saat saya minta",
+    "it": "Chiama quando lo chiedo",
+    "ja": "頼んだときに電話",
+    "ko": "요청할 때 전화",
+    "pl": "Dzwoń, gdy poproszę",
+    "pt-BR": "Ligar quando eu pedir",
+    "ru": "Звонить по моей просьбе",
+    "tr": "İstediğimde ara",
+    "zh-Hans": "我要求时来电",
+    "zh-Hant": "我要求時來電"
+  },
   "Calls answer with {model} and hand the work to Hermes.": {
     "de": "Anrufe antworten mit {model} und übergeben die Arbeit an Hermes.",
     "es": "Las llamadas responden con {model} y pasan el trabajo a Hermes.",
@@ -2803,6 +2833,36 @@
     "tr": "Hermes'ten aramalar",
     "zh-Hans": "Hermes 来电",
     "zh-Hant": "Hermes 來電"
+  },
+  "Calls per day": {
+    "de": "Anrufe pro Tag",
+    "es": "Llamadas por día",
+    "fr": "Appels par jour",
+    "id": "Panggilan per hari",
+    "it": "Chiamate al giorno",
+    "ja": "1日あたりの通話数",
+    "ko": "하루 통화 수",
+    "pl": "Połączenia dziennie",
+    "pt-BR": "Chamadas por dia",
+    "ru": "Звонков в день",
+    "tr": "Günde arama",
+    "zh-Hans": "每天通话次数",
+    "zh-Hant": "每天通話次數"
+  },
+  "Calls per hour": {
+    "de": "Anrufe pro Stunde",
+    "es": "Llamadas por hora",
+    "fr": "Appels par heure",
+    "id": "Panggilan per jam",
+    "it": "Chiamate all’ora",
+    "ja": "1時間あたりの通話数",
+    "ko": "시간당 통화 수",
+    "pl": "Połączenia na godzinę",
+    "pt-BR": "Chamadas por hora",
+    "ru": "Звонков в час",
+    "tr": "Saatte arama",
+    "zh-Hans": "每小时通话次数",
+    "zh-Hant": "每小時通話次數"
   },
   "Calm": {
     "de": "Ruhig",
@@ -5128,6 +5188,21 @@
     "tr": "Bu panelin bildirim eklentisine ulaşılamadı. Yeniden denemek için bu sayfayı tekrar açın.",
     "zh-Hans": "无法连接此仪表板的通知插件。重新打开此页面即可重试。",
     "zh-Hant": "無法連線到此儀表板的通知外掛程式。請再次打開此頁面以重試。"
+  },
+  "Couldn't read Hermes' call settings.": {
+    "de": "Die Anrufeinstellungen von Hermes konnten nicht gelesen werden.",
+    "es": "No se pudo leer la configuración de llamadas de Hermes.",
+    "fr": "Impossible de lire les réglages d'appel d'Hermes.",
+    "id": "Tidak dapat membaca pengaturan panggilan Hermes.",
+    "it": "Impossibile leggere le impostazioni delle chiamate di Hermes.",
+    "ja": "Hermesの通話設定を読み込めませんでした。",
+    "ko": "Hermes 통화 설정을 읽을 수 없었어요.",
+    "pl": "Nie udało się odczytać ustawień połączeń Hermesa.",
+    "pt-BR": "Não foi possível ler os ajustes de chamadas do Hermes.",
+    "ru": "Не удалось прочитать настройки звонков Hermes.",
+    "tr": "Hermes'in arama ayarları okunamadı.",
+    "zh-Hans": "无法读取 Hermes 的来电设置。",
+    "zh-Hant": "無法讀取 Hermes 的來電設定。"
   },
   "Couldn't read Pulse": {
     "de": "Pulse konnte nicht gelesen werden",
@@ -8339,6 +8414,21 @@
     "zh-Hans": "适用于位于 Cloudflare Access 或其他检查请求头的代理后面的控制台。它们只会通过 HTTPS 发送到此地址。",
     "zh-Hant": "適用於位於 Cloudflare Access 或其他檢查標頭的代理伺服器後面的控制台。它們只會透過 HTTPS 傳送到此位址。"
   },
+  "For example: only if production is down or a deploy fails. Never before 9 am.": {
+    "de": "Zum Beispiel: nur wenn die Produktion ausfällt oder ein Deploy fehlschlägt. Nie vor 9 Uhr.",
+    "es": "Por ejemplo: solo si producción cae o falla un despliegue. Nunca antes de las 9.",
+    "fr": "Par exemple : seulement si la production tombe ou si un déploiement échoue. Jamais avant 9 h.",
+    "id": "Contoh: hanya jika produksi mati atau deploy gagal. Jangan sebelum pukul 9 pagi.",
+    "it": "Ad esempio: solo se la produzione è giù o un deploy fallisce. Mai prima delle 9.",
+    "ja": "例：本番環境が落ちたときやデプロイに失敗したときだけ。午前9時より前は不可。",
+    "ko": "예: 프로덕션이 다운되거나 배포가 실패했을 때만. 오전 9시 전에는 안 됨.",
+    "pl": "Na przykład: tylko gdy produkcja leży albo wdrożenie się nie uda. Nigdy przed 9:00.",
+    "pt-BR": "Por exemplo: só se a produção cair ou um deploy falhar. Nunca antes das 9h.",
+    "ru": "Например: только если упал прод или не прошёл деплой. Не раньше 9 утра.",
+    "tr": "Örneğin: yalnızca canlı sistem çökerse ya da bir dağıtım başarısız olursa. Sabah 9'dan önce asla.",
+    "zh-Hans": "例如：只在生产环境宕机或部署失败时。早上 9 点前不要打。",
+    "zh-Hant": "例如：只在正式環境當機或部署失敗時。早上 9 點前不要打。"
+  },
   "For the morning brief": {
     "de": "Für das Morgenbriefing",
     "es": "Para el resumen matutino",
@@ -9464,6 +9554,51 @@
     "zh-Hans": "Hermes 请求确认：{question}",
     "zh-Hant": "Hermes 請求確認：{question}"
   },
+  "Hermes calls when it has waited a minute for your OK or an answer, or when a request fails. In a live call you can answer out loud.": {
+    "de": "Hermes ruft an, wenn er eine Minute auf dein OK oder eine Antwort gewartet hat oder wenn eine Anfrage fehlschlägt. In einem Live-Anruf kannst du laut antworten.",
+    "es": "Hermes llama cuando lleva un minuto esperando tu aprobación o una respuesta, o cuando falla una solicitud. En una llamada en vivo puedes responder en voz alta.",
+    "fr": "Hermes appelle quand il attend votre accord ou une réponse depuis une minute, ou quand une demande échoue. Pendant un appel en direct, vous pouvez répondre à voix haute.",
+    "id": "Hermes menelepon saat sudah menunggu persetujuan atau jawaban Anda selama satu menit, atau saat permintaan gagal. Dalam panggilan langsung, Anda bisa menjawab dengan suara.",
+    "it": "Hermes chiama quando aspetta da un minuto il tuo OK o una risposta, o quando una richiesta non va a buon fine. In una chiamata live puoi rispondere a voce.",
+    "ja": "承認や回答を1分待っても返事がないとき、またはリクエストが失敗したときにHermesが電話します。ライブ通話では声で答えられます。",
+    "ko": "승인이나 답변을 1분 동안 기다렸거나 요청이 실패하면 Hermes가 전화해요. 라이브 통화에서는 말로 답할 수 있어요.",
+    "pl": "Hermes dzwoni, gdy przez minutę czeka na Twoją zgodę lub odpowiedź albo gdy prośba się nie powiedzie. W połączeniu Live możesz odpowiedzieć na głos.",
+    "pt-BR": "O Hermes liga quando já esperou um minuto pela sua aprovação ou resposta, ou quando um pedido falha. Em uma chamada ao vivo, você pode responder em voz alta.",
+    "ru": "Hermes звонит, если минуту ждёт вашего одобрения или ответа, или если запрос не удался. В Live-звонке можно ответить вслух.",
+    "tr": "Hermes, onayınızı ya da yanıtınızı bir dakika beklediğinde veya bir istek başarısız olduğunda arar. Canlı aramada sesli yanıt verebilirsiniz.",
+    "zh-Hans": "Hermes 等你批准或回答满一分钟，或请求失败时，会给你打电话。在实时通话中可以直接开口回答。",
+    "zh-Hant": "Hermes 等你核准或回答滿一分鐘，或請求失敗時，會打電話給你。在即時通話中可以直接開口回答。"
+  },
+  "Hermes calls when it has waited for your OK or an answer, or when a request fails. In a live call you can answer out loud.": {
+    "de": "Hermes ruft an, wenn er auf dein OK oder eine Antwort gewartet hat oder wenn eine Anfrage fehlschlägt. In einem Live-Anruf kannst du laut antworten.",
+    "es": "Hermes llama cuando lleva un rato esperando tu aprobación o una respuesta, o cuando falla una solicitud. En una llamada en vivo puedes responder en voz alta.",
+    "fr": "Hermes appelle quand il attend votre accord ou une réponse, ou quand une demande échoue. Pendant un appel en direct, vous pouvez répondre à voix haute.",
+    "id": "Hermes menelepon saat sudah menunggu persetujuan atau jawaban Anda, atau saat permintaan gagal. Dalam panggilan langsung, Anda bisa menjawab dengan suara.",
+    "it": "Hermes chiama quando aspetta il tuo OK o una risposta, o quando una richiesta non va a buon fine. In una chiamata live puoi rispondere a voce.",
+    "ja": "承認や回答を待っても返事がないとき、またはリクエストが失敗したときにHermesが電話します。ライブ通話では声で答えられます。",
+    "ko": "승인이나 답변을 기다렸거나 요청이 실패하면 Hermes가 전화해요. 라이브 통화에서는 말로 답할 수 있어요.",
+    "pl": "Hermes dzwoni, gdy czeka na Twoją zgodę lub odpowiedź albo gdy prośba się nie powiedzie. W połączeniu Live możesz odpowiedzieć na głos.",
+    "pt-BR": "O Hermes liga quando espera pela sua aprovação ou resposta, ou quando um pedido falha. Em uma chamada ao vivo, você pode responder em voz alta.",
+    "ru": "Hermes звонит, если ждёт вашего одобрения или ответа, или если запрос не удался. В Live-звонке можно ответить вслух.",
+    "tr": "Hermes, onayınızı ya da yanıtınızı beklediğinde veya bir istek başarısız olduğunda arar. Canlı aramada sesli yanıt verebilirsiniz.",
+    "zh-Hans": "Hermes 等待你批准或回答时，或请求失败时，会给你打电话。在实时通话中可以直接开口回答。",
+    "zh-Hant": "Hermes 等待你核准或回答時，或請求失敗時，會打電話給你。在即時通話中可以直接開口回答。"
+  },
+  "Hermes can call me": {
+    "de": "Hermes darf mich anrufen",
+    "es": "Hermes puede llamarme",
+    "fr": "Hermes peut m'appeler",
+    "id": "Hermes boleh menelepon saya",
+    "it": "Hermes può chiamarmi",
+    "ja": "Hermesからの電話を許可",
+    "ko": "Hermes가 나에게 전화할 수 있음",
+    "pl": "Hermes może do mnie dzwonić",
+    "pt-BR": "O Hermes pode me ligar",
+    "ru": "Hermes может мне звонить",
+    "tr": "Hermes beni arayabilir",
+    "zh-Hans": "允许 Hermes 给我打电话",
+    "zh-Hant": "允許 Hermes 打電話給我"
+  },
   "Hermes can't read this folder.": {
     "de": "Hermes kann diesen Ordner nicht lesen.",
     "es": "Hermes no puede leer esta carpeta.",
@@ -9568,6 +9703,21 @@
     "tr": "Hermes bunu yazıya dökemedi: {error}",
     "zh-Hans": "Hermes 无法转写这段内容：{error}",
     "zh-Hant": "Hermes 無法轉寫這段內容：{error}"
+  },
+  "Hermes decides when to call": {
+    "de": "Hermes entscheidet, wann er anruft",
+    "es": "Hermes decide cuándo llamar",
+    "fr": "Hermes décide quand appeler",
+    "id": "Hermes memutuskan kapan menelepon",
+    "it": "Hermes decide quando chiamare",
+    "ja": "電話するタイミングをHermesに任せる",
+    "ko": "전화할 때를 Hermes가 결정",
+    "pl": "Hermes decyduje, kiedy dzwonić",
+    "pt-BR": "O Hermes decide quando ligar",
+    "ru": "Hermes сам решает, когда звонить",
+    "tr": "Ne zaman arayacağına Hermes karar verir",
+    "zh-Hans": "由 Hermes 决定何时来电",
+    "zh-Hant": "由 Hermes 決定何時來電"
   },
   "Hermes did not accept the model switch.": {
     "de": "Hermes hat den Modellwechsel nicht angenommen.",
@@ -9914,6 +10064,21 @@
     "zh-Hans": "Hermes 将插件设置保存在主机的默认配置文件中。切换到该配置文件即可更改。",
     "zh-Hant": "Hermes 將外掛設定保存在主機的預設設定檔中。切換到該設定檔即可變更。"
   },
+  "Hermes may also call on its own when news can't wait, within your limits. It never calls for routine updates.": {
+    "de": "Hermes darf auch von sich aus anrufen, wenn Neuigkeiten nicht warten können, im Rahmen deiner Limits. Für Routine-Updates ruft er nie an.",
+    "es": "Hermes también puede llamarte por su cuenta cuando una noticia no puede esperar, dentro de tus límites. Nunca llama por novedades rutinarias.",
+    "fr": "Hermes peut aussi appeler de lui-même quand une nouvelle ne peut pas attendre, dans le respect de vos limites. Il n'appelle jamais pour des mises à jour courantes.",
+    "id": "Hermes juga boleh menelepon atas inisiatifnya sendiri saat ada kabar yang tidak bisa menunggu, sesuai batas Anda. Hermes tidak pernah menelepon untuk kabar rutin.",
+    "it": "Hermes può anche chiamarti di sua iniziativa quando una notizia non può aspettare, entro i tuoi limiti. Non chiama mai per aggiornamenti di routine.",
+    "ja": "待てない知らせがあるときは、上限の範囲内でHermesが自分の判断で電話することもあります。定期的な報告で電話することはありません。",
+    "ko": "기다릴 수 없는 소식이 있으면 Hermes가 한도 안에서 스스로 전화할 수도 있어요. 일상적인 소식으로는 전화하지 않아요.",
+    "pl": "Hermes może też zadzwonić sam, gdy wiadomość nie może czekać, w ramach Twoich limitów. Nigdy nie dzwoni z rutynowymi informacjami.",
+    "pt-BR": "O Hermes também pode ligar por conta própria quando uma notícia não pode esperar, dentro dos seus limites. Ele nunca liga para atualizações de rotina.",
+    "ru": "Hermes может позвонить и сам, если новость не терпит отлагательств, в пределах ваших лимитов. Ради обычных обновлений он не звонит.",
+    "tr": "Bekleyemeyecek bir haber olduğunda Hermes, sınırlarınız içinde kendiliğinden de arayabilir. Rutin güncellemeler için asla aramaz.",
+    "zh-Hans": "有等不及的消息时，Hermes 也可以在你的限制范围内主动来电。它绝不会为例行更新打电话。",
+    "zh-Hant": "有等不及的消息時，Hermes 也可以在你的限制範圍內主動來電。它絕不會為例行更新打電話。"
+  },
   "Hermes needs a note on what was done before {title} can be marked done. Open the task, write it, and choose Mark done.": {
     "de": "Hermes braucht eine Notiz dazu, was erledigt wurde, bevor {title} als erledigt markiert werden kann. Öffne die Aufgabe, schreib sie und wähle „Als erledigt markieren“.",
     "es": "Hermes necesita una nota sobre lo que se hizo antes de marcar {title} como hecha. Abre la tarea, escríbela y elige Marcar como hecha.",
@@ -10003,6 +10168,21 @@
     "tr": "Hermes yeni sürümü çeker ve yeniden başlar. Geri gelene kadar sohbetler ve mesajlaşma kanalları duraklar.",
     "zh-Hans": "Hermes 会拉取新版本并重启。在恢复之前，聊天和消息渠道会暂停。",
     "zh-Hant": "Hermes 會取得新版本並重新啟動。在恢復之前，聊天和訊息頻道會暫停。"
+  },
+  "Hermes reads this before each call it decides to make, and calls only if the news fits. Calls you ask for don't depend on it.": {
+    "de": "Hermes liest das vor jedem Anruf, den er selbst beschließt, und ruft nur an, wenn die Neuigkeit dazu passt. Anrufe, um die du bittest, hängen nicht davon ab.",
+    "es": "Hermes lo lee antes de cada llamada que decide hacer y solo llama si la noticia encaja. Las llamadas que tú pides no dependen de esto.",
+    "fr": "Hermes le lit avant chaque appel qu'il décide de passer, et n'appelle que si la nouvelle y correspond. Les appels que vous demandez n'en dépendent pas.",
+    "id": "Hermes membaca ini sebelum setiap panggilan yang ia putuskan sendiri, dan hanya menelepon jika kabarnya sesuai. Panggilan yang Anda minta tidak bergantung pada ini.",
+    "it": "Hermes lo legge prima di ogni chiamata che decide di fare e chiama solo se la notizia corrisponde. Le chiamate che chiedi tu non ne dipendono.",
+    "ja": "Hermesは自分の判断で電話する前に毎回これを読み、内容が当てはまる場合だけ電話します。あなたが頼んだ電話はこれに左右されません。",
+    "ko": "Hermes는 스스로 전화하기 전에 매번 이 내용을 읽고, 소식이 해당할 때만 전화해요. 직접 요청한 전화는 이와 상관없어요.",
+    "pl": "Hermes czyta to przed każdym połączeniem, o którym decyduje sam, i dzwoni tylko wtedy, gdy wiadomość pasuje. Połączenia, o które prosisz, od tego nie zależą.",
+    "pt-BR": "O Hermes lê isto antes de cada ligação que decide fazer e só liga se a notícia se encaixar. As ligações que você pede não dependem disso.",
+    "ru": "Hermes читает это перед каждым звонком, который решает сделать сам, и звонит, только если новость подходит. Звонки, о которых вы просите, от этого не зависят.",
+    "tr": "Hermes, kendi karar verdiği her aramadan önce bunu okur ve yalnızca haber buna uyuyorsa arar. Sizin istediğiniz aramalar buna bağlı değildir.",
+    "zh-Hans": "Hermes 每次决定主动来电前都会先读这段说明，只有消息符合时才会打电话。你要求的来电不受它影响。",
+    "zh-Hant": "Hermes 每次決定主動來電前都會先讀這段說明，只有消息符合時才會打電話。你要求的來電不受它影響。"
   },
   "Hermes refused the settings.": {
     "de": "Hermes hat die Einstellungen abgelehnt.",
@@ -12298,6 +12478,21 @@
     "tr": "Kullanılabilir modeller yükleniyor…",
     "zh-Hans": "正在加载可用模型…",
     "zh-Hant": "正在載入可用的模型…"
+  },
+  "Loading call settings…": {
+    "de": "Anrufeinstellungen werden geladen…",
+    "es": "Cargando la configuración de llamadas…",
+    "fr": "Chargement des réglages d'appel…",
+    "id": "Memuat pengaturan panggilan…",
+    "it": "Caricamento delle impostazioni delle chiamate…",
+    "ja": "通話設定を読み込み中…",
+    "ko": "통화 설정을 불러오는 중…",
+    "pl": "Wczytywanie ustawień połączeń…",
+    "pt-BR": "Carregando os ajustes de chamadas…",
+    "ru": "Загрузка настроек звонков…",
+    "tr": "Arama ayarları yükleniyor…",
+    "zh-Hans": "正在载入来电设置…",
+    "zh-Hant": "正在載入來電設定…"
   },
   "Loading chats…": {
     "de": "Chats werden geladen…",
@@ -16289,6 +16484,21 @@
     "zh-Hans": "密码与登录信息",
     "zh-Hant": "密碼與登入資訊"
   },
+  "Past a limit, a finished job sends its usual notification instead of calling. These settings are this profile's, kept on your Hermes host.": {
+    "de": "Über einem Limit schickt ein fertiger Job seine übliche Mitteilung, statt anzurufen. Diese Einstellungen gehören zu diesem Profil und liegen auf deinem Hermes-Host.",
+    "es": "Al superar un límite, un trabajo terminado envía su notificación habitual en lugar de llamar. Estos ajustes son de este perfil y se guardan en tu host de Hermes.",
+    "fr": "Au-delà d'une limite, un job terminé envoie sa notification habituelle au lieu d'appeler. Ces réglages sont propres à ce profil et conservés sur votre hôte Hermes.",
+    "id": "Jika melewati batas, pekerjaan yang selesai mengirim pemberitahuan biasa alih-alih menelepon. Pengaturan ini milik profil ini dan disimpan di host Hermes Anda.",
+    "it": "Oltre un limite, un job terminato invia la solita notifica invece di chiamare. Queste impostazioni sono di questo profilo e restano sul tuo host Hermes.",
+    "ja": "上限を超えると、完了したジョブは電話の代わりに通常の通知を送ります。これらはこのプロファイルの設定で、Hermesホストに保存されます。",
+    "ko": "한도를 넘으면 끝난 작업은 전화 대신 평소 알림을 보내요. 이 설정은 이 프로필의 설정이며 Hermes 호스트에 저장돼요.",
+    "pl": "Po przekroczeniu limitu zakończone zlecenie wysyła zwykłe powiadomienie zamiast dzwonić. Te ustawienia dotyczą tego profilu i są przechowywane na Twoim hoście Hermes.",
+    "pt-BR": "Acima de um limite, um trabalho concluído envia a notificação de sempre em vez de ligar. Estes ajustes são deste perfil e ficam guardados no seu host Hermes.",
+    "ru": "Сверх лимита завершённое задание присылает обычное уведомление вместо звонка. Эти настройки относятся к этому профилю и хранятся на вашем хосте Hermes.",
+    "tr": "Bir sınır aşılınca, biten iş arama yerine her zamanki bildirimini gönderir. Bu ayarlar bu profile aittir ve Hermes ana makinenizde saklanır.",
+    "zh-Hans": "超过限制后，完成的任务会发送平常的通知，而不是打电话。这些设置属于此档案，保存在你的 Hermes 主机上。",
+    "zh-Hant": "超過限制後，完成的工作會傳送平常的通知，而不是打電話。這些設定屬於此設定檔，儲存在你的 Hermes 主機上。"
+  },
   "Paste API key": {
     "de": "API-Schlüssel einfügen",
     "es": "Pega la clave de API",
@@ -20174,6 +20384,21 @@
     "zh-Hans": "说出你选择的编号，可以选多个，或用你自己的话回答。",
     "zh-Hant": "說出你選擇的編號，可以選多個，或用你自己的話回答。"
   },
+  "Say “call me when it's done” during a live call, or ask Hermes in a chat to call you. Hermes calls about that job once the call has ended; if it finishes while you're still talking, you hear about it in the call instead.": {
+    "de": "Sag während eines Live-Anrufs „Ruf mich an, wenn es fertig ist“ oder bitte Hermes in einem Chat, dich anzurufen. Hermes ruft wegen dieses Jobs an, sobald der Anruf beendet ist. Wird er fertig, während ihr noch sprecht, erfährst du es stattdessen im Anruf.",
+    "es": "Di «llámame cuando esté listo» durante una llamada en vivo, o pídele a Hermes en un chat que te llame. Hermes te llama por ese trabajo cuando termine la llamada; si termina mientras siguen hablando, te enteras en la llamada.",
+    "fr": "Dites « appelle-moi quand c'est fini » pendant un appel en direct, ou demandez à Hermes de vous appeler dans une discussion. Hermes vous appelle au sujet de ce job une fois l'appel terminé ; s'il se termine pendant que vous parlez encore, vous l'apprenez dans l'appel.",
+    "id": "Ucapkan “telepon saya kalau sudah selesai” saat panggilan langsung, atau minta Hermes menelepon Anda di obrolan. Hermes menelepon tentang pekerjaan itu setelah panggilan berakhir; jika selesai saat Anda masih berbicara, Anda akan mendengarnya di panggilan.",
+    "it": "Durante una chiamata live, di' «chiamami quando hai finito», oppure chiedi a Hermes in una chat di chiamarti. Hermes ti chiama per quel job una volta terminata la chiamata; se finisce mentre state ancora parlando, lo saprai nella chiamata.",
+    "ja": "ライブ通話中に「終わったら電話して」と言うか、チャットでHermesに電話を頼んでください。通話が終わった後、Hermesがそのジョブについて電話します。話している間に完了した場合は、その通話の中でお知らせします。",
+    "ko": "라이브 통화 중에 “끝나면 전화해 줘”라고 말하거나, 채팅에서 Hermes에게 전화해 달라고 부탁하세요. 통화가 끝난 뒤 Hermes가 그 작업에 대해 전화해요. 아직 이야기하는 중에 끝나면 대신 통화에서 알려 드려요.",
+    "pl": "Podczas połączenia Live powiedz „zadzwoń, jak skończysz” albo poproś Hermesa na czacie, żeby do Ciebie zadzwonił. Hermes zadzwoni w sprawie tego zlecenia po zakończeniu połączenia; jeśli skończy się, gdy jeszcze rozmawiacie, usłyszysz o tym w trakcie połączenia.",
+    "pt-BR": "Diga “me liga quando terminar” durante uma chamada ao vivo, ou peça ao Hermes em um chat para ligar para você. O Hermes liga sobre esse trabalho quando a chamada terminar; se ele terminar enquanto vocês ainda conversam, você fica sabendo na própria chamada.",
+    "ru": "Скажите во время Live-звонка «позвони, когда будет готово» или попросите Hermes в чате вам позвонить. Hermes позвонит по этому заданию после окончания звонка; если оно завершится, пока вы ещё говорите, вы узнаете об этом прямо в звонке.",
+    "tr": "Canlı arama sırasında “bitince beni ara” deyin ya da bir sohbette Hermes'ten sizi aramasını isteyin. Hermes, arama bittikten sonra o iş hakkında sizi arar; siz hâlâ konuşurken biterse bunu aramada öğrenirsiniz.",
+    "zh-Hans": "在实时通话中说“完成后给我打电话”，或在聊天中请 Hermes 给你打电话。通话结束后，Hermes 会就该任务给你打电话；如果在你们还在通话时就完成了，你会直接在通话中听到结果。",
+    "zh-Hant": "在即時通話中說「完成後打電話給我」，或在聊天中請 Hermes 打電話給你。通話結束後，Hermes 會就該工作打電話給你；如果在你們還在通話時就完成了，你會直接在通話中聽到結果。"
+  },
   "Schedule": {
     "de": "Zeitplan",
     "es": "Programación",
@@ -23339,6 +23564,21 @@
     "zh-Hans": "Conduit 插件已是最新版本",
     "zh-Hant": "Conduit 外掛程式已是最新版本"
   },
+  "The Conduit plugin on your Hermes host needs an update for calls from Hermes.": {
+    "de": "Das Conduit-Plugin auf deinem Hermes-Host braucht ein Update für Anrufe von Hermes.",
+    "es": "El plugin de Conduit de tu host de Hermes necesita una actualización para las llamadas de Hermes.",
+    "fr": "Le plugin Conduit de ton hôte Hermes doit être mis à jour pour les appels de Hermes.",
+    "id": "Plugin Conduit di host Hermes Anda perlu diperbarui untuk panggilan dari Hermes.",
+    "it": "Il plugin Conduit sul tuo host Hermes va aggiornato per le chiamate da Hermes.",
+    "ja": "Hermes からの通話には、Hermes ホストの Conduit プラグインのアップデートが必要です。",
+    "ko": "Hermes의 전화를 받으려면 Hermes 호스트의 Conduit 플러그인을 업데이트해야 합니다.",
+    "pl": "Wtyczka Conduit na Twoim hoście Hermes wymaga aktualizacji, aby obsługiwać połączenia od Hermesa.",
+    "pt-BR": "O plugin do Conduit no seu host Hermes precisa de uma atualização para as chamadas do Hermes.",
+    "ru": "Для звонков от Hermes нужно обновить плагин Conduit на вашем хосте Hermes.",
+    "tr": "Hermes’ten gelen aramalar için Hermes sunucunuzdaki Conduit eklentisinin güncellenmesi gerekiyor.",
+    "zh-Hans": "要接收 Hermes 的来电，需要更新 Hermes 主机上的 Conduit 插件。",
+    "zh-Hant": "要接收 Hermes 的來電，需要更新 Hermes 主機上的 Conduit 外掛程式。"
+  },
   "The Conduit plugin on your Hermes server didn't confirm the voice you chose.": {
     "de": "Das Conduit-Plug-in auf deinem Hermes-Server hat die gewählte Stimme nicht bestätigt.",
     "es": "El plugin de Conduit de tu servidor Hermes no confirmó la voz que elegiste.",
@@ -25214,6 +25454,21 @@
     "zh-Hans": "时间",
     "zh-Hant": "時間"
   },
+  "Time between calls": {
+    "de": "Zeit zwischen Anrufen",
+    "es": "Tiempo entre llamadas",
+    "fr": "Délai entre les appels",
+    "id": "Jeda antarpanggilan",
+    "it": "Tempo tra le chiamate",
+    "ja": "通話の間隔",
+    "ko": "통화 간격",
+    "pl": "Odstęp między połączeniami",
+    "pt-BR": "Tempo entre chamadas",
+    "ru": "Интервал между звонками",
+    "tr": "Aramalar arasındaki süre",
+    "zh-Hans": "来电间隔",
+    "zh-Hant": "來電間隔"
+  },
   "Time limit per call": {
     "de": "Zeitlimit pro Anruf",
     "es": "Límite de tiempo por llamada",
@@ -25693,6 +25948,21 @@
     "tr": "Pulse'u aç",
     "zh-Hans": "打开 Pulse",
     "zh-Hant": "開啟 Pulse"
+  },
+  "Turn on notifications for this profile in Conduit on your iPhone first, in Settings under Notifications: Hermes calls you through them.": {
+    "de": "Schalte zuerst in Conduit auf deinem iPhone die Mitteilungen für dieses Profil ein, in den Einstellungen unter Mitteilungen: Hermes ruft dich über sie an.",
+    "es": "Primero activa las notificaciones de este perfil en Conduit en tu iPhone, en Ajustes > Notificaciones: Hermes te llama a través de ellas.",
+    "fr": "Active d’abord les notifications de ce profil dans Conduit sur ton iPhone, dans Réglages > Notifications : Hermes t’appelle par leur biais.",
+    "id": "Aktifkan dulu notifikasi untuk profil ini di Conduit pada iPhone Anda, di Pengaturan bagian Notifikasi: Hermes menelepon Anda melaluinya.",
+    "it": "Attiva prima le notifiche per questo profilo in Conduit sul tuo iPhone, in Impostazioni > Notifiche: Hermes ti chiama tramite queste.",
+    "ja": "まず iPhone の Conduit で、設定の「通知」からこのプロファイルの通知をオンにしてください。Hermes は通知を通じて電話をかけます。",
+    "ko": "먼저 iPhone의 Conduit에서 설정 > 알림에서 이 프로필의 알림을 켜세요. Hermes는 알림을 통해 전화를 겁니다.",
+    "pl": "Najpierw włącz powiadomienia dla tego profilu w Conduit na iPhonie, w Ustawieniach w sekcji Powiadomienia: Hermes dzwoni przez nie.",
+    "pt-BR": "Primeiro ative as notificações deste perfil no Conduit no seu iPhone, em Ajustes > Notificações: o Hermes liga para você por meio delas.",
+    "ru": "Сначала включите уведомления для этого профиля в Conduit на iPhone, в Настройках в разделе «Уведомления»: Hermes звонит через них.",
+    "tr": "Önce iPhone’unuzdaki Conduit’te Ayarlar > Bildirimler’den bu profilin bildirimlerini açın: Hermes sizi bunlar üzerinden arar.",
+    "zh-Hans": "请先在 iPhone 上的 Conduit 中，于“设置”的“通知”里为此个人资料打开通知：Hermes 通过通知给你打电话。",
+    "zh-Hant": "請先在 iPhone 上的 Conduit 中，於「設定」的「通知」裡為此個人檔案開啟通知：Hermes 透過通知打電話給你。"
   },
   "Turned off": {
     "de": "Ausgeschaltet",
@@ -27149,6 +27419,21 @@
     "zh-Hans": "语音回复",
     "zh-Hant": "語音回覆"
   },
+  "Wait while I'm at a screen": {
+    "de": "Warten, während ich am Bildschirm bin",
+    "es": "Esperar mientras estoy ante una pantalla",
+    "fr": "Attendre quand je suis devant un écran",
+    "id": "Tunggu saat saya di depan layar",
+    "it": "Aspetta quando sono davanti a uno schermo",
+    "ja": "画面の前にいるときは待つ",
+    "ko": "화면 앞에 있을 때는 기다리기",
+    "pl": "Czekaj, gdy jestem przy ekranie",
+    "pt-BR": "Esperar quando estou diante de uma tela",
+    "ru": "Ждать, пока я у экрана",
+    "tr": "Ekran başındayken bekle",
+    "zh-Hans": "在屏幕前时等待",
+    "zh-Hant": "在螢幕前時等待"
+  },
   "Waiting": {
     "de": "Wartet",
     "es": "Esperando",
@@ -27599,6 +27884,21 @@
     "zh-Hans": "已逾期或一天内到期的事",
     "zh-Hant": "已逾期或一天內到期的事"
   },
+  "What's worth a call": {
+    "de": "Was einen Anruf wert ist",
+    "es": "Qué merece una llamada",
+    "fr": "Ce qui mérite un appel",
+    "id": "Hal yang layak ditelepon",
+    "it": "Cosa merita una chiamata",
+    "ja": "電話してほしいこと",
+    "ko": "전화할 만한 일",
+    "pl": "Co jest warte telefonu",
+    "pt-BR": "O que vale uma ligação",
+    "ru": "Что стоит звонка",
+    "tr": "Neler aramaya değer",
+    "zh-Hans": "什么事值得来电",
+    "zh-Hant": "什麼事值得來電"
+  },
   "When Hermes updates itself from an app, keep local source edits or throw them away. Terminal updates always ask.": {
     "de": "Wenn Hermes sich aus einer App aktualisiert: lokale Quelltextänderungen behalten oder verwerfen. Updates im Terminal fragen immer nach.",
     "es": "Cuando Hermes se actualiza desde una app, conservar o descartar los cambios locales en el código. Las actualizaciones desde el terminal siempre preguntan.",
@@ -27629,6 +27929,21 @@
     "zh-Hans": "Pulse 何时提醒",
     "zh-Hant": "Pulse 何時提醒"
   },
+  "When a job you asked about is done, Hermes calls you so you can talk it through. Your iPhone rings like a phone call; where it can't, a “Hermes wants to talk” notification comes instead: tap Talk to answer.": {
+    "de": "Wenn ein Job fertig ist, nach dem du gefragt hast, ruft Hermes dich an, damit ihr darüber sprechen könnt. Dein iPhone klingelt wie bei einem Telefonanruf; wo das nicht geht, kommt stattdessen die Mitteilung „Hermes möchte sprechen“: Tippe auf „Sprechen“, um anzunehmen.",
+    "es": "Cuando termina un trabajo por el que preguntaste, Hermes te llama para que lo comenten. Tu iPhone suena como una llamada telefónica; donde no puede, llega en su lugar una notificación «Hermes quiere hablar»: toca Hablar para contestar.",
+    "fr": "Quand un job dont vous avez demandé des nouvelles est terminé, Hermes vous appelle pour en parler. Votre iPhone sonne comme pour un appel téléphonique ; quand ce n'est pas possible, une notification « Hermes veut vous parler » arrive à la place : touchez Parler pour répondre.",
+    "id": "Saat pekerjaan yang Anda tanyakan selesai, Hermes menelepon Anda agar bisa membahasnya. iPhone Anda berdering seperti panggilan telepon; jika tidak bisa, pemberitahuan “Hermes ingin bicara” muncul sebagai gantinya: ketuk Bicara untuk menjawab.",
+    "it": "Quando un job di cui hai chiesto è terminato, Hermes ti chiama per parlarne. L'iPhone squilla come per una telefonata; dove non è possibile, arriva invece la notifica «Hermes vuole parlarti»: tocca Parla per rispondere.",
+    "ja": "依頼したジョブが完了すると、Hermesが電話をかけてきて、結果について話せます。iPhoneは通常の電話のように着信します。着信できない場合は、代わりに「Hermesが話したがっています」という通知が届きます。「話す」をタップして応答してください。",
+    "ko": "물어본 작업이 끝나면 Hermes가 전화해서 결과를 함께 이야기할 수 있어요. iPhone이 일반 전화처럼 울리고, 그럴 수 없을 때는 대신 “Hermes가 이야기하고 싶어 해요” 알림이 와요. 대화를 탭해 받으세요.",
+    "pl": "Gdy zlecenie, o które pytasz, zostanie zakończone, Hermes dzwoni, żebyście mogli o nim porozmawiać. iPhone dzwoni jak przy zwykłym połączeniu; gdy to niemożliwe, przychodzi zamiast tego powiadomienie „Hermes chce porozmawiać”: stuknij Rozmawiaj, aby odebrać.",
+    "pt-BR": "Quando um trabalho sobre o qual você perguntou termina, o Hermes liga para você para conversarem sobre ele. Seu iPhone toca como em uma ligação telefônica; quando não é possível, chega no lugar uma notificação “O Hermes quer conversar”: toque em Conversar para atender.",
+    "ru": "Когда задание, о котором вы просили, будет готово, Hermes позвонит, чтобы вы могли его обсудить. iPhone звонит, как при обычном телефонном звонке; если это невозможно, вместо этого приходит уведомление «Hermes хочет поговорить»: нажмите «Говорить», чтобы ответить.",
+    "tr": "Sorduğunuz bir iş bittiğinde, Hermes sonucu konuşabilmeniz için sizi arar. iPhone'unuz normal bir telefon araması gibi çalar; bunun mümkün olmadığı yerlerde bunun yerine “Hermes konuşmak istiyor” bildirimi gelir: yanıtlamak için Konuş'a dokunun.",
+    "zh-Hans": "你询问的任务完成后，Hermes 会给你打电话，方便你们聊聊结果。你的 iPhone 会像普通来电一样响铃；无法响铃时，会改为收到“Hermes 想和你通话”通知：轻点“通话”即可接听。",
+    "zh-Hant": "你詢問的工作完成後，Hermes 會打電話給你，方便你們聊聊結果。你的 iPhone 會像一般來電一樣響鈴；無法響鈴時，會改為收到「Hermes 想跟你通話」通知：點一下「通話」即可接聽。"
+  },
   "When a reply finishes or something needs you in a chat you’re not looking at": {
     "de": "Wenn eine Antwort fertig ist oder etwas dich in einem Chat braucht, den du gerade nicht ansiehst",
     "es": "Cuando termina una respuesta o algo te necesita en un chat que no estás mirando",
@@ -27658,6 +27973,21 @@
     "tr": "Bir yanıt birkaç adım sürdüğünde Hermes bunlara kısa bir paragrafla geri bakar: ne yapmaya çalıştığını ve her adıma neden geçtiğini katlanmış adımların altında gösterir.",
     "zh-Hans": "当一条回复用了多个步骤时，Hermes 会用一小段话回顾：它打算做什么、为什么走到下一步，显示在折叠的步骤下方。",
     "zh-Hant": "當一則回覆用了多個步驟時，Hermes 會用一小段話回顧：它打算做什麼、為什麼走到下一步，顯示在收合的步驟下方。"
+  },
+  "When this is on, Hermes waits longer before calling, up to 10 minutes, while you're talking to it in Hermes Desktop, the dashboard or a terminal, or have the chat open in Conduit, and a failed request there only sends a notification.": {
+    "de": "Wenn das an ist, wartet Hermes länger mit dem Anruf, bis zu 10 Minuten, während du mit ihm in Hermes Desktop, im Dashboard oder in einem Terminal sprichst oder den Chat in Conduit geöffnet hast, und eine fehlgeschlagene Anfrage sendet dort nur eine Mitteilung.",
+    "es": "Si está activado, Hermes espera más antes de llamar, hasta 10 minutos, mientras hablas con él en Hermes Desktop, el panel o un terminal, o tienes el chat abierto en Conduit, y ahí una solicitud fallida solo envía una notificación.",
+    "fr": "Quand c’est activé, Hermes attend plus longtemps avant d’appeler, jusqu’à 10 minutes, pendant que vous lui parlez dans Hermes Desktop, le tableau de bord ou un terminal, ou que la discussion est ouverte dans Conduit, et une demande échouée n’envoie alors qu’une notification.",
+    "id": "Jika aktif, Hermes menunggu lebih lama sebelum menelepon, hingga 10 menit, saat Anda berbicara dengannya di Hermes Desktop, dasbor, atau terminal, atau membuka obrolan di Conduit, dan permintaan yang gagal di sana hanya mengirim notifikasi.",
+    "it": "Se è attivo, Hermes aspetta più a lungo prima di chiamare, fino a 10 minuti, mentre gli parli in Hermes Desktop, nella dashboard o in un terminale, o hai la chat aperta in Conduit, e lì una richiesta non riuscita invia solo una notifica.",
+    "ja": "オンにすると、Hermes Desktop、ダッシュボード、ターミナルで話しているときや、Conduitでチャットを開いているときは、電話をかけるまで長めに（最大10分）待ちます。その場合、失敗したリクエストは通知だけを送ります。",
+    "ko": "켜 두면 Hermes Desktop, 대시보드, 터미널에서 대화 중이거나 Conduit에서 채팅을 열어 두었을 때 Hermes가 전화하기 전에 더 오래(최대 10분) 기다려요. 이때 실패한 요청은 알림만 보내요.",
+    "pl": "Gdy to jest włączone, Hermes czeka dłużej, zanim zadzwoni, do 10 minut, gdy rozmawiasz z nim w Hermes Desktop, panelu lub terminalu albo masz otwarty czat w Conduit, a nieudana prośba wysyła wtedy tylko powiadomienie.",
+    "pt-BR": "Quando isso está ativado, o Hermes espera mais antes de ligar, até 10 minutos, enquanto você fala com ele no Hermes Desktop, no painel ou em um terminal, ou está com a conversa aberta no Conduit, e nesses casos um pedido com falha só envia uma notificação.",
+    "ru": "Если включено, Hermes ждёт дольше, прежде чем позвонить, до 10 минут, пока вы общаетесь с ним в Hermes Desktop, на панели или в терминале либо чат открыт в Conduit, а неудачный запрос тогда только отправляет уведомление.",
+    "tr": "Açıkken Hermes, Hermes Desktop’ta, panoda veya bir terminalde onunla konuşurken ya da sohbet Conduit’te açıkken aramadan önce daha uzun, en fazla 10 dakika bekler; bu durumda başarısız bir istek yalnızca bildirim gönderir.",
+    "zh-Hans": "开启后，当你在 Hermes Desktop、仪表板或终端中与 Hermes 交谈，或在 Conduit 中打开了该聊天时，它会等更久（最多 10 分钟）再打电话，此时请求失败只会发送通知。",
+    "zh-Hant": "開啟後，當你在 Hermes Desktop、儀表板或終端機中與 Hermes 交談，或在 Conduit 中開著該聊天時，它會等更久（最多 10 分鐘）再打電話，此時請求失敗只會傳送通知。"
   },
   "When this many are running, {bot} waits for one to finish or sends new work to one that’s already on it.": {
     "de": "Laufen so viele, wartet {bot}, bis einer fertig ist, oder gibt neue Arbeit an einen, der schon daran sitzt.",
