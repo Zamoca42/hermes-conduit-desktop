@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
 import { Icon } from './icons'
+import { PictureProfile } from './Picture'
+import { openAppsDirectory } from '../state/appsDirectory'
 import {
   appTitle,
   asksApproval,
@@ -35,6 +37,7 @@ const installs = (target: ConnectionTarget) => target.kind === 'plugin' || targe
  */
 export function ConnectionCardView({ card }: { card: ConnectionCard }) {
   const actions = useContext(ConnectionActionsContext)
+  const profile = useContext(PictureProfile)
   const [drafts, setDrafts] = useState<Record<string, Record<string, string>>>({})
   /** Rows whose page was opened from this card: only those say they wait on the sign-in. */
   const [opened, setOpened] = useState<string[]>([])
@@ -103,11 +106,20 @@ export function ConnectionCardView({ card }: { card: ConnectionCard }) {
       </p>
 
       {display ? (
-        <ul className="connection-suggested">
-          {(card.suggested ?? []).map(slug => (
-            <li key={slug}>{appTitle(slug)}</li>
-          ))}
-        </ul>
+        <>
+          <ul className="connection-suggested">
+            {(card.suggested ?? []).map(slug => (
+              <li key={slug}>{appTitle(slug)}</li>
+            ))}
+          </ul>
+          {live ? (
+            <div className="connection-browse">
+              <button className="ask-btn primary" onClick={() => openAppsDirectory(card.suggested ?? [], profile)}>
+                {t('Browse Apps')}
+              </button>
+            </div>
+          ) : null}
+        </>
       ) : (
         card.targets.map(target => (
           <div key={target.name} className="connection-row">

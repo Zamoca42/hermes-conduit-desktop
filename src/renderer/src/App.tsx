@@ -57,6 +57,7 @@ import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
 import { ArtifactsPanel } from './components/ArtifactsPanel'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
+import { onAppsDirectory, type AppsRequest } from './state/appsDirectory'
 import { MemoryPage } from './components/MemoryPage'
 import { PlanDock } from './components/PlanDock'
 import { AgentsDock } from './components/AgentsDock'
@@ -214,6 +215,16 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const closeShortcuts = useCallback(() => setShortcutsOpen(false), [])
   const [chatScale, setChatScale] = useState(readScale)
   useEffect(() => applyScale(chatScale), [chatScale])
+  // A chat's apps card opens Settings > Capabilities > Browse Apps.
+  const [appsRequest, setAppsRequest] = useState<AppsRequest | null>(null)
+  useEffect(
+    () =>
+      onAppsDirectory(request => {
+        setAppsRequest(request)
+        setSection('settings')
+      }),
+    []
+  )
   const runShortcut = useRef<(action: MenuAction) => void>(() => {})
   runShortcut.current = action => {
     if (action === 'new-chat') newChat()
@@ -1404,6 +1415,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             chatScale={chatScale}
             setChatScale={setChatScale}
             onShortcuts={() => setShortcutsOpen(true)}
+            appsRequest={appsRequest}
+            onAppsRequestTaken={() => setAppsRequest(null)}
           />
         )}
       </div>
@@ -1419,7 +1432,9 @@ function Settings({
   profile,
   chatScale,
   setChatScale,
-  onShortcuts
+  onShortcuts,
+  appsRequest,
+  onAppsRequestTaken
 }: {
   status: ConnectionStatus
   onAddHost: () => void
@@ -1428,12 +1443,22 @@ function Settings({
   chatScale: number
   setChatScale: (scale: number) => void
   onShortcuts: () => void
+  appsRequest: AppsRequest | null
+  onAppsRequestTaken: () => void
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
   const [page, setPage] = useState<
     'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance'
   >('main')
+  // The apps card's ask, taken once: Capabilities opens on Browse Apps with its picks.
+  const [apps, setApps] = useState<AppsRequest | null>(null)
+  useEffect(() => {
+    if (!appsRequest) return
+    setApps(appsRequest)
+    setPage('capabilities')
+    onAppsRequestTaken()
+  }, [appsRequest, onAppsRequestTaken])
   if (page === 'usage')
     return (
       <main className="settings">
@@ -1508,7 +1533,16 @@ function Settings({
   if (page === 'capabilities')
     return (
       <main className="settings">
-        <CapabilitiesPage bots={bots} profile={profile} host={status.url} onBack={() => setPage('main')} />
+        <CapabilitiesPage
+          bots={bots}
+          profile={profile}
+          host={status.url}
+          apps={apps}
+          onBack={() => {
+            setApps(null)
+            setPage('main')
+          }}
+        />
       </main>
     )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }

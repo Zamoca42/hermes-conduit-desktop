@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { onAppsDirectory, openAppsDirectory, type AppsRequest } from '../src/renderer/src/state/appsDirectory'
 import {
   accountNameProblem,
   appOf,
@@ -153,5 +154,19 @@ describe('hosted apps', () => {
     expect(accountNameProblem('-a', accounts)).toMatch(/lowercase/)
     expect(accountNameProblem('work', accounts)).toMatch(/already/)
     expect(accountNameProblem('work', accounts, 'c1')).toBeNull()
+  })
+
+  it('hands a chat card’s Browse Apps to whoever opens Settings, each ask a new one', () => {
+    const asks: AppsRequest[] = []
+    const stop = onAppsDirectory(ask => asks.push(ask))
+    openAppsDirectory(['slack'], 'furina')
+    openAppsDirectory(['slack'], 'furina')
+    stop()
+    openAppsDirectory(['gmail'])
+    expect(asks.map(a => [a.suggested, a.profile])).toEqual([
+      [['slack'], 'furina'],
+      [['slack'], 'furina']
+    ])
+    expect(asks[1]!.n).toBe(asks[0]!.n + 1)
   })
 })

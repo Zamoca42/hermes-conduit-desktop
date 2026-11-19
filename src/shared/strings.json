@@ -24959,6 +24959,21 @@
     "zh-Hans": "停顿时建议",
     "zh-Hant": "停頓時建議"
   },
+  "Suggested": {
+    "de": "Vorgeschlagen",
+    "es": "Sugeridas",
+    "fr": "Suggestions",
+    "id": "Disarankan",
+    "it": "Suggerite",
+    "ja": "おすすめ",
+    "ko": "추천",
+    "pl": "Sugerowane",
+    "pt-BR": "Sugeridas",
+    "ru": "Рекомендуемые",
+    "tr": "Önerilen",
+    "zh-Hans": "推荐",
+    "zh-Hant": "推薦"
+  },
   "Suggested replies": {
     "de": "Vorgeschlagene Antworten",
     "es": "Respuestas sugeridas",

@@ -24,6 +24,7 @@ import { SkillHub } from './SkillHub'
 import { PluginsTab } from './PluginsTab'
 import { HostedAppPage, HostedAppsDirectory, HostedAppsSection } from './HostedApps'
 import { useHostedApps } from '../state/useHostedApps'
+import type { AppsRequest } from '../state/appsDirectory'
 import { Icon } from './icons'
 
 interface Props {
@@ -31,6 +32,8 @@ interface Props {
   profile: string
   /** The host's address, for the restart a plugin change asks for. */
   host?: string
+  /** A chat's apps card asked for Browse Apps, with Hermes' picks first. */
+  apps?: AppsRequest | null
   onBack: () => void
 }
 
@@ -66,7 +69,7 @@ function Switch({ label, checked, disabled, onChange }: { label: string; checked
  * Switches reach Hermes one after another, in the order flipped. Connectors
  * opens on the apps signed in through Nous Portal, above the MCP servers.
  */
-export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }: Props) {
+export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, onBack }: Props) {
   const [profile, setProfile] = useState(initialProfile)
   const [tab, setTabState] = useState<CapabilityTab>(storedTab)
   const [query, setQuery] = useState('')
@@ -81,7 +84,9 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }
   const [hubOpen, setHubOpen] = useState(false)
   // Connectors' Apps, through Nous Portal: the directory or an app's page over the tab.
   const hostedApps = useHostedApps(profile)
-  const [appsPage, setAppsPage] = useState<{ slug: string | null; fromDirectory: boolean } | null>(null)
+  const [appsPage, setAppsPage] = useState<{ slug: string | null; fromDirectory: boolean; suggested?: string[] } | null>(null)
+  /** The apps card's ask, waiting for its bot's profile to be the one shown. */
+  const appsAsk = useRef<AppsRequest | null>(null)
   const generation = useRef(0)
   const writes = useRef<Promise<unknown>>(Promise.resolve())
 
@@ -148,9 +153,23 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }
     setOpen(null)
     setOpenServer(null)
     setHubOpen(false)
-    setAppsPage(null)
+    const ask = appsAsk.current
+    appsAsk.current = null
+    setAppsPage(ask && (ask.profile ?? profile) === profile ? { slug: null, fromDirectory: true, suggested: ask.suggested } : null)
     setProblem(null)
   }, [profile])
+
+  // The apps card's Browse Apps: Connectors, on the card's bot, with its picks first.
+  useEffect(() => {
+    if (!apps) return
+    setTab('connectors')
+    const target = apps.profile && bots.some(bot => bot.name === apps.profile) ? apps.profile : profile
+    if (target !== profile) {
+      appsAsk.current = apps
+      setProfile(target)
+    } else setAppsPage({ slug: null, fromDirectory: true, suggested: apps.suggested })
+    // Each ask once.
+  }, [apps?.n])
 
   useEffect(() => {
     if (tab === 'skills' && !skills) void load('skills')
@@ -362,9 +381,22 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }
 
   if (appsPage?.slug)
     return (
-      <HostedAppPage apps={hostedApps} slug={appsPage.slug} onBack={() => setAppsPage(appsPage.fromDirectory ? { slug: null, fromDirectory: true } : null)} />
+      <HostedAppPage
+        key={appsPage.slug}
+        apps={hostedApps}
+        slug={appsPage.slug}
+        onBack={() => setAppsPage(appsPage.fromDirectory ? { slug: null, fromDirectory: true, suggested: appsPage.suggested } : null)}
+      />
     )
-  if (appsPage) return <HostedAppsDirectory apps={hostedApps} onOpenApp={slug => setAppsPage({ slug, fromDirectory: true })} onBack={() => setAppsPage(null)} />
+  if (appsPage)
+    return (
+      <HostedAppsDirectory
+        apps={hostedApps}
+        suggested={appsPage.suggested}
+        onOpenApp={slug => setAppsPage({ slug, fromDirectory: true, suggested: appsPage.suggested })}
+        onBack={() => setAppsPage(null)}
+      />
+    )
 
   if (hubOpen)
     return (

@@ -8342,3 +8342,6 @@ a.ask-btn[aria-disabled='true'] {
 button.secondary.danger {
   color: var(--danger);
 }
+.connection-browse {
+  margin-top: 8px;
+}
