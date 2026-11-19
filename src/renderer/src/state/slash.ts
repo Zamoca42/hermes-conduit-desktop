@@ -14,6 +14,11 @@ export function looksLikeSlashCommand(text: string): boolean {
   return SLASH_COMMAND.test(text.trimStart())
 }
 
+/** `/new` and its aliases, which start a new chat (and compact a Bot Chat instead). */
+export function isResetCommand(text: string): boolean {
+  return looksLikeSlashCommand(text) && ['new', 'reset', 'clear'].includes(parseSlashCommand(text).name)
+}
+
 /** `/name arg…` split the way Hermes does: the name lower-cased, the argument's inside kept as typed. */
 export function parseSlashCommand(command: string): { name: string; arg: string } {
   const match = /^(\S+)([\s\S]*)$/.exec(command.trimStart().replace(/^\/+/, ''))

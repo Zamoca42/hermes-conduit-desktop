@@ -58,7 +58,7 @@ import {
 import { cleanTitle } from './state/text'
 import type { StagedAttachment } from './state/attachments'
 import type { QuoteRequest } from './state/quote'
-import { looksLikeSlashCommand } from './state/slash'
+import { isResetCommand, looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
@@ -225,6 +225,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     send,
     stop,
     command,
+    notice,
     setModel,
     setReasoning,
     setSpeed,
@@ -753,8 +754,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const onSend = useCallback(
     async (text: string, attachments: StagedAttachment[] = [], options: { takeOver?: boolean; spoken?: boolean } = {}) => {
       let created: string | null | false
+      // A bot's one chat never resets: /new compacts it, and a compaction carries no attachments.
+      const botChat = selected.botChat === true || !!openBotChat
+      if (botChat && attachments.length && isResetCommand(text)) {
+        notice(t('This bot chat never resets. Remove the attachments to compact it instead.'), 'error')
+        return false
+      }
       if (looksLikeSlashCommand(text) && !attachments.length) {
-        const outcome = await command(text, commands)
+        const outcome = await command(text, commands, { botChat })
         if (outcome.kind === 'new') return newChat()
         if (outcome.kind === 'model') setModelOpen(true)
         if (outcome.kind === 'prefill') setQuote(prefillRequest(withoutMentionNote(outcome.text), botTitle))
@@ -769,7 +776,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       }
       return true
     },
-    [send, command, commands, newChat, list, botTitle, roster.bots, selected.profile]
+    [send, command, notice, commands, newChat, list, botTitle, roster.bots, selected.profile, selected.botChat, openBotChat]
   )
   // The bots a chat can tag, in their order: every shown bot but the chat's own.
   const mentionBots = useMemo(() => mentionCandidates(roster.bots, '', selected.profile ?? 'default'), [roster.bots, selected.profile])
