@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent, type RefObject } from 'react'
+import { useContext, useEffect, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent, type RefObject } from 'react'
 import type { ContextWindow } from '../state/context'
 import { Icon } from './icons'
 import { t } from '@shared/i18n'
@@ -10,6 +10,7 @@ import { suggestCommands, type SlashCommand } from '../state/slash'
 import { TAP_GUARD_MS, askable, pauseDelay, type DraftGuesses } from '../state/predictive'
 import { composerDrafts, draftStoreKey, isEmptyDraft, type ComposerDraft } from '../state/composerDrafts'
 import { SummaryHost } from '../state/useStepSummaries'
+import { ClipInbox, indexedClipStore, keepsAfter, memoryClipStore, withRetries, type DictationClip } from '../state/dictationClips'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
 
 /** The last folder of a path, the way the phone's chip shows it. */
@@ -67,6 +68,10 @@ interface Props {
 }
 
 const chatReply = (reply: ReplyReference, draft: string) => replyEnvelope(reply.text, draft)
+
+/** Hermes dictations whose words haven't reached a draft, kept on this computer (the phone's DictationClipStore). */
+export const dictationClips = new ClipInbox(typeof indexedDB === 'undefined' ? memoryClipStore() : indexedClipStore())
+const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms))
 
 /** Enter sends, Shift Enter adds a line; while a turn runs the send button stops it. */
 export function Composer({
@@ -305,7 +310,9 @@ export function Composer({
   }
 
   const hasContent = text.trim().length > 0 || attachments.length > 0
-  const canSend = !disabled && hasContent && staging === 0
+  // Send waits while a dictation runs, until its words are in the draft to read over (Eric, 2026-10-26).
+  const dictating = recorder.recording || transcribing
+  const canSend = !disabled && hasContent && staging === 0 && !dictating
 
   function send() {
     if (!canSend) return
@@ -344,35 +351,96 @@ export function Composer({
     else if (recorder.error) setNotice(recorder.error)
   }, [recorder.error])
 
-  /** The recording's words, typed in where the caret is. */
-  async function dictate() {
-    const recording = await recorder.stop()
-    if (!recording) return
-    setTranscribing(true)
+  /** Words typed in where the caret is. */
+  function typeIn(words: string) {
+    const el = area.current
+    setText(current => {
+      const at = el && document.activeElement === el ? el.selectionStart : current.length
+      const before = current.slice(0, at)
+      const pad = before && !/\s$/.test(before) ? ' ' : ''
+      const next = `${before}${pad}${words}${current.slice(at)}`
+      const caret = at + pad.length + words.length
+      requestAnimationFrame(() => {
+        el?.focus()
+        el?.setSelectionRange(caret, caret)
+      })
+      return next
+    })
+  }
+
+  // Kept recordings for this host and profile, offered above the composer with Retry and Delete.
+  const clipProfile = voice?.profile ?? ''
+  useEffect(() => void dictationClips.load(), [])
+  useSyncExternalStore(
+    listener => dictationClips.subscribe(listener),
+    () => dictationClips.version
+  )
+  const [uploading, setUploading] = useState<ReadonlySet<string>>(new Set())
+  const offeredClips = voice ? dictationClips.offered(host, clipProfile, uploading) : []
+  const busyWith = (id: string, on: boolean) =>
+    setUploading(current => {
+      const next = new Set(current)
+      if (on) next.add(id)
+      else next.delete(id)
+      return next
+    })
+  /** The dictation Transcribing waits on; Cancel lets it go (its recording stays for Retry). */
+  const waitingOn = useRef<string | null>(null)
+
+  /**
+   * One upload of a kept recording. Its words go to the draft that was on
+   * screen when it started, even if another chat opened meanwhile; a
+   * recording Hermes heard nothing in goes when short and stays when long.
+   */
+  async function deliver(clip: DictationClip, retries: boolean) {
+    const forKey = storeKey
+    busyWith(clip.id, true)
     try {
-      const words = await transcribe(await blobToBase64(recording.blob), recording.mime, voice?.profile)
+      const upload = () => transcribe(clip.base64, clip.mime, clip.profile || undefined)
+      const words = retries ? await withRetries(upload, sleep) : await upload()
+      const cancelled = retries && waitingOn.current !== clip.id
       if (!words) {
-        setNotice(t("Hermes didn't hear any words."))
+        if (!keepsAfter(words, clip.duration)) await dictationClips.release(clip.id)
+        if (!cancelled) setNotice(t("Hermes didn't hear any words."))
         return
       }
-      const el = area.current
-      setText(current => {
-        const at = el && document.activeElement === el ? el.selectionStart : current.length
-        const before = current.slice(0, at)
-        const pad = before && !/\s$/.test(before) ? ' ' : ''
-        const next = `${before}${pad}${words}${current.slice(at)}`
-        const caret = at + pad.length + words.length
-        requestAnimationFrame(() => {
-          el?.focus()
-          el?.setSelectionRange(caret, caret)
-        })
-        return next
-      })
+      await dictationClips.release(clip.id)
+      if (forKey === shownKey.current) typeIn(words)
+      else {
+        const kept = composerDrafts.peek(forKey) ?? { text: '', attachments: [], replyTo: null }
+        composerDrafts.save(forKey, { ...kept, text: kept.text ? `${kept.text} ${words}` : words })
+      }
       setNotice(null)
     } catch (e) {
       setNotice(t("Hermes couldn't transcribe that: {error}", { error: e instanceof Error ? e.message : String(e) }))
     } finally {
-      setTranscribing(false)
+      busyWith(clip.id, false)
+    }
+  }
+
+  /** The recording's words, typed in where the caret is. It's written to this computer before it goes to Hermes. */
+  async function dictate() {
+    const recording = await recorder.stop()
+    if (!recording) return
+    const clip: DictationClip = {
+      id: `clip-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      host,
+      profile: clipProfile,
+      mime: recording.mime,
+      base64: await blobToBase64(recording.blob),
+      duration: recording.duration,
+      created: Date.now()
+    }
+    setTranscribing(true)
+    waitingOn.current = clip.id
+    try {
+      await dictationClips.keep(clip)
+      await deliver(clip, true)
+    } finally {
+      if (waitingOn.current === clip.id) {
+        waitingOn.current = null
+        setTranscribing(false)
+      }
     }
   }
 
@@ -431,7 +499,9 @@ export function Composer({
     }
     if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
       event.preventDefault()
-      send()
+      // Return ends a dictation running, and its words land in the draft rather than going.
+      if (recorder.recording) void dictate()
+      else send()
     } else if (event.key === 'Escape' && running) {
       event.preventDefault()
       onStop()
@@ -535,6 +605,24 @@ export function Composer({
             </button>
           </div>
         ) : null}
+        {offeredClips.map(clip => (
+          <div key={clip.id} className="composer-notice dictation-clip" role="status">
+            <span>{t("Your {duration} dictation wasn't transcribed. Its recording is saved.", { duration: durationLabel(clip.duration) })}</span>
+            <button className="secondary" disabled={uploading.size > 0 || transcribing} onClick={() => void deliver(clip, false)}>
+              {t('Retry')}
+            </button>
+            <button
+              className="staged-remove"
+              aria-label={t('Delete')}
+              title={t('Delete')}
+              onClick={() => {
+                if (window.confirm(t("Delete this recording? Its words haven't been transcribed."))) void dictationClips.release(clip.id)
+              }}
+            >
+              <Icon name="close" />
+            </button>
+          </div>
+        ))}
         {notice ? <div className="composer-notice">{notice}</div> : null}
         <label className="sr-only" htmlFor="composer-input">
           {t('Message')}
@@ -542,10 +630,24 @@ export function Composer({
         {recorder.recording || transcribing ? (
           <div className="voice-strip" role="status">
             {transcribing ? (
-              <span className="voice-busy">
-                <Icon name="spinner" style={{ animation: 'spin 1s linear infinite' }} />
-                {t('Transcribing')}
-              </span>
+              <>
+                <span className="voice-busy">
+                  <Icon name="spinner" style={{ animation: 'spin 1s linear infinite' }} />
+                  {t('Transcribing')}
+                </span>
+                {waitingOn.current ? (
+                  <button
+                    className="secondary"
+                    onClick={() => {
+                      // Its recording stays for Retry; words that come later still reach this draft.
+                      waitingOn.current = null
+                      setTranscribing(false)
+                    }}
+                  >
+                    {t('Cancel')}
+                  </button>
+                ) : null}
+              </>
             ) : (
               <>
                 <span className="voice-dot" />
@@ -639,7 +741,7 @@ export function Composer({
             </span>
           ) : null}
           <span className="hint">{running ? t('Esc stops') : t('Enter sends · Shift Enter new line')}</span>
-          {running && !hasContent ? (
+          {running && !hasContent && !dictating ? (
             <button className="send stop" aria-label={t('Stop')} title={t('Stop (Esc)')} onClick={onStop}>
               <Icon name="stop" />
             </button>

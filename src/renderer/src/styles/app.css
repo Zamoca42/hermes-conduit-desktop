@@ -2374,6 +2374,24 @@ html[data-window='quick'] body {
   color: var(--danger);
 }
 
+.composer-notice.dictation-clip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-2);
+}
+
+.dictation-clip > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.dictation-clip .secondary {
+  flex: none;
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
 .composer-row .attach {
   flex: none;
   width: 28px;
