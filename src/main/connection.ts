@@ -377,12 +377,14 @@ export class Connection {
         const id = (event.payload as { id?: unknown } | undefined)?.id
         if (typeof id === 'string') this.dropRequest(id)
       }
+      const admission = (event as { admission_id?: unknown }).admission_id
       this.deps.onEvent({
         type: event.type,
         session_id: event.session_id,
         payload: event.payload,
         seq: event.seq,
-        replayed: event.replayed
+        replayed: event.replayed,
+        ...(typeof admission === 'string' && admission ? { admission_id: admission } : {})
       })
     })
     // Approvals and questions wait in Needs you. Anything else (the TUI's

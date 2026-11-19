@@ -93,6 +93,8 @@ export interface GatewayEventMessage {
   payload?: unknown
   seq?: number
   replayed?: boolean
+  /** On the Webapp's listener, the queued message a turn's `message.start` runs. */
+  admission_id?: string
 }
 
 /** A value only the user may give, typed on the chat's card and sent straight to the tool that asked (never into the chat): a sudo password, a secret, a password manager's master password, a website's login or one-time code. */

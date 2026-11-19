@@ -10,7 +10,7 @@ import {
   takingOverMessage
 } from './chatTakeover'
 import { connectionFrom, connectionOwner, type ConnectionCard } from './connections'
-import { gateway } from '../gateway'
+import { gateway, GatewayError } from '../gateway'
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { contextFromUsage, parseBreakdown, type ContextWindow } from './context'
 import { parsePlan } from './plan'
@@ -19,6 +19,10 @@ import {
   addOutput,
   addPendingUser,
   applyEvent,
+  dropHeld,
+  holdSent,
+  releaseHeld,
+  reholdEdited,
   attachBoards,
   emptyTranscript,
   failPendingUser,
@@ -36,12 +40,17 @@ import { promptText, releaseHeldImages, titlePreview, uploadAttachments, type St
 import type { Attachment } from './text'
 import { helpText, parseSlashCommand, parseSlashResult, wantsDispatch, type SlashCommand, type SlashResult } from './slash'
 import { t } from '../../../shared/i18n'
+import { lostRows, queueFrom, refusalMeansSettled, resendWords, type QueuedPrompt } from './chatQueue'
 
 type Action =
   | { type: 'reset'; state: TranscriptState }
   | { type: 'boards'; answers: Map<string, string>; args: Map<string, string> }
   | { type: 'event'; event: { type: string; payload?: unknown } }
-  | { type: 'pending'; text: string; attachments?: Attachment[] }
+  | { type: 'pending'; text: string; attachments?: Attachment[]; key?: string }
+  /** The queue took a send behind the running turn, or a dock action settled one. */
+  | { type: 'held'; key: string; admission: string }
+  | { type: 'released' | 'dropped'; admission: string }
+  | { type: 'edited'; admission: string; edited: string; text: string }
   | { type: 'failed'; error: string }
   | { type: 'withdrawn' }
   | { type: 'output'; command?: string; text: string; format: 'plain' | 'markdown' }
@@ -69,7 +78,15 @@ function reducer(state: TranscriptState, action: Action): TranscriptState {
     case 'event':
       return applyEvent(state, action.event)
     case 'pending':
-      return addPendingUser(state, action.text, action.attachments)
+      return addPendingUser(state, action.text, action.attachments, action.key)
+    case 'held':
+      return holdSent(state, action.key, action.admission)
+    case 'released':
+      return releaseHeld(state, action.admission)
+    case 'dropped':
+      return dropHeld(state, action.admission)
+    case 'edited':
+      return reholdEdited(state, action.admission, action.edited, action.text)
     case 'failed':
       return failPendingUser(state, action.error)
     case 'withdrawn':
@@ -92,6 +109,8 @@ interface ResumeResult {
   todo_state?: unknown
   /** A connection card still waiting on the user: reopening the chat brings it back. */
   pending_connection?: unknown
+  /** The chat's queue, on the Webapp's listener. */
+  pending?: unknown
 }
 
 /** An open connection card the resume brought back. */
@@ -190,6 +209,10 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   runningRef.current = transcript.running
   /** Another app holds the chat and Take over automatically is off: the offer, naming who holds it. */
   const [takeover, setTakeover] = useState<{ surface?: string; busy: boolean } | null>(null)
+  /** The open chat's queue on the Webapp; empty on `hermes dashboard`, which keeps none. */
+  const [queue, setQueue] = useState<QueuedPrompt[]>([])
+  const queueRef = useRef(queue)
+  queueRef.current = queue
 
   // Resume when the chat (or the connection) changes.
   useEffect(() => {
@@ -198,6 +221,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     const ticket = ++request.current
     liveId.current = null
     setTakeover(null)
+    setQueue([])
     setChat(storedId || !folder ? { storedId, liveId: null } : { storedId, liveId: null, cwd: folder })
     setError(null)
     if (!storedId) {
@@ -227,6 +251,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         }
         state = withPendingConnection(state, result)
         dispatch({ type: 'reset', state })
+        setQueue(queueFrom(result.pending) ?? [])
         void loadBoards(state, result.stored_session_id ?? storedId, profile, () => ticket === request.current, dispatch)
         // How full the window is, before the first reply ticks it.
         gateway
@@ -258,6 +283,8 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         if (event.type === 'session.info') {
           const settings = chatSettings(event.payload as ChatInfo | undefined)
           setChat(c => ({ ...c, ...settings }))
+          const rows = queueFrom((event.payload as { pending?: unknown } | undefined)?.pending)
+          if (rows) setQueue(rows)
           return
         }
         if (event.type === 'session.usage' || event.type === 'message.complete') {
@@ -309,6 +336,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         result
       )
       dispatch({ type: 'reset', state })
+      setQueue(queueFrom(result.pending) ?? [])
       void loadBoards(state, result.stored_session_id ?? stored, profile, () => ticket === request.current, dispatch)
     } catch {
       // The chat as drawn stays; the next open reads it.
@@ -385,7 +413,10 @@ export function useChat(storedId: string | null, profile: string | undefined, se
       const shown: Attachment[] = attachments.map(a =>
         a.kind === 'image' ? { kind: 'image', value: a.name, preview: `data:${a.mime};base64,${a.base64}` } : { kind: 'file', value: a.name }
       )
-      dispatch({ type: 'pending', text: trimmed, attachments: shown })
+      const key = `u-${uuid()}`
+      // Hermes' receipt says `queued` for every send; only one into a running turn, or behind a turn a restart cut off, waits.
+      const joinsRunningTurn = runningRef.current || lostRows(queueRef.current).length > 0
+      dispatch({ type: 'pending', text: trimmed, attachments: shown, key })
       let sid = liveId.current
       let held: string[] = []
       try {
@@ -411,13 +442,18 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         const preview = titlePreview(attachments)
         if (preview) params.title_preview = preview
         const submit = async () => {
+          let receipt: { status?: unknown; admission_id?: unknown } | null
           try {
-            await gateway.rpc('prompt.submit', params)
+            receipt = await gateway.rpc('prompt.submit', params)
           } catch (e) {
             // A Hermes that doesn't know the title preview gets the message without it.
             if (!preview || !String(e instanceof Error ? e.message : e).includes('title_preview')) throw e
             delete params.title_preview
-            await gateway.rpc('prompt.submit', params)
+            receipt = await gateway.rpc('prompt.submit', params)
+          }
+          // The Webapp's queue took it behind the running turn: it waits in the dock until its turn starts.
+          if (sessionAuthority && joinsRunningTurn && receipt?.status === 'queued' && typeof receipt.admission_id === 'string' && receipt.admission_id) {
+            dispatch({ type: 'held', key, admission: receipt.admission_id })
           }
         }
         try {
@@ -652,6 +688,86 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     [configure]
   )
 
+  /** Runs one of the queue dock's verbs on the open chat; Hermes' refusal is thrown for the dock to say. */
+  const queueVerb = useCallback(async <T = Record<string, unknown>>(method: string, row: QueuedPrompt, extra: Record<string, unknown> = {}): Promise<T> => {
+    const sid = liveId.current
+    if (!sid) throw new Error(t('Not connected to Hermes.'))
+    // Hermes' queue verbs take a closed set of params, never `profile`: the ids name the row on any profile.
+    const result = await gateway.rpc<T>(method, { session_id: sid, admission_id: row.admissionId, ...extra })
+    if (liveId.current === sid) setQueue(rows => rows.filter(r => r.admissionId !== row.admissionId))
+    return result
+  }, [])
+
+  /** Remove from queue: it never runs. */
+  const cancelQueued = useCallback(
+    async (row: QueuedPrompt) => {
+      await queueVerb('prompt.cancel', row)
+      dispatch({ type: 'dropped', admission: row.admissionId })
+    },
+    [queueVerb]
+  )
+
+  /** Edit: Hermes queues the new words at the back of the line in place of the old ones. */
+  const editQueued = useCallback(
+    async (row: QueuedPrompt, text: string) => {
+      const words = text.trim()
+      // Emptied is no edit: Remove from queue withdraws it.
+      if (!words || words === row.text.trim()) return
+      const receipt = await queueVerb<{ admission_id?: unknown }>('prompt.replace_queued', row, { submission_id: uuid(), text: words })
+      if (typeof receipt?.admission_id === 'string' && receipt.admission_id) {
+        dispatch({ type: 'edited', admission: row.admissionId, edited: receipt.admission_id, text: words })
+      } else dispatch({ type: 'dropped', admission: row.admissionId })
+    },
+    [queueVerb]
+  )
+
+  /** Send now: into the running turn, as a steer; it never also runs as its own. */
+  const sendQueuedNow = useCallback(
+    async (row: QueuedPrompt) => {
+      await queueVerb('prompt.steer_queued', row)
+      dispatch({ type: 'released', admission: row.admissionId })
+    },
+    [queueVerb]
+  )
+
+  /** Discard a turn a restart cut off: Hermes settles it as interrupted and the messages behind it go on. */
+  const discardLost = useCallback(
+    async (row: QueuedPrompt) => {
+      if (row.generation === undefined) throw new Error(t('Hermes didn’t say which turn this was. Reopen the chat and try again.'))
+      await queueVerb('prompt.resolve_unknown', row, { execution_generation: row.generation })
+      dispatch({ type: 'dropped', admission: row.admissionId })
+    },
+    [queueVerb]
+  )
+
+  /**
+   * Resend: discards the cut-off turn and sends its words again as a new
+   * message, at the back of the line; its files aren't sent again. Returns
+   * the words when they didn't go (a discard with no answer, or one no longer
+   * waiting), for the composer, rather than losing them.
+   */
+  const resendLost = useCallback(
+    async (row: QueuedPrompt): Promise<string | null> => {
+      const words = resendWords(row.text)
+      if (!words) {
+        await discardLost(row)
+        return null
+      }
+      try {
+        await discardLost(row)
+      } catch (e) {
+        if (!(e instanceof GatewayError) || refusalMeansSettled(e)) {
+          setQueue(rows => rows.filter(r => r.admissionId !== row.admissionId))
+          return words
+        }
+        throw e
+      }
+      const sent = await send(words)
+      return sent === false ? words : null
+    },
+    [discardLost, send]
+  )
+
   return {
     transcript,
     chat,
@@ -669,6 +785,12 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     takeOver,
     respondConnection,
     reissueConnection,
-    wakeConnection
+    wakeConnection,
+    queue,
+    cancelQueued,
+    editQueued,
+    sendQueuedNow,
+    discardLost,
+    resendLost
   }
 }

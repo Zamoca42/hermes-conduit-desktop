@@ -211,6 +211,12 @@ export interface TranscriptState {
   status?: string
   /** The agent's plan: the newest `todo` result, or `todo_state` from the resume. */
   plan?: Plan | null
+  /**
+   * Your messages waiting in the chat's queue on the Webapp (A chat's queue
+   * on the Webapp): out of the transcript while the dock shows them, back
+   * at their turn's `message.start`, which names the admission.
+   */
+  held?: { admission: string; item: UserItem }[]
 }
 
 export const emptyTranscript: TranscriptState = { items: [], running: false }
@@ -346,7 +352,7 @@ function payloadOf(event: { payload?: unknown }): Record<string, unknown> {
 
 const str = (value: unknown): string | undefined => (typeof value === 'string' ? value : undefined)
 
-export function applyEvent(state: TranscriptState, event: { type: string; payload?: unknown; session_id?: string }): TranscriptState {
+export function applyEvent(state: TranscriptState, event: { type: string; payload?: unknown; session_id?: string; admission_id?: string }): TranscriptState {
   const payload = payloadOf(event)
   switch (event.type) {
     case 'connection.request':
@@ -354,8 +360,11 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
       const card = connectionFrom(payload, event.session_id ?? '')
       return card ? showConnection(state, card) : state
     }
-    case 'message.start':
-      return { ...state, running: true, status: undefined, items: confirmPending(state.items) }
+    case 'message.start': {
+      const started = { ...state, running: true, status: undefined, items: confirmPending(state.items) }
+      const admission = event.admission_id ?? str(payload.admission_id)
+      return admission ? releaseHeld(started, admission) : started
+    }
     case 'message.delta': {
       const text = payload.text
       if (text === null) return { ...state, items: seal(state.items) }
@@ -504,8 +513,8 @@ function confirmPending(items: TranscriptItem[]): TranscriptItem[] {
   return items.map(item => (item.kind === 'user' && item.pending ? { ...item, pending: false } : item))
 }
 
-export function addPendingUser(state: TranscriptState, text: string, attachments: Attachment[] = []): TranscriptState {
-  const item: UserItem = userItem(nextKey('u'), text, Date.now()) ?? { kind: 'user' as const, key: nextKey('u'), text, at: Date.now() }
+export function addPendingUser(state: TranscriptState, text: string, attachments: Attachment[] = [], key = nextKey('u')): TranscriptState {
+  const item: UserItem = userItem(key, text, Date.now()) ?? { kind: 'user' as const, key, text, at: Date.now() }
   const all = [...attachments, ...(item.attachments ?? [])]
   return { ...state, items: [...state.items, { ...item, ...(all.length ? { attachments: all } : {}), pending: true }] }
 }
@@ -577,4 +586,46 @@ export function toolAnswers(raw: unknown): Map<string, string> {
     if (row.role === 'tool' && typeof row.tool_call_id === 'string') answers.set(row.tool_call_id, rowText(row))
   }
   return answers
+}
+
+/** A send the chat's queue took behind the running turn: its bubble waits in the dock, out of the transcript. */
+export function holdSent(state: TranscriptState, key: string, admission: string): TranscriptState {
+  const item = state.items.find((i): i is UserItem => i.kind === 'user' && i.key === key)
+  if (!item) return state
+  return {
+    ...state,
+    items: joinAround(state.items, state.items.indexOf(item)),
+    held: [...(state.held ?? []).filter(h => h.admission !== admission), { admission, item: { ...item, pending: false } }]
+  }
+}
+
+/** Its turn started (or it went into the running one): the message comes back, after what's there. */
+export function releaseHeld(state: TranscriptState, admission: string): TranscriptState {
+  const held = state.held?.find(h => h.admission === admission)
+  if (!held) return state
+  return { ...state, items: [...seal(state.items), { ...held.item, at: Date.now() }], held: state.held!.filter(h => h !== held) }
+}
+
+/** Withdrawn or discarded: it never runs, so it never comes back. */
+export function dropHeld(state: TranscriptState, admission: string): TranscriptState {
+  if (!state.held?.some(h => h.admission === admission)) return state
+  return { ...state, held: state.held.filter(h => h.admission !== admission) }
+}
+
+/** Edited: the new words wait as a new admission at the back of the line. */
+export function reholdEdited(state: TranscriptState, admission: string, edited: string, text: string): TranscriptState {
+  const held = state.held?.find(h => h.admission === admission)
+  const rest = (state.held ?? []).filter(h => h.admission !== admission && h.admission !== edited)
+  const item: UserItem = held ? { ...held.item, text } : { kind: 'user', key: nextKey('u'), text }
+  return { ...state, held: [...rest, { admission: edited, item }] }
+}
+
+/** The items without the one at `index`; a reply its bubble had split in two is one again. */
+function joinAround(items: TranscriptItem[], index: number): TranscriptItem[] {
+  const before = items[index - 1]
+  const after = items[index + 1]
+  const rest = items.filter((_, i) => i !== index)
+  if (before?.kind !== 'assistant' || after?.kind !== 'assistant') return rest
+  const joined: AssistantItem = { ...before, text: before.text + after.text, streaming: after.streaming }
+  return [...rest.slice(0, index - 1), joined, ...rest.slice(index + 1)]
 }

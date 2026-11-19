@@ -6944,6 +6944,21 @@
     "zh-Hans": "不符合任何卡片类型",
     "zh-Hant": "不符合任何卡片類型"
   },
+  "Discard": {
+    "de": "Verwerfen",
+    "es": "Descartar",
+    "fr": "Ignorer",
+    "id": "Buang",
+    "it": "Scarta",
+    "ja": "破棄",
+    "ko": "버리기",
+    "pl": "Odrzuć",
+    "pt-BR": "Descartar",
+    "ru": "Отбросить",
+    "tr": "At",
+    "zh-Hans": "丢弃",
+    "zh-Hant": "捨棄"
+  },
   "Discard unsaved changes?": {
     "de": "Nicht gespeicherte Änderungen verwerfen?",
     "es": "¿Descartar los cambios sin guardar?",
@@ -7513,6 +7528,21 @@
     "tr": "Görevi düzenle",
     "zh-Hans": "编辑任务",
     "zh-Hant": "編輯任務"
+  },
+  "Edit queued message": {
+    "de": "Nachricht in der Warteschlange bearbeiten",
+    "es": "Editar mensaje en cola",
+    "fr": "Modifier le message en file d'attente",
+    "id": "Edit pesan dalam antrean",
+    "it": "Modifica messaggio in coda",
+    "ja": "待機中のメッセージを編集",
+    "ko": "대기 중인 메시지 편집",
+    "pl": "Edytuj wiadomość w kolejce",
+    "pt-BR": "Editar mensagem na fila",
+    "ru": "Изменить сообщение в очереди",
+    "tr": "Sıradaki mesajı düzenle",
+    "zh-Hans": "编辑排队中的消息",
+    "zh-Hant": "編輯排隊中的訊息"
   },
   "Edit scheduled job": {
     "de": "Geplanten Job bearbeiten",
@@ -10124,6 +10154,21 @@
     "zh-Hans": "Hermes Desktop 仍在此对话中回复。请在回复结束后重试。",
     "zh-Hant": "Hermes Desktop 仍在這個聊天中回覆。請等它完成後再試一次。"
   },
+  "Hermes already started on it.": {
+    "de": "Hermes hat schon damit angefangen.",
+    "es": "Hermes ya empezó con él.",
+    "fr": "Hermes a déjà commencé.",
+    "id": "Hermes sudah mulai mengerjakannya.",
+    "it": "Hermes ci ha già iniziato a lavorare.",
+    "ja": "Hermesはすでに取りかかっています。",
+    "ko": "Hermes가 이미 시작했습니다.",
+    "pl": "Hermes już się tym zajął.",
+    "pt-BR": "O Hermes já começou.",
+    "ru": "Hermes уже начал над ним работать.",
+    "tr": "Hermes zaten başladı.",
+    "zh-Hans": "Hermes 已经开始处理了。",
+    "zh-Hant": "Hermes 已經開始處理了。"
+  },
   "Hermes answers on this server, so there's nothing to set up on it. The Conduit plugin runs each turn and has the server read the reply aloud.": {
     "de": "Auf diesem Server antwortet Hermes, dort ist also nichts einzurichten. Das Conduit-Plugin führt jede Runde aus und lässt den Server die Antwort vorlesen.",
     "es": "En este servidor responde Hermes, así que no hay nada que configurar en él. El plugin de Conduit lleva cada turno y hace que el servidor lea la respuesta en voz alta.",
@@ -10229,6 +10274,21 @@
     "zh-Hans": "Hermes 无法在此自行更新。",
     "zh-Hant": "Hermes 無法在此自行更新。"
   },
+  "Hermes can’t take it into this reply yet. It stays queued.": {
+    "de": "Hermes kann sie noch nicht in diese Antwort aufnehmen. Sie bleibt in der Warteschlange.",
+    "es": "Hermes todavía no puede incluirlo en esta respuesta. Sigue en la cola.",
+    "fr": "Hermes ne peut pas encore l'intégrer à cette réponse. Il reste dans la file.",
+    "id": "Hermes belum bisa memasukkannya ke balasan ini. Pesan tetap dalam antrean.",
+    "it": "Hermes non può ancora inserirlo in questa risposta. Resta in coda.",
+    "ja": "Hermesはまだこの返信に取り込めません。待機列に残ります。",
+    "ko": "Hermes가 아직 이 응답에 넣을 수 없습니다. 대기열에 남아 있습니다.",
+    "pl": "Hermes nie może jeszcze dołączyć jej do tej odpowiedzi. Zostaje w kolejce.",
+    "pt-BR": "O Hermes ainda não consegue incluí-la nesta resposta. Ela continua na fila.",
+    "ru": "Hermes пока не может добавить его в этот ответ. Оно остаётся в очереди.",
+    "tr": "Hermes bunu henüz bu yanıta alamıyor. Sırada kalıyor.",
+    "zh-Hans": "Hermes 暂时还无法把它加入这条回复。它仍在队列中。",
+    "zh-Hant": "Hermes 暫時還無法把它加入這則回覆。它仍在佇列中。"
+  },
   "Hermes couldn't reach the server.": {
     "de": "Hermes hat den Server nicht erreicht.",
     "es": "Hermes no pudo conectar con el servidor.",
@@ -10303,6 +10363,21 @@
     "tr": "Hermes bunu yazıya dökemedi: {error}",
     "zh-Hans": "Hermes 无法转写这段内容：{error}",
     "zh-Hant": "Hermes 無法轉寫這段內容：{error}"
+  },
+  "Hermes couldn’t be reached. Check the queue before you try again.": {
+    "de": "Hermes war nicht erreichbar. Sieh in der Warteschlange nach, bevor du es noch einmal versuchst.",
+    "es": "No se pudo contactar con Hermes. Revisa la cola antes de volver a intentarlo.",
+    "fr": "Impossible de joindre Hermes. Vérifiez la file d'attente avant de réessayer.",
+    "id": "Hermes tidak bisa dihubungi. Periksa antrean sebelum mencoba lagi.",
+    "it": "Impossibile raggiungere Hermes. Controlla la coda prima di riprovare.",
+    "ja": "Hermesに接続できませんでした。もう一度試す前に待機列を確認してください。",
+    "ko": "Hermes에 연결할 수 없습니다. 다시 시도하기 전에 대기열을 확인하세요.",
+    "pl": "Nie udało się połączyć z Hermesem. Sprawdź kolejkę, zanim spróbujesz ponownie.",
+    "pt-BR": "Não foi possível falar com o Hermes. Confira a fila antes de tentar de novo.",
+    "ru": "Не удалось связаться с Hermes. Проверьте очередь, прежде чем повторить попытку.",
+    "tr": "Hermes'e ulaşılamadı. Tekrar denemeden önce sırayı kontrol et.",
+    "zh-Hans": "无法连接 Hermes。请先查看队列，再重试。",
+    "zh-Hant": "無法連線 Hermes。請先查看佇列，再重試。"
   },
   "Hermes decides when to call": {
     "de": "Hermes entscheidet, wann er anruft",
@@ -10423,6 +10498,21 @@
     "tr": "Hermes hangi odayı oluşturduğunu söylemedi.",
     "zh-Hans": "Hermes 没说创建了哪个房间。",
     "zh-Hant": "Hermes 沒說建立了哪個聊天室。"
+  },
+  "Hermes didn’t say which turn this was. Reopen the chat and try again.": {
+    "de": "Hermes hat nicht gesagt, welcher Durchgang das war. Öffne den Chat erneut und versuche es noch einmal.",
+    "es": "Hermes no indicó qué turno era. Vuelve a abrir el chat e inténtalo de nuevo.",
+    "fr": "Hermes n'a pas indiqué de quel tour il s'agissait. Rouvrez la discussion et réessayez.",
+    "id": "Hermes tidak menyebutkan giliran yang mana. Buka lagi obrolannya dan coba lagi.",
+    "it": "Hermes non ha indicato di quale turno si trattasse. Riapri la chat e riprova.",
+    "ja": "どのターンだったかHermesが示しませんでした。チャットを開き直して、もう一度お試しください。",
+    "ko": "Hermes가 어느 턴인지 알려 주지 않았습니다. 채팅을 다시 열고 다시 시도하세요.",
+    "pl": "Hermes nie podał, która to była tura. Otwórz czat ponownie i spróbuj jeszcze raz.",
+    "pt-BR": "O Hermes não disse qual turno era. Abra o chat de novo e tente outra vez.",
+    "ru": "Hermes не сообщил, какой это был ход. Откройте чат заново и повторите попытку.",
+    "tr": "Hermes bunun hangi tur olduğunu söylemedi. Sohbeti yeniden açıp tekrar dene.",
+    "zh-Hans": "Hermes 没有说明这是哪一轮。请重新打开聊天后再试一次。",
+    "zh-Hant": "Hermes 沒有說明這是哪一輪。請重新開啟聊天後再試一次。"
   },
   "Hermes ends it on your host. Anything it was serving or watching stops with it.": {
     "de": "Hermes beendet ihn auf deinem Host. Was er bereitgestellt oder beobachtet hat, stoppt mit ihm.",
@@ -10873,6 +10963,21 @@
     "tr": "Hermes böyle yanıt verir.",
     "zh-Hans": "Hermes 会这样回复。",
     "zh-Hant": "Hermes 會這樣回覆。"
+  },
+  "Hermes restarted before it finished this.": {
+    "de": "Hermes wurde neu gestartet, bevor das hier fertig war.",
+    "es": "Hermes se reinició antes de terminar esto.",
+    "fr": "Hermes a redémarré avant d'avoir terminé ceci.",
+    "id": "Hermes dimulai ulang sebelum menyelesaikan ini.",
+    "it": "Hermes si è riavviato prima di finire questo.",
+    "ja": "これが終わる前にHermesが再起動しました。",
+    "ko": "이 작업을 마치기 전에 Hermes가 다시 시작되었습니다.",
+    "pl": "Hermes uruchomił się ponownie, zanim to skończył.",
+    "pt-BR": "O Hermes reiniciou antes de terminar isto.",
+    "ru": "Hermes перезапустился, не успев это закончить.",
+    "tr": "Hermes bunu bitirmeden yeniden başladı.",
+    "zh-Hans": "Hermes 在完成这条之前重启了。",
+    "zh-Hant": "Hermes 在完成這則之前重新啟動了。"
   },
   "Hermes restarts its gateway process. Messaging channels, running sessions and any profiles that share this gateway reconnect once it's back.": {
     "de": "Hermes startet seinen Gateway-Prozess neu. Messaging-Kanäle, laufende Sitzungen und alle Profile, die sich dieses Gateway teilen, verbinden sich wieder, sobald es zurück ist.",
@@ -12269,6 +12374,21 @@
     "zh-Hans": "它只会发送到 Hermes 主机，仅用于此次安装，不会被保存。",
     "zh-Hant": "它只會傳送到 Hermes 主機，僅用於這次安裝，不會被保存。"
   },
+  "It goes to the back of the line. To withdraw it, use Remove from queue.": {
+    "de": "Sie kommt ans Ende der Warteschlange. Um sie zurückzuziehen, nutze „Aus der Warteschlange entfernen“.",
+    "es": "Pasa al final de la cola. Para retirarlo, usa «Quitar de la cola».",
+    "fr": "Il passe en fin de file. Pour le retirer, utilisez « Retirer de la file d'attente ».",
+    "id": "Pesan dipindah ke akhir antrean. Untuk menariknya, gunakan Hapus dari antrean.",
+    "it": "Va in fondo alla coda. Per ritirarlo, usa «Rimuovi dalla coda».",
+    "ja": "列の最後に回ります。取り下げるには「待機列から削除」を使ってください。",
+    "ko": "대기열 맨 뒤로 갑니다. 취소하려면 '대기열에서 제거'를 사용하세요.",
+    "pl": "Trafi na koniec kolejki. Aby ją wycofać, użyj opcji „Usuń z kolejki”.",
+    "pt-BR": "Ela vai para o fim da fila. Para retirá-la, use Remover da fila.",
+    "ru": "Оно переместится в конец очереди. Чтобы отозвать его, нажмите «Убрать из очереди».",
+    "tr": "Sıranın sonuna gider. Geri çekmek için Sıradan kaldır'ı kullan.",
+    "zh-Hans": "它会排到队尾。要撤回，请使用“从队列中移除”。",
+    "zh-Hant": "它會排到隊尾。要撤回，請使用「從佇列中移除」。"
+  },
   "It may still be finishing running tasks. Run hermes gateway status on the host to check.": {
     "de": "Vielleicht schließt es noch laufende Aufgaben ab. Führe hermes gateway status auf dem Host aus, um nachzusehen.",
     "es": "Puede que aún esté terminando tareas en curso. Ejecuta hermes gateway status en el host para comprobarlo.",
@@ -13018,6 +13138,21 @@
     "tr": "{bot} Koordine Etsin",
     "zh-Hans": "让 {bot} 协调它",
     "zh-Hant": "讓 {bot} 協調它"
+  },
+  "Lets the messages waiting behind it go on.": {
+    "de": "Lässt die Nachrichten, die dahinter warten, weiterlaufen.",
+    "es": "Deja que sigan los mensajes que esperan detrás.",
+    "fr": "Laisse avancer les messages qui attendent derrière.",
+    "id": "Membiarkan pesan yang menunggu di belakangnya berjalan.",
+    "it": "Lascia proseguire i messaggi in attesa dopo di esso.",
+    "ja": "後ろで待っているメッセージを先に進めます。",
+    "ko": "뒤에서 기다리는 메시지를 계속 진행합니다.",
+    "pl": "Pozwala ruszyć wiadomościom czekającym za nią.",
+    "pt-BR": "Deixa as mensagens que esperam atrás dela seguirem.",
+    "ru": "Позволяет продолжить сообщениям, ожидающим за ним.",
+    "tr": "Arkasında bekleyen mesajların devam etmesini sağlar.",
+    "zh-Hans": "让排在后面的消息继续。",
+    "zh-Hant": "讓排在後面的訊息繼續。"
   },
   "Letting running tasks finish…": {
     "de": "Laufende Aufgaben werden abgeschlossen …",
@@ -14158,6 +14293,21 @@
     "tr": "{name} adlı bota mesaj…",
     "zh-Hans": "给 {name} 发消息…",
     "zh-Hant": "傳訊息給 {name}…"
+  },
+  "Messages after it wait until you choose.": {
+    "de": "Nachrichten danach warten, bis du dich entscheidest.",
+    "es": "Los mensajes posteriores esperan hasta que elijas.",
+    "fr": "Les messages suivants attendent votre choix.",
+    "id": "Pesan setelahnya menunggu sampai kamu memilih.",
+    "it": "I messaggi successivi attendono la tua scelta.",
+    "ja": "この後のメッセージは、選ぶまで待機します。",
+    "ko": "이후 메시지는 선택할 때까지 대기합니다.",
+    "pl": "Kolejne wiadomości czekają, aż wybierzesz.",
+    "pt-BR": "As mensagens seguintes esperam até você escolher.",
+    "ru": "Следующие сообщения ждут вашего решения.",
+    "tr": "Sonraki mesajlar sen seçene kadar bekler.",
+    "zh-Hans": "之后的消息会等到你做出选择。",
+    "zh-Hant": "之後的訊息會等到你做出選擇。"
   },
   "Microphone input level": {
     "de": "Mikrofon-Eingangspegel",
@@ -15718,6 +15868,21 @@
     "tr": "Henüz sağlayıcı yok.",
     "zh-Hans": "还没有提供方。",
     "zh-Hant": "尚無供應商。"
+  },
+  "No reply is running to send it into. It runs next.": {
+    "de": "Es läuft keine Antwort, in die sie gehen könnte. Sie kommt als Nächstes dran.",
+    "es": "No hay ninguna respuesta en curso a la que enviarlo. Va a continuación.",
+    "fr": "Aucune réponse n'est en cours pour l'y envoyer. Il passe ensuite.",
+    "id": "Tidak ada balasan yang sedang berjalan untuk dikirimi. Pesan berjalan berikutnya.",
+    "it": "Nessuna risposta in corso in cui inviarlo. Va subito dopo.",
+    "ja": "送り込める返信が進行中ではありません。次に実行されます。",
+    "ko": "보낼 수 있는 진행 중인 응답이 없습니다. 다음 순서로 실행됩니다.",
+    "pl": "Nie trwa żadna odpowiedź, do której można ją wysłać. Pójdzie jako następna.",
+    "pt-BR": "Nenhuma resposta está em andamento para recebê-la. Ela vai em seguida.",
+    "ru": "Нет идущего ответа, в который его можно отправить. Оно будет следующим.",
+    "tr": "Gönderilebilecek, devam eden bir yanıt yok. Sıradaki o.",
+    "zh-Hans": "当前没有正在进行的回复可以加入。它会接着运行。",
+    "zh-Hant": "目前沒有正在進行的回覆可以加入。它會接著執行。"
   },
   "No schedule": {
     "de": "Kein Zeitplan",
@@ -18839,6 +19004,21 @@
     "zh-Hans": "排队中",
     "zh-Hant": "排隊中"
   },
+  "Queued messages": {
+    "de": "Nachrichten in der Warteschlange",
+    "es": "Mensajes en cola",
+    "fr": "Messages en file d'attente",
+    "id": "Pesan dalam antrean",
+    "it": "Messaggi in coda",
+    "ja": "キュー内のメッセージ",
+    "ko": "대기 중인 메시지",
+    "pl": "Wiadomości w kolejce",
+    "pt-BR": "Mensagens na fila",
+    "ru": "Сообщения в очереди",
+    "tr": "Sıradaki mesajlar",
+    "zh-Hans": "排队中的消息",
+    "zh-Hant": "排隊中的訊息"
+  },
   "Quick Ask": {
     "de": "Schnellfrage",
     "es": "Pregunta rápida",
@@ -19589,6 +19769,21 @@
     "zh-Hans": "从“已保存”中移除",
     "zh-Hant": "從「已儲存」中移除"
   },
+  "Remove from queue": {
+    "de": "Aus der Warteschlange entfernen",
+    "es": "Quitar de la cola",
+    "fr": "Retirer de la file d'attente",
+    "id": "Hapus dari antrean",
+    "it": "Rimuovi dalla coda",
+    "ja": "待機列から削除",
+    "ko": "대기열에서 제거",
+    "pl": "Usuń z kolejki",
+    "pt-BR": "Remover da fila",
+    "ru": "Убрать из очереди",
+    "tr": "Sıradan kaldır",
+    "zh-Hans": "从队列中移除",
+    "zh-Hant": "從佇列中移除"
+  },
   "Remove it from your calendar?": {
     "de": "Aus deinem Kalender entfernen?",
     "es": "¿Quitarlo de tu calendario?",
@@ -20023,6 +20218,36 @@
     "tr": "Zorunlu",
     "zh-Hans": "必填",
     "zh-Hant": "必填"
+  },
+  "Resend": {
+    "de": "Erneut senden",
+    "es": "Reenviar",
+    "fr": "Renvoyer",
+    "id": "Kirim ulang",
+    "it": "Invia di nuovo",
+    "ja": "再送信",
+    "ko": "다시 보내기",
+    "pl": "Wyślij ponownie",
+    "pt-BR": "Reenviar",
+    "ru": "Отправить снова",
+    "tr": "Yeniden gönder",
+    "zh-Hans": "重新发送",
+    "zh-Hant": "重新傳送"
+  },
+  "Resend sends the words only, without any files.": {
+    "de": "„Erneut senden“ schickt nur den Text, ohne Dateien.",
+    "es": "Reenviar envía solo el texto, sin archivos.",
+    "fr": "Renvoyer n’envoie que le texte, sans les fichiers.",
+    "id": "Kirim ulang hanya mengirim teksnya, tanpa file.",
+    "it": "Invia di nuovo invia solo il testo, senza file.",
+    "ja": "再送信では文章だけが送られ、ファイルは送られません。",
+    "ko": "다시 보내기는 파일 없이 글만 보냅니다.",
+    "pl": "Wyślij ponownie wysyła tylko tekst, bez plików.",
+    "pt-BR": "Reenviar envia só o texto, sem arquivos.",
+    "ru": "«Отправить снова» отправляет только текст, без файлов.",
+    "tr": "Yeniden gönder yalnızca metni gönderir, dosyalar gönderilmez.",
+    "zh-Hans": "重新发送只会发送文字，不含任何文件。",
+    "zh-Hant": "重新傳送只會傳送文字，不含任何檔案。"
   },
   "Reset": {
     "de": "Zurücksetzen",
@@ -21944,6 +22169,21 @@
     "zh-Hans": "发送",
     "zh-Hant": "傳送"
   },
+  "Send now": {
+    "de": "Jetzt senden",
+    "es": "Enviar ahora",
+    "fr": "Envoyer maintenant",
+    "id": "Kirim sekarang",
+    "it": "Invia ora",
+    "ja": "今すぐ送信",
+    "ko": "지금 보내기",
+    "pl": "Wyślij teraz",
+    "pt-BR": "Enviar agora",
+    "ru": "Отправить сейчас",
+    "tr": "Şimdi gönder",
+    "zh-Hans": "立即发送",
+    "zh-Hant": "立即傳送"
+  },
   "Send to {ref}": {
     "de": "An {ref} senden",
     "es": "Enviar a {ref}",
@@ -22003,6 +22243,21 @@
     "tr": "Gönderiliyor…",
     "zh-Hans": "发送中…",
     "zh-Hant": "傳送中…"
+  },
+  "Sends these words again as a new message, without any files it had.": {
+    "de": "Sendet diese Worte noch einmal als neue Nachricht, ohne die Dateien, die sie hatte.",
+    "es": "Vuelve a enviar estas palabras como un mensaje nuevo, sin los archivos que tenía.",
+    "fr": "Renvoie ces mots dans un nouveau message, sans les fichiers qu'il contenait.",
+    "id": "Mengirim ulang kata-kata ini sebagai pesan baru, tanpa file yang dibawanya.",
+    "it": "Invia di nuovo queste parole come nuovo messaggio, senza i file che aveva.",
+    "ja": "この言葉を新しいメッセージとしてもう一度送ります。付いていたファイルは送られません。",
+    "ko": "이 말을 새 메시지로 다시 보냅니다. 첨부되어 있던 파일은 보내지 않습니다.",
+    "pl": "Wysyła te słowa ponownie jako nową wiadomość, bez plików, które zawierała.",
+    "pt-BR": "Envia estas palavras de novo como uma nova mensagem, sem os arquivos que ela tinha.",
+    "ru": "Отправляет эти слова снова новым сообщением, без файлов, которые в нём были.",
+    "tr": "Bu sözleri, içindeki dosyalar olmadan yeni bir mesaj olarak yeniden gönderir.",
+    "zh-Hans": "将这些文字作为新消息重新发送，不含原有的文件。",
+    "zh-Hant": "將這些文字作為新訊息重新傳送，不含原有的檔案。"
   },
   "Sent. The agent reads it at its next step.": {
     "de": "Gesendet. Der Agent liest es bei seinem nächsten Schritt.",
@@ -24643,6 +24898,21 @@
     "tr": "Bu bir saat dilimi adı değil. America/Toronto veya Europe/Paris gibi bir ad kullanın ya da sunucunun yerel saati için boş bırakın.",
     "zh-Hans": "这不是时区名称。请使用 America/Toronto 或 Europe/Paris 这样的名称，或留空以使用服务器本地时间。",
     "zh-Hant": "這不是時區名稱。請使用 America/Toronto 或 Europe/Paris 這類名稱，或留空以使用伺服器本地時間。"
+  },
+  "That message isn’t waiting any more.": {
+    "de": "Diese Nachricht wartet nicht mehr.",
+    "es": "Ese mensaje ya no está esperando.",
+    "fr": "Ce message n'attend plus.",
+    "id": "Pesan itu sudah tidak menunggu lagi.",
+    "it": "Quel messaggio non è più in attesa.",
+    "ja": "そのメッセージはもう待機していません。",
+    "ko": "그 메시지는 더 이상 대기 중이 아닙니다.",
+    "pl": "Ta wiadomość już nie czeka.",
+    "pt-BR": "Essa mensagem não está mais esperando.",
+    "ru": "Это сообщение больше не ждёт.",
+    "tr": "O mesaj artık beklemiyor.",
+    "zh-Hans": "那条消息已不再等待。",
+    "zh-Hant": "那則訊息已不再等待。"
   },
   "That name can’t be used.": {
     "de": "Dieser Name kann nicht verwendet werden.",

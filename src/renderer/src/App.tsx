@@ -71,6 +71,7 @@ import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
+import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
 import { StepSummarySettings } from './components/StepSummarySettings'
 import { PredictiveSettings } from './components/PredictiveSettings'
@@ -188,7 +189,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     takeOver,
     respondConnection,
     reissueConnection,
-    wakeConnection
+    wakeConnection,
+    queue,
+    cancelQueued,
+    editQueued,
+    sendQueuedNow,
+    discardLost,
+    resendLost
   } = useChat(selected.id, selected.profile, status.sessionAuthority === true, connected, selected.botChat === true, selected.id ? undefined : selected.folder)
 
   // The chat list's profile: a new chat starts in it.
@@ -1160,6 +1167,18 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   </button>
                 </div>
               ) : null}
+              <ChatQueueDock
+                rows={queue}
+                chatKey={selected.id ?? 'new'}
+                onSendNow={sendQueuedNow}
+                onEdit={editQueued}
+                onCancel={cancelQueued}
+                onDiscard={discardLost}
+                onResend={async row => {
+                  const words = await resendLost(row)
+                  if (words) setQuote(prefillRequest(words, botTitle))
+                }}
+              />
               <Composer
                 sendNow={sendNow}
                 placeholder={t('Message {name}…', { name: botTitle })}
