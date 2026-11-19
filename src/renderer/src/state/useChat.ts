@@ -10,6 +10,7 @@ import {
   takingOverMessage
 } from './chatTakeover'
 import { connectionFrom, connectionOwner, type ConnectionCard } from './connections'
+import { isRuntimeGone } from './runtimeGone'
 import { gateway, GatewayError } from '../gateway'
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { contextFromUsage, parseBreakdown, type ContextWindow } from './context'
@@ -456,9 +457,28 @@ export function useChat(storedId: string | null, profile: string | undefined, se
             dispatch({ type: 'held', key, admission: receipt.admission_id })
           }
         }
+        /** Hermes cleared the chat's runtime: resumed by its stored id, which still finds it, the message goes once more. */
+        const resumedAfterReap = async (e: unknown): Promise<boolean> => {
+          const stored = chatRef.current.storedId
+          if (!isRuntimeGone(e) || createdStoredId || uploaded || !stored || liveId.current !== sid) return false
+          const resume: Record<string, unknown> = { session_id: stored, cols: 96, source: 'desktop', omit_messages: true }
+          if (profile) resume.profile = profile
+          const result = await gateway.rpc<ResumeResult>('session.resume', resume).catch(() => null)
+          if (!result?.session_id || liveId.current !== sid) return false
+          liveId.current = result.session_id
+          sid = result.session_id
+          params.session_id = result.session_id
+          setChat(c => ({ ...c, liveId: result.session_id, storedId: result.stored_session_id ?? c.storedId }))
+          return true
+        }
         try {
           await submit()
         } catch (e) {
+          if (await resumedAfterReap(e)) {
+            await submit()
+            setTakeover(null)
+            return createdStoredId
+          }
           if (!isSessionNotOwned(e)) throw e
           // Another app holds the chat. Taking it over waits out a reply it's running, then the message goes (#304, #1061).
           const surface = refusalDetails(e instanceof Error ? e.message : String(e)).surface
