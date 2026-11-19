@@ -3,9 +3,11 @@ import ReactMarkdown from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
 import remarkGfm from 'remark-gfm'
 import { looksLikePath } from '../state/workspace'
+import { remarkDesktopCards } from '../state/desktopCards'
+import { DesktopCard } from './DesktopCard'
 
 // A single newline is a line break, as replies are written for chat, not for a page.
-const plugins = [remarkGfm, remarkBreaks]
+const plugins = [remarkGfm, remarkBreaks, remarkDesktopCards]
 
 /** Opens a file path a reply names in inline code, in the Folder; null where there's no folder. */
 export const FileLinks = createContext<((path: string) => void) | null>(null)
@@ -45,7 +47,14 @@ export const Markdown = memo(function Markdown({ text }: { text: string }) {
             {children}
           </a>
         ),
-        code: ({ className, children }) => <Code className={className}>{children}</Code>
+        code: ({ className, children }) => <Code className={className}>{children}</Code>,
+        // A directive only Hermes Desktop draws: its card (remarkDesktopCards).
+        ...({
+          'desktop-card': ({ node }: { node?: { properties?: Record<string, unknown> } }) => {
+            const p = node?.properties ?? {}
+            return <DesktopCard name={String(p.dataName ?? '')} source={String(p.dataSource ?? '')} id={String(p.dataId ?? '')} />
+          }
+        } as object)
       }}
     >
       {text}
