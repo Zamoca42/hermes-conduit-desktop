@@ -9257,3 +9257,47 @@ button.secondary.danger {
 .teammate-reply[open] > summary {
   margin-bottom: 8px;
 }
+
+/* Show in All, from the All chip: which profiles All lists, and Group by profile. */
+.profile-strip-wrap {
+  position: relative;
+}
+
+.show-in-all {
+  top: calc(100% + 4px);
+  left: 12px;
+  right: 12px;
+  min-width: 0;
+  gap: 4px;
+  padding: 10px;
+}
+
+.show-in-all > .meta {
+  margin-bottom: 6px;
+  font-size: 12px;
+  white-space: normal;
+}
+
+.show-in-all-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.show-in-all-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.show-in-all-row.group {
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding-top: 10px;
+}

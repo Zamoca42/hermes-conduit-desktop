@@ -1124,6 +1124,21 @@
     "zh-Hans": "所有聊天",
     "zh-Hant": "所有聊天"
   },
+  "All lists these profiles' chats together, newest first. A new chat asks which profile to use.": {
+    "de": "„Alle“ zeigt die Chats dieser Profile zusammen, die neuesten zuerst. Ein neuer Chat fragt, welches Profil er nutzen soll.",
+    "es": "Todos muestra juntos los chats de estos perfiles, los más recientes primero. Un chat nuevo pregunta qué perfil usar.",
+    "fr": "Tous regroupe les discussions de ces profils, les plus récentes en premier. Une nouvelle discussion demande quel profil utiliser.",
+    "id": "Semua menampilkan obrolan profil-profil ini bersama, yang terbaru lebih dulu. Obrolan baru akan menanyakan profil mana yang dipakai.",
+    "it": "Tutti mostra insieme le chat di questi profili, le più recenti prima. Una nuova chat chiede quale profilo usare.",
+    "ja": "「すべて」には、これらのプロファイルのチャットが新しい順にまとめて表示されます。新規チャットでは使うプロファイルを選べます。",
+    "ko": "전체에는 이 프로필들의 채팅이 최신순으로 함께 표시됩니다. 새 채팅을 만들 때는 사용할 프로필을 묻습니다.",
+    "pl": "Wszystkie pokazuje razem czaty tych profili, od najnowszych. Nowy czat pyta, którego profilu użyć.",
+    "pt-BR": "Todos mostra juntos os chats destes perfis, os mais recentes primeiro. Um novo chat pergunta qual perfil usar.",
+    "ru": "В «Все» чаты этих профилей идут вместе, сначала новые. Новый чат спросит, какой профиль использовать.",
+    "tr": "Tümü, bu profillerin sohbetlerini en yenisi önce olmak üzere bir arada gösterir. Yeni sohbet hangi profilin kullanılacağını sorar.",
+    "zh-Hans": "“全部”会把这些配置的聊天放在一起，最新的在前。新建聊天时会询问使用哪个配置。",
+    "zh-Hant": "「全部」會把這些設定檔的聊天放在一起，最新的在前。新增聊天時會詢問要使用哪個設定檔。"
+  },
   "All profiles": {
     "de": "Alle Profile",
     "es": "Todos los perfiles",
@@ -22214,6 +22229,21 @@
     "zh-Hans": "立即，并发送通知",
     "zh-Hant": "立即，並傳送通知"
   },
+  "Right-click to choose which profiles All shows": {
+    "de": "Rechtsklick, um zu wählen, welche Profile „Alle“ zeigt",
+    "es": "Haz clic derecho para elegir qué perfiles muestra Todos",
+    "fr": "Clic droit pour choisir les profils affichés dans Tous",
+    "id": "Klik kanan untuk memilih profil yang ditampilkan Semua",
+    "it": "Clic destro per scegliere quali profili mostra Tutti",
+    "ja": "右クリックで「すべて」に表示するプロフィールを選べます",
+    "ko": "오른쪽 클릭으로 전체에 표시할 프로필을 선택합니다",
+    "pl": "Kliknij prawym przyciskiem, aby wybrać profile widoczne we Wszystkich",
+    "pt-BR": "Clique com o botão direito para escolher quais perfis Todos mostra",
+    "ru": "Щёлкните правой кнопкой, чтобы выбрать профили для «Все»",
+    "tr": "Tümü'nde hangi profillerin görüneceğini seçmek için sağ tıklayın",
+    "zh-Hans": "右键选择“全部”显示哪些资料",
+    "zh-Hant": "按右鍵選擇「全部」顯示哪些設定檔"
+  },
   "Room name": {
     "de": "Raumname",
     "es": "Nombre de la sala",
@@ -24313,6 +24343,21 @@
     "tr": "Daha az göster",
     "zh-Hans": "收起",
     "zh-Hant": "收合"
+  },
+  "Show in All": {
+    "de": "In „Alle“ zeigen",
+    "es": "Mostrar en Todos",
+    "fr": "Afficher dans Tous",
+    "id": "Tampilkan di Semua",
+    "it": "Mostra in Tutti",
+    "ja": "「すべて」に表示",
+    "ko": "전체에 표시",
+    "pl": "Pokaż w Wszystkie",
+    "pt-BR": "Mostrar em Todos",
+    "ru": "Показывать во «Все»",
+    "tr": "Tümü'nde göster",
+    "zh-Hans": "在“全部”中显示",
+    "zh-Hant": "在「全部」中顯示"
   },
   "Show in Chat": {
     "de": "Im Chat zeigen",
@@ -34588,6 +34633,21 @@
     "tr": "{name} eklentiyi güncel tutar.",
     "zh-Hans": "{name} 会保持插件为最新版本。",
     "zh-Hant": "{name} 會讓外掛保持最新版本。"
+  },
+  "{name} profile": {
+    "de": "Profil {name}",
+    "es": "Perfil {name}",
+    "fr": "Profil {name}",
+    "id": "Profil {name}",
+    "it": "Profilo {name}",
+    "ja": "{name} プロファイル",
+    "ko": "{name} 프로필",
+    "pl": "Profil {name}",
+    "pt-BR": "Perfil {name}",
+    "ru": "Профиль {name}",
+    "tr": "{name} profili",
+    "zh-Hans": "{name} 配置文件",
+    "zh-Hant": "{name} 設定檔"
   },
   "{name} wants to talk": {
     "de": "{name} möchte sprechen",

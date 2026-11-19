@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { GROUP_PREVIEW_COUNT, profileGroups } from '../src/renderer/src/state/profileGroups'
+import { GROUP_PREVIEW_COUNT, includedInAll, profileGroups, shownInAll } from '../src/renderer/src/state/profileGroups'
 import type { ChatRow } from '../src/renderer/src/state/chats'
 
 const row = (id: string, profile: string | undefined, activeAt: number, pinned = false): ChatRow => ({ id, title: id, pinned, profile, activeAt })
@@ -34,5 +34,24 @@ describe('all profiles grouped by profile', () => {
     const groups = profileGroups(rows, ['default'], { capped: false, showsAll: () => false, openId: null })
     expect(groups[0]!.rows).toHaveLength(9)
     expect(groups[0]!.hidden).toBe(0)
+  })
+})
+
+describe('Show in All', () => {
+  const profiles = ['default', 'atlas', 'iris']
+  it('lists every profile but the ones left out, by name, and never nothing', () => {
+    expect(includedInAll(profiles, [])).toEqual(profiles)
+    expect(includedInAll(profiles, ['Atlas'])).toEqual(['default', 'iris'])
+    // A name left out that's gone, or every one left out: all of them.
+    expect(includedInAll(profiles, ['gone'])).toEqual(profiles)
+    expect(includedInAll(profiles, profiles)).toEqual(profiles)
+  })
+
+  it('hides only a left-out profile’s rows, the main profile’s rows included', () => {
+    expect(shownInAll('atlas', profiles, ['atlas'])).toBe(false)
+    expect(shownInAll(undefined, profiles, ['default'])).toBe(false)
+    expect(shownInAll('iris', profiles, ['atlas'])).toBe(true)
+    expect(shownInAll('elsewhere', profiles, ['atlas'])).toBe(true)
+    expect(shownInAll('atlas', profiles, profiles)).toBe(true)
   })
 })
