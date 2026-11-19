@@ -2444,6 +2444,21 @@
     "zh-Hans": "幕后",
     "zh-Hant": "幕後"
   },
+  "Beside chat": {
+    "de": "Neben dem Chat",
+    "es": "Junto al chat",
+    "fr": "À côté de la discussion",
+    "id": "Di samping chat",
+    "it": "Accanto alla chat",
+    "ja": "チャットの横",
+    "ko": "채팅 옆에",
+    "pl": "Obok czatu",
+    "pt-BR": "Ao lado da conversa",
+    "ru": "Рядом с чатом",
+    "tr": "Sohbetin yanında",
+    "zh-Hans": "在聊天旁边",
+    "zh-Hant": "在聊天旁邊"
+  },
   "Between Workstreams": {
     "de": "Zwischen Workstreams",
     "es": "Entre flujos de trabajo",
@@ -3838,6 +3853,21 @@
     "tr": "Kapat",
     "zh-Hans": "关闭",
     "zh-Hant": "關閉"
+  },
+  "Close Chat Beside": {
+    "de": "Chat daneben schließen",
+    "es": "Cerrar el chat de al lado",
+    "fr": "Fermer la discussion à côté",
+    "id": "Tutup Chat di Samping",
+    "it": "Chiudi la chat a fianco",
+    "ja": "横のチャットを閉じる",
+    "ko": "옆 채팅 닫기",
+    "pl": "Zamknij czat obok",
+    "pt-BR": "Fechar a conversa ao lado",
+    "ru": "Закрыть чат рядом",
+    "tr": "Yandaki Sohbeti Kapat",
+    "zh-Hans": "关闭旁边的聊天",
+    "zh-Hant": "關閉旁邊的聊天"
   },
   "Closes the task, with the note as its summary of what was done.": {
     "de": "Schließt die Aufgabe ab, mit der Notiz als Zusammenfassung des Erledigten.",
@@ -17039,6 +17069,21 @@
     "zh-Hans": "只提值得打扰你的事：每天一条提醒，承诺检查得少一些。",
     "zh-Hant": "只提值得打擾你的事：每天一則提醒，承諾檢查得少一些。"
   },
+  "Open Beside": {
+    "de": "Daneben öffnen",
+    "es": "Abrir al lado",
+    "fr": "Ouvrir à côté",
+    "id": "Buka di Samping",
+    "it": "Apri a fianco",
+    "ja": "横に並べて開く",
+    "ko": "옆에 열기",
+    "pl": "Otwórz obok",
+    "pt-BR": "Abrir ao lado",
+    "ru": "Открыть рядом",
+    "tr": "Yanında Aç",
+    "zh-Hans": "在旁边打开",
+    "zh-Hant": "在旁邊打開"
+  },
   "Open Conduit": {
     "de": "Conduit öffnen",
     "es": "Abrir Conduit",
@@ -22244,6 +22289,21 @@
     "zh-Hans": "发送中…",
     "zh-Hant": "傳送中…"
   },
+  "Sends once the reply has finished": {
+    "de": "Wird gesendet, sobald die Antwort fertig ist",
+    "es": "Se envía cuando termine la respuesta",
+    "fr": "S'envoie une fois la réponse terminée",
+    "id": "Terkirim setelah balasan selesai",
+    "it": "Si invia quando la risposta è finita",
+    "ja": "返信が終わると送信されます",
+    "ko": "답장이 끝나면 보내요",
+    "pl": "Wyśle się po zakończeniu odpowiedzi",
+    "pt-BR": "Envia quando a resposta terminar",
+    "ru": "Отправится, когда ответ закончится",
+    "tr": "Yanıt bitince gönderilir",
+    "zh-Hans": "回复结束后发送",
+    "zh-Hant": "回覆結束後傳送"
+  },
   "Sends these words again as a new message, without any files it had.": {
     "de": "Sendet diese Worte noch einmal als neue Nachricht, ohne die Dateien, die sie hatte.",
     "es": "Vuelve a enviar estas palabras como un mensaje nuevo, sin los archivos que tenía.",
@@ -24418,6 +24478,36 @@
     "tr": "Sörfçü",
     "zh-Hans": "冲浪手",
     "zh-Hant": "衝浪手"
+  },
+  "Swap": {
+    "de": "Tauschen",
+    "es": "Intercambiar",
+    "fr": "Échanger",
+    "id": "Tukar",
+    "it": "Scambia",
+    "ja": "入れ替え",
+    "ko": "교체",
+    "pl": "Zamień",
+    "pt-BR": "Trocar",
+    "ru": "Поменять",
+    "tr": "Değiştir",
+    "zh-Hans": "交换",
+    "zh-Hant": "交換"
+  },
+  "Swap Chats": {
+    "de": "Chats tauschen",
+    "es": "Intercambiar chats",
+    "fr": "Échanger les discussions",
+    "id": "Tukar Chat",
+    "it": "Scambia le chat",
+    "ja": "チャットを入れ替える",
+    "ko": "채팅 맞바꾸기",
+    "pl": "Zamień czaty",
+    "pt-BR": "Trocar conversas",
+    "ru": "Поменять чаты местами",
+    "tr": "Sohbetleri Değiştir",
+    "zh-Hans": "交换聊天",
+    "zh-Hant": "交換聊天"
   },
   "Switch": {
     "de": "Wechseln",

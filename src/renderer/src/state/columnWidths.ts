@@ -78,3 +78,6 @@ export function writeWidth(bounds: ColumnBounds, width: number | null) {
     // Kept for this window only.
   }
 }
+
+/** Whether a chat fits beside the open one: the window less the list leaves the chat its least width and the pane its own. */
+export const besideChatFits = (windowWidth: number, listWidth: number) => windowWidth - RAIL_WIDTH - listWidth >= CHAT_LEAST + PANEL_COLUMN.min

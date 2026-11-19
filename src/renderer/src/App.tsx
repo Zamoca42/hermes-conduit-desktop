@@ -15,7 +15,8 @@ import { FilesPanel } from './components/FilesPanel'
 import { ColumnDivider } from './components/ColumnDivider'
 import { LastCallTrace } from './components/LastCallTrace'
 import { GlowContext, useGlowColors } from './components/GlowColors'
-import { LIST_COLUMN, PANEL_COLUMN, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
+import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
+import { BesideChatPane, type BesideChat } from './components/BesideChat'
 import { absolutePath, pathForDraft } from './state/workspace'
 import { FileLinks } from './components/Markdown'
 import { usePulse } from './state/usePulse'
@@ -451,6 +452,25 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   }, [])
   const listWidth = shownListWidth(listLive ?? listStored, windowWidth)
   const panelWidth = shownPanelWidth(panelLive ?? panelStored, windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
+  // A chat beside the open one: only where both fit, else the pane hides until the window widens.
+  const [beside, setBeside] = useState<BesideChat | null>(null)
+  const besideFits = besideChatFits(windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
+  const sameProfileAs = (a?: string, b?: string) => (a ?? 'default').toLowerCase() === (b ?? 'default').toLowerCase()
+  // Opening the pane's chat in the chat's column, or a chat of another profile, closes it.
+  useEffect(() => {
+    if (beside && (selected.id === beside.id || !sameProfileAs(selected.profile, beside.profile))) setBeside(null)
+  }, [beside, selected.id, selected.profile])
+  /** Open Beside: the row opens, and the chat on screen stays in the pane (an ordinary chat of the same profile only). */
+  const openBeside = (row: ChatRow) => {
+    const keeps = !!selected.id && !selected.botChat && selected.id !== row.id
+    setSelected({ id: row.id, profile: row.profile, title: row.title })
+    setBeside(keeps ? { id: selected.id!, profile: selected.profile, title: chat.title ?? selected.title } : null)
+  }
+  const swapBeside = () => {
+    if (!beside) return
+    setBeside(selected.id && !selected.botChat ? { id: selected.id, profile: selected.profile, title: chat.title ?? selected.title } : null)
+    setSelected({ id: beside.id, profile: beside.profile, title: beside.title })
+  }
   const commitList = (width: number | null) => {
     setListLive(null)
     setListStored(width)
@@ -492,6 +512,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     async (row: ChatRow, patch: { pinned?: boolean; title?: string } | null) => {
       list.patchRow(row.id, patch)
       if (patch === null && (selected.id === row.id || chat.storedId === row.id)) newChat()
+      if (patch === null) setBeside(current => (current?.id === row.id ? null : current))
       try {
         await mutateSession(gateway.http, row.id, row.profile, patch)
       } catch (e) {
@@ -596,6 +617,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const chooseProfile = useCallback(
     (next: string | null) => {
       setChatProfile(next)
+      // Any change of profile closes the chat kept beside.
+      if (next) setBeside(current => (current && !sameProfileAs(current.profile, next) ? null : current))
       if (!next) return
       const same = (name: string | undefined) => (name ?? 'default').toLowerCase() === next.toLowerCase()
       if (same(selected.profile)) return
@@ -917,6 +940,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 runningIds={runningIds}
                 runningStatus={transcript.status}
                 onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
+                onOpenBeside={besideFits ? openBeside : undefined}
+                canOpenBeside={row => row.id !== selected.id && row.id !== beside?.id && sameProfileAs(row.profile, selected.profile)}
                 onNewChat={newChat}
                 bots={roster.bots}
                 profile={chatProfile}
@@ -1218,7 +1243,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 voice={calling ? undefined : { profile: selected.profile }}
               />
             </main>
-            {(artifactsOpen && selected.id) || showWork || (filesOpen && chat.cwd) ? (
+            {(artifactsOpen && selected.id) || showWork || (filesOpen && chat.cwd) || (beside && besideFits) ? (
               <ColumnDivider label={t('Side panel width')} bounds={PANEL_COLUMN} sign={-1} width={panelWidth} onLive={setPanelLive} onCommit={commitPanel} />
             ) : null}
             {artifactsOpen && selected.id ? (
@@ -1252,6 +1277,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 reveal={reveal}
                 onInsertPath={path => setQuote(quoteRequest({ insert: pathForDraft(path) }))}
                 onClose={() => showFiles(false)}
+              />
+            ) : beside && besideFits ? (
+              <BesideChatPane
+                key={beside.id}
+                chat={beside}
+                sessionAuthority={status.sessionAuthority === true}
+                connected={connected}
+                author={roster.bots?.find(b => b.name === (beside.profile ?? 'default'))?.title ?? 'Hermes'}
+                display={chatDisplay}
+                onSwap={swapBeside}
+                onClose={() => setBeside(null)}
               />
             ) : null}
           </>

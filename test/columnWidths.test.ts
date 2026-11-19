@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LIST_COLUMN, PANEL_COLUMN, shownListWidth, shownPanelWidth, storedAfterDrag, storedAfterStep } from '../src/renderer/src/state/columnWidths'
+import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, shownListWidth, shownPanelWidth, storedAfterDrag, storedAfterStep } from '../src/renderer/src/state/columnWidths'
 
 describe('column widths', () => {
   it('drags within the column bounds, and a press that barely moves stores nothing', () => {
@@ -27,5 +27,14 @@ describe('column widths', () => {
     expect(shownPanelWidth(700, 1280, 320)).toBe(1280 - 72 - 320 - 430)
     expect(shownPanelWidth(400, 1600, 320)).toBe(400)
     expect(shownPanelWidth(700, 900, 320)).toBe(300)
+  })
+})
+
+describe('a chat beside the open one', () => {
+  it('fits only where the chat keeps its least width beside the pane', () => {
+    // 72 rail + 320 list + 430 chat + 300 pane.
+    expect(besideChatFits(1122, 320)).toBe(true)
+    expect(besideChatFits(1121, 320)).toBe(false)
+    expect(besideChatFits(900, 240)).toBe(false)
   })
 })
