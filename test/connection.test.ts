@@ -304,4 +304,26 @@ describe('more than one Hermes', () => {
     expect(fresh.connection.current()).toMatchObject({ phase: 'open', url: 'https://two' })
     expect(fresh.connection.isLocked).toBe(false)
   })
+  it('with Ask Which Dashboard at Launch, lists two or more hosts until one is picked', async () => {
+    const one = harness({ hosts: true })
+    one.hostList.save({ url: 'https://one', method: 'token', token: 'a' })
+    await one.connection.restore({ askWhich: true })
+    await tick()
+    // One host: nothing to choose, so it opens.
+    expect(one.connection.current()).toMatchObject({ phase: 'open', url: 'https://one' })
+
+    const two = harness({ hosts: true })
+    two.hostList.save({ url: 'https://one', method: 'token', token: 'a' })
+    two.hostList.save({ url: 'https://two', method: 'token', token: 'b' })
+    two.connection.lock()
+    await two.connection.unlocked({ askWhich: true })
+    await tick()
+    expect(two.sockets).toHaveLength(0)
+    expect(two.connection.current()).toMatchObject({ phase: 'signed-out', choosing: true, hosts: [{ url: 'https://one' }, { url: 'https://two' }] })
+    // The pick opens that host, not the last one used, and ends the wait.
+    expect(two.connection.switchHost('https://one')).toBe(true)
+    await tick()
+    expect(two.connection.current()).toMatchObject({ phase: 'open', url: 'https://one' })
+    expect(two.connection.current().choosing).toBeUndefined()
+  })
 })

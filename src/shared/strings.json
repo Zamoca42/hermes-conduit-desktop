@@ -689,6 +689,21 @@
     "zh-Hans": "添加评论，或说明完成了什么",
     "zh-Hant": "新增留言，或說明完成了什麼"
   },
+  "Add a dashboard": {
+    "de": "Dashboard hinzufügen",
+    "es": "Añadir un panel",
+    "fr": "Ajouter un tableau de bord",
+    "id": "Tambah dasbor",
+    "it": "Aggiungi una dashboard",
+    "ja": "ダッシュボードを追加",
+    "ko": "대시보드 추가",
+    "pl": "Dodaj panel",
+    "pt-BR": "Adicionar um painel",
+    "ru": "Добавить дашборд",
+    "tr": "Panel ekle",
+    "zh-Hans": "添加仪表板",
+    "zh-Hant": "加入儀表板"
+  },
   "Add a login, card or address": {
     "de": "Login, Karte oder Adresse hinzufügen",
     "es": "Añadir un inicio de sesión, tarjeta o dirección",
@@ -1858,6 +1873,21 @@
     "tr": "Önce Bana Sor",
     "zh-Hans": "先问我",
     "zh-Hant": "先問我"
+  },
+  "Ask Which Dashboard at Launch": {
+    "de": "Beim Start nach dem Dashboard fragen",
+    "es": "Preguntar qué panel al abrir",
+    "fr": "Demander le tableau de bord au lancement",
+    "id": "Tanyakan Dasbor saat Dibuka",
+    "it": "Chiedi quale dashboard all'avvio",
+    "ja": "起動時にダッシュボードを選択",
+    "ko": "실행 시 대시보드 묻기",
+    "pl": "Pytaj o panel przy uruchomieniu",
+    "pt-BR": "Perguntar Qual Painel ao Abrir",
+    "ru": "Спрашивать дашборд при запуске",
+    "tr": "Açılışta Hangi Paneli Sor",
+    "zh-Hans": "启动时询问仪表板",
+    "zh-Hant": "啟動時詢問儀表板"
   },
   "Ask a side question about this chat": {
     "de": "Eine Nebenfrage zu diesem Chat stellen",
@@ -22619,6 +22649,21 @@
     "zh-Hans": "已保存",
     "zh-Hant": "已儲存"
   },
+  "Saved Dashboards": {
+    "de": "Meine Dashboards",
+    "es": "Paneles guardados",
+    "fr": "Mes tableaux de bord",
+    "id": "Dasbor Tersimpan",
+    "it": "Dashboard salvate",
+    "ja": "保存済みのダッシュボード",
+    "ko": "저장된 대시보드",
+    "pl": "Zapisane panele",
+    "pt-BR": "Painéis Salvos",
+    "ru": "Мои дашборды",
+    "tr": "Kayıtlı Paneller",
+    "zh-Hans": "已保存的仪表板",
+    "zh-Hant": "已儲存的儀表板"
+  },
   "Saved as the bot's SOUL.md.": {
     "de": "Wird als SOUL.md des Bots gespeichert.",
     "es": "Guardado como SOUL.md del bot.",
@@ -31634,6 +31679,21 @@
     "zh-Hans": "什么事值得来电",
     "zh-Hant": "什麼事值得來電"
   },
+  "When Conduit opens, your dashboards stay listed until you pick one, instead of signing in to the last one you used.": {
+    "de": "Beim Öffnen von Conduit bleiben deine Dashboards aufgelistet, bis du eines auswählst, statt dich beim zuletzt verwendeten anzumelden.",
+    "es": "Al abrir Conduit, tus paneles siguen en la lista hasta que elijas uno, en lugar de iniciar sesión en el último que usaste.",
+    "fr": "À l’ouverture de Conduit, vos tableaux de bord restent affichés jusqu’à ce que vous en choisissiez un, au lieu de vous connecter au dernier utilisé.",
+    "id": "Saat Conduit dibuka, dasbor Anda tetap tercantum sampai Anda memilih salah satu, alih-alih masuk ke dasbor terakhir yang Anda gunakan.",
+    "it": "All’apertura di Conduit, le tue dashboard restano elencate finché non ne scegli una, invece di accedere all’ultima usata.",
+    "ja": "Conduit を開いたとき、最後に使ったダッシュボードにサインインせず、選ぶまでダッシュボードの一覧を表示します。",
+    "ko": "Conduit을 열면 마지막으로 사용한 대시보드에 로그인하지 않고, 하나를 고를 때까지 대시보드 목록을 보여줍니다.",
+    "pl": "Po otwarciu Conduit Twoje panele pozostają na liście, dopóki nie wybierzesz jednego, zamiast logowania do ostatnio używanego.",
+    "pt-BR": "Ao abrir o Conduit, seus painéis ficam listados até você escolher um, em vez de entrar no último que você usou.",
+    "ru": "При открытии Conduit ваши дашборды остаются в списке, пока вы не выберете один, вместо входа в последний использованный.",
+    "tr": "Conduit açıldığında, en son kullandığınız panele giriş yapmak yerine siz birini seçene kadar panelleriniz listelenir.",
+    "zh-Hans": "打开 Conduit 时，仪表板会一直列出，直到你选择一个，而不是登录到你上次使用的那个。",
+    "zh-Hant": "開啟 Conduit 時，儀表板會一直列出，直到你選擇一個，而不是登入你上次使用的那個。"
+  },
   "When Hermes updates itself from an app, keep local source edits or throw them away. Terminal updates always ask.": {
     "de": "Wenn Hermes sich aus einer App aktualisiert: lokale Quelltextänderungen behalten oder verwerfen. Updates im Terminal fragen immer nach.",
     "es": "Cuando Hermes se actualiza desde una app, conservar o descartar los cambios locales en el código. Las actualizaciones desde el terminal siempre preguntan.",
@@ -32608,6 +32668,21 @@
     "tr": "Metnin açık ve koyu modda okunabilir kalması için renginiz gerektiğinde ayarlanır.",
     "zh-Hans": "必要时会调整你的颜色，确保文字在浅色和深色模式下都清晰可读。",
     "zh-Hant": "必要時會調整你的顏色，確保文字在淺色和深色模式下都清楚易讀。"
+  },
+  "Your dashboards": {
+    "de": "Deine Dashboards",
+    "es": "Tus paneles",
+    "fr": "Vos tableaux de bord",
+    "id": "Dasbor Anda",
+    "it": "Le tue dashboard",
+    "ja": "ダッシュボード",
+    "ko": "내 대시보드",
+    "pl": "Twoje panele",
+    "pt-BR": "Seus painéis",
+    "ru": "Ваши дашборды",
+    "tr": "Panelleriniz",
+    "zh-Hans": "你的仪表板",
+    "zh-Hant": "你的儀表板"
   },
   "Your fast model answers first": {
     "de": "Dein schnelles Modell antwortet zuerst",

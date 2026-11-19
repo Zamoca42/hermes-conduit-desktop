@@ -60,6 +60,8 @@ export interface ConnectionStatus {
   retryInSeconds?: number
   /** Every Hermes host signed in on this computer. */
   hosts?: HostSummary[]
+  /** Signed out at launch with the hosts listed for a pick (Ask Which Dashboard at Launch). */
+  choosing?: boolean
 }
 
 /** A host the phone sent while pairing, shown before signing in. */
@@ -153,6 +155,8 @@ export interface ConduitApi {
   appLock(): Promise<AppLockState>
   /** Turns the lock on or off, after Touch ID or Windows Hello; false when that was cancelled. */
   setAppLock(on: boolean): Promise<boolean>
+  askHostAtLaunch(): Promise<boolean>
+  setAskHostAtLaunch(on: boolean): Promise<boolean>
   /** Asks for Touch ID or Windows Hello and, once given, opens the saved hosts. */
   unlock(): Promise<boolean>
   /** Crash and freeze reports kept on this computer, and those Conduit still asks about. */
@@ -303,6 +307,8 @@ export const IPC = {
   setTheme: 'conduit:set-theme',
   appLock: 'conduit:app-lock',
   setAppLock: 'conduit:set-app-lock',
+  askHost: 'conduit:ask-host',
+  setAskHost: 'conduit:set-ask-host',
   unlock: 'conduit:unlock',
   deviceReports: 'conduit:device-reports',
   sendDeviceReports: 'conduit:send-device-reports',

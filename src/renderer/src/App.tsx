@@ -81,6 +81,7 @@ import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
+import { AskDashboardSetting, DashboardChoice } from './components/AskDashboard'
 import { StepSummarySettings } from './components/StepSummarySettings'
 import { PredictiveSettings } from './components/PredictiveSettings'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
@@ -156,6 +157,8 @@ export function App() {
         <LockedScreen />
       ) : adding ? (
         <SignIn onCancel={() => setAdding(false)} />
+      ) : status.phase === 'signed-out' && status.choosing && status.hosts?.length ? (
+        <DashboardChoice hosts={status.hosts} onAdd={() => setAdding(true)} />
       ) : signedOut || status.phase === 'failed' ? (
         <SignIn notice={status.error} />
       ) : (
@@ -1844,6 +1847,7 @@ function Settings({
         </dd>
         {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
         <AppLockSetting />
+        <AskDashboardSetting hosts={status.hosts?.length ?? 0} />
         <dt>{t('Models')}</dt>
         <dd>
           <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
