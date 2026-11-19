@@ -1002,7 +1002,8 @@ a:hover {
 
 .settings dl {
   display: grid;
-  grid-template-columns: 140px 1fr;
+  /* minmax: a long value (a host's address) wraps or clips instead of widening the page. */
+  grid-template-columns: 140px minmax(0, 1fr);
   gap: 10px 16px;
   margin: 0;
   font-size: 14px;
@@ -1015,6 +1016,8 @@ a:hover {
 
 .settings dd {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .language-select {
@@ -2139,6 +2142,22 @@ html[data-window='quick'] body {
 
 .hosts .spacer {
   flex: 1;
+}
+
+.hosts .host-label,
+.hosts li > .meta {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hosts .host-label {
+  flex: 0 1 auto;
+}
+
+.hosts li > button {
+  flex: none;
 }
 
 .link.danger {
