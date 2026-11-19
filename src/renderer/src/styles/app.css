@@ -1060,10 +1060,43 @@ a:hover {
   }
 }
 
+/* The line beside the list or the side panel drags its width. */
+.column-divider {
+  flex: none;
+  width: 7px;
+  margin: 0 -3px;
+  position: relative;
+  z-index: 5;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.column-divider::after {
+  content: '';
+  position: absolute;
+  inset: 0 3px;
+  transition: background 0.12s;
+}
+
+.column-divider:hover::after,
+.column-divider:focus-visible::after,
+.column-divider.dragging::after {
+  background: var(--accent);
+}
+
+.column-divider:focus-visible {
+  outline: none;
+}
+
+body.resizing-columns {
+  cursor: col-resize;
+  user-select: none;
+}
+
 /* Narrow windows ------------------------------------------------------ */
 
 .chatlist {
-  width: clamp(240px, 28vw, 320px);
+  width: var(--list-width, clamp(240px, 28vw, 320px));
 }
 
 .composer-row .chip {
@@ -4033,7 +4066,7 @@ html[data-window='quick'] body {
 }
 
 .ws-panel {
-  width: 340px;
+  width: var(--panel-width, 340px);
   flex: none;
   display: flex;
   flex-direction: column;
@@ -7279,7 +7312,7 @@ button.cap-row-text {
 }
 
 .artifacts-panel {
-  width: 360px;
+  width: var(--panel-width, 360px);
 }
 
 .artifact-chips {

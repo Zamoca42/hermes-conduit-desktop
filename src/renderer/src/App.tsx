@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
@@ -12,6 +12,8 @@ import { RoomView } from './components/RoomView'
 import { Tasks } from './components/Tasks'
 import { PulsePage } from './components/PulsePage'
 import { FilesPanel } from './components/FilesPanel'
+import { ColumnDivider } from './components/ColumnDivider'
+import { LIST_COLUMN, PANEL_COLUMN, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
 import { absolutePath, pathForDraft } from './state/workspace'
 import { FileLinks } from './components/Markdown'
 import { usePulse } from './state/usePulse'
@@ -423,6 +425,29 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   useEffect(() => setScreenOpen(false), [screenProfile])
   // The chat's artifacts beside it, after the phone's In This Chat sheet.
   const [artifactsOpen, setArtifactsOpen] = useState(false)
+  // The list's and the side panel's widths, dragged by the lines beside them and kept on this device.
+  const [listStored, setListStored] = useState(() => readWidth(LIST_COLUMN))
+  const [panelStored, setPanelStored] = useState(() => readWidth(PANEL_COLUMN))
+  const [listLive, setListLive] = useState<number | null>(null)
+  const [panelLive, setPanelLive] = useState<number | null>(null)
+  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth)
+  useEffect(() => {
+    const resized = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', resized)
+    return () => window.removeEventListener('resize', resized)
+  }, [])
+  const listWidth = shownListWidth(listLive ?? listStored, windowWidth)
+  const panelWidth = shownPanelWidth(panelLive ?? panelStored, windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
+  const commitList = (width: number | null) => {
+    setListLive(null)
+    setListStored(width)
+    writeWidth(LIST_COLUMN, width)
+  }
+  const commitPanel = (width: number | null) => {
+    setPanelLive(null)
+    setPanelStored(width)
+    writeWidth(PANEL_COLUMN, width)
+  }
   // An artifact's Show in Chat: the message it came from, once its chat's transcript has it (after the phone's ArtifactReveal).
   const [revealRow, setRevealRow] = useState<{ sessionId: string; messageId: number; until: number } | null>(null)
   useEffect(() => {
@@ -765,7 +790,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           {status.phase === 'reconnecting' ? <button onClick={() => void window.conduit.reconnect()}>{t('Try now')}</button> : null}
         </div>
       ) : null}
-      <div className="body">
+      <div
+        className="body"
+        style={
+          {
+            ...(listWidth !== null ? { '--list-width': `${listWidth}px` } : {}),
+            ...(panelWidth !== null ? { '--panel-width': `${panelWidth}px` } : {})
+          } as CSSProperties
+        }
+      >
         <nav className="rail" aria-label={t('Sections')}>
           <button
             className="railbtn"
@@ -877,6 +910,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onMove={(row, target) => void moveToProject(row, target)}
               />
             )}
+            <ColumnDivider label={t('Chat list width')} bounds={LIST_COLUMN} sign={1} width={listWidth} onLive={setListLive} onCommit={commitList} />
             <main className="chat" ref={chatPane}>
               <div className="chat-head">
                 <div className="chat-titles">
@@ -1147,6 +1181,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 voice={calling ? undefined : { profile: selected.profile }}
               />
             </main>
+            {(artifactsOpen && selected.id) || showWork || (filesOpen && chat.cwd) ? (
+              <ColumnDivider label={t('Side panel width')} bounds={PANEL_COLUMN} sign={-1} width={panelWidth} onLive={setPanelLive} onCommit={commitPanel} />
+            ) : null}
             {artifactsOpen && selected.id ? (
               <ArtifactsPanel
                 profile={selected.profile}
