@@ -14,6 +14,24 @@ const savedBoard = (): string | null => {
   }
 }
 
+/**
+ * The last board read on this dashboard, so opening Tasks again shows it at
+ * once while the read runs, as the phone keeps its board, instead of an
+ * empty board until the dashboard answers.
+ */
+let keptHost = ''
+const kept = new Map<string, KanbanBoard>()
+let keptBoards: KanbanBoardRow[] | null = null
+const keptKey = (slug: string | null) => slug ?? ''
+
+/** The dashboard signed in to; another one's board is never shown. */
+export function setKanbanHost(host: string): void {
+  if (host === keptHost) return
+  keptHost = host
+  kept.clear()
+  keptBoards = null
+}
+
 /** Hermes says so when there's no board plugin: a 404 on its routes. */
 const missing = (error: unknown) => (error as { code?: unknown } | null)?.code === 404 || /\b404\b|not found/i.test(error instanceof Error ? error.message : String(error))
 
@@ -23,9 +41,9 @@ const missing = (error: unknown) => (error as { code?: unknown } | null)?.code =
  * few seconds while `shown`.
  */
 export function useKanban(connected: boolean, shown: boolean) {
-  const [boards, setBoards] = useState<KanbanBoardRow[] | null>(null)
+  const [boards, setBoards] = useState<KanbanBoardRow[] | null>(keptBoards)
   const [slug, setSlug] = useState<string | null>(savedBoard)
-  const [board, setBoard] = useState<KanbanBoard | null>(null)
+  const [board, setBoard] = useState<KanbanBoard | null>(() => kept.get(keptKey(slug)) ?? null)
   const [error, setError] = useState<string | null>(null)
   const [unavailable, setUnavailable] = useState(false)
   const [assignee, setAssignee] = useState('default')
@@ -36,7 +54,9 @@ export function useKanban(connected: boolean, shown: boolean) {
     try {
       const raw = await gateway.http('GET', boardPath('/board', slug))
       if (mine !== generation.current) return
-      setBoard(parseBoard(raw))
+      const read = parseBoard(raw)
+      kept.set(keptKey(slug), read)
+      setBoard(read)
       setError(null)
       setUnavailable(false)
     } catch (e) {
@@ -49,6 +69,7 @@ export function useKanban(connected: boolean, shown: boolean) {
   const loadBoards = useCallback(async () => {
     try {
       const list = parseBoards(await gateway.http('GET', boardPath('/boards', null)))
+      keptBoards = list
       setBoards(list)
       // A saved board that's gone falls back to the server's current one.
       if (slug && !list.some(row => row.slug === slug)) setSlug(null)
@@ -77,7 +98,7 @@ export function useKanban(connected: boolean, shown: boolean) {
 
   const pickBoard = useCallback((next: string | null) => {
     setSlug(next)
-    setBoard(null)
+    setBoard(kept.get(keptKey(next)) ?? null)
     try {
       if (next) localStorage.setItem(BOARD_KEY, next)
       else localStorage.removeItem(BOARD_KEY)
