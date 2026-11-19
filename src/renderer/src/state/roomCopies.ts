@@ -7,8 +7,9 @@
  */
 
 import { t } from '../../../shared/i18n'
-import { logPage, type DriverStatus, type LogPage, type Room } from './groups'
-import { ROOMS_PATH, type Http } from './roomLinks'
+import { logPage, type DriverStatus, type LogPage, type Room, type RoomApproval } from './groups'
+import { MAILBOX_TIMEOUT_MS, ROOMS_PATH, type Http } from './roomLinks'
+import { parseInvite, type RoomInvite } from './roomInvites'
 
 export const ROOM_COPIES_CAPABILITY = 'room-copies'
 /** `DELETE /rooms/copies` and `DELETE /rooms/sessions`: an ended copy can be deleted. */
@@ -16,6 +17,17 @@ export const ROOM_FORGET_CAPABILITY = 'room-forget'
 export const COPIES_PATH = `${ROOMS_PATH}/copies`
 export const ROOM_SESSIONS_PATH = `${ROOMS_PATH}/sessions`
 export const ROOM_PEOPLE_PATH = `${ROOMS_PATH}/people`
+/** Posting in rooms other people host: `POST`/`GET /rooms/copies/messages`. */
+export const ROOM_POSTS_CAPABILITY = 'room-posts'
+export const POSTS_PATH = `${COPIES_PATH}/messages`
+/** Your agents' approvals in rooms other people host: `GET /rooms/approvals`, `POST /rooms/approvals/answer`. */
+export const ROOM_APPROVALS_CAPABILITY = 'room-approvals'
+export const APPROVALS_PATH = `${ROOMS_PATH}/approvals`
+/** The plugin answers within 30 s, its API server's wait. */
+export const APPROVAL_ANSWER_TIMEOUT_MS = 35_000
+/** Taking your agents out of a room someone else hosts: `POST /rooms/leave`. */
+export const ROOM_LEAVE_CAPABILITY = 'room-leave'
+export const LEAVE_PATH = `${ROOMS_PATH}/leave`
 /** room_copies.MAX_LOG_LIMIT. */
 export const MAX_COPY_LOG_LIMIT = 500
 
@@ -141,7 +153,8 @@ export function copyRoom(copy: RoomCopy): Room {
         profile: agent?.profile,
         handle: member.handle,
         displayName: member.displayName,
-        ...(agent ? {} : { peer: true, owner: member.owner ?? (host || undefined) })
+        ...(agent ? {} : { peer: true, owner: member.owner ?? (host || undefined) }),
+        ...(copy.out[member.memberId] ? { out: copy.out[member.memberId] } : {})
       }
     }),
     updatedAt: copy.updatedAt || undefined,
@@ -156,6 +169,24 @@ export function copyStatus(copy: RoomCopy): DriverStatus {
   const busy = [...new Set(copy.activity.map(a => a.memberId))]
   return { working: copy.working || busy.length > 0, busy, disbanded: isOver(copy), activity: copy.activity, approvals: [] }
 }
+
+/** Whether your agents, or you with Just me, can leave it. */
+export const canLeave = (copy: RoomCopy, served: boolean) => served && !isOver(copy) && (copy.yours.length > 0 || copy.justMe)
+
+/** What Leave asks before your agents leave. */
+export function leaveMessage(copy: RoomCopy): string {
+  const host = hostOf(copy)
+  if (copy.justMe)
+    return host
+      ? t('You stop getting this room, and {host} is told. Your copy of it stays until you delete it.', { host })
+      : t('You stop getting this room, and the host is told. Your copy of it stays until you delete it.')
+  return host
+    ? t('Your agents stop taking part, and {host} is told. Your copy of the room and their chats for it stay until you delete it.', { host })
+    : t('Your agents stop taking part, and the host is told. Your copy of the room and their chats for it stay until you delete it.')
+}
+
+/** A member's line in a room over Links once it's out. */
+export const outLine = (out: string) => (out === 'removed' ? t('Taken out') : t('Left the room'))
 
 /** Group chats' line under its name: who hosts it and how it stands. */
 export function copyLine(copy: RoomCopy): string {
@@ -182,6 +213,140 @@ export function copyReadOnly(copy: RoomCopy): string {
   return host ? t('Hosted by {host}. You can read it here.', { host }) : t('Hosted elsewhere. You can read it here.')
 }
 
+/** A post as this Hermes keeps it: on its way to the host, in the room at its seq, or refused and why. */
+export type RoomPostStatus = { kind: 'sending' } | { kind: 'posted'; seq: number } | { kind: 'refused'; error?: string }
+
+export interface RoomPost {
+  eventId: string
+  text: string
+  status: RoomPostStatus
+}
+
+/** One post; one without an event id or with a status this app can't place is left out. */
+export function parsePost(value: unknown): RoomPost | null {
+  const row = obj(value)
+  const eventId = text(row?.event_id)
+  if (!row || !eventId) return null
+  const value_ = typeof row.text === 'string' ? row.text : ''
+  if (row.status === 'sending') return { eventId, text: value_, status: { kind: 'sending' } }
+  if (row.status === 'posted' && typeof row.seq === 'number') return { eventId, text: value_, status: { kind: 'posted', seq: row.seq } }
+  if (row.status === 'refused') return { eventId, text: value_, status: { kind: 'refused', error: text(row.error) } }
+  return null
+}
+
+/** Whether the copy takes your posts: still going, with an agent of yours in it or you in it with Just me. */
+export const takesPosts = (copy: RoomCopy, canPost: boolean) => canPost && copy.status === 'started' && (copy.yours.length > 0 || copy.justMe)
+
+/** Why a post wasn't posted. */
+export function postRefusal(error?: string): string {
+  switch (error) {
+    case 'ended':
+      return t('Not posted: the room has ended.')
+    case 'not_in':
+      return t("Not posted: your agents aren't in this room.")
+    case 'too_long':
+      return t("Not posted: it's too long for this room.")
+    case 'too_many':
+      return t('Not posted: too many posts this hour. Try again later.')
+    case 'unavailable':
+      return t("Not posted: the host's Hermes couldn't take it. Try again.")
+    case 'bad_post':
+      return t("Not posted: the host's Hermes couldn't read it.")
+    default:
+      return t('Not posted.')
+  }
+}
+
+/** Whether posting it again could go differently. */
+export const postRetries = (error?: string) => !['ended', 'not_in', 'too_long', 'bad_post'].includes(error ?? '')
+
+/**
+ * A post of yours not yet in the room's log, as its row shows it: on its
+ * way, not delivered (the request failed, so it may not have reached your
+ * Hermes), refused with why, or closed: the room takes no more posts, so
+ * it can only be copied and dismissed.
+ */
+export type PostRow =
+  | { state: 'sending' }
+  | { state: 'notDelivered' }
+  | { state: 'refused'; why: string; retry: boolean }
+  | { state: 'closed'; why: string }
+
+export function postRow(post: RoomPost | undefined, inFlight: boolean, copy: RoomCopy, canPost: boolean): PostRow {
+  if (inFlight) return { state: 'sending' }
+  if (!takesPosts(copy, canPost)) {
+    // A refusal's reason stands, whatever the room does now.
+    if (post?.status.kind === 'refused') return { state: 'closed', why: postRefusal(post.status.error) }
+    if (post?.status.kind === 'sending' && canPost) return { state: 'sending' }
+    return { state: 'closed', why: postRefusal(isOver(copy) && copy.status === 'ended' ? 'ended' : 'not_in') }
+  }
+  if (!post) return { state: 'notDelivered' }
+  if (post.status.kind === 'refused') return { state: 'refused', why: postRefusal(post.status.error), retry: postRetries(post.status.error) }
+  return { state: 'sending' }
+}
+
+/**
+ * An approval one of your agents' turns in a room hosted elsewhere waits
+ * for: the turn runs on your Hermes, so the plugin lists it and answers it.
+ */
+export interface CopyApproval extends RoomApproval {
+  runId: string
+  roomId?: string
+  /** The room's name, as the invite named it. */
+  room?: string
+  link?: string
+  /** Who hosts it, by the name the Link shows them. */
+  from?: string
+  agentProfile?: string
+  agentHandle?: string
+  agentName?: string
+}
+
+/** One approval; one without a run or request id can't be answered and is left out. */
+export function parseCopyApproval(value: unknown): CopyApproval | null {
+  const row = obj(value)
+  const runId = text(row?.run_id)
+  const requestId = text(row?.request_id)
+  if (!row || !runId || !requestId) return null
+  const agent = obj(row.agent) ?? {}
+  const offered = (Array.isArray(row.choices) ? row.choices : []).filter((c): c is 'once' | 'deny' => c === 'once' || c === 'deny')
+  return {
+    id: `${runId}/${requestId}`,
+    runId,
+    requestId,
+    memberId: text(agent.profile) ?? '',
+    taskId: runId,
+    executionGeneration: 0,
+    roomId: text(row.room_id),
+    room: text(row.room),
+    link: text(row.link),
+    from: text(row.from),
+    agentProfile: text(agent.profile),
+    agentHandle: text(agent.handle),
+    agentName: text(agent.display_name),
+    description: typeof row.description === 'string' ? row.description : '',
+    command: typeof row.command === 'string' ? row.command : '',
+    choices: offered.length ? offered : ['once', 'deny']
+  }
+}
+
+/** Your agents' approvals in this copy: by its Link and room, or by room alone where no other copy has that room id. */
+export function copyApprovals(approvals: readonly CopyApproval[], copy: RoomCopy, copies: readonly RoomCopy[]): CopyApproval[] {
+  const shared = copies.some(c => c.roomId === copy.roomId && c.link !== copy.link)
+  return approvals.filter(a => a.roomId === copy.roomId && (a.link === copy.link || (!a.link && !shared)))
+}
+
+/** The agent and where it waits: "Kuro in Zoo trip, hosted by Furina". */
+export function approvalLine(approval: CopyApproval): string {
+  const agent = [approval.agentName, approval.agentHandle, approval.agentProfile].map(v => v?.trim()).find(Boolean) ?? t('Your agent')
+  const room = approval.room?.trim() ?? ''
+  const host = approval.from?.trim() ?? ''
+  if (room && host) return t('{agent} in {room}, hosted by {host}', { agent, room, host })
+  if (room) return t('{agent} in {room}', { agent, room })
+  if (host) return t('{agent} in a room hosted by {host}', { agent, host })
+  return t('{agent} in a room hosted elsewhere', { agent })
+}
+
 const query = (value: string) => encodeURIComponent(value)
 
 /** The plugin's copies routes over the dashboard. */
@@ -206,6 +371,44 @@ export function roomCopiesClient(http: Http) {
     forgetSessions: async (roomId: string, profile: string): Promise<void> => {
       const path = `${ROOM_SESSIONS_PATH}?room_id=${query(roomId)}${profile && profile !== 'default' ? `&profile=${query(profile)}` : ''}`
       if (obj(await http('DELETE', path))?.ok !== true) throw new Error(t('Could not delete this room'))
+    },
+    /** Posts `text` under `eventId`, the retry key: the same id again is the same post. */
+    post: async (roomId: string, eventId: string, value: string): Promise<RoomPost> => {
+      const body = obj(await http('POST', POSTS_PATH, { room_id: roomId, event_id: eventId, text: value }, MAILBOX_TIMEOUT_MS))
+      const post = body?.ok === true ? parsePost(body.message) : null
+      if (!post) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+      return post
+    },
+    /** What you posted in the room, oldest first. */
+    posts: async (roomId: string): Promise<RoomPost[]> => {
+      const body = obj(await http('GET', `${POSTS_PATH}?room_id=${query(roomId)}`))
+      if (body?.ok !== true || !Array.isArray(body.messages)) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+      return body.messages.map(parsePost).filter((p): p is RoomPost => p !== null)
+    },
+    /** Your agents' approvals in rooms other people host, the oldest turn's first. */
+    approvals: async (): Promise<CopyApproval[]> => {
+      const body = obj(await http('GET', APPROVALS_PATH))
+      if (body?.ok !== true || !Array.isArray(body.approvals)) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+      return body.approvals.map(parseCopyApproval).filter((a): a is CopyApproval => a !== null)
+    },
+    /** Answers an approval, once or deny. */
+    answer: async (approval: CopyApproval, choice: 'once' | 'deny'): Promise<void> => {
+      const body = obj(await http('POST', `${APPROVALS_PATH}/answer`, { run_id: approval.runId, request_id: approval.requestId, choice }, APPROVAL_ANSWER_TIMEOUT_MS))
+      if (body?.ok !== true) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+    },
+    /**
+     * Your agents of `profiles`, or all still in (null), out of the room.
+     * Answers its invite; a 504 is a leave still on its way, which may be made.
+     */
+    leave: async (copy: RoomCopy, profiles: string[] | null): Promise<{ kind: 'left'; invite: RoomInvite } | { kind: 'sending' }> => {
+      try {
+        const invite = parseInvite(obj(await http('POST', LEAVE_PATH, { link: copy.link, room_id: copy.roomId, agents: profiles }, MAILBOX_TIMEOUT_MS))?.invite)
+        if (!invite) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+        return { kind: 'left', invite }
+      } catch (error) {
+        if ((error as { code?: unknown })?.code === 504) return { kind: 'sending' }
+        throw error
+      }
     },
     /** Deletes the copy. */
     forget: async (roomId: string): Promise<void> => {

@@ -22,6 +22,8 @@ export interface RoomMember {
   peer?: boolean
   /** Another person's agent, in a room over Links: whose it is. */
   owner?: string
+  /** In a room over Links: it left (`left`) or was taken out (`removed`). */
+  out?: string
 }
 
 export interface Room {

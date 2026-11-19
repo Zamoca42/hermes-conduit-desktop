@@ -87,7 +87,10 @@ import { MultiplayerPage } from './components/MultiplayerPage'
 import { RoomInviteCard } from './components/RoomInviteCard'
 import { useRoomInvites } from './state/useRoomInvites'
 import { useRoomCopies } from './state/useRoomCopies'
-import { copyRoom } from './state/roomCopies'
+import { useRoomDrafts } from './state/useRoomDrafts'
+import { NewGroupChat } from './components/NewGroupChat'
+import { RoomDraftCard } from './components/RoomDraftCard'
+import { canLeave as canLeaveCopy, copyApprovals, copyRoom } from './state/roomCopies'
 import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
@@ -946,16 +949,43 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const [openInvite, setOpenInvite] = useState<string | null>(null)
   const shownInvite = openInvite ? roomInvites.invites.find(i => i.id === openInvite) : undefined
   const roomCopies = useRoomCopies(connected, status.url ?? '', roomInvites.capabilities)
+  const roomDrafts = useRoomDrafts(connected, status.url ?? '', roomInvites.capabilities)
+  const [newGroupOpen, setNewGroupOpen] = useState(false)
+  const [openDraft, setOpenDraft] = useState<string | null>(null)
+  const shownDraft = openDraft ? roomDrafts.drafts.find(d => d.id === openDraft) : undefined
+  const refreshDraft = useCallback(
+    async (started: boolean) => {
+      await roomDrafts.refresh()
+      if (started) await groupRooms.refresh()
+    },
+    [roomDrafts.refresh, groupRooms.refresh]
+  )
   const [openRoom, setOpenRoom] = useState<Room | null>(null)
   /** The open room when someone else hosts it: read from this Hermes' copy, by its Link and room. */
   const [openCopy, setOpenCopy] = useState<string | null>(null)
   const shownCopy = openCopy ? roomCopies.copies.find(c => c.id === openCopy) : undefined
   const shownCopyRoom = useMemo(() => (shownCopy ? copyRoom(shownCopy) : null), [shownCopy])
+  const shownCopyApprovals = useMemo(
+    () => (shownCopy ? copyApprovals(roomCopies.approvals, shownCopy, roomCopies.copies) : []),
+    [shownCopy, roomCopies.approvals, roomCopies.copies]
+  )
+  const copiesWaiting = useMemo(
+    () => new Set(roomCopies.copies.filter(c => copyApprovals(roomCopies.approvals, c, roomCopies.copies).length).map(c => c.id)),
+    [roomCopies.approvals, roomCopies.copies]
+  )
   const showRoom = useCallback((room: Room) => {
     setOpenRoom(room)
     setOpenCopy(null)
     setSection('room')
   }, [])
+  /** A draft that started: its card closes and its room opens. */
+  const openDraftRoom = useCallback(
+    (room: Room) => {
+      setOpenDraft(null)
+      showRoom(room)
+    },
+    [showRoom]
+  )
   const runningProfiles = useMemo(() => {
     const names = new Set<string>()
     if (transcript.running && selected.profile) names.add(selected.profile)
@@ -1675,7 +1705,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onDismissNotice={() => setBotNotice(null)}
             invites={roomInvites.rows}
             onOpenInvite={invite => setOpenInvite(invite.id)}
+            drafts={roomDrafts.rows}
+            onOpenDraft={draft => setOpenDraft(draft.id)}
+            onNewGroup={
+              connected && groupRooms.capabilities?.supported === true
+                ? () => {
+                    setNewGroupOpen(true)
+                    void roomDrafts.refresh()
+                    void roomDrafts.refreshPeople()
+                  }
+                : undefined
+            }
             copies={roomCopies.copies}
+            copiesWaiting={copiesWaiting}
             onOpenCopy={copy => {
               setOpenCopy(copy.id)
               setOpenRoom(null)
@@ -1738,6 +1780,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             canAttach={false}
             copy={shownCopy}
             onRefreshCopies={roomCopies.refresh}
+            canPostInCopy={roomCopies.canPost}
+            copyApprovals={shownCopyApprovals}
+            copyAnswers={roomCopies.answers}
+            onAnswerCopyApproval={(approval, choice) => void roomCopies.answer(approval, choice)}
+            onLeaveCopy={
+              canLeaveCopy(shownCopy, roomCopies.canLeave)
+                ? async () => {
+                    const kind = await roomCopies.leave(shownCopy)
+                    void roomInvites.refresh()
+                    return kind
+                  }
+                : undefined
+            }
             onDeleteCopy={
               roomCopies.canForget
                 ? async () => {
@@ -1799,6 +1854,31 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
           onRemove={invite => void roomInvites.remove(invite)}
           onRefresh={roomInvites.refresh}
           onClose={() => setOpenInvite(null)}
+        />
+      ) : null}
+      {newGroupOpen ? (
+        <NewGroupChat
+          bots={roster.bots ?? []}
+          people={roomDrafts.people}
+          peopleOffered={roomDrafts.served && roomDrafts.read}
+          startsUnavailable={roomDrafts.read && !roomDrafts.startsAvailable}
+          canLink={roomInvites.capabilities.includes('room-links')}
+          onCreateRoom={groupRooms.create}
+          onCreateDraft={(name, agents, links) => roomDrafts.create(name, agents, links, chatProfile ?? 'default')}
+          onOpenRoom={showRoom}
+          onClose={() => setNewGroupOpen(false)}
+        />
+      ) : null}
+      {shownDraft ? (
+        <RoomDraftCard
+          draft={shownDraft}
+          rooms={groupRooms.rooms}
+          onStart={roomDrafts.start}
+          onWithdraw={roomDrafts.withdraw}
+          onDismiss={roomDrafts.dismiss}
+          onRefresh={refreshDraft}
+          onOpenRoom={openDraftRoom}
+          onClose={() => setOpenDraft(null)}
         />
       ) : null}
     </GlowContext.Provider>

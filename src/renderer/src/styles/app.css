@@ -9664,3 +9664,62 @@ button.secondary.danger {
   height: 16px;
   flex: none;
 }
+.copy-tile .bot-time.waiting {
+  color: var(--accent);
+  font-weight: 600;
+}
+.room-confirms:empty {
+  display: none;
+}
+.room-confirms {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 16px 6px;
+}
+.room-confirms .room-confirm,
+.room-confirms .notice {
+  margin: 0;
+}
+.rooms-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.rooms-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.rooms-new svg {
+  width: 14px;
+  height: 14px;
+}
+.person-glyph {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-hover);
+  color: var(--text-2);
+}
+.person-glyph svg {
+  width: 18px;
+  height: 18px;
+}
+.new-group .input-ask-field {
+  width: 100%;
+  box-sizing: border-box;
+}
+.new-group .meta {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.4;
+}
+.new-group .invite-bot-row {
+  padding: 4px 0;
+}
