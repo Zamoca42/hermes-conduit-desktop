@@ -21,6 +21,8 @@ import { useStepSummaries, type StepSummaries } from '../state/useStepSummaries'
 import { callLength, withCalls, type ChatCall } from '../state/voiceCalls'
 import { followedUpKeys } from '../state/predictive'
 import { ConnectionCardView } from './ConnectionCardView'
+import { PinnedReplyBar, type PinControls } from './PinnedReplies'
+import { barOrder, pinFor, refreshed, resolved } from '../state/pinnedReplies'
 
 export interface MessageMenuItem {
   label: string
@@ -254,6 +256,8 @@ interface ItemProps {
   expandTools?: boolean
   /** A saved call's card opens its transcript. */
   onOpenCall?: (callId: string) => void
+  /** ⋯'s Pin reply or Unpin reply. */
+  pinToggle?: { label: string; onSelect: () => void }
 }
 
 /** A reply's Copy and ⋯, with Read Aloud (Stop reading response while it plays). */
@@ -378,7 +382,7 @@ function ReplyActions({ messageKey, text, menu }: { messageKey: string; text: st
   )
 }
 
-function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools, onOpenCall, followedUp }: ItemProps) {
+function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinkingToggle, expandTools, onOpenCall, followedUp, pinToggle }: ItemProps) {
   switch (item.kind) {
     case 'user': {
       const envelope = parseReplyEnvelope(item.text)
@@ -431,6 +435,7 @@ function Item({ item, author, onQuote, jump, onRetry, onEdit, onFollowUp, thinki
               menu={[
                 ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: item.text } })) }] : []),
                 ...(onRetry ? [{ label: t('Retry'), onSelect: onRetry }] : []),
+                ...(pinToggle ? [pinToggle] : []),
                 ...(thinkingToggle ? [thinkingToggle] : [])
               ]}
             />
@@ -634,7 +639,8 @@ export function Transcript({
   sessionId,
   calls,
   onOpenCall,
-  followedUp
+  followedUp,
+  pins
 }: {
   state: TranscriptState
   loading: boolean
@@ -658,6 +664,8 @@ export function Transcript({
   onOpenCall?: (callId: string) => void
   /** The replies that answer a turn Hermes took on its own, by `followUpId`. */
   followedUp?: Set<string>
+  /** Pinned replies: ⋯'s Pin reply and the bar; left out where replies can't be pinned. */
+  pins?: PinControls
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -757,6 +765,33 @@ export function Transcript({
     if (el && pinned.current) el.scrollTop = el.scrollHeight
   }, [state, requests])
 
+  // Pins: which reply each shows, the bar's order, and the row ids replies pinned as they arrived took.
+  const pinList = pins?.list
+  const pinKeys = useMemo(() => (pinList?.length ? resolved(pinList, state.items) : new Map<string, string>()), [pinList, state.items])
+  const pinnedKeys = useMemo(() => new Set(pinKeys.values()), [pinKeys])
+  const barPins = useMemo(() => (pinList?.length ? barOrder(pinList, state.items) : []), [pinList, state.items])
+  const refreshPins = pins?.refresh
+  useEffect(() => {
+    if (!pinList?.length || state.running) return
+    const next = refreshed(pinList, state.items)
+    if (next) refreshPins?.(next)
+  }, [pinList, state.items, state.running, refreshPins])
+  const jumpToPin = (pin: { id: string }) => {
+    pinned.current = false
+    revealMessage(scroller.current, pinKeys.get(pin.id))
+  }
+  // A pin opened from the list scrolls to its reply once the chat has it.
+  const reveal = pins?.reveal
+  const onRevealed = pins?.onRevealed
+  useEffect(() => {
+    if (!reveal || loading) return
+    const key = pinKeys.get(reveal.id)
+    if (!key) return
+    pinned.current = false
+    requestAnimationFrame(() => revealMessage(scroller.current, key))
+    onRevealed?.()
+  }, [reveal, pinKeys, loading, onRevealed])
+
   const renderItem = (item: TranscriptItem) => (
     <Item
       key={item.key}
@@ -771,11 +806,23 @@ export function Transcript({
       expandTools={display.expandTools}
       onOpenCall={onOpenCall}
       followedUp={followedUpKeySet.has(item.key)}
+      pinToggle={
+        pins && item.kind === 'assistant' && !item.streaming
+          ? { label: pinnedKeys.has(item.key) ? t('Unpin reply') : t('Pin reply'), onSelect: () => togglePin(item) }
+          : undefined
+      }
     />
   )
+  const togglePin = (item: { key: string; text: string }) => {
+    if (!pins) return
+    const existing = pinFor({ kind: 'assistant', ...item }, pins.list, state.items)
+    if (existing) pins.unpin(existing)
+    else pins.pin(item)
+  }
 
   return (
     <PictureProfile.Provider value={profile}>
+      {pins && barPins.length ? <PinnedReplyBar pins={barPins} jump={jumpToPin} onUnpin={pins.unpin} onLabel={pins.label} onShowAll={pins.showAll} /> : null}
       <div className="transcript" ref={scroller} aria-live="polite">
         <div className="transcript-inner">
           {loading ? <div className="notice">{t('Loading…')}</div> : null}

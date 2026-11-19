@@ -97,6 +97,8 @@ import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/read
 import { useCommands } from './state/useCommands'
 import { moveChat, mutateSession } from './state/chatActions'
 import { parseProjects } from './state/projects'
+import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply } from './state/pinnedReplies'
+import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { GO_TO, SCALES, applyScale, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
@@ -519,12 +521,29 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     setModelOpen(false)
     setContextOpen(false)
   }, [selected.id])
+  // Pinned replies: on this computer, per host, as the phone keeps them per device.
+  const pinHost = status.url ?? ''
+  const [pins, setPins] = useState<PinnedReply[]>(() => loadPins(pinHost))
+  useEffect(() => setPins(loadPins(pinHost)), [pinHost])
+  const updatePins = useCallback(
+    (change: (current: PinnedReply[]) => PinnedReply[]) =>
+      setPins(current => {
+        const next = change(current)
+        if (next !== current) savePins(pinHost, next)
+        return next
+      }),
+    [pinHost]
+  )
+  const [pinSheet, setPinSheet] = useState<{ scope: 'chat' | 'all'; editing?: string } | null>(null)
+  const [pinReveal, setPinReveal] = useState<{ pin: PinnedReply; expires: number } | null>(null)
   /** A row's Pin, Rename or Delete: shown at once, put back with the reason when Hermes refuses it. */
   const chatAction = useCallback(
     async (row: ChatRow, patch: { pinned?: boolean; title?: string } | null) => {
       list.patchRow(row.id, patch)
       if (patch === null && (selected.id === row.id || chat.storedId === row.id)) newChat()
       if (patch === null) setBeside(current => (current?.id === row.id ? null : current))
+      // A deleted chat's pins go with it.
+      if (patch === null) updatePins(current => withoutChat(current, row.profile, row.id))
       try {
         await mutateSession(gateway.http, row.id, row.profile, patch)
       } catch (e) {
@@ -532,7 +551,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       }
       list.refresh()
     },
-    [list, selected.id, chat.storedId, newChat]
+    [list, selected.id, chat.storedId, newChat, updatePins]
   )
   // Move to Project: the chat's profile's projects with a folder, as the phone offers them.
   const moveTargets = useCallback(async (row: ChatRow): Promise<MoveTarget[]> => {
@@ -618,6 +637,43 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     : selected.botChat && selected.title
       ? selected.title
       : cleanTitle(chat.title || selected.title || '') || (selected.id ? '' : t('New chat'))
+
+  // Pinned replies in the open chat: ⋯'s Pin reply, the bar, and the list from the bar or the Chats list.
+  const pinChat = chat.storedId ?? selected.id
+  const chatPins = useMemo(() => pinsOfChat(pins, selected.profile, pinChat), [pins, selected.profile, pinChat])
+  const revealPin = pinReveal && pinReveal.expires > Date.now() && pinReveal.pin.chat === pinChat ? pinReveal.pin : null
+  const clearPinReveal = useCallback(() => setPinReveal(null), [])
+  const refreshPins = useCallback(
+    (next: PinnedReply[]) => {
+      const byId = new Map(next.map(p => [p.id, p]))
+      updatePins(current => current.map(p => byId.get(p.id) ?? p))
+    },
+    [updatePins]
+  )
+  const pinControls: PinControls | undefined =
+    pinChat && !workItem
+      ? {
+          list: chatPins,
+          pin: item => updatePins(current => [...current, newPin({ kind: 'assistant', ...item }, pinChat, selected.profile, title || t('Chat'))]),
+          unpin: pin => updatePins(current => current.filter(p => p.id !== pin.id)),
+          label: pin => setPinSheet({ scope: 'chat', editing: pin.id }),
+          showAll: () => setPinSheet({ scope: 'chat' }),
+          refresh: refreshPins,
+          reveal: revealPin,
+          onRevealed: clearPinReveal
+        }
+      : undefined
+  const pinChatTitle = (pin: PinnedReply) =>
+    cleanTitle(list.rows?.find(r => r.id === pin.chat && (r.profile ?? 'default').toLowerCase() === pin.profile.toLowerCase())?.title ?? '') ||
+    pin.chatTitle ||
+    t('Chat')
+  const openPin = (pin: PinnedReply) => {
+    setPinSheet(null)
+    setPinReveal({ pin, expires: Date.now() + 20_000 })
+    if (pin.chat !== pinChat || (pin.profile || 'default').toLowerCase() !== (selected.profile || 'default').toLowerCase())
+      setSelected({ id: pin.chat, profile: pin.profile === 'default' ? undefined : pin.profile, title: pinChatTitle(pin) })
+    setSection('chats')
+  }
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
   const openBot = useCallback((bot: Bot) => {
@@ -969,6 +1025,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     void chatAction(row, null)
                 }}
                 onProjects={() => setProjectsOpen(true)}
+                onPinnedReplies={pins.length ? () => setPinSheet({ scope: 'all' }) : undefined}
                 moveTargets={moveTargets}
                 onMove={(row, target) => void moveToProject(row, target)}
               />
@@ -1087,9 +1144,23 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     calls={chatCallList}
                     onOpenCall={setOpenCall}
                     followedUp={followedUp}
+                    pins={pinControls}
                   />
                 </ConnectionActionsContext.Provider>
               </FileLinks.Provider>
+              {pinSheet ? (
+                <PinnedRepliesSheet
+                  pins={pins}
+                  open={{ profile: selected.profile, chat: pinChat }}
+                  initialScope={pinSheet.scope}
+                  editing={pinSheet.editing}
+                  chatTitle={pinChatTitle}
+                  onOpen={openPin}
+                  onUnpin={pin => updatePins(current => current.filter(p => p.id !== pin.id))}
+                  onLabel={(pin, label) => updatePins(current => current.map(p => (p.id === pin.id ? { ...p, label } : p)))}
+                  onClose={() => setPinSheet(null)}
+                />
+              ) : null}
               {openCall && selected.id ? (
                 <CallTranscriptSheet profile={selected.profile} chatId={selected.id} callId={openCall} onClose={() => setOpenCall(null)} />
               ) : null}
@@ -1703,7 +1774,11 @@ function Settings({
         <dt>{t('Device reports')}</dt>
         <dd>
           <DeviceReportsSetting />
-          <p className="meta">{t('When part of Conduit stops or the window stops responding, it keeps a report of which part and why, never your messages, and asks once before sending it to Conduit’s developer.')}</p>
+          <p className="meta">
+            {t(
+              'When part of Conduit stops or the window stops responding, it keeps a report of which part and why, never your messages, and asks once before sending it to Conduit’s developer.'
+            )}
+          </p>
         </dd>
         <dt>{t('Appearance')}</dt>
         <dd>

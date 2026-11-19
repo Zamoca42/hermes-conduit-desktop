@@ -374,6 +374,21 @@
     "zh-Hans": "那里正在进行的回复总会先完成。如果你回到那个应用，请在那里重新打开对话，才能看到你从 Conduit 发送的内容。",
     "zh-Hant": "那裡正在進行的回覆一律會先完成。如果你回到該 App，請在那裡重新打開聊天，才能看到你從 Conduit 傳送的內容。"
   },
+  "A short name for the pins list, such as Security recommendations.": {
+    "de": "Ein kurzer Name für die Liste, z. B. Sicherheitsempfehlungen.",
+    "es": "Un nombre corto para la lista, como Recomendaciones de seguridad.",
+    "fr": "Un nom court pour la liste, par exemple Recommandations de sécurité.",
+    "id": "Nama singkat untuk daftar sematan, misalnya Rekomendasi keamanan.",
+    "it": "Un nome breve per l'elenco, ad esempio Consigli di sicurezza.",
+    "ja": "ピンの一覧に表示する短い名前（例：セキュリティの推奨事項）。",
+    "ko": "고정 목록에 표시할 짧은 이름(예: 보안 권장 사항).",
+    "pl": "Krótka nazwa na liście przypiętych, np. Zalecenia bezpieczeństwa.",
+    "pt-BR": "Um nome curto para a lista, como Recomendações de segurança.",
+    "ru": "Короткое название для списка, например «Рекомендации по безопасности».",
+    "tr": "Sabitlenenler listesi için kısa bir ad, örneğin Güvenlik önerileri.",
+    "zh-Hans": "置顶列表中显示的简短名称，例如“安全建议”。",
+    "zh-Hant": "釘選列表中顯示的簡短名稱，例如「安全建議」。"
+  },
   "A short name tells this {app} account apart from your others, like work or home. You sign in next.": {
     "de": "Ein kurzer Name unterscheidet dieses {app}-Konto von deinen anderen, etwa arbeit oder privat. Danach meldest du dich an.",
     "es": "Un nombre corto distingue esta cuenta de {app} de las demás, como trabajo o casa. Después inicias sesión.",
@@ -764,6 +779,21 @@
     "zh-Hans": "添加备用模型",
     "zh-Hant": "新增備用模型"
   },
+  "Add label": {
+    "de": "Label hinzufügen",
+    "es": "Añadir etiqueta",
+    "fr": "Ajouter un libellé",
+    "id": "Tambahkan label",
+    "it": "Aggiungi etichetta",
+    "ja": "ラベルを追加",
+    "ko": "레이블 추가",
+    "pl": "Dodaj etykietę",
+    "pt-BR": "Adicionar rótulo",
+    "ru": "Добавить метку",
+    "tr": "Etiket ekle",
+    "zh-Hans": "添加标签",
+    "zh-Hant": "新增標籤"
+  },
   "Add to message": {
     "de": "Zur Nachricht hinzufügen",
     "es": "Añadir al mensaje",
@@ -1033,6 +1063,21 @@
     "tr": "Tüm kaynaklar",
     "zh-Hans": "所有来源",
     "zh-Hant": "所有來源"
+  },
+  "All chats": {
+    "de": "Alle Chats",
+    "es": "Todos los chats",
+    "fr": "Tous les chats",
+    "id": "Semua chat",
+    "it": "Tutte le chat",
+    "ja": "すべてのチャット",
+    "ko": "모든 채팅",
+    "pl": "Wszystkie czaty",
+    "pt-BR": "Todos os chats",
+    "ru": "Все чаты",
+    "tr": "Tüm sohbetler",
+    "zh-Hans": "所有聊天",
+    "zh-Hant": "所有聊天"
   },
   "All profiles": {
     "de": "Alle Profile",
@@ -3733,6 +3778,21 @@
     "tr": "Fotoğraf Seç",
     "zh-Hans": "选择照片",
     "zh-Hant": "選擇照片"
+  },
+  "Choose Pin reply in a reply’s ⋯ menu. It stays at the top of its chat and shows here.": {
+    "de": "Wähle „Diese Antwort anheften“ im ⋯-Menü einer Antwort. Sie bleibt oben in ihrem Chat und erscheint hier.",
+    "es": "Elige Fijar esta respuesta en el menú ⋯ de una respuesta. Se queda arriba en su chat y aparece aquí.",
+    "fr": "Choisissez Épingler cette réponse dans le menu ⋯ d’une réponse. Elle reste en haut de sa conversation et s’affiche ici.",
+    "id": "Pilih Sematkan balasan ini di menu ⋯ sebuah balasan. Balasan itu tetap di atas obrolannya dan muncul di sini.",
+    "it": "Scegli Fissa questa risposta nel menu ⋯ di una risposta. Resta in cima alla sua chat e compare qui.",
+    "ja": "返信の⋯メニューで「この返信をピンで固定」を選ぶと、そのチャットの上部に固定され、ここに表示されます。",
+    "ko": "답장의 ⋯ 메뉴에서 이 답장 고정을 선택하세요. 해당 채팅 맨 위에 고정되고 여기에 표시됩니다.",
+    "pl": "Wybierz Przypnij tę odpowiedź w menu ⋯ odpowiedzi. Zostanie na górze swojego czatu i pojawi się tutaj.",
+    "pt-BR": "Escolha Fixar esta resposta no menu ⋯ de uma resposta. Ela fica no topo da conversa e aparece aqui.",
+    "ru": "Выберите «Закрепить этот ответ» в меню ⋯ ответа. Он останется вверху своего чата и появится здесь.",
+    "tr": "Bir yanıtın ⋯ menüsünde Bu yanıtı sabitle’yi seçin. Yanıt sohbetinin en üstünde kalır ve burada görünür.",
+    "zh-Hans": "在回复的 ⋯ 菜单中选择“置顶此回复”。它会固定在所在聊天的顶部，并显示在这里。",
+    "zh-Hant": "在回覆的 ⋯ 選單中選擇「釘選此回覆」。它會固定在所在聊天的頂端，並顯示在這裡。"
   },
   "Choose how Conduit appears across the app.": {
     "de": "Wähle, wie Conduit in der gesamten App aussieht.",
@@ -7859,6 +7919,21 @@
     "zh-Hans": "编辑任务",
     "zh-Hant": "編輯任務"
   },
+  "Edit label": {
+    "de": "Label bearbeiten",
+    "es": "Editar etiqueta",
+    "fr": "Modifier le libellé",
+    "id": "Edit label",
+    "it": "Modifica etichetta",
+    "ja": "ラベルを編集",
+    "ko": "레이블 편집",
+    "pl": "Edytuj etykietę",
+    "pt-BR": "Editar rótulo",
+    "ru": "Изменить метку",
+    "tr": "Etiketi düzenle",
+    "zh-Hans": "编辑标签",
+    "zh-Hant": "編輯標籤"
+  },
   "Edit queued message": {
     "de": "Nachricht in der Warteschlange bearbeiten",
     "es": "Editar mensaje en cola",
@@ -10063,6 +10138,21 @@
     "tr": "Hedef · tur {used}/{max}",
     "zh-Hans": "目标 · 第 {used}/{max} 轮",
     "zh-Hant": "目標 · 第 {used}/{max} 輪"
+  },
+  "Goes to the pinned reply": {
+    "de": "Springt zur angehefteten Antwort",
+    "es": "Va a la respuesta fijada",
+    "fr": "Va à la réponse épinglée",
+    "id": "Membuka balasan tersemat",
+    "it": "Va alla risposta fissata",
+    "ja": "ピン留めした返信に移動します",
+    "ko": "고정된 답장으로 이동합니다",
+    "pl": "Przechodzi do przypiętej odpowiedzi",
+    "pt-BR": "Vai para a resposta fixada",
+    "ru": "Переходит к закреплённому ответу",
+    "tr": "Sabitlenmiş yanıta gider",
+    "zh-Hans": "前往置顶回复",
+    "zh-Hant": "前往已釘選的回覆"
   },
   "Google Search": {
     "de": "Google Suche",
@@ -13319,6 +13409,21 @@
     "zh-Hans": "韩语",
     "zh-Hant": "韓語"
   },
+  "Label": {
+    "de": "Label",
+    "es": "Etiqueta",
+    "fr": "Libellé",
+    "id": "Label",
+    "it": "Etichetta",
+    "ja": "ラベル",
+    "ko": "레이블",
+    "pl": "Etykieta",
+    "pt-BR": "Rótulo",
+    "ru": "Метка",
+    "tr": "Etiket",
+    "zh-Hans": "标签",
+    "zh-Hant": "標籤"
+  },
   "Label, like GitHub work account": {
     "de": "Name, etwa GitHub-Arbeitskonto",
     "es": "Nombre, como Cuenta de trabajo de GitHub",
@@ -16379,6 +16484,21 @@
     "zh-Hans": "此机器人还没有可用的模型，因此跳过了自我介绍。请编辑机器人并选择一个模型。",
     "zh-Hant": "此機器人還沒有可用的模型，因此跳過了自我介紹。請編輯機器人並選擇一個模型。"
   },
+  "No pinned replies": {
+    "de": "Keine angehefteten Antworten",
+    "es": "No hay respuestas fijadas",
+    "fr": "Aucune réponse épinglée",
+    "id": "Tidak ada balasan tersemat",
+    "it": "Nessuna risposta fissata",
+    "ja": "ピン留めした返信はありません",
+    "ko": "고정된 답장 없음",
+    "pl": "Brak przypiętych odpowiedzi",
+    "pt-BR": "Nenhuma resposta fixada",
+    "ru": "Нет закреплённых ответов",
+    "tr": "Sabitlenmiş yanıt yok",
+    "zh-Hans": "没有置顶回复",
+    "zh-Hant": "沒有已釘選的回覆"
+  },
   "No problems found": {
     "de": "Keine Probleme gefunden",
     "es": "No se encontraron problemas",
@@ -17804,6 +17924,21 @@
     "zh-Hans": "正在打开网页",
     "zh-Hant": "正在打開網頁"
   },
+  "Opens the chat at this reply": {
+    "de": "Öffnet den Chat bei dieser Antwort",
+    "es": "Abre el chat en esta respuesta",
+    "fr": "Ouvre la conversation à cette réponse",
+    "id": "Membuka obrolan di balasan ini",
+    "it": "Apre la chat su questa risposta",
+    "ja": "この返信の位置でチャットを開きます",
+    "ko": "이 답장 위치에서 채팅을 엽니다",
+    "pl": "Otwiera czat przy tej odpowiedzi",
+    "pt-BR": "Abre o chat nesta resposta",
+    "ru": "Открывает чат на этом ответе",
+    "tr": "Sohbeti bu yanıtta açar",
+    "zh-Hans": "在此回复处打开聊天",
+    "zh-Hant": "在此回覆處打開聊天"
+  },
   "Optional, for a hosted model": {
     "de": "Optional, für ein gehostetes Modell",
     "es": "Opcional, para un modelo alojado",
@@ -18599,6 +18734,21 @@
     "zh-Hans": "置顶",
     "zh-Hant": "釘選"
   },
+  "Pin reply": {
+    "de": "Diese Antwort anheften",
+    "es": "Fijar esta respuesta",
+    "fr": "Épingler cette réponse",
+    "id": "Sematkan balasan ini",
+    "it": "Fissa questa risposta",
+    "ja": "この返信をピンで固定",
+    "ko": "이 답장 고정",
+    "pl": "Przypnij tę odpowiedź",
+    "pt-BR": "Fixar esta resposta",
+    "ru": "Закрепить этот ответ",
+    "tr": "Bu yanıtı sabitle",
+    "zh-Hans": "置顶此回复",
+    "zh-Hant": "釘選此回覆"
+  },
   "Pink": {
     "de": "Pink",
     "es": "Rosa",
@@ -18628,6 +18778,51 @@
     "tr": "Sabitlenmiş",
     "zh-Hans": "已置顶",
     "zh-Hant": "已釘選"
+  },
+  "Pinned replies": {
+    "de": "Angeheftete Antworten",
+    "es": "Respuestas fijadas",
+    "fr": "Réponses épinglées",
+    "id": "Balasan tersemat",
+    "it": "Risposte fissate",
+    "ja": "ピン留めした返信",
+    "ko": "고정된 답장",
+    "pl": "Przypięte odpowiedzi",
+    "pt-BR": "Respostas fixadas",
+    "ru": "Закреплённые ответы",
+    "tr": "Sabitlenmiş yanıtlar",
+    "zh-Hans": "置顶回复",
+    "zh-Hant": "已釘選的回覆"
+  },
+  "Pinned reply": {
+    "de": "Angeheftete Antwort",
+    "es": "Respuesta fijada",
+    "fr": "Réponse épinglée",
+    "id": "Balasan tersemat",
+    "it": "Risposta fissata",
+    "ja": "ピン留めした返信",
+    "ko": "고정된 답장",
+    "pl": "Przypięta odpowiedź",
+    "pt-BR": "Resposta fixada",
+    "ru": "Закреплённый ответ",
+    "tr": "Sabitlenmiş yanıt",
+    "zh-Hans": "置顶回复",
+    "zh-Hant": "已釘選的回覆"
+  },
+  "Pinned reply {n} of {count}": {
+    "de": "Angeheftete Antwort {n} von {count}",
+    "es": "Respuesta fijada {n} de {count}",
+    "fr": "Réponse épinglée {n} sur {count}",
+    "id": "Balasan tersemat {n} dari {count}",
+    "it": "Risposta fissata {n} di {count}",
+    "ja": "ピン留めした返信 {n}/{count}",
+    "ko": "고정된 답장 {n}/{count}",
+    "pl": "Przypięta odpowiedź {n} z {count}",
+    "pt-BR": "Resposta fixada {n} de {count}",
+    "ru": "Закреплённый ответ {n} из {count}",
+    "tr": "Sabitlenmiş yanıt {n}/{count}",
+    "zh-Hans": "置顶回复 {n}/{count}",
+    "zh-Hant": "已釘選的回覆 {n}/{count}"
   },
   "Pirate": {
     "de": "Pirat",
@@ -22769,6 +22964,21 @@
     "zh-Hans": "安全修复",
     "zh-Hant": "安全性修正"
   },
+  "Security recommendations": {
+    "de": "Sicherheitsempfehlungen",
+    "es": "Recomendaciones de seguridad",
+    "fr": "Recommandations de sécurité",
+    "id": "Rekomendasi keamanan",
+    "it": "Consigli di sicurezza",
+    "ja": "セキュリティの推奨事項",
+    "ko": "보안 권장 사항",
+    "pl": "Zalecenia bezpieczeństwa",
+    "pt-BR": "Recomendações de segurança",
+    "ru": "Рекомендации по безопасности",
+    "tr": "Güvenlik önerileri",
+    "zh-Hans": "安全建议",
+    "zh-Hant": "安全建議"
+  },
   "Security scan failed": {
     "de": "Sicherheitsprüfung fehlgeschlagen",
     "es": "El análisis de seguridad falló",
@@ -23488,6 +23698,21 @@
     "tr": "Daha az göster",
     "zh-Hans": "收起",
     "zh-Hant": "收起"
+  },
+  "Show pins from": {
+    "de": "Pins anzeigen aus",
+    "es": "Mostrar fijados de",
+    "fr": "Afficher les épingles de",
+    "id": "Tampilkan sematan dari",
+    "it": "Mostra fissati da",
+    "ja": "表示するピン",
+    "ko": "고정 항목 표시 범위",
+    "pl": "Pokaż przypięcia z",
+    "pt-BR": "Mostrar fixados de",
+    "ru": "Показать закрепы из",
+    "tr": "Sabitlemeleri göster",
+    "zh-Hans": "显示置顶来源",
+    "zh-Hant": "顯示釘選來源"
   },
   "Show puts Hermes' thinking in every chat. On request hides it, with Show thinking in a run's menu and a reply's ⋯. Off hides it everywhere.": {
     "de": "„In jedem Chat zeigen“ zeigt das Denken von Hermes in jedem Chat. „Auf Anfrage“ blendet es aus, mit „Denkprozess anzeigen“ im Menü eines Durchlaufs und im ⋯ einer Antwort. „Aus“ blendet es überall aus.",
@@ -27524,6 +27749,21 @@
     "zh-Hans": "此卡片无法显示全部内容。请在其聊天中批准，或在此拒绝。",
     "zh-Hant": "此卡片無法顯示全部內容。請在其聊天中核准，或在此拒絕。"
   },
+  "This chat": {
+    "de": "Dieser Chat",
+    "es": "Este chat",
+    "fr": "Ce chat",
+    "id": "Chat ini",
+    "it": "Questa chat",
+    "ja": "このチャット",
+    "ko": "이 채팅",
+    "pl": "Ten czat",
+    "pt-BR": "Este chat",
+    "ru": "Этот чат",
+    "tr": "Bu sohbet",
+    "zh-Hans": "此聊天",
+    "zh-Hant": "此聊天"
+  },
   "This chat is open in Conduit on another device or in the Hermes web chat. Send from there, or close it there and try again.": {
     "de": "Dieser Chat ist in Conduit auf einem anderen Gerät oder im Hermes-Webchat geöffnet. Sende von dort, oder schließe ihn dort und versuche es erneut.",
     "es": "Este chat está abierto en Conduit en otro dispositivo o en el chat web de Hermes. Envía desde allí, o ciérralo allí y vuelve a intentarlo.",
@@ -29098,6 +29338,21 @@
     "tr": "Sabitlemeyi Kaldır",
     "zh-Hans": "取消置顶",
     "zh-Hant": "取消釘選"
+  },
+  "Unpin reply": {
+    "de": "Diese Antwort lösen",
+    "es": "Dejar de fijar esta respuesta",
+    "fr": "Désépingler cette réponse",
+    "id": "Lepas sematan balasan ini",
+    "it": "Non fissare questa risposta",
+    "ja": "この返信のピンを外す",
+    "ko": "이 답장 고정 해제",
+    "pl": "Odepnij tę odpowiedź",
+    "pt-BR": "Desafixar esta resposta",
+    "ru": "Открепить этот ответ",
+    "tr": "Bu yanıtın sabitlemesini kaldır",
+    "zh-Hans": "取消置顶此回复",
+    "zh-Hant": "取消釘選此回覆"
   },
   "Unread": {
     "de": "Ungelesen",

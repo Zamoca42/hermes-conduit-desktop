@@ -8439,3 +8439,148 @@ button.secondary.danger {
   background: var(--accent-fill);
   color: var(--accent-ink);
 }
+
+/* Pinned replies: the bar over the chat, and the list. */
+.pinned-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px 4px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.pinned-bar-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  text-align: left;
+  color: inherit;
+}
+
+.pinned-bar-main:hover {
+  background: var(--surface-hover);
+}
+
+.pinned-bar-main:not(:has(.pinned-bar-ticks))::before {
+  content: '';
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.pinned-bar-ticks {
+  flex: none;
+  width: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pinned-bar-ticks span {
+  flex: 1;
+  border-radius: 2px;
+  background: var(--accent-soft);
+}
+
+.pinned-bar-ticks span.on {
+  background: var(--accent);
+}
+
+.pinned-bar-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.pinned-bar-heading {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.pinned-bar-title {
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pinned-bar .message-more {
+  position: relative;
+}
+
+.pinned-bar-menu {
+  left: auto;
+  right: 0;
+}
+
+.pinned-sheet {
+  width: min(560px, 100%);
+}
+
+.pinned-sheet .filter-chips {
+  margin: 10px 0 2px;
+}
+
+.pinned-row {
+  align-items: flex-start;
+}
+
+.pinned-row-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  text-align: left;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.pinned-row-open:hover {
+  background: var(--surface-hover);
+}
+
+.pinned-row .link {
+  flex: none;
+}
+
+.pinned-row .link.danger {
+  color: var(--danger);
+}
+
+.pinned-label-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pinned-label-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.pinned-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 12px;
+  text-align: center;
+}
