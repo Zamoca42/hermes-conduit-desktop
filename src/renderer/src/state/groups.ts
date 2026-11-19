@@ -383,6 +383,10 @@ export interface DriverStatus {
   routingModes?: string[]
   /** How many times one discussion can be continued past its turn limit. */
   maxContinues?: number
+  /** The live member turns (`member_activity`), in admission order; absent on a host before 0.22.5. */
+  activity?: { memberId: string; status: string }[]
+  /** The members waiting on an approval (`pending_actions`). */
+  approvals: string[]
 }
 
 export function driverStatus(result: unknown): DriverStatus {
@@ -393,6 +397,18 @@ export function driverStatus(result: unknown): DriverStatus {
     const id = str(obj(raw)?.member_id)
     if (id && !busy.includes(id)) busy.push(id)
   }
+  const activity = Array.isArray(driver?.member_activity)
+    ? (driver!.member_activity as unknown[]).flatMap(raw => {
+        const memberId = str(obj(raw)?.member_id)
+        return memberId ? [{ memberId, status: str(obj(raw)?.status) ?? '' }] : []
+      })
+    : undefined
+  const approvals: string[] = []
+  for (const raw of Array.isArray(driver?.pending_actions) ? (driver!.pending_actions as unknown[]) : []) {
+    const action = obj(raw)
+    const memberId = str(action?.member_id)
+    if (action?.kind === 'approval' && memberId && !approvals.includes(memberId)) approvals.push(memberId)
+  }
   const modes = Array.isArray(driver?.routing_modes) ? (driver!.routing_modes as unknown[]).filter((m): m is string => typeof m === 'string') : undefined
   return {
     working: driver?.working === true || busy.length > 0,
@@ -400,8 +416,157 @@ export function driverStatus(result: unknown): DriverStatus {
     disbanded: typeof obj(row?.room)?.disbanded_at === 'number',
     context: contextFrom(row?.context),
     routingModes: modes,
-    maxContinues: int(driver?.max_continues)
+    maxContinues: int(driver?.max_continues),
+    activity,
+    approvals
   }
+}
+
+// MARK: Member statuses
+
+/** How each member did with the latest message, for the pills under the room's title (the phone's GroupMemberStatus). */
+export type MemberStatus = 'needsApproval' | 'responding' | 'waiting' | 'replied' | 'passed' | 'failed' | 'stopped' | 'unavailable'
+
+/** The words after the member's name, with the dot between them, as the phone shows them. */
+export function memberStatusLabel(status: MemberStatus): string {
+  switch (status) {
+    case 'needsApproval':
+      return t('· needs approval')
+    case 'responding':
+      return t('· responding…')
+    case 'waiting':
+      return t('· waiting')
+    case 'replied':
+      return t('· replied')
+    case 'passed':
+      return t('· passed')
+    case 'failed':
+      return t('· failed')
+    case 'stopped':
+      return t('· stopped')
+    case 'unavailable':
+      return t('· unavailable')
+  }
+}
+
+/** The member a driver id names: its member id first, then its profile. */
+export function roomMember(room: Pick<Room, 'members'>, id: string): RoomMember | undefined {
+  const key = id.trim().toLowerCase()
+  return room.members.find(m => m.memberId.toLowerCase() === key) ?? room.members.find(m => m.profile?.toLowerCase() === key)
+}
+
+const threadOf = (event: RoomEvent) => str(event.payload.thread_id) ?? ''
+const discussionOf = (event: RoomEvent) => str(event.payload.discussion_event_id)
+
+/**
+ * Each thread's current discussion: its newest message's event id. A thread
+ * whose message the kept events no longer hold takes the newest discussion
+ * its events name, so a long discussion keeps its outcomes.
+ */
+export function currentDiscussions(events: readonly RoomEvent[]): Map<string, string> {
+  const named = new Map<string, string>()
+  const fromMessages = new Map<string, string>()
+  for (const event of events) {
+    if (event.kind === 'message.user' && event.eventId) fromMessages.set(threadOf(event), event.eventId)
+    else {
+      const id = discussionOf(event)
+      if (id) named.set(threadOf(event), id)
+    }
+  }
+  for (const [thread, id] of fromMessages) named.set(thread, id)
+  return named
+}
+
+/**
+ * Each member's status, by member id, as the phone (and Hermes Desktop's
+ * group header) reads it: a pending approval, then a live turn (running or
+ * stopping before queued), else the member's last outcome in its thread's
+ * current discussion, later turns winning. A driver that reports idle has no
+ * live turns, whatever rows it still lists; a host without `member_activity`
+ * names its busy members as responding. A lead's routing turn (the task a
+ * `room.assignment` names) is no reply or pass. A member with nothing to
+ * show is absent.
+ */
+export function memberStatuses(room: Pick<Room, 'members'>, events: readonly RoomEvent[], status: Pick<DriverStatus, 'working' | 'busy' | 'activity' | 'approvals'>): Map<string, MemberStatus> {
+  const statuses = new Map<string, MemberStatus>()
+  const discussions = currentDiscussions(events)
+  const routingTasks = new Set(events.flatMap(e => (e.kind === 'room.assignment' && str(e.payload.task_id) ? [str(e.payload.task_id)!] : [])))
+  for (const event of events) {
+    const task = str(event.payload.task_id)
+    if (event.kind.startsWith('turn.') && task && routingTasks.has(task)) continue
+    const memberId = str(event.payload.member_id)
+    const discussion = discussionOf(event)
+    if (!memberId || !discussion || discussion !== discussions.get(threadOf(event))) continue
+    const member = roomMember(room, memberId)
+    if (!member) continue
+    let outcome: MemberStatus | null = null
+    if (event.kind === 'turn.settled') outcome = event.payload.passed === true ? 'passed' : 'replied'
+    else if (event.kind === 'turn.failed') outcome = 'failed'
+    else if (event.kind === 'turn.cancelled') outcome = 'stopped'
+    // The driver parks a member it can't reach; it runs again later.
+    else if (event.kind === 'turn.deferred' && event.payload.reason === 'member_unavailable') outcome = 'unavailable'
+    if (outcome) statuses.set(member.memberId, outcome)
+  }
+  if (status.working) {
+    if (status.activity) {
+      for (const row of status.activity) {
+        const member = row.status === 'queued' ? roomMember(room, row.memberId) : undefined
+        if (member) statuses.set(member.memberId, 'waiting')
+      }
+      for (const row of status.activity) {
+        const member = row.status === 'running' || row.status === 'stopping' ? roomMember(room, row.memberId) : undefined
+        if (member) statuses.set(member.memberId, 'responding')
+      }
+    } else {
+      for (const id of status.busy) {
+        const member = roomMember(room, id)
+        if (member) statuses.set(member.memberId, 'responding')
+      }
+    }
+  }
+  for (const id of status.approvals) {
+    const member = roomMember(room, id)
+    if (member) statuses.set(member.memberId, 'needsApproval')
+  }
+  return statuses
+}
+
+/** The member whose pill carries the lead's crown: Who answers' lead, while it is Lead. */
+export function leadMemberId(room: Pick<Room, 'members'>, context: RoomContext | undefined): string | undefined {
+  if (!context || context.routing !== 'lead' || !context.leadMemberId.trim()) return undefined
+  return roomMember(room, context.leadMemberId)?.memberId
+}
+
+/**
+ * Whether the newest message's discussion settled, nobody having more to say
+ * (its last `room.activity` is `settled`, with no Continue or Stop after it).
+ * A message being sent starts the next one.
+ */
+export function latestDiscussionSettled(events: readonly RoomEvent[], sending = false): boolean {
+  if (sending) return false
+  let index = -1
+  for (let i = events.length - 1; i >= 0; i--) {
+    if (events[i]!.kind === 'message.user') {
+      index = i
+      break
+    }
+  }
+  let discussion: string | undefined
+  let start = 0
+  if (index >= 0) {
+    discussion = events[index]!.eventId
+    start = index + 1
+  } else {
+    for (let i = events.length - 1; i >= 0 && !discussion; i--) discussion = discussionOf(events[i]!)
+  }
+  if (!discussion) return false
+  let settled = false
+  for (const event of events.slice(start)) {
+    const ofIt = discussionOf(event) === discussion
+    if (event.kind === 'room.activity' && ofIt) settled = event.payload.status === 'settled'
+    else if ((event.kind === 'room.continued' && ofIt) || event.kind === 'room.stop_requested') settled = false
+  }
+  return settled
 }
 
 /** A bot's @handle in a room, as the phone gives it: its profile name, the default profile's "hermes". */

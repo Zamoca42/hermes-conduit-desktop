@@ -3,6 +3,9 @@ import {
   addToDraft,
   defaultRoomName,
   driverStatus,
+  latestDiscussionSettled,
+  leadMemberId,
+  memberStatuses,
   eventFromWire,
   logPage,
   mergeEvents,
@@ -91,9 +94,14 @@ describe('rooms', () => {
     expect(driverStatus({ room: {}, driver_status: { working: false, member_activity: [{ member_id: 'furina' }, { member_id: 'furina' }] } })).toEqual({
       working: true,
       busy: ['furina'],
-      disbanded: false
+      disbanded: false,
+      activity: [
+        { memberId: 'furina', status: '' },
+        { memberId: 'furina', status: '' }
+      ],
+      approvals: []
     })
-    expect(driverStatus({ room: { disbanded_at: 5 }, driver_status: { running: true } })).toEqual({ working: false, busy: [], disbanded: true })
+    expect(driverStatus({ room: { disbanded_at: 5 }, driver_status: { running: true } })).toEqual({ working: false, busy: [], disbanded: true, approvals: [] })
   })
 })
 
@@ -158,5 +166,78 @@ describe('room pictures', () => {
     expect(pictureFromDownload({ data_base64: btoa('not a picture') })).toBeNull()
     expect(pictureFromDownload({ data_base64: 'x'.repeat(23_000_000) })).toBeNull()
     expect(pictureFromDownload(null)).toBeNull()
+  })
+})
+
+describe('member statuses', () => {
+  const room = { members: [{ memberId: 'm-ada', profile: 'ada' }, { memberId: 'm-lin', profile: 'linus' }, { memberId: 'm-bo', profile: 'bo' }] }
+  let seq = 0
+  const ev = (kind: string, payload: Record<string, unknown> = {}, eventId = `e${++seq}`) => ({ seq, eventId, kind, actor: { kind: 'system', id: 'x' }, payload })
+  const idle = { working: false, busy: [], approvals: [] as string[] }
+
+  it('shows each member’s last outcome in its thread’s current discussion, later turns winning', () => {
+    const events = [
+      ev('message.user', {}, 'old'),
+      ev('turn.failed', { member_id: 'm-bo', discussion_event_id: 'old' }),
+      ev('message.user', {}, 'new'),
+      ev('turn.failed', { member_id: 'm-ada', discussion_event_id: 'new' }),
+      ev('turn.settled', { member_id: 'm-ada', discussion_event_id: 'new' }),
+      ev('turn.settled', { member_id: 'linus', discussion_event_id: 'new', passed: true })
+    ]
+    const statuses = memberStatuses(room, events, idle)
+    expect(Object.fromEntries(statuses)).toEqual({ 'm-ada': 'replied', 'm-lin': 'passed' })
+  })
+
+  it('puts live turns over outcomes, approvals over both, and nothing live when the driver is idle', () => {
+    const events = [ev('message.user', {}, 'd'), ev('turn.settled', { member_id: 'm-ada', discussion_event_id: 'd' })]
+    const activity = [
+      { memberId: 'm-ada', status: 'queued' },
+      { memberId: 'm-lin', status: 'running' }
+    ]
+    expect(Object.fromEntries(memberStatuses(room, events, { working: true, busy: [], activity, approvals: ['m-bo'] }))).toEqual({
+      'm-ada': 'waiting',
+      'm-lin': 'responding',
+      'm-bo': 'needsApproval'
+    })
+    expect(Object.fromEntries(memberStatuses(room, events, { working: false, busy: [], activity, approvals: [] }))).toEqual({ 'm-ada': 'replied' })
+    // A host without member_activity names its busy members.
+    expect(memberStatuses(room, [], { working: true, busy: ['m-bo'], approvals: [] }).get('m-bo')).toBe('responding')
+  })
+
+  it('leaves a lead’s routing turn out, and marks a member the driver parked as unavailable', () => {
+    const events = [
+      ev('message.user', {}, 'd'),
+      ev('room.assignment', { task_id: 't-route' }),
+      ev('turn.settled', { member_id: 'm-ada', discussion_event_id: 'd', task_id: 't-route' }),
+      ev('turn.deferred', { member_id: 'm-bo', discussion_event_id: 'd', reason: 'member_unavailable' })
+    ]
+    expect(Object.fromEntries(memberStatuses(room, events, idle))).toEqual({ 'm-bo': 'unavailable' })
+  })
+
+  it('crowns the lead only while Who answers is Lead', () => {
+    expect(leadMemberId(room, { purpose: '', notes: '', routing: 'lead', leadMemberId: 'ada', newerRouting: '' })).toBe('m-ada')
+    expect(leadMemberId(room, { purpose: '', notes: '', routing: 'everyone', leadMemberId: '', newerRouting: '' })).toBeUndefined()
+  })
+
+  it('says the room settled until a new message, a Continue or a Stop', () => {
+    const settled = [ev('message.user', {}, 'd'), ev('room.activity', { discussion_event_id: 'd', status: 'settled' })]
+    expect(latestDiscussionSettled(settled)).toBe(true)
+    expect(latestDiscussionSettled(settled, true)).toBe(false)
+    expect(latestDiscussionSettled([...settled, ev('room.continued', { discussion_event_id: 'd' })])).toBe(false)
+    expect(latestDiscussionSettled([...settled, ev('room.stop_requested')])).toBe(false)
+    expect(latestDiscussionSettled([...settled, ev('message.user', {}, 'd2')])).toBe(false)
+  })
+
+  it('reads the live turns and approvals from the driver', () => {
+    const status = driverStatus({
+      driver_status: {
+        working: true,
+        member_activity: [{ member_id: 'm-ada', status: 'running' }],
+        pending_actions: [{ kind: 'approval', member_id: 'm-bo' }, { kind: 'clarify', member_id: 'm-lin' }]
+      }
+    })
+    expect(status.activity).toEqual([{ memberId: 'm-ada', status: 'running' }])
+    expect(status.approvals).toEqual(['m-bo'])
+    expect(driverStatus({ driver_status: {} }).activity).toBeUndefined()
   })
 })

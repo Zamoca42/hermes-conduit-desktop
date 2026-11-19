@@ -9149,3 +9149,46 @@ button.secondary.danger {
   pointer-events: none;
   z-index: -1;
 }
+
+/* Each bot's status with the latest message, under a room's title. */
+.room-pills {
+  display: flex;
+  justify-content: safe center;
+  gap: 6px;
+  padding: 0 16px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.room-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px 3px 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.room-pill-status {
+  color: var(--text-2);
+}
+
+.room-pill.failed .room-pill-status,
+.room-pill.unavailable .room-pill-status {
+  color: var(--pulse-red);
+}
+
+.room-pill.needsApproval .room-pill-status,
+.room-pill.responding .room-pill-status {
+  color: var(--accent);
+}
+
+.room-pill-crown {
+  color: #e0a91b;
+  font-size: 11px;
+}
