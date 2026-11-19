@@ -1738,6 +1738,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             canAttach={false}
             copy={shownCopy}
             onRefreshCopies={roomCopies.refresh}
+            canPostInCopy={roomCopies.canPost}
             onDeleteCopy={
               roomCopies.canForget
                 ? async () => {

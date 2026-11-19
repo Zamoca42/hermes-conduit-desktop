@@ -20,7 +20,7 @@ import { RoomSettings } from "./RoomSettings";
 import { Fragment } from "react";
 import { useRoom, type RoomApprovalAnswer } from "../state/useGroups";
 import { useRoomCopy } from "../state/useRoomCopies";
-import { copyHost, copyLine, copyReadOnly, isOver, type RoomCopy } from "../state/roomCopies";
+import { copyHost, copyLine, copyReadOnly, isOver, postRow, takesPosts, type RoomCopy } from "../state/roomCopies";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
@@ -50,6 +50,8 @@ interface Props {
   onRefreshCopies?: () => Promise<void>;
   /** Deletes the copy once it's over, when the plugin can. */
   onDeleteCopy?: () => Promise<void>;
+  /** This Hermes' plugin posts in rooms other people host. */
+  canPostInCopy?: boolean;
 }
 
 const noRefresh = async () => undefined;
@@ -159,7 +161,7 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy }: Props) {
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false }: Props) {
   // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
   const hosted = useRoom(copy ? null : room, connected);
   const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
@@ -168,6 +170,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
   const host = copy ? copy.from.trim() || t("The host") : "";
   const copyYou = copied.you;
   const items = useMemo(() => roomItems(room, events, copy ? { host, you: copyYou } : undefined), [room, events, copy, host, copyYou]);
+  const copyTakesPosts = !!copy && takesPosts(copy, canPostInCopy);
   const [deleting, setDeleting] = useState<"asking" | "deleting" | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const botFor = (profile?: string) => bots.find((b) => b.name === profile);
@@ -186,7 +189,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
   useLayoutEffect(() => {
     const el = scroller.current;
     if (el && pinned.current) el.scrollTop = el.scrollHeight;
-  }, [items, pending, status.working]);
+  }, [items, pending, copied.outbox, status.working]);
 
   // A message replying to another: the "Replying to" card, then its own words.
   const [quote, setQuote] = useState<QuoteRequest | null>(null);
@@ -531,6 +534,54 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
               )}
             </div>
           ))}
+          {copy
+            ? copied.outbox.map((o) => {
+                const row = postRow(copied.posts[o.eventId], copied.inFlight.has(o.eventId), copy, canPostInCopy);
+                return (
+                  <div key={o.eventId} className={`user pending${row.state === "sending" ? "" : " failed"}`}>
+                    <div className="bubble">{o.text}</div>
+                    {row.state === "sending" ? (
+                      <span className="time">{t("Sending…")}</span>
+                    ) : row.state === "notDelivered" ? (
+                      <span className="time">
+                        <button className="link" onClick={() => void copied.post(o.text, o.eventId)}>
+                          {t("Not delivered — retry")}
+                        </button>
+                      </span>
+                    ) : (
+                      <span className="time">
+                        {row.why}{" "}
+                        {row.state === "refused" && row.retry ? (
+                          <button className="link" onClick={() => void copied.post(o.text, o.eventId)}>
+                            {t("Retry")}
+                          </button>
+                        ) : null}{" "}
+                        {row.state === "refused" ? (
+                          <button
+                            className="link"
+                            onClick={() => {
+                              copied.dismiss(o.eventId);
+                              setQuote(quoteRequest({ draft: o.text }));
+                            }}
+                          >
+                            {t("Edit")}
+                          </button>
+                        ) : (
+                          <>
+                            <button className="link" onClick={() => void navigator.clipboard.writeText(o.text)}>
+                              {t("Copy")}
+                            </button>{" "}
+                            <button className="link" onClick={() => copied.dismiss(o.eventId)}>
+                              {t("Dismiss")}
+                            </button>
+                          </>
+                        )}
+                      </span>
+                    )}
+                  </div>
+                );
+              })
+            : null}
           {status.working ? (
             <div className="status-line">
               <span className="running" />
@@ -575,7 +626,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           })}
         </div>
       ) : null}
-      {copy ? (
+      {copy && !copyTakesPosts ? (
         <div className="room-read-only" role="note">
           <Icon name="eye" />
           <span>{copyReadOnly(copy)}</span>
@@ -583,15 +634,17 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
       ) : (
       <Composer
         placeholder={t('Message {name}…', { name: room.name })}
-        running={canStop && status.working}
+        running={!copy && canStop && status.working}
         disabled={!connected || status.disbanded}
         onSend={(text, attachments) => {
-          void send(text, attachments);
+          // In a room someone else hosts, your Hermes posts it there, named for you.
+          if (copy) void copied.post(text);
+          else void send(text, attachments);
           if (picked.length) setRecipients([]);
         }}
         onStop={() => void stop()}
         focusKey={room.roomId}
-        canAttach={canAttach && !room.linked}
+        canAttach={canAttach && !room.linked && !copy}
         dropZone={pane}
         checkAttachments={roomUploadProblem}
         quote={quote}

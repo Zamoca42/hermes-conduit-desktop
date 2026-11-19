@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { eventFromWire, roomItems, unnamedPost } from '../src/renderer/src/state/groups'
-import { copyLine, copyRoom, copyStatus, isOver, parseCopies, roomCopiesClient } from '../src/renderer/src/state/roomCopies'
+import { copyLine, copyRoom, copyStatus, isOver, parseCopies, parsePost, postRow, roomCopiesClient, takesPosts } from '../src/renderer/src/state/roomCopies'
 
 const wire = {
   room_id: 'conduit-1',
@@ -88,6 +88,46 @@ describe('rooms other people host', () => {
       'DELETE /api/plugins/conduit_push/rooms/sessions?room_id=room%201',
       'DELETE /api/plugins/conduit_push/rooms/sessions?room_id=room%201&profile=work',
       'DELETE /api/plugins/conduit_push/rooms/copies?room_id=room%201'
+    ])
+  })
+
+  it('posts while the room takes them, and says how each post stands', () => {
+    const copy = parseCopies({ ok: true, copies: [wire] })![0]!
+    expect(takesPosts(copy, true)).toBe(true)
+    expect(takesPosts(copy, false)).toBe(false)
+    expect(takesPosts({ ...copy, yours: [] }, true)).toBe(false)
+    expect(takesPosts({ ...copy, yours: [], justMe: true }, true)).toBe(true)
+    expect(takesPosts({ ...copy, status: 'left' }, true)).toBe(false)
+
+    expect(parsePost({ event_id: 'p1', text: 'hi', status: 'posted', seq: 4 })).toEqual({ eventId: 'p1', text: 'hi', status: { kind: 'posted', seq: 4 } })
+    expect(parsePost({ event_id: 'p1', status: 'posted' })).toBeNull()
+    expect(parsePost({ event_id: 'p1', status: 'mystery' })).toBeNull()
+    const refused = (error: string) => parsePost({ event_id: 'p1', text: 'hi', status: 'refused', error })!
+
+    expect(postRow(undefined, true, copy, true)).toEqual({ state: 'sending' })
+    expect(postRow(undefined, false, copy, true)).toEqual({ state: 'notDelivered' })
+    expect(postRow(refused('too_many'), false, copy, true)).toEqual({ state: 'refused', why: 'Not posted: too many posts this hour. Try again later.', retry: true })
+    expect(postRow(refused('too_long'), false, copy, true)).toMatchObject({ state: 'refused', retry: false })
+    // A room that takes no more posts: the refusal stands, anything else can't go further.
+    const ended = { ...copy, status: 'ended' }
+    expect(postRow(refused('too_long'), false, ended, true)).toEqual({ state: 'closed', why: "Not posted: it's too long for this room." })
+    expect(postRow(undefined, false, ended, true)).toEqual({ state: 'closed', why: 'Not posted: the room has ended.' })
+    expect(postRow(undefined, false, { ...copy, status: 'left' }, true)).toEqual({ state: 'closed', why: "Not posted: your agents aren't in this room." })
+  })
+
+  it('sends a post under its retry key, over the mailbox’s wait', async () => {
+    const calls: unknown[] = []
+    const client = roomCopiesClient(async (method, path, body, timeoutMs) => {
+      calls.push([method, path, body, timeoutMs])
+      return (method === 'POST'
+        ? { ok: true, message: { event_id: 'p1', text: 'hi', status: 'sending' } }
+        : { ok: true, messages: [{ event_id: 'p1', text: 'hi', status: 'posted', seq: 7 }] }) as never
+    })
+    expect(await client.post('r1', 'p1', 'hi')).toEqual({ eventId: 'p1', text: 'hi', status: { kind: 'sending' } })
+    expect((await client.posts('r1'))[0]!.status).toEqual({ kind: 'posted', seq: 7 })
+    expect(calls).toEqual([
+      ['POST', '/api/plugins/conduit_push/rooms/copies/messages', { room_id: 'r1', event_id: 'p1', text: 'hi' }, 55000],
+      ['GET', '/api/plugins/conduit_push/rooms/copies/messages?room_id=r1', undefined, undefined]
     ])
   })
 })
