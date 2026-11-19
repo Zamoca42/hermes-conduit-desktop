@@ -198,6 +198,7 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
           assignees={assignees}
           botTitle={botTitle}
           load={kanban.detail}
+          touched={kanban.touched.ids.has(openId!) ? kanban.touched.revision : 0}
           onClose={() => setOpenId(null)}
           onPatch={async fields => {
             if (!openTask) return
@@ -223,6 +224,7 @@ function TaskPanel({
   assignees,
   botTitle,
   load,
+  touched,
   onClose,
   onPatch,
   onComment,
@@ -233,6 +235,8 @@ function TaskPanel({
   assignees: string[]
   botTitle: (name?: string) => string
   load: (id: string) => Promise<KanbanTaskDetail | null>
+  /** Bumped when a live batch touched this task. */
+  touched: number
   onClose: () => void
   onPatch: (fields: Record<string, unknown>) => Promise<void>
   onComment: (body: string) => Promise<void>
@@ -254,11 +258,11 @@ function TaskPanel({
       })
       .catch(e => setFailure(message(e)))
 
-  // Read again when the board says the task moved on.
+  // Read again when the board says the task moved on, or the live stream says something happened to it.
   useEffect(() => {
     void refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, task?.status, task?.assignee, task?.commentCount, task?.latestSummary])
+  }, [id, task?.status, task?.assignee, task?.commentCount, task?.latestSummary, touched])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

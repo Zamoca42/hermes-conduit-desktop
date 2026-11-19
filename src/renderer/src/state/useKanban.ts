@@ -1,5 +1,6 @@
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { LIVE_BOARD_POLL_MS, startKanbanStream, windowSockets } from './kanbanEvents'
 import { boardPath, boardPollDelay, defaultAssignee, failedInTransit, FIRST_READ_RETRY_MS, parseBoard, parseBoards, parseTask, parseTaskDetail, type KanbanBoard, type KanbanBoardRow, type KanbanTask, type KanbanTaskDetail } from './kanban'
 
 const BOARD_KEY = 'conduit.kanbanBoard'
@@ -46,6 +47,12 @@ export function useKanban(connected: boolean, shown: boolean) {
   const [unavailable, setUnavailable] = useState(false)
   const [assignee, setAssignee] = useState('default')
   const generation = useRef(0)
+  /** The live event stream is up: the poll is only a backstop then. */
+  const [live, setLive] = useState(false)
+  const liveRef = useRef(false)
+  const repace = useRef<(() => void) | null>(null)
+  /** The tasks the stream's last batch touched, so an open task reads again at once. */
+  const [touched, setTouched] = useState<{ revision: number; ids: ReadonlySet<string> }>({ revision: 0, ids: new Set() })
 
   /** Reads in a row that found the board as it was, which space the poll out. */
   const unchanged = useRef(0)
@@ -111,14 +118,57 @@ export function useKanban(connected: boolean, shown: boolean) {
     unchanged.current = 0
     const tick = async (first: boolean) => {
       if (first || document.visibilityState === 'visible') await load()
-      if (!stopped) timer = setTimeout(() => void tick(false), boardPollDelay(unchanged.current))
+      if (!stopped) timer = setTimeout(() => void tick(false), liveRef.current ? LIVE_BOARD_POLL_MS : boardPollDelay(unchanged.current))
     }
     void tick(true)
+    // The stream dropped: the next read comes at the board's own pace, not the backstop's.
+    repace.current = () => {
+      if (stopped || timer === undefined) return
+      clearTimeout(timer)
+      timer = setTimeout(() => void tick(false), boardPollDelay(unchanged.current))
+    }
     return () => {
       stopped = true
       clearTimeout(timer)
+      repace.current = null
     }
   }, [connected, shown, load])
+
+  // The live stream, from the cursor the first read of this board gave, while the board shows and the window is visible.
+  const cursor = board?.latestEventId
+  const hasCursor = cursor !== undefined
+  const startAt = useRef<number | undefined>(undefined)
+  startAt.current = cursor
+  const [visible, setVisible] = useState(() => document.visibilityState === 'visible')
+  useEffect(() => {
+    const onChange = () => setVisible(document.visibilityState === 'visible')
+    document.addEventListener('visibilitychange', onChange)
+    return () => document.removeEventListener('visibilitychange', onChange)
+  }, [])
+  useEffect(() => {
+    if (!connected || !shown || !visible || !hasCursor) return
+    const stream = startKanbanStream({
+      board: slug,
+      since: startAt.current!,
+      sockets: windowSockets,
+      onBatch: ids => {
+        void load()
+        setTouched(current => ({ revision: current.revision + 1, ids }))
+      },
+      onConnected: up => {
+        liveRef.current = up
+        setLive(up)
+        // Back down: the board's own pace again, from now.
+        if (!up) {
+          unchanged.current = 0
+          repace.current?.()
+        }
+      }
+    })
+    return () => {
+      stream.stop()
+    }
+  }, [connected, shown, visible, hasCursor, slug, load])
 
   useEffect(() => {
     if (connected && shown) void loadBoards()
@@ -190,5 +240,5 @@ export function useKanban(connected: boolean, shown: boolean) {
     [slug]
   )
 
-  return { boards, slug, pickBoard, board, error, unavailable, defaultAssignee: assignee, reload: load, patch, create, remove, comment, detail }
+  return { boards, slug, pickBoard, board, error, unavailable, defaultAssignee: assignee, reload: load, patch, create, remove, comment, detail, live, touched }
 }
