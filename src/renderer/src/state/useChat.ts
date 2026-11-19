@@ -1,3 +1,14 @@
+import {
+  CALL_TAKEOVER_WAIT_MS,
+  TAKEOVER_MAX_IDS,
+  TAKEOVER_PATH,
+  isSessionNotOwned,
+  owner,
+  refusalDetails,
+  runTakeover,
+  takesOverAutomatically,
+  takingOverMessage
+} from './chatTakeover'
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { contextFromUsage, parseBreakdown, type ContextWindow } from './context'
@@ -10,6 +21,7 @@ import {
   attachBoards,
   emptyTranscript,
   failPendingUser,
+  withdrawPendingUser,
   fromHistory,
   missingDetails,
   toolArgs,
@@ -28,6 +40,7 @@ type Action =
   | { type: 'event'; event: { type: string; payload?: unknown } }
   | { type: 'pending'; text: string; attachments?: Attachment[] }
   | { type: 'failed'; error: string }
+  | { type: 'withdrawn' }
   | { type: 'output'; command?: string; text: string; format: 'plain' | 'markdown' }
   | { type: 'notice'; text: string; tone?: 'error' | 'info' }
 
@@ -56,6 +69,8 @@ function reducer(state: TranscriptState, action: Action): TranscriptState {
       return addPendingUser(state, action.text, action.attachments)
     case 'failed':
       return failPendingUser(state, action.error)
+    case 'withdrawn':
+      return withdrawPendingUser(state)
     case 'output':
       return addOutput(state, action)
     case 'notice':
@@ -162,6 +177,8 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   chatRef.current = chat
   const runningRef = useRef(false)
   runningRef.current = transcript.running
+  /** Another app holds the chat and Take over automatically is off: the offer, naming who holds it. */
+  const [takeover, setTakeover] = useState<{ surface?: string; busy: boolean } | null>(null)
 
   // Resume when the chat (or the connection) changes.
   useEffect(() => {
@@ -169,6 +186,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     created.current = null
     const ticket = ++request.current
     liveId.current = null
+    setTakeover(null)
     setChat(storedId || !folder ? { storedId, liveId: null } : { storedId, liveId: null, cwd: folder })
     setError(null)
     if (!storedId) {
@@ -282,8 +300,39 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     }
   }, [profile, sessionAuthority])
 
+  /** Asks the plugin to drop another app's claim on this chat, under every id it goes by. */
+  const takeOverChat = useCallback(
+    (live: string | null) => {
+      const ids = [...new Set([chatRef.current.storedId, live].filter((id): id is string => !!id))].slice(0, TAKEOVER_MAX_IDS)
+      const path = profile && profile !== 'default' ? `${TAKEOVER_PATH}?profile=${encodeURIComponent(profile)}` : TAKEOVER_PATH
+      return gateway.http('POST', path, { session_ids: ids })
+    },
+    [profile]
+  )
+
+  /** The offer's Take Over: true once the chat is Conduit's (the composer then sends its words). */
+  const takeOver = useCallback(async (): Promise<boolean> => {
+    const offer = takeover
+    if (!offer || offer.busy) return false
+    const forChat = liveId.current
+    setTakeover({ ...offer, busy: true })
+    dispatch({ type: 'notice', text: takingOverMessage(owner(offer.surface)), tone: 'info' })
+    const end = await runTakeover(() => takeOverChat(forChat), {
+      surface: offer.surface,
+      keepWaiting: () => liveId.current === forChat,
+      onOwner: surface => setTakeover(current => (current ? { ...current, surface } : current))
+    })
+    if (end?.kind === 'ready') {
+      setTakeover(null)
+      return true
+    }
+    setTakeover(current => (current ? { ...current, busy: false } : current))
+    if (end) dispatch({ type: 'notice', text: end.message, tone: 'error' })
+    return false
+  }, [takeover, takeOverChat])
+
   const send = useCallback(
-    async (text: string, attachments: StagedAttachment[] = [], wire?: string): Promise<string | null | false> => {
+    async (text: string, attachments: StagedAttachment[] = [], wire?: string, options: { takeOver?: boolean } = {}): Promise<string | null | false> => {
       const trimmed = text.trim()
       if (!trimmed && !attachments.length) return null
       const shown: Attachment[] = attachments.map(a =>
@@ -311,14 +360,41 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         if (uploaded?.images.length) params.attachments = uploaded.images
         const preview = titlePreview(attachments)
         if (preview) params.title_preview = preview
-        try {
-          await gateway.rpc('prompt.submit', params)
-        } catch (e) {
-          // A Hermes that doesn't know the title preview gets the message without it.
-          if (!preview || !String(e instanceof Error ? e.message : e).includes('title_preview')) throw e
-          delete params.title_preview
-          await gateway.rpc('prompt.submit', params)
+        const submit = async () => {
+          try {
+            await gateway.rpc('prompt.submit', params)
+          } catch (e) {
+            // A Hermes that doesn't know the title preview gets the message without it.
+            if (!preview || !String(e instanceof Error ? e.message : e).includes('title_preview')) throw e
+            delete params.title_preview
+            await gateway.rpc('prompt.submit', params)
+          }
         }
+        try {
+          await submit()
+        } catch (e) {
+          if (!isSessionNotOwned(e)) throw e
+          // Another app holds the chat. Taking it over waits out a reply it's running, then the message goes (#304, #1061).
+          const surface = refusalDetails(e instanceof Error ? e.message : String(e)).surface
+          if (!options.takeOver && !takesOverAutomatically()) {
+            // The words go back to the composer and the offer says why; Take over sends them.
+            setTakeover({ surface, busy: false })
+            if (held.length) await releaseHeldImages((method, params) => gateway.rpc(method, params), sid, profile, held)
+            dispatch({ type: 'withdrawn' })
+            return false
+          }
+          const forChat = sid
+          dispatch({ type: 'notice', text: takingOverMessage(owner(surface)), tone: 'info' })
+          const end = await runTakeover(() => takeOverChat(forChat), {
+            surface,
+            waitMs: options.takeOver ? CALL_TAKEOVER_WAIT_MS : undefined,
+            keepWaiting: () => liveId.current === forChat
+          })
+          if (!end) return false
+          if (end.kind === 'failed') throw new Error(end.message)
+          await submit()
+        }
+        setTakeover(null)
         return createdStoredId
       } catch (e) {
         // Pictures held for this message would ride on the next one.
@@ -327,7 +403,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         return false
       }
     },
-    [profile, sessionAuthority, createSession]
+    [profile, sessionAuthority, createSession, takeOverChat]
   )
 
   const stop = useCallback(async () => {
@@ -526,5 +602,5 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     [configure]
   )
 
-  return { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection }
+  return { transcript, chat, loading, error, send, stop, command, setModel, setReasoning, setSpeed, setYolo, noteCorrection, takeover, takeOver }
 }

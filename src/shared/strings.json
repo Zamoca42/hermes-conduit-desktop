@@ -119,6 +119,21 @@
     "zh-Hans": "Cloudflare Access 服务令牌需要客户端 ID 和密钥。",
     "zh-Hant": "Cloudflare Access 服務權杖需要用戶端 ID 和密鑰。"
   },
+  "A Hermes terminal is still replying in this chat. Try again when it finishes.": {
+    "de": "Ein Hermes-Terminal antwortet noch in diesem Chat. Versuche es erneut, wenn die Antwort fertig ist.",
+    "es": "Un terminal de Hermes sigue respondiendo en este chat. Vuelve a intentarlo cuando termine.",
+    "fr": "Un terminal Hermes répond encore dans cette discussion. Réessayez quand il aura terminé.",
+    "id": "Terminal Hermes masih membalas di obrolan ini. Coba lagi setelah selesai.",
+    "it": "Un terminale Hermes sta ancora rispondendo in questa chat. Riprova quando ha finito.",
+    "ja": "Hermesのターミナルはまだこのチャットで返信中です。完了してからもう一度お試しください。",
+    "ko": "Hermes 터미널이 아직 이 채팅에서 응답 중이에요. 끝나면 다시 시도하세요.",
+    "pl": "Terminal Hermes nadal odpowiada w tym czacie. Spróbuj ponownie, gdy skończy.",
+    "pt-BR": "Um terminal do Hermes ainda está respondendo neste chat. Tente novamente quando terminar.",
+    "ru": "Терминал Hermes ещё отвечает в этом чате. Повторите попытку, когда ответ будет завершён.",
+    "tr": "Bir Hermes terminali bu sohbette hâlâ yanıt veriyor. Bittiğinde yeniden deneyin.",
+    "zh-Hans": "Hermes 终端仍在此对话中回复。请在回复结束后重试。",
+    "zh-Hant": "Hermes 終端機仍在這個聊天中回覆。請等它完成後再試一次。"
+  },
   "A bot": {
     "de": "Ein Bot",
     "es": "Un bot",
@@ -313,6 +328,21 @@
     "tr": "Bir soru",
     "zh-Hans": "一个问题",
     "zh-Hant": "一個問題"
+  },
+  "A reply running there always finishes first. If you go back to that app, reopen the chat there to see what you sent from Conduit.": {
+    "de": "Eine dort laufende Antwort wird immer zuerst abgeschlossen. Wenn du zu dieser App zurückkehrst, öffne den Chat dort erneut, um zu sehen, was du aus Conduit gesendet hast.",
+    "es": "Una respuesta en curso allí siempre termina primero. Si vuelves a esa app, abre de nuevo el chat allí para ver lo que enviaste desde Conduit.",
+    "fr": "Une réponse en cours là-bas se termine toujours d'abord. Si vous revenez dans cette app, rouvrez-y la discussion pour voir ce que vous avez envoyé depuis Conduit.",
+    "id": "Balasan yang sedang berjalan di sana selalu diselesaikan terlebih dahulu. Jika Anda kembali ke app tersebut, buka ulang obrolan di sana untuk melihat apa yang Anda kirim dari Conduit.",
+    "it": "Una risposta in corso lì termina sempre prima. Se torni in quell'app, riapri lì la chat per vedere cosa hai inviato da Conduit.",
+    "ja": "そちらで実行中の返信は常に先に完了します。そのアプリに戻った場合は、そちらでチャットを開き直すと、Conduitから送信した内容が表示されます。",
+    "ko": "그곳에서 실행 중인 응답은 항상 먼저 끝나요. 그 앱으로 돌아가면 그곳에서 채팅을 다시 열어야 Conduit에서 보낸 내용을 볼 수 있어요.",
+    "pl": "Trwająca tam odpowiedź zawsze najpierw się kończy. Jeśli wrócisz do tamtej aplikacji, otwórz tam czat ponownie, aby zobaczyć, co wysłano z Conduit.",
+    "pt-BR": "Uma resposta em andamento lá sempre termina primeiro. Se você voltar para aquele app, reabra o chat lá para ver o que você enviou pelo Conduit.",
+    "ru": "Ответ, который там уже выполняется, всегда завершается первым. Если вы вернётесь в то приложение, откройте там чат заново, чтобы увидеть, что вы отправили из Conduit.",
+    "tr": "Orada çalışan bir yanıt her zaman önce tamamlanır. O uygulamaya geri dönerseniz Conduit'ten gönderdiklerinizi görmek için sohbeti orada yeniden açın.",
+    "zh-Hans": "那里正在进行的回复总会先完成。如果你回到那个应用，请在那里重新打开对话，才能看到你从 Conduit 发送的内容。",
+    "zh-Hant": "那裡正在進行的回覆一律會先完成。如果你回到該 App，請在那裡重新打開聊天，才能看到你從 Conduit 傳送的內容。"
   },
   "A worker picks it up as soon as it’s ready.": {
     "de": "Ein Worker übernimmt sie, sobald sie bereit ist.",
@@ -1153,6 +1183,21 @@
     "tr": "Hareketli",
     "zh-Hans": "活泼",
     "zh-Hant": "生動"
+  },
+  "Another Hermes window is still replying in this chat. Try again when it finishes.": {
+    "de": "Ein anderes Hermes-Fenster antwortet noch in diesem Chat. Versuche es erneut, wenn die Antwort fertig ist.",
+    "es": "Otra ventana de Hermes sigue respondiendo en este chat. Vuelve a intentarlo cuando termine.",
+    "fr": "Une autre fenêtre Hermes répond encore dans cette discussion. Réessayez quand elle aura terminé.",
+    "id": "Jendela Hermes lain masih membalas di obrolan ini. Coba lagi setelah selesai.",
+    "it": "Un'altra finestra Hermes sta ancora rispondendo in questa chat. Riprova quando ha finito.",
+    "ja": "別のHermesウインドウはまだこのチャットで返信中です。完了してからもう一度お試しください。",
+    "ko": "다른 Hermes 창이 아직 이 채팅에서 응답 중이에요. 끝나면 다시 시도하세요.",
+    "pl": "Inne okno Hermesa nadal odpowiada w tym czacie. Spróbuj ponownie, gdy skończy.",
+    "pt-BR": "Outra janela do Hermes ainda está respondendo neste chat. Tente novamente quando terminar.",
+    "ru": "Другое окно Hermes ещё отвечает в этом чате. Повторите попытку, когда ответ будет завершён.",
+    "tr": "Başka bir Hermes penceresi bu sohbette hâlâ yanıt veriyor. Bittiğinde yeniden deneyin.",
+    "zh-Hans": "另一个 Hermes 窗口仍在此对话中回复。请在回复结束后重试。",
+    "zh-Hant": "另一個 Hermes 視窗仍在這個聊天中回覆。請等它完成後再試一次。"
   },
   "Another bot": {
     "de": "Ein anderer Bot",
@@ -3193,6 +3238,21 @@
     "tr": "Sohbetler",
     "zh-Hans": "聊天",
     "zh-Hant": "聊天"
+  },
+  "Chats open on your computer": {
+    "de": "Auf deinem Computer geöffnete Chats",
+    "es": "Chats abiertos en tu equipo",
+    "fr": "Discussions ouvertes sur votre ordinateur",
+    "id": "Obrolan yang terbuka di komputer Anda",
+    "it": "Chat aperte sul tuo computer",
+    "ja": "コンピュータで開いているチャット",
+    "ko": "컴퓨터에서 열려 있는 채팅",
+    "pl": "Czaty otwarte na komputerze",
+    "pt-BR": "Chats abertos no computador",
+    "ru": "Чаты, открытые на компьютере",
+    "tr": "Bilgisayarınızda açık sohbetler",
+    "zh-Hans": "在电脑上打开的对话",
+    "zh-Hant": "在你電腦上打開的聊天"
   },
   "Chats you haven’t opened here show up once the Conduit plugin on your host is up to date.": {
     "de": "Chats, die du hier noch nicht geöffnet hast, erscheinen, sobald das Conduit-Plugin auf deinem Host aktuell ist.",
@@ -5308,6 +5368,36 @@
     "tr": "Dosya kaydedilemedi. Tekrar deneyin.",
     "zh-Hans": "无法存储文件。请再试一次。",
     "zh-Hant": "無法儲存檔案。請再試一次。"
+  },
+  "Couldn't take this chat over. Check the connection to your Hermes host and try again.": {
+    "de": "Dieser Chat konnte nicht übernommen werden. Prüfe die Verbindung zu deinem Hermes-Host und versuche es erneut.",
+    "es": "No se pudo retomar este chat. Comprueba la conexión con tu host de Hermes y vuelve a intentarlo.",
+    "fr": "Impossible de reprendre cette discussion. Vérifiez la connexion à votre hôte Hermes et réessayez.",
+    "id": "Tidak dapat mengambil alih obrolan ini. Periksa koneksi ke host Hermes Anda dan coba lagi.",
+    "it": "Impossibile riprendere questa chat. Controlla la connessione al tuo host Hermes e riprova.",
+    "ja": "このチャットを引き継げませんでした。Hermesホストへの接続を確認して、もう一度お試しください。",
+    "ko": "이 채팅을 넘겨받을 수 없었어요. Hermes 호스트 연결을 확인하고 다시 시도하세요.",
+    "pl": "Nie udało się przejąć tego czatu. Sprawdź połączenie z hostem Hermes i spróbuj ponownie.",
+    "pt-BR": "Não foi possível assumir este chat. Verifique a conexão com seu host Hermes e tente novamente.",
+    "ru": "Не удалось перенести этот чат. Проверьте подключение к хосту Hermes и повторите попытку.",
+    "tr": "Bu sohbet devralınamadı. Hermes ana makinenizle bağlantıyı denetleyip yeniden deneyin.",
+    "zh-Hans": "无法接管此对话。请检查与 Hermes 主机的连接，然后重试。",
+    "zh-Hant": "無法接管這個聊天。請檢查與 Hermes 主機的連線，然後再試一次。"
+  },
+  "Couldn't take this chat over: {detail}": {
+    "de": "Dieser Chat konnte nicht übernommen werden: {detail}",
+    "es": "No se pudo retomar este chat: {detail}",
+    "fr": "Impossible de reprendre cette discussion : {detail}",
+    "id": "Tidak dapat mengambil alih obrolan ini: {detail}",
+    "it": "Impossibile riprendere questa chat: {detail}",
+    "ja": "このチャットを引き継げませんでした：{detail}",
+    "ko": "이 채팅을 넘겨받을 수 없었어요: {detail}",
+    "pl": "Nie udało się przejąć tego czatu: {detail}",
+    "pt-BR": "Não foi possível assumir este chat: {detail}",
+    "ru": "Не удалось перенести этот чат: {detail}",
+    "tr": "Bu sohbet devralınamadı: {detail}",
+    "zh-Hans": "无法接管此对话：{detail}",
+    "zh-Hant": "無法接管這個聊天：{detail}"
   },
   "Couldn't update Hermes": {
     "de": "Hermes konnte nicht aktualisiert werden",
@@ -9614,6 +9704,21 @@
     "zh-Hans": "Hermes",
     "zh-Hant": "Hermes"
   },
+  "Hermes Desktop is still replying in this chat. Try again when it finishes.": {
+    "de": "Hermes Desktop antwortet noch in diesem Chat. Versuche es erneut, wenn die Antwort fertig ist.",
+    "es": "Hermes Desktop sigue respondiendo en este chat. Vuelve a intentarlo cuando termine.",
+    "fr": "Hermes Desktop répond encore dans cette discussion. Réessayez quand il aura terminé.",
+    "id": "Hermes Desktop masih membalas di obrolan ini. Coba lagi setelah selesai.",
+    "it": "Hermes Desktop sta ancora rispondendo in questa chat. Riprova quando ha finito.",
+    "ja": "Hermes Desktopはまだこのチャットで返信中です。完了してからもう一度お試しください。",
+    "ko": "Hermes Desktop이 아직 이 채팅에서 응답 중이에요. 끝나면 다시 시도하세요.",
+    "pl": "Hermes Desktop nadal odpowiada w tym czacie. Spróbuj ponownie, gdy skończy.",
+    "pt-BR": "O Hermes Desktop ainda está respondendo neste chat. Tente novamente quando terminar.",
+    "ru": "Hermes Desktop ещё отвечает в этом чате. Повторите попытку, когда ответ будет завершён.",
+    "tr": "Hermes Desktop bu sohbette hâlâ yanıt veriyor. Bittiğinde yeniden deneyin.",
+    "zh-Hans": "Hermes Desktop 仍在此对话中回复。请在回复结束后重试。",
+    "zh-Hant": "Hermes Desktop 仍在這個聊天中回覆。請等它完成後再試一次。"
+  },
   "Hermes answers on this server, so there's nothing to set up on it. The Conduit plugin runs each turn and has the server read the reply aloud.": {
     "de": "Auf diesem Server antwortet Hermes, dort ist also nichts einzurichten. Das Conduit-Plugin führt jede Runde aus und lässt den Server die Antwort vorlesen.",
     "es": "En este servidor responde Hermes, así que no hay nada que configurar en él. El plugin de Conduit lleva cada turno y hace que el servidor lea la respuesta en voz alta.",
@@ -10168,6 +10273,21 @@
     "tr": "Hermes eklenti ayarlarını sunucunun varsayılan profilinde tutar. Değiştirmek için o profile geçin.",
     "zh-Hans": "Hermes 将插件设置保存在主机的默认配置文件中。切换到该配置文件即可更改。",
     "zh-Hant": "Hermes 將外掛設定保存在主機的預設設定檔中。切換到該設定檔即可變更。"
+  },
+  "Hermes lets one app use a chat at a time. When a chat is open in Hermes Desktop or a terminal, Conduit takes it over when you send. Calls always take it over; turn this off to be asked first when you type.": {
+    "de": "Hermes lässt immer nur eine App einen Chat nutzen. Ist ein Chat in Hermes Desktop oder einem Terminal geöffnet, übernimmt Conduit ihn beim Senden. Anrufe übernehmen ihn immer; schalte dies aus, um beim Tippen vorher gefragt zu werden.",
+    "es": "Hermes permite que solo una app use un chat a la vez. Cuando un chat está abierto en Hermes Desktop o en un terminal, Conduit lo retoma al enviar. Las llamadas siempre lo retoman; desactiva esta opción para que se te pregunte antes cuando escribas.",
+    "fr": "Hermes ne permet qu'à une seule app à la fois d'utiliser une discussion. Lorsqu'une discussion est ouverte dans Hermes Desktop ou un terminal, Conduit la reprend quand vous envoyez un message. Les appels la reprennent toujours ; désactivez cette option pour qu'on vous le demande d'abord quand vous écrivez.",
+    "id": "Hermes hanya mengizinkan satu app menggunakan obrolan pada satu waktu. Saat obrolan terbuka di Hermes Desktop atau terminal, Conduit mengambil alihnya saat Anda mengirim. Panggilan selalu mengambil alihnya; matikan ini agar Anda ditanya terlebih dahulu saat mengetik.",
+    "it": "Hermes consente a una sola app alla volta di usare una chat. Quando una chat è aperta in Hermes Desktop o in un terminale, Conduit la riprende quando invii un messaggio. Le chiamate la riprendono sempre; disattiva questa opzione per ricevere prima una richiesta quando scrivi.",
+    "ja": "Hermesでは、1つのチャットを同時に使用できるアプリは1つだけです。チャットがHermes Desktopまたはターミナルで開かれている場合、送信時にConduitが引き継ぎます。通話では常に引き継ぎます。入力時に先に確認したい場合はオフにしてください。",
+    "ko": "Hermes에서는 한 번에 하나의 앱만 채팅을 사용할 수 있어요. Hermes Desktop이나 터미널에서 채팅이 열려 있으면 보낼 때 Conduit이 채팅을 가져와요. 통화는 항상 채팅을 가져와요. 입력할 때 먼저 확인받으려면 이 옵션을 끄세요.",
+    "pl": "Hermes pozwala tylko jednej aplikacji naraz korzystać z czatu. Gdy czat jest otwarty w Hermes Desktop lub w terminalu, Conduit przejmuje go przy wysyłaniu. Połączenia zawsze go przejmują; wyłącz tę opcję, aby przy pisaniu najpierw otrzymać pytanie.",
+    "pt-BR": "O Hermes permite que apenas um app use um chat por vez. Quando um chat está aberto no Hermes Desktop ou em um terminal, o Conduit assume o chat ao enviar. As chamadas sempre assumem o chat; desative esta opção para ser perguntado antes quando digitar.",
+    "ru": "Hermes позволяет только одному приложению одновременно использовать чат. Если чат открыт в Hermes Desktop или в терминале, Conduit забирает его при отправке. Звонки всегда забирают его; выключите этот параметр, чтобы при наборе текста сначала получать запрос.",
+    "tr": "Hermes, bir sohbetin aynı anda yalnızca tek bir uygulama tarafından kullanılmasına izin verir. Bir sohbet Hermes Desktop'ta veya bir terminalde açıksa Conduit gönderdiğinizde onu devralır. Aramalar onu her zaman devralır; yazarken önce sorulmasını istiyorsanız bunu kapatın.",
+    "zh-Hans": "Hermes 同一时间只允许一个 app 使用一个聊天。如果聊天已在 Hermes Desktop 或终端中打开，Conduit 会在你发送时接管它。通话始终会接管；关闭此选项可在你输入时先询问你。",
+    "zh-Hant": "Hermes 同一時間只允許一個 app 使用一個聊天。如果聊天已在 Hermes Desktop 或終端機中開啟，Conduit 會在你傳送時接手。通話一律會接手；關閉此選項可在你輸入時先詢問你。"
   },
   "Hermes may also call on its own when news can't wait, within your limits. It never calls for routine updates.": {
     "de": "Hermes darf auch von sich aus anrufen, wenn Neuigkeiten nicht warten können, im Rahmen deiner Limits. Für Routine-Updates ruft er nie an.",
@@ -23489,6 +23609,36 @@
     "zh-Hans": "撤回",
     "zh-Hant": "撤回"
   },
+  "Take over automatically": {
+    "de": "Automatisch übernehmen",
+    "es": "Retomar automáticamente",
+    "fr": "Reprendre automatiquement",
+    "id": "Ambil alih secara otomatis",
+    "it": "Riprendi automaticamente",
+    "ja": "自動的に引き継ぐ",
+    "ko": "자동으로 넘겨받기",
+    "pl": "Przejmuj automatycznie",
+    "pt-BR": "Assumir automaticamente",
+    "ru": "Переносить автоматически",
+    "tr": "Otomatik olarak devral",
+    "zh-Hans": "自动接管",
+    "zh-Hant": "自動接管"
+  },
+  "Take over this chat": {
+    "de": "Diesen Chat übernehmen",
+    "es": "Retomar este chat",
+    "fr": "Reprendre cette discussion",
+    "id": "Ambil alih obrolan ini",
+    "it": "Riprendi questa chat",
+    "ja": "このチャットを引き継ぐ",
+    "ko": "이 채팅 넘겨받기",
+    "pl": "Przejmij ten czat",
+    "pt-BR": "Assumir este chat",
+    "ru": "Перенести чат сюда",
+    "tr": "Bu sohbeti devral",
+    "zh-Hans": "接管此对话",
+    "zh-Hant": "接管這個聊天"
+  },
   "Take turns": {
     "de": "Abwechselnd",
     "es": "Por turnos",
@@ -23533,6 +23683,51 @@
     "tr": "Sohbetleri Hermes Desktop’tan devralma",
     "zh-Hans": "从 Hermes Desktop 接管聊天",
     "zh-Hant": "從 Hermes Desktop 接管聊天"
+  },
+  "Taking this chat over from Hermes Desktop. If it's replying, Conduit waits for the reply to finish.": {
+    "de": "Dieser Chat wird aus Hermes Desktop übernommen. Falls dort gerade eine Antwort läuft, wartet Conduit, bis sie fertig ist.",
+    "es": "Retomando este chat desde Hermes Desktop. Si está respondiendo, Conduit espera a que termine la respuesta.",
+    "fr": "Reprise de cette discussion depuis Hermes Desktop. Si une réponse est en cours, Conduit attend qu'elle se termine.",
+    "id": "Mengambil alih obrolan ini dari Hermes Desktop. Jika sedang membalas, Conduit menunggu balasan selesai.",
+    "it": "Ripresa di questa chat da Hermes Desktop in corso. Se sta rispondendo, Conduit attende che la risposta termini.",
+    "ja": "Hermes Desktopからこのチャットを引き継いでいます。返信中の場合、Conduitは返信の完了を待ちます。",
+    "ko": "Hermes Desktop에서 이 채팅을 넘겨받는 중이에요. 응답 중이면 Conduit이 응답이 끝날 때까지 기다려요.",
+    "pl": "Przejmowanie tego czatu z Hermes Desktop. Jeśli trwa odpowiedź, Conduit poczeka na jej zakończenie.",
+    "pt-BR": "Assumindo este chat do Hermes Desktop. Se houver uma resposta em andamento, o Conduit espera que ela termine.",
+    "ru": "Перенос чата из Hermes Desktop. Если там идёт ответ, Conduit дождётся его завершения.",
+    "tr": "Bu sohbet Hermes Desktop'tan devralınıyor. Yanıt veriyorsa Conduit yanıtın bitmesini bekler.",
+    "zh-Hans": "正在从 Hermes Desktop 接管此对话。如果它正在回复，Conduit 会等待回复结束。",
+    "zh-Hant": "正在從 Hermes Desktop 接管這個聊天。如果它正在回覆，Conduit 會等待回覆完成。"
+  },
+  "Taking this chat over from a Hermes terminal. If it's replying, Conduit waits for the reply to finish.": {
+    "de": "Dieser Chat wird aus einem Hermes-Terminal übernommen. Falls dort gerade eine Antwort läuft, wartet Conduit, bis sie fertig ist.",
+    "es": "Retomando este chat desde un terminal de Hermes. Si está respondiendo, Conduit espera a que termine la respuesta.",
+    "fr": "Reprise de cette discussion depuis un terminal Hermes. Si une réponse est en cours, Conduit attend qu'elle se termine.",
+    "id": "Mengambil alih obrolan ini dari terminal Hermes. Jika sedang membalas, Conduit menunggu balasan selesai.",
+    "it": "Ripresa di questa chat da un terminale Hermes in corso. Se sta rispondendo, Conduit attende che la risposta termini.",
+    "ja": "Hermesのターミナルからこのチャットを引き継いでいます。返信中の場合、Conduitは返信の完了を待ちます。",
+    "ko": "Hermes 터미널에서 이 채팅을 넘겨받는 중이에요. 응답 중이면 Conduit이 응답이 끝날 때까지 기다려요.",
+    "pl": "Przejmowanie tego czatu z terminala Hermes. Jeśli trwa odpowiedź, Conduit poczeka na jej zakończenie.",
+    "pt-BR": "Assumindo este chat de um terminal do Hermes. Se houver uma resposta em andamento, o Conduit espera que ela termine.",
+    "ru": "Перенос чата из терминала Hermes. Если там идёт ответ, Conduit дождётся его завершения.",
+    "tr": "Bu sohbet bir Hermes terminalinden devralınıyor. Yanıt veriyorsa Conduit yanıtın bitmesini bekler.",
+    "zh-Hans": "正在从 Hermes 终端接管此对话。如果它正在回复，Conduit 会等待回复结束。",
+    "zh-Hant": "正在從 Hermes 終端機接管這個聊天。如果它正在回覆，Conduit 會等待回覆完成。"
+  },
+  "Taking this chat over from another Hermes window. If it's replying, Conduit waits for the reply to finish.": {
+    "de": "Dieser Chat wird aus einem anderen Hermes-Fenster übernommen. Falls dort gerade eine Antwort läuft, wartet Conduit, bis sie fertig ist.",
+    "es": "Retomando este chat desde otra ventana de Hermes. Si está respondiendo, Conduit espera a que termine la respuesta.",
+    "fr": "Reprise de cette discussion depuis une autre fenêtre Hermes. Si une réponse est en cours, Conduit attend qu'elle se termine.",
+    "id": "Mengambil alih obrolan ini dari jendela Hermes lain. Jika sedang membalas, Conduit menunggu balasan selesai.",
+    "it": "Ripresa di questa chat da un'altra finestra Hermes in corso. Se sta rispondendo, Conduit attende che la risposta termini.",
+    "ja": "別のHermesウインドウからこのチャットを引き継いでいます。返信中の場合、Conduitは返信の完了を待ちます。",
+    "ko": "다른 Hermes 창에서 이 채팅을 넘겨받는 중이에요. 응답 중이면 Conduit이 응답이 끝날 때까지 기다려요.",
+    "pl": "Przejmowanie tego czatu z innego okna Hermesa. Jeśli trwa odpowiedź, Conduit poczeka na jej zakończenie.",
+    "pt-BR": "Assumindo este chat de outra janela do Hermes. Se houver uma resposta em andamento, o Conduit espera que ela termine.",
+    "ru": "Перенос чата из другого окна Hermes. Если там идёт ответ, Conduit дождётся его завершения.",
+    "tr": "Bu sohbet başka bir Hermes penceresinden devralınıyor. Yanıt veriyorsa Conduit yanıtın bitmesini bekler.",
+    "zh-Hans": "正在从另一个 Hermes 窗口接管此对话。如果它正在回复，Conduit 会等待回复结束。",
+    "zh-Hant": "正在從另一個 Hermes 視窗接管這個聊天。如果它正在回覆，Conduit 會等待回覆完成。"
   },
   "Task": {
     "de": "Aufgabe",
@@ -23818,6 +24013,21 @@
     "tr": "Bu bir klasör değil.",
     "zh-Hans": "这不是文件夹。",
     "zh-Hant": "這不是資料夾。"
+  },
+  "The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.": {
+    "de": "Das Conduit-Notifier-Plug-in hat unerwartet geantwortet. Aktualisiere es auf deinem Hermes-Host und versuche es erneut.",
+    "es": "El plugin de notificaciones de Conduit dio una respuesta inesperada. Actualízalo en tu host de Hermes y vuelve a intentarlo.",
+    "fr": "Le plugin de notification Conduit a donné une réponse inattendue. Mettez-le à jour sur votre hôte Hermes et réessayez.",
+    "id": "Plugin notifier Conduit memberikan jawaban yang tidak terduga. Perbarui di host Hermes Anda dan coba lagi.",
+    "it": "Il plugin di notifica di Conduit ha dato una risposta imprevista. Aggiornalo sul tuo host Hermes e riprova.",
+    "ja": "Conduit通知プラグインから予期しない応答がありました。Hermesホストでアップデートしてから、もう一度お試しください。",
+    "ko": "Conduit 알림 플러그인이 예상치 못한 응답을 보냈어요. Hermes 호스트에서 업데이트한 후 다시 시도하세요.",
+    "pl": "Wtyczka powiadomień Conduit zwróciła nieoczekiwaną odpowiedź. Zaktualizuj ją na hoście Hermes i spróbuj ponownie.",
+    "pt-BR": "O plugin notificador do Conduit deu uma resposta inesperada. Atualize-o no seu host Hermes e tente novamente.",
+    "ru": "Плагин уведомлений Conduit дал неожиданный ответ. Обновите его на хосте Hermes и повторите попытку.",
+    "tr": "Conduit bildirim eklentisi beklenmeyen bir yanıt verdi. Hermes ana makinenizde güncelleyip yeniden deneyin.",
+    "zh-Hans": "Conduit 通知插件返回了意外的响应。请在 Hermes 主机上更新它后重试。",
+    "zh-Hant": "Conduit 通知外掛程式傳回了非預期的回應。請在 Hermes 主機上更新它，然後再試一次。"
   },
   "The Conduit plugin is off for {name}, so its notifications, group rooms, Folder and cards don't work.": {
     "de": "Das Conduit-Plugin ist für {name} deaktiviert, daher funktionieren Mitteilungen, Gruppenräume, Ordner und Karten nicht.",
@@ -25169,6 +25379,21 @@
     "zh-Hans": "此 Hermes 没有任务看板。",
     "zh-Hant": "此 Hermes 沒有任務看板。"
   },
+  "This Hermes version can't hand a chat over.": {
+    "de": "Diese Hermes-Version kann keinen Chat übergeben.",
+    "es": "Esta versión de Hermes no puede ceder un chat.",
+    "fr": "Cette version d'Hermes ne peut pas transférer une discussion.",
+    "id": "Versi Hermes ini tidak dapat menyerahkan obrolan.",
+    "it": "Questa versione di Hermes non può cedere una chat.",
+    "ja": "このバージョンのHermesはチャットの引き継ぎに対応していません。",
+    "ko": "이 Hermes 버전은 채팅을 넘겨줄 수 없어요.",
+    "pl": "Ta wersja Hermesa nie umożliwia przekazania czatu.",
+    "pt-BR": "Esta versão do Hermes não consegue transferir um chat.",
+    "ru": "Эта версия Hermes не умеет передавать чаты.",
+    "tr": "Bu Hermes sürümü bir sohbeti devredemez.",
+    "zh-Hans": "此 Hermes 版本无法转交对话。",
+    "zh-Hant": "此 Hermes 版本無法移交聊天。"
+  },
   "This agent has already finished.": {
     "de": "Dieser Agent ist bereits fertig.",
     "es": "Este agente ya ha terminado.",
@@ -25183,6 +25408,51 @@
     "tr": "Bu ajan zaten bitirdi.",
     "zh-Hans": "此智能体已经完成。",
     "zh-Hant": "此代理程式已經完成。"
+  },
+  "This bot is answering a message from another bot. Conduit sends yours when it finishes.": {
+    "de": "Dieser Bot beantwortet gerade eine Nachricht von einem anderen Bot. Conduit sendet deine, wenn er fertig ist.",
+    "es": "Este bot está respondiendo un mensaje de otro bot. Conduit enviará el tuyo cuando termine.",
+    "fr": "Ce bot répond à un message d'un autre bot. Conduit enverra le vôtre quand il aura terminé.",
+    "id": "Bot ini sedang menjawab pesan dari bot lain. Conduit mengirim pesanmu setelah selesai.",
+    "it": "Questo bot sta rispondendo a un messaggio di un altro bot. Conduit invierà il tuo quando ha finito.",
+    "ja": "このボットは別のボットからのメッセージに応答中です。完了したらConduitがあなたのメッセージを送信します。",
+    "ko": "이 봇은 다른 봇의 메시지에 답하는 중이에요. 끝나면 Conduit이 메시지를 보내요.",
+    "pl": "Ten bot odpowiada na wiadomość od innego bota. Conduit wyśle Twoją, gdy skończy.",
+    "pt-BR": "Este bot está respondendo a uma mensagem de outro bot. O Conduit envia a sua quando ele terminar.",
+    "ru": "Этот бот отвечает на сообщение от другого бота. Conduit отправит ваше, когда он закончит.",
+    "tr": "Bu bot başka bir botun mesajını yanıtlıyor. Bittiğinde Conduit seninkini gönderir.",
+    "zh-Hans": "此机器人正在回复另一个机器人的消息。回复结束后，Conduit 会发送你的消息。",
+    "zh-Hant": "這個機器人正在回覆另一個機器人的訊息。回覆結束後，Conduit 會傳送你的訊息。"
+  },
+  "This bot is answering a message from another bot. Take the chat over, and Conduit sends yours when it finishes.": {
+    "de": "Dieser Bot beantwortet gerade eine Nachricht von einem anderen Bot. Übernimm den Chat, dann sendet Conduit deine, wenn er fertig ist.",
+    "es": "Este bot está respondiendo un mensaje de otro bot. Toma el control del chat y Conduit enviará el tuyo cuando termine.",
+    "fr": "Ce bot répond à un message d'un autre bot. Reprenez la discussion, et Conduit enverra le vôtre quand il aura terminé.",
+    "id": "Bot ini sedang menjawab pesan dari bot lain. Ambil alih obrolan, dan Conduit mengirim pesanmu setelah selesai.",
+    "it": "Questo bot sta rispondendo a un messaggio di un altro bot. Prendi il controllo della chat e Conduit invierà il tuo quando ha finito.",
+    "ja": "このボットは別のボットからのメッセージに応答中です。チャットを引き継ぐと、完了後にConduitがあなたのメッセージを送信します。",
+    "ko": "이 봇은 다른 봇의 메시지에 답하는 중이에요. 채팅을 가져오면 끝난 뒤 Conduit이 메시지를 보내요.",
+    "pl": "Ten bot odpowiada na wiadomość od innego bota. Przejmij czat, a Conduit wyśle Twoją, gdy skończy.",
+    "pt-BR": "Este bot está respondendo a uma mensagem de outro bot. Assuma o chat, e o Conduit envia a sua quando ele terminar.",
+    "ru": "Этот бот отвечает на сообщение от другого бота. Перехватите чат, и Conduit отправит ваше, когда он закончит.",
+    "tr": "Bu bot başka bir botun mesajını yanıtlıyor. Sohbeti devral, bittiğinde Conduit seninkini göndersin.",
+    "zh-Hans": "此机器人正在回复另一个机器人的消息。接管此对话后，Conduit 会在回复结束时发送你的消息。",
+    "zh-Hant": "這個機器人正在回覆另一個機器人的訊息。接管這個聊天後，Conduit 會在回覆結束時傳送你的訊息。"
+  },
+  "This bot is still answering a message from another bot. Try again when it finishes.": {
+    "de": "Dieser Bot beantwortet noch eine Nachricht von einem anderen Bot. Versuche es erneut, wenn er fertig ist.",
+    "es": "Este bot sigue respondiendo un mensaje de otro bot. Vuelve a intentarlo cuando termine.",
+    "fr": "Ce bot répond encore à un message d'un autre bot. Réessayez quand il aura terminé.",
+    "id": "Bot ini masih menjawab pesan dari bot lain. Coba lagi setelah selesai.",
+    "it": "Questo bot sta ancora rispondendo a un messaggio di un altro bot. Riprova quando ha finito.",
+    "ja": "このボットはまだ別のボットからのメッセージに応答中です。完了してからもう一度お試しください。",
+    "ko": "이 봇은 아직 다른 봇의 메시지에 답하는 중이에요. 끝나면 다시 시도하세요.",
+    "pl": "Ten bot nadal odpowiada na wiadomość od innego bota. Spróbuj ponownie, gdy skończy.",
+    "pt-BR": "Este bot ainda está respondendo a uma mensagem de outro bot. Tente novamente quando ele terminar.",
+    "ru": "Этот бот ещё отвечает на сообщение от другого бота. Повторите попытку, когда он закончит.",
+    "tr": "Bu bot hâlâ başka bir botun mesajını yanıtlıyor. Bittiğinde yeniden deneyin.",
+    "zh-Hans": "此机器人仍在回复另一个机器人的消息。请在回复结束后重试。",
+    "zh-Hant": "這個機器人仍在回覆另一個機器人的訊息。請等它完成後再試一次。"
   },
   "This call reached its time limit on the API key.": {
     "de": "Dieser Anruf hat sein Zeitlimit für den API-Schlüssel erreicht.",
@@ -25213,6 +25483,66 @@
     "tr": "Bu kart tamamını gösteremiyor. Sohbetinde onaylayın ya da burada reddedin.",
     "zh-Hans": "此卡片无法显示全部内容。请在其聊天中批准，或在此拒绝。",
     "zh-Hant": "此卡片無法顯示全部內容。請在其聊天中核准，或在此拒絕。"
+  },
+  "This chat is open in Conduit on another device or in the Hermes web chat. Send from there, or close it there and try again.": {
+    "de": "Dieser Chat ist in Conduit auf einem anderen Gerät oder im Hermes-Webchat geöffnet. Sende von dort, oder schließe ihn dort und versuche es erneut.",
+    "es": "Este chat está abierto en Conduit en otro dispositivo o en el chat web de Hermes. Envía desde allí, o ciérralo allí y vuelve a intentarlo.",
+    "fr": "Cette discussion est ouverte dans Conduit sur un autre appareil ou dans la discussion web d'Hermes. Envoyez depuis là-bas, ou fermez-la là-bas et réessayez.",
+    "id": "Obrolan ini terbuka di Conduit di perangkat lain atau di obrolan web Hermes. Kirim dari sana, atau tutup di sana dan coba lagi.",
+    "it": "Questa chat è aperta in Conduit su un altro dispositivo o nella chat web di Hermes. Invia da lì, oppure chiudila lì e riprova.",
+    "ja": "このチャットは別のデバイスのConduitまたはHermesのWebチャットで開かれています。そちらから送信するか、そちらで閉じてからもう一度お試しください。",
+    "ko": "이 채팅은 다른 기기의 Conduit이나 Hermes 웹 채팅에서 열려 있어요. 그곳에서 보내거나, 그곳에서 닫은 후 다시 시도하세요.",
+    "pl": "Ten czat jest otwarty w Conduit na innym urządzeniu lub w czacie internetowym Hermes. Wyślij wiadomość stamtąd albo zamknij go tam i spróbuj ponownie.",
+    "pt-BR": "Este chat está aberto no Conduit em outro aparelho ou no chat web do Hermes. Envie de lá ou feche-o lá e tente novamente.",
+    "ru": "Этот чат открыт в Conduit на другом устройстве или в веб-чате Hermes. Отправьте сообщение оттуда или закройте чат там и повторите попытку.",
+    "tr": "Bu sohbet başka bir cihazdaki Conduit'te veya Hermes web sohbetinde açık. Oradan gönderin ya da orada kapatıp yeniden deneyin.",
+    "zh-Hans": "此对话已在另一台设备上的 Conduit 或 Hermes 网页聊天中打开。请在那里发送，或在那里关闭后重试。",
+    "zh-Hant": "這個聊天已在另一部裝置上的 Conduit 或 Hermes 網頁聊天中打開。請在該處傳送，或在該處關閉後再試一次。"
+  },
+  "This chat is open in Hermes Desktop. Take it over to send from here.": {
+    "de": "Dieser Chat ist in Hermes Desktop geöffnet. Übernimm ihn, um von hier aus zu senden.",
+    "es": "Este chat está abierto en Hermes Desktop. Retómalo para enviar desde aquí.",
+    "fr": "Cette discussion est ouverte dans Hermes Desktop. Reprenez-la pour envoyer d'ici.",
+    "id": "Obrolan ini terbuka di Hermes Desktop. Ambil alih untuk mengirim dari sini.",
+    "it": "Questa chat è aperta in Hermes Desktop. Riprendila per inviare da qui.",
+    "ja": "このチャットはHermes Desktopで開かれています。ここから送信するには引き継いでください。",
+    "ko": "이 채팅은 Hermes Desktop에서 열려 있어요. 여기서 보내려면 넘겨받으세요.",
+    "pl": "Ten czat jest otwarty w Hermes Desktop. Przejmij go, aby wysyłać wiadomości stąd.",
+    "pt-BR": "Este chat está aberto no Hermes Desktop. Assuma-o para enviar daqui.",
+    "ru": "Этот чат открыт в Hermes Desktop. Перенесите его сюда, чтобы отправлять отсюда.",
+    "tr": "Bu sohbet Hermes Desktop'ta açık. Buradan göndermek için devralın.",
+    "zh-Hans": "此对话已在 Hermes Desktop 中打开。接管后即可在这里发送。",
+    "zh-Hant": "這個聊天已在 Hermes Desktop 中打開。接管後即可從這裡傳送。"
+  },
+  "This chat is open in a Hermes terminal. Take it over to send from here.": {
+    "de": "Dieser Chat ist in einem Hermes-Terminal geöffnet. Übernimm ihn, um von hier aus zu senden.",
+    "es": "Este chat está abierto en un terminal de Hermes. Retómalo para enviar desde aquí.",
+    "fr": "Cette discussion est ouverte dans un terminal Hermes. Reprenez-la pour envoyer d'ici.",
+    "id": "Obrolan ini terbuka di terminal Hermes. Ambil alih untuk mengirim dari sini.",
+    "it": "Questa chat è aperta in un terminale Hermes. Riprendila per inviare da qui.",
+    "ja": "このチャットはHermesのターミナルで開かれています。ここから送信するには引き継いでください。",
+    "ko": "이 채팅은 Hermes 터미널에서 열려 있어요. 여기서 보내려면 넘겨받으세요.",
+    "pl": "Ten czat jest otwarty w terminalu Hermes. Przejmij go, aby wysyłać wiadomości stąd.",
+    "pt-BR": "Este chat está aberto em um terminal do Hermes. Assuma-o para enviar daqui.",
+    "ru": "Этот чат открыт в терминале Hermes. Перенесите его сюда, чтобы отправлять отсюда.",
+    "tr": "Bu sohbet bir Hermes terminalinde açık. Buradan göndermek için devralın.",
+    "zh-Hans": "此对话已在 Hermes 终端中打开。接管后即可在这里发送。",
+    "zh-Hant": "這個聊天已在 Hermes 終端機中打開。接管後即可從這裡傳送。"
+  },
+  "This chat is open in another Hermes window. Take it over to send from here.": {
+    "de": "Dieser Chat ist in einem anderen Hermes-Fenster geöffnet. Übernimm ihn, um von hier aus zu senden.",
+    "es": "Este chat está abierto en otra ventana de Hermes. Retómalo para enviar desde aquí.",
+    "fr": "Cette discussion est ouverte dans une autre fenêtre Hermes. Reprenez-la pour envoyer d'ici.",
+    "id": "Obrolan ini terbuka di jendela Hermes lain. Ambil alih untuk mengirim dari sini.",
+    "it": "Questa chat è aperta in un'altra finestra Hermes. Riprendila per inviare da qui.",
+    "ja": "このチャットは別のHermesウインドウで開かれています。ここから送信するには引き継いでください。",
+    "ko": "이 채팅은 다른 Hermes 창에서 열려 있어요. 여기서 보내려면 넘겨받으세요.",
+    "pl": "Ten czat jest otwarty w innym oknie Hermesa. Przejmij go, aby wysyłać wiadomości stąd.",
+    "pt-BR": "Este chat está aberto em outra janela do Hermes. Assuma-o para enviar daqui.",
+    "ru": "Этот чат открыт в другом окне Hermes. Перенесите его сюда, чтобы отправлять отсюда.",
+    "tr": "Bu sohbet başka bir Hermes penceresinde açık. Buradan göndermek için devralın.",
+    "zh-Hans": "此对话已在另一个 Hermes 窗口中打开。接管后即可在这里发送。",
+    "zh-Hant": "這個聊天已在另一個 Hermes 視窗中打開。接管後即可從這裡傳送。"
   },
   "This dashboard asks for a sign-in. Try again with your user name and password.": {
     "de": "Dieses Dashboard verlangt eine Anmeldung. Versuche es erneut mit Benutzername und Passwort.",
@@ -26908,6 +27238,21 @@
     "tr": "Güncelleme gerekiyor",
     "zh-Hans": "需要更新",
     "zh-Hant": "需要更新"
+  },
+  "Update the Conduit notifier plugin on your Hermes host to take chats over.": {
+    "de": "Aktualisiere das Conduit-Notifier-Plug-in auf deinem Hermes-Host, um Chats übernehmen zu können.",
+    "es": "Actualiza el plugin de notificaciones de Conduit en tu host de Hermes para retomar chats.",
+    "fr": "Mettez à jour le plugin de notification Conduit sur votre hôte Hermes pour reprendre des discussions.",
+    "id": "Perbarui plugin notifier Conduit di host Hermes Anda untuk mengambil alih obrolan.",
+    "it": "Aggiorna il plugin di notifica di Conduit sul tuo host Hermes per riprendere le chat.",
+    "ja": "チャットを引き継ぐには、HermesホストのConduit通知プラグインをアップデートしてください。",
+    "ko": "채팅을 넘겨받으려면 Hermes 호스트의 Conduit 알림 플러그인을 업데이트하세요.",
+    "pl": "Zaktualizuj wtyczkę powiadomień Conduit na hoście Hermes, aby przejmować czaty.",
+    "pt-BR": "Atualize o plugin notificador do Conduit no seu host Hermes para assumir chats.",
+    "ru": "Обновите плагин уведомлений Conduit на вашем хосте Hermes, чтобы переносить чаты.",
+    "tr": "Sohbetleri devralmak için Hermes ana makinenizdeki Conduit bildirim eklentisini güncelleyin.",
+    "zh-Hans": "请更新 Hermes 主机上的 Conduit 通知插件以接管对话。",
+    "zh-Hant": "請更新 Hermes 主機上的 Conduit 通知外掛程式，才能接管聊天。"
   },
   "Update the Conduit plugin on this host to search and change files here.": {
     "de": "Aktualisiere das Conduit-Plugin auf diesem Host, um hier Dateien zu durchsuchen und zu ändern.",

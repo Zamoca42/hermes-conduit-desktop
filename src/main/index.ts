@@ -22,6 +22,7 @@ import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ConduitTray } from './tray'
 import { chooseLanguage, chooseTheme, languageChoice, resolvedLanguage, themeChoice } from './settings'
 import type { WebSocketLike } from '../vendor/hermes-shared/json-rpc-gateway'
+import { jsonRpcErrorReason } from '../vendor/hermes-shared/json-rpc-channel'
 import { LIVE_TOKEN_PATHS, mintedSocket, type LiveSocketEvent } from '../shared/ipc'
 import { setLanguage, t } from '../shared/i18n'
 
@@ -194,7 +195,13 @@ function registerIpc(): void {
       return { ok: true, result: await connection.rpc(method, params ?? {}) }
     } catch (error) {
       const code = (error as { code?: unknown }).code
-      return { ok: false, error: error instanceof Error ? error.message : String(error), code: typeof code === 'number' ? code : undefined }
+      const reason = jsonRpcErrorReason(error)
+      return {
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+        code: typeof code === 'number' ? code : undefined,
+        reason: typeof reason === 'string' ? reason : undefined
+      }
     }
   })
   ipcMain.handle(IPC.http, async (_event, method: string, path: string, body?: unknown, timeoutMs?: unknown): Promise<RpcOutcome> => {

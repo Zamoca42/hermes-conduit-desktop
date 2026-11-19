@@ -10,7 +10,9 @@ import type { RpcOutcome } from '../../shared/ipc'
 export class GatewayError extends Error {
   constructor(
     message: string,
-    readonly code?: number
+    readonly code?: number,
+    /** A gateway refusal's `data.reason`. */
+    readonly reason?: string
   ) {
     super(message)
     this.name = 'GatewayError'
@@ -18,7 +20,7 @@ export class GatewayError extends Error {
 }
 
 function settled<T>(outcome: RpcOutcome<T>): T {
-  if (!outcome.ok) throw new GatewayError(outcome.error, outcome.code)
+  if (!outcome.ok) throw new GatewayError(outcome.error, outcome.code, outcome.reason)
   return outcome.result
 }
 

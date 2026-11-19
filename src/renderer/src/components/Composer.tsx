@@ -46,6 +46,8 @@ interface Props {
   checkAttachments?: (attachments: StagedAttachment[]) => string | null
   /** A quote from the transcript: words go in the draft, a whole message becomes the "Replying to" chip. */
   quote?: QuoteRequest | null
+  /** Bumped to send what's in the draft now (a tapped takeover made the chat Conduit's). */
+  sendNow?: number
   /** Suggested replies, best first: shown while the draft is empty and nothing is staged. */
   replies?: string[]
   /** A suggested reply clicked: sent as the next message. */
@@ -89,6 +91,7 @@ export function Composer({
   onStagedChange,
   checkAttachments,
   quote,
+  sendNow = 0,
   replies: guessed,
   onSuggestion,
   onDraftPause,
@@ -344,6 +347,13 @@ export function Composer({
     setAttachments(draft.attachments)
     setReplyTo(draft.replyTo)
   }
+
+  const sentNow = useRef(sendNow)
+  useEffect(() => {
+    if (sendNow === sentNow.current) return
+    sentNow.current = sendNow
+    send()
+  }, [sendNow])
 
   useEffect(() => {
     if (recorder.error === 'denied') setNotice(t("Conduit can't use the microphone. Allow it for Conduit in your computer's privacy settings, then try again."))

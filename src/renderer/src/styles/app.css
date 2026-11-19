@@ -5751,6 +5751,26 @@ button.cap-row-text {
   padding: 0 12px;
   box-sizing: border-box;
 }
+.takeover-offer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 6px;
+  width: min(100% - 24px, 736px);
+  padding: 8px 10px 8px 14px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.takeover-offer > span {
+  flex: 1;
+  min-width: 0;
+}
+.takeover-offer > button {
+  flex: none;
+}
 .plan-line {
   display: flex;
   align-items: center;
