@@ -69,7 +69,7 @@ import {
 } from '../state/localLive'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, openQuestion, requestUpdate } from '../state/liveRequests'
 import { approvalView, clarifyQuestions } from '../state/needsYou'
-import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
+import { newCallId, saveCall, type CallResume, type CallTurn } from '../state/voiceSave'
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { CallCards } from './CallCards'
@@ -99,6 +99,8 @@ interface Props {
   onClassic: () => void
   /** The approvals and questions the chat waits on, which a spoken yes, no or answer takes. */
   requests?: PendingRequest[]
+  /** Resume call: the saved call this one continues, its id and turns. */
+  resume?: CallResume
 }
 
 type Phase = 'starting' | 'listening' | 'speaking' | 'failed'
@@ -140,7 +142,21 @@ interface Follow {
  * written. Audio goes both ways as 24 kHz PCM over the plugin's relay, which
  * hands Conduit each turn the server asks for.
  */
-export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrected, running, turnsDone, lastReply, onEnd, onClassic, requests = [] }: Props) {
+export function LocalLiveCall({
+  profile,
+  chatId,
+  liveId,
+  items,
+  onSay,
+  onCorrected,
+  running,
+  turnsDone,
+  lastReply,
+  onEnd,
+  onClassic,
+  requests = [],
+  resume
+}: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -215,13 +231,14 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
   live.current = { items, running, turnsDone, lastReply, onSay, onCorrected, chatId, requests, liveId }
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
-  const callId = useRef(newCallId())
+  const callId = useRef(resume?.callId ?? newCallId())
+  const resumed = useRef(resume)
   const saved = useRef(false)
   const keep = (role: CallTurn['role'], text: string) => text.trim() && record.current.push({ role, text: text.trim(), at: Date.now() / 1000 })
   const save = () => {
     if (saved.current) return
     saved.current = true
-    void saveCall(profile, callId.current, 'local-live', record.current, live.current.chatId)
+    void saveCall(profile, callId.current, 'local-live', record.current, live.current.chatId, resumed.current?.from ?? 0)
   }
 
   const send = (message: Record<string, unknown>) => {
@@ -725,7 +742,7 @@ export function LocalLiveCall({ profile, chatId, liveId, items, onSay, onCorrect
               extra: AGENT_INSTRUCTIONS + clockInstructions(new Date(), timeZone),
               language: language(),
               persona,
-              chat: chatContext(turns)
+              chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current)
             })
           }
           if (ended.current) return

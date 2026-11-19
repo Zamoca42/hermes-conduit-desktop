@@ -67,7 +67,9 @@ describe("a chat's saved voice calls", () => {
       turns: [
         { role: 'user', text: 'check my mail' },
         { role: 'assistant', text: 'Asking Hermes.' }
-      ]
+      ],
+      // Every turn the host holds: a resumed call's turns are numbered after them.
+      count: 4
     })
     expect(callTranscript(answer, 'gone')).toBeNull()
     expect(callTranscript({ ok: true, calls: [{ call_id: 'x', turns: [] }] }, 'x')).toBeNull()

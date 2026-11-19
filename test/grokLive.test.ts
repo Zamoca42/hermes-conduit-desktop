@@ -96,6 +96,9 @@ describe('Grok Live session', () => {
 
   it("keeps the chat's latest turns within the phone's budget", () => {
     expect(chatContext([])).toBe('')
+    // Resume call: the saved call's turns, named as the call this one continues.
+    expect(chatContext([{ role: 'user', text: 'hi' }], true)).toContain('continues an earlier voice call')
+    expect(chatContext([{ role: 'user', text: 'hi' }])).toContain('The chat this call is attached to')
     const long = Array.from({ length: 20 }, (_, i) => ({ role: (i % 2 ? 'assistant' : 'user') as 'user' | 'assistant', text: `turn ${i} ${'x'.repeat(2000)}` }))
     const block = chatContext(long)
     expect(block).not.toContain('turn 9 ')

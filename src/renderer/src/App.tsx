@@ -105,7 +105,8 @@ import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { CallTranscriptSheet } from './components/CallTranscriptSheet'
 import { ProviderConsentSheet } from './components/ProviderConsent'
 import { consented, isLive } from './state/consent'
-import { loadChatCalls, type ChatCall } from './state/voiceCalls'
+import { loadChatCalls, type CallTranscript, type ChatCall } from './state/voiceCalls'
+import type { CallResume } from './state/voiceSave'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 
 export function App() {
@@ -331,7 +332,19 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   // The mode is set with the call, never a render later: a Classic call drawn first would open the microphone.
   const toggleCall = () => {
     if (!calling) setCallMode(voiceMode())
+    setResume(null)
     setCalling(!calling)
+  }
+  // Resume call, from a saved call's card: a live call in its chat that continues it, on the mode picked now.
+  const [resume, setResume] = useState<CallResume | null>(null)
+  useEffect(() => {
+    if (!calling) setResume(null)
+  }, [calling])
+  const resumeCall = (callId: string, call: CallTranscript) => {
+    setOpenCall(null)
+    setResume({ callId, turns: call.turns, from: call.count })
+    setCallMode(voiceMode())
+    setCalling(true)
   }
   // The mode the next call takes, picked beside the call button or in Settings > Voice.
   const [nextMode, setNextMode] = useState<VoiceMode>(voiceMode)
@@ -1163,7 +1176,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 />
               ) : null}
               {openCall && selected.id ? (
-                <CallTranscriptSheet profile={selected.profile} chatId={selected.id} callId={openCall} onClose={() => setOpenCall(null)} />
+                <CallTranscriptSheet
+                  profile={selected.profile}
+                  chatId={selected.id}
+                  callId={openCall}
+                  onResume={!calling && connected && nextMode !== 'classic' ? call => resumeCall(openCall, call) : undefined}
+                  onClose={() => setOpenCall(null)}
+                />
               ) : null}
               {contextOpen && chat.liveId ? (
                 <ContextPanel
@@ -1199,6 +1218,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
                   requests={openRequests}
+                  resume={resume ?? undefined}
                 />
               ) : calling && (callMode === 'gemini' || callMode === 'qwen') ? (
                 <GeminiLiveCall
@@ -1213,6 +1233,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
                   requests={openRequests}
+                  resume={resume ?? undefined}
                 />
               ) : calling && callMode === 'grok' ? (
                 <GrokLiveCall
@@ -1226,6 +1247,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
                   requests={openRequests}
+                  resume={resume ?? undefined}
                 />
               ) : calling && callMode === 'local' ? (
                 <LocalLiveCall
@@ -1241,6 +1263,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                   onEnd={() => setCalling(false)}
                   onClassic={() => setCallMode('classic')}
                   requests={openRequests}
+                  resume={resume ?? undefined}
                 />
               ) : calling ? (
                 <VoiceCall

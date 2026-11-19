@@ -29,4 +29,10 @@ describe('saving a live call', () => {
     expect(saveBody('c', 'gpt-live', [{ role: 'user', text: 'hi', at: 1 }])).not.toHaveProperty('chat_id')
     expect(newCallId()).toMatch(/^desktop-[0-9a-f-]{36}$/)
   })
+
+  it('numbers a resumed call’s new turns after the saved ones', () => {
+    const body = saveBody('desktop-1', 'gemini-live', [{ role: 'user', text: 'and one more thing', at: 5 }], 'chat', 4)!
+    expect((body.turns as { index: number }[]).map(t => t.index)).toEqual([4])
+    expect(body.call_id).toBe('desktop-1')
+  })
 })

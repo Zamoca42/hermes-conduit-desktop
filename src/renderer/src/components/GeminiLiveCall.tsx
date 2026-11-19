@@ -62,7 +62,7 @@ import {
   webSearch,
   webSearchAvailable
 } from '../state/qwenLive'
-import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
+import { newCallId, saveCall, type CallResume, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
@@ -92,6 +92,8 @@ interface Props {
   provider?: 'gemini' | 'qwen'
   /** The approvals and questions the chat waits on, which the call can answer by voice. */
   requests?: PendingRequest[]
+  /** Resume call: the saved call this one continues, its id and turns. */
+  resume?: CallResume
 }
 
 /** What the call says, by provider: each a literal key, so translations find it. */
@@ -134,7 +136,20 @@ const ECHO_TAIL_MS = 300
  * next message. Its ask_thread call stays open (NON_BLOCKING) until Hermes
  * replies, and the reply is told once Gemini is idle.
  */
-export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, provider = 'gemini', requests = [] }: Props) {
+export function GeminiLiveCall({
+  profile,
+  chatId,
+  items,
+  onSay,
+  running,
+  turnsDone,
+  lastReply,
+  onEnd,
+  onClassic,
+  provider = 'gemini',
+  requests = [],
+  resume
+}: Props) {
   const qwen = provider === 'qwen'
   const copy = COPY[provider]
   const [phase, setPhase] = useState<Phase>('starting')
@@ -209,13 +224,14 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
   const told = useRef(new Set<string>())
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
-  const callId = useRef(newCallId())
+  const callId = useRef(resume?.callId ?? newCallId())
+  const resumed = useRef(resume)
   const saved = useRef(false)
   const keep = (role: CallTurn['role'], text: string) => text.trim() && record.current.push({ role, text: text.trim(), at: Date.now() / 1000 })
   const save = () => {
     if (saved.current) return
     saved.current = true
-    void saveCall(profile, callId.current, qwen ? 'qwen-live' : 'gemini-live', record.current, live.current.chatId)
+    void saveCall(profile, callId.current, qwen ? 'qwen-live' : 'gemini-live', record.current, live.current.chatId, resumed.current?.from ?? 0)
   }
 
   const send = (message: Record<string, unknown>) => {
@@ -600,7 +616,7 @@ export function GeminiLiveCall({ profile, chatId, items, onSay, running, turnsDo
         if (ended.current) return
         recall = memory.recall
         search = resolvedSearch(searchMode(provider), searches, provider)
-        toldWith = { language: language(), persona, memory: memory.text, recall, chat: chatContext(turns) }
+        toldWith = { language: language(), persona, memory: memory.text, recall, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) }
         told = instructions({ ...toldWith, search })
         if (!(await open())) return
         // The microphone, as 16 kHz PCM, while the call listens.
