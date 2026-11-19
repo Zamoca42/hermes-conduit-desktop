@@ -11,7 +11,7 @@ import {
   type Room,
 } from "../state/groups";
 import { starterFace } from "../state/starterFaces";
-import { useAvatar } from "../state/useBots";
+import { useAvatar, useFace } from "../state/useBots";
 import { canDelete } from "../state/botActions";
 import { Icon } from "./icons";
 import { StarterFaceArt } from "./StarterFaceArt";
@@ -23,8 +23,13 @@ const BOT_DRAG = "application/x-conduit-bot";
 export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delete";
 
 /** A bot's picture, else its starter face (on the color Hermes keeps for it, when it has one). */
-export function BotAvatar({ bot, size }: { bot: Bot; size: number }) {
-  const url = useAvatar(bot.name, bot.hasAvatar);
+/**
+ * A bot's face. A moving picture plays only where the face is what you're
+ * looking at (`moving`: Bots Home's portraits, the editor), as on the phone,
+ * and never with Reduce Motion; everywhere else it keeps its first frame.
+ */
+export function BotAvatar({ bot, size, moving = false }: { bot: Bot; size: number; moving?: boolean }) {
+  const url = useFace(useAvatar(bot.name, bot.hasAvatar), moving);
   // Its ring is its chat's glow color, as on the phone.
   const color = useContext(GlowContext)(bot.name);
   return (
@@ -557,7 +562,7 @@ function OneBot({
         onContextMenu={onMenu}
         aria-label={t('Open {name}', { name: bot.title })}
       >
-        <BotAvatar bot={bot} size={168} />
+        <BotAvatar bot={bot} size={168} moving />
       </button>
       <h2>{bot.title}</h2>
       {pill}
@@ -629,7 +634,7 @@ function BotTile({
       {...drag}
     >
       <span className="bot-tile-face">
-        <BotAvatar bot={bot} size={face} />
+        <BotAvatar bot={bot} size={face} moving />
         {target ? (
           <span className="drop-plus" aria-hidden="true">
             <Icon name="plus" />

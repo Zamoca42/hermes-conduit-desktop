@@ -24,6 +24,7 @@ import { Icon } from './icons'
 import { ModelOptions } from './ModelOptions'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote } from './ModelCatalogNote'
+import { mayMove, movingPicture, TooLargeError } from '../state/movingPicture'
 
 interface Props {
   /** Every bot, hidden ones too: a new name and face stay clear of them. */
@@ -56,6 +57,20 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const picker = useRef<HTMLInputElement>(null)
+  const movingPicker = useRef<HTMLInputElement>(null)
+  const [making, setMaking] = useState(false)
+  /** Choose GIF or Video: a picture that moves, or a video, becomes a looping one; a still is used as a photo. */
+  const pickMoving = async (file: File) => {
+    setMaking(true)
+    try {
+      setPicture((mayMove(file) ? await movingPicture(file) : null) ?? (await normalizedPicture(file)))
+      setError(null)
+    } catch (e) {
+      setError(e instanceof TooLargeError ? t('That animation is too large. Try a shorter or simpler clip.') : t('That picture could not be used.'))
+    } finally {
+      setMaking(false)
+    }
+  }
 
   const catalog = useModelCatalog(
     useMemo(() => (cloneFrom && cloneFrom !== MAIN_PROFILE ? { explicit_only: true, profile: cloneFrom } : { explicit_only: true }), [cloneFrom])
@@ -172,8 +187,11 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
               {picture ? <img src={picture} alt="" draggable={false} /> : <StarterFaceArt face={starterFace(face)} background={color} />}
             </span>
             <div className="pset-actions">
-              <button className="secondary" onClick={() => picker.current?.click()} disabled={saving}>
+              <button className="secondary" onClick={() => picker.current?.click()} disabled={saving || making}>
                 {t('Choose Photo')}
+              </button>
+              <button className="secondary" onClick={() => movingPicker.current?.click()} disabled={saving || making}>
+                {making ? t('Working…') : t('Choose GIF or Video')}
               </button>
               {picture ? (
                 <button className="secondary" onClick={() => setPicture(null)} disabled={saving}>
@@ -195,7 +213,19 @@ export function NewBot({ bots, protocol, onClose, onCreated }: Props) {
                     .catch(() => setError(t('That picture could not be used.')))
               }}
             />
+            <input
+              ref={movingPicker}
+              type="file"
+              accept="image/gif,image/webp,image/png,video/mp4,video/quicktime,video/webm"
+              hidden
+              onChange={e => {
+                const file = e.target.files?.[0]
+                e.target.value = ''
+                if (file) void pickMoving(file)
+              }}
+            />
           </div>
+          <p className="meta">{t('A GIF, a short video or a picture brought to life moves on Bots Home and in Hermes Desktop.')}</p>
           <div className="bot-faces" role="radiogroup" aria-label={t('Face')}>
             {Array.from({ length: FACE_COUNT }, (_, index) => (
               <button
