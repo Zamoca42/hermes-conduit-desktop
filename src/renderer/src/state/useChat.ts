@@ -194,6 +194,9 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
  * `botChat`: a new chat is the bot's one Bot Chat, made hidden and titled "Bot Chat" as the phone makes it.
  * `folder`: where a new chat works, a project's folder (the phone's New Chat in a project).
  */
+/** A new chat's session came back after another chat opened (the phone's "A new chat that something waits on"). */
+class ChatMovedOn extends Error {}
+
 export function useChat(storedId: string | null, profile: string | undefined, sessionAuthority: boolean, connected: boolean, botChat = false, folder?: string) {
   const [transcript, dispatch] = useReducer(reducer, emptyTranscript)
   const [chat, setChat] = useState<OpenChat>({ storedId, liveId: null })
@@ -308,7 +311,10 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     if (profile) params.profile = profile
     if (botChat) Object.assign(params, { title: 'Bot Chat', hidden: true, follow_profile_config: true })
     else if (folder) params.cwd = folder
+    const opening = request.current
     const made = await gateway.rpc<CreateResult>('session.create', params)
+    // Another chat opened meanwhile: this chat isn't on screen any more, so nothing goes in it.
+    if (request.current !== opening) throw new ChatMovedOn()
     const sid = made.session_id
     const storedId = made.stored_session_id ?? null
     liveId.current = sid
@@ -483,6 +489,8 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         setTakeover(null)
         return createdStoredId
       } catch (e) {
+        // The words go back to the composer; the chat now open gets nothing.
+        if (e instanceof ChatMovedOn) return false
         // Pictures held for this message would ride on the next one.
         if (sid && held.length) await releaseHeldImages((method, params) => gateway.rpc(method, params), sid, profile, held)
         dispatch({ type: 'failed', error: e instanceof Error ? e.message : String(e) })
@@ -553,7 +561,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           done.created = created
         }
       } catch (e) {
-        failed(e)
+        if (!(e instanceof ChatMovedOn)) failed(e)
         return done
       }
       const scoped = (params: Record<string, unknown>) => (profile ? { ...params, profile } : params)
