@@ -281,6 +281,17 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
       }),
     []
   )
+  // A Link invite opened from another app opens in Settings > Multiplayer, as on the phone.
+  const [linkRequest, setLinkRequest] = useState<{ url: string; at: number } | null>(null)
+  useEffect(() => {
+    const open = (url: string | null) => {
+      if (!url) return
+      setLinkRequest({ url, at: Date.now() })
+      setSection('settings')
+    }
+    void window.conduit.takeLinkUrl().then(open).catch(() => undefined)
+    return window.conduit.onLinkUrl(open)
+  }, [])
   const runShortcut = useRef<(action: MenuAction) => void>(() => {})
   runShortcut.current = action => {
     if (action === 'new-chat') newChat()
@@ -1841,6 +1852,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             onShortcuts={() => setShortcutsOpen(true)}
             appsRequest={appsRequest}
             onAppsRequestTaken={() => setAppsRequest(null)}
+            linkRequest={linkRequest}
+            onLinkRequestTaken={() => setLinkRequest(null)}
           />
         )}
       </div>
@@ -1894,7 +1907,9 @@ function Settings({
   setChatScale,
   onShortcuts,
   appsRequest,
-  onAppsRequestTaken
+  onAppsRequestTaken,
+  linkRequest,
+  onLinkRequestTaken
 }: {
   status: ConnectionStatus
   onAddHost: () => void
@@ -1905,6 +1920,9 @@ function Settings({
   onShortcuts: () => void
   appsRequest: AppsRequest | null
   onAppsRequestTaken: () => void
+  /** A Link invite opened from another app: Multiplayer opens it. */
+  linkRequest: { url: string; at: number } | null
+  onLinkRequestTaken: () => void
 }) {
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
@@ -1936,6 +1954,14 @@ function Settings({
     setPage('capabilities')
     onAppsRequestTaken()
   }, [appsRequest, onAppsRequestTaken])
+  // A Link invite from another app, taken once: Multiplayer opens on it.
+  const [linkInvite, setLinkInvite] = useState<{ url: string; at: number } | null>(null)
+  useEffect(() => {
+    if (!linkRequest) return
+    setLinkInvite(linkRequest)
+    setPage('multiplayer')
+    onLinkRequestTaken()
+  }, [linkRequest, onLinkRequestTaken])
   if (page === 'usage')
     return (
       <main className="settings">
@@ -1957,7 +1983,14 @@ function Settings({
   if (page === 'multiplayer' && status.url)
     return (
       <main className="settings">
-        <MultiplayerPage host={status.url} capabilities={pluginCapabilities} bots={bots} profile={profile} onBack={() => setPage('main')} />
+        <MultiplayerPage
+          host={status.url}
+          capabilities={pluginCapabilities}
+          bots={bots}
+          profile={profile}
+          invite={linkInvite}
+          onBack={() => setPage('main')}
+        />
       </main>
     )
   if (page === 'vault')

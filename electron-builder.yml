@@ -11,6 +11,10 @@ files:
   - out/**
   - package.json
 asarUnpack: []
+# Link invites (conduit://link/…) opened from another app come to Conduit.
+protocols:
+  - name: Conduit Link
+    schemes: [conduit]
 # The tray's icons, read from the resources folder at run time.
 extraResources:
   - from: resources

@@ -11,8 +11,9 @@ import {
   shell,
   type MenuItemConstructorOptions
 } from 'electron'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import WebSocket from 'ws'
+import { LINK_SCHEME, linkUrl, linkUrlFromArgs } from '../shared/linkUrls'
 import {
   IPC,
   type GatewayEventMessage,
@@ -67,6 +68,20 @@ function showWindow(): void {
   if (window.isMinimized()) window.restore()
   window.show()
   window.focus()
+}
+
+/** A Link invite opened from another app that the window hasn't taken yet. */
+let pendingLinkUrl: string | null = linkUrlFromArgs(process.argv)
+
+/** Shows the window and hands it the invite: now if it's loaded, else when it asks. */
+function openLinkUrl(url: string): void {
+  pendingLinkUrl = url
+  showWindow()
+  const target = mainWindow ?? BrowserWindow.getAllWindows()[0]
+  if (target && !target.isDestroyed() && !target.webContents.isLoading()) {
+    pendingLinkUrl = null
+    target.webContents.send(IPC.linkUrl, url)
+  }
 }
 
 function sendCommand(action: MenuAction): void {
@@ -256,6 +271,11 @@ function registerIpc(): void {
   })
   ipcMain.on(IPC.closeChatWindows, (_event, ids: unknown) => chatWindows.close(Array.isArray(ids) ? ids.filter((id): id is string => typeof id === 'string') : undefined))
   ipcMain.handle(IPC.chatWindows, () => chatWindows.ids())
+  ipcMain.handle(IPC.takeLinkUrl, () => {
+    const url = pendingLinkUrl
+    pendingLinkUrl = null
+    return url
+  })
   ipcMain.on(IPC.hideQuickAsk, () => quickAsk.hide())
   ipcMain.on(IPC.copyText, (_event, text: unknown) => {
     if (typeof text === 'string') clipboard.writeText(text)
@@ -419,7 +439,22 @@ function registerIpc(): void {
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
-  app.on('second-instance', () => showWindow())
+  app.on('second-instance', (_event, argv) => {
+    const url = linkUrlFromArgs(argv)
+    if (url) openLinkUrl(url)
+    else showWindow()
+  })
+  // The Mac hands a conduit:// link to the running app, before it's ready too.
+  app.on('open-url', (event, url) => {
+    event.preventDefault()
+    const invite = linkUrl(url)
+    if (!invite) return
+    if (app.isReady()) openLinkUrl(invite)
+    else pendingLinkUrl = invite
+  })
+  // Conduit opens conduit://link/ invites; a run from source names its script too.
+  if (process.defaultApp && process.argv.length >= 2) app.setAsDefaultProtocolClient(LINK_SCHEME, process.execPath, [resolve(process.argv[1]!)])
+  else app.setAsDefaultProtocolClient(LINK_SCHEME)
   app.on('before-quit', () => {
     quitting = true
     quickAsk.destroy()

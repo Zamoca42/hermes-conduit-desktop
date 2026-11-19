@@ -77,12 +77,15 @@ export function MultiplayerPage({
   capabilities,
   bots,
   profile: initialProfile,
+  invite,
   onBack
 }: {
   host: string
   capabilities: string[]
   bots: { name: string; title: string }[]
   profile: string
+  /** A Link invite opened from another app (`conduit://link/…`), to open here. */
+  invite?: { url: string; at: number } | null
   onBack: () => void
 }) {
   const [profile, setProfile] = useState(initialProfile)
@@ -97,6 +100,11 @@ export function MultiplayerPage({
   const [pasted, setPasted] = useState('')
   const [pasteError, setPasteError] = useState<string | null>(null)
   const reads = useRef(0)
+  // An invite opened from another app opens as a pasted one does.
+  useEffect(() => {
+    const found = invite ? findInvite(invite.url) : null
+    if (found) setOpened(found)
+  }, [invite])
 
   const load = useCallback(
     async (keepIdentity = false) => {
