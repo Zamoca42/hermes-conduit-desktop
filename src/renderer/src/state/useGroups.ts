@@ -83,7 +83,7 @@ export interface PendingSend {
 export function useRoom(room: Room | null, connected: boolean) {
   const roomId = room?.roomId ?? null
   const [events, setEvents] = useState<RoomEvent[]>([])
-  const [status, setStatus] = useState<DriverStatus>({ working: false, busy: [], disbanded: false })
+  const [status, setStatus] = useState<DriverStatus>({ working: false, busy: [], disbanded: false, approvals: [] })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState<PendingSend[]>([])
@@ -119,7 +119,7 @@ export function useRoom(room: Room | null, connected: boolean) {
     setEvents([])
     setPending([])
     setError(null)
-    setStatus({ working: false, busy: [], disbanded: false })
+    setStatus({ working: false, busy: [], disbanded: false, approvals: [] })
     if (!roomId || !connected) return
     setLoading(true)
     void Promise.all([readLog(roomId, mine), readState(roomId, mine)])

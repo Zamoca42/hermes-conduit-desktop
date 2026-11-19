@@ -1,6 +1,18 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Bot } from "../state/bots";
-import { canContinue, choosingWhoAnswers, dayLabel, roomItems, routingChoices, startsNewDay, type Room } from "../state/groups";
+import {
+  canContinue,
+  choosingWhoAnswers,
+  dayLabel,
+  latestDiscussionSettled,
+  leadMemberId,
+  memberStatusLabel,
+  memberStatuses,
+  roomItems,
+  routingChoices,
+  startsNewDay,
+  type Room,
+} from "../state/groups";
 import { RoomSettings } from "./RoomSettings";
 import { Fragment } from "react";
 import { useRoom } from "../state/useGroups";
@@ -129,6 +141,10 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
   const [continueError, setContinueError] = useState<string | null>(null);
   const choosing = useMemo(() => choosingWhoAnswers(room, events, status.context), [room, events, status.context]);
   const showsSettings = !!canEditSettings && !!status.context && !status.disbanded;
+  // How each bot did with the latest message, in pills under the title, as the phone and Hermes Desktop show it.
+  const statuses = useMemo(() => memberStatuses(room, events, status), [room, events, status]);
+  const lead = leadMemberId(room, status.context);
+  const settled = useMemo(() => !status.working && latestDiscussionSettled(events, pending.length > 0), [events, pending.length, status.working]);
   return (
     <main className="chat room" ref={pane}>
       <div className="chat-head">
@@ -140,7 +156,9 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
               ? choosing.lead
                 ? t("{name} is choosing who answers…", { name: choosing.lead })
                 : t("Choosing who answers…")
-              : `${names.length} bots`}
+              : settled
+                ? t("Settled, nobody had more to say")
+                : `${names.length} bots`}
           </span>
         </div>
         {showsSettings ? (
@@ -154,6 +172,27 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
           </button>
         ) : null}
       </div>
+      {room.members.length ? (
+        <div className="room-pills" role="group" aria-label={t("Members")}>
+          {room.members.map((member) => {
+            const bot = memberBot(member.memberId);
+            const shown = statuses.get(member.memberId);
+            const name = member.displayName ?? bot?.title ?? member.profile ?? member.memberId;
+            return (
+              <span key={member.memberId} className={`room-pill${shown ? ` ${shown}` : ""}`}>
+                {bot ? <BotAvatar bot={bot} size={16} /> : null}
+                <span className="room-pill-name">{name}</span>
+                {member.memberId === lead ? (
+                  <span className="room-pill-crown" title={t("Lead")} aria-label={t("Lead")}>
+                    ♛
+                  </span>
+                ) : null}
+                {shown ? <span className="room-pill-status">{memberStatusLabel(shown)}</span> : null}
+              </span>
+            );
+          })}
+        </div>
+      ) : null}
       {settingsOpen && status.context ? (
         <RoomSettings
           room={room}
