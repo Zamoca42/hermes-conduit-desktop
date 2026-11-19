@@ -22,6 +22,8 @@ import {
 import { Markdown } from './Markdown'
 import { SkillHub } from './SkillHub'
 import { PluginsTab } from './PluginsTab'
+import { HostedAppPage, HostedAppsDirectory, HostedAppsSection } from './HostedApps'
+import { useHostedApps } from '../state/useHostedApps'
 import { Icon } from './icons'
 
 interface Props {
@@ -61,7 +63,8 @@ function Switch({ label, checked, disabled, onChange }: { label: string; checked
  * Settings > Capabilities, after the phone's: Skills, Tools and Connectors
  * for a bot's profile, each with its switch. A skill opens its SKILL.md; a
  * connector that's on is tested as the tab opens, and on Test Connection.
- * Switches reach Hermes one after another, in the order flipped.
+ * Switches reach Hermes one after another, in the order flipped. Connectors
+ * opens on the apps signed in through Nous Portal, above the MCP servers.
  */
 export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }: Props) {
   const [profile, setProfile] = useState(initialProfile)
@@ -76,6 +79,9 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }
   const [open, setOpen] = useState<{ skill: Skill; text: string | null; error?: string } | null>(null)
   const [openServer, setOpenServer] = useState<string | null>(null)
   const [hubOpen, setHubOpen] = useState(false)
+  // Connectors' Apps, through Nous Portal: the directory or an app's page over the tab.
+  const hostedApps = useHostedApps(profile)
+  const [appsPage, setAppsPage] = useState<{ slug: string | null; fromDirectory: boolean } | null>(null)
   const generation = useRef(0)
   const writes = useRef<Promise<unknown>>(Promise.resolve())
 
@@ -142,6 +148,7 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }
     setOpen(null)
     setOpenServer(null)
     setHubOpen(false)
+    setAppsPage(null)
     setProblem(null)
   }, [profile])
 
@@ -280,7 +287,19 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }
     return <span className="error-text">{result.error}</span>
   }
 
-  const connectorsTab = () => {
+  const appsSection = (
+    <HostedAppsSection
+      key="apps"
+      apps={hostedApps}
+      query={query}
+      onOpenApp={slug => setAppsPage({ slug, fromDirectory: false })}
+      onBrowse={() => setAppsPage({ slug: null, fromDirectory: true })}
+    />
+  )
+
+  const connectorsTab = () => [appsSection, <div key="servers">{serversList()}</div>]
+
+  const serversList = () => {
     if (!servers) return loadingOrError('connectors')
     if (!servers.length) return <p className="meta">{t('No connectors yet')}</p>
     const shown = filterServers(servers, query)
@@ -340,6 +359,12 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, onBack }
       </section>
     )
   }
+
+  if (appsPage?.slug)
+    return (
+      <HostedAppPage apps={hostedApps} slug={appsPage.slug} onBack={() => setAppsPage(appsPage.fromDirectory ? { slug: null, fromDirectory: true } : null)} />
+    )
+  if (appsPage) return <HostedAppsDirectory apps={hostedApps} onOpenApp={slug => setAppsPage({ slug, fromDirectory: true })} onBack={() => setAppsPage(null)} />
 
   if (hubOpen)
     return (
