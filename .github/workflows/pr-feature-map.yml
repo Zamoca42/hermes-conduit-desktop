@@ -1,0 +1,35 @@
+name: pr-feature-map
+# Fails a PR whose description doesn't name the hermes-conduit feature map
+# entries it changes, or say "No mapped feature" and why
+# (scripts/check-pr-feature-map.mjs; CONTRIBUTING.md has the rules). It runs
+# again when the description is edited, so fixing the section doesn't need a
+# push. The description reaches the script through the environment, never
+# the shell.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-feature-map-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  feature-map:
+    name: Feature map section
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/check-pr-feature-map.mjs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the PR's Feature map section
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/check-pr-feature-map.mjs
