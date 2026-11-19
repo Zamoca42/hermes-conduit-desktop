@@ -10,7 +10,7 @@ import { RequestCard } from './RequestCard'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
 import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
-import { locale, t } from '@shared/i18n'
+import { formatDate, locale, t } from '@shared/i18n'
 import { blockquote, copyableReply, excerpt, parseReplyEnvelope, sameQuotedText, type QuoteRequest } from '../state/quote'
 import { BoardView } from './BoardView'
 import { DEFAULT_DISPLAY, type ChatDisplay } from '../state/display'
@@ -211,7 +211,7 @@ export const Reply = memo(function Reply({ text }: { text: string }) {
 })
 
 export function clock(ms?: number): string {
-  return ms ? new Date(ms).toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' }) : ''
+  return ms ? formatDate(ms, { hour: 'numeric', minute: '2-digit' }) : ''
 }
 
 /** "terminal" → "Ran a command", the way the phone names its tool steps. */

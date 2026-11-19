@@ -64,6 +64,23 @@ export function locale(): string | undefined {
   return current === 'en' ? undefined : current
 }
 
+const formats = new Map<string, Intl.DateTimeFormat>()
+
+/**
+ * A date in the current language, like toLocaleString with these options,
+ * from one formatter kept per language and options: making a formatter for
+ * each call costs far more than formatting, which a list of rows feels.
+ */
+export function formatDate(at: number | Date, options: Intl.DateTimeFormatOptions): string {
+  const key = `${current}\t${JSON.stringify(options)}`
+  let format = formats.get(key)
+  if (!format) {
+    format = new Intl.DateTimeFormat(locale(), options)
+    formats.set(key, format)
+  }
+  return format.format(at)
+}
+
 /** `key` in the current language, with each {name} filled from `vars`. */
 export function t(key: string, vars?: Record<string, string | number>): string {
   const text = current === 'en' ? key : (strings[key]?.[current] ?? key)

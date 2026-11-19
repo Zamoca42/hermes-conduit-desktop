@@ -5,7 +5,7 @@
  * with no window open. Read the phone's GroupChatModels.swift for the rest.
  */
 import type { Bot } from './bots'
-import { locale, t } from '../../../shared/i18n'
+import { formatDate, locale, t } from '../../../shared/i18n'
 
 export const ROOM_MIN_MEMBERS = 2
 export const ROOM_MAX_MEMBERS = 6
@@ -441,7 +441,7 @@ export function dayLabel(at: number, now = Date.now()): string {
   const days = Math.round((start(today) - start(day)) / 86_400_000)
   if (days === 0) return t('Today')
   if (days === 1) return t('Yesterday')
-  return day.toLocaleDateString(locale(), { weekday: days < 7 ? 'long' : undefined, month: 'short', day: 'numeric', year: day.getFullYear() === today.getFullYear() ? undefined : 'numeric' })
+  return formatDate(day, { weekday: days < 7 ? 'long' : undefined, month: 'short', day: 'numeric', year: day.getFullYear() === today.getFullYear() ? undefined : 'numeric' })
 }
 
 /** Whether a day line goes above the message at `at`, after one at `previous`. */

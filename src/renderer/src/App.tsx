@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { gateway } from './gateway'
 import type { ConnectionStatus, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, type BotAction } from './components/BotsHome'
@@ -171,6 +171,21 @@ export function App() {
   )
 }
 
+/**
+ * A pane kept mounted while another section shows. Away, it renders what it
+ * last showed, so the rest of the window's updates skip it (its own state
+ * still updates), and the CSS keeps its layout without painting it.
+ */
+function KeptPane({ away, children }: { away: boolean; children: ReactNode }) {
+  const shown = useRef(children)
+  if (!away) shown.current = children
+  return (
+    <div className={`chats-section${away ? ' away' : ''}`} inert={away}>
+      {shown.current}
+    </div>
+  )
+}
+
 type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'pulse' | 'artifacts' | 'needs' | 'settings'
 
 const REOPEN_SECTION = 'conduit.reopen-section'
@@ -191,6 +206,10 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   useState(forgetAvatars)
   const connected = status.phase === 'open'
   const [section, setSection] = useState<Section>(reopenedSection)
+  /** Chats has been open: from then on its pane stays mounted, only hidden. */
+  const [chatsSeen, setChatsSeen] = useState(section === 'chats')
+  if (section === 'chats' && !chatsSeen) setChatsSeen(true)
+  const chatsShown = chatsSeen || section === 'chats'
   // `folder`: a new chat started in a project works there.
   const [selected, setSelected] = useState<{ id: string | null; profile?: string; title?: string; botChat?: boolean; folder?: string }>({ id: null })
   const [projectsOpen, setProjectsOpen] = useState(false)
@@ -1132,8 +1151,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             title={connected ? t('Connected to {host}', { host: status.hostLabel ?? '' }) : t('Not connected')}
           />
         </nav>
-        {section === 'chats' ? (
-          <>
+        {/* Chats stays mounted once shown, hidden while another section is open, so coming back doesn't rebuild every row and the open transcript. */}
+        {chatsShown ? (
+          <KeptPane away={section !== 'chats'}>
             {projectsOpen ? (
               <ProjectsPane
                 profile={chatProfile}
@@ -1551,8 +1571,9 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 onClose={() => setBeside(null)}
               />
             ) : null}
-          </>
-        ) : section === 'bots' && newBot ? (
+          </KeptPane>
+        ) : null}
+        {section === 'chats' ? null : section === 'bots' && newBot ? (
           <NewBot
             bots={[...(roster.bots ?? []), ...roster.hidden]}
             protocol={roster.protocol}
