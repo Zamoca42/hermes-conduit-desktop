@@ -370,7 +370,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const workChecklist = workItem?.checklist
   const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
   const delegates = useAgents(chat.liveId, connected, transcript.running)
-  const suggestions = usePredictions(transcript, connected && !calling ? (chat.liveId ?? undefined) : undefined)
+  const predictions = usePredictions(transcript, connected && !calling ? (chat.liveId ?? undefined) : undefined)
   // Hermes may have changed the goal, loop or heartbeat: a turn ended or a command answered.
   const outputs = useMemo(() => transcript.items.filter(item => item.kind === 'output').length, [transcript.items])
   const controlPulse = turnsDone + outputs
@@ -1039,7 +1039,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 model={chat.model}
                 cwd={chat.cwd}
                 onSend={(text, attachments) => void onSend(text, attachments)}
-                replies={suggestions}
+                replies={predictions.replies}
+                onDraftPause={predictions.askDraft}
                 onSuggestion={text => void onSend(text, [])}
                 onStop={() => void stop()}
                 focusKey={selected.id ?? 'new'}

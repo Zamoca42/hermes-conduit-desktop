@@ -7579,3 +7579,7 @@ button.cap-row-text {
 .suggested-reply:hover {
   border-color: var(--accent);
 }
+.suggested-reply.continuation {
+  color: var(--text-2);
+  font-style: italic;
+}

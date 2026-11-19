@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react'
-import { t } from '@shared/i18n'
+import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import {
   MINIMUM_PLUGIN,
+  PAUSE_DELAYS,
   PREDICT_PATH,
+  pauseDelay,
+  pauseEnabled,
+  setPauseDelay,
+  setPauseEnabled,
   REPLY_COUNTS,
   predictModel,
   repliesEnabled,
@@ -20,6 +25,8 @@ export function PredictiveSettings() {
   const [on, setOn] = useState(repliesEnabled)
   const [count, setCount] = useState(replyCount)
   const [model, setModel] = useState(predictModel)
+  const [pause, setPause] = useState(pauseEnabled)
+  const [delay, setDelay] = useState(pauseDelay)
   const [served, setServed] = useState<boolean | null>(null)
   const [host, setHost] = useState<{ fast: string | null; today: number } | null>(null)
 
@@ -91,12 +98,52 @@ export function PredictiveSettings() {
           ))}
         </select>
       </div>
+      <p className="meta">
+        {t(
+          "When you stop typing for a moment, words to finish your message and whole messages you might mean. Your unsent draft goes to your agent's model to make them."
+        )}
+      </p>
+      <div className="pset-row">
+        <span>{t('Suggest while I pause')}</span>
+        <label className="switch-inline">
+          <input
+            type="checkbox"
+            checked={pause}
+            disabled={served === false}
+            aria-label={t('Suggest while I pause')}
+            onChange={e => {
+              setPause(e.target.checked)
+              setPauseEnabled(e.target.checked)
+            }}
+          />
+        </label>
+      </div>
+      <div className="pset-row">
+        <span>{t('Pause before asking')}</span>
+        <select
+          className="language-select"
+          value={delay}
+          disabled={!pause}
+          aria-label={t('Pause before asking')}
+          onChange={e => {
+            const n = Number(e.target.value)
+            setDelay(n)
+            setPauseDelay(n)
+          }}
+        >
+          {PAUSE_DELAYS.map(n => (
+            <option key={n} value={n}>
+              {t('{number} s', { number: n.toLocaleString(language()) })}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="pset-row">
         <span>{t('Predictions use')}</span>
         <select
           className="language-select"
           value={model}
-          disabled={!on}
+          disabled={!on && !pause}
           aria-label={t('Predictions use')}
           onChange={e => {
             const m = e.target.value as PredictModel

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { guesses, repliesBody, settledReply } from '../src/renderer/src/state/predictive'
+import { askable, draftBody, draftGuesses, guesses, repliesBody, settledReply } from '../src/renderer/src/state/predictive'
 import type { TranscriptItem } from '../src/renderer/src/state/transcript'
 
 describe('predictive replies', () => {
@@ -32,5 +32,35 @@ describe('predictive replies', () => {
     expect(settledReply([user, { ...reply, streaming: true } as TranscriptItem], false)).toBeNull()
     expect(settledReply([reply, user], false)).toBeNull()
     expect(settledReply([user, { kind: 'notice', key: 'n', text: 'x', tone: 'error' }], false)).toBeNull()
+  })
+})
+
+describe('predictive draft guesses', () => {
+  it('keeps a continuation’s leading space and drops long or repeated ones', () => {
+    const answer = {
+      next: [{ text: ' the  weather' }, { text: 'ing' }, { text: ' the weather' }, { text: ' ' + 'x'.repeat(70) }, { text: '  ' }],
+      replies: [{ text: 'What is the weather?', p: 1 }]
+    }
+    expect(draftGuesses(answer)).toEqual({ next: [' the weather', 'ing'], replies: ['What is the weather?'] })
+  })
+
+  it('asks only about a draft that fits', () => {
+    expect(askable('hi')).toBe(false)
+    expect(askable('  a  ')).toBe(false)
+    expect(askable('hey')).toBe(true)
+    expect(askable('😀'.repeat(2000))).toBe(true)
+    expect(askable('😀'.repeat(2001))).toBe(false)
+  })
+
+  it('asks with the draft and a short wait', () => {
+    expect(draftBody('s', 'what is', 3, 'English', 'chat')).toEqual({
+      session_id: 's',
+      kind: 'draft',
+      draft: 'what is',
+      count: 3,
+      language: 'English',
+      model: 'chat',
+      wait_s: 4
+    })
   })
 })
