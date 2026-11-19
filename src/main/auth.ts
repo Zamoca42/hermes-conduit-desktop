@@ -15,7 +15,7 @@
 import type { HostProbe, SignInMethod } from '../shared/ipc'
 import { t } from '../shared/i18n'
 import { httpsIssue, proxyFetch, type ProxyHeaders } from './proxyHeaders'
-import { accessDeniedMessage, describeConnectionFailure } from './connectionFailure'
+import { accessDeniedMessage, connectionFailureKind, connectionFailureMessage } from './connectionFailure'
 
 export type Fetch = typeof fetch
 
@@ -101,8 +101,8 @@ async function timedFetch(fetchImpl: Fetch, url: string, init: RequestInit = {})
     return await fetchImpl(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
   } catch (error) {
     // A network or TLS failure in the phone's words, named by the check that failed.
-    const described = describeConnectionFailure(error)
-    if (described) throw new AuthError(described)
+    const kind = connectionFailureKind(error)
+    if (kind) throw Object.assign(new AuthError(connectionFailureMessage(kind)), { kind })
     const reason = error instanceof Error ? (error.cause instanceof Error ? error.cause.message : error.message) : ''
     throw new AuthError(reason ? t('Couldn’t reach {host} ({reason}).', { host: new URL(url).host, reason }) : t('Couldn’t reach {host}.', { host: new URL(url).host }))
   }
@@ -153,7 +153,9 @@ export async function probeHost(input: string, fetchImpl: Fetch, headers?: Proxy
     }
     return { ok: true, url, methods: signInMethods(body), version: typeof body.version === 'string' ? body.version : undefined }
   } catch (error) {
-    return { ok: false, error: (error as Error).message }
+    // A certificate this computer doesn't trust: offer to read and save its root.
+    const untrusted = (error as { kind?: unknown }).kind === 'tlsUntrusted' && url.startsWith('https:')
+    return { ok: false, error: (error as Error).message, ...(untrusted ? { untrusted: url } : {}) }
   }
 }
 

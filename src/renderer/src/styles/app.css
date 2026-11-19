@@ -9956,3 +9956,40 @@ button.secondary.danger {
   display: inline-flex;
   gap: 2px;
 }
+
+/* Install this server's certificate, on the sign-in card. */
+.server-certificate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.server-certificate .hint {
+  margin: 0;
+}
+
+.certificate-fingerprint {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.certificate-fingerprint code {
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  user-select: text;
+}
+
+.certificate-steps {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+}

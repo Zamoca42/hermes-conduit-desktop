@@ -3,6 +3,7 @@ import {
   Menu,
   app,
   clipboard,
+  dialog,
   desktopCapturer,
   globalShortcut,
   ipcMain,
@@ -30,6 +31,8 @@ import { isPageUrl, pageUrl, registerPageScheme, servePages } from './pages'
 import { pluginRelease } from './pluginRelease'
 import { cleanHeaders } from './proxyHeaders'
 import { KeptHosts } from './keptHosts'
+import { readServerCertificate } from './serverCertificate'
+import { writeFile } from 'node:fs/promises'
 import { Connection, DISPLAY_SOCKET_PATH } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
@@ -312,6 +315,26 @@ function registerIpc(): void {
     if (typeof url === 'string') connection.removeHost(url)
   })
   ipcMain.handle(IPC.status, () => connection.current())
+  // Install this server's certificate: read its root, then save it where the person picks.
+  const checkedCertificates = new Map<string, { pem: string; name: string }>()
+  ipcMain.handle(IPC.checkCertificate, async (_e, url: unknown) => {
+    if (typeof url !== 'string') return { ok: false, reason: 'notHttps' }
+    const check = await readServerCertificate(url)
+    if (!check.ok) return check
+    checkedCertificates.set(url, { pem: check.pem, name: check.name })
+    return { ok: true, fingerprint: check.fingerprint, name: check.name }
+  })
+  ipcMain.handle(IPC.saveCertificate, async (event, url: unknown) => {
+    const checked = typeof url === 'string' ? checkedCertificates.get(url) : undefined
+    if (!checked) return false
+    const owner = BrowserWindow.fromWebContents(event.sender)
+    const file = `${checked.name.replace(/[^\w.-]+/g, '_').slice(0, 60) || 'hermes'}.crt`
+    const picked = owner ? await dialog.showSaveDialog(owner, { defaultPath: file }) : await dialog.showSaveDialog({ defaultPath: file })
+    if (picked.canceled || !picked.filePath) return false
+    await writeFile(picked.filePath, checked.pem)
+    shell.showItemInFolder(picked.filePath)
+    return true
+  })
   ipcMain.handle(IPC.keptHosts, () => keptHosts.list())
   ipcMain.handle(IPC.setCombined, (_e, url: unknown, on: unknown) => {
     if (typeof url !== 'string' || typeof on !== 'boolean') return

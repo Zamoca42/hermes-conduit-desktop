@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import type { SignInMethod } from '@shared/ipc'
 import { t } from '@shared/i18n'
+import { ServerCertificate } from './ServerCertificate'
 import { PairWithPhone } from './PairWithPhone'
 
 /** "Name: value" lines into headers, or the first line that isn't one. */
@@ -39,6 +40,8 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
   const [accessId, setAccessId] = useState('')
   const [accessSecret, setAccessSecret] = useState('')
   const [otherHeaders, setOtherHeaders] = useState('')
+  /** An address whose certificate this computer doesn't trust: Install this server's certificate. */
+  const [untrusted, setUntrusted] = useState<string | null>(null)
 
   /** The proxy's headers as typed, or an error to show. */
   function proxyHeaders(): { ok: true; headers?: Record<string, string> } | { ok: false; error: string } {
@@ -56,6 +59,7 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
     event.preventDefault()
     setBusy(true)
     setError(null)
+    setUntrusted(null)
     const proxy = proxyHeaders()
     if (!proxy.ok) {
       setBusy(false)
@@ -66,6 +70,7 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
     setBusy(false)
     if (!probe.ok) {
       setError(probe.error)
+      setUntrusted(probe.untrusted ?? null)
       return
     }
     setUrl(probe.url)
@@ -143,6 +148,7 @@ export function SignIn({ notice, onCancel }: { notice?: string; onCancel?: () =>
             </fieldset>
           ) : null}
           {error ? <div className="error-text" role="alert">{error}</div> : null}
+          {untrusted ? <ServerCertificate url={untrusted} /> : null}
           <button className="primary" type="submit" disabled={busy || !address.trim()}>
             {busy ? t('Connecting…') : t('Continue')}
           </button>
