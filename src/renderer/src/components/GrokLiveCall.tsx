@@ -35,7 +35,7 @@ import {
   type ServerEvent
 } from '../state/grokLive'
 import { SHOW_ON_SCREEN, screenCard, withCard, type ScreenCard } from '../state/liveCall'
-import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
+import { newCallId, saveCall, type CallResume, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
@@ -63,6 +63,8 @@ interface Props {
   onClassic: () => void
   /** The approvals and questions the chat waits on, which the call can answer by voice. */
   requests?: PendingRequest[]
+  /** Resume call: the saved call this one continues, its id and turns. */
+  resume?: CallResume
 }
 
 type Phase = 'starting' | 'listening' | 'speaking' | 'ending' | 'failed'
@@ -93,7 +95,7 @@ const SILENCE = new Float32Array(Math.round(SAMPLE_RATE * 0.8))
  * goes to Hermes as the chat's next message, with Hermes' reply told back to
  * you in the call. Audio goes both ways as 24 kHz PCM over the plugin's relay.
  */
-export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [] }: Props) {
+export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [], resume }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -163,13 +165,14 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
   const told = useRef(new Set<string>())
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
-  const callId = useRef(newCallId())
+  const callId = useRef(resume?.callId ?? newCallId())
+  const resumed = useRef(resume)
   const saved = useRef(false)
   const keep = (role: CallTurn['role'], text: string) => text.trim() && record.current.push({ role, text: text.trim(), at: Date.now() / 1000 })
   const save = () => {
     if (saved.current) return
     saved.current = true
-    void saveCall(profile, callId.current, 'grok-live', record.current, live.current.chatId)
+    void saveCall(profile, callId.current, 'grok-live', record.current, live.current.chatId, resumed.current?.from ?? 0)
   }
 
   const send = (message: Record<string, unknown>) => {
@@ -461,8 +464,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
       if (event.type === 'open') {
         trace.current?.step('Socket open, setup sent')
         send(sessionUpdate(told))
-      }
-      else if (event.type === 'message') {
+      } else if (event.type === 'message') {
         const decoded = decode(event.data)
         if (decoded) handle(decoded)
       } else if (event.type === 'close') {
@@ -493,7 +495,7 @@ export function GrokLiveCall({ profile, chatId, items, onSay, running, turnsDone
           grokSendsMemory() ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(memoryText, () => '') : ''
         ])
         if (ended.current) return
-        told = instructions({ language: language(), persona, memory, chat: chatContext(turns) })
+        told = instructions({ language: language(), persona, memory, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) })
         trace.current.step('Opening the socket')
         const opened = await window.conduit.liveOpen(SOCKET_PATH, profile && profile !== 'default' ? { profile } : {})
         if (!opened.ok) trace.current.step('The socket did not open')

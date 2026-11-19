@@ -24,15 +24,23 @@ export interface CallTurn {
 /** A call's id: the plugin skips turns it already holds under it, so a retry never doubles them. */
 export const newCallId = () => `desktop-${crypto.randomUUID()}`
 
-/** The request body: finished turns in order, numbered from 0; null when there's nothing to keep. */
-export function saveBody(callId: string, engine: LiveEngine, turns: CallTurn[], chatId?: string | null): Record<string, unknown> | null {
+/** A saved call picked up again (Resume call): its id and turns, and how many the host holds. */
+export interface CallResume {
+  callId: string
+  turns: { role: 'user' | 'assistant'; text: string }[]
+  /** Where the new turns' numbers start, so they continue the saved ones. */
+  from: number
+}
+
+/** The request body: finished turns in order, numbered from `from` (0, or after a resumed call's); null when there's nothing to keep. */
+export function saveBody(callId: string, engine: LiveEngine, turns: CallTurn[], chatId?: string | null, from = 0): Record<string, unknown> | null {
   const kept = turns.map(turn => ({ ...turn, text: turn.text.trim() })).filter(turn => turn.text)
   if (!kept.length) return null
   const body: Record<string, unknown> = {
     call_id: callId,
     engine,
     turns: kept.slice(0, MAX_TURNS).map((turn, index) => ({
-      index,
+      index: from + index,
       role: turn.role,
       text: turn.text.slice(0, MAX_TURN_CHARACTERS),
       at: Math.round(turn.at)
@@ -43,9 +51,16 @@ export function saveBody(callId: string, engine: LiveEngine, turns: CallTurn[], 
 }
 
 /** Keeps the call's transcript on the host; a host without the route (or a failure) loses only the copy. */
-export async function saveCall(profile: string | undefined, callId: string, engine: LiveEngine, turns: CallTurn[], chatId?: string | null): Promise<boolean> {
+export async function saveCall(
+  profile: string | undefined,
+  callId: string,
+  engine: LiveEngine,
+  turns: CallTurn[],
+  chatId?: string | null,
+  from = 0
+): Promise<boolean> {
   if (!savesCalls()) return false
-  const body = saveBody(callId, engine, turns, chatId)
+  const body = saveBody(callId, engine, turns, chatId, from)
   if (!body) return false
   try {
     await gateway.http('POST', withProfile(SESSIONS_PATH, profile), body)

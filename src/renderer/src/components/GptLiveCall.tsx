@@ -44,7 +44,7 @@ import {
   type Dialect,
   type ServerEvent
 } from '../state/gptLive'
-import { newCallId, saveCall, type CallTurn } from '../state/voiceSave'
+import { newCallId, saveCall, type CallResume, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { answerApproval, answerQuestion, answerWords, isApprove, isDeny, requestUpdate } from '../state/liveRequests'
 import { chatFinder, delegatedRead, delegatedSearch, findChatMarker, readChatMarker } from '../state/chatFinder'
@@ -72,6 +72,8 @@ interface Props {
   onClassic: () => void
   /** The approvals and questions the chat waits on, which the call can answer by voice. */
   requests?: PendingRequest[]
+  /** Resume call: the saved call this one continues, its id and turns. */
+  resume?: CallResume
 }
 
 type Phase = 'starting' | 'listening' | 'speaking' | 'ending' | 'failed'
@@ -96,7 +98,7 @@ const GOODBYE =
  * you talk with GPT-Live, and what you ask it to do goes to Hermes as the chat's
  * next message, with Hermes' reply told back to you in the call.
  */
-export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [] }: Props) {
+export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone, lastReply, onEnd, onClassic, requests = [], resume }: Props) {
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
@@ -160,13 +162,14 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
   const told = useRef(new Set<string>())
   // The call's finished turns, kept with the chat when it ends.
   const record = useRef<CallTurn[]>([])
-  const callId = useRef(newCallId())
+  const callId = useRef(resume?.callId ?? newCallId())
+  const resumed = useRef(resume)
   const saved = useRef(false)
   const keep = (role: CallTurn['role'], text: string) => text.trim() && record.current.push({ role, text: text.trim(), at: Date.now() / 1000 })
   const save = () => {
     if (saved.current) return
     saved.current = true
-    void saveCall(profile, callId.current, 'gpt-live', record.current, live.current.chatId)
+    void saveCall(profile, callId.current, 'gpt-live', record.current, live.current.chatId, resumed.current?.from ?? 0)
   }
 
   const append = (text: string, channelName: Channel, delegationId: string | null) => {
@@ -464,10 +467,12 @@ export function GptLiveCall({ profile, chatId, items, onSay, running, turnsDone,
           window.setTimeout(resolve, 3000)
         })
         if (ended.current) return
+        // A resumed call is seeded with the saved call's turns, a fresh one with the chat's.
         const seed = history(
-          items.flatMap((item): { role: 'user' | 'assistant'; text: string }[] =>
-            item.kind === 'user' || item.kind === 'assistant' ? [{ role: item.kind, text: item.text }] : []
-          )
+          resumed.current?.turns ??
+            items.flatMap((item): { role: 'user' | 'assistant'; text: string }[] =>
+              item.kind === 'user' || item.kind === 'assistant' ? [{ role: item.kind, text: item.text }] : []
+            )
         )
         // The persona and memory only when switched on; a host without them starts the call without.
         const [persona, memory] = await Promise.all([

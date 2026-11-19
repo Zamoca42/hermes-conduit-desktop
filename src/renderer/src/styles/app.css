@@ -8611,3 +8611,11 @@ button.secondary.danger {
   color: var(--accent);
   font-weight: 600;
 }
+
+/* Resume call, in a saved call's sheet. */
+.call-resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;
+}

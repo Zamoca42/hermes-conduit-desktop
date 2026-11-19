@@ -86,6 +86,8 @@ export interface CallTurn {
 export interface CallTranscript {
   engine: string | null
   turns: CallTurn[]
+  /** How many turns the host holds for the call: where a resumed call's turns continue. */
+  count: number
 }
 
 /** One call's turns from `voice/chat-calls`; null when the host no longer has it. */
@@ -95,11 +97,12 @@ export function callTranscript(response: unknown, callId: string): CallTranscrip
   const call = (calls as Row[]).find(c => c && typeof c === 'object' && c.call_id === callId)
   if (!call) return null
   const turns: CallTurn[] = []
-  for (const turn of Array.isArray(call.turns) ? (call.turns as Row[]) : []) {
+  const stored = Array.isArray(call.turns) ? (call.turns as Row[]) : []
+  for (const turn of stored) {
     const text = typeof turn?.text === 'string' ? turn.text.trim() : ''
     if (text && (turn.role === 'user' || turn.role === 'assistant')) turns.push({ role: turn.role, text })
   }
-  return turns.length ? { engine: str(call.engine), turns } : null
+  return turns.length ? { engine: str(call.engine), turns, count: stored.length } : null
 }
 
 /** Who said a line, as the phone's transcript names them. */

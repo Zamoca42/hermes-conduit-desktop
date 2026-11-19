@@ -2,9 +2,23 @@ import { useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { loadCallTranscript, speaker, type CallTranscript } from '../state/voiceCalls'
 import { Markdown } from './Markdown'
+import { Icon } from './icons'
 
 /** What was said on a call saved with the chat, read from the host when its card is opened, after the phone's VoiceChatCallTranscriptSheet. */
-export function CallTranscriptSheet({ profile, chatId, callId, onClose }: { profile?: string; chatId: string; callId: string; onClose: () => void }) {
+export function CallTranscriptSheet({
+  profile,
+  chatId,
+  callId,
+  onResume,
+  onClose
+}: {
+  profile?: string
+  chatId: string
+  callId: string
+  /** Resume call: a new live call that continues this one; left out where none can start. */
+  onResume?: (call: CallTranscript) => void
+  onClose: () => void
+}) {
   const [call, setCall] = useState<CallTranscript | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
   const done = useRef<HTMLButtonElement>(null)
@@ -46,6 +60,12 @@ export function CallTranscriptSheet({ profile, chatId, callId, onClose }: { prof
         <header>
           <h2>{t('Voice call')}</h2>
           <span className="spacer" />
+          {onResume && call ? (
+            <button className="link call-resume" title={t('Starts a new live call that continues this one')} onClick={() => onResume(call)}>
+              <Icon name="phone" />
+              {t('Resume call')}
+            </button>
+          ) : null}
           <button ref={done} className="link" onClick={onClose}>
             {t('Done')}
           </button>

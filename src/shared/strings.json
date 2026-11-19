@@ -21524,6 +21524,21 @@
     "zh-Hans": "恢复循环",
     "zh-Hant": "恢復循環"
   },
+  "Resume call": {
+    "de": "Anruf fortsetzen",
+    "es": "Reanudar llamada",
+    "fr": "Reprendre l'appel",
+    "id": "Lanjutkan panggilan",
+    "it": "Riprendi chiamata",
+    "ja": "通話を再開",
+    "ko": "통화 재개",
+    "pl": "Wznów połączenie",
+    "pt-BR": "Retomar chamada",
+    "ru": "Продолжить звонок",
+    "tr": "Aramayı sürdür",
+    "zh-Hans": "继续通话",
+    "zh-Hant": "繼續通話"
+  },
   "Resumed interrupted turn": {
     "de": "Unterbrochener Durchgang fortgesetzt",
     "es": "Se reanudó el turno interrumpido",
@@ -24898,6 +24913,21 @@
     "tr": "Ağ geçidi başlatılıyor…",
     "zh-Hans": "正在启动网关…",
     "zh-Hant": "正在啟動閘道…"
+  },
+  "Starts a new live call that continues this one": {
+    "de": "Startet einen neuen Live-Anruf, der diesen fortsetzt",
+    "es": "Inicia una nueva llamada en vivo que continúa esta",
+    "fr": "Lance un nouvel appel en direct qui prolonge celui-ci",
+    "id": "Memulai panggilan langsung baru yang melanjutkan panggilan ini",
+    "it": "Avvia una nuova chiamata live che continua questa",
+    "ja": "この通話の続きとして新しいライブ通話を開始します",
+    "ko": "이 통화를 이어 가는 새 라이브 통화를 시작해요",
+    "pl": "Rozpoczyna nowe połączenie Live, które kontynuuje to połączenie",
+    "pt-BR": "Inicia uma nova chamada ao vivo que dá continuidade a esta",
+    "ru": "Начинает новый Live-звонок, продолжающий этот",
+    "tr": "Bunu sürdüren yeni bir canlı arama başlatır",
+    "zh-Hans": "开始一个新的实时通话，接着这次通话继续",
+    "zh-Hant": "開始新的即時通話，接續這次通話"
   },
   "Starts in": {
     "de": "Startet in",
