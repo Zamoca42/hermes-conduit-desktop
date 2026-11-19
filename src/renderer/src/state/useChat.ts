@@ -283,7 +283,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
   }, [profile, sessionAuthority])
 
   const send = useCallback(
-    async (text: string, attachments: StagedAttachment[] = [], wire?: string): Promise<string | null> => {
+    async (text: string, attachments: StagedAttachment[] = [], wire?: string): Promise<string | null | false> => {
       const trimmed = text.trim()
       if (!trimmed && !attachments.length) return null
       const shown: Attachment[] = attachments.map(a =>
@@ -324,7 +324,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         // Pictures held for this message would ride on the next one.
         if (sid && held.length) await releaseHeldImages((method, params) => gateway.rpc(method, params), sid, profile, held)
         dispatch({ type: 'failed', error: e instanceof Error ? e.message : String(e) })
-        return null
+        return false
       }
     },
     [profile, sessionAuthority, createSession]

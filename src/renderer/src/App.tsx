@@ -23,6 +23,7 @@ import { Transcript, prefillRequest, quoteRequest, revealMessage } from './compo
 import { forgetSummaries } from './state/stepSummaries'
 import { useFollowUps, usePredictions } from './state/usePredictions'
 import { SummaryHost } from './state/useStepSummaries'
+import { chatDraft, composerDrafts } from './state/composerDrafts'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
 import { forgetAvatars, useBots } from './state/useBots'
@@ -500,7 +501,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
   const commands = useCommands(selected.profile ?? chatProfile ?? undefined, connected)
   const onSend = useCallback(
     async (text: string, attachments: StagedAttachment[] = []) => {
-      let created: string | null
+      let created: string | null | false
       if (looksLikeSlashCommand(text) && !attachments.length) {
         const outcome = await command(text, commands)
         if (outcome.kind === 'new') return newChat()
@@ -509,11 +510,13 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         created = outcome.created
       } else {
         created = await send(text, attachments)
+        if (created === false) return false
       }
       if (created) {
         setSelected(s => ({ ...s, id: created }))
         void list.refresh()
       }
+      return true
     },
     [send, command, commands, newChat, list, botTitle]
   )
@@ -1096,13 +1099,14 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                 disabled={!connected}
                 model={chat.model}
                 cwd={chat.cwd}
-                onSend={(text, attachments) => void onSend(text, attachments)}
+                onSend={onSend}
                 replies={predictions.replies}
                 onDraftPause={predictions.askDraft}
                 onDrafting={setDrafting}
                 onSuggestion={text => void onSend(text, [])}
                 onStop={() => void stop()}
                 focusKey={selected.id ?? 'new'}
+                draftKey={chatDraft(selected.profile, selected.id)}
                 canAttach
                 dropZone={chatPane}
                 voice={calling ? undefined : { profile: selected.profile }}
@@ -1386,7 +1390,10 @@ function Settings({
                     <button
                       className="link danger"
                       onClick={() => {
-                        if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) void window.conduit.removeHost(host.url)
+                        if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) {
+                          composerDrafts.dropHost(host.url)
+                          void window.conduit.removeHost(host.url)
+                        }
                       }}
                     >
                       {t('Sign out')}
@@ -1554,7 +1561,13 @@ function Settings({
           {status.phase === 'open' && status.sessionAuthority ? ` · ${t('session authority')}` : ''}
         </dd>
       </dl>
-      <button className="secondary" onClick={() => void window.conduit.signOut()}>
+      <button
+        className="secondary"
+        onClick={() => {
+          composerDrafts.dropHost(status.url ?? '')
+          void window.conduit.signOut()
+        }}
+      >
         {(status.hosts?.length ?? 0) > 1 ? t('Sign out of {host}', { host: status.hostLabel ?? '' }) : t('Sign out')}
       </button>
     </main>
