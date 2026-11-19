@@ -1949,11 +1949,12 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
         <NewGroupChat
           bots={roster.bots ?? []}
           people={roomDrafts.people}
+          ownBots={roomDrafts.ownBots}
           peopleOffered={roomDrafts.served && roomDrafts.read}
           startsUnavailable={roomDrafts.read && !roomDrafts.startsAvailable}
           canLink={roomInvites.capabilities.includes('room-links')}
           onCreateRoom={groupRooms.create}
-          onCreateDraft={(name, agents, links) => roomDrafts.create(name, agents, links, chatProfile ?? 'default')}
+          onCreateDraft={(name, agents, links, bring) => roomDrafts.create(name, agents, links, chatProfile ?? 'default', bring)}
           onOpenRoom={showRoom}
           onClose={() => setNewGroupOpen(false)}
         />

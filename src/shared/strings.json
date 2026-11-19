@@ -464,6 +464,21 @@
     "zh-Hans": "那里正在进行的回复总会先完成。如果你回到那个应用，请在那里重新打开对话，才能看到你从 Conduit 发送的内容。",
     "zh-Hant": "那裡正在進行的回覆一律會先完成。如果你回到該 App，請在那裡重新打開聊天，才能看到你從 Conduit 傳送的內容。"
   },
+  "A room can bring bots from one of your other Hermes beside at least one of your bots here, and then invites no one else. They join by themselves.": {
+    "de": "Ein Raum kann neben mindestens einem deiner Bots hier Bots von einem deiner anderen Hermes mitbringen und lädt dann niemanden sonst ein. Sie treten von selbst bei.",
+    "es": "Una sala puede traer bots de uno de tus otros Hermes junto a al menos uno de tus bots de aquí y entonces no invita a nadie más. Se unen por sí solos.",
+    "fr": "Un salon peut accueillir les bots de l'un de vos autres Hermes avec au moins un de vos bots d'ici, et n'invite alors personne d'autre. Ils rejoignent d'eux-mêmes.",
+    "id": "Satu ruang bisa membawa bot dari salah satu Hermes Anda yang lain di samping setidaknya satu bot Anda di sini, lalu tidak mengundang orang lain. Mereka bergabung sendiri.",
+    "it": "Una stanza può portare i bot di uno dei tuoi altri Hermes insieme ad almeno uno dei tuoi bot di qui, e allora non invita nessun altro. Entrano da soli.",
+    "ja": "ルームには、ここにある自分のボットを少なくとも 1 体入れたうえで、ほかの Hermes のうち 1 つからボットを連れてこられます。その場合はほかの誰も招待しません。ボットは自動で参加します。",
+    "ko": "룸에는 여기 있는 내 봇을 하나 이상 넣고, 다른 Hermes 중 하나의 봇을 데려올 수 있습니다. 이때는 다른 누구도 초대하지 않습니다. 봇은 알아서 참여합니다.",
+    "pl": "Pokój może wnieść boty z jednego z Twoich pozostałych Hermesów obok co najmniej jednego Twojego bota stąd i wtedy nie zaprasza nikogo innego. Dołączają same.",
+    "pt-BR": "Uma sala pode trazer bots de um dos seus outros Hermes junto com pelo menos um dos seus bots daqui e, nesse caso, não convida mais ninguém. Eles entram sozinhos.",
+    "ru": "Комната может взять ботов одного из ваших других Hermes вместе хотя бы с одним вашим ботом отсюда и тогда никого больше не приглашает. Они присоединяются сами.",
+    "tr": "Bir oda, buradaki botlarınızdan en az biriyle birlikte diğer Hermes'lerinizden birinin botlarını getirebilir ve o zaman başka kimseyi davet etmez. Botlar kendiliğinden katılır.",
+    "zh-Hans": "一个房间可以在至少一个你在这里的机器人之外，带上你另一个 Hermes 的机器人，这时不会再邀请其他人。它们会自动加入。",
+    "zh-Hant": "一個房間可以在至少一個你在這裡的機器人之外，帶上你另一個 Hermes 的機器人，這時不會再邀請其他人。它們會自動加入。"
+  },
   "A room holds up to 6 agents: your bots, and at least one for each person.": {
     "de": "Ein Raum fasst bis zu 6 Agenten: deine Bots und mindestens einen für jede Person.",
     "es": "Una sala admite hasta 6 agentes: tus bots y al menos uno por cada persona.",
@@ -20323,6 +20338,36 @@
     "tr": "Ses sunucusunda dil modelini bu adres ve anahtara, model adını {name} olarak ayarlayın. Böylece kendi yanıtını yazmak yerine Hermes'in yanıtlarını sesli okur.",
     "zh-Hans": "在语音服务器上，将其语言模型设为此地址和密钥，模型名称为 {name}。这样它会朗读 Hermes 的回复，而不是自己写回复。",
     "zh-Hant": "在語音伺服器上，將其語言模型設為此位址和密鑰，模型名稱為 {name}。這樣它會朗讀 Hermes 的回覆，而不是自己寫回覆。"
+  },
+  "On {name}": {
+    "de": "Auf {name}",
+    "es": "En {name}",
+    "fr": "Sur {name}",
+    "id": "Di {name}",
+    "it": "Su {name}",
+    "ja": "{name} 上",
+    "ko": "{name}에서",
+    "pl": "Na {name}",
+    "pt-BR": "Em {name}",
+    "ru": "На {name}",
+    "tr": "{name} üzerinde",
+    "zh-Hans": "在 {name} 上",
+    "zh-Hant": "在 {name} 上"
+  },
+  "On {name} · turn on rooms for it there first": {
+    "de": "Auf {name} · schalte dort zuerst Räume dafür ein",
+    "es": "En {name} · activa primero las salas para él allí",
+    "fr": "Sur {name} · activez d'abord les salons pour lui là-bas",
+    "id": "Di {name} · aktifkan ruang untuknya di sana dulu",
+    "it": "Su {name} · attiva prima le stanze per lui lì",
+    "ja": "{name} 上 · 先にそちらでこのボットのルームを有効にしてください",
+    "ko": "{name}에서 · 먼저 그곳에서 이 봇의 룸을 켜세요",
+    "pl": "Na {name} · najpierw włącz tam dla niego pokoje",
+    "pt-BR": "Em {name} · ative as salas para ele lá primeiro",
+    "ru": "На {name} · сначала включите для него комнаты там",
+    "tr": "{name} üzerinde · önce orada onun için odaları açın",
+    "zh-Hans": "在 {name} 上 · 请先在那里为它开启房间",
+    "zh-Hant": "在 {name} 上 · 請先在那裡為它開啟房間"
   },
   "On: {list}": {
     "de": "An: {list}",
