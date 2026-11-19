@@ -811,7 +811,8 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
     pinChat && !workItem
       ? {
           list: chatPins,
-          pin: item => updatePins(current => [...current, newPin({ kind: 'assistant', ...item }, pinChat, selected.profile, title || t('Chat'))]),
+          pin: (item, passage) =>
+            updatePins(current => [...current, newPin({ kind: 'assistant', ...item }, pinChat, selected.profile, title || t('Chat'), Date.now(), passage)]),
           unpin: pin => updatePins(current => current.filter(p => p.id !== pin.id)),
           label: pin => setPinSheet({ scope: 'chat', editing: pin.id }),
           showAll: () => setPinSheet({ scope: 'chat' }),

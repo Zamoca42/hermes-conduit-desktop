@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { Icon } from './icons'
-import { nextBarIndex, normalizedLabel, overview, pinTitle, type PinnedReply } from '../state/pinnedReplies'
+import { nextBarIndex, normalizedLabel, overview, pinTitle, shownText, type PinnedReply } from '../state/pinnedReplies'
 
 /** What a chat's transcript is given to pin replies and draw the bar. */
 export interface PinControls {
   /** This chat's pins. */
   list: PinnedReply[]
-  pin: (item: { key: string; text: string }) => void
+  /** Pins the reply, or the passage of it that was selected. */
+  pin: (item: { key: string; text: string }, passage?: string) => void
   unpin: (pin: PinnedReply) => void
   /** Opens the list with this pin's label editor. */
   label: (pin: PinnedReply) => void
@@ -231,7 +232,15 @@ export function PinnedRepliesSheet({
                       <>
                         <button className="pinned-row-open" title={t('Opens the chat at this reply')} onClick={() => onOpen(pin)}>
                           {pin.label ? <strong>{pin.label}</strong> : null}
-                          <span className={pin.label ? 'meta' : undefined}>{pin.excerpt}</span>
+                          <span className={pin.label ? 'meta' : undefined}>
+                            {/* A passage reads as a quote of its reply. */}
+                            {pin.passage ? (
+                              <span className="pinned-passage-mark" aria-hidden="true">
+                                “
+                              </span>
+                            ) : null}
+                            {shownText(pin)}
+                          </span>
                         </button>
                         <button
                           className="link"

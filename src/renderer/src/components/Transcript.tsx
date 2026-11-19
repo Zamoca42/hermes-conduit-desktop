@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { mediaKind, splitReply } from '../state/media'
 import { PagePreview } from './PagePreview'
 import { baseName, type Attachment } from '../state/text'
@@ -22,7 +22,7 @@ import { callLength, withCalls, type ChatCall } from '../state/voiceCalls'
 import { followedUpKeys } from '../state/predictive'
 import { ConnectionCardView } from './ConnectionCardView'
 import { PinnedReplyBar, type PinControls } from './PinnedReplies'
-import { barOrder, pinFor, refreshed, resolved } from '../state/pinnedReplies'
+import { barOrder, pinFor, pinForPassage, pinnedWhole, refreshed, resolved } from '../state/pinnedReplies'
 import { delivery, inbound, teammateName } from '../state/teammateMessages'
 
 export interface MessageMenuItem {
@@ -119,6 +119,114 @@ export function revealMessage(container: HTMLElement | null, key: string | undef
   el.classList.remove('flash')
   void el.offsetWidth
   el.classList.add('flash')
+}
+
+/** What a passage search skips in a reply: its action row and notes, which aren't the reply's words. */
+const NOT_REPLY_TEXT = '.message-actions, .message-menu, .read-problem, .followed-up'
+
+/**
+ * The range of `passage` in a reply's drawn text, whitespace aside (the
+ * selection it was pinned from may have had line breaks between blocks
+ * that the text nodes don't), or null when the reply doesn't show it.
+ */
+export function passageRange(root: HTMLElement, passage: string): Range | null {
+  const target = passage.replace(/\s+/g, '')
+  if (!target) return null
+  const chars: string[] = []
+  const at: { node: Text; offset: number }[] = []
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: node => (node.parentElement?.closest(NOT_REPLY_TEXT) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)
+  })
+  for (let node = walker.nextNode() as Text | null; node; node = walker.nextNode() as Text | null) {
+    const text = node.data
+    for (let i = 0; i < text.length; i++) {
+      if (/\s/.test(text[i]!)) continue
+      chars.push(text[i]!)
+      at.push({ node, offset: i })
+    }
+  }
+  const index = chars.join('').indexOf(target)
+  if (index < 0) return null
+  const start = at[index]!
+  const end = at[index + target.length - 1]!
+  const range = document.createRange()
+  range.setStart(start.node, start.offset)
+  range.setEnd(end.node, end.offset + 1)
+  return range
+}
+
+const PASSAGE_HIGHLIGHT = 'pinned-passage'
+let passageTimer: ReturnType<typeof setTimeout> | null = null
+
+/**
+ * Scrolls to a pinned passage in its reply and marks it for a moment, as
+ * the phone flashes it; a reply that no longer shows the passage gets the
+ * whole reply's flash.
+ */
+export function revealPassage(container: HTMLElement | null, key: string | undefined, passage: string) {
+  if (!container || !key) return
+  const el = container.querySelector<HTMLElement>(`[data-key="${CSS.escape(key)}"]`)
+  const range = el ? passageRange(el, passage) : null
+  if (!range) return revealMessage(container, key)
+  const box = range.getBoundingClientRect()
+  const frame = container.getBoundingClientRect()
+  container.scrollTo({ top: container.scrollTop + box.top - frame.top - frame.height / 2 + box.height / 2, behavior: 'smooth' })
+  const highlights = (CSS as unknown as { highlights?: Map<string, unknown> }).highlights
+  const Mark = (window as unknown as { Highlight?: new (...ranges: Range[]) => unknown }).Highlight
+  if (!highlights || !Mark) return
+  highlights.set(PASSAGE_HIGHLIGHT, new Mark(range))
+  if (passageTimer) clearTimeout(passageTimer)
+  passageTimer = setTimeout(() => highlights.delete(PASSAGE_HIGHLIGHT), 2400)
+}
+
+/** A reply's selection: its text and the row it's in, when it lies within one finished reply. */
+function replySelection(): { key: string; text: string } | null {
+  const selection = window.getSelection()
+  const text = selection?.toString() ?? ''
+  if (!selection || selection.rangeCount === 0 || !text.trim()) return null
+  const range = selection.getRangeAt(0)
+  const replyOf = (node: Node) => (node instanceof Element ? node : node.parentElement)?.closest<HTMLElement>('.assistant[data-key]')
+  const start = replyOf(range.startContainer)
+  if (!start || start !== replyOf(range.endContainer) || !start.dataset.key) return null
+  return { key: start.dataset.key, text }
+}
+
+/** The menu for text selected in a reply (right-click): Copy, Quote and Pin, as the phone's selection menu. */
+function SelectionMenu({ at, items, onClose }: { at: { x: number; y: number }; items: MessageMenuItem[]; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [place, setPlace] = useState(at)
+  useLayoutEffect(() => {
+    const box = ref.current?.getBoundingClientRect()
+    if (!box) return
+    setPlace({ x: Math.max(8, Math.min(at.x, window.innerWidth - box.width - 8)), y: Math.max(8, Math.min(at.y, window.innerHeight - box.height - 8)) })
+  }, [at])
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('mousedown', onClose)
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('blur', onClose)
+    return () => {
+      window.removeEventListener('mousedown', onClose)
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('blur', onClose)
+    }
+  }, [onClose])
+  return (
+    <div ref={ref} className="host-menu message-menu selection-menu" role="menu" style={{ left: place.x, top: place.y }} onMouseDown={e => e.stopPropagation()}>
+      {items.map(item => (
+        <button
+          key={item.label}
+          role="menuitem"
+          onClick={() => {
+            onClose()
+            item.onSelect()
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  )
 }
 
 /** Words /undo gave back, for the draft: a message that replied to another gets its "Replying to" chip back. */
@@ -809,7 +917,7 @@ export function Transcript({
   // Pins: which reply each shows, the bar's order, and the row ids replies pinned as they arrived took.
   const pinList = pins?.list
   const pinKeys = useMemo(() => (pinList?.length ? resolved(pinList, state.items) : new Map<string, string>()), [pinList, state.items])
-  const pinnedKeys = useMemo(() => new Set(pinKeys.values()), [pinKeys])
+  const pinnedKeys = useMemo(() => (pinList?.length ? pinnedWhole(pinList, state.items) : new Set<string>()), [pinList, state.items])
   const barPins = useMemo(() => (pinList?.length ? barOrder(pinList, state.items) : []), [pinList, state.items])
   const refreshPins = pins?.refresh
   useEffect(() => {
@@ -817,9 +925,10 @@ export function Transcript({
     const next = refreshed(pinList, state.items)
     if (next) refreshPins?.(next)
   }, [pinList, state.items, state.running, refreshPins])
-  const jumpToPin = (pin: { id: string }) => {
+  const jumpToPin = (pin: { id: string; passage?: string }) => {
     pinned.current = false
-    revealMessage(scroller.current, pinKeys.get(pin.id))
+    if (pin.passage) revealPassage(scroller.current, pinKeys.get(pin.id), pin.passage)
+    else revealMessage(scroller.current, pinKeys.get(pin.id))
   }
   // A pin opened from the list scrolls to its reply once the chat has it.
   const reveal = pins?.reveal
@@ -829,7 +938,8 @@ export function Transcript({
     const key = pinKeys.get(reveal.id)
     if (!key) return
     pinned.current = false
-    requestAnimationFrame(() => revealMessage(scroller.current, key))
+    const passage = reveal.passage
+    requestAnimationFrame(() => (passage ? revealPassage(scroller.current, key, passage) : revealMessage(scroller.current, key)))
     onRevealed?.()
   }, [reveal, pinKeys, loading, onRevealed])
 
@@ -862,10 +972,37 @@ export function Transcript({
     else pins.pin(item)
   }
 
+  // Right-click on text selected in a finished reply: Copy, Quote, and Pin or Unpin for the passage.
+  const [selectionMenu, setSelectionMenu] = useState<{ x: number; y: number; key: string; text: string } | null>(null)
+  const closeSelectionMenu = useCallback(() => setSelectionMenu(null), [])
+  const onContextMenu = (e: React.MouseEvent) => {
+    const selected = replySelection()
+    const item = selected && state.items.find(i => i.key === selected.key && i.kind === 'assistant')
+    if (!selected || !item || item.kind !== 'assistant' || item.streaming) return
+    e.preventDefault()
+    setSelectionMenu({ x: e.clientX, y: e.clientY, key: selected.key, text: selected.text })
+  }
+  const selectionItems = (menu: { key: string; text: string }): MessageMenuItem[] => {
+    const item = state.items.find(i => i.key === menu.key)
+    const reply = item && item.kind === 'assistant' ? { kind: 'assistant', key: item.key, text: item.text } : null
+    const pinnedPassage = pins && reply ? pinForPassage(menu.text, reply, pins.list, state.items) : undefined
+    return [
+      { label: t('Copy'), onSelect: () => void navigator.clipboard.writeText(menu.text) },
+      ...(onQuote ? [{ label: t('Quote'), onSelect: () => onQuote(quoteRequest({ reply: { author, text: menu.text } })) }] : []),
+      ...(pins && reply
+        ? [
+            pinnedPassage
+              ? { label: t('Unpin'), onSelect: () => pins.unpin(pinnedPassage) }
+              : { label: t('Pin'), onSelect: () => pins.pin({ key: reply.key, text: reply.text }, menu.text) }
+          ]
+        : [])
+    ]
+  }
+
   return (
     <PictureProfile.Provider value={profile}>
       {pins && barPins.length ? <PinnedReplyBar pins={barPins} jump={jumpToPin} onUnpin={pins.unpin} onLabel={pins.label} onShowAll={pins.showAll} /> : null}
-      <div className="transcript" ref={scroller} aria-live="polite">
+      <div className="transcript" ref={scroller} aria-live="polite" onContextMenu={onContextMenu}>
         <div className="transcript-inner">
           {loading ? <div className="notice">{t('Loading…')}</div> : null}
           {error ? <div className="notice error">{error}</div> : null}
@@ -903,6 +1040,7 @@ export function Transcript({
           ) : null}
         </div>
       </div>
+      {selectionMenu ? <SelectionMenu at={selectionMenu} items={selectionItems(selectionMenu)} onClose={closeSelectionMenu} /> : null}
     </PictureProfile.Provider>
   )
 }

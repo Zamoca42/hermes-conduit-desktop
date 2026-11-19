@@ -9192,3 +9192,21 @@ button.secondary.danger {
   color: #e0a91b;
   font-size: 11px;
 }
+
+/* Right-click on text selected in a reply: Copy, Quote, Pin. */
+.selection-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* A pinned passage, marked for a moment when the bar or the list goes to it. */
+::highlight(pinned-passage) {
+  background-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.pinned-passage-mark {
+  margin-right: 4px;
+  color: var(--accent);
+  font-weight: 600;
+}
