@@ -5,6 +5,7 @@
  * (`session.context_breakdown`), and the chat's tokens and cost from the
  * Conduit plugin's `/sessions/usage` (plugin 0.177.34+).
  */
+import { dashboardProfilePath } from './dashboardProfile'
 
 export interface ContextWindow {
   used: number
@@ -93,7 +94,7 @@ export const SESSION_USAGE_PATH = '/api/plugins/conduit_push/sessions/usage'
 
 export function sessionUsagePath(sessionId: string, profile?: string | null): string {
   const base = `${SESSION_USAGE_PATH}?session_id=${encodeURIComponent(sessionId)}`
-  return profile && profile !== 'default' ? `${base}&profile=${encodeURIComponent(profile)}` : base
+  return dashboardProfilePath(base, profile)
 }
 
 export function parseSessionUsage(raw: unknown): SessionUsage {

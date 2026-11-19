@@ -35,6 +35,6 @@ describe('the Context panel', () => {
 
   it('names a non-default profile on the usage route', () => {
     expect(sessionUsagePath('abc', 'default')).toBe('/api/plugins/conduit_push/sessions/usage?session_id=abc')
-    expect(sessionUsagePath('a b', 'work')).toBe('/api/plugins/conduit_push/sessions/usage?session_id=a%20b&profile=work')
+    expect(sessionUsagePath('a b', 'work')).toBe('/api/plugins/conduit_push/sessions/usage?session_id=a%20b&conduit_profile=work')
   })
 })

@@ -76,6 +76,7 @@ import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
+import { dashboardProfilePath, dashboardProfileQuery } from '../state/dashboardProfile'
 
 interface Props {
   profile?: string
@@ -739,7 +740,7 @@ export function LocalLiveCall({
         context.current = ctx
         if (localLiveAgent()) {
           // Agent mode when the host has a fast model; without one, Hermes answers each turn.
-          const status = await gateway.http('GET', withProfile(STATUS_PATH, profile), undefined, 30_000).catch(() => null)
+          const status = await gateway.http('GET', dashboardProfilePath(STATUS_PATH, profile), undefined, 30_000).catch(() => null)
           if (frontModel(status)?.available) {
             const persona = localLivePersona() ? await gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : ''
             const turns = live.current.items.flatMap((item): { role: 'user' | 'assistant'; text: string }[] =>
@@ -758,7 +759,7 @@ export function LocalLiveCall({
           if (ended.current) return
         }
         trace.current.step('Opening the socket')
-        const opened = await window.conduit.liveOpen(SOCKET_PATH, profile && profile !== 'default' ? { profile } : {})
+        const opened = await window.conduit.liveOpen(SOCKET_PATH, dashboardProfileQuery(profile))
         if (!opened.ok) trace.current.step('The socket did not open')
         if (!opened.ok) return fail(/\b404\b/.test(opened.error) ? PLUGIN_MISSING() : t('Could not open the Local Live connection.'))
         if (ended.current) return window.conduit.liveClose(opened.id)
