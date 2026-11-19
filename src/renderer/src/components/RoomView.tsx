@@ -20,7 +20,7 @@ import { RoomSettings } from "./RoomSettings";
 import { Fragment } from "react";
 import { useRoom, type RoomApprovalAnswer } from "../state/useGroups";
 import { useRoomCopy } from "../state/useRoomCopies";
-import { approvalLine, copyHost, copyLine, copyReadOnly, isOver, postRow, takesPosts, type CopyApproval, type RoomCopy } from "../state/roomCopies";
+import { approvalLine, copyHost, copyLine, copyReadOnly, isOver, leaveMessage, outLine, postRow, takesPosts, type CopyApproval, type RoomCopy } from "../state/roomCopies";
 import { BotAvatar, RoomFaces } from "./BotsHome";
 import { Composer } from "./Composer";
 import { MessageActions, QuotedCard, Reply, clock, quoteRequest, revealMessage } from "./Transcript";
@@ -56,6 +56,8 @@ interface Props {
   copyApprovals?: CopyApproval[];
   copyAnswers?: Record<string, RoomApprovalAnswer>;
   onAnswerCopyApproval?: (approval: CopyApproval, choice: "once" | "deny") => void;
+  /** Takes all your agents out of the copy, when the plugin can and they're still in. */
+  onLeaveCopy?: () => Promise<"left" | "sending">;
 }
 
 const noRefresh = async () => undefined;
@@ -165,7 +167,7 @@ function FileChips({ files, roomId, eventId }: { files: ShownFile[]; roomId: str
 }
 
 /** A group chat: the user's messages and each bot's under its face and name, read from the room's log. */
-export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval }: Props) {
+export function RoomView({ room, bots, connected, canStop, canAttach, canEditSettings, canContinueDiscussions, canApprove, copy, onRefreshCopies, onDeleteCopy, canPostInCopy = false, copyApprovals = [], copyAnswers = {}, onAnswerCopyApproval, onLeaveCopy }: Props) {
   // A copy reads its log from this Hermes' plugin; a room this Hermes hosts, from the gateway.
   const hosted = useRoom(copy ? null : room, connected);
   const copied = useRoomCopy(copy ?? null, connected, onRefreshCopies ?? noRefresh);
@@ -176,6 +178,8 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
   const items = useMemo(() => roomItems(room, events, copy ? { host, you: copyYou } : undefined), [room, events, copy, host, copyYou]);
   const copyTakesPosts = !!copy && takesPosts(copy, canPostInCopy);
   const [deleting, setDeleting] = useState<"asking" | "deleting" | null>(null);
+  const [leaving, setLeaving] = useState<"asking" | "leaving" | null>(null);
+  const [leaveNote, setLeaveNote] = useState<{ text: string; error?: boolean } | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const botFor = (profile?: string) => bots.find((b) => b.name === profile);
   const memberBot = (memberId: string) => {
@@ -265,6 +269,20 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                 : `${names.length} bots`}
           </span>
         </div>
+        {copy && onLeaveCopy ? (
+          <button
+            className="chat-head-button"
+            title={t("Leave Room")}
+            aria-label={t("Leave Room")}
+            disabled={leaving === "leaving"}
+            onClick={() => {
+              setLeaveNote(null);
+              setLeaving("asking");
+            }}
+          >
+            <Icon name="leave" />
+          </button>
+        ) : null}
         {copy && onDeleteCopy && isOver(copy) ? (
           <button
             className="chat-head-button"
@@ -310,6 +328,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
                 {bot ? <BotAvatar bot={bot} size={16} /> : null}
                 <span className="room-pill-name">{name}</span>
                 {member.owner ? <span className="room-pill-owner">{member.owner}</span> : null}
+                {member.out ? <span className="room-pill-status">· {outLine(member.out)}</span> : null}
                 {member.memberId === lead ? (
                   <span className="room-pill-crown" title={t("Lead")} aria-label={t("Lead")}>
                     ♛
@@ -343,30 +362,6 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
         <div className="transcript-inner">
           {loading ? <div className="notice">{t('Loading…')}</div> : null}
           {error ? <div className="notice error">{error}</div> : null}
-          {deleting === "asking" || deleting === "deleting" ? (
-            <div className="notice">
-              <strong>{t("Delete this room?")}</strong>{" "}
-              {t("Your copy of it and your agents' chats for it are deleted from your Hermes. The others keep theirs.")}
-              <span className="notice-action">
-                <button
-                  className="ask-btn danger"
-                  disabled={deleting === "deleting"}
-                  onClick={() => {
-                    setDeleting("deleting");
-                    void onDeleteCopy?.()
-                      .catch((e) => setDeleteError(t("Could not delete this room: {reason}", { reason: e instanceof Error ? e.message : String(e) })))
-                      .finally(() => setDeleting(null));
-                  }}
-                >
-                  {t("Delete")}
-                </button>
-                <button className="ask-btn" disabled={deleting === "deleting"} onClick={() => setDeleting(null)}>
-                  {t("Cancel")}
-                </button>
-              </span>
-            </div>
-          ) : null}
-          {deleteError ? <div className="notice error">{deleteError}</div> : null}
           {copy ? (
             isOver(copy) ? <div className="notice">{`${copyHost(copy)} · ${copyLine(copy)}`}</div> : null
           ) : status.disbanded ? (
@@ -376,7 +371,7 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
             <div className="welcome">
               <h2>{room.name}</h2>
               <span>
-                {copy ? copyReadOnly(copy) : t('Everyone here reads what you send. Mention a bot with @ to ask just them.')}
+                {copy && !copyTakesPosts ? copyReadOnly(copy) : t('Everyone here reads what you send. Mention a bot with @ to ask just them.')}
               </span>
             </div>
           ) : null}
@@ -599,6 +594,58 @@ export function RoomView({ room, bots, connected, canStop, canAttach, canEditSet
             </div>
           ) : null}
         </div>
+      </div>
+      <div className="room-confirms">
+          {deleting === "asking" || deleting === "deleting" ? (
+            <div className="notice room-confirm">
+              <strong>{t("Delete this room?")}</strong>{" "}
+              {t("Your copy of it and your agents' chats for it are deleted from your Hermes. The others keep theirs.")}
+              <span className="notice-action">
+                <button
+                  className="ask-btn danger"
+                  disabled={deleting === "deleting"}
+                  onClick={() => {
+                    setDeleting("deleting");
+                    void onDeleteCopy?.()
+                      .catch((e) => setDeleteError(t("Could not delete this room: {reason}", { reason: e instanceof Error ? e.message : String(e) })))
+                      .finally(() => setDeleting(null));
+                  }}
+                >
+                  {t("Delete")}
+                </button>
+                <button className="ask-btn" disabled={deleting === "deleting"} onClick={() => setDeleting(null)}>
+                  {t("Cancel")}
+                </button>
+              </span>
+            </div>
+          ) : null}
+          {deleteError ? <div className="notice error">{deleteError}</div> : null}
+          {copy && (leaving === "asking" || leaving === "leaving") ? (
+            <div className="notice room-confirm">
+              <strong>{t("Leave this room?")}</strong> {leaveMessage(copy)}
+              <span className="notice-action">
+                <button
+                  className="ask-btn danger"
+                  disabled={leaving === "leaving"}
+                  onClick={() => {
+                    setLeaving("leaving");
+                    void onLeaveCopy?.()
+                      .then((kind) => setLeaveNote(kind === "sending" ? { text: t("Your Hermes is still sending this. The room shows it once it has.") } : null))
+                      .catch((e) =>
+                        setLeaveNote({ text: t("Could not leave this room: {reason}", { reason: e instanceof Error ? e.message : String(e) }), error: true }),
+                      )
+                      .finally(() => setLeaving(null));
+                  }}
+                >
+                  {t("Leave Room")}
+                </button>
+                <button className="ask-btn" disabled={leaving === "leaving"} onClick={() => setLeaving(null)}>
+                  {t("Cancel")}
+                </button>
+              </span>
+            </div>
+          ) : null}
+          {leaveNote ? <div className={`notice${leaveNote.error ? " error" : ""}`}>{leaveNote.text}</div> : null}
       </div>
       {copy && copyApprovals.length ? (
         <div className="room-approvals">

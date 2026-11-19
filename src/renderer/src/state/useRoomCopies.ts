@@ -5,6 +5,7 @@ import {
   ROOM_APPROVALS_CAPABILITY,
   ROOM_COPIES_CAPABILITY,
   ROOM_FORGET_CAPABILITY,
+  ROOM_LEAVE_CAPABILITY,
   ROOM_POSTS_CAPABILITY,
   copyStatus,
   isOver,
@@ -30,6 +31,7 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
   const canForget = served && capabilities.includes(ROOM_FORGET_CAPABILITY)
   const canPost = served && capabilities.includes(ROOM_POSTS_CAPABILITY)
   const canAnswer = capabilities.includes(ROOM_APPROVALS_CAPABILITY)
+  const canLeave = served && capabilities.includes(ROOM_LEAVE_CAPABILITY)
   const [copies, setCopies] = useState<RoomCopy[] | null>(null)
   const reads = useRef(0)
   const [approvals, setApprovals] = useState<CopyApproval[]>([])
@@ -118,12 +120,25 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
     [refreshApprovals]
   )
 
+  /** All your agents out of a copy; it stays, over for you, to delete when you like. */
+  const leave = useCallback(
+    async (copy: RoomCopy) => {
+      const outcome = await client.leave(copy, null)
+      reads.current++
+      await refresh()
+      return outcome.kind
+    },
+    [refresh]
+  )
+
   const shownApprovals = useMemo(() => approvals.filter(a => answers[a.id]?.state !== 'sent'), [approvals, answers])
 
   return {
     served,
     canForget,
     canPost,
+    canLeave,
+    leave,
     copies: served && copies ? copies : [],
     refresh,
     remove,

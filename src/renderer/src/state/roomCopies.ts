@@ -9,6 +9,7 @@
 import { t } from '../../../shared/i18n'
 import { logPage, type DriverStatus, type LogPage, type Room, type RoomApproval } from './groups'
 import { MAILBOX_TIMEOUT_MS, ROOMS_PATH, type Http } from './roomLinks'
+import { parseInvite, type RoomInvite } from './roomInvites'
 
 export const ROOM_COPIES_CAPABILITY = 'room-copies'
 /** `DELETE /rooms/copies` and `DELETE /rooms/sessions`: an ended copy can be deleted. */
@@ -24,6 +25,9 @@ export const ROOM_APPROVALS_CAPABILITY = 'room-approvals'
 export const APPROVALS_PATH = `${ROOMS_PATH}/approvals`
 /** The plugin answers within 30 s, its API server's wait. */
 export const APPROVAL_ANSWER_TIMEOUT_MS = 35_000
+/** Taking your agents out of a room someone else hosts: `POST /rooms/leave`. */
+export const ROOM_LEAVE_CAPABILITY = 'room-leave'
+export const LEAVE_PATH = `${ROOMS_PATH}/leave`
 /** room_copies.MAX_LOG_LIMIT. */
 export const MAX_COPY_LOG_LIMIT = 500
 
@@ -149,7 +153,8 @@ export function copyRoom(copy: RoomCopy): Room {
         profile: agent?.profile,
         handle: member.handle,
         displayName: member.displayName,
-        ...(agent ? {} : { peer: true, owner: member.owner ?? (host || undefined) })
+        ...(agent ? {} : { peer: true, owner: member.owner ?? (host || undefined) }),
+        ...(copy.out[member.memberId] ? { out: copy.out[member.memberId] } : {})
       }
     }),
     updatedAt: copy.updatedAt || undefined,
@@ -164,6 +169,24 @@ export function copyStatus(copy: RoomCopy): DriverStatus {
   const busy = [...new Set(copy.activity.map(a => a.memberId))]
   return { working: copy.working || busy.length > 0, busy, disbanded: isOver(copy), activity: copy.activity, approvals: [] }
 }
+
+/** Whether your agents, or you with Just me, can leave it. */
+export const canLeave = (copy: RoomCopy, served: boolean) => served && !isOver(copy) && (copy.yours.length > 0 || copy.justMe)
+
+/** What Leave asks before your agents leave. */
+export function leaveMessage(copy: RoomCopy): string {
+  const host = hostOf(copy)
+  if (copy.justMe)
+    return host
+      ? t('You stop getting this room, and {host} is told. Your copy of it stays until you delete it.', { host })
+      : t('You stop getting this room, and the host is told. Your copy of it stays until you delete it.')
+  return host
+    ? t('Your agents stop taking part, and {host} is told. Your copy of the room and their chats for it stay until you delete it.', { host })
+    : t('Your agents stop taking part, and the host is told. Your copy of the room and their chats for it stay until you delete it.')
+}
+
+/** A member's line in a room over Links once it's out. */
+export const outLine = (out: string) => (out === 'removed' ? t('Taken out') : t('Left the room'))
 
 /** Group chats' line under its name: who hosts it and how it stands. */
 export function copyLine(copy: RoomCopy): string {
@@ -372,6 +395,20 @@ export function roomCopiesClient(http: Http) {
     answer: async (approval: CopyApproval, choice: 'once' | 'deny'): Promise<void> => {
       const body = obj(await http('POST', `${APPROVALS_PATH}/answer`, { run_id: approval.runId, request_id: approval.requestId, choice }, APPROVAL_ANSWER_TIMEOUT_MS))
       if (body?.ok !== true) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+    },
+    /**
+     * Your agents of `profiles`, or all still in (null), out of the room.
+     * Answers its invite; a 504 is a leave still on its way, which may be made.
+     */
+    leave: async (copy: RoomCopy, profiles: string[] | null): Promise<{ kind: 'left'; invite: RoomInvite } | { kind: 'sending' }> => {
+      try {
+        const invite = parseInvite(obj(await http('POST', LEAVE_PATH, { link: copy.link, room_id: copy.roomId, agents: profiles }, MAILBOX_TIMEOUT_MS))?.invite)
+        if (!invite) throw new Error(t('The Conduit notifier plugin gave an unexpected answer. Update it on your Hermes host and try again.'))
+        return { kind: 'left', invite }
+      } catch (error) {
+        if ((error as { code?: unknown })?.code === 504) return { kind: 'sending' }
+        throw error
+      }
     },
     /** Deletes the copy. */
     forget: async (roomId: string): Promise<void> => {

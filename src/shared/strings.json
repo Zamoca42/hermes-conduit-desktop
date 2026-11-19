@@ -5894,6 +5894,21 @@
     "zh-Hans": "无法加入：{error}",
     "zh-Hant": "無法加入：{error}"
   },
+  "Could not leave this room: {reason}": {
+    "de": "Raum konnte nicht verlassen werden: {reason}",
+    "es": "No se pudo salir de esta sala: {reason}",
+    "fr": "Impossible de quitter ce salon : {reason}",
+    "id": "Tidak dapat keluar dari ruang ini: {reason}",
+    "it": "Impossibile uscire da questa stanza: {reason}",
+    "ja": "このグループから退出できませんでした: {reason}",
+    "ko": "이 방에서 나가지 못했어요: {reason}",
+    "pl": "Nie udało się opuścić tego pokoju: {reason}",
+    "pt-BR": "Não foi possível sair desta sala: {reason}",
+    "ru": "Не удалось выйти из этой комнаты: {reason}",
+    "tr": "Bu odadan çıkılamadı: {reason}",
+    "zh-Hans": "无法退出此群聊：{reason}",
+    "zh-Hant": "無法退出此群組聊天：{reason}"
+  },
   "Could not link: {error}": {
     "de": "Verknüpfen nicht möglich: {error}",
     "es": "No se pudo vincular: {error}",
@@ -15134,6 +15149,36 @@
     "zh-Hans": "不要干预",
     "zh-Hant": "不要干預"
   },
+  "Leave Room": {
+    "de": "Raum verlassen",
+    "es": "Salir de la sala",
+    "fr": "Quitter le salon",
+    "id": "Keluar dari Ruang",
+    "it": "Esci dalla stanza",
+    "ja": "グループから退出",
+    "ko": "방 나가기",
+    "pl": "Opuść pokój",
+    "pt-BR": "Sair da sala",
+    "ru": "Выйти из комнаты",
+    "tr": "Odadan Çık",
+    "zh-Hans": "退出群聊",
+    "zh-Hant": "退出群組聊天"
+  },
+  "Leave this room?": {
+    "de": "Diesen Raum verlassen?",
+    "es": "¿Salir de esta sala?",
+    "fr": "Quitter ce salon ?",
+    "id": "Keluar dari ruang ini?",
+    "it": "Uscire da questa stanza?",
+    "ja": "このグループから退出しますか？",
+    "ko": "이 방에서 나갈까요?",
+    "pl": "Opuścić ten pokój?",
+    "pt-BR": "Sair desta sala?",
+    "ru": "Выйти из этой комнаты?",
+    "tr": "Bu odadan çıkılsın mı?",
+    "zh-Hans": "要退出此群聊吗？",
+    "zh-Hant": "要退出此群組聊天嗎？"
+  },
   "Left out of the look ahead": {
     "de": "In der Vorausschau ausgelassen",
     "es": "Fuera de la previsión",
@@ -15163,6 +15208,21 @@
     "tr": "Rapora girmeyenler",
     "zh-Hans": "未写进报告",
     "zh-Hant": "未寫進報告"
+  },
+  "Left the room": {
+    "de": "Hat den Raum verlassen",
+    "es": "Salió de la sala",
+    "fr": "A quitté le salon",
+    "id": "Keluar dari ruang",
+    "it": "È uscito dalla stanza",
+    "ja": "グループから退出しました",
+    "ko": "방에서 나감",
+    "pl": "Opuścił pokój",
+    "pt-BR": "Saiu da sala",
+    "ru": "Вышел из комнаты",
+    "tr": "Odadan çıktı",
+    "zh-Hans": "已退出群聊",
+    "zh-Hant": "已退出群組聊天"
   },
   "Let Hermes change settings": {
     "de": "Hermes Einstellungen ändern lassen",
@@ -28694,6 +28754,21 @@
     "zh-Hans": "移出 {name}",
     "zh-Hant": "移出 {name}"
   },
+  "Taken out": {
+    "de": "Entfernt",
+    "es": "Sacado",
+    "fr": "Retiré",
+    "id": "Dikeluarkan",
+    "it": "Tolto",
+    "ja": "外されました",
+    "ko": "내보내짐",
+    "pl": "Usunięty",
+    "pt-BR": "Retirado",
+    "ru": "Убран",
+    "tr": "Çıkarıldı",
+    "zh-Hans": "已被移出",
+    "zh-Hant": "已被移出"
+  },
   "Taking chats over from Hermes Desktop": {
     "de": "Chats von Hermes Desktop übernehmen",
     "es": "Tomar el control de chats de Hermes Desktop",
@@ -35954,6 +36029,36 @@
     "zh-Hans": "你发送的",
     "zh-Hant": "你傳送的"
   },
+  "You stop getting this room, and the host is told. Your copy of it stays until you delete it.": {
+    "de": "Du erhältst diesen Raum nicht mehr, und der Gastgeber wird informiert. Deine Kopie bleibt, bis du sie löschst.",
+    "es": "Dejas de recibir esta sala y se avisa al anfitrión. Tu copia se queda hasta que la elimines.",
+    "fr": "Vous ne recevez plus ce salon, et l’hôte en est informé. Votre copie reste jusqu’à ce que vous la supprimiez.",
+    "id": "Kamu berhenti menerima ruang ini, dan tuan rumah diberi tahu. Salinanmu tetap ada sampai kamu menghapusnya.",
+    "it": "Non ricevi più questa stanza e l’host viene avvisato. La tua copia resta finché non la elimini.",
+    "ja": "このルームは届かなくなり、ホストに通知されます。コピーは削除するまで残ります。",
+    "ko": "이 방을 더 이상 받지 않으며 호스트에게 알립니다. 사본은 삭제할 때까지 남습니다.",
+    "pl": "Przestajesz otrzymywać ten pokój, a gospodarz zostaje powiadomiony. Twoja kopia zostaje, dopóki jej nie usuniesz.",
+    "pt-BR": "Você deixa de receber esta sala, e o anfitrião é avisado. Sua cópia fica até você excluí-la.",
+    "ru": "Эта комната больше не будет к вам приходить, и хозяин узнает об этом. Ваша копия останется, пока вы её не удалите.",
+    "tr": "Bu oda artık sana gelmez ve ev sahibi bilgilendirilir. Kopyan sen silene kadar kalır.",
+    "zh-Hans": "你将不再收到这个房间，主持人会收到通知。你的副本会保留到你删除为止。",
+    "zh-Hant": "你將不再收到這個房間，主持人會收到通知。你的副本會保留到你刪除為止。"
+  },
+  "You stop getting this room, and {host} is told. Your copy of it stays until you delete it.": {
+    "de": "Du erhältst diesen Raum nicht mehr, und {host} wird informiert. Deine Kopie bleibt, bis du sie löschst.",
+    "es": "Dejas de recibir esta sala y se avisa a {host}. Tu copia se queda hasta que la elimines.",
+    "fr": "Vous ne recevez plus ce salon, et {host} en est informé. Votre copie reste jusqu’à ce que vous la supprimiez.",
+    "id": "Kamu berhenti menerima ruang ini, dan {host} diberi tahu. Salinanmu tetap ada sampai kamu menghapusnya.",
+    "it": "Non ricevi più questa stanza e {host} viene avvisato. La tua copia resta finché non la elimini.",
+    "ja": "このルームは届かなくなり、{host} に通知されます。コピーは削除するまで残ります。",
+    "ko": "이 방을 더 이상 받지 않으며 {host} 님에게 알립니다. 사본은 삭제할 때까지 남습니다.",
+    "pl": "Przestajesz otrzymywać ten pokój, a {host} zostaje powiadomiony. Twoja kopia zostaje, dopóki jej nie usuniesz.",
+    "pt-BR": "Você deixa de receber esta sala, e {host} é avisado. Sua cópia fica até você excluí-la.",
+    "ru": "Эта комната больше не будет к вам приходить, и {host} узнает об этом. Ваша копия останется, пока вы её не удалите.",
+    "tr": "Bu oda artık sana gelmez ve {host} bilgilendirilir. Kopyan sen silene kadar kalır.",
+    "zh-Hans": "你将不再收到这个房间，{host} 会收到通知。你的副本会保留到你删除为止。",
+    "zh-Hant": "你將不再收到這個房間，{host} 會收到通知。你的副本會保留到你刪除為止。"
+  },
   "You tapped Do it {when} but didn't send it.": {
     "de": "Du hast {when} auf „Erledigen“ getippt, aber nichts gesendet.",
     "es": "Tocaste «Hacerlo» {when}, pero no lo enviaste.",
@@ -36074,6 +36179,21 @@
     "zh-Hans": "你的 Hermes 已与 {name} 关联。",
     "zh-Hant": "你的 Hermes 已與 {name} 連結。"
   },
+  "Your Hermes is still sending this. The room shows it once it has.": {
+    "de": "Dein Hermes sendet das noch. Der Raum zeigt es, sobald es angekommen ist.",
+    "es": "Tu Hermes aún lo está enviando. La sala lo mostrará cuando termine.",
+    "fr": "Votre Hermes est encore en train de l’envoyer. Le salon l’affichera une fois fait.",
+    "id": "Hermes Anda masih mengirimkannya. Ruang akan menampilkannya setelah selesai.",
+    "it": "Il tuo Hermes lo sta ancora inviando. La stanza lo mostrerà appena fatto.",
+    "ja": "Hermes がまだ送信しています。完了するとグループに表示されます。",
+    "ko": "Hermes가 아직 보내는 중이에요. 완료되면 방에 표시돼요.",
+    "pl": "Twój Hermes wciąż to wysyła. Pokój pokaże to, gdy skończy.",
+    "pt-BR": "Seu Hermes ainda está enviando isso. A sala mostra quando terminar.",
+    "ru": "Ваш Hermes ещё отправляет это. Комната покажет, когда он закончит.",
+    "tr": "Hermes'iniz bunu hâlâ gönderiyor. Bittiğinde oda gösterir.",
+    "zh-Hans": "你的 Hermes 仍在发送。完成后群聊中会显示。",
+    "zh-Hant": "你的 Hermes 仍在傳送。完成後群組聊天中會顯示。"
+  },
   "Your Hermes is still sending your answer. The invite shows it once it has.": {
     "de": "Dein Hermes sendet deine Antwort noch. Die Einladung zeigt sie, sobald das erledigt ist.",
     "es": "Tu Hermes aún está enviando tu respuesta. La invitación la mostrará cuando termine.",
@@ -36163,6 +36283,36 @@
     "tr": "Ajanlarınız ayrıldı",
     "zh-Hans": "你的智能体已离开",
     "zh-Hant": "你的代理程式已離開"
+  },
+  "Your agents stop taking part, and the host is told. Your copy of the room and their chats for it stay until you delete it.": {
+    "de": "Deine Agenten nehmen nicht mehr teil, und der Gastgeber wird informiert. Deine Kopie des Raums und ihre Chats dafür bleiben, bis du sie löschst.",
+    "es": "Tus agentes dejan de participar y se avisa al anfitrión. Tu copia de la sala y sus chats en ella se quedan hasta que la elimines.",
+    "fr": "Vos agents ne participent plus, et l’hôte est prévenu. Votre copie du salon et leurs discussions restent jusqu’à ce que vous la supprimiez.",
+    "id": "Agen Anda berhenti ikut serta, dan tuan rumah diberi tahu. Salinan ruang Anda dan chat mereka di sana tetap ada sampai Anda menghapusnya.",
+    "it": "I tuoi agenti smettono di partecipare e l’host viene avvisato. La tua copia della stanza e le loro chat restano finché non la elimini.",
+    "ja": "あなたのエージェントは参加をやめ、ホストに通知されます。グループのコピーとその中のチャットは、削除するまで残ります。",
+    "ko": "내 에이전트가 더 이상 참여하지 않으며, 방장에게 알려요. 방의 사본과 그 안의 채팅은 삭제할 때까지 남아 있어요.",
+    "pl": "Twoje agenty przestają brać udział, a gospodarz zostaje powiadomiony. Twoja kopia pokoju i ich czaty w nim zostają, dopóki jej nie usuniesz.",
+    "pt-BR": "Seus agentes deixam de participar, e o anfitrião é avisado. Sua cópia da sala e as conversas deles nela ficam até você apagá-la.",
+    "ru": "Ваши агенты больше не участвуют, и хозяин получит уведомление. Ваша копия комнаты и их чаты в ней останутся, пока вы её не удалите.",
+    "tr": "Ajanlarınız artık katılmıyor ve odayı açana bildiriliyor. Oda kopyanız ve içindeki sohbetleri, siz silene kadar kalır.",
+    "zh-Hans": "你的智能体不再参与，并会通知主持人。你的群聊副本及其中的聊天会保留，直到你删除它。",
+    "zh-Hant": "你的代理程式不再參與，並會通知主持人。你的群組聊天副本及其中的聊天會保留，直到你刪除它。"
+  },
+  "Your agents stop taking part, and {host} is told. Your copy of the room and their chats for it stay until you delete it.": {
+    "de": "Deine Agenten nehmen nicht mehr teil, und {host} wird informiert. Deine Kopie des Raums und ihre Chats dafür bleiben, bis du sie löschst.",
+    "es": "Tus agentes dejan de participar y se avisa a {host}. Tu copia de la sala y sus chats en ella se quedan hasta que la elimines.",
+    "fr": "Vos agents ne participent plus, et {host} est prévenu. Votre copie du salon et leurs discussions restent jusqu’à ce que vous la supprimiez.",
+    "id": "Agen Anda berhenti ikut serta, dan {host} diberi tahu. Salinan ruang Anda dan chat mereka di sana tetap ada sampai Anda menghapusnya.",
+    "it": "I tuoi agenti smettono di partecipare e {host} viene avvisato. La tua copia della stanza e le loro chat restano finché non la elimini.",
+    "ja": "あなたのエージェントは参加をやめ、{host} さんに通知されます。グループのコピーとその中のチャットは、削除するまで残ります。",
+    "ko": "내 에이전트가 더 이상 참여하지 않으며, {host} 님에게 알려요. 방의 사본과 그 안의 채팅은 삭제할 때까지 남아 있어요.",
+    "pl": "Twoje agenty przestają brać udział, a {host} zostaje powiadomiony. Twoja kopia pokoju i ich czaty w nim zostają, dopóki jej nie usuniesz.",
+    "pt-BR": "Seus agentes deixam de participar, e {host} é avisado. Sua cópia da sala e as conversas deles nela ficam até você apagá-la.",
+    "ru": "Ваши агенты больше не участвуют, и {host} получит уведомление. Ваша копия комнаты и их чаты в ней останутся, пока вы её не удалите.",
+    "tr": "Ajanlarınız artık katılmıyor ve {host} adlı kişiye bildiriliyor. Oda kopyanız ve içindeki sohbetleri, siz silene kadar kalır.",
+    "zh-Hans": "你的智能体不再参与，并会通知 {host}。你的群聊副本及其中的聊天会保留，直到你删除它。",
+    "zh-Hant": "你的代理程式不再參與，並會通知 {host}。你的群組聊天副本及其中的聊天會保留，直到你刪除它。"
   },
   "Your agents were taken out": {
     "de": "Deine Agenten wurden entfernt",

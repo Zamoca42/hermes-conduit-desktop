@@ -9668,3 +9668,16 @@ button.secondary.danger {
   color: var(--accent);
   font-weight: 600;
 }
+.room-confirms:empty {
+  display: none;
+}
+.room-confirms {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 16px 6px;
+}
+.room-confirms .room-confirm,
+.room-confirms .notice {
+  margin: 0;
+}

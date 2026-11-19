@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { eventFromWire, roomItems, unnamedPost } from '../src/renderer/src/state/groups'
-import { approvalLine, copyApprovals, copyLine, copyRoom, copyStatus, isOver, parseCopies, parseCopyApproval, parsePost, postRow, roomCopiesClient, takesPosts } from '../src/renderer/src/state/roomCopies'
+import { approvalLine, canLeave, copyApprovals, leaveMessage, copyLine, copyRoom, copyStatus, isOver, parseCopies, parseCopyApproval, parsePost, postRow, roomCopiesClient, takesPosts } from '../src/renderer/src/state/roomCopies'
 
 const wire = {
   room_id: 'conduit-1',
@@ -154,5 +154,26 @@ describe('rooms other people host', () => {
     await client.answer(approval, 'deny')
     expect(await client.approvals()).toEqual([])
     expect(calls[0]).toEqual(['POST', '/api/plugins/conduit_push/rooms/approvals/answer', { run_id: 'run1', request_id: 'req1', choice: 'deny' }, 35000])
+  })
+
+  it('leaves a copy: everyone of yours, over the mailbox, a 504 still on its way', async () => {
+    const copy = parseCopies({ ok: true, copies: [{ ...wire, out: { default: 'removed' } }] })![0]!
+    expect(canLeave(copy, true)).toBe(true)
+    expect(canLeave(copy, false)).toBe(false)
+    expect(canLeave({ ...copy, status: 'left' }, true)).toBe(false)
+    expect(leaveMessage(copy)).toContain('Ana is told')
+    expect(copyRoom(copy).members[0]!.out).toBe('removed')
+    const invite = { link: 'L1', room_id: 'conduit-1', name: 'Trip planning', status: 'left', joined: [], profiles: [], choices: {} }
+    const calls: unknown[] = []
+    const client = roomCopiesClient(async (method, path, body, timeoutMs) => {
+      calls.push([method, path, body, timeoutMs])
+      return { ok: true, invite } as never
+    })
+    expect((await client.leave(copy, null)).kind).toBe('left')
+    expect(calls[0]).toEqual(['POST', '/api/plugins/conduit_push/rooms/leave', { link: 'L1', room_id: 'conduit-1', agents: null }, 55000])
+    const slow = roomCopiesClient(async () => {
+      throw Object.assign(new Error('timeout'), { code: 504 })
+    })
+    expect(await slow.leave(copy, null)).toEqual({ kind: 'sending' })
   })
 })

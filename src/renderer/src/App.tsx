@@ -87,7 +87,7 @@ import { MultiplayerPage } from './components/MultiplayerPage'
 import { RoomInviteCard } from './components/RoomInviteCard'
 import { useRoomInvites } from './state/useRoomInvites'
 import { useRoomCopies } from './state/useRoomCopies'
-import { copyApprovals, copyRoom } from './state/roomCopies'
+import { canLeave as canLeaveCopy, copyApprovals, copyRoom } from './state/roomCopies'
 import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
@@ -1751,6 +1751,15 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
             copyApprovals={shownCopyApprovals}
             copyAnswers={roomCopies.answers}
             onAnswerCopyApproval={(approval, choice) => void roomCopies.answer(approval, choice)}
+            onLeaveCopy={
+              canLeaveCopy(shownCopy, roomCopies.canLeave)
+                ? async () => {
+                    const kind = await roomCopies.leave(shownCopy)
+                    void roomInvites.refresh()
+                    return kind
+                  }
+                : undefined
+            }
             onDeleteCopy={
               roomCopies.canForget
                 ? async () => {
