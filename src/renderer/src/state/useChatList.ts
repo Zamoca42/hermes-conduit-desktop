@@ -14,6 +14,14 @@ export function useChatList(connected: boolean) {
   const generation = useRef(0)
 
   const rowsRef = useRef<ChatRow[] | null>(null)
+  /**
+   * Updating… (issue 2706): rows read before the connection dropped may be
+   * out of date, so the read after it says so until its first page lands.
+   * The list's own refreshes over a current list say nothing; a failed read
+   * stops saying it and leaves the rows stale for the next one.
+   */
+  const stale = useRef(false)
+  const [updating, setUpdating] = useState(false)
 
   /**
    * The first page at once, then (on a full load) the rest page by page
@@ -22,6 +30,7 @@ export function useChatList(connected: boolean) {
   const load = useCallback(async (full = true) => {
     const ticket = ++generation.current
     let shown = false
+    setUpdating(stale.current && !!rowsRef.current?.length)
     try {
       let body: unknown
       if (dashboardList.current) {
@@ -40,6 +49,8 @@ export function useChatList(connected: boolean) {
       rowsRef.current = all
       setRows(all)
       setError(null)
+      stale.current = false
+      setUpdating(false)
       shown = true
       if (!dashboardList.current) return
       void readArchived(ticket, full)
@@ -54,6 +65,7 @@ export function useChatList(connected: boolean) {
     } catch (e) {
       // A later page that fails leaves the chats already shown; the next refresh tries again.
       if (ticket !== generation.current || shown) return
+      setUpdating(false)
       setError(e instanceof Error ? e.message : String(e))
     }
   }, [])
@@ -83,7 +95,13 @@ export function useChatList(connected: boolean) {
   }, [load])
 
   useEffect(() => {
-    if (!connected) return
+    if (!connected) {
+      // What's listed now predates the drop: the read once it's back says Updating….
+      if (rowsRef.current) stale.current = true
+      generation.current++
+      setUpdating(false)
+      return
+    }
     void load()
     const off = window.conduit.onEvent(event => {
       if (event.type === 'sessions.changed' || event.type === 'session.title' || event.type === 'message.complete') {
@@ -105,5 +123,5 @@ export function useChatList(connected: boolean) {
     setRows(next)
   }, [])
 
-  return { rows, archived, error, refresh: refreshSoon, patchRow }
+  return { rows, archived, error, updating, refresh: refreshSoon, patchRow }
 }

@@ -6,6 +6,7 @@ import type { Bot } from '../state/bots'
 import { BotAvatar } from './BotsHome'
 import { t } from '@shared/i18n'
 import { Icon } from './icons'
+import { UpdatingCapsule } from './UpdatingCapsule'
 import { filterRows, isStarred, isUnread, type ChatFilter, type ChatMarks } from '../state/chatMarks'
 import { sourceName, sourcesIn, type ChatSource } from '../state/chatSources'
 import { contentRows, useContentSearch } from '../state/contentSearch'
@@ -32,6 +33,8 @@ interface ListSection {
 interface Props {
   rows: ChatRow[] | null
   error: string | null
+  /** Rows that may be out of date are being read again: the Updating… capsule. */
+  updating?: boolean
   selectedId: string | null
   runningIds: ReadonlySet<string>
   /** Chats Hermes waits on the user in (an approval or a question): Needs approval on the row. */
@@ -82,6 +85,7 @@ const sameProfile = (row: ChatRow, name: string) => (row.profile ?? 'default').t
 
 export function ChatList({
   rows,
+  updating,
   error,
   selectedId,
   runningIds,
@@ -475,6 +479,7 @@ export function ChatList({
           <div className="empty">{t('No matching conversations')}</div>
         ) : null}
       </div>
+      <UpdatingCapsule shown={!!updating && sections.length > 0} />
       {menu ? (
         <div
           className="host-menu row-menu"
