@@ -1178,6 +1178,7 @@ function Shell({ status, onAddHost }: { status: ConnectionStatus; onAddHost: () 
                     author={botTitle}
                     onQuote={setQuote}
                     onCommand={text => void onSend(text)}
+                    teammates={glowBots}
                     display={chatDisplay}
                     sessionId={chat.liveId ?? undefined}
                     calls={chatCallList}

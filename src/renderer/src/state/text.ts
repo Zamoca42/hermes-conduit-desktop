@@ -3,6 +3,7 @@
  * shows them, the way the phone does (HermesClient's `removingContextFooter`,
  * `splitLeadingFileReferences`, and the voice background-job brief).
  */
+import { inbound } from './teammateMessages'
 
 /** The brief a Conduit voice conversation puts before a background job's instructions. */
 // A list preview can end inside it, before its closing bracket.
@@ -170,7 +171,10 @@ export function previewText(raw: string): string {
   // A folded preview has the stored context on the same line as the words.
   // It can be cut off anywhere, even inside the marker.
   if (attachments.length || CONTEXT_REFERENCE.test(raw)) text = text.replace(/\s*---(?:\s[\s\S]*)?$/, '')
-  const words = plainReferences(text, true).replace(/\s+/g, ' ').trim()
+  const said = plainReferences(text, true).replace(/\s+/g, ' ').trim()
+  // A teammate's delivery previews as "Atlas: what it said".
+  const teammate = inbound(said)
+  const words = teammate ? `${teammate.sender}: ${teammate.body}` : said
   const first = attachments[0]
   // A preview cut off just past a long link can leave a letter or two of the words.
   if (words.replace(/[….\s]+$/, '').length >= 3 || (words && !first)) return words

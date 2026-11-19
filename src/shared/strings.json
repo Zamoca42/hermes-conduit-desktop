@@ -14924,6 +14924,21 @@
     "zh-Hans": "消息",
     "zh-Hant": "訊息"
   },
+  "Message from {name}": {
+    "de": "Nachricht von {name}",
+    "es": "Mensaje de {name}",
+    "fr": "Message de {name}",
+    "id": "Pesan dari {name}",
+    "it": "Messaggio da {name}",
+    "ja": "{name} からのメッセージ",
+    "ko": "{name}의 메시지",
+    "pl": "Wiadomość od {name}",
+    "pt-BR": "Mensagem de {name}",
+    "ru": "Сообщение от {name}",
+    "tr": "{name} adlı bottan mesaj",
+    "zh-Hans": "来自 {name} 的消息",
+    "zh-Hant": "來自 {name} 的訊息"
+  },
   "Message {name}…": {
     "de": "Nachricht an {name}…",
     "es": "Mensaje para {name}…",
@@ -14939,6 +14954,21 @@
     "zh-Hans": "给 {name} 发消息…",
     "zh-Hant": "傳訊息給 {name}…"
   },
+  "Messaged {name}": {
+    "de": "Nachricht an {name} gesendet",
+    "es": "Mensaje enviado a {name}",
+    "fr": "Message envoyé à {name}",
+    "id": "Mengirim pesan ke {name}",
+    "it": "Messaggio inviato a {name}",
+    "ja": "{name} にメッセージを送信しました",
+    "ko": "{name}에게 메시지를 보냄",
+    "pl": "Wysłano wiadomość do {name}",
+    "pt-BR": "Mensagem enviada para {name}",
+    "ru": "Отправлено сообщение для {name}",
+    "tr": "{name} adlı bota mesaj gönderildi",
+    "zh-Hans": "已给 {name} 发消息",
+    "zh-Hant": "已傳訊息給 {name}"
+  },
   "Messages after it wait until you choose.": {
     "de": "Nachrichten danach warten, bis du dich entscheidest.",
     "es": "Los mensajes posteriores esperan hasta que elijas.",
@@ -14953,6 +14983,21 @@
     "tr": "Sonraki mesajlar sen seçene kadar bekler.",
     "zh-Hans": "之后的消息会等到你做出选择。",
     "zh-Hant": "之後的訊息會等到你做出選擇。"
+  },
+  "Messaging {name}…": {
+    "de": "Nachricht an {name} wird gesendet…",
+    "es": "Enviando mensaje a {name}…",
+    "fr": "Envoi d’un message à {name}…",
+    "id": "Mengirim pesan ke {name}…",
+    "it": "Invio messaggio a {name}…",
+    "ja": "{name} にメッセージを送信中…",
+    "ko": "{name}에게 메시지 보내는 중…",
+    "pl": "Wysyłanie wiadomości do {name}…",
+    "pt-BR": "Enviando mensagem para {name}…",
+    "ru": "Отправка сообщения для {name}…",
+    "tr": "{name} adlı bota mesaj gönderiliyor…",
+    "zh-Hans": "正在给 {name} 发消息…",
+    "zh-Hant": "正在傳訊息給 {name}…"
   },
   "Microphone input level": {
     "de": "Mikrofon-Eingangspegel",
