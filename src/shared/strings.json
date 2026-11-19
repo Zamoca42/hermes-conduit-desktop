@@ -464,6 +464,21 @@
     "zh-Hans": "那里正在进行的回复总会先完成。如果你回到那个应用，请在那里重新打开对话，才能看到你从 Conduit 发送的内容。",
     "zh-Hant": "那裡正在進行的回覆一律會先完成。如果你回到該 App，請在那裡重新打開聊天，才能看到你從 Conduit 傳送的內容。"
   },
+  "A room holds up to 6 agents: your bots, and at least one for each person.": {
+    "de": "Ein Raum fasst bis zu 6 Agenten: deine Bots und mindestens einen für jede Person.",
+    "es": "Una sala admite hasta 6 agentes: tus bots y al menos uno por cada persona.",
+    "fr": "Un salon accueille jusqu'à 6 agents : vos bots, et au moins un pour chaque personne.",
+    "id": "Satu ruang memuat hingga 6 agen: bot Anda, dan setidaknya satu untuk setiap orang.",
+    "it": "Una stanza ospita fino a 6 agenti: i tuoi bot e almeno uno per ogni persona.",
+    "ja": "1つのグループに入れるエージェントは最大6つです。あなたのボットと、相手1人につき少なくとも1つです。",
+    "ko": "방 하나에는 에이전트가 최대 6개까지 들어가요. 내 봇과, 초대한 사람마다 적어도 하나씩이에요.",
+    "pl": "Pokój mieści do 6 agentów: Twoje boty i co najmniej jednego dla każdej osoby.",
+    "pt-BR": "Uma sala comporta até 6 agentes: seus bots e pelo menos um para cada pessoa.",
+    "ru": "В комнате может быть до 6 агентов: ваши боты и хотя бы по одному на каждого человека.",
+    "tr": "Bir oda en fazla 6 ajan alır: botlarınız ve her kişi için en az bir tane.",
+    "zh-Hans": "一个群聊最多容纳 6 个智能体：你的机器人，以及每个人至少一个。",
+    "zh-Hant": "一個群組最多容納 6 個代理程式：你的機器人，以及每個人至少一個。"
+  },
   "A room uses these only when its Custom choice names their tools.": {
     "de": "Ein Raum nutzt diese nur, wenn seine eigene Auswahl ihre Werkzeuge nennt.",
     "es": "Una sala usa estas solo cuando su opción Personalizado nombra sus herramientas.",
@@ -5819,6 +5834,21 @@
     "zh-Hans": "无法创建机器人：{error}",
     "zh-Hant": "無法建立機器人：{error}"
   },
+  "Could not create the group chat: {reason}": {
+    "de": "Der Gruppenchat konnte nicht erstellt werden: {reason}",
+    "es": "No se pudo crear el chat de grupo: {reason}",
+    "fr": "Impossible de créer la discussion de groupe : {reason}",
+    "id": "Tidak dapat membuat obrolan grup: {reason}",
+    "it": "Impossibile creare la chat di gruppo: {reason}",
+    "ja": "グループチャットを作成できませんでした：{reason}",
+    "ko": "그룹 채팅을 만들 수 없어요: {reason}",
+    "pl": "Nie udało się utworzyć czatu grupowego: {reason}",
+    "pt-BR": "Não foi possível criar o chat em grupo: {reason}",
+    "ru": "Не удалось создать групповой чат: {reason}",
+    "tr": "Grup sohbeti oluşturulamadı: {reason}",
+    "zh-Hans": "无法创建群聊：{reason}",
+    "zh-Hant": "無法建立群組聊天：{reason}"
+  },
   "Could not decline: {error}": {
     "de": "Ablehnen nicht möglich: {error}",
     "es": "No se pudo rechazar: {error}",
@@ -6283,6 +6313,36 @@
     "tr": "Bu Hermes kurulamadı: {error}",
     "zh-Hans": "无法设置此 Hermes：{error}",
     "zh-Hant": "無法設定此 Hermes：{error}"
+  },
+  "Could not start it: {reason}": {
+    "de": "Der Raum konnte nicht gestartet werden: {reason}",
+    "es": "No se pudo iniciar: {reason}",
+    "fr": "Impossible de le démarrer : {reason}",
+    "id": "Tidak dapat memulainya: {reason}",
+    "it": "Impossibile avviarla: {reason}",
+    "ja": "開始できませんでした：{reason}",
+    "ko": "시작할 수 없어요: {reason}",
+    "pl": "Nie udało się go uruchomić: {reason}",
+    "pt-BR": "Não foi possível iniciá-la: {reason}",
+    "ru": "Не удалось запустить: {reason}",
+    "tr": "Başlatılamadı: {reason}",
+    "zh-Hans": "无法开始：{reason}",
+    "zh-Hant": "無法開始：{reason}"
+  },
+  "Could not take it back: {reason}": {
+    "de": "Der Raum konnte nicht zurückgenommen werden: {reason}",
+    "es": "No se pudo retirar: {reason}",
+    "fr": "Impossible de le retirer : {reason}",
+    "id": "Tidak dapat menariknya kembali: {reason}",
+    "it": "Impossibile revocarla: {reason}",
+    "ja": "取り消せませんでした：{reason}",
+    "ko": "철회할 수 없어요: {reason}",
+    "pl": "Nie udało się go wycofać: {reason}",
+    "pt-BR": "Não foi possível retirá-la: {reason}",
+    "ru": "Не удалось отозвать: {reason}",
+    "tr": "Geri alınamadı: {reason}",
+    "zh-Hans": "无法撤回：{reason}",
+    "zh-Hant": "無法撤回：{reason}"
   },
   "Could not unlink {name}: {error}": {
     "de": "Die Verknüpfung mit {name} konnte nicht getrennt werden: {error}",
@@ -7439,6 +7499,21 @@
     "zh-Hans": "拒绝 {name}？",
     "zh-Hant": "拒絕 {name}？"
   },
+  "Declined": {
+    "de": "Abgelehnt",
+    "es": "Rechazó la invitación",
+    "fr": "A refusé",
+    "id": "Menolak",
+    "it": "Ha rifiutato",
+    "ja": "辞退",
+    "ko": "거절함",
+    "pl": "Odrzucono",
+    "pt-BR": "Recusou",
+    "ru": "Приглашение отклонено",
+    "tr": "Reddetti",
+    "zh-Hans": "已拒绝",
+    "zh-Hant": "已拒絕"
+  },
   "Default": {
     "de": "Standard",
     "es": "Predeterminado",
@@ -8549,6 +8624,21 @@
     "zh-Hans": "每次查看有发现时会发送一条通知。晨间简报每天按时送达，包含仍未完成的事项、今天的日历和提醒，以及你要求少提醒的事项。",
     "zh-Hant": "每次查看有發現時會傳送一則通知。晨間簡報每天準時送達，包含仍未完成的事項、今天的行事曆和提醒，以及你要求少提醒的事項。"
   },
+  "Each person gets an invite on their Hermes. The room starts once they’ve all answered, or when you start it.": {
+    "de": "Jede Person bekommt eine Einladung auf ihrem Hermes. Der Raum startet, sobald alle geantwortet haben, oder wenn du ihn startest.",
+    "es": "Cada persona recibe una invitación en su Hermes. La sala empieza cuando todos hayan respondido, o cuando tú la inicies.",
+    "fr": "Chaque personne reçoit une invitation sur son Hermes. Le salon démarre quand tout le monde a répondu, ou quand vous le démarrez.",
+    "id": "Setiap orang mendapat undangan di Hermes mereka. Ruang dimulai setelah semuanya menjawab, atau saat Anda memulainya.",
+    "it": "Ogni persona riceve un invito sul proprio Hermes. La stanza si avvia quando tutti hanno risposto, o quando la avvii tu.",
+    "ja": "相手それぞれのHermesに招待が届きます。全員が返事をするか、あなたが開始すると、グループが始まります。",
+    "ko": "각 사람의 Hermes로 초대가 가요. 모두 답하거나 내가 시작하면 방이 시작돼요.",
+    "pl": "Każda osoba dostaje zaproszenie na swoim Hermesie. Pokój startuje, gdy wszyscy odpowiedzą albo gdy go uruchomisz.",
+    "pt-BR": "Cada pessoa recebe um convite no Hermes dela. A sala começa quando todos responderem, ou quando você iniciá-la.",
+    "ru": "Каждый получит приглашение на своём Hermes. Комната запустится, когда все ответят или когда вы её запустите.",
+    "tr": "Her kişi kendi Hermes’inde bir davet alır. Oda, herkes yanıt verdiğinde ya da siz başlattığınızda başlar.",
+    "zh-Hans": "每个人都会在自己的 Hermes 上收到邀请。所有人都回复后，或者你开始它时，群聊就会开始。",
+    "zh-Hant": "每個人都會在自己的 Hermes 上收到邀請。所有人都回覆後，或你開始它時，群組就會開始。"
+  },
   "Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.": {
     "de": "Jede Antwort im geöffneten Chat wird mit der Stimme von Hermes vorgelesen, sobald sie fertig ist. Anrufe sprechen ihre eigenen Antworten.",
     "es": "Cada respuesta del chat abierto se lee en voz alta con la voz de Hermes al terminar. Las llamadas dicen sus propias respuestas.",
@@ -9508,6 +9598,21 @@
     "tr": "Buradaki herkes gönderdiklerinizi okur. Yalnızca bir bota sormak için @ ile ondan bahsedin.",
     "zh-Hans": "这里的每个人都能看到你发的内容。用 @ 提及机器人，只问它。",
     "zh-Hant": "這裡的每個人都能看到你傳的內容。用 @ 提及機器人，只問它。"
+  },
+  "Everyone you invited is told, and their agents’ joins are undone.": {
+    "de": "Alle, die du eingeladen hast, werden benachrichtigt, und der Beitritt ihrer Agenten wird rückgängig gemacht.",
+    "es": "Se avisa a todas las personas que invitaste, y se deshace la entrada de sus agentes.",
+    "fr": "Toutes les personnes invitées sont prévenues, et l’arrivée de leurs agents est annulée.",
+    "id": "Semua orang yang Anda undang diberi tahu, dan bergabungnya agen mereka dibatalkan.",
+    "it": "Tutte le persone che hai invitato vengono avvisate, e l’ingresso dei loro agenti viene annullato.",
+    "ja": "招待したすべての人に通知され、その人たちのエージェントの参加は取り消されます。",
+    "ko": "초대한 모든 사람에게 알리고, 그 사람들의 에이전트 참여는 취소돼요.",
+    "pl": "Wszyscy zaproszeni zostaną powiadomieni, a dołączenie ich agentów zostanie cofnięte.",
+    "pt-BR": "Todos que você convidou são avisados, e a entrada dos agentes deles é desfeita.",
+    "ru": "Все приглашённые получат уведомление, а присоединение их агентов будет отменено.",
+    "tr": "Davet ettiğiniz herkese haber verilir ve ajanlarının katılımı geri alınır.",
+    "zh-Hans": "你邀请的每个人都会收到通知，他们的智能体加入也会被撤销。",
+    "zh-Hant": "你邀請的每個人都會收到通知，他們的代理程式加入也會被撤銷。"
   },
   "Everything Here": {
     "de": "Alles hier",
@@ -11414,6 +11519,36 @@
     "zh-Hans": "群聊",
     "zh-Hant": "群組聊天"
   },
+  "Group chats run on this gateway. The gateway drives each member’s turn — closing Conduit never stops a room.": {
+    "de": "Gruppenchats laufen auf diesem Gateway. Das Gateway steuert den Durchgang jedes Mitglieds – das Schließen von Conduit stoppt nie einen Raum.",
+    "es": "Los chats de grupo se ejecutan en esta pasarela. La pasarela gestiona el turno de cada miembro: cerrar Conduit nunca detiene una sala.",
+    "fr": "Les discussions de groupe s’exécutent sur cette passerelle. La passerelle gère le tour de chaque membre : fermer Conduit n’arrête jamais un salon.",
+    "id": "Obrolan grup berjalan di gateway ini. Gateway menjalankan giliran setiap anggota — menutup Conduit tidak pernah menghentikan ruang.",
+    "it": "Le chat di gruppo vengono eseguite su questo gateway. Il gateway gestisce il turno di ogni membro: chiudere Conduit non ferma mai una stanza.",
+    "ja": "グループチャットはこのゲートウェイ上で動作します。各メンバーのターンはゲートウェイが進めるため、Conduitを閉じてもグループが止まることはありません。",
+    "ko": "그룹 채팅은 이 게이트웨이에서 실행돼요. 게이트웨이가 각 멤버의 턴을 진행하므로 Conduit을 닫아도 방은 멈추지 않아요.",
+    "pl": "Czaty grupowe działają na tej bramie. Brama steruje turą każdego uczestnika — zamknięcie Conduit nigdy nie zatrzymuje pokoju.",
+    "pt-BR": "Os chats em grupo rodam neste gateway. O gateway conduz o turno de cada membro — fechar o Conduit nunca interrompe uma sala.",
+    "ru": "Групповые чаты работают на этом шлюзе. Шлюз управляет ходами участников — закрытие Conduit никогда не останавливает комнату.",
+    "tr": "Grup sohbetleri bu ağ geçidinde çalışır. Her üyenin turunu ağ geçidi yürütür — Conduit’i kapatmak bir odayı asla durdurmaz.",
+    "zh-Hans": "群聊运行在此网关上。每个成员的回合由网关驱动——关闭 Conduit 不会停止群聊。",
+    "zh-Hant": "群組聊天在此閘道上執行。閘道會推動每位成員的回合，關閉 Conduit 絕不會讓群組停止。"
+  },
+  "Group name": {
+    "de": "Gruppenname",
+    "es": "Nombre del grupo",
+    "fr": "Nom du groupe",
+    "id": "Nama grup",
+    "it": "Nome del gruppo",
+    "ja": "グループ名",
+    "ko": "그룹 이름",
+    "pl": "Nazwa grupy",
+    "pt-BR": "Nome do grupo",
+    "ru": "Название группы",
+    "tr": "Grup adı",
+    "zh-Hans": "群聊名称",
+    "zh-Hant": "群組名稱"
+  },
   "HERMES IS WAITING": {
     "de": "HERMES WARTET",
     "es": "HERMES ESTÁ ESPERANDO",
@@ -11488,6 +11623,21 @@
     "tr": "Bir görev devrediliyor",
     "zh-Hans": "正在移交任务",
     "zh-Hant": "正在移交任務"
+  },
+  "Hasn't answered yet": {
+    "de": "Hat noch nicht geantwortet",
+    "es": "Aún no ha respondido",
+    "fr": "N'a pas encore répondu",
+    "id": "Belum menjawab",
+    "it": "Non ha ancora risposto",
+    "ja": "まだ返事がありません",
+    "ko": "아직 답하지 않음",
+    "pl": "Jeszcze bez odpowiedzi",
+    "pt-BR": "Ainda não respondeu",
+    "ru": "Пока нет ответа",
+    "tr": "Henüz yanıt vermedi",
+    "zh-Hans": "尚未回复",
+    "zh-Hant": "尚未回覆"
   },
   "Have an invite?": {
     "de": "Hast du eine Einladung?",
@@ -14159,6 +14309,21 @@
     "zh-Hans": "邀请",
     "zh-Hant": "邀請"
   },
+  "Invited": {
+    "de": "Eingeladen",
+    "es": "Invitados",
+    "fr": "Invités",
+    "id": "Diundang",
+    "it": "Invitati",
+    "ja": "招待した人",
+    "ko": "초대한 사람",
+    "pl": "Zaproszeni",
+    "pt-BR": "Convidados",
+    "ru": "Приглашённые",
+    "tr": "Davet edilenler",
+    "zh-Hans": "已邀请",
+    "zh-Hant": "已邀請"
+  },
   "Invites waiting": {
     "de": "Offene Einladungen",
     "es": "Invitaciones pendientes",
@@ -14173,6 +14338,21 @@
     "tr": "Bekleyen davetler",
     "zh-Hans": "待接受的邀请",
     "zh-Hant": "待接受的邀請"
+  },
+  "Invites work until {date}": {
+    "de": "Einladungen gültig bis {date}",
+    "es": "Las invitaciones valen hasta {date}",
+    "fr": "Invitations valables jusqu'à {date}",
+    "id": "Undangan berlaku hingga {date}",
+    "it": "Inviti validi fino a {date}",
+    "ja": "招待の有効期限：{date}",
+    "ko": "초대는 {date}까지 유효해요",
+    "pl": "Zaproszenia ważne do {date}",
+    "pt-BR": "Convites válidos até {date}",
+    "ru": "Приглашения действуют до {date}",
+    "tr": "Davetlerin son geçerliliği: {date}",
+    "zh-Hans": "邀请有效期至 {date}",
+    "zh-Hant": "邀請有效期限至 {date}"
   },
   "It answers from what it knows, without tools.": {
     "de": "Er antwortet aus seinem Wissen, ohne Tools.",
@@ -14263,6 +14443,21 @@
     "tr": "Sona erdi",
     "zh-Hans": "已结束",
     "zh-Hant": "已結束"
+  },
+  "It ended before it started": {
+    "de": "Vor dem Start beendet",
+    "es": "Terminó antes de empezar",
+    "fr": "Il s'est terminé avant de démarrer",
+    "id": "Berakhir sebelum dimulai",
+    "it": "È terminata prima di iniziare",
+    "ja": "開始前に終了しました",
+    "ko": "시작하기 전에 끝났어요",
+    "pl": "Zakończony przed startem",
+    "pt-BR": "Terminou antes de começar",
+    "ru": "Завершилась, не начавшись",
+    "tr": "Başlamadan sona erdi",
+    "zh-Hans": "在开始前就结束了",
+    "zh-Hant": "在開始前就結束了"
   },
   "It goes to the Hermes host only, for this install, and isn't kept.": {
     "de": "Es geht nur an den Hermes-Host, nur für diese Installation, und wird nicht gespeichert.",
@@ -14518,6 +14713,36 @@
     "tr": "Katıl",
     "zh-Hans": "加入",
     "zh-Hant": "加入"
+  },
+  "Joined with {names}": {
+    "de": "Beigetreten mit {names}",
+    "es": "Se unió con {names}",
+    "fr": "A rejoint avec {names}",
+    "id": "Bergabung dengan {names}",
+    "it": "Partecipa con {names}",
+    "ja": "{names}で参加",
+    "ko": "참여함: {names}",
+    "pl": "Dołączono z: {names}",
+    "pt-BR": "Entrou com {names}",
+    "ru": "Принято, агенты: {names}",
+    "tr": "Şu ajanlarla katıldı: {names}",
+    "zh-Hans": "已加入，智能体：{names}",
+    "zh-Hant": "已加入，代理程式：{names}"
+  },
+  "Joined without their bots": {
+    "de": "Ohne ihre Bots beigetreten",
+    "es": "Se unió sin sus bots",
+    "fr": "A rejoint sans ses bots",
+    "id": "Bergabung tanpa bot mereka",
+    "it": "Entrato senza i suoi bot",
+    "ja": "ボットなしで参加",
+    "ko": "봇 없이 참여함",
+    "pl": "Dołączył(a) bez swoich botów",
+    "pt-BR": "Entrou sem seus bots",
+    "ru": "Присоединился без своих ботов",
+    "tr": "Botları olmadan katıldı",
+    "zh-Hans": "未带机器人加入",
+    "zh-Hant": "未帶機器人加入"
   },
   "Joins in": {
     "de": "Macht mit",
@@ -15179,6 +15404,21 @@
     "zh-Hans": "要退出此群聊吗？",
     "zh-Hant": "要退出此群組聊天嗎？"
   },
+  "Left": {
+    "de": "Verlassen",
+    "es": "Salió",
+    "fr": "Parti",
+    "id": "Keluar",
+    "it": "Uscito",
+    "ja": "退出",
+    "ko": "나감",
+    "pl": "Wyszedł/wyszła",
+    "pt-BR": "Saiu",
+    "ru": "Вышел",
+    "tr": "Ayrıldı",
+    "zh-Hans": "已离开",
+    "zh-Hant": "已離開"
+  },
   "Left out of the look ahead": {
     "de": "In der Vorausschau ausgelassen",
     "es": "Fuera de la previsión",
@@ -15508,6 +15748,21 @@
     "tr": "Biriyle bağlantı kur",
     "zh-Hans": "与他人关联",
     "zh-Hant": "與他人連結"
+  },
+  "Link with someone to make rooms with their agents.": {
+    "de": "Verknüpfe dich mit jemandem, um Räume mit seinen Agenten zu erstellen.",
+    "es": "Vincúlate con alguien para crear salas con sus agentes.",
+    "fr": "Liez-vous à quelqu'un pour créer des salons avec ses agents.",
+    "id": "Tautkan dengan seseorang untuk membuat ruang bersama agennya.",
+    "it": "Collegati con qualcuno per creare stanze con i suoi agenti.",
+    "ja": "誰かとリンクすると、その人のエージェントとルームを作れます。",
+    "ko": "다른 사람과 연결하면 그 사람의 에이전트와 방을 만들 수 있습니다.",
+    "pl": "Połącz się z kimś, aby tworzyć pokoje z jego agentami.",
+    "pt-BR": "Vincule-se a alguém para criar salas com os agentes dessa pessoa.",
+    "ru": "Свяжитесь с кем-нибудь, чтобы создавать комнаты с его агентами.",
+    "tr": "Birinin ajanlarıyla oda kurmak için onunla bağlantı kurun.",
+    "zh-Hans": "与他人建立链接，即可和对方的智能体一起创建房间。",
+    "zh-Hant": "與他人建立連結，即可和對方的智慧體一起建立房間。"
   },
   "Link with {name}": {
     "de": "Mit {name} verknüpfen",
@@ -16573,6 +16828,21 @@
     "tr": "Üyeler",
     "zh-Hans": "成员",
     "zh-Hant": "成員"
+  },
+  "Members (2–6)": {
+    "de": "Mitglieder (2–6)",
+    "es": "Miembros (2–6)",
+    "fr": "Membres (2 à 6)",
+    "id": "Anggota (2–6)",
+    "it": "Membri (2–6)",
+    "ja": "メンバー（2〜6）",
+    "ko": "멤버(2–6)",
+    "pl": "Uczestnicy (2–6)",
+    "pt-BR": "Membros (2–6)",
+    "ru": "Участники (2–6)",
+    "tr": "Üyeler (2–6)",
+    "zh-Hans": "成员（2–6）",
+    "zh-Hant": "成員（2–6 位）"
   },
   "Memory": {
     "de": "Gedächtnis",
@@ -17759,6 +18029,21 @@
     "zh-Hans": "新建文件夹",
     "zh-Hant": "新增檔案夾"
   },
+  "New Group Chat": {
+    "de": "Neuer Gruppenchat",
+    "es": "Nuevo chat de grupo",
+    "fr": "Nouvelle discussion de groupe",
+    "id": "Obrolan Grup Baru",
+    "it": "Nuova chat di gruppo",
+    "ja": "新規グループチャット",
+    "ko": "새 그룹 채팅",
+    "pl": "Nowy czat grupowy",
+    "pt-BR": "Novo Chat em Grupo",
+    "ru": "Новый групповой чат",
+    "tr": "Yeni Grup Sohbeti",
+    "zh-Hans": "新建群聊",
+    "zh-Hant": "新增群組聊天"
+  },
   "New Project": {
     "de": "Neues Projekt",
     "es": "Nuevo proyecto",
@@ -18823,6 +19108,21 @@
     "tr": "Henüz iş yok",
     "zh-Hans": "还没有工作",
     "zh-Hant": "還沒有工作"
+  },
+  "Nobody else joined, so it didn't start": {
+    "de": "Niemand sonst ist beigetreten, daher startete der Raum nicht",
+    "es": "Nadie más se unió, así que la sala no empezó",
+    "fr": "Personne d'autre n'a rejoint, il n'a donc pas démarré",
+    "id": "Tidak ada orang lain yang bergabung, jadi ruang tidak dimulai",
+    "it": "Nessun altro ha accettato, quindi la stanza non è partita",
+    "ja": "ほかに誰も参加しなかったため、開始されませんでした",
+    "ko": "아무도 참여하지 않아 시작되지 않았어요",
+    "pl": "Nikt inny nie dołączył, więc pokój nie wystartował",
+    "pt-BR": "Ninguém mais entrou, então a sala não começou",
+    "ru": "Больше никто не присоединился, поэтому комната не запустилась",
+    "tr": "Başka kimse katılmadı, bu yüzden oda başlamadı",
+    "zh-Hans": "没有其他人加入，所以没有开始",
+    "zh-Hant": "沒有其他人加入，所以沒有開始"
   },
   "Noir": {
     "de": "Noir",
@@ -24224,6 +24524,21 @@
     "zh-Hans": "右键选择“全部”显示哪些资料",
     "zh-Hant": "按右鍵選擇「全部」顯示哪些設定檔"
   },
+  "Room": {
+    "de": "Raum",
+    "es": "Sala",
+    "fr": "Salon",
+    "id": "Ruang",
+    "it": "Stanza",
+    "ja": "ルーム",
+    "ko": "방",
+    "pl": "Pokój",
+    "pt-BR": "Sala",
+    "ru": "Комната",
+    "tr": "Oda",
+    "zh-Hans": "房间",
+    "zh-Hant": "房間"
+  },
   "Room name": {
     "de": "Raumname",
     "es": "Nombre de la sala",
@@ -27734,6 +28049,21 @@
     "zh-Hans": "对于支持的 ChatGPT Codex 登录模型，在 85% 时开始压缩。",
     "zh-Hant": "對於支援的 ChatGPT Codex 登入模型，在 85% 時開始壓縮。"
   },
+  "Start now": {
+    "de": "Jetzt starten",
+    "es": "Iniciar ahora",
+    "fr": "Démarrer maintenant",
+    "id": "Mulai sekarang",
+    "it": "Avvia ora",
+    "ja": "今すぐ開始",
+    "ko": "지금 시작",
+    "pl": "Uruchom teraz",
+    "pt-BR": "Iniciar agora",
+    "ru": "Запустить сейчас",
+    "tr": "Şimdi başlat",
+    "zh-Hans": "立即开始",
+    "zh-Hant": "立即開始"
+  },
   "Start over": {
     "de": "Neu anfangen",
     "es": "Empezar de nuevo",
@@ -27748,6 +28078,21 @@
     "tr": "Baştan başla",
     "zh-Hans": "重新开始",
     "zh-Hant": "重新開始"
+  },
+  "Start without {names}?": {
+    "de": "Ohne {names} starten?",
+    "es": "¿Iniciar sin {names}?",
+    "fr": "Démarrer sans {names} ?",
+    "id": "Mulai tanpa {names}?",
+    "it": "Avviare senza {names}?",
+    "ja": "{names}を待たずに開始しますか？",
+    "ko": "{names} 없이 시작할까요?",
+    "pl": "Uruchomić bez: {names}?",
+    "pt-BR": "Iniciar sem {names}?",
+    "ru": "Запустить, не дожидаясь: {names}?",
+    "tr": "{names} beklenmeden başlatılsın mı?",
+    "zh-Hans": "不等 {names} 就开始？",
+    "zh-Hant": "不等 {names} 就開始？"
   },
   "Started by Hermes for this chat. They keep running until they finish or you stop them.": {
     "de": "Von Hermes für diesen Chat gestartet. Sie laufen weiter, bis sie fertig sind oder du sie beendest.",
@@ -27853,6 +28198,21 @@
     "tr": "Ağ geçidi başlatılıyor…",
     "zh-Hans": "正在启动网关…",
     "zh-Hant": "正在啟動閘道…"
+  },
+  "Starting…": {
+    "de": "Wird gestartet …",
+    "es": "Iniciando…",
+    "fr": "Démarrage…",
+    "id": "Memulai…",
+    "it": "Avvio…",
+    "ja": "開始しています…",
+    "ko": "시작하는 중…",
+    "pl": "Uruchamianie…",
+    "pt-BR": "Iniciando…",
+    "ru": "Запуск…",
+    "tr": "Başlatılıyor…",
+    "zh-Hans": "正在启动…",
+    "zh-Hant": "正在啟動…"
   },
   "Starts a new live call that continues this one": {
     "de": "Startet einen neuen Live-Anruf, der diesen fortsetzt",
@@ -28693,6 +29053,21 @@
     "tr": "Geri al",
     "zh-Hans": "撤回",
     "zh-Hant": "撤回"
+  },
+  "Take back {name}?": {
+    "de": "{name} zurücknehmen?",
+    "es": "¿Retirar {name}?",
+    "fr": "Retirer {name} ?",
+    "id": "Tarik kembali {name}?",
+    "it": "Revocare {name}?",
+    "ja": "{name}を取り消しますか？",
+    "ko": "{name}을(를) 철회할까요?",
+    "pl": "Wycofać {name}?",
+    "pt-BR": "Retirar {name}?",
+    "ru": "Отозвать «{name}»?",
+    "tr": "{name} geri alınsın mı?",
+    "zh-Hans": "撤回 {name}？",
+    "zh-Hant": "撤回 {name}？"
   },
   "Take over automatically": {
     "de": "Automatisch übernehmen",
@@ -29864,6 +30239,21 @@
     "zh-Hans": "邀请二维码",
     "zh-Hant": "邀請 QR 碼"
   },
+  "The invites ran out before everyone answered": {
+    "de": "Die Einladungen sind abgelaufen, bevor alle geantwortet haben",
+    "es": "Las invitaciones caducaron antes de que todos respondieran",
+    "fr": "Les invitations ont expiré avant que tout le monde réponde",
+    "id": "Undangan kedaluwarsa sebelum semua orang menjawab",
+    "it": "Gli inviti sono scaduti prima che tutti rispondessero",
+    "ja": "全員が返事をする前に招待の期限が切れました",
+    "ko": "모두 답하기 전에 초대가 만료됐어요",
+    "pl": "Zaproszenia wygasły, zanim wszyscy odpowiedzieli",
+    "pt-BR": "Os convites expiraram antes que todos respondessem",
+    "ru": "Приглашения истекли до того, как все ответили",
+    "tr": "Herkes yanıt vermeden davetlerin süresi doldu",
+    "zh-Hans": "邀请在所有人回复前已过期",
+    "zh-Hant": "邀請在所有人回覆前已到期"
+  },
   "The job is saved, but not its reasoning: {reason}": {
     "de": "Der Job ist gespeichert, aber nicht seine Denkstufe: {reason}",
     "es": "El trabajo está guardado, pero no su razonamiento: {reason}",
@@ -30763,6 +31153,21 @@
     "tr": "Eşleşiyor, giriş yap",
     "zh-Hans": "一致，登录",
     "zh-Hant": "一致，登入"
+  },
+  "They’re told it started without them.": {
+    "de": "Sie erfahren, dass der Raum ohne sie gestartet ist.",
+    "es": "Se les avisa que empezó sin ellos.",
+    "fr": "Ces personnes sont prévenues qu’il a démarré sans elles.",
+    "id": "Mereka diberi tahu bahwa ruang dimulai tanpa mereka.",
+    "it": "Vengono avvisati che è partita senza di loro.",
+    "ja": "その人たちには、待たずに開始したことが通知されます。",
+    "ko": "그 사람들에게 자신들 없이 시작됐다고 알려 줘요.",
+    "pl": "Zostaną powiadomieni, że pokój wystartował bez nich.",
+    "pt-BR": "Eles são avisados de que ela começou sem eles.",
+    "ru": "Им сообщат, что комната запустилась без них.",
+    "tr": "Odanın onlarsız başladığı kendilerine bildirilir.",
+    "zh-Hans": "他们会收到通知：群聊已在他们缺席时开始。",
+    "zh-Hant": "他們會收到通知：群組已在他們缺席時開始。"
   },
   "Things about “{area}”": {
     "de": "Dinge zu „{area}“",
@@ -34499,6 +34904,21 @@
     "zh-Hans": "正在等待 {name} 的 Hermes 确认",
     "zh-Hant": "正在等待 {name} 的 Hermes 確認"
   },
+  "Waiting for {waiting}": {
+    "de": "Wartet auf {waiting}",
+    "es": "Esperando a {waiting}",
+    "fr": "En attente de {waiting}",
+    "id": "Menunggu {waiting}",
+    "it": "In attesa di {waiting}",
+    "ja": "{waiting}の返事を待っています",
+    "ko": "{waiting}의 답을 기다리는 중",
+    "pl": "Oczekiwanie na: {waiting}",
+    "pt-BR": "Aguardando {waiting}",
+    "ru": "Ожидание: {waiting}",
+    "tr": "{waiting} bekleniyor",
+    "zh-Hans": "正在等待 {waiting}",
+    "zh-Hant": "正在等待 {waiting}"
+  },
   "Waiting on {bot}": {
     "de": "Wartet auf {bot}",
     "es": "Esperando a {bot}",
@@ -36089,6 +36509,21 @@
     "zh-Hans": "你{when}点了“去做”，但还没完成。",
     "zh-Hant": "你{when}點了「去做」，但還沒完成。"
   },
+  "You took it back": {
+    "de": "Du hast ihn zurückgenommen",
+    "es": "La retiraste",
+    "fr": "Vous l'avez retiré",
+    "id": "Anda menariknya kembali",
+    "it": "L'hai revocata",
+    "ja": "あなたが取り消しました",
+    "ko": "내가 철회했어요",
+    "pl": "Wycofany przez Ciebie",
+    "pt-BR": "Você a retirou",
+    "ru": "Вы её отозвали",
+    "tr": "Siz geri aldınız",
+    "zh-Hans": "你已撤回",
+    "zh-Hant": "你已撤回"
+  },
   "You turned this kind off": {
     "de": "Du hast diese Art ausgeschaltet",
     "es": "Desactivaste este tipo",
@@ -36134,6 +36569,36 @@
     "zh-Hans": "你正在控制",
     "zh-Hant": "你正在控制"
   },
+  "Your Hermes can't host rooms with people you've linked yet. Update Hermes to invite them.": {
+    "de": "Dein Hermes kann noch keine Räume mit Personen hosten, mit denen du verknüpft bist. Aktualisiere Hermes, um sie einzuladen.",
+    "es": "Tu Hermes aún no puede alojar salas con las personas con las que te vinculaste. Actualiza Hermes para invitarlas.",
+    "fr": "Votre Hermes ne peut pas encore héberger de salons avec les personnes auxquelles vous êtes lié. Mettez à jour Hermes pour les inviter.",
+    "id": "Hermes Anda belum dapat menjadi tuan rumah ruang dengan orang yang tertaut dengan Anda. Perbarui Hermes untuk mengundang mereka.",
+    "it": "Il tuo Hermes non può ancora ospitare stanze con le persone a cui sei collegato. Aggiorna Hermes per invitarle.",
+    "ja": "あなたのHermesは、リンクした相手とのグループをまだホストできません。招待するにはHermesをアップデートしてください。",
+    "ko": "내 Hermes는 아직 연결한 사람과 함께하는 방을 호스팅할 수 없어요. 초대하려면 Hermes를 업데이트하세요.",
+    "pl": "Twój Hermes nie może jeszcze hostować pokojów z połączonymi osobami. Zaktualizuj Hermesa, aby je zaprosić.",
+    "pt-BR": "Seu Hermes ainda não pode hospedar salas com pessoas vinculadas a você. Atualize o Hermes para convidá-las.",
+    "ru": "Ваш Hermes пока не может размещать комнаты со связанными с вами людьми. Обновите Hermes, чтобы приглашать их.",
+    "tr": "Hermes'iniz henüz bağlantı kurduğunuz kişilerle oda barındıramıyor. Onları davet etmek için Hermes'i güncelleyin.",
+    "zh-Hans": "你的 Hermes 还无法托管与已关联的人一起的群聊。请更新 Hermes 以邀请他们。",
+    "zh-Hant": "你的 Hermes 還無法主持與已連結的人一起的群組。請更新 Hermes 以邀請他們。"
+  },
+  "Your Hermes couldn't start it": {
+    "de": "Dein Hermes konnte den Raum nicht starten",
+    "es": "Tu Hermes no pudo iniciarla",
+    "fr": "Votre Hermes n'a pas pu le démarrer",
+    "id": "Hermes Anda tidak dapat memulainya",
+    "it": "Il tuo Hermes non è riuscito ad avviarla",
+    "ja": "あなたのHermesは開始できませんでした",
+    "ko": "내 Hermes가 시작하지 못했어요",
+    "pl": "Twój Hermes nie mógł go uruchomić",
+    "pt-BR": "Seu Hermes não conseguiu iniciá-la",
+    "ru": "Вашему Hermes не удалось её запустить",
+    "tr": "Hermes'iniz odayı başlatamadı",
+    "zh-Hans": "你的 Hermes 无法开始它",
+    "zh-Hant": "你的 Hermes 無法開始它"
+  },
   "Your Hermes gets its four words when it first makes or accepts an invite.": {
     "de": "Dein Hermes bekommt seine vier Wörter, wenn er zum ersten Mal eine Einladung erstellt oder annimmt.",
     "es": "Tu Hermes recibe sus cuatro palabras la primera vez que crea o acepta una invitación.",
@@ -36178,6 +36643,21 @@
     "tr": "Hermes'iniz zaten {name} ile bağlantılı.",
     "zh-Hans": "你的 Hermes 已与 {name} 关联。",
     "zh-Hant": "你的 Hermes 已與 {name} 連結。"
+  },
+  "Your Hermes is still sending the invites. The room shows under Group Chats once it has.": {
+    "de": "Dein Hermes verschickt die Einladungen noch. Der Raum erscheint unter Gruppenchats, sobald das erledigt ist.",
+    "es": "Tu Hermes aún está enviando las invitaciones. La sala aparecerá en Chats de grupo cuando termine.",
+    "fr": "Votre Hermes envoie encore les invitations. Le salon apparaîtra dans Discussions de groupe une fois que ce sera fait.",
+    "id": "Hermes Anda masih mengirim undangan. Ruang akan muncul di Obrolan Grup setelah selesai.",
+    "it": "Il tuo Hermes sta ancora inviando gli inviti. La stanza compare in Chat di gruppo quando ha finito.",
+    "ja": "あなたのHermesはまだ招待を送信中です。送信が終わると、グループチャットに表示されます。",
+    "ko": "내 Hermes가 아직 초대를 보내는 중이에요. 다 보내면 방이 그룹 채팅에 나타나요.",
+    "pl": "Twój Hermes wciąż wysyła zaproszenia. Pokój pojawi się w Czatach grupowych, gdy skończy.",
+    "pt-BR": "Seu Hermes ainda está enviando os convites. A sala aparece em Chats em Grupo quando ele terminar.",
+    "ru": "Ваш Hermes ещё рассылает приглашения. Комната появится в разделе «Групповые чаты», когда он закончит.",
+    "tr": "Hermes'iniz davetleri hâlâ gönderiyor. Bitirdiğinde oda Grup Sohbetleri altında görünür.",
+    "zh-Hans": "你的 Hermes 仍在发送邀请。完成后，它会显示在群聊中。",
+    "zh-Hant": "你的 Hermes 仍在傳送邀請。完成後，它會顯示在「群組聊天」中。"
   },
   "Your Hermes is still sending this. The room shows it once it has.": {
     "de": "Dein Hermes sendet das noch. Der Raum zeigt es, sobald es angekommen ist.",
@@ -37663,6 +38143,21 @@
     "tr": "{input} girdi · {output} çıktı",
     "zh-Hans": "输入 {input} · 输出 {output}",
     "zh-Hant": "輸入 {input} · 輸出 {output}"
+  },
+  "{joined} joined, waiting for {waiting}": {
+    "de": "Beigetreten: {joined} · Wartet auf {waiting}",
+    "es": "Ya en la sala: {joined} · Esperando a {waiting}",
+    "fr": "Déjà dans le salon : {joined} · En attente de {waiting}",
+    "id": "Sudah bergabung: {joined} · Menunggu {waiting}",
+    "it": "Già nella stanza: {joined} · In attesa di {waiting}",
+    "ja": "{joined}が参加済み、{waiting}の返事を待っています",
+    "ko": "참여: {joined} · 기다리는 중: {waiting}",
+    "pl": "W pokoju: {joined} · oczekiwanie na: {waiting}",
+    "pt-BR": "Já na sala: {joined} · Aguardando {waiting}",
+    "ru": "Уже в комнате: {joined} · ожидание: {waiting}",
+    "tr": "Katılanlar: {joined} · {waiting} bekleniyor",
+    "zh-Hans": "已加入：{joined} · 等待：{waiting}",
+    "zh-Hant": "已加入：{joined} · 等待：{waiting}"
   },
   "{kind}: Bring up sooner": {
     "de": "{kind}: Früher ansprechen",

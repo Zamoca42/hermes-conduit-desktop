@@ -16,6 +16,7 @@ import { canDelete } from "../state/botActions";
 import { Icon } from "./icons";
 import { inviteRowLine, type RoomInvite } from "../state/roomInvites";
 import { copyLine, copyRoom, isOver, type RoomCopy } from "../state/roomCopies";
+import { draftLine, type RoomDraft } from "../state/roomDrafts";
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 
@@ -115,6 +116,11 @@ interface Props {
   onOpenCopy?: (copy: RoomCopy) => void;
   /** The copies an agent of yours waits in for your approval. */
   copiesWaiting?: ReadonlySet<string>;
+  /** Rooms with people you've linked that haven't started: who they wait for, or why they ended. */
+  drafts?: RoomDraft[];
+  onOpenDraft?: (draft: RoomDraft) => void;
+  /** New Group Chat: your bots, and people you've linked. */
+  onNewGroup?: () => void;
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -187,6 +193,9 @@ export function BotsHome({
   copies,
   onOpenCopy,
   copiesWaiting,
+  drafts,
+  onOpenDraft,
+  onNewGroup,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -368,15 +377,36 @@ export function BotsHome({
               ))}
             </div>
           ) : null}
-          {rooms && (rooms.length > 0 || canDrag || (invites?.length ?? 0) > 0 || (copies?.length ?? 0) > 0) ? (
+          {rooms && (rooms.length > 0 || canDrag || !!onNewGroup || (invites?.length ?? 0) > 0 || (copies?.length ?? 0) > 0 || (drafts?.length ?? 0) > 0) ? (
             <section className="rooms">
-              <h2>{t('Group chats')}</h2>
+              <div className="rooms-head">
+                <h2>{t('Group chats')}</h2>
+                {onNewGroup ? (
+                  <button className="secondary rooms-new" onClick={onNewGroup}>
+                    <Icon name="plus" />
+                    {t('New Group Chat')}
+                  </button>
+                ) : null}
+              </div>
               {rooms.length === 0 && !draft ? (
                 <p className="meta hint">
                   {t('Drag one bot onto another to start a group chat.')}
                 </p>
               ) : null}
               <div className="rooms-grid">
+                {(drafts ?? []).map((draft) => (
+                  <button
+                    key={draft.id}
+                    className={`room-tile invite-tile draft-tile ${draft.status}`}
+                    onClick={() => onOpenDraft?.(draft)}
+                  >
+                    <span className="invite-glyph" aria-hidden="true">
+                      <Icon name={draft.status === "ended" ? "bell" : "clock"} />
+                    </span>
+                    <span className="bot-name">{draft.name}</span>
+                    <span className="meta bot-time">{draftLine(draft)}</span>
+                  </button>
+                ))}
                 {(copies ?? []).map((copy) => (
                   <button
                     key={copy.id}
@@ -415,7 +445,17 @@ export function BotsHome({
                     className="room-tile"
                     onClick={() => onOpenRoom(room)}
                   >
-                    <RoomFaces room={room} bots={bots ?? []} size={44} />
+                    {room.linked ? (
+                      // With people you've linked: the two-people mark, as rooms hosted by others carry.
+                      <span className="copy-faces">
+                        <RoomFaces room={room} bots={bots ?? []} size={44} />
+                        <span className="copy-badge" title={t("With linked people")}>
+                          <Icon name="linked" />
+                        </span>
+                      </span>
+                    ) : (
+                      <RoomFaces room={room} bots={bots ?? []} size={44} />
+                    )}
                     <span className="bot-name">{room.name}</span>
                     {room.updatedAt ? (
                       <span className="meta bot-time">
