@@ -24,6 +24,9 @@ import { dataUrlPath, parsePreview, readTextPath, sizeText } from '../state/work
 import { PageFrame, pageAddress } from './PagePreview'
 import { GatewayPicture, PictureProfile } from './Picture'
 import { Icon, type IconName } from './icons'
+import { useKeptArtifacts, type HostBadge, type KeptArtifact } from '../state/keptHosts'
+import type { KeptHost } from '@shared/ipc'
+import { HostBadgeMark } from './CombinedDashboards'
 
 interface Props {
   profile?: string
@@ -39,6 +42,12 @@ interface Props {
   onClose?: () => void
   /** A page of its own rather than a panel beside the chat. */
   page?: boolean
+  /** Combined dashboards, on the page: the hosts kept beside this one, whose artifacts list after its own. */
+  kept?: readonly KeptHost[]
+  /** This host and the others, for their chips and badges. */
+  dashboards?: { url: string; name: string; badge: HostBadge | null }[]
+  /** Show in Chat on another host's artifact: switch there and open it. */
+  onOpenOtherChat?: (item: KeptArtifact) => void
 }
 
 type Tab = ArtifactFilter | 'saved'
@@ -66,7 +75,7 @@ const inside = (path: string, folder?: string | null) =>
   !!folder && (path === folder || path.startsWith(folder.replace(/[\\/]+$/, '') + '/') || path.startsWith(folder.replace(/[\\/]+$/, '') + '\\'))
 
 /** Artifacts beside a chat, or every chat's on a page, after the phone's In This Chat sheet and Artifacts screen. */
-export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShowInFolder, onOpenChat, onClose, page }: Props) {
+export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShowInFolder, onOpenChat, onClose, page, kept, dashboards, onOpenOtherChat }: Props) {
   const [tab, setTab] = useState<Tab>('all')
   const [query, setQuery] = useState('')
   const [words, setWords] = useState('')
@@ -104,6 +113,22 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
       .catch((e: unknown) => setSaved({ error: failure(e) }))
   }, [profile])
   useEffect(() => readSaved(), [readSaved])
+
+  // The other combined hosts' artifacts, on the page only; a chip per host shows its alone, a second tap every one again.
+  const others = useKeptArtifacts(kept ?? [], !!page && !!dashboards && dashboards.length > 1 && tab !== 'saved', filter, words, reload)
+  const [onlyHost, setOnlyHost] = useState<string | null>(null)
+  const here = dashboards?.[0]?.url
+  const elsewhere = (item: ArtifactItem): KeptArtifact | null => ('dashboard' in item && typeof item.dashboard === 'string' ? (item as KeptArtifact) : null)
+  const dashboardOf = (item: ArtifactItem) => dashboards?.find(d => d.url === elsewhere(item)?.dashboard)
+
+  /** A file's data, from the host it's on. */
+  const fileData = async (item: ArtifactItem, path: string): Promise<unknown> => {
+    const other = elsewhere(item)
+    if (!other) return gateway.http('GET', dataUrlPath(path, profile), undefined, 60_000)
+    const outcome = await window.conduit.keptHttp(other.dashboard, dataUrlPath(path, other.dashboardProfile))
+    if (!outcome.ok) throw new Error(outcome.error)
+    return outcome.result
+  }
 
   const savedItems = Array.isArray(saved) ? saved : []
   const chats = useMemo(() => new Set(sessionIds), [ids]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -149,7 +174,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
     if (!path) return
     setBusy(item.id)
     try {
-      const raw = (await gateway.http('GET', dataUrlPath(path, profile), undefined, 60_000)) as { data_url?: unknown; dataUrl?: unknown } | null
+      const raw = (await fileData(item, path)) as { data_url?: unknown; dataUrl?: unknown } | null
       const url = typeof raw?.data_url === 'string' ? raw.data_url : typeof raw?.dataUrl === 'string' ? raw.dataUrl : null
       if (!url) throw new Error(t("Couldn't save the file. Try again."))
       const a = document.createElement('a')
@@ -169,8 +194,19 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
     if (!path) return setViewer({ item, error: t('This file is no longer on your Hermes host.') })
     setViewer({ item })
     try {
+      const other = elsewhere(item)
+      if (other && item.kind !== 'image') {
+        // A page or a text file opens through that host's own window.
+        const outcome = await window.conduit.keptHttp(other.dashboard, readTextPath(path, other.dashboardProfile))
+        if (!outcome.ok) throw new Error(outcome.error)
+        const preview = parsePreview(outcome.result)
+        setViewer(current =>
+          current?.item.id !== item.id ? current : preview.binary ? { item, error: t("This file isn't text, so it can't be shown here.") } : { item, text: preview.text }
+        )
+        return
+      }
       if (item.kind === 'image') {
-        const raw = (await gateway.http('GET', dataUrlPath(path, profile), undefined, 60_000)) as { data_url?: unknown; dataUrl?: unknown } | null
+        const raw = (await fileData(item, path)) as { data_url?: unknown; dataUrl?: unknown } | null
         const url = typeof raw?.data_url === 'string' ? raw.data_url : typeof raw?.dataUrl === 'string' ? raw.dataUrl : null
         setViewer(current => (current?.item.id === item.id ? (url ? { item, image: url } : { item, error: t("Couldn't open this file.") }) : current))
         return
@@ -195,6 +231,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
 
   const meta = (item: ArtifactItem) =>
     [
+      dashboardOf(item) ? [dashboardOf(item)!.name, elsewhere(item)?.dashboardProfile].filter(Boolean).join(' · ') : '',
       kindTitle(item.kind),
       item.source === 'attached' ? t('You sent') : '',
       item.host ?? '',
@@ -212,7 +249,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
       <div key={item.id} className={`artifact-row${item.exists || item.keptPath ? '' : ' gone'}`}>
         <button className="artifact-main" title={item.path ?? item.url} onClick={() => void open(item)}>
           <span className="artifact-thumb">
-            {item.kind === 'image' && path ? (
+            {dashboardOf(item)?.badge ? <HostBadgeMark badge={dashboardOf(item)!.badge!} /> : item.kind === 'image' && path ? (
               <GatewayPicture path={path} name={item.name} className="artifact-picture" fallback={<Icon name="image" />} />
             ) : (
               <Icon name={ICONS[item.kind]} />
@@ -225,6 +262,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
           </span>
         </button>
         <span className="artifact-actions">
+          {elsewhere(item) ? null : (
           <button
             className={`staged-remove${savedIds.has(item.id) ? ' on' : ''}`}
             aria-label={savedIds.has(item.id) ? t('Remove from Saved') : t('Save')}
@@ -234,6 +272,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
           >
             <Icon name="star" />
           </button>
+          )}
           {path && item.kind !== 'link' ? (
             <button className="staged-remove" aria-label={t('Download')} title={t('Download')} disabled={busy === item.id} onClick={() => void download(item)}>
               ↓
@@ -244,7 +283,13 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
               <Icon name="folder" />
             </button>
           ) : null}
-          {onOpenChat ? (
+          {elsewhere(item) ? (
+            onOpenOtherChat ? (
+              <button className="staged-remove" aria-label={t('Show in Chat')} title={t('Show in Chat')} onClick={() => onOpenOtherChat(elsewhere(item)!)}>
+                <Icon name="chats" />
+              </button>
+            ) : null
+          ) : onOpenChat ? (
             <button className="staged-remove" aria-label={t('Show in Chat')} title={t('Show in Chat')} onClick={() => onOpenChat(item)}>
               <Icon name="chats" />
             </button>
@@ -296,7 +341,9 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
           <p className="meta">{listing.error}</p>
         </div>
       )
-    const items = listing.items.filter(item => includes(filter, item.kind))
+    const own = onlyHost && onlyHost !== here ? [] : listing.items
+    const theirs = others.filter(item => !onlyHost || item.dashboard === onlyHost)
+    const items = (theirs.length ? [...own, ...theirs].sort((a, b) => b.at - a.at) : own).filter(item => includes(filter, item.kind))
     if (!items.length)
       return words ? (
         <div className="ws-note">{t('Nothing here matches.')}</div>
@@ -405,6 +452,19 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
                   {ownSaved.length ? ` ${ownSaved.length}` : ''}
                 </button>
               ) : null}
+              {page && dashboards && dashboards.length > 1 && tab !== 'saved'
+                ? dashboards.map(d => (
+                    <button
+                      key={d.url}
+                      className={`artifact-host-chip${onlyHost === d.url ? ' on' : ''}`}
+                      aria-pressed={onlyHost === d.url}
+                      onClick={() => setOnlyHost(current => (current === d.url ? null : d.url))}
+                    >
+                      {d.badge ? <HostBadgeMark badge={d.badge} /> : null}
+                      {d.name}
+                    </button>
+                  ))
+                : null}
             </div>
             <div className="ws-tree artifact-list">{list()}</div>
           </>

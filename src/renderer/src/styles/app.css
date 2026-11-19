@@ -9993,3 +9993,16 @@ button.secondary.danger {
   padding-left: 20px;
   font-size: 13px;
 }
+
+/* Combined dashboards: the Artifacts page's chip per host, and a badge for another host's row. */
+.artifact-host-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.artifact-thumb .host-badge {
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+}
