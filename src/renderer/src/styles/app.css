@@ -5761,21 +5761,6 @@ code.file-link:hover {
   align-items: flex-start;
 }
 
-.work-pill {
-  padding: 2px 9px;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--working) 16%, transparent);
-  color: var(--working);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.work-pill.needs {
-  background: color-mix(in srgb, var(--warning) 16%, transparent);
-  color: var(--warning);
-}
-
 /* Settings > Models */
 .models-select {
   max-width: 300px;
@@ -10642,6 +10627,16 @@ button.secondary.danger {
   color: var(--working);
 }
 
+.status-mark.tone-working svg {
+  animation: spin 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-mark.tone-working svg {
+    animation: none;
+  }
+}
+
 .status-mark.tone-ready {
   background: color-mix(in srgb, var(--success) 16%, transparent);
   color: var(--success);
@@ -10650,11 +10645,6 @@ button.secondary.danger {
 .status-mark.tone-failed {
   background: color-mix(in srgb, var(--danger) 16%, transparent);
   color: var(--danger);
-}
-
-.status-mark.tone-pulse {
-  background: color-mix(in srgb, var(--pulse) 18%, transparent);
-  color: var(--pulse);
 }
 
 .status-chip {
