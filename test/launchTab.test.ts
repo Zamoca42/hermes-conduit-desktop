@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { firstTab, keepTabs, launchPage, syncedTabs } from '../src/renderer/src/state/launchTab'
+import { firstTab, keepTabs, keptTabs, launchPage, syncedTabs, withFirstTab } from '../src/renderer/src/state/launchTab'
 
 function memory() {
   const map = new Map<string, string>()
@@ -33,5 +33,31 @@ describe('the page a launch opens on', () => {
     keepTabs('http://b', syncedTabs({ values: {} }), storage)
     expect(launchPage('http://a', storage)).toBe('chats')
     expect(launchPage('http://b', storage)).toBe('bots')
+  })
+})
+
+describe('Open on, chosen on this computer', () => {
+  it('moves the page first and shows it, with no phone layout to start from', () => {
+    const tabs = withFirstTab(undefined, 'chats')
+    expect(tabs).toEqual(['chats', 'bots', 'tasks', '-pulse', '-artifacts', 'settings'])
+    expect(firstTab(tabs)).toBe('chats')
+  })
+
+  it('keeps the other tabs, hidden ones and unknown names where they were', () => {
+    const tabs = withFirstTab(['bots', '-tasks', 'chats', 'future', '-pulse', 'settings', '-artifacts'], 'pulse')
+    expect(tabs).toEqual(['pulse', 'bots', '-tasks', 'chats', 'future', 'settings', '-artifacts'])
+    expect(firstTab(tabs)).toBe('pulse')
+  })
+
+  it('hides the last shown tab past the five the phone shows, never Sessions or Settings', () => {
+    const tabs = withFirstTab(['bots', 'chats', 'tasks', 'pulse', 'settings', '-artifacts'], 'artifacts')
+    expect(tabs).toEqual(['artifacts', 'bots', 'chats', 'tasks', '-pulse', 'settings'])
+  })
+
+  it('is read back for the next launch once kept', () => {
+    const storage = memory()
+    keepTabs('h', withFirstTab(keptTabs('h', storage), 'tasks'), storage)
+    expect(launchPage('h', storage)).toBe('tasks')
+    expect(keptTabs('other', storage)).toBeUndefined()
   })
 })

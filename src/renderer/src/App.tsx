@@ -2515,7 +2515,7 @@ function Settings({
   if (page === 'appearance')
     return (
       <main className="settings">
-        <AppearancePage onBack={() => setPage('main')} />
+        <AppearancePage host={status.url ?? ''} onBack={() => setPage('main')} />
       </main>
     )
   if (page === 'multiplayer' && status.url)

@@ -41623,5 +41623,50 @@
     "tr": "Uyandırma ifadesi durdu: {error}",
     "zh-Hans": "唤醒词已停止：{error}",
     "zh-Hant": "喚醒詞已停止：{error}"
+  },
+  "Open on": {
+    "de": "Öffnen mit",
+    "es": "Abrir en",
+    "fr": "Ouvrir sur",
+    "id": "Buka di",
+    "it": "Apri su",
+    "ja": "起動時に開く",
+    "ko": "시작 화면",
+    "pl": "Otwieraj na",
+    "pt-BR": "Abrir em",
+    "ru": "Открывать",
+    "tr": "Açılış sayfası",
+    "zh-Hans": "打开时显示",
+    "zh-Hant": "開啟時顯示"
+  },
+  "The page Conduit shows when it starts. It’s kept with this dashboard, so a phone signed in to it opens on the same tab.": {
+    "de": "Die Seite, die Conduit beim Start zeigt. Sie wird mit diesem Dashboard gespeichert, sodass ein damit verbundenes Telefon auf demselben Tab öffnet.",
+    "es": "La página que muestra Conduit al iniciarse. Se guarda con este panel, así que un teléfono conectado a él abre en la misma pestaña.",
+    "fr": "La page que Conduit affiche au démarrage. Elle est enregistrée avec ce tableau de bord, donc un téléphone connecté à celui-ci s’ouvre sur le même onglet.",
+    "id": "Halaman yang ditampilkan Conduit saat dimulai. Disimpan bersama dasbor ini, jadi ponsel yang masuk ke dasbor ini membuka tab yang sama.",
+    "it": "La pagina che Conduit mostra all’avvio. È salvata con questa dashboard, quindi un telefono collegato a essa si apre sulla stessa scheda.",
+    "ja": "Conduit の起動時に表示するページです。このダッシュボードに保存されるため、同じダッシュボードにサインインした iPhone も同じタブで開きます。",
+    "ko": "Conduit이 시작할 때 보여 주는 페이지입니다. 이 대시보드에 저장되므로, 여기에 로그인한 휴대폰도 같은 탭으로 열립니다.",
+    "pl": "Strona, którą Conduit pokazuje po uruchomieniu. Jest zapisywana z tym pulpitem, więc telefon zalogowany do niego otwiera się na tej samej karcie.",
+    "pt-BR": "A página que o Conduit mostra ao iniciar. Ela fica salva com este painel, então um telefone conectado a ele abre na mesma aba.",
+    "ru": "Страница, которую Conduit показывает при запуске. Она хранится вместе с этой панелью, поэтому телефон, подключённый к ней, откроется на той же вкладке.",
+    "tr": "Conduit başlarken gösterilen sayfa. Bu panoyla birlikte saklanır, böylece ona bağlı bir telefon da aynı sekmede açılır.",
+    "zh-Hans": "Conduit 启动时显示的页面。它随此仪表板保存，因此登录该仪表板的手机也会打开同一标签。",
+    "zh-Hant": "Conduit 啟動時顯示的頁面。它隨此儀表板保存，因此登入該儀表板的手機也會開啟同一個標籤。"
+  },
+  "Kept on this computer. Hermes didn’t take it, so other devices still open where they did.": {
+    "de": "Auf diesem Computer gespeichert. Hermes hat es nicht übernommen, daher öffnen andere Geräte weiter wie bisher.",
+    "es": "Guardado en este ordenador. Hermes no lo aceptó, así que los demás dispositivos siguen abriendo donde lo hacían.",
+    "fr": "Enregistré sur cet ordinateur. Hermes ne l’a pas pris en compte, donc les autres appareils s’ouvrent toujours au même endroit.",
+    "id": "Disimpan di komputer ini. Hermes tidak menerimanya, jadi perangkat lain tetap terbuka seperti sebelumnya.",
+    "it": "Salvato su questo computer. Hermes non l’ha accettato, quindi gli altri dispositivi si aprono ancora come prima.",
+    "ja": "このコンピュータに保存しました。Hermes に保存できなかったため、ほかのデバイスはこれまでどおりのページで開きます。",
+    "ko": "이 컴퓨터에 저장했습니다. Hermes가 받지 않아 다른 기기는 계속 이전처럼 열립니다.",
+    "pl": "Zapisano na tym komputerze. Hermes tego nie przyjął, więc inne urządzenia nadal otwierają się jak wcześniej.",
+    "pt-BR": "Salvo neste computador. O Hermes não aceitou, então os outros dispositivos continuam abrindo onde abriam.",
+    "ru": "Сохранено на этом компьютере. Hermes не принял изменение, поэтому другие устройства открываются как раньше.",
+    "tr": "Bu bilgisayarda saklandı. Hermes kabul etmedi, bu yüzden diğer cihazlar eskisi gibi açılır.",
+    "zh-Hans": "已保存在这台电脑上。Hermes 未接受，因此其他设备仍按原来的页面打开。",
+    "zh-Hant": "已保存在這台電腦上。Hermes 未接受，因此其他裝置仍依原來的頁面開啟。"
   }
 }
