@@ -5,6 +5,7 @@
  * (`profiles.get_asset`, asset `avatar`).
  */
 import { cleanTitle, plainLine, previewText } from './text'
+import { isSilenceMarker } from './silence'
 import { toMillis } from './chats'
 import { assignFaces, faceColor, starterFace } from './starterFaces'
 
@@ -121,6 +122,8 @@ export function lastLineOf(preview: string | undefined): string | undefined {
   if (!preview) return undefined
   const text = preview.trim()
   if (/^\[(?:System\b|Cron job\b|Scheduled\b)/i.test(text)) return undefined
+  // Hermes' silence marker is no line of the bot's (issue 2700).
+  if (isSilenceMarker(text)) return undefined
   return plainLine(previewText(text), 240) || undefined
 }
 

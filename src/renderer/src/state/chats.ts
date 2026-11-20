@@ -5,6 +5,7 @@
  */
 import { formatDate, t } from '../../../shared/i18n'
 import { cleanTitle, previewText } from './text'
+import { isSilenceMarker } from './silence'
 import { classifySource, type ChatSource } from './chatSources'
 
 export interface ChatRow {
@@ -119,7 +120,7 @@ export function rowsFromResponse(body: unknown): ChatRow[] {
     if (source && CHAT_LIST_EXCLUDED_SOURCES.split(',').includes(source.toLowerCase())) continue
     if (isLegacyKanbanWorker(source, typeof obj.preview === 'string' ? obj.preview : undefined)) continue
     const title = typeof obj.title === 'string' ? cleanTitle(obj.title) : ''
-    const preview = typeof obj.preview === 'string' ? previewText(obj.preview) : ''
+    const preview = typeof obj.preview === 'string' && !isSilenceMarker(obj.preview) ? previewText(obj.preview) : ''
     let activeAt: number | undefined
     for (const key of ACTIVITY_KEYS) {
       activeAt = toMillis(obj[key])

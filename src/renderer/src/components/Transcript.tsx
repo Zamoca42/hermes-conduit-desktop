@@ -975,7 +975,10 @@ export function Transcript({
     () =>
       withCalls(
         state.items.filter(item =>
-          item.kind === 'thinking'
+          // A reply held back while it could still be a silence marker isn't drawn yet.
+          item.kind === 'assistant'
+            ? !!item.text.trim()
+            : item.kind === 'thinking'
             ? showsThinking
             : item.kind === 'tool' && !item.board
               ? display.toolCards
