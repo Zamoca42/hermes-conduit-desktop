@@ -1600,6 +1600,19 @@ body.resizing-columns {
   background: color-mix(in srgb, var(--warning) 9%, transparent);
 }
 
+/* An expired question or a settled connection no longer waits on you. */
+.ask.expired,
+.ask.settled {
+  border-color: var(--line);
+  background: var(--surface);
+}
+
+.ask.expired .ask-icon,
+.ask.settled .ask-icon {
+  background: var(--surface-hover);
+  color: var(--text-2);
+}
+
 .ask-head {
   display: flex;
   align-items: center;
@@ -5638,6 +5651,10 @@ code.file-link:hover {
   align-items: center;
   gap: 8px;
   min-height: 22px;
+}
+
+.work-card-line > :not(.status-chip) {
+  flex: none;
 }
 
 .work-card-line .meta svg {
@@ -10607,16 +10624,6 @@ button.secondary.danger {
   stroke-width: 2.4;
 }
 
-.status-mark.small {
-  width: 24px;
-  height: 24px;
-}
-
-.status-mark.small svg {
-  width: 12px;
-  height: 12px;
-}
-
 .status-mark.tone-needs {
   background: var(--warning);
   color: rgba(0, 0, 0, 0.85);
@@ -10649,7 +10656,9 @@ button.secondary.danger {
 
 .status-chip {
   margin-left: auto;
-  flex: none;
+  /* A long status ("Waiting on" a bot) truncates rather than pushing past the card. */
+  flex: 0 1 auto;
+  min-width: 0;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -10662,8 +10671,14 @@ button.secondary.danger {
   color: var(--text-2);
 }
 
+.status-chip-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .status-chip:not(.tone-done)::before {
   content: '';
+  flex: none;
   width: 6px;
   height: 6px;
   border-radius: 50%;

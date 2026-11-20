@@ -165,6 +165,8 @@ export type WorkTone = 'needs' | 'working' | 'ready' | 'failed' | 'done'
 export function workTone(item: WorkItem): WorkTone {
   if (needsYou(item)) return 'needs'
   if (item.closed) return 'done'
+  // As the phone's BotWorkLook.tint: a status that needs you is orange on an ask's row too.
+  if (item.status === 'needs_you' || item.status === 'interrupted') return 'needs'
   if (item.status === 'running' || item.status === 'starting' || item.status === 'waiting') return 'working'
   if (item.status === 'ready') return 'ready'
   if (item.status === 'failed' || item.status === 'stopped') return 'failed'

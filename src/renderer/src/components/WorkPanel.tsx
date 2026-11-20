@@ -84,7 +84,9 @@ function WorkCard({
                 <Icon name="pin" />
               </span>
             ) : null}
-            <span className={`status-chip tone-${tone}`}>{statusText(item)}</span>
+            <span className={`status-chip tone-${tone}`} title={statusText(item)}>
+              <span className="status-chip-text">{statusText(item)}</span>
+            </span>
           </span>
           <span className="work-card-title">{shownTitle(item)}</span>
         </button>
