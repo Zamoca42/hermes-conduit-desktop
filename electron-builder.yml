@@ -15,11 +15,11 @@ asarUnpack: []
 protocols:
   - name: Conduit Link
     schemes: [conduit]
-# The tray's icons, read from the resources folder at run time.
+# The tray's icons and the app icon's dark and light versions, read from the resources folder at run time.
 extraResources:
   - from: resources
     to: .
-    filter: ['tray*.png']
+    filter: ['tray*.png', 'app-icon-*.png']
 mac:
   category: public.app-category.productivity
   target:

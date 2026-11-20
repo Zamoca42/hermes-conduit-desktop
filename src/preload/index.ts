@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron'
 import {
   IPC,
+  type AppIconChoice,
   type ConduitApi,
   type ConnectionStatus,
   type GatewayEventMessage,
@@ -62,6 +63,9 @@ const api: ConduitApi = {
   setLanguage: choice => ipcRenderer.send(IPC.setLanguage, choice),
   theme: ipcRenderer.sendSync(IPC.theme) as ConduitApi['theme'],
   setTheme: choice => ipcRenderer.send(IPC.setTheme, choice),
+  appIcon: ipcRenderer.sendSync(IPC.appIcon) as ConduitApi['appIcon'],
+  setAppIcon: choice => ipcRenderer.send(IPC.setAppIcon, choice),
+  onAppIcon: listener => listen<AppIconChoice>(IPC.setAppIcon, listener),
   appLock: () => ipcRenderer.invoke(IPC.appLock),
   setAppLock: on => ipcRenderer.invoke(IPC.setAppLock, on),
   askHostAtLaunch: () => ipcRenderer.invoke(IPC.askHost),

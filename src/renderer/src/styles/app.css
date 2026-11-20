@@ -105,11 +105,7 @@ a:hover {
   flex: 1;
 }
 
-/* The app icon, as on the iPhone: its light version under a light theme. */
-.titlebar .brand picture {
-  display: flex;
-  flex: none;
-}
+/* The app icon picked in Settings > Appearance, as on the iPhone. */
 .brand-mark {
   width: 20px;
   height: 20px;
@@ -10283,4 +10279,42 @@ button.secondary.danger {
 
 .model-chooser .model-current .staged-remove {
   margin-left: auto;
+}
+
+/* Settings > Appearance > App icon: the phone's two tiles, the picked one tinted with the accent. */
+.app-icon-choices {
+  display: flex;
+  gap: 12px;
+  max-width: 360px;
+}
+.app-icon-choice {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 12px 8px 10px;
+  border-radius: 18px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+}
+.app-icon-choice img {
+  width: 64px;
+  height: 64px;
+  border-radius: 15px;
+}
+.app-icon-choice span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.app-icon-choice span svg {
+  width: 14px;
+  height: 14px;
+}
+.app-icon-choice[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
 }

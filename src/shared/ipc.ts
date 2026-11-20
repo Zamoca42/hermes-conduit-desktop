@@ -188,6 +188,8 @@ export type Platform = 'win32' | 'darwin' | 'linux'
 export type LanguageChoice = 'system' | Language
 /** "system" follows the computer's light or dark mode. */
 export type ThemeChoice = 'system' | 'dark' | 'light'
+/** The app icon, as on the phone: dark (the default) or light. */
+export type AppIconChoice = 'dark' | 'light'
 
 export interface ConduitApi {
   platform: Platform
@@ -199,6 +201,12 @@ export interface ConduitApi {
   theme: ThemeChoice
   /** Saves a new choice; the window follows it at once. */
   setTheme(choice: ThemeChoice): void
+  /** Settings > Appearance > App icon, as picked when the window opened. */
+  appIcon: AppIconChoice
+  /** Saves a new choice: the windows, taskbar or Dock, tray and title bar show it at once. */
+  setAppIcon(choice: AppIconChoice): void
+  /** Another window changed the app icon. */
+  onAppIcon(listener: (choice: AppIconChoice) => void): () => void
   /** Settings > Lock: whether this computer can lock the saved sign-ins, and whether it does. */
   appLock(): Promise<AppLockState>
   /** Turns the lock on or off, after Touch ID or Windows Hello; false when that was cancelled. */
@@ -413,6 +421,8 @@ export const IPC = {
   setLanguage: 'conduit:set-language',
   theme: 'conduit:theme',
   setTheme: 'conduit:set-theme',
+  appIcon: 'conduit:app-icon',
+  setAppIcon: 'conduit:set-app-icon',
   appLock: 'conduit:app-lock',
   setAppLock: 'conduit:set-app-lock',
   askHost: 'conduit:ask-host',

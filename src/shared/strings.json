@@ -42238,5 +42238,50 @@
     "tr": "Yeniden bağlanıyor…",
     "zh-Hans": "正在重新连接…",
     "zh-Hant": "正在重新連線…"
+  },
+  "App icon": {
+    "de": "App-Symbol",
+    "es": "Icono de la app",
+    "fr": "Icône de l'app",
+    "id": "Ikon app",
+    "it": "Icona dell'app",
+    "ja": "Appアイコン",
+    "ko": "앱 아이콘",
+    "pl": "Ikona aplikacji",
+    "pt-BR": "Ícone do app",
+    "ru": "Значок приложения",
+    "tr": "Uygulama simgesi",
+    "zh-Hans": "App 图标",
+    "zh-Hant": "App 圖像"
+  },
+  "Choose the icon shown in the Dock and the title bar.": {
+    "de": "Wähle das Symbol im Dock und in der Titelleiste.",
+    "es": "Elige el icono que se muestra en el Dock y en la barra de título.",
+    "fr": "Choisissez l'icône affichée dans le Dock et la barre de titre.",
+    "id": "Pilih ikon yang ditampilkan di Dock dan bilah judul.",
+    "it": "Scegli l'icona mostrata nel Dock e nella barra del titolo.",
+    "ja": "Dockとタイトルバーに表示するアイコンを選びます。",
+    "ko": "Dock과 제목 막대에 표시할 아이콘을 선택하세요.",
+    "pl": "Wybierz ikonę wyświetlaną w Docku i na pasku tytułu.",
+    "pt-BR": "Escolha o ícone exibido no Dock e na barra de título.",
+    "ru": "Выберите значок для Dock и строки заголовка.",
+    "tr": "Dock'ta ve başlık çubuğunda gösterilecek simgeyi seçin.",
+    "zh-Hans": "选择在程序坞和标题栏中显示的图标。",
+    "zh-Hant": "選擇在 Dock 和標題列中顯示的圖像。"
+  },
+  "Choose the icon shown on the taskbar, in the notification area and in the title bar.": {
+    "de": "Wähle das Symbol in der Taskleiste, im Infobereich und in der Titelleiste.",
+    "es": "Elige el icono que se muestra en la barra de tareas, el área de notificación y la barra de título.",
+    "fr": "Choisissez l'icône affichée dans la barre des tâches, la zone de notification et la barre de titre.",
+    "id": "Pilih ikon yang ditampilkan di bilah tugas, area notifikasi, dan bilah judul.",
+    "it": "Scegli l'icona mostrata nella barra delle applicazioni, nell'area di notifica e nella barra del titolo.",
+    "ja": "タスクバー、通知領域、タイトルバーに表示するアイコンを選びます。",
+    "ko": "작업 표시줄, 알림 영역, 제목 표시줄에 표시할 아이콘을 선택하세요.",
+    "pl": "Wybierz ikonę wyświetlaną na pasku zadań, w obszarze powiadomień i na pasku tytułu.",
+    "pt-BR": "Escolha o ícone exibido na barra de tarefas, na área de notificação e na barra de título.",
+    "ru": "Выберите значок для панели задач, области уведомлений и строки заголовка.",
+    "tr": "Görev çubuğunda, bildirim alanında ve başlık çubuğunda gösterilecek simgeyi seçin.",
+    "zh-Hans": "选择在任务栏、通知区域和标题栏中显示的图标。",
+    "zh-Hant": "選擇在工作列、通知區域和標題列中顯示的圖像。"
   }
 }
