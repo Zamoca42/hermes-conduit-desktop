@@ -21734,6 +21734,21 @@
     "zh-Hans": "在 Conduit 中打开这个邀请，将你的 Hermes 与我的关联。",
     "zh-Hant": "在 Conduit 中開啟這個邀請，將你的 Hermes 與我的連結。"
   },
+  "Open chat": {
+    "de": "Chat öffnen",
+    "es": "Abrir chat",
+    "fr": "Ouvrir le chat",
+    "id": "Buka obrolan",
+    "it": "Apri chat",
+    "ja": "チャットを開く",
+    "ko": "채팅 열기",
+    "pl": "Otwórz czat",
+    "pt-BR": "Abrir chat",
+    "ru": "Открыть чат",
+    "tr": "Sohbeti aç",
+    "zh-Hans": "打开聊天",
+    "zh-Hant": "打開聊天"
+  },
   "Open {ref}’s chat": {
     "de": "Chat von {ref} öffnen",
     "es": "Abrir el chat de {ref}",

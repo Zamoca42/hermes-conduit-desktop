@@ -5748,6 +5748,7 @@ code.file-link:hover {
   background: var(--working);
 }
 
+/* Open chat and Pin, Resolve, Leave Alone fit one row at the panel's width (Eric 2026-11-20); a wider set wraps. */
 .work-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -10708,7 +10709,7 @@ button.secondary.danger {
 /* A quiet text button beside a card's main one (Pin, Resolve, Leave Alone). */
 button.ghost {
   height: 32px;
-  padding: 0 8px;
+  padding: 0 7px;
   border: 0;
   border-radius: 10px;
   background: transparent;

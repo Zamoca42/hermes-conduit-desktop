@@ -164,9 +164,9 @@ function WorkCard({
           ) : null}
           <div className="work-buttons">
             {item.sessionId && item.kind === 'workstream' ? (
-              <button className="secondary" onClick={() => onOpenChat(item)}>
+              <button className="secondary" aria-label={t('Open {ref}’s chat', { ref: item.ref })} onClick={() => onOpenChat(item)}>
                 <Icon name="chats" />
-                {t('Open {ref}’s chat', { ref: item.ref })}
+                {t('Open chat')}
               </button>
             ) : null}
             {item.actions
