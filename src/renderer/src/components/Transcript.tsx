@@ -9,8 +9,13 @@ import type { DelegationEntry } from '../state/timeline'
 import { ExpiredClarifyCard, RequestCard } from './RequestCard'
 import type { ExpiredQuestion } from '../state/expiredQuestions'
 import { Icon, type IconName } from './icons'
+import { JumpToLatest } from './JumpToLatest'
+import { atEnd } from '../state/scrollEnd'
 import { Markdown } from './Markdown'
 import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
+import { gateway } from '../gateway'
+import { readDataUrlPath } from '../state/gatewayPictures'
+import { saveHostFile, sayIfFailed } from '../state/saveMedia'
 import { formatDate, locale, t } from '@shared/i18n'
 import { blockquote, copyableReply, excerpt, parseReplyEnvelope, sameQuotedText, type QuoteRequest } from '../state/quote'
 import { BoardView } from './BoardView'
@@ -362,17 +367,56 @@ const MEDIA_ICONS: Record<ReturnType<typeof mediaKind>, IconName> = { image: 'im
 
 /** A file Hermes delivered (`MEDIA:`) or a message named (`@file:`): its name, with the full path on hover. */
 function FileCard({ path, label, link }: { path: string; label?: string; link?: boolean }) {
+  const profile = useContext(PictureProfile)
+  const [audio, setAudio] = useState<'loading' | 'failed' | { src: string } | null>(null)
+  const [saving, setSaving] = useState(false)
   const name = label || (link ? path : baseName(path))
   const folder = path.slice(0, Math.max(0, path.length - baseName(path).length)).replace(/[\\/]+$/, '')
+  const kind = mediaKind(path)
+  const play = async () => {
+    setAudio('loading')
+    try {
+      const answer = (await gateway.http('GET', readDataUrlPath(path, profile))) as { dataUrl?: unknown } | null
+      const src = typeof answer?.dataUrl === 'string' && answer.dataUrl.startsWith('data:') ? answer.dataUrl : null
+      setAudio(src ? { src } : 'failed')
+    } catch {
+      setAudio('failed')
+    }
+  }
+  const download = async () => {
+    setSaving(true)
+    try {
+      sayIfFailed(await saveHostFile(path, profile))
+    } finally {
+      setSaving(false)
+    }
+  }
   return (
     <div className="file-card" title={path}>
-      <span className="file-icon">
-        <Icon name={link ? 'link' : MEDIA_ICONS[mediaKind(path)]} />
-      </span>
-      <span className="file-body">
-        <span className="file-name">{name}</span>
-        {!link && folder ? <span className="file-path">{folder}</span> : null}
-      </span>
+      <div className="file-card-row">
+        <span className="file-icon">
+          <Icon name={link ? 'link' : MEDIA_ICONS[kind]} />
+        </span>
+        <span className="file-body">
+          <span className="file-name">{name}</span>
+          {!link && folder ? <span className="file-path">{folder}</span> : null}
+        </span>
+        {link ? null : (
+          <span className="file-actions">
+            {kind === 'audio' && (audio === null || audio === 'failed') ? (
+              <button className="secondary" onClick={() => void play()}>
+                {t('Play')}
+              </button>
+            ) : null}
+            <button className="secondary" disabled={saving} onClick={() => void download()}>
+              {t('Download')}
+            </button>
+          </span>
+        )}
+      </div>
+      {audio === 'loading' ? <span className="meta">{t('Loading…')}</span> : null}
+      {audio === 'failed' ? <span className="meta error-text">{t("Couldn't open this file")}</span> : null}
+      {audio && typeof audio === 'object' ? <audio className="file-audio" controls autoPlay src={audio.src} /> : null}
     </div>
   )
 }
@@ -1002,7 +1046,7 @@ export function Transcript({
     const el = scroller.current
     if (!el) return
     const onScroll = () => {
-      pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48
+      pinned.current = atEnd(el)
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
@@ -1204,6 +1248,7 @@ export function Transcript({
             </div>
           ) : null}
         </div>
+        <JumpToLatest scroller={scroller} onJump={() => (pinned.current = true)} />
       </div>
       {selectionMenu ? <SelectionMenu at={selectionMenu} items={selectionItems(selectionMenu)} onClose={closeSelectionMenu} /> : null}
     </PictureProfile.Provider>
