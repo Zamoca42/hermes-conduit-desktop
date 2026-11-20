@@ -30,6 +30,8 @@ export interface ChatRow {
   endReason?: string
   /** A voice call was kept with this chat, so it's under Voice too. */
   hasVoiceCalls?: boolean
+  /** The call or chat a voice job started from: it nests under that row. */
+  nestUnder?: string
 }
 
 export interface ChatSection {

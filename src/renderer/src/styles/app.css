@@ -9076,6 +9076,39 @@ button.secondary.danger {
   transform: rotate(-90deg);
 }
 
+/* A voice job's nest under the call or chat it came from (the phone's nests, #556). */
+.nest-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: 0;
+  background: none;
+  color: var(--text-3);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: start;
+  padding-top: 0;
+  padding-bottom: 6px;
+  cursor: pointer;
+}
+
+.nest-toggle svg {
+  width: 11px;
+  height: 11px;
+  flex: none;
+  transition: transform 0.15s;
+}
+
+.nest-toggle svg.closed {
+  transform: rotate(-90deg);
+}
+
+.row-wrap.nested {
+  border-inline-start: 1.5px solid var(--line);
+}
+
 .row.show-more {
   color: var(--accent);
   font-size: 13px;

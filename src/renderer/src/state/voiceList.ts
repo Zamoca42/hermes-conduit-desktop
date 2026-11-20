@@ -110,6 +110,8 @@ export function withVoice(rows: ChatRow[], archived: ChatRow[], voice: VoiceList
       const parent = tag.parentId ? all.find(r => r.id === tag.parentId || r.lineageRoot === tag.parentId) : undefined
       const title = parent?.title ?? tag.parentTitle
       if (title) next.preview = t('From {name}', { name: title })
+      // A job nests under the call or chat that started it, as on the phone.
+      if (tag.parentId) next.nestUnder = tag.parentId
     }
     return next
   })
