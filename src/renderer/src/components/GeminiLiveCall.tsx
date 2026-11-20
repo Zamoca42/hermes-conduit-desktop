@@ -72,6 +72,7 @@ import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote, imageFrame } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 import { RECONNECT_ATTEMPTS, isRefusalClose, isResumptionLost, reconnectDelayMs, rejoinPrompt } from '@shared/liveReconnect'
+import { LiveHandoff } from '@shared/liveHandoff'
 
 interface Props {
   profile?: string
@@ -218,7 +219,7 @@ export function GeminiLiveCall({
   // the connection a GoAway hands off to while the current one serves, and a recap owed to a session that lost the call.
   const resumeHandle = useRef<string | null>(null)
   const attempt = useRef(0)
-  const handoff = useRef<string | null>(null)
+  const handoff = useRef(new LiveHandoff(id => window.conduit.liveClose(id)))
   const connection = useRef(0)
   const owesRecap = useRef(false)
   const startHandoff = useRef<((next: number) => void) | null>(null)
@@ -292,8 +293,10 @@ export function GeminiLiveCall({
 
   const teardown = () => {
     save()
+    // Every connection the call owns closes, as on the phone: the live one and a GoAway's next one, open or in setup.
     if (socket.current) window.conduit.liveClose(socket.current)
     socket.current = null
+    handoff.current.drop()
     processor.current?.disconnect()
     processor.current = null
     mic.current?.getTracks().forEach(track => track.stop())
@@ -508,7 +511,7 @@ export function GeminiLiveCall({
         return
       case 'goAway':
         // The connection ends soon: the call goes on, on a new one.
-        if (!qwen && resumeHandle.current && !handoff.current) startHandoff.current?.(0)
+        if (!qwen && resumeHandle.current && handoff.current.claim()) startHandoff.current?.(0)
         return
     }
   }
@@ -546,6 +549,7 @@ export function GeminiLiveCall({
     // `asHandoff`: Gemini's next connection after a GoAway, set up while the current one keeps serving.
     const open = async (asHandoff = false): Promise<boolean> => {
       trace.current?.step(asHandoff ? 'Opening the next connection (GoAway)' : 'Opening the socket')
+      const handoffToken = handoff.current.token()
       const opened = await window.conduit.liveOpenMinted(withProfile(qwen ? QWEN_TOKEN_PATH : TOKEN_PATH, profile))
       if (!opened.ok) {
         trace.current?.step(`The socket did not open${opened.code ? ` (${opened.code})` : ''}`)
@@ -567,10 +571,8 @@ export function GeminiLiveCall({
         window.conduit.liveClose(opened.id)
         return false
       }
-      if (asHandoff) {
-        handoff.current = opened.id
-        return true
-      }
+      // Closed instead when the handoff was given up while it opened.
+      if (asHandoff) return handoff.current.accept(opened.id, handoffToken)
       model = opened.model ?? (qwen ? QWEN_MODEL : DEFAULT_MODEL)
       // The voice picked here, else the host's.
       voice = (qwen ? qwenVoice() : geminiVoice()) || opened.voice
@@ -608,7 +610,7 @@ export function GeminiLiveCall({
       window.setTimeout(() => !ended.current && reconnect(failed + 1), reconnectDelayMs(failed))
     }
     startHandoff.current = next => {
-      if (ended.current || ending.current) return
+      if (ended.current || ending.current || !handoff.current.active) return
       attempt.current = next
       void open(true)
     }
@@ -619,8 +621,7 @@ export function GeminiLiveCall({
     // The handed-off connection is set up: it takes over, and the old one closes.
     const takeOver = () => {
       const old = socket.current
-      socket.current = handoff.current
-      handoff.current = null
+      socket.current = handoff.current.take()
       attempt.current = 0
       replaced()
       if (old) window.conduit.liveClose(old)
@@ -636,7 +637,7 @@ export function GeminiLiveCall({
       }
     }
     const stopListening = window.conduit.onLive(event => {
-      if (handoff.current && event.id === handoff.current) {
+      if (handoff.current.id && event.id === handoff.current.id) {
         if (event.type === 'open') window.conduit.liveSend(event.id, JSON.stringify(setupMessage(model, told, voice, recall, search, { handle: resumeHandle.current })))
         else if (event.type === 'message') {
           for (const decoded of decode(event.data)) {
@@ -644,7 +645,7 @@ export function GeminiLiveCall({
             else if (decoded.type === 'ready') return takeOver()
           }
         } else if (event.type === 'close') {
-          handoff.current = null
+          handoff.current.closed()
           trace.current?.step(`The next connection closed (${event.code ?? 'no code'})`)
           if (ended.current || ending.current) return
           if (isRefusalClose(event.code, event.reason)) {
@@ -694,10 +695,12 @@ export function GeminiLiveCall({
           search = 'none'
           told = instructions({ ...toldWith, search })
           ready.current = false
+          // A GoAway's next connection would resume with Search: it closes, and this one serves instead.
+          handoff.current.drop()
           return void open()
         }
         // A GoAway's next connection is setting up: it takes over once ready.
-        if (handoff.current) {
+        if (handoff.current.active) {
           if (ready.current) {
             ready.current = false
             setPhase('reconnecting')
