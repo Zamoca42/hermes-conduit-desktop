@@ -36,7 +36,8 @@ import { displayName, roomUploadProblem } from "../state/attachments";
 import { keptPictures, keptStoredPicture, readRoomPicture, readStoredPicture } from "../state/roomPictures";
 import { isStoredRoomFile, linkedRoomFilesProblem } from "../state/roomFiles";
 import { t } from "@shared/i18n";
-import { JumpToLatest, atEnd } from "./JumpToLatest";
+import { JumpToLatest } from "./JumpToLatest"
+import { atEnd } from "../state/scrollEnd";
 
 interface Props {
   room: Room;

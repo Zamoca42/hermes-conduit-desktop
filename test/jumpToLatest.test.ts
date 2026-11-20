@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { atEnd } from '../src/renderer/src/components/JumpToLatest'
+import { atEnd } from '../src/renderer/src/state/scrollEnd'
 
 describe('the jump-to-latest button', () => {
   it('shows once the reader is more than a little way up from the end', () => {
