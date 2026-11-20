@@ -30,6 +30,14 @@ button {
   cursor: pointer;
 }
 
+/* A select's open list is drawn by the system, which can't show the see-through field colors:
+   without an opaque background of its own it came out white, with the theme's white text unreadable. */
+select option,
+select optgroup {
+  background-color: var(--backdrop);
+  color: var(--text);
+}
+
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
