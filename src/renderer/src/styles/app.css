@@ -105,17 +105,16 @@ a:hover {
   flex: 1;
 }
 
+/* The app icon, as on the iPhone: its light version under a light theme. */
+.titlebar .brand picture {
+  display: flex;
+  flex: none;
+}
 .brand-mark {
   width: 20px;
   height: 20px;
-  border-radius: 6px;
-  background: var(--accent-fill);
-  color: var(--accent-ink);
-  font-size: 12px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 5px;
+  display: block;
   flex: none;
 }
 
