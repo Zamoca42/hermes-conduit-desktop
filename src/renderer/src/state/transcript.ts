@@ -11,6 +11,7 @@ import { isQuestion } from './stepSummaries'
 import { SHOW_TOOL, boardFrom, type Board } from './boards'
 import { appliedOver, connectionFrom, type ConnectionCard } from './connections'
 import { TIMELINE_KINDS, delegationReport, timelineNotice, type DelegationEntry } from './timeline'
+import { silenceShown, streamShown } from './silence'
 
 export interface UserItem {
   kind: 'user'
@@ -29,6 +30,8 @@ export interface AssistantItem {
   text: string
   at?: number
   streaming: boolean
+  /** While streaming, everything received; `text` holds back a silence marker it could still become (silence.ts). */
+  raw?: string
   /** Its stored row, which a reaction addresses; a live reply learns it from its first reaction. */
   rowId?: number
   /** Tapbacks on it, yours and the agent's, in the order they came (Hermes' display_metadata.reactions). */
@@ -359,7 +362,8 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
         if (typeof row.reasoning === 'string' && row.reasoning.trim()) {
           items.push({ kind: 'thinking', key: `${key}-r`, text: row.reasoning.trim(), streaming: false })
         }
-        const text = rowText(row).trim()
+        // A reply that is only Hermes' silence marker shows nothing (issue 2700).
+        const text = silenceShown(rowText(row)).trim()
         const reactions = reactionsFrom(metadataOf(row.display_metadata)?.reactions)
         if (text)
           items.push({
@@ -402,25 +406,36 @@ export function fromHistory(rows: HistoryRow[]): TranscriptItem[] {
 /** Stops whatever is still streaming: a tool line or the turn's end comes next. */
 function seal(items: TranscriptItem[]): TranscriptItem[] {
   let changed = false
-  const next = items.map(item => {
-    if ((item.kind === 'assistant' || item.kind === 'thinking') && item.streaming) {
+  const next = items.flatMap((item): TranscriptItem[] => {
+    if (item.kind === 'assistant' && item.streaming) {
       changed = true
-      return { ...item, streaming: false }
+      // A finished reply: no closing marker, and nothing at all when it was only one.
+      const { raw, ...rest } = item
+      const text = silenceShown(raw ?? item.text)
+      return text.trim() ? [{ ...rest, text, streaming: false }] : []
     }
-    return item
+    if (item.kind === 'thinking' && item.streaming) {
+      changed = true
+      return [{ ...item, streaming: false }]
+    }
+    return [item]
   })
   return changed ? next : items
 }
 
 function appendStreaming(items: TranscriptItem[], kind: 'assistant' | 'thinking', text: string): TranscriptItem[] {
   const last = items[items.length - 1]
+  if (last && last.kind === 'assistant' && kind === 'assistant' && last.streaming) {
+    const raw = (last.raw ?? last.text) + text
+    return [...items.slice(0, -1), { ...last, raw, text: streamShown(raw) }]
+  }
   if (last && last.kind === kind && last.streaming) {
     return [...items.slice(0, -1), { ...last, text: last.text + text }]
   }
   const base = kind === 'assistant' ? seal(items) : items
   const item: TranscriptItem =
     kind === 'assistant'
-      ? { kind: 'assistant', key: nextKey('a'), text, at: Date.now(), streaming: true }
+      ? { kind: 'assistant', key: nextKey('a'), raw: text, text: streamShown(text), at: Date.now(), streaming: true }
       : { kind: 'thinking', key: nextKey('t'), text, streaming: true }
   return [...base, item]
 }
@@ -457,8 +472,8 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
       return { ...state, items: appendStreaming(state.items, 'thinking', text) }
     }
     case 'message.interim': {
-      const text = str(payload.text)
-      if (!text || payload.already_streamed === true) return { ...state, items: seal(state.items) }
+      const text = silenceShown(str(payload.text) ?? '')
+      if (!text.trim() || payload.already_streamed === true) return { ...state, items: seal(state.items) }
       return {
         ...state,
         items: [...seal(state.items), { kind: 'assistant', key: nextKey('a'), text, at: Date.now(), streaming: false }]
@@ -502,7 +517,7 @@ export function applyEvent(state: TranscriptState, event: { type: string; payloa
     }
     case 'message.complete': {
       let items = seal(confirmPending(state.items))
-      const finalText = str(payload.text) ?? str(payload.rendered)
+      const finalText = silenceShown(str(payload.text) ?? str(payload.rendered) ?? '')
       const lastUser = items.map(i => i.kind).lastIndexOf('user')
       const repliedThisTurn = items.slice(lastUser + 1).some(i => i.kind === 'assistant')
       if (finalText?.trim() && !repliedThisTurn) {

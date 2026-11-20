@@ -14,10 +14,36 @@ import {
   type RpcOutcome
 } from '../shared/ipc'
 
+/**
+ * One ipcRenderer listener per channel, fanned out to every subscriber: many
+ * screens stay mounted and each listens for gateway events, which would pass
+ * EventEmitter's limit of 10 listeners and warn of a leak that isn't one.
+ */
+const fanouts = new Map<string, Set<(value: unknown) => void>>()
+
 function listen<T>(channel: string, listener: (value: T) => void): () => void {
-  const handler = (_event: IpcRendererEvent, value: T) => listener(value)
-  ipcRenderer.on(channel, handler)
-  return () => ipcRenderer.removeListener(channel, handler)
+  let subscribers = fanouts.get(channel)
+  if (!subscribers) {
+    const set = new Set<(value: unknown) => void>()
+    subscribers = set
+    fanouts.set(channel, set)
+    ipcRenderer.on(channel, (_event: IpcRendererEvent, value: unknown) => {
+      // A subscriber that unsubscribes (or throws) mid-dispatch leaves the rest unaffected.
+      for (const subscriber of [...set]) {
+        try {
+          subscriber(value)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    })
+  }
+  // Its own wrapper, so the same function subscribed twice is called twice and unsubscribed once each.
+  const subscriber = (value: unknown) => listener(value as T)
+  subscribers.add(subscriber)
+  return () => {
+    subscribers.delete(subscriber)
+  }
 }
 
 class RpcError extends Error {
