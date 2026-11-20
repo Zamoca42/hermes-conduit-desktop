@@ -2,7 +2,7 @@ import { ROOM_RULES_CAPABILITY } from './state/roomChoices'
 import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { gateway } from './gateway'
+import { GatewayError, gateway } from './gateway'
 import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
 import { arrange, farBotFor, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
@@ -25,6 +25,7 @@ import { GlowContext, useGlowColors } from './components/GlowColors'
 import { archiveClassicChat, tagVoiceSession, useVoiceList, withVoice } from './state/voiceList'
 import { setCatalogHost } from './state/modelCatalog'
 import { setTurnSurfaceHost } from './state/turnSurface'
+import { noteDashboardProfiles, setDashboardProfilesHost } from './state/dashboardProfile'
 import { setDesktopCardsHost } from './state/desktopCards'
 import { setKanbanHost } from './state/useKanban'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
@@ -212,8 +213,23 @@ export function App() {
   setCatalogHost(url ?? '')
   setKeptAnswersHost(url ?? '')
   setTurnSurfaceHost(url ?? '')
+  setDashboardProfilesHost(url ?? '')
   setDesktopCardsHost(url ?? '')
   setKanbanHost(url ?? '')
+  // Whether this dashboard's plugin reads ?conduit_profile= for another profile's routes, or an older one keeps ?profile=.
+  const phase = status?.phase
+  useEffect(() => {
+    if (phase !== 'open' || !url) return
+    gateway
+      .http('GET', PLUGIN_STATUS_PATH, undefined, 8_000)
+      .then(body => {
+        const plugin = pluginStatus(body)
+        noteDashboardProfiles(url, plugin.state === 'reported' ? plugin.capabilities : null)
+      })
+      .catch((e: unknown) => {
+        if (e instanceof GatewayError && e.code === 404) noteDashboardProfiles(url, null)
+      })
+  }, [phase, url])
   // A host signed out or removed takes the summaries of its runs of steps, and its saved chat list, with it.
   const hostList = status?.hosts?.map(h => h.url).join('\n')
   useEffect(() => {
