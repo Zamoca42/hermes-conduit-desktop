@@ -11,7 +11,7 @@ const AUXILIARY = '/api/model/auxiliary'
 /**
  * Pick who answers automatically: the model that picks, the default profile's Group router helper, which Hermes
  * uses for every auto-routed room on this Hermes (hermes-conduit#2909). Change opens Settings > Models for the
- * default profile. Shown once Hermes lists the slot (the plugin adds it from 0.186.0).
+ * default profile. Shown once Hermes lists the slot (the plugin adds it from 0.187.0).
  */
 function RouterModelRow({ mainBot, onOpen }: { mainBot: string; onOpen: () => void }) {
   const [slot, setSlot] = useState<HelperSlot | null>(() => groupRouterSlot(keptAnswer(AUXILIARY)))
@@ -41,7 +41,7 @@ function RouterModelRow({ mainBot, onOpen }: { mainBot: string; onOpen: () => vo
         </button>
       </div>
       <p className="meta">
-        {t('This is {name}’s Group router helper. It picks for every group chat on this Hermes that answers automatically.', { name: mainBot })}
+        {t('This is {name}’s Group router helper. It picks who answers in every group chat on this Hermes set to pick automatically.', { name: mainBot })}
       </p>
     </>
   )
