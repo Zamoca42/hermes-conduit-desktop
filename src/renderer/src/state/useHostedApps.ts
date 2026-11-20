@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '../../../shared/i18n'
 import { gateway, GatewayError } from '../gateway'
+import { answerKeeper, keptAnswer } from './keptAnswers'
 import {
   carryingLink,
   isConnected,
@@ -30,6 +31,16 @@ import {
   type Policy,
   type Snapshot
 } from './hostedApps'
+
+/** Where the apps as Hermes last gave them are kept, per profile: the catalog, the accounts' names and the rules, never a sign-in. */
+export const keptAppsKey = (profile: string) => `rpc:connectors?profile=${encodeURIComponent(profile || 'default')}`
+
+/** A kept snapshot read back: only one shaped like the hook's own. */
+export function keptSnapshot(value: unknown): Snapshot | null {
+  const s = value && typeof value === 'object' ? (value as Partial<Snapshot>) : null
+  if (!s || typeof s.available !== 'boolean' || !Array.isArray(s.catalog) || !Array.isArray(s.statuses) || !Array.isArray(s.accounts)) return null
+  return { available: s.available, catalog: s.catalog, statuses: s.statuses, accounts: s.accounts, policy: s.policy ?? null, rulesFailed: !!s.rulesFailed }
+}
 
 const METHOD_NOT_FOUND = -32601
 const POLL_MS = 2_000
@@ -75,6 +86,8 @@ export function useHostedApps(profile: string): HostedApps {
   const generation = useRef(0)
   const snapshotRef = useRef<Snapshot | null>(null)
   snapshotRef.current = snapshot
+  /** Whether the snapshot is Hermes' answer this time, not the one kept from last time. */
+  const fresh = useRef(false)
   /** The running sign-in: its operation once Hermes gave one, and whether it was stopped. */
   const signIn = useRef<{ slug: string; operation: Operation | null; stopped: boolean; woke: boolean } | null>(null)
 
@@ -96,6 +109,7 @@ export function useHostedApps(profile: string): HostedApps {
 
   const reload = useCallback(async () => {
     const mine = generation.current
+    const keep = answerKeeper(keptAppsKey(profile))
     setLoading(true)
     setError(null)
     try {
@@ -108,7 +122,12 @@ export function useHostedApps(profile: string): HostedApps {
         else throw e
       }
       if (!list.available) {
-        if (generation.current === mine) setSnapshot(UNAVAILABLE)
+        if (generation.current === mine) {
+          fresh.current = true
+          snapshotRef.current = UNAVAILABLE
+          setSnapshot(UNAVAILABLE)
+          keep(UNAVAILABLE)
+        }
         return
       }
       const [catalog, accounts] = [rpc('connectors.catalog').then(parseCatalog), rpc('connectors.accounts').then(parseAccounts)]
@@ -125,13 +144,20 @@ export function useHostedApps(profile: string): HostedApps {
         }
       }
       const next: Snapshot = { available: true, catalog: await catalog, statuses: list.statuses, accounts: await accounts, policy, rulesFailed }
-      if (generation.current === mine) setSnapshot(next)
+      if (generation.current === mine) {
+        fresh.current = true
+        // Set now too, so a switch waiting on this read sees its revision.
+        snapshotRef.current = next
+        setSnapshot(next)
+        // Rules that couldn't be read aren't kept as read.
+        if (!rulesFailed) keep(next)
+      }
     } catch (e) {
       if (generation.current === mine) setError(worded(e))
     } finally {
       if (generation.current === mine) setLoading(false)
     }
-  }, [rpc])
+  }, [rpc, profile])
 
   /** Tells Hermes to stop waiting, and removes the accounts the sign-in left unfinished. */
   const giveUp = useCallback(
@@ -242,7 +268,9 @@ export function useHostedApps(profile: string): HostedApps {
   // Another bot, or leaving Capabilities, starts over and gives up a sign-in.
   useEffect(() => {
     generation.current++
-    setSnapshot(null)
+    // Opens on the apps as Hermes last gave them on this dashboard, then reads them again (Screens that open on their last answer).
+    fresh.current = false
+    setSnapshot(keptSnapshot(keptAnswer(keptAppsKey(profile))))
     setError(null)
     setNotes({})
     void reload()
@@ -253,13 +281,15 @@ export function useHostedApps(profile: string): HostedApps {
       setSigningIn(null)
       setSignInPage(null)
     }
-  }, [reload])
+  }, [reload, profile])
 
   const tools = useCallback(async (slug: string, refresh = false) => parseTools(await rpc('connectors.tools', { slug, refresh })), [rpc])
 
   /** A rules change against the member rules' revision; the rules are read again after, a conflict included. */
   const writeRules = useCallback(
     async (slug: string, change: Record<string, unknown>) => {
+      // A switch on the kept rules waits for Hermes' own, so it writes against their revision.
+      if (!fresh.current) await reload()
       const mine = generation.current
       const revision = policyRevision(snapshotRef.current?.policy ?? null)
       if (!revision) return note(slug, t('Your organization manages these switches.'))

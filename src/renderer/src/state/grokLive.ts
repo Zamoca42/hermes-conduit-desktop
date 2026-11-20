@@ -38,6 +38,20 @@ const str = (v: unknown) => (typeof v === 'string' && v ? v : null)
 
 export type Availability = { ok: true; model: string; voice: string | null; auth: string | null } | { ok: false; reason: string | null }
 
+/** The line as kept: `auth` names the sign-in used (subscription or API key), never a secret, but the store leaves out any name like it. */
+export function packGrokLine(line: Availability): unknown {
+  if (!line.ok) return line
+  const { auth, ...rest } = line
+  return { ...rest, signIn: auth }
+}
+
+export function unpackGrokLine(kept: unknown): Availability | null {
+  const r = (kept ?? {}) as Row
+  if (r.ok === false) return { ok: false, reason: str(r.reason) }
+  if (r.ok !== true || !str(r.model)) return null
+  return { ok: true, model: str(r.model)!, voice: str(r.voice), auth: str(r.signIn) }
+}
+
 /** The plugin's status: whether this host can relay Grok Live. */
 export function availability(response: unknown): Availability {
   const r = (response ?? {}) as Row
