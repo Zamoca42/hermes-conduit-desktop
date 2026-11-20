@@ -38,6 +38,7 @@ import { REASONING_LEVELS } from '../state/models'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelChooser } from './ModelChooser'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
+import { ask } from '../state/dialogs'
 
 interface Props {
   bots: Bot[] | null
@@ -119,8 +120,8 @@ export function ScheduledJobs({ bots, connected, profile, onProfile, onOpenRun, 
   }
 
   async function remove(job: CronJob) {
-    const ask = t("This removes {name} from Hermes, so it won't run again. Chats from its past runs are kept.", { name: displayName(job) })
-    if (!window.confirm(`${t('Delete scheduled job?')}\n\n${ask}`)) return
+    const detail = t("This removes {name} from Hermes, so it won't run again. Chats from its past runs are kept.", { name: displayName(job) })
+    if (!(await ask(`${t('Delete scheduled job?')}\n\n${detail}`, { confirm: t('Delete'), destructive: true }))) return
     setNote(null)
     const failure = await cron.remove(job)
     if (failure) {

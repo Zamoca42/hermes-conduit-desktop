@@ -5,6 +5,7 @@ import {
   CHECK_PATH,
   canUpdateHere,
   dismissRestart,
+  dismissUpdate,
   restartInProgress,
   startCheck,
   startRestart,
@@ -17,6 +18,7 @@ import {
   type UpdateState,
   type UpdateStep
 } from '../state/hostActions'
+import { ask } from '../state/dialogs'
 
 // Hermes' update check probes its checkout's git remotes and can take most of a minute (40 s on a real host).
 const request = (method: 'GET' | 'POST', path: string) =>
@@ -151,19 +153,19 @@ export function HostActions({ host, connected }: { host: string; connected: bool
   const row = updateRow(update)
   const restartShown = restartRow(restart)
 
-  const confirmUpdate = () => {
+  const confirmUpdate = async () => {
     const lines = [t("Hermes pulls the new version and restarts. Chats and messaging channels pause until it's back.")]
     if (check?.rollbackTo)
       lines.push(t('This host is newer than the {release} release; updating moves it back to that release.', { release: check.rollbackTo }))
-    if (!window.confirm(`${t('Update Hermes on your host?')}\n\n${lines.join('\n\n')}`)) return
+    if (!(await ask(`${t('Update Hermes on your host?')}\n\n${lines.join('\n\n')}`, { confirm: t('Update Hermes') }))) return
     void startUpdate(host, request, t("Hermes can't update itself here."), () => void window.conduit.reconnect())
   }
 
-  const confirmRestart = () => {
+  const confirmRestart = async () => {
     const text = `${t('Restart the gateway?')}\n\n${t(
       "Hermes restarts its gateway process. Messaging channels, running sessions and any profiles that share this gateway reconnect once it's back."
     )}`
-    if (window.confirm(text)) void startRestart(host, request)
+    if (await ask(text, { confirm: t('Restart Gateway') })) void startRestart(host, request)
   }
 
   return (
@@ -171,7 +173,7 @@ export function HostActions({ host, connected }: { host: string; connected: bool
       <dt>{t('Version')}</dt>
       <dd className="host-actions">
         {check?.currentVersion ? <div>{check.currentVersion}</div> : null}
-        {row ? <Status row={row} /> : null}
+        {row ? <Status row={row} onDismiss={update.kind === 'checked' || update.kind === 'checking' ? undefined : () => dismissUpdate(host)} /> : null}
         {check && canUpdateHere(check) && check.commits.length ? (
           <div className="host-news">
             <div className="meta">{t("What's new")}</div>

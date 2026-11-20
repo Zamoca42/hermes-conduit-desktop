@@ -6,6 +6,7 @@ import { useKanban } from '../state/useKanban'
 import { timeLabel } from '../state/chats'
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
+import { ask } from '../state/dialogs'
 
 interface Props {
   connected: boolean
@@ -521,8 +522,8 @@ function TaskPanel({
           <button
             className="secondary danger"
             disabled={busy}
-            onClick={() => {
-              if (window.confirm(`${t('Delete task?')}\n\n${t('This removes {title} from the board for good.', { title: shown.title })}`)) void run(onDelete)
+            onClick={async () => {
+              if (await ask(`${t('Delete task?')}\n\n${t('This removes {title} from the board for good.', { title: shown.title })}`, { confirm: t('Delete'), destructive: true })) void run(onDelete)
             }}
           >
             {t('Delete')}

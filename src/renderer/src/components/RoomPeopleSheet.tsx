@@ -6,6 +6,7 @@ import { clippedNote, canTakeOut, roomChoicesClient, takeOutMessage, takeOutTitl
 import { roomCopiesClient, outLine, type RoomCopy } from '../state/roomCopies'
 import { shareDetail, toolsDetail } from '../state/roomInvites'
 import { linksMessage } from '../state/roomLinks'
+import { ask } from '../state/dialogs'
 
 const choicesClient = roomChoicesClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 const copiesClient = roomCopiesClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
@@ -61,7 +62,7 @@ export function RoomPeopleSheet({
 
   const takeOut = async (member: RoomMember) => {
     const name = nameOf(member)
-    if (working || !window.confirm(`${takeOutTitle(name)}\n\n${takeOutMessage(name, member, host)}`)) return
+    if (working || !(await ask(`${takeOutTitle(name)}\n\n${takeOutMessage(name, member, host)}`))) return
     setWorking(member.memberId)
     setError(null)
     setNote(null)

@@ -4,6 +4,7 @@ import type { Room } from '../state/groups'
 import { canStartNow, draftLine, namesList, personStatus, waitingFor, type RoomDraft } from '../state/roomDrafts'
 import { until } from '../state/roomInvites'
 import { Icon } from './icons'
+import { ask } from '../state/dialogs'
 
 /**
  * A draft's card, after the phone's RoomDraftSheet: each person invited and
@@ -67,7 +68,7 @@ export function RoomDraftCard({
 
   const start = async () => {
     const waiting = namesList(waitingFor(draft).map(p => p.name))
-    if (!window.confirm(`${t('Start without {names}?', { names: waiting })}\n\n${t('They’re told it started without them.')}`)) return
+    if (!(await ask(`${t('Start without {names}?', { names: waiting })}\n\n${t('They’re told it started without them.')}`))) return
     setBusy(true)
     setError(null)
     try {
@@ -81,7 +82,7 @@ export function RoomDraftCard({
   }
 
   const takeBack = async () => {
-    if (!window.confirm(`${t('Take back {name}?', { name: draft.name })}\n\n${t('Everyone you invited is told, and their agents’ joins are undone.')}`)) return
+    if (!(await ask(`${t('Take back {name}?', { name: draft.name })}\n\n${t('Everyone you invited is told, and their agents’ joins are undone.')}`))) return
     setBusy(true)
     setError(null)
     try {

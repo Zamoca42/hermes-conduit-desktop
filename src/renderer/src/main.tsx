@@ -5,15 +5,19 @@ import { QuickAsk } from './components/QuickAsk'
 import { ChatWindow } from './components/ChatWindow'
 import { chatWindowRequest } from '@shared/chatWindows'
 import { PictureViewerHost } from './components/Picture'
+import { DialogHost } from './components/Dialogs'
 import './styles/theme.css'
 import './styles/app.css'
 import { setLanguage } from '@shared/i18n'
 import { applyStoredAppearance } from './state/appearance'
+import { installMouseBack } from './state/mouseBack'
 
 setLanguage(window.conduit.language.resolved)
 document.documentElement.lang = window.conduit.language.resolved
 document.documentElement.dataset.platform = window.conduit.platform
 applyStoredAppearance()
+// The mouse's back button goes back from any page or sheet with a Back.
+installMouseBack()
 // The quick ask window follows an accent or text style picked in the main one.
 window.addEventListener('storage', () => applyStoredAppearance())
 const quick = window.location.hash === '#quick'
@@ -23,6 +27,9 @@ if (chatWindow) document.documentElement.dataset.window = 'chat'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PictureViewerHost>{quick ? <QuickAsk /> : chatWindow ? <ChatWindow chat={chatWindow} /> : <App />}</PictureViewerHost>
+    <PictureViewerHost>
+      {quick ? <QuickAsk /> : chatWindow ? <ChatWindow chat={chatWindow} /> : <App />}
+      <DialogHost />
+    </PictureViewerHost>
   </StrictMode>
 )

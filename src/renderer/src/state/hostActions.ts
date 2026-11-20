@@ -66,7 +66,7 @@ export type UpdateState =
   | { kind: 'checked'; check: UpdateCheck }
   | { kind: 'updating'; step: UpdateStep; detail?: string }
   | { kind: 'updated'; version?: string }
-  | { kind: 'failed'; detail?: string }
+  | { kind: 'failed'; detail?: string; back?: boolean }
   | { kind: 'checkFailed'; detail?: string }
   | { kind: 'manual'; message: string; command?: string }
   | { kind: 'notBackYet' }
@@ -330,6 +330,20 @@ export async function runRestart(run: Runner, progress: (s: RestartState) => voi
   }
 }
 
+/**
+ * What the connection banner says while Hermes is away because of an update
+ * started here, in place of a bare "reconnecting": the update's step, or
+ * that it didn't come back (the update may have stopped, and Hermes may need
+ * starting on the host). Null for anything else.
+ */
+export function updateBanner(update: UpdateState): 'updating' | 'restarting' | 'notBack' | 'failed' | null {
+  if (update.kind === 'updating') return update.step === 'restarting' ? 'restarting' : 'updating'
+  if (update.kind === 'notBackYet') return 'notBack'
+  // Once Hermes has been reachable since, a later disconnection isn't the update's.
+  if (update.kind === 'failed' && !update.back) return 'failed'
+  return null
+}
+
 /** The window's one update and one restart, for the host they started on. */
 interface HostActions {
   host: string
@@ -400,6 +414,22 @@ export async function startRestart(host: string, request: Runner['request']) {
   const run = runner(host, request)
   const outcome = await runRestart(run, state => run.live() && set({ restart: state }))
   if (run.live()) set({ restart: outcome })
+}
+
+/**
+ * Hermes is reachable on `host`: an update that wasn't back yet is, so its row
+ * clears, and a failed one stays in Settings but no longer speaks for the
+ * connection banner.
+ */
+export function hostReachable(host: string) {
+  if (current.host !== host) return
+  if (current.update.kind === 'notBackYet') set({ update: { kind: 'idle' } })
+  else if (current.update.kind === 'failed' && !current.update.back) set({ update: { ...current.update, back: true } })
+}
+
+/** Clears a finished update's outcome. */
+export function dismissUpdate(host: string) {
+  if (current.host === host && !updateInProgress(current.update)) set({ update: { kind: 'idle' } })
 }
 
 /** Clears a finished restart's outcome. */

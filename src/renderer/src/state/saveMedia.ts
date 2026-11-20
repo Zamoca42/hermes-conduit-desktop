@@ -3,6 +3,7 @@
  * person picks: a file on the Hermes host (streamed by the main process), or
  * a picture already drawn from its data.
  */
+import { tell } from './dialogs'
 
 /** Saves a host file; null when saved or cancelled, else what went wrong. */
 export async function saveHostFile(path: string, profile?: string | null): Promise<string | null> {
@@ -23,7 +24,7 @@ export async function saveFromUrl(src: string, name: string): Promise<boolean> {
 
 /** Says what went wrong, if anything. */
 export function sayIfFailed(error: string | null): void {
-  if (error) window.alert(error)
+  if (error) void tell(error)
 }
 
 /** A base64 data URL's bytes, or null when it isn't one. */

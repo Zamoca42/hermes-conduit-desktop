@@ -5958,7 +5958,8 @@ code.file-link:hover {
   display: block;
   margin-top: 4px;
 }
-.host-status .spinner {
+.host-status .spinner,
+.banner > .spinner {
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -10597,4 +10598,28 @@ button.secondary.danger {
 .bot-side-stream .row-title {
   font-size: 13px;
   font-weight: 500;
+}
+
+/* Conduit's own confirm, notice and name dialogs, in place of the system boxes (state/dialogs.ts). */
+.dialog-backdrop {
+  z-index: 1100;
+}
+.conduit-dialog {
+  width: min(460px, 100%);
+}
+.conduit-dialog p {
+  white-space: pre-line;
+  color: var(--text-2);
+}
+.conduit-dialog-field {
+  width: 100%;
+  margin: 2px 0 4px;
+}
+.conduit-dialog .primary.destructive {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.banner > .spinner {
+  flex: none;
 }

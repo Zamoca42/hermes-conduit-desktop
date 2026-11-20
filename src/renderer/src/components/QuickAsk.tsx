@@ -10,6 +10,7 @@ import type { QuoteRequest } from '../state/quote'
 import { looksLikeSlashCommand } from '../state/slash'
 import { useCommands } from '../state/useCommands'
 import { dataUrlBlob } from '../state/callPicture'
+import { tell } from '../state/dialogs'
 
 /**
  * The quick ask window: one field to ask Hermes something from anywhere,
@@ -101,7 +102,7 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
     const url = await window.conduit.screenshot().catch(() => null)
     setCapturing(false)
     if (!url) {
-      window.alert(t('Conduit couldn’t capture the screen. On a Mac, allow Screen Recording for Conduit in System Settings, then try again.'))
+      void tell(t('Conduit couldn’t capture the screen. On a Mac, allow Screen Recording for Conduit in System Settings, then try again.'))
       return
     }
     const blob = dataUrlBlob(url)

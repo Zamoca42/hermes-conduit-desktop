@@ -71,6 +71,7 @@ import {
   setGeminiVoice,
   type Availability as GeminiAvailability
 } from '../state/geminiLive'
+import { ask } from '../state/dialogs'
 
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
@@ -113,13 +114,13 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
     setMode(next)
     setVoiceMode(next)
   }
-  const pay = (next: Billing) => {
+  const pay = async (next: Billing) => {
     // As on the phone: the API key is billed per minute, so it's asked first.
     if (
       next === 'api' &&
-      !window.confirm(
+      !(await ask(
         `${t('Bill GPT-Live to the API key?')}\n\n${t("GPT-Live calls will use your Hermes server's OpenAI API key, which OpenAI bills per minute of call time, separately from any ChatGPT plan. Your Hermes server has to allow it too (voice.gpt_live.conduit_api_billing in the profile's config).")}`
-      )
+      ))
     )
       return
     setBilling(next)

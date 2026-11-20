@@ -22,6 +22,7 @@ import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 import { useMouseBack } from '../state/mouseBack'
+import { ask } from '../state/dialogs'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -90,7 +91,7 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
       let answer = (await gateway.http('POST', path, body)) as { confirm_required?: unknown; confirm_message?: unknown } | null
       if (answer?.confirm_required === true) {
         const note = typeof answer.confirm_message === 'string' && answer.confirm_message ? answer.confirm_message : t('Use This Model?')
-        if (!window.confirm(note)) return
+        if (!(await ask(note))) return
         answer = (await gateway.http('POST', path, { ...body, confirm_expensive_model: true })) as typeof answer
       }
       await load()

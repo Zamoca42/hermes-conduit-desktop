@@ -25,6 +25,7 @@ import {
 import type { HostedApps } from '../state/useHostedApps'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { ask } from '../state/dialogs'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 
@@ -343,9 +344,9 @@ export function HostedAppPage({ apps, slug, onBack }: { apps: HostedApps; slug: 
 
   const disconnect = async (account: AppAccount) => {
     if (
-      !window.confirm(
+      !(await ask(
         `${t('Disconnect this account?')}\n\n${t('Hermes signs out of “{name}” and can’t use it until you connect it again.', { name: accountName(account) })}`
-      )
+      ))
     )
       return
     setBusyAccount(account.connectionId)

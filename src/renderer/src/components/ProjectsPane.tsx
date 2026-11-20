@@ -4,6 +4,7 @@ import { gateway } from '../gateway'
 import { timeLabel } from '../state/chats'
 import { createParams, parseProjectChats, parseProjects, type Project, type ProjectChat, type ProjectDetail } from '../state/projects'
 import { Icon } from './icons'
+import { ask, tell } from '../state/dialogs'
 
 interface Props {
   /** The chat list's profile; null reads the active one. */
@@ -230,16 +231,16 @@ function ProjectPage({
       await gateway.rpc('projects.update', withProfile({ id: project.id, name: title }))
       onChanged({ ...project, title })
     } catch (e) {
-      window.alert(t('Couldn’t rename the project: {reason}', { reason: reason(e) }))
+      void tell(t('Couldn’t rename the project: {reason}', { reason: reason(e) }))
     }
   }
   async function remove() {
-    if (!window.confirm(`${t('Delete project?')}\n\n${project.title}\n${t('Its folders, files and chats stay where they are.')}`)) return
+    if (!(await ask(`${t('Delete project?')}\n\n${project.title}\n${t('Its folders, files and chats stay where they are.')}`, { confirm: t('Delete'), destructive: true }))) return
     try {
       await gateway.rpc('projects.delete', withProfile({ id: project.id }))
       onChanged(null)
     } catch (e) {
-      window.alert(t('Couldn’t delete the project: {reason}', { reason: reason(e) }))
+      void tell(t('Couldn’t delete the project: {reason}', { reason: reason(e) }))
     }
   }
 

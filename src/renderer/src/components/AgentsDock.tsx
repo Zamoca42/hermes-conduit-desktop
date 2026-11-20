@@ -3,6 +3,7 @@ import { t } from '@shared/i18n'
 import { elapsed, isActive, statusTitle, type DelegateAgent } from '../state/agents'
 import { isRunningProcess, type BackgroundProcess } from '../state/processes'
 import { Icon } from './icons'
+import { ask } from '../state/dialogs'
 
 interface Props {
   agents: DelegateAgent[]
@@ -119,8 +120,8 @@ function ProcessCard({ process, kill }: { process: BackgroundProcess; kill: Prop
           <button
             className="link danger"
             disabled={busy}
-            onClick={() => {
-              if (!window.confirm(`${t('Stop this process?')}\n\n${t('Hermes ends it on your host. Anything it was serving or watching stops with it.')}`))
+            onClick={async () => {
+              if (!(await ask(`${t('Stop this process?')}\n\n${t('Hermes ends it on your host. Anything it was serving or watching stops with it.')}`)))
                 return
               setBusy(true)
               setNote(null)

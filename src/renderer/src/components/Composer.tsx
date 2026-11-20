@@ -14,6 +14,7 @@ import { ClipInbox, indexedClipStore, keepsAfter, memoryClipStore, withRetries, 
 import { insertingMention, mentionCandidates, mentionQueryAt, mentionTag } from '../state/botMentions'
 import type { Bot } from '../state/bots'
 import { carriesReply, excerpt, insertQuote, replyEnvelope, type QuoteRequest, type ReplyReference } from '../state/quote'
+import { ask } from '../state/dialogs'
 
 /** The last folder of a path, the way the phone's chip shows it. */
 function folderName(path: string): string {
@@ -722,8 +723,8 @@ export function Composer({
               className="staged-remove"
               aria-label={t('Delete')}
               title={t('Delete')}
-              onClick={() => {
-                if (window.confirm(t("Delete this recording? Its words haven't been transcribed."))) void dictationClips.release(clip.id)
+              onClick={async () => {
+                if (await ask(t("Delete this recording? Its words haven't been transcribed."))) void dictationClips.release(clip.id)
               }}
             >
               <Icon name="close" />

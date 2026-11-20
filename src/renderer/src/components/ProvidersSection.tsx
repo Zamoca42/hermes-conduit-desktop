@@ -28,6 +28,7 @@ import { readConfig, updateConfig, valueAt, withValue, type Http } from '../stat
 import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { ask } from '../state/dialogs'
 
 const request = (method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number) => gateway.http(method, path, body, timeoutMs)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -318,8 +319,8 @@ function ProviderPage({
             <button
               className="link danger"
               disabled={busy || runsDefault || entry.endpoint.isCurrent}
-              onClick={() => {
-                if (!window.confirm(`${t('Remove {name}?', { name: entry.name })}\n\n${t('The endpoint is removed from this profile on your Hermes host.')}`))
+              onClick={async () => {
+                if (!(await ask(`${t('Remove {name}?', { name: entry.name })}\n\n${t('The endpoint is removed from this profile on your Hermes host.')}`)))
                   return
                 void run(async () => {
                   await service.removeEndpoint(entry.endpoint!.endpointID)
@@ -557,8 +558,8 @@ function AccountSection({ entry, service, busy, run }: { entry: ProviderEntry; s
               <button
                 className="link danger"
                 disabled={busy}
-                onClick={() => {
-                  if (!window.confirm(`${t('Remove {name}?', { name: entry.name })}\n\n${t('Hermes signs out of it for every profile.')}`)) return
+                onClick={async () => {
+                  if (!(await ask(`${t('Remove {name}?', { name: entry.name })}\n\n${t('Hermes signs out of it for every profile.')}`))) return
                   void run(() => service.signOut(entry.id))
                 }}
               >
@@ -724,8 +725,8 @@ function KeySection({
           <button
             className="link danger"
             disabled={busy || runsDefault}
-            onClick={() => {
-              if (!window.confirm(`${t('Remove the shared key?')}\n\n${t('Every profile without a key of its own stops using {name}.', { name: entry.name })}`))
+            onClick={async () => {
+              if (!(await ask(`${t('Remove the shared key?')}\n\n${t('Every profile without a key of its own stops using {name}.', { name: entry.name })}`)))
                 return
               void run(() => service.unshare(entry))
             }}
@@ -737,8 +738,8 @@ function KeySection({
           <button
             className="link danger"
             disabled={busy || runsDefault}
-            onClick={() => {
-              if (!window.confirm(t('Remove {name}?', { name: entry.name }))) return
+            onClick={async () => {
+              if (!(await ask(t('Remove {name}?', { name: entry.name })))) return
               void run(() => service.removeVariables(removableVars(key)))
             }}
           >

@@ -3689,6 +3689,21 @@
     "zh-Hans": "按模型",
     "zh-Hant": "依模型"
   },
+  "Conduit reconnects when it's back.": {
+    "de": "Conduit verbindet sich neu, sobald es zurück ist.",
+    "es": "Conduit se vuelve a conectar cuando regrese.",
+    "fr": "Conduit se reconnecte dès son retour.",
+    "id": "Conduit tersambung lagi saat Hermes kembali.",
+    "it": "Conduit si ricollega quando torna.",
+    "ja": "戻り次第、Conduitが再接続します。",
+    "ko": "돌아오면 Conduit이 다시 연결합니다.",
+    "pl": "Conduit połączy się ponownie, gdy wróci.",
+    "pt-BR": "O Conduit reconecta quando ele voltar.",
+    "ru": "Conduit переподключится, когда он вернётся.",
+    "tr": "Geri geldiğinde Conduit yeniden bağlanır.",
+    "zh-Hans": "恢复后 Conduit 会重新连接。",
+    "zh-Hant": "恢復後 Conduit 會重新連線。"
+  },
   "CONNECTED": {
     "de": "VERBUNDEN",
     "es": "CONECTADO",
@@ -9764,6 +9779,21 @@
     "zh-Hans": "结束通话",
     "zh-Hant": "結束通話"
   },
+  "End Call and Switch": {
+    "de": "Anruf beenden und wechseln",
+    "es": "Terminar llamada y cambiar",
+    "fr": "Terminer l'appel et changer",
+    "id": "Akhiri Panggilan dan Beralih",
+    "it": "Termina chiamata e passa",
+    "ja": "通話を終了して切り替え",
+    "ko": "통화 끝내고 전환",
+    "pl": "Zakończ i przełącz",
+    "pt-BR": "Encerrar chamada e trocar",
+    "ru": "Завершить и переключиться",
+    "tr": "Aramayı Bitir ve Geç",
+    "zh-Hans": "结束通话并切换",
+    "zh-Hant": "結束通話並切換"
+  },
   "End quiet time": {
     "de": "Ruhe beenden",
     "es": "Terminar el silencio",
@@ -12313,6 +12343,21 @@
     "tr": "Grup adı",
     "zh-Hans": "群聊名称",
     "zh-Hant": "群組名稱"
+  },
+  "Hermes hasn't come back after its update.": {
+    "de": "Hermes ist nach dem Update nicht zurückgekommen.",
+    "es": "Hermes no ha vuelto después de la actualización.",
+    "fr": "Hermes n’est pas revenu après sa mise à jour.",
+    "id": "Hermes belum kembali setelah pembaruannya.",
+    "it": "Hermes non è tornato dopo l’aggiornamento.",
+    "ja": "アップデート後、Hermesが戻っていません。",
+    "ko": "업데이트 후 Hermes가 돌아오지 않았습니다.",
+    "pl": "Hermes nie wrócił po aktualizacji.",
+    "pt-BR": "O Hermes não voltou depois da atualização.",
+    "ru": "Hermes не вернулся после обновления.",
+    "tr": "Hermes güncellemeden sonra geri gelmedi.",
+    "zh-Hans": "Hermes 更新后没有恢复。",
+    "zh-Hant": "Hermes 更新後沒有恢復。"
   },
   "HERMES IS WAITING": {
     "de": "HERMES WARTET",
@@ -21028,6 +21073,21 @@
     "tr": "Destek",
     "zh-Hans": "支持",
     "zh-Hant": "支援"
+  },
+  "The update may have stopped. If Hermes stays away, start it on the host.": {
+    "de": "Das Update wurde womöglich abgebrochen. Bleibt Hermes weg, starte es auf dem Host.",
+    "es": "Puede que la actualización se haya detenido. Si Hermes no vuelve, inícialo en el host.",
+    "fr": "La mise à jour s’est peut-être arrêtée. Si Hermes ne revient pas, démarrez-le sur l’hôte.",
+    "id": "Pembaruan mungkin berhenti. Jika Hermes tidak kembali, jalankan di host.",
+    "it": "L’aggiornamento potrebbe essersi interrotto. Se Hermes non torna, avvialo sull’host.",
+    "ja": "アップデートが止まった可能性があります。Hermesが戻らない場合は、ホストで起動してください。",
+    "ko": "업데이트가 중단되었을 수 있습니다. Hermes가 돌아오지 않으면 호스트에서 시작하세요.",
+    "pl": "Aktualizacja mogła się zatrzymać. Jeśli Hermes nie wróci, uruchom go na hoście.",
+    "pt-BR": "A atualização pode ter parado. Se o Hermes não voltar, inicie-o no host.",
+    "ru": "Возможно, обновление остановилось. Если Hermes не вернётся, запустите его на хосте.",
+    "tr": "Güncelleme durmuş olabilir. Hermes geri gelmezse sunucuda başlatın.",
+    "zh-Hans": "更新可能已中止。如果 Hermes 一直没有恢复，请在主机上启动它。",
+    "zh-Hant": "更新可能已中止。如果 Hermes 一直沒有恢復，請在主機上啟動它。"
   },
   "Tool steps between skill reviews": {
     "de": "Werkzeugschritte zwischen Skill-Prüfungen",
