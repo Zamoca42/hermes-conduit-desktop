@@ -98,6 +98,7 @@ import { ConfigPage } from './components/ConfigPage'
 import { ConduitPluginPage } from './components/ConduitPluginPage'
 import { VaultPage } from './components/VaultPage'
 import { AppearancePage } from './components/AppearancePage'
+import { ReadAloudVoiceSetting } from './components/ReadAloudVoiceSetting'
 import { MultiplayerPage } from './components/MultiplayerPage'
 import { RoomInviteCard } from './components/RoomInviteCard'
 import { useRoomInvites } from './state/useRoomInvites'
@@ -2767,8 +2768,9 @@ function Settings({
             {t('Read replies aloud')}
           </label>
           <p className="meta settings-caption">
-            {t('Each reply in the open chat is read aloud with Hermes’ voice as it finishes. Calls speak their own replies.')}
+            {t('Each reply in the open chat is read aloud as it finishes, in the voice below. Calls speak their own replies.')}
           </p>
+          <ReadAloudVoiceSetting profile={profile} />
           <VoiceModeSettings profile={profile} />
         </dd>
         {status.url ? (
@@ -2791,7 +2793,7 @@ function Settings({
         <dt>{t('Last Read Aloud')}</dt>
         <dd>
           <LastCallTrace reading />
-          <p className="meta">{t('How the last reply read aloud went: Hermes’ voice and playback, without the reply’s words, to paste into an issue.')}</p>
+          <p className="meta">{t('How the last reply read aloud went: the voice and playback, without the reply’s words, to paste into an issue.')}</p>
         </dd>
         <dt>{t('Device reports')}</dt>
         <dd>

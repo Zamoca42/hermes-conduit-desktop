@@ -1,5 +1,6 @@
 /**
- * Read Aloud: one reply at a time, spoken by Hermes' voice. Asking for
+ * Read Aloud: one reply at a time, spoken by Hermes' voice or this
+ * computer's, as Settings > Voice picks (speechOutput.ts). Asking for
  * another stops the first; the message playing is told to whoever listens,
  * so its menu says Stop. Each reading keeps a trace of how it went
  * (Settings > Last Read Aloud), without the reply's words.
@@ -7,8 +8,9 @@
 import { useSyncExternalStore } from 'react'
 import { startReadingTrace, type CallTrace } from './callTrace'
 import { speak, spokenText } from './voice'
+import { speakOnComputer, speechOutput } from './speechOutput'
 
-let playing: { key: string; audio: HTMLAudioElement | null; trace: CallTrace } | null = null
+let playing: { key: string; audio: HTMLAudioElement | null; trace: CallTrace; stop?: () => void } | null = null
 const listeners = new Set<() => void>()
 const tell = () => listeners.forEach(listener => listener())
 
@@ -27,6 +29,7 @@ export function stopReading() {
     playing.trace.end('stopped')
   }
   playing?.audio?.pause()
+  playing?.stop?.()
   playing = null
   tell()
 }
@@ -45,10 +48,33 @@ export async function readAloud(key: string, text: string, profile?: string): Pr
   const words = spokenText(text)
   if (!words) return
   const trace = startReadingTrace(`Reading a reply: ${words.length} of its ${text.length} characters to speak`)
-  const mine = { key, audio: null as HTMLAudioElement | null, trace }
+  const mine: NonNullable<typeof playing> = { key, audio: null, trace }
   playing = mine
   tell()
   const asked = Date.now()
+  if (speechOutput(profile) === 'computer') {
+    trace.step('Speaking with this computer’s voice')
+    const spoken = speakOnComputer(words)
+    mine.stop = spoken.stop
+    trace.step('Playing')
+    try {
+      await spoken.done
+      if (playing === mine) {
+        trace.end('finished playing')
+        playing = null
+        tell()
+      }
+    } catch (e) {
+      trace.step(`Failed: ${e instanceof Error ? e.message : 'error'}`)
+      if (playing === mine) {
+        trace.end('error')
+        playing = null
+        tell()
+      }
+      throw e
+    }
+    return
+  }
   try {
     trace.step('Speaking with Hermes speech')
     const url = await speak(words, profile)
