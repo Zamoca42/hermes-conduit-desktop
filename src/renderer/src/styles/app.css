@@ -5748,7 +5748,7 @@ code.file-link:hover {
   background: var(--working);
 }
 
-/* Open chat and Pin, Resolve, Leave Alone fit one row at the panel's width (Eric 2026-11-20); a wider set wraps. */
+/* Open chat and Pin, Resolve, Leave Alone on one row (Eric 2026-11-20). */
 .work-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -5770,6 +5770,20 @@ code.file-link:hover {
 
 .work-buttons-gap {
   flex: 1;
+}
+
+/* A narrow panel can't fit all four on one row: Open chat keeps its own row
+   and Pin, Resolve and Leave Alone stay together on the next, never one
+   button left over on a row of its own. */
+.work-card {
+  container-type: inline-size;
+}
+
+@container (max-width: 310px) {
+  .work-buttons-gap {
+    flex-basis: 100%;
+    height: 0;
+  }
 }
 
 .work-empty {
