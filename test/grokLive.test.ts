@@ -66,6 +66,14 @@ describe('Grok Live session', () => {
     expect((sessionUpdate('x') as { session: Record<string, unknown> }).session.voice).toBeUndefined()
   })
 
+  it('offers recall_memory only when the memory provider can be searched', () => {
+    const names = (u: unknown) => ((u as { session: { tools: { type: string; name?: string }[] } }).session.tools).map(t => t.name)
+    expect(names(sessionUpdate('x'))).not.toContain('recall_memory')
+    const tool = (sessionUpdate('x', undefined, true) as { session: { tools: { type: string; name?: string; parameters?: unknown }[] } }).session.tools.find(t => t.name === 'recall_memory')
+    expect(tool?.type).toBe('function')
+    expect(tool?.parameters).toBeTruthy()
+  })
+
   it('writes the instructions for a call attached to the chat, with persona, memory, chat and language', () => {
     const text = instructions({
       language: 'de',
