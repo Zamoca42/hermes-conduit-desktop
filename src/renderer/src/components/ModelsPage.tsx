@@ -2,7 +2,8 @@ import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
-import { hasOwnModel, helperSummary, parseModelSettings, type ModelSettings } from '../state/helperModels'
+import { hasOwnModel, helperSummary, helperSwitch, parseModelSettings, switchValue, type HelperSwitch, type ModelSettings } from '../state/helperModels'
+import { readConfig, updateConfig, withValue, type Http } from '../state/profileConfig'
 import { groupModels, type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
 import { FallbackModels } from './FallbackModels'
@@ -182,6 +183,7 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
                 {slot.follows && !hasOwnModel(slot) ? (
                   <p className="meta">{t('Follows {slot} while it has no model of its own.', { slot: slot.follows })}</p>
                 ) : null}
+                {helperSwitch(slot.task) ? <HelperSwitchRow key={`${profile}:${slot.task}`} profile={profile} words={helperSwitch(slot.task)!} /> : null}
               </div>
             ))}
           </section>
@@ -197,5 +199,62 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
         </>
       )}
     </div>
+  )
+}
+
+const configHttp: Http = (method, path, body) => gateway.http(method, path, body)
+
+/** A helper's on/off switch (Background review's), read from and saved in the profile's config, in turn with every config save. */
+function HelperSwitchRow({ profile, words }: { profile: string; words: HelperSwitch }) {
+  const [on, setOn] = useState<boolean | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let current = true
+    readConfig(configHttp, profile).then(
+      config => current && setOn(switchValue(config, words)),
+      e => current && setError(t('Could not load profile settings: {error}', { error: e instanceof Error ? e.message : String(e) }))
+    )
+    return () => {
+      current = false
+    }
+    // The words are made anew on each render; the key names the setting.
+  }, [profile, words.key])
+
+  const save = async (next: boolean) => {
+    const before = on
+    setOn(next)
+    setSaving(true)
+    setError(null)
+    try {
+      await updateConfig(configHttp, profile, config => withValue(config, words.key, next))
+    } catch (e) {
+      setOn(before)
+      setError(t('Couldn’t save that change: {error}', { error: e instanceof Error ? e.message : String(e) }))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <>
+      <div className="pset-row">
+        <span>
+          {words.title}: {words.label}
+        </span>
+        <label className="switch-inline">
+          <input
+            type="checkbox"
+            checked={on ?? words.defaultValue}
+            disabled={on === null || saving}
+            aria-label={words.label}
+            onChange={e => void save(e.target.checked)}
+          />
+        </label>
+      </div>
+      <p className="meta">{words.caption}</p>
+      {error ? <p className="error-text">{error}</p> : null}
+    </>
   )
 }

@@ -5,6 +5,7 @@
  * /api/model/auxiliary), each on the chat model unless it has one of its own.
  */
 import { t } from '../../../shared/i18n'
+import { valueAt } from './profileConfig'
 
 export interface HelperSlot {
   task: string
@@ -36,7 +37,8 @@ function builtIn(task: string): { title: string; caption: string } | null {
     case 'approval':
       return { title: t('Smart approvals'), caption: t('Decides which commands are safe to run without asking you, when smart approvals are on.') }
     case 'mcp':
-      return { title: t('MCP tool routing'), caption: t('Picks which MCP tools a turn needs.') }
+      // Hermes runs it only when an MCP server asks for a completion (sampling/createMessage); the chat model picks tools (hermes-conduit#2877).
+      return { title: t('MCP sampling'), caption: t('Answers when an MCP server asks Hermes’ model to write something. It doesn’t choose tools.') }
     case 'title_generation':
       return { title: t('Chat titles'), caption: t('Names new chats.') }
     case 'review':
@@ -56,6 +58,14 @@ function builtIn(task: string): { title: string; caption: string } | null {
       return { title: t('Profile descriptions'), caption: t("Writes a profile's description.") }
     case 'curator':
       return { title: t('Skill curator'), caption: t('Reviews how skills are used and suggests improvements.') }
+    case 'background_review':
+      // Listed by the Conduit plugin from 0.184.0 until Hermes lists it (hermes-conduit#2871).
+      return {
+        title: t('Background review'),
+        caption: t(
+          'Looks back over a chat after each turn to decide what goes into memory and which skills to improve. Its reasoning applies only on a model of its own, which starts without the chat’s prompt cache.'
+        )
+      }
     case 'conduit_predict':
       return { title: t('Conduit predictions'), caption: t('Suggested replies and draft guesses in Conduit, when Predictive uses the fast model.') }
     case 'conduit_work_watch':
@@ -66,6 +76,33 @@ function builtIn(task: string): { title: string; caption: string } | null {
     default:
       return null
   }
+}
+
+/** A helper's own on/off switch, in its `auxiliary.<task>` block. */
+export interface HelperSwitch {
+  key: string
+  defaultValue: boolean
+  title: string
+  label: string
+  caption: string
+}
+
+/** The helpers with an on/off switch of their own: Background review's, its biggest cost lever (hermes-conduit#2871). */
+export function helperSwitch(task: string): HelperSwitch | null {
+  if (task !== 'background_review') return null
+  return {
+    key: 'auxiliary.background_review.enabled',
+    defaultValue: true,
+    title: t('Automatic review'),
+    label: t('After every turn'),
+    caption: t('Off, Hermes reviews a chat only when you ask with /refine. It’s the helper that runs most, so turning it off saves the most.')
+  }
+}
+
+/** The switch's value in a profile's config; unset, Hermes runs it. */
+export const switchValue = (config: unknown, words: HelperSwitch): boolean => {
+  const value = valueAt(config, words.key)
+  return typeof value === 'boolean' ? value : words.defaultValue
 }
 
 /** A slot a newer Hermes added: its label, else its key made readable. */

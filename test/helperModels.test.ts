@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasOwnModel, helperSummary, parseModelSettings } from '../src/renderer/src/state/helperModels'
+import { hasOwnModel, helperSummary, helperSwitch, parseModelSettings, switchValue } from '../src/renderer/src/state/helperModels'
 
 describe('parseModelSettings', () => {
   const raw = {
@@ -39,5 +39,20 @@ describe('parseModelSettings', () => {
 
   it('reads nothing as empty', () => {
     expect(parseModelSettings(null)).toEqual({ main: { provider: '', model: '' }, slots: [] })
+  })
+})
+
+describe('background review and MCP sampling', () => {
+  it('names background review, with its switch, and says what the MCP slot does', () => {
+    const [mcp, review] = parseModelSettings({ tasks: [{ task: 'mcp' }, { task: 'background_review', provider: 'openrouter', model: 'fast' }] }).slots
+    expect(mcp.title).toBe('MCP sampling')
+    expect(mcp.caption).toContain('doesn’t choose tools')
+    expect(helperSwitch('mcp')).toBeNull()
+    expect(review.title).toBe('Background review')
+    const words = helperSwitch(review.task)!
+    expect(words.key).toBe('auxiliary.background_review.enabled')
+    expect(switchValue({ auxiliary: { background_review: { enabled: false } } }, words)).toBe(false)
+    expect(switchValue({ auxiliary: { background_review: {} } }, words)).toBe(true)
+    expect(switchValue(null, words)).toBe(true)
   })
 })
