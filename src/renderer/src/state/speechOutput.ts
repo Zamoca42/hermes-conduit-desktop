@@ -1,14 +1,14 @@
 /**
  * Who speaks Read Aloud and Classic voice's replies, after the phone's
  * Assistant speech (Settings > Voice > Read Aloud > Voice, hermes-conduit#2876):
- * Hermes' speech providers, or this computer's own voices, which need nothing
- * set up on Hermes. Kept on this computer per profile. The live modes speak
+ * Hermes' speech providers, this computer's own voices, which need nothing
+ * set up on Hermes, or the user's own speech server (speechServerSpeech.ts). Kept on this computer per profile. The live modes speak
  * with their own voices.
  */
 import { language } from '../../../shared/i18n'
 
-export type SpeechOutput = 'hermes' | 'computer'
-export const SPEECH_OUTPUTS: SpeechOutput[] = ['computer', 'hermes']
+export type SpeechOutput = 'hermes' | 'computer' | 'server'
+export const SPEECH_OUTPUTS: SpeechOutput[] = ['computer', 'hermes', 'server']
 
 const KEY = 'conduit.speechOutput.v1'
 type Storage = Pick<globalThis.Storage, 'getItem' | 'setItem'>
@@ -25,7 +25,8 @@ function readAll(storage: Storage): Record<string, SpeechOutput> {
 
 /** The profile's choice; Hermes' speech until one is made, as before there was a choice. */
 export function speechOutput(profile?: string, storage: Storage = localStorage): SpeechOutput {
-  return readAll(storage)[nameOf(profile)] === 'computer' ? 'computer' : 'hermes'
+  const saved = readAll(storage)[nameOf(profile)]
+  return saved === 'computer' || saved === 'server' ? saved : 'hermes'
 }
 
 export function setSpeechOutput(profile: string | undefined, output: SpeechOutput, storage: Storage = localStorage): void {
