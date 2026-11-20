@@ -1,6 +1,6 @@
 /**
- * Read Aloud: one reply at a time, spoken by Hermes' voice or this
- * computer's, as Settings > Voice picks (speechOutput.ts). Asking for
+ * Read Aloud: one reply at a time, spoken by Hermes' voice, this
+ * computer's or the speech server's, as Settings > Voice picks (speechOutput.ts). Asking for
  * another stops the first; the message playing is told to whoever listens,
  * so its menu says Stop. Each reading keeps a trace of how it went
  * (Settings > Last Read Aloud), without the reply's words.
@@ -8,7 +8,8 @@
 import { useSyncExternalStore } from 'react'
 import { startReadingTrace, type CallTrace } from './callTrace'
 import { speak, spokenText } from './voice'
-import { speakOnComputer, speechOutput } from './speechOutput'
+import { speechOutput } from './speechOutput'
+import { speakHere } from './speechServerSpeech'
 
 let playing: { key: string; audio: HTMLAudioElement | null; trace: CallTrace; stop?: () => void } | null = null
 const listeners = new Set<() => void>()
@@ -52,9 +53,10 @@ export async function readAloud(key: string, text: string, profile?: string): Pr
   playing = mine
   tell()
   const asked = Date.now()
-  if (speechOutput(profile) === 'computer') {
-    trace.step('Speaking with this computer’s voice')
-    const spoken = speakOnComputer(words)
+  const output = speechOutput(profile)
+  if (output !== 'hermes') {
+    trace.step(output === 'computer' ? 'Speaking with this computer’s voice' : 'Speaking with your speech server')
+    const spoken = speakHere(words, output, profile, step => trace.step(step))
     mine.stop = spoken.stop
     trace.step('Playing')
     try {

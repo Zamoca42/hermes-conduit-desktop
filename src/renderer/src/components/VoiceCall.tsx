@@ -4,7 +4,8 @@ import { useRecorder } from '../state/useRecorder'
 import { stopReading } from '../state/readAloud'
 import { blobToBase64, speak, spokenText, transcribe } from '../state/voice'
 import { callStep, micScale, type CallPhase } from '../state/call'
-import { speakOnComputer, speechOutput } from '../state/speechOutput'
+import { speechOutput } from '../state/speechOutput'
+import { speakHere } from '../state/speechServerSpeech'
 import { Icon } from './icons'
 
 interface Props {
@@ -116,12 +117,15 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
     const words = spokenText(lastReply ?? '')
     if (!words) return void listen()
     setPhase('speaking')
-    if (speechOutput(profile) === 'computer') {
-      const spoken = speakOnComputer(words)
+    const output = speechOutput(profile)
+    if (output !== 'hermes') {
+      const spoken = speakHere(words, output, profile)
       stopComputer.current = spoken.stop
       spoken.done
         .catch(e => {
-          if (!ended.current) setProblem(t("This computer couldn't read this aloud: {error}", { error: e instanceof Error ? e.message : String(e) }))
+          if (ended.current) return
+          const error = e instanceof Error ? e.message : String(e)
+          setProblem(output === 'server' ? t("Your speech server couldn't read this aloud: {error}", { error }) : t("This computer couldn't read this aloud: {error}", { error }))
         })
         .finally(() => {
           // Interrupted: the interrupt already moved on.
