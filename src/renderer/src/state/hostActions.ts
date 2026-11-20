@@ -372,6 +372,9 @@ export function useHostActions(host: string): HostActions {
   return shown.host === host ? shown : { host, update: { kind: 'idle' }, restart: { kind: 'idle' } }
 }
 
+/** The window's actions as they stand, for tests. */
+export const hostActionsNow = (): HostActions => current
+
 /** Whether an update, check or restart is running on `host`: only one runs at a time. */
 export const hostBusy = (host: string) => current.host === host && (updateInProgress(current.update) || restartInProgress(current.restart))
 
