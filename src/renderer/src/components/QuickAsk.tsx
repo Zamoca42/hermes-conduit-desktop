@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ConnectionStatus } from '@shared/ipc'
 import { useChat } from '../state/useChat'
+import { setTurnSurfaceHost } from '../state/turnSurface'
 import { useRequests } from '../state/useNeedsYou'
 import { Composer } from './Composer'
 import { Transcript, prefillRequest } from './Transcript'
@@ -48,6 +49,8 @@ export function QuickAsk() {
 
 function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => void }) {
   const connected = status.phase === 'open'
+  // This window's sends report where they came from on the dashboard it shows.
+  setTurnSurfaceHost(status.url ?? '')
   const { transcript, chat, loading, error, send, stop, command } = useChat(null, undefined, status.sessionAuthority === true, connected)
   const requests = useRequests()
   const openRequests = requests.filter(r => r.sessionId && r.sessionId === chat.liveId)

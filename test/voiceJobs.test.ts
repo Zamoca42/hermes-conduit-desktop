@@ -21,6 +21,7 @@ function setup(fail = false, correction: 'redirected' | 'queued' | 'rejected' = 
   const corrected: [string, string, string | undefined][] = []
   const adopted: [string | undefined, string, string, string][] = []
   const calls: [string, Record<string, unknown>][] = []
+  const surfaced: unknown[][] = []
   let handler: (event: Event) => void = () => {}
   const changes: VoiceJob[][] = []
   const told: string[] = []
@@ -45,15 +46,26 @@ function setup(fail = false, correction: 'redirected' | 'queued' | 'rejected' = 
     async (profile, sid, title, goal) => {
       adopted.push([profile, sid, title, goal])
       return true
+    },
+    async () => undefined,
+    {
+      report: async (sid, text, input, heard) => {
+        surfaced.push(['report', sid, text, input, heard])
+      },
+      discard: (sid, text) => {
+        surfaced.push(['discard', sid, text])
+      }
     }
   )
-  return { jobs, calls, changes, told, corrected, adopted, emit: (e: Event) => handler(e) }
+  return { jobs, calls, changes, told, corrected, adopted, surfaced, emit: (e: Event) => handler(e) }
 }
 
 describe('background jobs from a call', () => {
   it('starts a job in a chat of its own and tells its reply', async () => {
-    const { jobs, calls, told, adopted, emit } = setup()
+    const { jobs, calls, told, adopted, surfaced, emit } = setup()
     const started = await jobs.start('Research the best GPU for training')
+    // Its turn says it was spoken here, as the phone's job does.
+    expect(surfaced).toEqual([['report', 's1', jobPrompt('Research the best GPU for training'), 'spoken', false]])
     expect(started).toMatchObject({ status: 'started', job_id: 'job-1' })
     expect(calls).toEqual([
       ['session.create', { cols: 96, source: 'desktop', title: 'Research the best GPU for training', profile: 'work' }],
@@ -82,8 +94,10 @@ describe('background jobs from a call', () => {
   })
 
   it('says a failure, at start or at the end of the turn', async () => {
-    const { jobs } = setup(true)
+    const { jobs, surfaced } = setup(true)
     expect((await jobs.start('x')).error).toMatch(/couldn't start: HTTP 500/)
+    // A send that failed drops its report.
+    expect(surfaced.map(entry => entry[0])).toEqual(['report', 'discard'])
     expect(jobs.jobs[0]!.status).toBe('failed')
     const second = setup()
     await second.jobs.start('y')

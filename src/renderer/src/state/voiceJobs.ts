@@ -22,6 +22,7 @@ import { tagVoiceSession } from './voiceList'
 import { namingFiles } from './media'
 import { correctTurn, type Correction } from './localLive'
 import { STATUS_PATH, pluginStatus, serves } from './plugin'
+import { discardTurnSurface, reportTurnSurface } from './turnSurface'
 
 const withProfile = (path: string, profile?: string) => (profile && profile !== 'default' ? `${path}?profile=${encodeURIComponent(profile)}` : path)
 
@@ -346,7 +347,8 @@ export class VoiceJobs {
     listen: (handler: (event: { type: string; session_id?: string; payload?: unknown }) => void) => () => void = handler => window.conduit.onEvent(handler),
     private correct: (sessionId: string, text: string, profile?: string) => Promise<Correction> = correctTurn,
     private adopt: (profile: string | undefined, sessionId: string, title: string, goal: string) => Promise<boolean> = adoptJob,
-    private tag: typeof tagVoiceSession = tagVoiceSession
+    private tag: typeof tagVoiceSession = tagVoiceSession,
+    private surface: { report: typeof reportTurnSurface; discard: typeof discardTurnSurface } = { report: reportTurnSurface, discard: discardTurnSurface }
   ) {
     this.unsubscribe = listen(event => this.event(event))
   }
@@ -462,9 +464,17 @@ export class VoiceJobs {
       const sid = str(made?.session_id)
       if (!sid) throw new Error('Hermes made no session for the job.')
       this.update(id, { sid, stored: str(made.stored_session_id) ?? sid, sentAt: Date.now() })
-      const submit: Row = { session_id: sid, text: jobPrompt(task) }
+      const text = jobPrompt(task)
+      const submit: Row = { session_id: sid, text }
       if (this.profile) submit.profile = this.profile
-      await this.rpc('prompt.submit', submit)
+      // Its turn says it was spoken on this computer (the phone's TurnSurface), dropped if Hermes refuses it.
+      await this.surface.report(sid, text, 'spoken', false)
+      try {
+        await this.rpc('prompt.submit', submit)
+      } catch (e) {
+        this.surface.discard(sid, text, e)
+        throw e
+      }
       // Filed under Voice Jobs, beneath the call's chat; the plugin archives it once Hermes answers.
       void this.tag(this.profile, str(made.stored_session_id) ?? sid, 'job', this.chat).catch(() => undefined)
       // Hermes took the request: its bot's Work panel keeps it as a call's.
