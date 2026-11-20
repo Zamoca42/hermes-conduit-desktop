@@ -32,10 +32,23 @@ describe('work links', () => {
     expect(splitWorkLinks(fenced)).toEqual({ text: `Like this:\n\n\`\`\`\n[Open W3](${W19})\n\`\`\`\n\nand`, links: [{ ref: 'W4', sessionId: '20261120_165155_a24bea', profile: 'zhongli' }] })
   })
 
+  it('takes a fence only at a line’s start', () => {
+    const text = `Use \`\`\`lang to open a fence.\n\n[Open W19](${W19}) @session:zhongli/20261120_165155_a24bea`
+    expect(splitWorkLinks(text)?.text).toBe('Use ```lang to open a fence.')
+  })
+
+  it('closes a span only with a run as long as the one that opened it', () => {
+    const quoted = `See \`\`a \` [Open W19](${W19}) b\`\` for the format.`
+    expect(splitWorkLinks(quoted)?.links ?? []).toEqual([])
+    const open = `A stray \` here.\n\n[Open W19](${W19})`
+    expect(splitWorkLinks(open)?.links.length).toBe(1)
+  })
+
   it('reads the id and profile of a chat link', () => {
     expect(sessionInLink(W19)).toEqual({ sessionId: '20261120_165155_a24bea', profile: 'zhongli' })
     expect(sessionInLink('conduit://session/abc')).toEqual({ sessionId: 'abc', profile: undefined })
     expect(sessionInLink('https://example.com')).toBeNull()
+    expect(sessionInLink('conduit://session/abc.')).toEqual({ sessionId: 'abc', profile: undefined })
   })
 })
 
