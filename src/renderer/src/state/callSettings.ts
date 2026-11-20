@@ -1,5 +1,5 @@
 /** The host's call settings for a profile, read and shown in Settings > Voice > Calls from Hermes. */
-import { language } from '../../../shared/i18n'
+import { language, t } from '../../../shared/i18n'
 
 export const withProfile = (path: string, profile?: string) => (profile && profile !== 'default' ? `${path}?profile=${encodeURIComponent(profile)}` : path)
 
@@ -81,3 +81,15 @@ export const cleanRules = (text: string) =>
     .map(line => line.trim())
     .filter(Boolean)
     .join('\n')
+
+/** What Try a test call leaves in a new chat's composer, in the app's language. */
+export const testCallPrompt = () => t('Call me now to test calls.')
+
+/**
+ * What Have Hermes watch for this leaves: scheduled checks for what the call
+ * note describes, brought in line with an edited note rather than added again
+ * (plugin 0.16.2's call watches). The note goes as typed, saved or not, trimmed
+ * the way the host keeps it.
+ */
+export const watchPrompt = (note: string) =>
+  t('Make my scheduled checks that call me match this note. Update the ones I already have instead of adding new ones:\n{note}', { note: cleanRules(note) })

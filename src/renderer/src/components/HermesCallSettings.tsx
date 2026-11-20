@@ -3,14 +3,14 @@ import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { CALLS_CAPABILITY, CALLS_PATH } from '../state/callbacks'
 import { STATUS_PATH, pluginStatus, serves } from '../state/plugin'
-import { cleanRules, gapChoices, gapText, parseCallsStatus, withProfile, type Bounds, type CallSettings, type CallsStatus } from '../state/callSettings'
+import { cleanRules, gapChoices, gapText, parseCallsStatus, testCallPrompt, watchPrompt, withProfile, type Bounds, type CallSettings, type CallsStatus } from '../state/callSettings'
 
 /**
  * Settings > Voice > Calls from Hermes, after the phone's: this profile's call
  * settings, kept on the Hermes host. Hermes calls the user's iPhone; the
  * phone's own settings (ringing, ringtones, a Focus contact, places) stay there.
  */
-export function HermesCallSettings({ profile }: { profile?: string }) {
+export function HermesCallSettings({ profile, onNewChat }: { profile?: string; onNewChat?: (draft: string) => void }) {
   const [status, setStatus] = useState<CallsStatus | null>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'failed' | 'unsupported'>('loading')
   const [draft, setDraft] = useState<CallSettings | null>(null)
@@ -124,6 +124,19 @@ export function HermesCallSettings({ profile }: { profile?: string }) {
                   "Say “call me when it's done” during a live call, or ask Hermes in a chat to call you. Hermes calls about that job once the call has ended; if it finishes while you're still talking, you hear about it in the call instead."
                 )}
               </p>
+              {/* The call tool came with plugin 0.14, as did "decides". */}
+              {onNewChat && status.paired && draft.when_asked && draft.decides !== undefined ? (
+                <>
+                  <div>
+                    <button className="secondary" onClick={() => onNewChat(testCallPrompt())}>
+                      {t('Try a test call')}
+                    </button>
+                  </div>
+                  <p className="meta settings-caption">
+                    {t('Opens a new chat with “{prompt}” ready to send. Send it, and your iPhone rings when Hermes replies.', { prompt: testCallPrompt() })}
+                  </p>
+                </>
+              ) : null}
               {draft.decides !== undefined ? (
                 <>
                   {toggle(t('Hermes decides when to call'), draft.decides, on => change({ decides: on }))}
@@ -149,6 +162,21 @@ export function HermesCallSettings({ profile }: { profile?: string }) {
                   <p className="meta">
                     {t("Hermes reads this before each call it decides to make, and calls only if the news fits. Calls you ask for don't depend on it.")}
                   </p>
+                  {/* A check's calls are ones the user asked for. */}
+                  {onNewChat && status.paired && draft.when_asked && cleanRules(rules) ? (
+                    <>
+                      <div>
+                        <button className="secondary" onClick={() => onNewChat(watchPrompt(rules))}>
+                          {t('Have Hermes watch for this')}
+                        </button>
+                      </div>
+                      <p className="meta settings-caption">
+                        {t(
+                          "Hermes doesn't check for what your note describes on its own. This opens a new chat asking it to set up scheduled checks that call you when it happens. After you change the note, tap it again to bring the checks up to date."
+                        )}
+                      </p>
+                    </>
+                  ) : null}
                 </div>
               ) : null}
               {draft.alerts !== undefined ? (
