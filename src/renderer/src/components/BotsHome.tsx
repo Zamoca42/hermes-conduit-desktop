@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
+import { useContext, useEffect, useMemo, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
 import type { BotWork } from "../state/useWork";
 import { timeLabel } from "../state/chats";
 import { keptColor, type Bot } from "../state/bots";
@@ -33,6 +33,17 @@ const ROOM_MOVE = "application/x-conduit-room-move";
 
 /** What a bot's right-click menu can do, besides Edit Bot. */
 export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delete";
+
+/**
+ * The face a reply's header draws for `bot`, moving on the newest reply. It
+ * keeps one identity while the bot looks the same, so the transcript's
+ * memoized replies aren't redrawn each time the roster is read again.
+ */
+export function useReplyFace(bot: Bot | undefined): ((moving: boolean) => ReactNode) | undefined {
+  const look = bot ? JSON.stringify(bot) : "";
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => (bot ? (moving: boolean) => <BotAvatar bot={bot} size={22} moving={moving} /> : undefined), [look]);
+}
 
 /** A bot's picture, else its starter face (on the color Hermes keeps for it, when it has one). */
 /**

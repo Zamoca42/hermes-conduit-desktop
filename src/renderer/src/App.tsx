@@ -2,12 +2,12 @@ import { ROOM_RULES_CAPABILITY } from './state/roomChoices'
 import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps } from 'react'
-import { GatewayError, gateway } from './gateway'
+import { gateway } from './gateway'
 import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
 import { arrange, farBotFor, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
-import { BotAvatar, BotsHome, type BotAction } from './components/BotsHome'
+import { BotsHome, useReplyFace, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
 import { BotScreen } from './components/BotScreen'
 import { ChatList, type MoveTarget } from './components/ChatList'
@@ -25,7 +25,7 @@ import { GlowContext, useGlowColors } from './components/GlowColors'
 import { archiveClassicChat, tagVoiceSession, useVoiceList, withVoice } from './state/voiceList'
 import { setCatalogHost } from './state/modelCatalog'
 import { setTurnSurfaceHost } from './state/turnSurface'
-import { noteDashboardProfiles, setDashboardProfilesHost } from './state/dashboardProfile'
+import { useDashboardProfiles } from './state/useDashboardProfiles'
 import { setDesktopCardsHost } from './state/desktopCards'
 import { setKanbanHost } from './state/useKanban'
 import { LIST_COLUMN, PANEL_COLUMN, besideChatFits, readWidth, shownListWidth, shownPanelWidth, writeWidth } from './state/columnWidths'
@@ -220,7 +220,6 @@ export function App() {
   setCatalogHost(url ?? '')
   setKeptAnswersHost(url ?? '')
   setTurnSurfaceHost(url ?? '')
-  setDashboardProfilesHost(url ?? '')
   setDesktopCardsHost(url ?? '')
   setKanbanHost(url ?? '')
   const phase = status?.phase
@@ -230,18 +229,7 @@ export function App() {
     else if (phase === 'failed' && url) setRepairing(current => (current?.url === url ? current : savedHost(status?.hosts, url)))
   }, [phase, url]) // eslint-disable-line react-hooks/exhaustive-deps
   // Whether this dashboard's plugin reads ?conduit_profile= for another profile's routes, or an older one keeps ?profile=.
-  useEffect(() => {
-    if (phase !== 'open' || !url) return
-    gateway
-      .http('GET', PLUGIN_STATUS_PATH, undefined, 8_000)
-      .then(body => {
-        const plugin = pluginStatus(body)
-        noteDashboardProfiles(url, plugin.state === 'reported' ? plugin.capabilities : null)
-      })
-      .catch((e: unknown) => {
-        if (e instanceof GatewayError && e.code === 404) noteDashboardProfiles(url, null)
-      })
-  }, [phase, url])
+  useDashboardProfiles(phase, url)
   // A host signed out or removed takes the summaries of its runs of steps, and its saved chat list, with it.
   const hostList = status?.hosts?.map(h => h.url).join('\n')
   useEffect(() => {
@@ -518,6 +506,7 @@ function Shell({
   const chatDisplay = useChatDisplay(selected.profile, connected, section === 'chats')
   const chatBot = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))
   const botTitle = chatBot?.title ?? 'Hermes'
+  const chatFace = useReplyFace(chatBot)
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
   // A quote lands in the composer it was made for, not again on the way back to Chats.
   useEffect(() => {
@@ -850,6 +839,7 @@ function Shell({
   // A chat beside the open one: only where both fit, else the pane hides until the window widens.
   const [beside, setBeside] = useState<BesideChat | null>(null)
   const besideBot = beside ? roster.bots?.find(b => b.name === (beside.profile ?? 'default')) : undefined
+  const besideFace = useReplyFace(besideBot)
   const besideFits = besideChatFits(windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
   const sameProfileAs = (a?: string, b?: string) => (a ?? 'default').toLowerCase() === (b ?? 'default').toLowerCase()
   // The chats in windows of their own (up to three), from the main process.
@@ -2085,7 +2075,7 @@ function Shell({
                     expired={expiredQuestions}
                     profile={selected.profile}
                     author={botTitle}
-                    face={chatBot ? moving => <BotAvatar bot={chatBot} size={22} moving={moving} /> : undefined}
+                    face={chatFace}
                     onQuote={setQuote}
                     onCommand={text => void onSend(text)}
                     teammates={glowBots}
@@ -2352,7 +2342,7 @@ function Shell({
                 sessionAuthority={status.sessionAuthority === true}
                 connected={connected}
                 author={besideBot?.title ?? 'Hermes'}
-                face={besideBot ? moving => <BotAvatar bot={besideBot} size={22} moving={moving} /> : undefined}
+                face={besideFace}
                 display={chatDisplay}
                 onSwap={swapBeside}
                 onClose={() => setBeside(null)}
