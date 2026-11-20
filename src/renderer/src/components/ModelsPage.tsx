@@ -2,7 +2,17 @@ import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
-import { hasOwnModel, helperSummary, helperSwitch, parseModelSettings, switchValue, type HelperSwitch, type ModelSettings } from '../state/helperModels'
+import {
+  hasOwnModel,
+  helperSummary,
+  helperSwitch,
+  intervalValue,
+  parseInterval,
+  parseModelSettings,
+  switchValue,
+  type HelperSwitch,
+  type ModelSettings
+} from '../state/helperModels'
 import { readConfig, updateConfig, withValue, type Http } from '../state/profileConfig'
 import { type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
@@ -200,16 +210,20 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
 
 const configHttp: Http = (method, path, body) => gateway.http(method, path, body)
 
-/** A helper's on/off switch (Background review's), read from and saved in the profile's config, in turn with every config save. */
+/**
+ * A helper's on/off switch (Background review's) and the intervals that decide when it runs, read from and saved in
+ * the profile's config, in turn with every config save. The intervals rest while the switch is off.
+ */
 function HelperSwitchRow({ profile, words }: { profile: string; words: HelperSwitch }) {
-  const [on, setOn] = useState<boolean | null>(null)
+  const [config, setConfig] = useState<Record<string, unknown> | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
 
   useEffect(() => {
     let current = true
     readConfig(configHttp, profile).then(
-      config => current && setOn(switchValue(config, words)),
+      read => current && setConfig(read),
       e => current && setError(t('Could not load profile settings: {error}', { error: e instanceof Error ? e.message : String(e) }))
     )
     return () => {
@@ -218,15 +232,18 @@ function HelperSwitchRow({ profile, words }: { profile: string; words: HelperSwi
     // The words are made anew on each render; the key names the setting.
   }, [profile, words.key])
 
-  const save = async (next: boolean) => {
-    const before = on
-    setOn(next)
+  const loaded = config !== null
+  const on = loaded ? switchValue(config, words) : words.defaultValue
+
+  const save = async (key: string, next: boolean | number) => {
+    const before = config
+    setConfig(withValue(config ?? {}, key, next))
     setSaving(true)
     setError(null)
     try {
-      await updateConfig(configHttp, profile, config => withValue(config, words.key, next))
+      await updateConfig(configHttp, profile, read => withValue(read, key, next))
     } catch (e) {
-      setOn(before)
+      setConfig(before)
       setError(t('Couldn’t save that change: {error}', { error: e instanceof Error ? e.message : String(e) }))
     } finally {
       setSaving(false)
@@ -240,16 +257,52 @@ function HelperSwitchRow({ profile, words }: { profile: string; words: HelperSwi
           {words.title}: {words.label}
         </span>
         <label className="switch-inline">
-          <input
-            type="checkbox"
-            checked={on ?? words.defaultValue}
-            disabled={on === null || saving}
-            aria-label={words.label}
-            onChange={e => void save(e.target.checked)}
-          />
+          <input type="checkbox" checked={on} disabled={!loaded || saving} aria-label={words.title} onChange={e => void save(words.key, e.target.checked)} />
         </label>
       </div>
       <p className="meta">{words.caption}</p>
+      {words.intervals.map(interval => {
+        const shown = loaded ? String(intervalValue(config, interval)) : ''
+        const draft = drafts[interval.key] ?? shown
+        const commit = () => {
+          setDrafts(d => {
+            const rest = { ...d }
+            delete rest[interval.key]
+            return rest
+          })
+          if (draft === shown) return
+          const value = parseInterval(draft)
+          if (value === null) {
+            setError(t('Enter a whole number, 0 or more.'))
+            return
+          }
+          void save(interval.key, value)
+        }
+        return (
+          <div key={interval.key} className="mem-row">
+            <div className="mem-text">
+              <span>{interval.label}</span>
+              <span className="meta">{interval.caption}</span>
+            </div>
+            <input
+              className="mem-number"
+              type="number"
+              min={0}
+              step={1}
+              inputMode="numeric"
+              placeholder={String(interval.defaultValue)}
+              value={draft}
+              disabled={!loaded || saving || !on}
+              aria-label={interval.label}
+              onChange={e => setDrafts(d => ({ ...d, [interval.key]: e.target.value }))}
+              onBlur={commit}
+              onKeyDown={e => {
+                if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+              }}
+            />
+          </div>
+        )
+      })}
       {error ? <p className="error-text">{error}</p> : null}
     </>
   )
