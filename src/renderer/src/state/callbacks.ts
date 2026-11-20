@@ -80,7 +80,7 @@ export async function callbackAvailability(profile: string | undefined, http: Ht
   const calls = (await http('GET', withProfile(CALLS_PATH, profile)).catch(() => null)) as Row | null
   const settings = (calls?.settings ?? null) as Row | null
   if (!calls || calls.ok !== true || !settings) return 'unsupported'
-  if (calls.paired !== true) return 'not_paired'
+  if (calls.paired !== true && calls.can_ring !== true) return 'not_paired'
   if (settings.enabled !== true) return 'calls_off'
   if (settings.when_asked === false) return 'when_asked_off'
   return 'available'
@@ -90,9 +90,9 @@ export async function callbackAvailability(profile: string | undefined, http: Ht
 export function refusal(availability: Availability | 'too_many'): string {
   switch (availability) {
     case 'when_asked_off':
-      return "Hermes can't call the user: Call when I ask is off in Conduit's Settings on their iPhone, under Calls from Hermes."
+      return "Hermes can't call the user: Call when I ask is off in Conduit's Settings, under Calls from Hermes."
     case 'not_paired':
-      return "Hermes can't call the user: this Hermes profile isn't set up for Conduit notifications on their iPhone. They can turn them on in Conduit's Settings there, under Notifications."
+      return "Hermes can't call the user: nothing can ring for this Hermes profile yet. Calls ring Conduit on a computer once it's open, or an iPhone once Conduit's notifications are on there."
     case 'unsupported':
       return "Hermes can't call the user yet: the Conduit plugin on their Hermes host needs an update."
     case 'too_many':

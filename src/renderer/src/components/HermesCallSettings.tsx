@@ -105,13 +105,13 @@ export function HermesCallSettings({ profile, onNewChat }: { profile?: string; o
       ) : null}
       {status && draft ? (
         <>
-          {toggle(t('Hermes can call me'), draft.enabled, on => change({ enabled: on }), !status.paired)}
+          {toggle(t('Hermes can call me'), draft.enabled, on => change({ enabled: on }), !status.canRing)}
           <p className="meta settings-caption">
             {t(
-              "When a job you asked about is done, Hermes calls you so you can talk it through. Your iPhone rings like a phone call; where it can't, a “Hermes wants to talk” notification comes instead: tap Talk to answer."
+              "When a job you asked about is done, Hermes calls you so you can talk it through. Conduit rings on this computer while it's open, and your iPhone rings too if you use Conduit there."
             )}
           </p>
-          {!status.paired ? (
+          {!status.canRing ? (
             <p className="meta settings-caption">
               {t('Turn on notifications for this profile in Conduit on your iPhone first, in Settings under Notifications: Hermes calls you through them.')}
             </p>
@@ -125,7 +125,7 @@ export function HermesCallSettings({ profile, onNewChat }: { profile?: string; o
                 )}
               </p>
               {/* The call tool came with plugin 0.14, as did "decides". */}
-              {onNewChat && status.paired && draft.when_asked && draft.decides !== undefined ? (
+              {onNewChat && status.canRing && draft.when_asked && draft.decides !== undefined ? (
                 <>
                   <div>
                     <button className="secondary" onClick={() => onNewChat(testCallPrompt())}>
@@ -133,7 +133,7 @@ export function HermesCallSettings({ profile, onNewChat }: { profile?: string; o
                     </button>
                   </div>
                   <p className="meta settings-caption">
-                    {t('Opens a new chat with “{prompt}” ready to send. Send it, and your iPhone rings when Hermes replies.', { prompt: testCallPrompt() })}
+                    {t('Opens a new chat with “{prompt}” ready to send. Send it, and Conduit rings when Hermes replies.', { prompt: testCallPrompt() })}
                   </p>
                 </>
               ) : null}
@@ -163,7 +163,7 @@ export function HermesCallSettings({ profile, onNewChat }: { profile?: string; o
                     {t("Hermes reads this before each call it decides to make, and calls only if the news fits. Calls you ask for don't depend on it.")}
                   </p>
                   {/* A check's calls are ones the user asked for. */}
-                  {onNewChat && status.paired && draft.when_asked && cleanRules(rules) ? (
+                  {onNewChat && status.canRing && draft.when_asked && cleanRules(rules) ? (
                     <>
                       <div>
                         <button className="secondary" onClick={() => onNewChat(watchPrompt(rules))}>
