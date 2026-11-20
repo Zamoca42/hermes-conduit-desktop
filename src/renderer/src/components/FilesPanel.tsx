@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import {
   baseName,
   changePath,
@@ -76,22 +77,31 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
   const list = useCallback(
     async (path: string) => {
       const mine = generation.current
-      setListings(current => (current[path] && current[path] !== 'loading' ? current : { ...current, [path]: 'loading' }))
+      // The workspace's top folder opens on what it listed last time, then reads Hermes again (keptAnswers.ts).
+      const keptPath = path === root ? `files:${profile ?? 'default'}:${root}` : null
+      const keep = keptPath ? answerKeeper(keptPath) : null
+      const kept = keptPath ? keptAnswer(keptPath) : undefined
+      setListings(current =>
+        current[path] && current[path] !== 'loading' ? current : { ...current, [path]: kept !== undefined ? parseListing(kept) : 'loading' }
+      )
       let listed: Listed
       try {
+        let raw: unknown
         if (pluginRef.current !== false) {
           try {
-            listed = parseListing(await gateway.http('GET', listPath(root, path, profile)))
+            raw = await gateway.http('GET', listPath(root, path, profile))
             if (pluginRef.current === null) setPlugin(true)
           } catch (e) {
             if ((e as { code?: unknown }).code !== 404) throw e
             setPlugin(false)
             pluginRef.current = false
-            listed = parseListing(await gateway.http('GET', fsListPath(path, profile)))
+            raw = await gateway.http('GET', fsListPath(path, profile))
           }
         } else {
-          listed = parseListing(await gateway.http('GET', fsListPath(path, profile)))
+          raw = await gateway.http('GET', fsListPath(path, profile))
         }
+        listed = parseListing(raw)
+        if (!('error' in listed)) keep?.(raw)
       } catch (e) {
         listed = { error: message(e) }
       }

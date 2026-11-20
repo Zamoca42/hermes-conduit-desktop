@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { GatewayError, gateway } from '../gateway'
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import {
   FILTERS,
   days,
@@ -98,18 +99,35 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
   useEffect(() => {
     if (tab === 'saved') return
     const id = ++load.current
-    setListing(current => (current !== 'loading' && !('error' in current) && refreshKey !== undefined ? current : 'loading'))
+    const path = listPath({ profile, sessionIds, filter, query: words })
+    // A list without a search opens on what it showed last time, then reads Hermes again (keptAnswers.ts).
+    const keep = words ? null : answerKeeper(path)
+    const kept = words ? undefined : keptAnswer(path)
+    setListing(current =>
+      current !== 'loading' && !('error' in current) && refreshKey !== undefined ? current : kept !== undefined ? parsePage(kept) : 'loading'
+    )
     gateway
-      .http('GET', listPath({ profile, sessionIds, filter, query: words }), undefined, 30_000)
-      .then(r => id === load.current && setListing(parsePage(r)))
+      .http('GET', path, undefined, 30_000)
+      .then(r => {
+        if (id !== load.current) return
+        keep?.(r)
+        setListing(parsePage(r))
+      })
       .catch((e: unknown) => id === load.current && setListing({ error: failure(e) }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile, ids, filter, words, refreshKey, tab, reload])
 
   const readSaved = useCallback(() => {
+    const path = pinsPath(profile)
+    const keep = answerKeeper(path)
+    const kept = keptAnswer(path)
+    if (kept !== undefined) setSaved(current => current ?? parsePins(kept))
     gateway
-      .http('GET', pinsPath(profile), undefined, 20_000)
-      .then(r => setSaved(parsePins(r)))
+      .http('GET', path, undefined, 20_000)
+      .then(r => {
+        keep(r)
+        setSaved(parsePins(r))
+      })
       .catch((e: unknown) => setSaved({ error: failure(e) }))
   }, [profile])
   useEffect(() => readSaved(), [readSaved])
