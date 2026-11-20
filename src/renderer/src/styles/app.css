@@ -11023,4 +11023,91 @@ button.ghost:disabled {
   .chat-head.soft {
     padding-left: 16px;
   }
+
+/* A reply's links to its work, drawn as cards under it (the phone's BotWorkLinkCard, app #1637). */
+.work-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  max-width: 560px;
+}
+
+.work-link-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-link-card:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.work-link-card:disabled {
+  cursor: default;
+}
+
+.work-link-card > svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--text-4);
+}
+
+.status-mark.tone-link {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.work-link-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.work-link-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.work-link-title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.work-link-status {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.work-link-status.tone-needs {
+  color: var(--warning);
+}
+
+.work-link-status.tone-working {
+  color: var(--working);
+}
+
+.work-link-status.tone-ready {
+  color: var(--success);
+}
+
+.work-link-status.tone-failed {
+  color: var(--danger);
 }

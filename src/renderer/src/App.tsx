@@ -33,6 +33,7 @@ import { BesideChatPane, type BesideChat } from './components/BesideChat'
 import { CHAT_WINDOW_LIMIT } from '@shared/chatWindows'
 import { absolutePath, pathForDraft } from './state/workspace'
 import { FileLinks } from './components/Markdown'
+import { WorkLinks, type WorkLinkActions } from './components/WorkLinkCard'
 import { usePulse } from './state/usePulse'
 import { Icon } from './components/icons'
 import { useMouseBack } from './state/mouseBack'
@@ -820,6 +821,32 @@ function Shell({
   // A bot's chat (its Bot Chat, one not resolved yet, or a workstream's) offers its work once the host answers with some.
   const workHere = !!openBotChat || !!workItem || selected.botChat === true
   const showWork = workOpen && workHere && (!!work.snapshot || !!work.error)
+  // A reply's links to its work and to other chats (workLinks): a card or a link opens the chat here, as on the phone.
+  const workSnapshot = work.snapshot
+  const listRows = list.rows
+  const workLinkActions = useMemo<WorkLinkActions>(() => {
+    const workstream = (ref: string) => workSnapshot?.items.find(item => item.kind === 'workstream' && item.ref === ref && !!item.sessionId)
+    const inBotChat = !!openBotChat || selected.botChat === true
+    return {
+      open: (sessionId, profile) => {
+        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        const row = listRows?.find(r => r.id === sessionId)
+        setSelected({ id: sessionId, profile: profile ?? selected.profile, title: item ? shownTitle(item) : row?.title })
+        setSection('chats')
+      },
+      item: workstream,
+      chatOf: inBotChat
+        ? ref => {
+            const item = workstream(ref)
+            return item ? { sessionId: item.sessionId, profile: selected.profile } : undefined
+          }
+        : undefined,
+      titleOf: sessionId => {
+        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        return item ? shownTitle(item) : listRows?.find(r => r.id === sessionId)?.title || undefined
+      }
+    }
+  }, [workSnapshot, listRows, openBotChat, selected.botChat, selected.profile])
   // The bot's screen (Hermes' Bot Screen), offered only where the host can have one, as the phone checks.
   const screenProfile = selected.profile ?? 'default'
   const [screenOpen, setScreenOpen] = useState(false)
@@ -2086,29 +2113,31 @@ function Shell({
               </div>
               {screenOpen ? <BotScreen profile={screenProfile} botName={botTitle} onClose={() => setScreenOpen(false)} /> : null}
               <FileLinks.Provider value={openPath}>
-                <ConnectionActionsContext.Provider value={connectionActions}>
-                  <Transcript
-                    state={transcript}
-                    loading={loading}
-                    error={error}
-                    requests={openRequests}
-                    expired={expiredQuestions}
-                    profile={selected.profile}
-                    author={botTitle}
-                    face={chatFace}
-                    onQuote={setQuote}
-                    onCommand={text => void onSend(text)}
-                    teammates={glowBots}
-                    display={chatDisplay}
-                    sessionId={chat.liveId ?? undefined}
-                    calls={chatCallList}
-                    onOpenCall={setOpenCall}
-                    followedUp={followedUp}
-                    pins={pinControls}
-                    onReact={chat.liveId ? reactTo : undefined}
-                    onBranch={chat.liveId && !transcript.running ? branchFrom : undefined}
-                  />
-                </ConnectionActionsContext.Provider>
+                <WorkLinks.Provider value={workLinkActions}>
+                  <ConnectionActionsContext.Provider value={connectionActions}>
+                    <Transcript
+                      state={transcript}
+                      loading={loading}
+                      error={error}
+                      requests={openRequests}
+                      expired={expiredQuestions}
+                      profile={selected.profile}
+                      author={botTitle}
+                      face={chatFace}
+                      onQuote={setQuote}
+                      onCommand={text => void onSend(text)}
+                      teammates={glowBots}
+                      display={chatDisplay}
+                      sessionId={chat.liveId ?? undefined}
+                      calls={chatCallList}
+                      onOpenCall={setOpenCall}
+                      followedUp={followedUp}
+                      pins={pinControls}
+                      onReact={chat.liveId ? reactTo : undefined}
+                      onBranch={chat.liveId && !transcript.running ? branchFrom : undefined}
+                    />
+                  </ConnectionActionsContext.Provider>
+                </WorkLinks.Provider>
               </FileLinks.Provider>
               {pinSheet ? (
                 <PinnedRepliesSheet

@@ -11,6 +11,8 @@ import type { ExpiredQuestion } from '../state/expiredQuestions'
 import { Icon, type IconName } from './icons'
 import { JumpToLatest } from './JumpToLatest'
 import { atEnd } from '../state/scrollEnd'
+import { WorkLinkCard, WorkLinks } from './WorkLinkCard'
+import { linkNamedRefs, linkSessionRefs, splitWorkLinks } from '../state/workLinks'
 import { Markdown, StreamingMarkdown } from './Markdown'
 import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
 import { gateway } from '../gateway'
@@ -454,7 +456,16 @@ function AttachmentChips({ attachments }: { attachments: Attachment[] }) {
 
 /** A reply's Markdown, with each `MEDIA:` file as a card where the tag stood. */
 export const Reply = memo(function Reply({ text, streaming = false }: { text: string; streaming?: boolean }) {
-  const blocks = useMemo(() => splitReply(text), [text])
+  // Its links to its work become cards under it, and Hermes' references to chats links to them (workLinks).
+  const links = useContext(WorkLinks)
+  const split = useMemo(() => splitWorkLinks(text), [text])
+  const shown = useMemo(() => {
+    const words = split ? split.text : text
+    if (!links) return words
+    const referred = linkSessionRefs(words, links.titleOf, t('Open chat'))
+    return links.chatOf ? linkNamedRefs(referred, links.chatOf) : referred
+  }, [split, text, links])
+  const blocks = useMemo(() => splitReply(shown), [shown])
   // While it streams, its markdown parses in blocks, only the open last one again per delta (desktop#198).
   const Text = streaming ? StreamingMarkdown : Markdown
   return (
@@ -476,6 +487,13 @@ export const Reply = memo(function Reply({ text, streaming = false }: { text: st
           <FileCard key={i} path={block.path} label={block.alt} />
         )
       )}
+      {split ? (
+        <div className="work-links">
+          {split.links.map(link => (
+            <WorkLinkCard key={link.ref} link={link} />
+          ))}
+        </div>
+      ) : null}
     </>
   )
 })

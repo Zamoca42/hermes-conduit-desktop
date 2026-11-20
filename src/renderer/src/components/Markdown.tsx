@@ -1,11 +1,13 @@
 import { createContext, memo, useContext, type ReactNode } from 'react'
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown, { defaultUrlTransform } from 'react-markdown'
 import remarkBreaks from 'remark-breaks'
 import remarkGfm from 'remark-gfm'
 import { looksLikePath } from '../state/workspace'
 import { remarkDesktopCards } from '../state/desktopCards'
 import { markdownBlocks } from '../state/markdownBlocks'
 import { DesktopCard } from './DesktopCard'
+import { SESSION_LINK, sessionInLink } from '../state/workLinks'
+import { WorkLinks } from './WorkLinkCard'
 
 // A single newline is a line break, as replies are written for chat, not for a page.
 const plugins = [remarkGfm, remarkBreaks, remarkDesktopCards]
@@ -37,17 +39,43 @@ function Code({ className, children }: { className?: string; children?: ReactNod
   return <code className={className}>{children}</code>
 }
 
-/** A reply's markdown. Raw HTML in it stays text; links open in the browser. */
+/** A link to a chat (`conduit://session/…`): opens it in the chat's column, where there is one; plain words elsewhere. */
+function ChatLink({ href, children }: { href: string; children?: ReactNode }) {
+  const actions = useContext(WorkLinks)
+  const session = sessionInLink(href)
+  if (!actions || !session) return <span>{children}</span>
+  return (
+    <a
+      href={href}
+      className="chat-link"
+      onClick={e => {
+        e.preventDefault()
+        actions.open(session.sessionId, session.profile)
+      }}
+    >
+      {children}
+    </a>
+  )
+}
+
+// Links to chats stay links; anything else as react-markdown allows it.
+const urlTransform = (url: string) => (url.startsWith(SESSION_LINK) ? url : defaultUrlTransform(url))
+
+/** A reply's markdown. Raw HTML in it stays text; links open in the browser, links to chats in the app. */
 export const Markdown = memo(function Markdown({ text }: { text: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={plugins}
+      urlTransform={urlTransform}
       components={{
-        a: ({ href, children }) => (
-          <a href={href} target="_blank" rel="noreferrer">
-            {children}
-          </a>
-        ),
+        a: ({ href, children }) =>
+          href?.startsWith(SESSION_LINK) ? (
+            <ChatLink href={href}>{children}</ChatLink>
+          ) : (
+            <a href={href} target="_blank" rel="noreferrer">
+              {children}
+            </a>
+          ),
         code: ({ className, children }) => <Code className={className}>{children}</Code>,
         // A directive only Hermes Desktop draws: its card (remarkDesktopCards).
         ...({
