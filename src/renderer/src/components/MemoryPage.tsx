@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
-import { groupModels, reasoningTitle, REASONING_LEVELS } from '../state/models'
+import { reasoningTitle, REASONING_LEVELS } from '../state/models'
 import {
   fieldValue,
   inTurn,
@@ -20,7 +20,7 @@ import {
 import { FieldRow } from './ConfigPage'
 import { FallbackModels } from './FallbackModels'
 import { Icon } from './icons'
-import { ModelOptions } from './ModelOptions'
+import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
@@ -181,8 +181,6 @@ function DelegateModel({
     setPick(savedModel ? `${savedProvider}\n${savedModel}` : '')
     setReasoning(savedReasoning)
   }, [savedProvider, savedModel, savedReasoning])
-  const groups = useMemo(() => groupModels(providers, ''), [providers])
-  const listed = !pick || groups.some(group => group.models.some(model => `${group.slug}\n${model}` === pick))
   const changed = pick !== (savedModel ? `${savedProvider}\n${savedModel}` : '') || reasoning !== savedReasoning
   return (
     <section className="pset-section">
@@ -192,17 +190,14 @@ function DelegateModel({
       </h2>
       <div className="pset-row">
         <span>{t('Model')}</span>
-        <select
-          className="language-select models-select"
+        <ModelChooser
           value={pick}
+          onChange={setPick}
+          providers={providers}
+          defaultLabel={t('Inherit chat model')}
+          label={t('Delegate model')}
           disabled={busy || !catalog.answered}
-          aria-label={t('Delegate model')}
-          onChange={e => setPick(e.target.value)}
-        >
-          <option value="">{t('Inherit chat model')}</option>
-          {!listed ? <option value={pick}>{pick.split('\n')[1]}</option> : null}
-          <ModelOptions providers={providers} groups={groups} />
-        </select>
+        />
       </div>
       <ModelCatalogNote catalog={catalog} />
       <div className="pset-row">

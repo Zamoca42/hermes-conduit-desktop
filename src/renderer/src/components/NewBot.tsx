@@ -15,13 +15,12 @@ import {
   type NewBotDraft
 } from '../state/botActions'
 import { FACE_COUNT, faceHex, faceName, metaOutcome, normalizedPicture } from '../state/botEditor'
-import { groupModels } from '../state/models'
 import { starterFace } from '../state/starterFaces'
 import { avatarChanged } from '../state/useBots'
 import { turnOnPluginForNewBot } from '../state/botPlugin'
 import { StarterFaceArt } from './StarterFaceArt'
 import { Icon } from './icons'
-import { ModelOptions } from './ModelOptions'
+import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 import { mayMove, movingPicture, TooLargeError } from '../state/movingPicture'
@@ -96,7 +95,6 @@ export function NewBot({ bots, protocol, onClose, onCreated, dashboards, onCreat
     useMemo(() => (cloneFrom && cloneFrom !== MAIN_PROFILE ? { explicit_only: true, profile: cloneFrom } : { explicit_only: true }), [cloneFrom])
   )
   const providers = catalog.providers ?? []
-  const groups = useMemo(() => groupModels(providers, ''), [providers])
 
   const slug = slugFrom(name)
   const taken = elsewhere ? elsewhere.taken.some(n => n.toLowerCase() === slug) : bots.some(b => b.name.toLowerCase() === slug)
@@ -325,10 +323,7 @@ export function NewBot({ bots, protocol, onClose, onCreated, dashboards, onCreat
             {t('Model')}
             <RefreshModelsButton catalog={catalog} />
           </h2>
-          <select className="language-select" value={pick} aria-label={t('Model')} disabled={!catalog.answered} onChange={e => setPick(e.target.value)}>
-            <option value="">{t('Default')}</option>
-            <ModelOptions providers={providers} groups={groups} />
-          </select>
+          <ModelChooser value={pick} onChange={setPick} providers={providers} defaultLabel={t('Default')} label={t('Model')} disabled={!catalog.answered} />
           <ModelCatalogNote catalog={catalog} />
         </section>
 

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
+import type { ModelProviderRow } from '../state/models'
+import { ModelChooser } from './ModelChooser'
 import { WORK, workPath } from '../state/work'
 import {
   approvalsCaption,
@@ -17,15 +19,15 @@ import {
 interface Props {
   bot: string
   botName: string
-  /** The models to pick from: provider groups as the Model panel lists them. */
-  groups: { slug: string; name: string; models: string[] }[]
+  /** The models to pick from, as the Model panel lists them. */
+  providers: ModelProviderRow[] | null
 }
 
 /**
  * Edit Bot > Work, after the phone's: each change saves at once, shows
  * what Hermes kept, and says so when it didn't save.
  */
-export function BotWorkSettings({ bot, botName, groups }: Props) {
+export function BotWorkSettings({ bot, botName, providers }: Props) {
   const [settings, setSettings] = useState<WorkSettings | null>(null)
   const [missing, setMissing] = useState(false)
   const [loadError, setLoadError] = useState(false)
@@ -85,7 +87,6 @@ export function BotWorkSettings({ bot, botName, groups }: Props) {
   const on = settings.policy !== 'off'
   const steps = quickStepsChoices(settings)
   const modelValue = settings.model ? `${settings.model.provider ?? ''}\n${settings.model.model}` : ''
-  const listed = groups.some(group => group.slug === (settings.model?.provider ?? '') && group.models.includes(settings.model?.model ?? ''))
 
   return (
     <>
@@ -205,28 +206,18 @@ export function BotWorkSettings({ bot, botName, groups }: Props) {
           <h2>{t('Workstream Model')}</h2>
           <div className="pset-row">
             <span>{t('Model')}</span>
-            <select
-              className="language-select"
+            <ModelChooser
               value={modelValue}
+              providers={providers}
+              defaultLabel={t('Same as Bot Chat')}
+              label={t('Workstream Model')}
               disabled={saving}
-              onChange={e => {
-                const [provider = '', model = ''] = e.target.value.split('\n')
+              onChange={next => {
+                const [provider = '', model = ''] = next.split('\n')
                 const pick = model ? { model, provider: provider || undefined } : null
                 void save({ workstream_model: modelBody(pick) }, { model: pick })
               }}
-            >
-              <option value="">{t('Same as Bot Chat')}</option>
-              {modelValue && !listed ? <option value={modelValue}>{settings.model?.model}</option> : null}
-              {groups.map(group => (
-                <optgroup key={group.slug} label={group.name}>
-                  {group.models.map(model => (
-                    <option key={model} value={`${group.slug}\n${model}`}>
-                      {model}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
+            />
           </div>
           <p className="meta">{t('New workstreams start on this model. Work that’s already running keeps its own.')}</p>
         </section>

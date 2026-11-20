@@ -4,11 +4,11 @@ import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { hasOwnModel, helperSummary, helperSwitch, parseModelSettings, switchValue, type HelperSwitch, type ModelSettings } from '../state/helperModels'
 import { readConfig, updateConfig, withValue, type Http } from '../state/profileConfig'
-import { groupModels, type ModelProviderRow } from '../state/models'
+import { type ModelProviderRow } from '../state/models'
 import { Icon } from './icons'
 import { FallbackModels } from './FallbackModels'
 import { ProvidersSection } from './ProvidersSection'
-import { ModelOptions } from './ModelOptions'
+import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
@@ -66,7 +66,6 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
     void load()
   }, [load])
 
-  const groups = useMemo(() => groupModels(providers, ''), [providers])
   // The bot list is a new array on every render above: the profiles stay the same one while their names do.
   const profileKey = bots.map(bot => bot.name).join('\n')
   const profiles = useMemo(() => (profileKey ? profileKey.split('\n') : []), [profileKey])
@@ -92,22 +91,19 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
 
   const picker = (key: string, value: { provider: string; model: string }, sameAsChats: boolean, onPick: (provider: string, model: string) => void) => {
     const current = value.model && value.provider !== 'auto' ? `${value.provider}\n${value.model}` : ''
-    const listed = groups.some(group => group.slug === value.provider && group.models.includes(value.model))
     return (
-      <select
-        className="language-select models-select"
+      <ModelChooser
         value={current}
+        providers={providers}
+        defaultLabel={sameAsChats ? t('Same as chats') : null}
+        emptyLabel={t('Default')}
+        label={key}
         disabled={saving !== null || !modelCatalog.answered}
-        aria-label={key}
-        onChange={e => {
-          const [provider = '', model = ''] = e.target.value.split('\n')
+        onChange={next => {
+          const [provider = '', model = ''] = next.split('\n')
           onPick(provider, model)
         }}
-      >
-        {sameAsChats ? <option value="">{t('Same as chats')}</option> : !current ? <option value="">{t('Default')}</option> : null}
-        {current && !listed ? <option value={current}>{value.model}</option> : null}
-        <ModelOptions providers={providers} groups={groups} />
-      </select>
+      />
     )
   }
 

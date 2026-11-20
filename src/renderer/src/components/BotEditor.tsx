@@ -21,7 +21,6 @@ import {
   type Capabilities,
   type Draft
 } from '../state/botEditor'
-import { groupModels } from '../state/models'
 import { starterFace } from '../state/starterFaces'
 import { movingPicture, mayMove, TooLargeError } from '../state/movingPicture'
 import { avatarChanged, useAvatar } from '../state/useBots'
@@ -32,7 +31,7 @@ import { BotPluginRow } from './BotPluginRow'
 import { BotWorkSettings } from './BotWorkSettings'
 import { StarterFaceArt } from './StarterFaceArt'
 import { Icon } from './icons'
-import { ModelOptions } from './ModelOptions'
+import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
@@ -131,9 +130,7 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
     void loadDetails()
   }, [bot.name])
 
-  const groups = useMemo(() => groupModels(providers ?? [], ''), [providers])
   const modelValue = draft.provider && draft.model ? `${draft.provider}\n${draft.model}` : ''
-  const listed = groups.some(group => group.slug === draft.provider && group.models.includes(draft.model))
 
   const [making, setMaking] = useState(false)
   const pickPicture = async (file: File | undefined, moving = false) => {
@@ -421,20 +418,18 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
             <RefreshModelsButton catalog={catalog} />
           </h2>
           {details && (providers || catalog.failed) ? (
-            <select
-              className="language-select"
+            <ModelChooser
               value={modelValue}
-              aria-label={t('Model')}
+              providers={providers}
+              defaultLabel={null}
+              emptyLabel={t('Default')}
+              label={t('Model')}
               disabled={!catalog.answered}
-              onChange={e => {
-                const [provider = '', model = ''] = e.target.value.split('\n')
+              onChange={next => {
+                const [provider = '', model = ''] = next.split('\n')
                 update({ provider, model })
               }}
-            >
-              {!modelValue ? <option value="">{t('Default')}</option> : null}
-              {modelValue && !listed ? <option value={modelValue}>{draft.model}</option> : null}
-              <ModelOptions providers={providers ?? []} groups={groups} />
-            </select>
+            />
           ) : !details ? (
             <p className="meta">{detailsError ? '—' : t('Loading…')}</p>
           ) : null}
@@ -457,7 +452,7 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
             ))}
           </section>
         ) : null}
-        <BotWorkSettings bot={bot.name} botName={draft.title.trim() || bot.title} groups={groups} />
+        <BotWorkSettings bot={bot.name} botName={draft.title.trim() || bot.title} providers={providers} />
         <BotPluginRow bot={bot.name} botName={draft.title.trim() || bot.title} />
       </div>
     </main>

@@ -4,7 +4,7 @@ import { gateway } from '../gateway'
 import { delegateChain, fallbackList, isComplete, moved, sameList, savedValue, type Fallback } from '../state/fallbacks'
 import { groupModels } from '../state/models'
 import { readConfig, updateConfig, withValue, type Http } from '../state/profileConfig'
-import { ModelOptions } from './ModelOptions'
+import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
@@ -123,25 +123,21 @@ export function FallbackModels({ profile, delegate = false }: Props) {
               <ol className="fallback-list">
                 {list.map((entry, index) => {
                   const value = entry.provider || entry.model ? `${entry.provider}\n${entry.model}` : ''
-                  const listed = !value || groups.some(g => g.slug === entry.provider && g.models.includes(entry.model))
                   return (
                     <li key={index} className="pset-row">
                       <span className="fallback-rank">{index + 1}</span>
-                      <select
-                        className="language-select models-select"
+                      <ModelChooser
                         value={value}
+                        providers={providers}
+                        defaultLabel={null}
                         disabled={saving}
-                        aria-label={t('Fallback {number}', { number: String(index + 1) })}
-                        onChange={e => {
-                          const [provider = '', model = ''] = e.target.value.split('\n')
+                        label={t('Fallback {number}', { number: String(index + 1) })}
+                        onChange={next => {
+                          const [provider = '', model = ''] = next.split('\n')
                           // A different model keeps no routing written for the old one.
                           set(index, { provider, model, extras: provider === entry.provider ? entry.extras : {} })
                         }}
-                      >
-                        {!value ? <option value="">{t('Not set')}</option> : null}
-                        {!listed ? <option value={value}>{entry.provider ? `${entry.provider} · ${entry.model}` : entry.model}</option> : null}
-                        <ModelOptions providers={providers} groups={groups} />
-                      </select>
+                      />
                       <button
                         className="staged-remove"
                         disabled={saving || index === 0}

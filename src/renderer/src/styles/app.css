@@ -10172,3 +10172,75 @@ button.secondary.danger {
   color: var(--muted);
   font-size: 14px;
 }
+
+/* A model setting's row and the Model page it opens (the phone's ModelChooserPage). */
+.model-chooser-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 340px;
+  height: 30px;
+  padding: 0 8px 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.model-chooser-row:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.model-chooser-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-chooser-detail {
+  flex: none;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-chooser-row svg {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  margin-left: auto;
+  color: var(--text-3);
+}
+
+.model-picker.model-chooser {
+  position: static;
+  transform: none;
+  width: min(560px, 100%);
+  max-height: min(640px, 100%);
+}
+
+.model-group-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.model-group-toggle:hover {
+  background: var(--surface-hover);
+}
+
+.model-group-toggle svg {
+  width: 12px;
+  height: 12px;
+}

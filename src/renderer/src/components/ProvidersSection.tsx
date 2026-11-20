@@ -1,6 +1,7 @@
 import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
+import { ModelChooser } from './ModelChooser'
 import { gateway } from '../gateway'
 import {
   ProviderService,
@@ -833,13 +834,15 @@ function EndpointForm({
         <label className="provider-field">
           <span>{t('Model')}</span>
           {models.length ? (
-            <select className="language-select" value={model} onChange={e => setModel(e.target.value)}>
-              {models.map(m => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </select>
+            // Its models as one provider on the Model page, as on the phone.
+            <ModelChooser
+              value={model ? `custom\n${model}` : ''}
+              providers={[{ slug: 'custom', name: name.trim() || address.trim(), models }]}
+              defaultLabel={null}
+              label={t('Model')}
+              disabled={busy}
+              onChange={next => setModel(next.split('\n')[1] ?? '')}
+            />
           ) : (
             <input value={model} onChange={e => setModel(e.target.value)} placeholder={t('Model name')} disabled={busy} />
           )}
