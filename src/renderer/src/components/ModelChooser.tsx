@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { t } from '@shared/i18n'
-import { groupModels, typedModelId, typedModelProviders, type ModelProviderRow } from '../state/models'
+import { groupModels, reasoningTitle, typedModelId, typedModelProviders, type ModelProviderRow } from '../state/models'
 import { isPinned, pinnedRows, recentRows } from '../state/modelQuickPicks'
 import { chooserLines, chooserListed, chooserPick, chooserValue, providerStartsOpen } from '../state/modelChooser'
 import { useModelQuickPicks } from './ModelOptions'
@@ -20,6 +20,15 @@ interface Props {
   label: string
   disabled?: boolean
   className?: string
+  /** The setting's reasoning, set in the page's top card with its own levels and inherit choice. */
+  reasoning?: ChooserReasoning
+}
+
+export interface ChooserReasoning {
+  value: string
+  levels: readonly string[]
+  inheritLabel: string
+  onChange: (value: string) => void
 }
 
 /**
@@ -29,7 +38,7 @@ interface Props {
  * Eric 2026-11-08: no drop-down menus). The setting keeps its own saves;
  * this only hands back a pick.
  */
-export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLabel, label, disabled, className }: Props) {
+export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLabel, label, disabled, className, reasoning }: Props) {
   const [open, setOpen] = useState(false)
   const lines = chooserLines(value, providers, defaultLabel ?? emptyLabel ?? t('Not set'))
   return (
@@ -43,7 +52,9 @@ export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLa
         onClick={() => setOpen(true)}
       >
         <span className="model-chooser-title">{lines.title}</span>
-        {lines.detail ? <span className="meta model-chooser-detail">{lines.detail}</span> : null}
+        {lines.detail || reasoning?.value ? (
+          <span className="meta model-chooser-detail">{[lines.detail, reasoning?.value ? reasoningTitle(reasoning.value) : ''].filter(Boolean).join(' · ')}</span>
+        ) : null}
         <Icon name="chevron" />
       </button>
       {open ? (
@@ -52,9 +63,11 @@ export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLa
           providers={providers}
           defaultLabel={defaultLabel}
           label={label}
+          reasoning={reasoning}
           onClose={() => setOpen(false)}
           onPick={next => {
-            setOpen(false)
+            // The page closes on a pick unless it has reasoning to set, as on the phone.
+            if (!reasoning) setOpen(false)
             if (next !== value) onChange(next)
           }}
         />
@@ -68,6 +81,7 @@ function ModelChooserPage({
   providers,
   defaultLabel,
   label,
+  reasoning,
   onClose,
   onPick
 }: {
@@ -75,6 +89,7 @@ function ModelChooserPage({
   providers: ModelProviderRow[] | null
   defaultLabel: string | null
   label: string
+  reasoning?: ChooserReasoning
   onClose: () => void
   onPick: (value: string) => void
 }) {
@@ -148,6 +163,7 @@ function ModelChooserPage({
             <Icon name="close" />
           </button>
         </div>
+        {reasoning ? <ReasoningChoice reasoning={reasoning} /> : null}
         <input
           ref={search}
           className="model-search"
@@ -211,5 +227,29 @@ function ModelChooserPage({
       </div>
     </div>,
     document.body
+  )
+}
+
+/** The setting's reasoning in the top card: its inherit choice, then its own levels (a saved level it doesn't list stays). */
+function ReasoningChoice({ reasoning }: { reasoning: ChooserReasoning }) {
+  const levels = reasoning.value && !reasoning.levels.includes(reasoning.value) ? [...reasoning.levels, reasoning.value] : reasoning.levels
+  const choices = [{ value: '', title: reasoning.inheritLabel }, ...levels.map(level => ({ value: level, title: reasoningTitle(level) }))]
+  return (
+    <div className="model-setting">
+      <span className="model-setting-label">{t('Reasoning')}</span>
+      <div className="segmented model-chooser-reasoning" role="radiogroup" aria-label={t('Reasoning')}>
+        {choices.map(choice => (
+          <button
+            key={choice.value || 'inherit'}
+            role="radio"
+            aria-checked={reasoning.value === choice.value}
+            className={reasoning.value === choice.value ? 'on' : undefined}
+            onClick={() => reasoning.onChange(choice.value)}
+          >
+            {choice.title}
+          </button>
+        ))}
+      </div>
+    </div>
   )
 }

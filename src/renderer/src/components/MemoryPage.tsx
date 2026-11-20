@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
-import { reasoningTitle, REASONING_LEVELS } from '../state/models'
+import { REASONING_LEVELS } from '../state/models'
 import {
   fieldValue,
   inTurn,
@@ -197,20 +197,16 @@ function DelegateModel({
           defaultLabel={t('Inherit chat model')}
           label={t('Delegate model')}
           disabled={busy || !catalog.answered}
+          // A delegate has no Off, as on the phone.
+          reasoning={{
+            value: reasoning,
+            levels: REASONING_LEVELS.filter(level => level !== 'none'),
+            inheritLabel: t('Inherit chat reasoning'),
+            onChange: setReasoning
+          }}
         />
       </div>
       <ModelCatalogNote catalog={catalog} />
-      <div className="pset-row">
-        <span>{t('Reasoning')}</span>
-        <select className="language-select" value={reasoning} disabled={busy} aria-label={t('Reasoning')} onChange={e => setReasoning(e.target.value)}>
-          <option value="">{t('Inherit chat reasoning')}</option>
-          {REASONING_LEVELS.filter(level => level !== 'none').map(level => (
-            <option key={level} value={level}>
-              {reasoningTitle(level)}
-            </option>
-          ))}
-        </select>
-      </div>
       <div>
         <button
           className="secondary"
