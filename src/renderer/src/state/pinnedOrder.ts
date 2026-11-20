@@ -131,7 +131,7 @@ export function installationId(): string {
 
 type Http = (method: 'GET' | 'PUT', path: string, body?: unknown) => Promise<unknown>
 
-const DEVICE_NAME = 'Conduit for desktop'
+export const DEVICE_NAME = 'Conduit for desktop'
 
 /**
  * The host's orders for the list: read from this computer, then each

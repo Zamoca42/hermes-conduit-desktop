@@ -17,7 +17,13 @@ import {
   type Accent,
   type ChatFontStyle
 } from '../state/appearance'
+import { LAUNCH_CHOICES, TABS_SYNC_KEY, keepTabs, keptTabs, launchPage, withFirstTab, type LaunchPage } from '../state/launchTab'
+import { DEVICE_NAME, PREFS_PATH, installationId } from '../state/pinnedOrder'
+import { gateway } from '../gateway'
 import { Icon } from './icons'
+
+const pageTitle = (page: LaunchPage) =>
+  page === 'bots' ? t('Bots') : page === 'chats' ? t('Chats') : page === 'tasks' ? t('Tasks') : page === 'pulse' ? t('Pulse') : t('Artifacts')
 
 const THEMES: ThemeChoice[] = ['dark', 'light', 'system']
 const themeTitle = (theme: ThemeChoice) => (theme === 'dark' ? t('Dark') : theme === 'light' ? t('Light') : t('System'))
@@ -48,8 +54,23 @@ function readLastCustom(): string {
 
 const rgb = (hex: string): [number, number, number] => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255) as [number, number, number]
 
-/** Settings > Appearance, after the phone's: theme, accent color and chat text style, all kept on this computer. */
-export function AppearancePage({ onBack }: { onBack: () => void }) {
+/**
+ * Settings > Appearance, after the phone's: theme, accent color and chat text
+ * style, all kept on this computer, and the page Conduit opens on, kept with
+ * the dashboard as the first tab of the phone's layout (launchTab.ts).
+ */
+export function AppearancePage({ host, onBack }: { host: string; onBack: () => void }) {
+  const [opensOn, setOpensOn] = useState<LaunchPage>(() => launchPage(host))
+  const [openFailed, setOpenFailed] = useState(false)
+  const chooseOpensOn = (page: LaunchPage) => {
+    const tabs = withFirstTab(keptTabs(host), page)
+    setOpensOn(page)
+    setOpenFailed(false)
+    keepTabs(host, tabs)
+    gateway
+      .http('PUT', PREFS_PATH, { installation_id: installationId(), device: DEVICE_NAME, changes: { [TABS_SYNC_KEY]: tabs } })
+      .catch(() => setOpenFailed(true))
+  }
   const [theme, setTheme] = useState<ThemeChoice>(window.conduit.theme)
   const [accent, setAccent] = useState<Accent>(readAccent)
   const [lastCustom, setLastCustom] = useState(readLastCustom)
@@ -64,6 +85,21 @@ export function AppearancePage({ onBack }: { onBack: () => void }) {
         </button>
         <h1>{t('Appearance')}</h1>
       </div>
+
+      {host ? (
+        <section className="pset-section">
+          <h2>{t('Open on')}</h2>
+          <p className="meta">{t('The page Conduit shows when it starts. It’s kept with this dashboard, so a phone signed in to it opens on the same tab.')}</p>
+          <div className="segmented" role="group" aria-label={t('Open on')}>
+            {LAUNCH_CHOICES.map(page => (
+              <button key={page} aria-pressed={opensOn === page} onClick={() => chooseOpensOn(page)}>
+                {pageTitle(page)}
+              </button>
+            ))}
+          </div>
+          {openFailed ? <p className="meta warns">{t('Kept on this computer. Hermes didn’t take it, so other devices still open where they did.')}</p> : null}
+        </section>
+      ) : null}
 
       <section className="pset-section">
         <h2>{t('Theme')}</h2>
