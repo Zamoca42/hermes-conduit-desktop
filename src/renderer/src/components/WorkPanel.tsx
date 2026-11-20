@@ -67,7 +67,9 @@ function WorkCard({
   }
 
   const tone = workTone(item)
-  const mark = tone === 'needs' ? 'bell' : tone === 'working' ? 'spinner' : tone === 'failed' ? 'close' : 'check'
+  // The mark follows the status, as the phone's BotWorkLook.symbol: a stopped card is grey with a stop mark, not a check.
+  const mark =
+    tone === 'needs' ? 'bell' : tone === 'working' ? 'spinner' : tone === 'failed' ? 'close' : !item.closed && item.status === 'stopped' ? 'stop' : 'check'
 
   return (
     <div className={`work-card tone-${tone}`}>
