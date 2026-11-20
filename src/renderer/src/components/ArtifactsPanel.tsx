@@ -390,7 +390,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
   const shownViewer = viewer ? (
     <div className="ws-viewer">
       <div className="ws-viewer-head">
-        <button className="staged-remove" aria-label={t('Back')} title={t('Back')} onClick={() => setViewer(null)}>
+        <button className="staged-remove" data-back aria-label={t('Back')} title={t('Back')} onClick={() => setViewer(null)}>
           ‹
         </button>
         <span className="ws-viewer-name" title={viewer.item.path ?? viewer.item.url}>

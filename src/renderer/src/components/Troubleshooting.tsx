@@ -65,7 +65,7 @@ export function Troubleshooting({
         </ul>
       )}
       {topic === 'tls' && untrusted ? <ServerCertificate url={untrusted} /> : null}
-      <button className="link-button" type="button" onClick={onBack}>
+      <button className="link-button" type="button" data-back onClick={onBack}>
         {t('Back')}
       </button>
     </div>

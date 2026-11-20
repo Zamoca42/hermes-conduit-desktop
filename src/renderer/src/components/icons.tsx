@@ -146,7 +146,7 @@ export type IconName = keyof typeof paths
 
 export function Icon({ name, style, className }: { name: IconName; style?: React.CSSProperties; className?: string }) {
   return (
-    <svg className={className ? `ico ${className}` : 'ico'} viewBox="0 0 24 24" aria-hidden="true" style={style}>
+    <svg className={className ? `ico ${className}` : 'ico'} data-icon={name} viewBox="0 0 24 24" aria-hidden="true" style={style}>
       {paths[name]}
     </svg>
   )

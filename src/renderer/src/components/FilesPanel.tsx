@@ -339,7 +339,7 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
   const viewer = open ? (
     <div className="ws-viewer">
       <div className="ws-viewer-head">
-        <button className="staged-remove" aria-label={t('Back')} title={t('Back')} onClick={closeViewer}>
+        <button className="staged-remove" data-back aria-label={t('Back')} title={t('Back')} onClick={closeViewer}>
           ‹
         </button>
         <span className="ws-viewer-name" title={open.entry.path}>
