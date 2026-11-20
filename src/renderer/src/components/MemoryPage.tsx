@@ -23,6 +23,7 @@ import { Icon } from './icons'
 import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
+import { useMouseBack } from '../state/mouseBack'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -41,6 +42,7 @@ interface Props {
  * changes, in turn with every other config save.
  */
 export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
+  useMouseBack(onBack)
   const [profile, setProfile] = useState(initialProfile)
   const [config, setConfig] = useState<Record<string, unknown> | null>(null)
   const [schema, setSchema] = useState<Set<string> | null>(null)

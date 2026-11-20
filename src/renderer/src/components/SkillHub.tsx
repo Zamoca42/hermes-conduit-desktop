@@ -20,6 +20,7 @@ import {
 } from '../state/skillHub'
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const missingRoute = (e: unknown) => e instanceof GatewayError && (e.code === 404 || e.code === 405)
@@ -199,6 +200,7 @@ function HubSkillPage({
  * its sources itself, so nothing downloads the whole catalog.
  */
 export function SkillHub({ profile, onBack, onChanged }: { profile: string; onBack: () => void; onChanged: () => void }) {
+  useMouseBack(onBack)
   const [hub, setHub] = useState<HubSnapshot | null>(null)
   const [hubError, setHubError] = useState<string | null>(null)
   const [unsupported, setUnsupported] = useState(false)

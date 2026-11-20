@@ -21,6 +21,7 @@ import { ProvidersSection } from './ProvidersSection'
 import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
+import { useMouseBack } from '../state/mouseBack'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -36,6 +37,7 @@ const withProfile = (path: string, profile: string) => (profile && profile !== '
  * model asks first), for new chats; a running chat keeps its own.
  */
 export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
+  useMouseBack(onBack)
   const [profile, setProfile] = useState(initialProfile)
   const [settings, setSettings] = useState<ModelSettings | null>(null)
   const modelCatalog = useModelCatalog(

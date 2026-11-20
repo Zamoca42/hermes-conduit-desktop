@@ -2517,6 +2517,19 @@ function Shell({
   )
 }
 
+/** A Settings row that opens a page: the whole row is the button, its label on the left, what's inside on the right. */
+function SettingsLink({ label, detail, disabled, onOpen }: { label: string; detail: string; disabled?: boolean; onOpen: () => void }) {
+  return (
+    <button className="settings-link" disabled={disabled} onClick={onOpen}>
+      <span className="settings-link-label">{label}</span>
+      <span className="settings-link-detail">
+        <span>{detail}</span>
+        <Icon name="chevron" />
+      </span>
+    </button>
+  )
+}
+
 function Settings({
   status,
   onAddHost,
@@ -2698,256 +2711,217 @@ function Settings({
   return (
     <main className="settings">
       <h1>{t('Settings')}</h1>
-      <dl>
-        <dt>Hermes</dt>
-        <dd>
-          <ul className="hosts">
-            {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(
-              host => (
-                <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
-                  <span className="host-label" title={host.url}>
-                    {hostName(host.url)}
-                  </span>
-                  {host.username ? <span className="meta">{host.username}</span> : null}
-                  <span className="spacer" />
-                  {host.url === status.url ? (
-                    <>
-                      <span className="meta">{t('In use')}</span>
-                      <button className="link" onClick={() => onEditHost(host)}>
-                        {t('Connection Setup')}
+      <section className="settings-group">
+        <h2>{t('Connection')}</h2>
+        <dl className="settings-card">
+          <dt>{t('Connection')}</dt>
+          <dd>
+            {status.phase === 'open' ? t('Connected') : status.phase === 'connecting' ? t('Connecting…') : t('Not connected')}
+            {status.phase === 'open' && status.sessionAuthority ? ` · ${t('session authority')}` : ''}
+          </dd>
+          <dt>Hermes</dt>
+          <dd>
+            <ul className="hosts">
+              {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(
+                host => (
+                  <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
+                    <span className="host-label" title={host.url}>
+                      {hostName(host.url)}
+                    </span>
+                    {host.username ? <span className="meta">{host.username}</span> : null}
+                    <span className="spacer" />
+                    {host.url === status.url ? (
+                      <>
+                        <span className="meta">{t('In use')}</span>
+                        <button className="link" onClick={() => onEditHost(host)}>
+                          {t('Connection Setup')}
+                        </button>
+                      </>
+                    ) : keptState(host.url) ? (
+                      <span className="meta">{keptStateLabel(keptState(host.url)!)}</span>
+                    ) : null}
+                    {host.url === status.url ? null : (
+                      <button className="link" onClick={() => switchEndingCall(hostName(host.url)) && void window.conduit.switchHost(host.url)}>
+                        {t('Switch')}
                       </button>
-                    </>
-                  ) : keptState(host.url) ? (
-                    <span className="meta">{keptStateLabel(keptState(host.url)!)}</span>
-                  ) : null}
-                  {host.url === status.url ? null : (
-                    <button className="link" onClick={() => switchEndingCall(hostName(host.url)) && void window.conduit.switchHost(host.url)}>
-                      {t('Switch')}
-                    </button>
-                  )}
-                  {host.url !== status.url ? (
-                    <button
-                      className="link danger"
-                      onClick={() => {
-                        if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) {
-                          composerDrafts.dropHost(host.url)
-                          void window.conduit.removeHost(host.url)
-                        }
-                      }}
-                    >
-                      {t('Sign out')}
-                    </button>
-                  ) : null}
-                </li>
-              )
-            )}
-          </ul>
-          <button className="link add-host" onClick={onAddHost}>
-            {t('Add another Hermes…')}
-          </button>
-        </dd>
-        <dt>{t('Dashboard')}</dt>
-        <dd>{status.url}</dd>
-        <dt>{t('Signed in with')}</dt>
-        <dd>
-          {status.method ? methods[status.method] : '—'}
-          {status.username ? ` (${status.username})` : ''}
-        </dd>
-        {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
-        <dt>{t('Profile')}</dt>
-        <dd>
-          <span>{bots.find(bot => bot.name === profile)?.title ?? profile}</span>{' '}
-          <button className="link" disabled={!onEditProfile} onClick={onEditProfile}>
-            {t('Edit profile')}
-          </button>
-        </dd>
-        <AppLockSetting />
-        <AskDashboardSetting hosts={status.hosts?.length ?? 0} />
-        <CombineDashboardsSetting hosts={status.hosts ?? []} />
-        <dt>{t('Models')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('models')}>
-            {t('Chat model and helper models')}
-          </button>
-        </dd>
-        <dt>{t('Chat')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('chat')}>
-            {t('Response behavior, visibility, and timezone')}
-          </button>
-        </dd>
-        <dt>{t('Workspace & safety')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('workspace')}>
-            {t('Working directory, approvals, and privacy')}
-          </button>
-        </dd>
-        <dt>{t('Memory & delegation')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('memory')}>
-            {t('Memory, compression, and child agents')}
-          </button>
-        </dd>
-        <dt>{t('Advanced')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('advanced')}>
-            {t('Turn limits, terminal, and tool output')}
-          </button>
-        </dd>
-        <dt>{t('Capabilities')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('capabilities')}>
-            {t('Skills, tools, connectors, and plugins')}
-          </button>
-        </dd>
-        <dt>{t('Conduit plugin')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('plugin')}>
-            {t('Version, updates and what it does here')}
-          </button>
-        </dd>
-        {linksServed ? (
-          <>
-            <dt>{t('Multiplayer')}</dt>
-            <dd>
-              <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('multiplayer')}>
-                {t("Rooms with other people's agents")}
-              </button>
-            </dd>
-          </>
-        ) : null}
-        <dt>{t('Passwords & logins')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('vault')}>
-            {t('Logins, cards and password managers Hermes signs in with')}
-          </button>
-        </dd>
-        <dt>{t('Usage')}</dt>
-        <dd>
-          <button className="link" disabled={status.phase !== 'open'} onClick={() => setPage('usage')}>
-            {t('Tokens, cost and provider quota')}
-          </button>
-        </dd>
-        <dt>{t('Notifications')}</dt>
-        <dd>
-          <label className="toggle">
+                    )}
+                    {host.url !== status.url ? (
+                      <button
+                        className="link danger"
+                        onClick={() => {
+                          if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) {
+                            composerDrafts.dropHost(host.url)
+                            void window.conduit.removeHost(host.url)
+                          }
+                        }}
+                      >
+                        {t('Sign out')}
+                      </button>
+                    ) : null}
+                  </li>
+                )
+              )}
+            </ul>
+            <button className="link add-host" onClick={onAddHost}>
+              {t('Add another Hermes…')}
+            </button>
+          </dd>
+          <dt>{t('Dashboard')}</dt>
+          <dd>{status.url}</dd>
+          <dt>{t('Signed in with')}</dt>
+          <dd>
+            {status.method ? methods[status.method] : '—'}
+            {status.username ? ` (${status.username})` : ''}
+          </dd>
+          {status.url ? <HostActions host={status.url} connected={status.phase === 'open'} /> : null}
+          <dt>{t('Profile')}</dt>
+          <dd>
+            <span>{bots.find(bot => bot.name === profile)?.title ?? profile}</span>{' '}
+            <button className="link" disabled={!onEditProfile} onClick={onEditProfile}>
+              {t('Edit profile')}
+            </button>
+          </dd>
+        </dl>
+      </section>
+      <section className="settings-group">
+        <h2>Hermes</h2>
+        <dl className="settings-card">
+          <SettingsLink label={t('Models')} detail={t('Chat model and helper models')} disabled={status.phase !== 'open'} onOpen={() => setPage('models')} />
+          <SettingsLink label={t('Usage')} detail={t('Tokens, cost and provider quota')} disabled={status.phase !== 'open'} onOpen={() => setPage('usage')} />
+          <SettingsLink label={t('Chat')} detail={t('Response behavior, visibility, and timezone')} disabled={status.phase !== 'open'} onOpen={() => setPage('chat')} />
+          <SettingsLink label={t('Workspace & safety')} detail={t('Working directory, approvals, and privacy')} disabled={status.phase !== 'open'} onOpen={() => setPage('workspace')} />
+          <SettingsLink label={t('Memory & delegation')} detail={t('Memory, compression, and child agents')} disabled={status.phase !== 'open'} onOpen={() => setPage('memory')} />
+          <SettingsLink label={t('Advanced')} detail={t('Turn limits, terminal, and tool output')} disabled={status.phase !== 'open'} onOpen={() => setPage('advanced')} />
+          <SettingsLink label={t('Capabilities')} detail={t('Skills, tools, connectors, and plugins')} disabled={status.phase !== 'open'} onOpen={() => setPage('capabilities')} />
+          <SettingsLink label={t('Passwords & logins')} detail={t('Logins, cards and password managers Hermes signs in with')} disabled={status.phase !== 'open'} onOpen={() => setPage('vault')} />
+          {linksServed ? (
+            <SettingsLink label={t('Multiplayer')} detail={t("Rooms with other people's agents")} disabled={status.phase !== 'open'} onOpen={() => setPage('multiplayer')} />
+          ) : null}
+          <SettingsLink label={t('Conduit plugin')} detail={t('Version, updates and what it does here')} disabled={status.phase !== 'open'} onOpen={() => setPage('plugin')} />
+        </dl>
+      </section>
+      <section className="settings-group">
+        <h2>{t('Voice')}</h2>
+        <dl className="settings-card">
+          <dt>{t('Voice')}</dt>
+          <dd>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={readAloudOn}
+                onChange={e => {
+                  setReadsRepliesAloud(e.target.checked)
+                  setReadAloudOn(e.target.checked)
+                }}
+              />
+              {t('Read replies aloud')}
+            </label>
+            <p className="meta settings-caption">
+              {t('Each reply in the open chat is read aloud as it finishes, in the voice below. Calls speak their own replies.')}
+            </p>
+            <ReadAloudVoiceSetting profile={profile} />
+            <VoiceModeSettings profile={profile} />
+          </dd>
+          {status.url ? (
+            <>
+              <dt>{t('Wake phrase')}</dt>
+              <dd>
+                <WakePhraseSettings host={status.url} profile={profile} />
+              </dd>
+            </>
+          ) : null}
+          <dt>{t('Calls from Hermes')}</dt>
+          <dd>
+            <HermesCallSettings profile={profile} onNewChat={onNewChatWith} />
+          </dd>
+        </dl>
+      </section>
+      <section className="settings-group">
+        <h2>{t('App')}</h2>
+        <dl className="settings-card">
+          <SettingsLink label={t('Appearance')} detail={t('Choose how Conduit appears across the app.')} onOpen={() => setPage('appearance')} />
+          <dt>{t('Chat text size')}</dt>
+          <dd>
             <input
-              type="checkbox"
-              checked={notifications}
-              onChange={e => {
-                setNotificationsEnabled(e.target.checked)
-                setNotifications(e.target.checked)
-              }}
+              className="text-size-slider"
+              type="range"
+              min={0}
+              max={SCALES.length - 1}
+              step={1}
+              value={Math.max(0, SCALES.indexOf(chatScale))}
+              onChange={e => setChatScale(SCALES[Number(e.target.value)] ?? 1)}
+              aria-label={t('Chat text size')}
             />
-            {t('When a reply finishes or something needs you in a chat you’re not looking at')}
-          </label>
-        </dd>
-        <dt>{t('Voice')}</dt>
-        <dd>
-          <label className="toggle">
-            <input
-              type="checkbox"
-              checked={readAloudOn}
+            <span className="meta">{Math.round(chatScale * 100)}%</span>
+          </dd>
+          <dt>{t('Notifications')}</dt>
+          <dd>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={notifications}
+                onChange={e => {
+                  setNotificationsEnabled(e.target.checked)
+                  setNotifications(e.target.checked)
+                }}
+              />
+              {t('When a reply finishes or something needs you in a chat you’re not looking at')}
+            </label>
+          </dd>
+          <dt>{t('Language')}</dt>
+          <dd>
+            <select
+              className="language-select"
+              value={window.conduit.language.choice}
               onChange={e => {
-                setReadsRepliesAloud(e.target.checked)
-                setReadAloudOn(e.target.checked)
+                // The window reloads in the new language; come back to Settings.
+                try {
+                  sessionStorage.setItem(REOPEN_SECTION, 'settings')
+                } catch {
+                  // Opens on Chats instead.
+                }
+                window.conduit.setLanguage(e.target.value as LanguageChoice)
               }}
-            />
-            {t('Read replies aloud')}
-          </label>
-          <p className="meta settings-caption">
-            {t('Each reply in the open chat is read aloud as it finishes, in the voice below. Calls speak their own replies.')}
-          </p>
-          <ReadAloudVoiceSetting profile={profile} />
-          <VoiceModeSettings profile={profile} />
-        </dd>
-        {status.url ? (
-          <>
-            <dt>{t('Wake phrase')}</dt>
-            <dd>
-              <WakePhraseSettings host={status.url} profile={profile} />
-            </dd>
-          </>
-        ) : null}
-        <dt>{t('Calls from Hermes')}</dt>
-        <dd>
-          <HermesCallSettings profile={profile} onNewChat={onNewChatWith} />
-        </dd>
-        <dt>{t('Last live call')}</dt>
-        <dd>
-          <LastCallTrace />
-          <p className="meta">{t('The steps of the last Grok Live, Qwen Live, Local Live or GPT-Live call, without what was said, to paste into an issue.')}</p>
-        </dd>
-        <dt>{t('Last Read Aloud')}</dt>
-        <dd>
-          <LastCallTrace reading />
-          <p className="meta">{t('How the last reply read aloud went: the voice and playback, without the reply’s words, to paste into an issue.')}</p>
-        </dd>
-        <dt>{t('Device reports')}</dt>
-        <dd>
-          <DeviceReportsSetting />
-          <p className="meta">
-            {t(
-              'When part of Conduit stops or the window stops responding, it keeps a report of which part and why, never your messages, and asks once before sending it to Conduit’s developer.'
-            )}
-          </p>
-        </dd>
-        <dt>{t('Appearance')}</dt>
-        <dd>
-          <button className="link" onClick={() => setPage('appearance')}>
-            {t('Choose how Conduit appears across the app.')}
-          </button>
-        </dd>
-        <dt>{t('Chat text size')}</dt>
-        <dd>
-          <input
-            className="text-size-slider"
-            type="range"
-            min={0}
-            max={SCALES.length - 1}
-            step={1}
-            value={Math.max(0, SCALES.indexOf(chatScale))}
-            onChange={e => setChatScale(SCALES[Number(e.target.value)] ?? 1)}
-            aria-label={t('Chat text size')}
-          />
-          <span className="meta">{Math.round(chatScale * 100)}%</span>
-        </dd>
-        <dt>{t('Keyboard')}</dt>
-        <dd>
-          <button className="link" onClick={onShortcuts}>
-            {t('Keyboard Shortcuts')}
-          </button>
-        </dd>
-        <dt>{t('Language')}</dt>
-        <dd>
-          <select
-            className="language-select"
-            value={window.conduit.language.choice}
-            onChange={e => {
-              // The window reloads in the new language; come back to Settings.
-              try {
-                sessionStorage.setItem(REOPEN_SECTION, 'settings')
-              } catch {
-                // Opens on Chats instead.
-              }
-              window.conduit.setLanguage(e.target.value as LanguageChoice)
-            }}
-            aria-label={t('Language')}
-          >
-            <option value="system">{t('Same as this computer')}</option>
-            {LANGUAGES.map(language => (
-              <option key={language} value={language} lang={language}>
-                {LANGUAGE_NAMES[language]}
-              </option>
-            ))}
-          </select>
-        </dd>
-        <dt>{t('Connection')}</dt>
-        <dd>
-          {status.phase === 'open' ? t('Connected') : status.phase === 'connecting' ? t('Connecting…') : t('Not connected')}
-          {status.phase === 'open' && status.sessionAuthority ? ` · ${t('session authority')}` : ''}
-        </dd>
-      </dl>
+              aria-label={t('Language')}
+            >
+              <option value="system">{t('Same as this computer')}</option>
+              {LANGUAGES.map(language => (
+                <option key={language} value={language} lang={language}>
+                  {LANGUAGE_NAMES[language]}
+                </option>
+              ))}
+            </select>
+          </dd>
+          <SettingsLink label={t('Keyboard')} detail={t('Keyboard Shortcuts')} onOpen={onShortcuts} />
+          <AppLockSetting />
+          <AskDashboardSetting hosts={status.hosts?.length ?? 0} />
+          <CombineDashboardsSetting hosts={status.hosts ?? []} />
+        </dl>
+      </section>
+      <section className="settings-group">
+        <h2>{t('Support')}</h2>
+        <dl className="settings-card">
+          <dt>{t('Last live call')}</dt>
+          <dd>
+            <LastCallTrace />
+            <p className="meta">{t('The steps of the last Grok Live, Qwen Live, Local Live or GPT-Live call, without what was said, to paste into an issue.')}</p>
+          </dd>
+          <dt>{t('Last Read Aloud')}</dt>
+          <dd>
+            <LastCallTrace reading />
+            <p className="meta">{t('How the last reply read aloud went: the voice and playback, without the reply’s words, to paste into an issue.')}</p>
+          </dd>
+          <dt>{t('Device reports')}</dt>
+          <dd>
+            <DeviceReportsSetting />
+            <p className="meta">
+              {t(
+                'When part of Conduit stops or the window stops responding, it keeps a report of which part and why, never your messages, and asks once before sending it to Conduit’s developer.'
+              )}
+            </p>
+          </dd>
+        </dl>
+      </section>
       <button
         className="secondary"
         onClick={() => {

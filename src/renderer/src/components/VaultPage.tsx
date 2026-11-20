@@ -18,6 +18,7 @@ import {
   type VaultSource
 } from '../state/vault'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const unsupported = (e: unknown) => /method not found|unknown method|-32601/i.test(message(e)) || (e as { code?: unknown })?.code === -32601
@@ -38,6 +39,7 @@ interface Props {
 const vaultKey = (profile?: string) => `rpc:vault:${profile || 'default'}`
 
 export function VaultPage({ bots, profile: initialProfile, onBack }: Props) {
+  useMouseBack(onBack)
   const [profile, setProfile] = useState(initialProfile)
   const [items, setItems] = useState<VaultItem[] | null>(null)
   const [sources, setSources] = useState<VaultSource[]>([])

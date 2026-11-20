@@ -1829,6 +1829,21 @@
     "zh-Hans": "公寓、单元（可选）",
     "zh-Hant": "公寓、樓層（選填）"
   },
+  "App": {
+    "de": "App",
+    "es": "App",
+    "fr": "App",
+    "id": "Aplikasi",
+    "it": "App",
+    "ja": "アプリ",
+    "ko": "앱",
+    "pl": "Aplikacja",
+    "pt-BR": "App",
+    "ru": "Приложение",
+    "tr": "Uygulama",
+    "zh-Hans": "App",
+    "zh-Hant": "App"
+  },
   "Appearance": {
     "de": "Erscheinungsbild",
     "es": "Apariencia",
@@ -20968,6 +20983,21 @@
     "tr": "En son mesaja kaydır",
     "zh-Hans": "滚动到最新消息",
     "zh-Hant": "捲動到最新訊息"
+  },
+  "Support": {
+    "de": "Support",
+    "es": "Soporte",
+    "fr": "Assistance",
+    "id": "Dukungan",
+    "it": "Supporto",
+    "ja": "サポート",
+    "ko": "지원",
+    "pl": "Wsparcie",
+    "pt-BR": "Suporte",
+    "ru": "Поддержка",
+    "tr": "Destek",
+    "zh-Hans": "支持",
+    "zh-Hant": "支援"
   },
   "Tool steps between skill reviews": {
     "de": "Werkzeugschritte zwischen Skill-Prüfungen",

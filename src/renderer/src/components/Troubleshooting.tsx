@@ -2,6 +2,7 @@ import type { TroubleshootingTopic } from '@shared/ipc'
 import { t } from '@shared/i18n'
 import { ServerCertificate } from './ServerCertificate'
 import { reachMethods, topicName, troubleshootingChecks } from '../state/troubleshooting'
+import { useMouseBack } from '../state/mouseBack'
 
 /**
  * The phone's troubleshooting page for a sign-in failure: Network &
@@ -21,6 +22,7 @@ export function Troubleshooting({
   untrusted: string | null
   onBack: () => void
 }) {
+  useMouseBack(onBack)
   return (
     <div className="signin-card troubleshooting">
       <div className="segmented" role="group" aria-label={t('Troubleshoot Connection')}>

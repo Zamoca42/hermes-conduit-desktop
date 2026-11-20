@@ -239,6 +239,12 @@ function createWindow(): void {
   }
 }
 
+/** What a host file's save says when it fails: the file gone from Hermes, or try again. */
+function saveFailure(error: unknown): string {
+  const code = (error as { code?: unknown } | null)?.code
+  return code === 404 || code === 410 ? t('This file is no longer on your Hermes host.') : t("Couldn't save the file. Try again.")
+}
+
 function registerIpc(): void {
   // Elsewhere Electron's default menu would take Ctrl+0 and Ctrl+Plus for zoom: the window reads them for the chat's text size.
   Menu.setApplicationMenu(process.platform === 'darwin' ? macMenu() : null)
@@ -377,7 +383,7 @@ function registerIpc(): void {
       return 'saved'
     } catch (error) {
       // A Hermes without /api/fs/download: the data URL its files are read as, up to 16 MB.
-      if ((error as { code?: unknown }).code !== 404 && (error as { code?: unknown }).code !== 405) return error instanceof Error ? error.message : String(error)
+      if ((error as { code?: unknown }).code !== 404 && (error as { code?: unknown }).code !== 405) return saveFailure(error)
     }
     try {
       const answer = await connection.http<{ dataUrl?: unknown; data_url?: unknown }>('GET', hostFilePath('read-data-url', path, shownProfile))
@@ -386,7 +392,7 @@ function registerIpc(): void {
       await writeFile(picked.filePath, bytes)
       return 'saved'
     } catch (error) {
-      return error instanceof Error ? error.message : String(error)
+      return saveFailure(error)
     }
   })
   ipcMain.handle(IPC.saveBytes, async (event, name: unknown, bytes: unknown) => {

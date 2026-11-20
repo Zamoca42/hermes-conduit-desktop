@@ -902,6 +902,31 @@ a:hover {
   user-select: text;
 }
 
+.signin-back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: -12px 0 -6px -8px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.signin-back:hover {
+  background: var(--surface-hover);
+}
+
+.signin-back svg {
+  width: 14px;
+  height: 14px;
+}
+
 .signin-card h1 {
   margin: 0;
   font-size: 26px;
@@ -1026,12 +1051,13 @@ a:hover {
 
 .settings {
   flex: 1;
-  padding: 28px 48px;
+  min-width: 0;
+  /* The whole pane scrolls, with its scrollbar at the window's edge; the page is a centered column, as Pulse and Bots are. */
+  padding: 28px max(48px, calc((100% - 880px) / 2)) 40px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 720px;
 }
 
 .settings h1 {
@@ -1057,6 +1083,104 @@ a:hover {
   margin: 0;
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+/* Settings home: groups of rows on cards, as the phone's, with a hairline between rows
+   so each label reads across to its own control. */
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-group h2 {
+  margin: 8px 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.settings .settings-card {
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.settings .settings-card > dt,
+.settings .settings-card > dd {
+  padding: 13px 16px;
+  border-top: 1px solid var(--line-strong);
+  line-height: 1.45;
+}
+
+.settings .settings-card > dt {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.settings .settings-card > dd {
+  padding-left: 0;
+}
+
+.settings .settings-card > dd > * + :is(p, div, label, ul) {
+  margin-top: 8px;
+}
+
+.settings .settings-card > :is(dt, .settings-link):first-child,
+.settings .settings-card > dt:first-child + dd {
+  border-top: 0;
+}
+
+.settings-link {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.settings-link:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.settings-link:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.settings-link-label {
+  padding: 13px 16px;
+  font-weight: 500;
+}
+
+.settings-link-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px 13px 0;
+  color: var(--text-3);
+  min-width: 0;
+}
+
+.settings-link-detail svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
 }
 
 .language-select {
@@ -4161,17 +4285,15 @@ html[data-window='quick'] body {
 .pulse-actions .thumb {
   width: 34px;
   height: 34px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: 17px;
-  background: var(--surface);
+  background: var(--surface-hover);
   font-size: 15px;
-  filter: grayscale(1);
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .pulse-actions .thumb.on,
 .pulse-actions .thumb:hover {
-  filter: none;
   opacity: 1;
 }
 

@@ -23,6 +23,7 @@ import {
   type PulseSettings as State
 } from '../state/pulseSettings'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 const NOTE_LIMIT = 1500
 
@@ -33,6 +34,7 @@ const NOTE_LIMIT = 1500
  * Save.
  */
 export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onChanged: () => void }) {
+  useMouseBack(onBack)
   // Opens on Pulse's state as it last answered on this dashboard (Screens that open on their last answer).
   const [state, setState] = useState<State | null>(() => {
     const kept = keptAnswer(PULSE)
@@ -573,6 +575,7 @@ function ReportTimes({ times, saving, onSave }: { times: string[]; saving: boole
 
 /** What Pulse remembers: the open items by kind, each one to forget. */
 function PulseMemory({ onBack, onChanged }: { onBack: () => void; onChanged: () => void }) {
+  useMouseBack(onBack)
   const [items, setItems] = useState<MemoryItem[] | null>(() => {
     const kept = keptAnswer(`${PULSE}/memory`)
     return kept ? parseMemory(kept) : null

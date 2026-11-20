@@ -25,6 +25,7 @@ import { LookFace } from './BotsHome'
 import { lookPicture } from '../state/lookPictures'
 import type { PersonPicture } from '../state/useRoomLooks'
 import { ROOM_DASHBOARD_PROFILES_CAPABILITY, ROOM_SETUP_CAPABILITY } from '../state/roomSetup'
+import { useMouseBack } from '../state/mouseBack'
 
 const client = roomLinksClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -96,6 +97,7 @@ export function MultiplayerPage({
   personPicture?: PersonPicture
   onBack: () => void
 }) {
+  useMouseBack(onBack)
   const [profile, setProfile] = useState(initialProfile)
   const profileName = bots.find(b => b.name === profile)?.title ?? profile
   const [list, setList] = useState<RoomLinksList | null>(null)

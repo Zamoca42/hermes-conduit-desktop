@@ -8,6 +8,8 @@ import { composerDrafts } from '../state/composerDrafts'
 import { copyHostData, finishHostMove, undoHostCopy } from '../state/hostData'
 import { switchEndingCall } from '../state/callSwitch'
 import { hostName } from './TitleBar'
+import { useMouseBack } from '../state/mouseBack'
+import { Icon } from './icons'
 
 /** "Name: value" lines into headers, or the first line that isn't one. */
 export function parseHeaderLines(text: string): { ok: true; headers: Record<string, string> } | { ok: false; line: string } {
@@ -49,6 +51,7 @@ export function SignIn({
   repairing?: boolean
   onDone?: () => void
 }) {
+  useMouseBack(onCancel)
   const [address, setAddress] = useState(editing?.url ?? '')
   const [url, setUrl] = useState<string | null>(null)
   const [methods, setMethods] = useState<SignInMethod[]>([])
@@ -173,6 +176,12 @@ export function SignIn({
     <div className="signin">
       {url === null ? (
         <form className="signin-card" onSubmit={findHost}>
+          {onCancel ? (
+            <button className="signin-back" type="button" onClick={onCancel}>
+              <Icon name="back" />
+              {t('Back')}
+            </button>
+          ) : null}
           <h1>{repairing ? t('Repair Connection') : editing ? t('Connection Setup') : onCancel ? t('Add another Hermes') : t('Connect to Hermes')}</h1>
           <p>
             {editing
