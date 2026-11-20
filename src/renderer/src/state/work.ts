@@ -169,7 +169,7 @@ export function workTone(item: WorkItem): WorkTone {
   if (item.status === 'needs_you' || item.status === 'interrupted') return 'needs'
   if (item.status === 'running' || item.status === 'starting' || item.status === 'waiting') return 'working'
   if (item.status === 'ready') return 'ready'
-  if (item.status === 'failed' || item.status === 'stopped') return 'failed'
+  if (item.status === 'failed') return 'failed'
   return 'done'
 }
 

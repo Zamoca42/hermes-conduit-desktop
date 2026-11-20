@@ -106,7 +106,7 @@ describe('workTone', () => {
     expect(tone({ status: 'done' })).toBe('done')
     expect(tone({ status: 'running', closed: true })).toBe('done')
     expect(tone({ status: 'waiting' })).toBe('working')
-    expect(tone({ status: 'stopped' })).toBe('failed')
+    expect(tone({ status: 'stopped' })).toBe('done')
     expect(workTone(parseItem({ ref: 'A1', kind: 'ask_out', status: 'waiting', bot: 'Nahida' })!)).toBe('working')
     expect(workTone(parseItem({ ref: 'A2', kind: 'ask_in', status: 'needs_you', bot: 'Nahida' })!)).toBe('needs')
     expect(workTone(parseItem({ ref: 'A3', kind: 'ask_out', status: 'answered' })!)).toBe('done')
