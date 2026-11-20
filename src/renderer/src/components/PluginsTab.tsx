@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -41,6 +42,17 @@ const tierTitle = (tier: CatalogPlugin['tier']) => (tier === 'official' ? t('Off
  * Update and Remove, then the catalog's plugins not installed yet, each
  * with what it adds and Install. Only the default profile changes them.
  */
+/** A kept answer read the way Hermes' is, or null when there's none or it no longer parses. */
+function keptList<T>(path: string, parse: (raw: unknown) => T): T | null {
+  const kept = keptAnswer(path)
+  if (kept === undefined) return null
+  try {
+    return parse(kept)
+  } catch {
+    return null
+  }
+}
+
 export function PluginsTab({ profile, query, host }: { profile: string; query: string; host?: string }) {
   const [installed, setInstalled] = useState<InstalledPlugin[] | null>(null)
   const [catalog, setCatalog] = useState<CatalogPlugin[] | null>(null)
@@ -56,6 +68,9 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
 
   const load = useCallback(async () => {
     setError(null)
+    const keepHub = answerKeeper(scoped(HUB_PATH, profile))
+    // The catalog is the same for every profile: kept once per dashboard.
+    const keepCatalog = answerKeeper(CATALOG_PATH)
     const [hub, list, rows] = await Promise.allSettled([
       gateway.http('GET', scoped(HUB_PATH, profile)),
       gateway.http('GET', CATALOG_PATH, undefined, 30_000),
@@ -65,6 +80,7 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
     if (hub.status === 'fulfilled') {
       try {
         setInstalled(parseInstalled(hub.value))
+        keepHub(hub.value)
       } catch {
         setError(t("Couldn't load agent plugins"))
       }
@@ -73,6 +89,7 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
       try {
         setCatalog(parseCatalog(list.value))
         setCatalogFailed(false)
+        keepCatalog(list.value)
       } catch {
         setCatalogFailed(true)
       }
@@ -80,7 +97,9 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
   }, [profile])
 
   useEffect(() => {
-    setInstalled(null)
+    // What the tab listed last time on this dashboard and profile, until Hermes answers again.
+    setInstalled(keptList(scoped(HUB_PATH, profile), parseInstalled))
+    setCatalog(current => current ?? keptList(CATALOG_PATH, parseCatalog))
     void load()
   }, [load])
 

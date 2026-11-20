@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -33,6 +34,9 @@ interface Props {
  * it takes logins from. Write-only: it lists what Hermes describes, never a
  * password, which Hermes doesn't send.
  */
+/** Where the page's last answer is kept: two RPCs, so a name of its own. */
+const vaultKey = (profile?: string) => `rpc:vault:${profile || 'default'}`
+
 export function VaultPage({ bots, profile: initialProfile, onBack }: Props) {
   const [profile, setProfile] = useState(initialProfile)
   const [items, setItems] = useState<VaultItem[] | null>(null)
@@ -53,13 +57,18 @@ export function VaultPage({ bots, profile: initialProfile, onBack }: Props) {
   const reload = useCallback(async () => {
     const read = ++reads.current
     setLoading(true)
+    const keep = answerKeeper(vaultKey(profile))
     try {
       // Sources first: an unlocked manager's items come with the list.
-      const s = vaultSources(await call('vault.sources'))
-      const i = vaultItems(await call('vault.list'))
+      const rawSources = await call('vault.sources')
+      const rawItems = await call('vault.list')
+      const s = vaultSources(rawSources)
+      const i = vaultItems(rawItems)
       if (read !== reads.current) return
       setSources(s)
       setItems(i)
+      // The items' metadata and the sources, never a password: Hermes' list has none.
+      keep({ sources: rawSources, items: rawItems })
       setError(null)
       setNoVault(false)
     } catch (e) {
@@ -73,7 +82,10 @@ export function VaultPage({ bots, profile: initialProfile, onBack }: Props) {
   }, [call])
 
   useEffect(() => {
-    setItems(null)
+    // What the page listed last time on this dashboard and profile, until Hermes answers.
+    const kept = keptAnswer(vaultKey(profile)) as { sources?: unknown; items?: unknown } | undefined
+    setItems(kept?.items ? vaultItems(kept.items) : null)
+    setSources(kept?.sources ? vaultSources(kept.sources) : [])
     void reload()
   }, [reload])
 
