@@ -11,6 +11,7 @@ import { BotsHome, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
 import { BotScreen } from './components/BotScreen'
 import { ChatList, type MoveTarget } from './components/ChatList'
+import { BotSideList } from './components/BotSideList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
 import { ContextPanel } from './components/ContextPanel'
@@ -347,6 +348,9 @@ function Shell({
   useState(forgetAvatars)
   const connected = status.phase === 'open'
   const [section, setSection] = useState<Section>(() => reopenedSection(status.url ?? ''))
+  // A bot opened from Bots home keeps the bots, and its workstreams, in the sidebar (as the iPad's Bots column
+  // stays beside an open Bot Chat) until Chats in the rail asks for the sessions list.
+  const [botsSide, setBotsSide] = useState(false)
   /** Chats has been open: from then on its pane stays mounted, only hidden. */
   const [chatsSeen, setChatsSeen] = useState(section === 'chats')
   if (section === 'chats' && !chatsSeen) setChatsSeen(true)
@@ -750,7 +754,9 @@ function Shell({
   // The open chat's bot's work: its Bot Chat shows a line under its title, and a workstream's chat goes back to it.
   const [workOpen, setWorkOpen] = useState(false)
   const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined
-  const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || !!openBotChat || workSessions.has(selected.id ?? '')))
+  // The bots sidebar shows while the chat on screen is a bot's: its Bot Chat (or a new one) or one of its workstreams.
+  const botsSideShown = botsSide && !!roster.bots?.length && (selected.botChat === true || !!openBotChat || workSessions.has(selected.id ?? ''))
+  const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || botsSideShown || !!openBotChat || workSessions.has(selected.id ?? '')))
   const workItem: WorkItem | undefined = selected.id
     ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id)
     : undefined
@@ -1099,6 +1105,7 @@ function Shell({
   const openBot = useCallback((bot: Bot) => {
     setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: true })
     setSection('chats')
+    setBotsSide(true)
   }, [])
   // Picking a bot on the strip opens its newest chat (its Bot Chat, which the list leaves out, when
   // that's newer), or a new chat when it has none, so the open chat matches the list.
@@ -1705,7 +1712,7 @@ function Shell({
             className="railbtn"
             aria-label={t('Bots')}
             title={t('Bots')}
-            aria-current={section === 'bots' || section === 'room' ? 'page' : undefined}
+            aria-current={section === 'bots' || section === 'room' || (section === 'chats' && botsSideShown) ? 'page' : undefined}
             onClick={() => setSection('bots')}
           >
             <Icon name="bots" />
@@ -1714,8 +1721,11 @@ function Shell({
             className="railbtn"
             aria-label={t('Chats')}
             title={t('Chats')}
-            aria-current={section === 'chats' ? 'page' : undefined}
-            onClick={() => setSection('chats')}
+            aria-current={section === 'chats' && !botsSideShown ? 'page' : undefined}
+            onClick={() => {
+              setBotsSide(false)
+              setSection('chats')
+            }}
           >
             <Icon name="chats" />
           </button>
@@ -1787,6 +1797,17 @@ function Shell({
                 onClose={() => setProjectsOpen(false)}
                 isUnread={projectChatUnread}
                 runningIds={runningIds}
+              />
+            ) : botsSideShown && roster.bots ? (
+              <BotSideList
+                bots={roster.bots}
+                profile={selected.profile ?? 'default'}
+                selectedId={chat.storedId ?? selected.id}
+                work={work.snapshot}
+                workByBot={workByBot}
+                onOpenBot={openBot}
+                onOpenWork={item => setSelected({ id: item.sessionId, profile: selected.profile, title: shownTitle(item) })}
+                onBotsHome={() => setSection('bots')}
               />
             ) : (
               <ChatList

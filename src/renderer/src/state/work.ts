@@ -266,3 +266,13 @@ export function manageTitle(manage: WorkManage, botName: string): string {
 export function workRefusal(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
+
+/** At most this many finished workstreams under the open bot, newest first; its Work column has the rest. */
+const RECENT_SHOWN = 5
+
+/** The open bot's workstreams for the sidebar: pinned and active first (what needs you on top), then a few recent ones. */
+export function sideWorkstreams(snapshot: WorkSnapshot | null | undefined): WorkItem[] {
+  const items = (snapshot?.items ?? []).filter(item => item.kind === 'workstream' && !!item.sessionId)
+  const { pinned, active, recent } = sections(items)
+  return [...pinned, ...active, ...recent.slice(0, RECENT_SHOWN)]
+}

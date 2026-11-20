@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { doing, parseItem, parseWork, sections, statusText, stripText, workPath, needsYou } from '../src/renderer/src/state/work'
+import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, stripText, workPath, needsYou } from '../src/renderer/src/state/work'
 
 const answer = {
   policy: 'on',
@@ -73,5 +73,10 @@ describe('a workstream on a model the bot named (app issue 2788)', () => {
     expect(parseItem({ ref: 'W2', kind: 'workstream', model: { model: 'gpt-5.5' } })?.model).toBe('gpt-5.5')
     expect(parseItem({ ref: 'W3', kind: 'workstream', model: null })?.model).toBe('')
     expect(parseItem({ ref: 'W4', kind: 'workstream' })?.model).toBe('')
+  })
+
+  it("lists the bots sidebar's workstreams: those with a chat, what needs you first", () => {
+    expect(sideWorkstreams(parseWork(answer)).map(i => i.ref)).toEqual(['W2', 'W1'])
+    expect(sideWorkstreams(null)).toEqual([])
   })
 })
