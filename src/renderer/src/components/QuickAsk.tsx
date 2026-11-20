@@ -8,6 +8,7 @@ import { t } from '@shared/i18n'
 import type { QuoteRequest } from '../state/quote'
 import { looksLikeSlashCommand } from '../state/slash'
 import { useCommands } from '../state/useCommands'
+import { dataUrlBlob } from '../state/callPicture'
 
 /**
  * The quick ask window: one field to ask Hermes something from anywhere,
@@ -89,6 +90,20 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
     return () => observer.disconnect()
   }, [started, staged])
   useEffect(() => window.conduit.setQuickAskExpanded(started ? true : staged && fieldHeight ? fieldHeight : false), [started, staged, fieldHeight])
+  // Ask Hermes About Screen, as the phone's shortcut does: the screen under Quick ask, staged with the question.
+  const [shot, setShot] = useState<{ id: number; files: File[] } | null>(null)
+  const [capturing, setCapturing] = useState(false)
+  const screenshot = async () => {
+    setCapturing(true)
+    const url = await window.conduit.screenshot().catch(() => null)
+    setCapturing(false)
+    if (!url) {
+      window.alert(t('Conduit couldn’t capture the screen. On a Mac, allow Screen Recording for Conduit in System Settings, then try again.'))
+      return
+    }
+    const blob = dataUrlBlob(url)
+    setShot(current => ({ id: (current?.id ?? 0) + 1, files: [new File([blob], 'Screenshot.png', { type: blob.type || 'image/png' })] }))
+  }
   return (
     <div className={`quick${started ? ' started' : ''}`} ref={pane}>
       <div className="quick-head">
@@ -131,6 +146,8 @@ function QuickChat({ status, onNew }: { status: ConnectionStatus; onNew: () => v
         dropZone={pane}
         onStagedChange={setStaged}
         quote={quote}
+        stageFiles={shot}
+        screenshot={{ take: () => void screenshot(), capturing }}
       />
     </div>
   )
