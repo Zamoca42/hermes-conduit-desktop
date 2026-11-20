@@ -7,11 +7,11 @@ import { app, nativeTheme } from 'electron'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { LANGUAGES, pickLanguage, setLanguage, type Language } from '../shared/i18n'
-import type { LanguageChoice, ThemeChoice } from '../shared/ipc'
+import type { AppIconChoice, LanguageChoice, ThemeChoice } from '../shared/ipc'
 
 const path = () => join(app.getPath('userData'), 'settings.json')
 
-function read(): { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown } {
+function read(): { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown; appIcon?: unknown } {
   try {
     return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown }
   } catch {
@@ -43,6 +43,21 @@ export function chooseLanguage(choice: LanguageChoice): Language {
 }
 
 const THEMES: readonly ThemeChoice[] = ['system', 'dark', 'light']
+
+/** Settings > Appearance > App icon, as on the phone: the dark icon (the default) or the light one. */
+export function appIconChoice(): AppIconChoice {
+  return read().appIcon === 'light' ? 'light' : 'dark'
+}
+
+export function chooseAppIcon(choice: AppIconChoice): AppIconChoice {
+  const valid: AppIconChoice = choice === 'light' ? 'light' : 'dark'
+  try {
+    writeFileSync(path(), JSON.stringify({ ...read(), appIcon: valid }, null, 2))
+  } catch {
+    // Not saved: it still applies until Conduit quits.
+  }
+  return valid
+}
 
 export function themeChoice(): ThemeChoice {
   const stored = read().theme

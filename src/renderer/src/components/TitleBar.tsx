@@ -4,6 +4,7 @@ import { Icon } from './icons'
 import { t } from '@shared/i18n'
 import { hostBadge, keptStateLabel, useKeptHosts } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
+import { appIconUrl, useAppIcon } from '../state/appIcon'
 
 export function hostName(url: string): string {
   try {
@@ -27,6 +28,7 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
   const switchable = hosts.length > 1 && !!onSwitch
   // Combined dashboards: how each one beside this one is doing.
   const kept = useKeptHosts()
+  const icon = useAppIcon()
 
   useEffect(() => {
     if (!open) return
@@ -43,9 +45,7 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
   return (
     <header className="titlebar" onDoubleClick={event => event.target === event.currentTarget && win.toggleMaximize()}>
       <div className="brand">
-        <span className="brand-mark" aria-hidden="true">
-          C
-        </span>
+        <img className="brand-mark" src={appIconUrl(icon)} alt="" aria-hidden="true" draggable={false} />
         <span className="brand-name">Conduit</span>
         {subtitle && switchable ? (
           <span className="host-switch">

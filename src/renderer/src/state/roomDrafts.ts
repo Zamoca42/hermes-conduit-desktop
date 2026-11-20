@@ -151,11 +151,15 @@ export function parseDrafts(value: unknown): RoomDraftsList | null {
   return { drafts: row.drafts.map(parseDraft).filter((d): d is RoomDraft => d !== null), startsAvailable: starts.available === true }
 }
 
-/** Group chats' drafts: those waiting or starting, and those that ended until removed. A started one is its room's tile. */
+/**
+ * Group chats' drafts: those waiting or starting, and those that ended until removed. A started one is its room's
+ * tile, a disbanded one was a room, and one you took back was your own doing: Take Back removes it on the device it
+ * was taken back on, and every other device leaves it out too, rather than keep it until it's removed there.
+ */
 export function draftRows(drafts: readonly RoomDraft[], dismissed: ReadonlySet<string>): RoomDraft[] {
   return drafts.filter(draft => {
     if (draft.status === 'waiting' || draft.status === 'starting') return true
-    if (draft.status === 'ended') return draft.reason !== 'disbanded' && !dismissed.has(draft.id)
+    if (draft.status === 'ended') return draft.reason !== 'disbanded' && draft.reason !== 'withdrawn' && !dismissed.has(draft.id)
     return false
   })
 }

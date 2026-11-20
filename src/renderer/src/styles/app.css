@@ -105,17 +105,12 @@ a:hover {
   flex: 1;
 }
 
+/* The app icon picked in Settings > Appearance, as on the iPhone. */
 .brand-mark {
   width: 20px;
   height: 20px;
-  border-radius: 6px;
-  background: var(--accent-fill);
-  color: var(--accent-ink);
-  font-size: 12px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 5px;
+  display: block;
   flex: none;
 }
 
@@ -5236,6 +5231,20 @@ code.file-link:hover {
   align-items: center;
   gap: 10px;
 }
+/* Settings > Voice's pickers (Gemini's voice, web lookups) in the fields' look, not Windows' default. */
+.voice-mode-pick select {
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+.voice-mode-pick select:focus {
+  border-color: var(--accent);
+}
 
 /* A GPT-Live call: what's said, under the status and buttons. */
 .voice-call.live {
@@ -10284,4 +10293,42 @@ button.secondary.danger {
 
 .model-chooser .model-current .staged-remove {
   margin-left: auto;
+}
+
+/* Settings > Appearance > App icon: the phone's two tiles, the picked one tinted with the accent. */
+.app-icon-choices {
+  display: flex;
+  gap: 12px;
+  max-width: 360px;
+}
+.app-icon-choice {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 12px 8px 10px;
+  border-radius: 18px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+}
+.app-icon-choice img {
+  width: 64px;
+  height: 64px;
+  border-radius: 15px;
+}
+.app-icon-choice span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.app-icon-choice span svg {
+  width: 14px;
+  height: 14px;
+}
+.app-icon-choice[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
 }

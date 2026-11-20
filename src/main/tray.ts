@@ -5,7 +5,7 @@
  */
 import { Menu, Tray, app, nativeImage, type BrowserWindow } from 'electron'
 import { join } from 'node:path'
-import type { MenuAction } from '../shared/ipc'
+import type { AppIconChoice, MenuAction } from '../shared/ipc'
 import { t } from '../shared/i18n'
 
 export interface TrayDeps {
@@ -27,15 +27,18 @@ export function trayLabel(waiting: number): string {
   return waiting === 1 ? t('Conduit · 1 thing needs you') : t('Conduit · {count} things need you', { count: waiting })
 }
 
+/** The Windows and Linux tray icon for the app icon picked. */
+export const trayFile = (icon: AppIconChoice) => (icon === 'light' ? 'tray-light.png' : 'tray.png')
+
 export class ConduitTray {
   private tray: Tray | null = null
   private waiting = 0
 
   constructor(private readonly deps: TrayDeps) {}
 
-  create(): void {
+  create(icon: AppIconChoice = 'dark'): void {
     const mac = process.platform === 'darwin'
-    const image = nativeImage.createFromPath(trayIconPath(mac ? 'trayTemplate.png' : 'tray.png'))
+    const image = nativeImage.createFromPath(trayIconPath(mac ? 'trayTemplate.png' : trayFile(icon)))
     if (mac) image.setTemplateImage(true)
     this.tray = new Tray(image)
     // A click opens the window on Windows and Linux; the Mac shows the menu, as menu bar items do.
@@ -51,6 +54,12 @@ export class ConduitTray {
     this.render()
     // The Mac's Dock and Linux launchers show it as a badge.
     app.setBadgeCount(count)
+  }
+
+  /** The app icon picked in Settings > Appearance; the Mac's menu bar keeps its monochrome template. */
+  setAppIcon(icon: AppIconChoice): void {
+    if (!this.tray || process.platform === 'darwin') return
+    this.tray.setImage(nativeImage.createFromPath(trayIconPath(trayFile(icon))))
   }
 
   /** Builds the menu again, in a new language. */

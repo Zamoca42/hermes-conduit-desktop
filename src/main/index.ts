@@ -25,7 +25,8 @@ import {
   type OpenChatRequest,
   type RpcOutcome,
   type SignInRequest,
-  type ThemeChoice
+  type ThemeChoice,
+  type AppIconChoice
 } from '../shared/ipc'
 import { probeHost } from './auth'
 import { isPageUrl, pageUrl, registerPageScheme, servePages } from './pages'
@@ -41,8 +42,11 @@ import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ChatWindowSet } from './chatWindowSet'
 import { createChatWindow } from './chatWindows'
 import { ConduitTray } from './tray'
+import { applyAppIcon, watchNewWindows } from './appIcon'
 import {
+  appIconChoice,
   askHostAtLaunch,
+  chooseAppIcon,
   chooseAskHost,
   chooseLanguage,
   chooseLock,
@@ -251,6 +255,18 @@ function registerIpc(): void {
   })
   ipcMain.on(IPC.theme, event => {
     event.returnValue = themeChoice()
+  })
+  ipcMain.on(IPC.appIcon, event => {
+    event.returnValue = appIconChoice()
+  })
+  ipcMain.on(IPC.setAppIcon, (event, choice: AppIconChoice) => {
+    const valid = chooseAppIcon(choice)
+    applyAppIcon(valid)
+    tray.setAppIcon(valid)
+    // Every window's title bar follows, not only the one that changed it.
+    for (const window of BrowserWindow.getAllWindows()) {
+      if (!window.isDestroyed() && window.webContents !== event.sender) window.webContents.send(IPC.setAppIcon, valid)
+    }
   })
   ipcMain.on(IPC.setTheme, (_event, choice: ThemeChoice) => {
     chooseTheme(choice)
@@ -534,10 +550,12 @@ if (!app.requestSingleInstanceLock()) {
     servePages()
     setLanguage(resolvedLanguage())
     chooseTheme(themeChoice(), false)
+    watchNewWindows()
     registerIpc()
     watchDeviceReports(() => send(IPC.deviceReportsChanged, null))
     createWindow()
-    tray.create()
+    applyAppIcon(appIconChoice())
+    tray.create(appIconChoice())
     quickAsk.register()
     void openSavedHosts()
     // The Dock icon brings the hidden window back.
