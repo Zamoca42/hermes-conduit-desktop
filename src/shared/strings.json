@@ -13709,21 +13709,6 @@
     "zh-Hans": "Hermes 仍为这个机器人关闭着插件。请重试。",
     "zh-Hant": "Hermes 仍為這個機器人關閉著外掛。請再試一次。"
   },
-  "Hermes stopped waiting for this.": {
-    "de": "Hermes wartet nicht mehr darauf.",
-    "es": "Hermes dejó de esperar esto.",
-    "fr": "Hermes n’attend plus cette réponse.",
-    "id": "Hermes berhenti menunggu ini.",
-    "it": "Hermes non aspetta più questa risposta.",
-    "ja": "Hermes はこれを待つのをやめました。",
-    "ko": "Hermes가 더 이상 기다리지 않습니다.",
-    "pl": "Hermes przestał na to czekać.",
-    "pt-BR": "O Hermes parou de esperar por isso.",
-    "ru": "Hermes больше этого не ждёт.",
-    "tr": "Hermes artık bunu beklemiyor.",
-    "zh-Hans": "Hermes 不再等待此项。",
-    "zh-Hant": "Hermes 不再等待此項。"
-  },
   "Hermes stops coming back to this chat when it's idle. Set another with /heartbeat.": {
     "de": "Hermes kehrt nicht mehr in diesen Chat zurück, wenn er ruht. Lege mit /heartbeat einen neuen fest.",
     "es": "Hermes deja de volver a este chat cuando está inactivo. Configura otro con /heartbeat.",
@@ -41743,5 +41728,50 @@
     "tr": "Bu bilgisayarda saklandı. Hermes kabul etmedi, bu yüzden diğer cihazlar eskisi gibi açılır.",
     "zh-Hans": "已保存在这台电脑上。Hermes 未接受，因此其他设备仍按原来的页面打开。",
     "zh-Hant": "已保存在這台電腦上。Hermes 未接受，因此其他裝置仍依原來的頁面開啟。"
+  },
+  "Answer in a message": {
+    "de": "Per Nachricht antworten",
+    "es": "Responder con un mensaje",
+    "fr": "Répondre par un message",
+    "id": "Jawab lewat pesan",
+    "it": "Rispondi con un messaggio",
+    "ja": "メッセージで答える",
+    "ko": "메시지로 답하기",
+    "pl": "Odpowiedz wiadomością",
+    "pt-BR": "Responder com uma mensagem",
+    "ru": "Ответить сообщением",
+    "tr": "Mesajla yanıtla",
+    "zh-Hans": "用消息回答",
+    "zh-Hant": "用訊息回答"
+  },
+  "Tap one to answer in a message.": {
+    "de": "Tippe auf eine Antwort, um sie per Nachricht zu senden.",
+    "es": "Toca una para responder con un mensaje.",
+    "fr": "Touchez-en une pour répondre par un message.",
+    "id": "Ketuk salah satu untuk menjawab lewat pesan.",
+    "it": "Toccane una per rispondere con un messaggio.",
+    "ja": "どれかをタップすると、メッセージで答えられます。",
+    "ko": "하나를 탭하면 메시지로 답할 수 있어요.",
+    "pl": "Stuknij jedną, aby odpowiedzieć wiadomością.",
+    "pt-BR": "Toque em uma para responder com uma mensagem.",
+    "ru": "Нажмите на вариант, чтобы ответить сообщением.",
+    "tr": "Mesajla yanıtlamak için birine dokunun.",
+    "zh-Hans": "轻点一项，用消息回答。",
+    "zh-Hant": "點一下其中一項，用訊息回答。"
+  },
+  "No longer active": {
+    "de": "Nicht mehr aktiv",
+    "es": "Ya no está activo",
+    "fr": "Plus active",
+    "id": "Sudah tidak aktif",
+    "it": "Non più attiva",
+    "ja": "無効になりました",
+    "ko": "더 이상 활성 상태 아님",
+    "pl": "Już nieaktywne",
+    "pt-BR": "Não está mais ativo",
+    "ru": "Больше не активно",
+    "tr": "Artık etkin değil",
+    "zh-Hans": "已失效",
+    "zh-Hant": "已失效"
   }
 }

@@ -3,6 +3,7 @@ import { gateway } from '../gateway'
 import type { PendingRequest } from '@shared/ipc'
 import { approvalView, clarifyQuestions, lockedAnswers, type ClarifyQuestion } from '../state/needsYou'
 import { inputAnswer, inputPromptView, type InputPromptView } from '../state/inputPrompts'
+import { answering, markExpired, noteLocked, type ExpiredQuestion } from '../state/expiredQuestions'
 import { Icon } from './icons'
 import { t } from '@shared/i18n'
 
@@ -65,11 +66,13 @@ function ClarifyCard({ request, chatTitle }: { request: PendingRequest; chatTitl
         answer
       })
       if (result?.status === 'expired') {
-        setError(t('Hermes stopped waiting for this.'))
+        // Kept in the chat with its choices, to answer in a message (expiredQuestions.ts).
+        markExpired(request, locked)
         void window.conduit.dismissRequest(request.id)
         return
       }
       const shown = answer === null ? null : Array.isArray(answer) ? answer.join(', ') : answer
+      noteLocked(request.id, question.qid, shown)
       setLocked(current => ({ ...current, [question.qid]: shown }))
       // The last answer settles the request on the gateway.
       if (Array.isArray(result?.remaining) && result.remaining.length === 0) void window.conduit.dismissRequest(request.id)
@@ -102,6 +105,74 @@ function ClarifyCard({ request, chatTitle }: { request: PendingRequest; chatTitl
         </button>
       </div>
       {error ? <p className="ask-error">{error}</p> : null}
+    </section>
+  )
+}
+
+/**
+ * A question Hermes stopped waiting for, after the phone's (issue 2850): what
+ * it asked and offered stay, and a tapped choice (or, for an open question,
+ * Answer in a message) puts the question in the draft as a quote with the
+ * choice under it. With no composer to fill, the choices are listed only.
+ */
+export function ExpiredClarifyCard({ expired, onAnswer }: { expired: ExpiredQuestion; onAnswer?: (text: string) => void }) {
+  const questions = clarifyQuestions(expired.request.params)
+  const locked = { ...lockedAnswers(expired.request.params), ...expired.locked }
+  const answer = (question: string, choice: string | null) => {
+    const text = answering(question, choice)
+    if (text) onAnswer?.(text)
+  }
+  return (
+    <section className="ask expired" aria-label={t('Question from Hermes')}>
+      <header className="ask-head">
+        <span className="ask-icon">
+          <Icon name="chats" />
+        </span>
+        <span className="ask-title">{questions.length > 1 ? t('{count} questions', { count: questions.length }) : t('A question')}</span>
+      </header>
+      {questions.map(q => {
+        const done = q.qid in locked
+        return (
+          <div key={q.qid} className={`ask-q${done ? ' done' : ''}`}>
+            <p className="ask-text">{q.question}</p>
+            {done ? (
+              <p className="ask-locked">
+                <Icon name="check" /> {locked[q.qid] === null ? t('Skipped') : locked[q.qid]}
+              </p>
+            ) : (
+              <>
+                <p className="meta">{t('No longer active')}</p>
+                {onAnswer ? (
+                  q.choices.length ? (
+                    <>
+                      <p className="meta">{t('Tap one to answer in a message.')}</p>
+                      <div className="ask-choices">
+                        {q.choices.map(choice => (
+                          <button key={choice} className="ask-choice" title={t('Answer in a message')} onClick={() => answer(q.question, choice)}>
+                            {choice}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="ask-actions">
+                      <button className="ask-btn plain" onClick={() => answer(q.question, null)}>
+                        {t('Answer in a message')}
+                      </button>
+                    </div>
+                  )
+                ) : q.choices.length ? (
+                  <ul className="ask-choices-list">
+                    {q.choices.map(choice => (
+                      <li key={choice}>{choice}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </>
+            )}
+          </div>
+        )
+      })}
     </section>
   )
 }
