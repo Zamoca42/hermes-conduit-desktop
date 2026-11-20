@@ -5553,11 +5553,6 @@ code.file-link:hover {
   color: var(--text);
 }
 
-.chat-subtitle.needs {
-  color: var(--warning);
-  font-weight: 600;
-}
-
 .work-body {
   flex: 1;
   min-height: 0;
