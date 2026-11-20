@@ -32,7 +32,9 @@ export function ColumnDivider({
 
   const columnWidth = (line: HTMLElement) => {
     if (width !== null) return width
-    const column = sign === 1 ? line.previousElementSibling : line.nextElementSibling
+    let column = sign === 1 ? line.previousElementSibling : line.nextElementSibling
+    // A wrapper that lays nothing out (the list's, display: contents) is measured by what it holds.
+    if (column && !column.getBoundingClientRect().width && column.firstElementChild) column = column.firstElementChild
     return column ? column.getBoundingClientRect().width : bounds.min
   }
 

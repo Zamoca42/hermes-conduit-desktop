@@ -33,6 +33,7 @@ import { BesideChatPane, type BesideChat } from './components/BesideChat'
 import { CHAT_WINDOW_LIMIT } from '@shared/chatWindows'
 import { absolutePath, pathForDraft } from './state/workspace'
 import { FileLinks } from './components/Markdown'
+import { WorkLinks, type WorkLinkActions } from './components/WorkLinkCard'
 import { usePulse } from './state/usePulse'
 import { Icon } from './components/icons'
 import { useMouseBack } from './state/mouseBack'
@@ -182,7 +183,7 @@ import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply }
 import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { isDone, useChatDone } from './state/chatDone'
-import { GO_TO, SCALES, applyScale, nextScale, readScale, shortcutFor } from './state/shortcuts'
+import { GO_TO, SCALES, applyScale, glyphs, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { CallTranscriptSheet } from './components/CallTranscriptSheet'
 import { ProviderConsentSheet } from './components/ProviderConsent'
@@ -549,6 +550,7 @@ function Shell({
       cwd
         ? (path: string) => {
             setReveal(current => ({ path: absolutePath(path, cwd), id: (current?.id ?? 0) + 1 }))
+            lastTab.current = 'files'
             setArtifactsOpen(false)
             setWorkOpen(false)
             showFiles(true)
@@ -820,6 +822,32 @@ function Shell({
   // A bot's chat (its Bot Chat, one not resolved yet, or a workstream's) offers its work once the host answers with some.
   const workHere = !!openBotChat || !!workItem || selected.botChat === true
   const showWork = workOpen && workHere && (!!work.snapshot || !!work.error)
+  // A reply's links to its work and to other chats (workLinks): a card or a link opens the chat here, as on the phone.
+  const workSnapshot = work.snapshot
+  const listRows = list.rows
+  const workLinkActions = useMemo<WorkLinkActions>(() => {
+    const workstream = (ref: string) => workSnapshot?.items.find(item => item.kind === 'workstream' && item.ref === ref && !!item.sessionId)
+    const inBotChat = !!openBotChat || selected.botChat === true
+    return {
+      open: (sessionId, profile) => {
+        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        const row = listRows?.find(r => r.id === sessionId)
+        setSelected({ id: sessionId, profile: profile ?? selected.profile, title: item ? shownTitle(item) : row?.title })
+        setSection('chats')
+      },
+      item: workstream,
+      chatOf: inBotChat
+        ? ref => {
+            const item = workstream(ref)
+            return item ? { sessionId: item.sessionId, profile: selected.profile } : undefined
+          }
+        : undefined,
+      titleOf: sessionId => {
+        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        return item ? shownTitle(item) : listRows?.find(r => r.id === sessionId)?.title || undefined
+      }
+    }
+  }, [workSnapshot, listRows, openBotChat, selected.botChat, selected.profile])
   // The bot's screen (Hermes' Bot Screen), offered only where the host can have one, as the phone checks.
   const screenProfile = selected.profile ?? 'default'
   const [screenOpen, setScreenOpen] = useState(false)
@@ -1856,7 +1884,7 @@ function Shell({
             <button
               className="railbtn rail-show-list"
               aria-label={t('Show Sidebar')}
-              title={`${t('Show Sidebar')} (${window.conduit.platform === 'darwin' ? '⌘\\' : 'Ctrl+\\'})`}
+              title={`${t('Show Sidebar')} (${glyphs('toggle-sidebar', window.conduit.platform === 'darwin')})`}
               onClick={() => hideList(false)}
             >
               <Icon name="chevronsRight" />
@@ -1941,59 +1969,62 @@ function Shell({
         {/* Chats stays mounted once shown, hidden while another section is open, so coming back doesn't rebuild every row and the open transcript. */}
         {chatsShown ? (
           <KeptPane away={section !== 'chats'}>
-            {listHidden ? null : projectsOpen ? (
-              <ProjectsPane
-                profile={chatProfile}
-                connected={connected}
-                selectedId={chat.storedId ?? selected.id}
-                onSelect={item => setSelected({ id: item.id, profile: item.profile ?? chatProfile ?? undefined, title: item.title })}
-                onNewChat={folder => setSelected({ id: null, profile: chatProfile ?? undefined, folder })}
-                onClose={() => setProjectsOpen(false)}
-                isUnread={projectChatUnread}
-                runningIds={runningIds}
-                onHide={() => hideList(true)}
-              />
-            ) : botsSideShown && orderedRoster ? (
-              <BotsHome {...botsHomeProps} side={{ openProfile: selected.profile ?? 'default' }} onHide={() => hideList(true)} />
-            ) : (
-              <ChatList
-                rows={listedRows}
-                error={list.error}
-                updating={list.updating}
-                selectedId={chat.storedId ?? selected.id}
-                runningIds={runningIds}
-                waitingIds={waitingIds}
-                runningStatus={transcript.status}
-                onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
-                onOpenBeside={besideFits ? openBeside : undefined}
-                canOpenBeside={row => row.id !== selected.id && row.id !== beside?.id && sameProfileAs(row.profile, selected.profile)}
-                onNewChat={newChat}
-                bots={roster.bots}
-                profile={chatProfile}
-                onProfile={chooseProfile}
-                onEditProfile={connected ? editProfile : undefined}
-                onPin={row => void chatAction(row, { pinned: !row.pinned })}
-                onRename={(row, title) => void chatAction(row, { title })}
-                marks={marks}
-                onStar={row => updateMarks(current => toggleStar(current, row))}
-                onToggleRead={toggleRead}
-                isDone={chatDone.available ? isRowDone : undefined}
-                onDone={chatDone.available ? chatDone.toggle : undefined}
-                onDelete={async row => {
-                  if (await ask(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`, { confirm: t('Delete'), destructive: true }))
-                    void chatAction(row, null)
-                }}
-                onProjects={() => setProjectsOpen(true)}
-                searchScope={markHost}
-                onPinnedReplies={pins.length ? () => setPinSheet({ scope: 'all' }) : undefined}
-                moveTargets={moveTargets}
-                onMove={(row, target) => void moveToProject(row, target)}
-                otherRows={otherChats}
-                badgeFor={badgeFor}
-                onOpenOther={openOtherChat}
-                onHide={() => hideList(true)}
-              />
-            )}
+            {/* Hidden, the list stays mounted, so its search and an open project are there when it comes back. */}
+            <div className="list-keeper" hidden={listHidden}>
+              {projectsOpen ? (
+                <ProjectsPane
+                  profile={chatProfile}
+                  connected={connected}
+                  selectedId={chat.storedId ?? selected.id}
+                  onSelect={item => setSelected({ id: item.id, profile: item.profile ?? chatProfile ?? undefined, title: item.title })}
+                  onNewChat={folder => setSelected({ id: null, profile: chatProfile ?? undefined, folder })}
+                  onClose={() => setProjectsOpen(false)}
+                  isUnread={projectChatUnread}
+                  runningIds={runningIds}
+                  onHide={() => hideList(true)}
+                />
+              ) : botsSideShown && orderedRoster ? (
+                <BotsHome {...botsHomeProps} side={{ openProfile: selected.profile ?? 'default' }} onHide={() => hideList(true)} />
+              ) : (
+                <ChatList
+                  rows={listedRows}
+                  error={list.error}
+                  updating={list.updating}
+                  selectedId={chat.storedId ?? selected.id}
+                  runningIds={runningIds}
+                  waitingIds={waitingIds}
+                  runningStatus={transcript.status}
+                  onSelect={(row: ChatRow) => setSelected({ id: row.id, profile: row.profile, title: row.title })}
+                  onOpenBeside={besideFits ? openBeside : undefined}
+                  canOpenBeside={row => row.id !== selected.id && row.id !== beside?.id && sameProfileAs(row.profile, selected.profile)}
+                  onNewChat={newChat}
+                  bots={roster.bots}
+                  profile={chatProfile}
+                  onProfile={chooseProfile}
+                  onEditProfile={connected ? editProfile : undefined}
+                  onPin={row => void chatAction(row, { pinned: !row.pinned })}
+                  onRename={(row, title) => void chatAction(row, { title })}
+                  marks={marks}
+                  onStar={row => updateMarks(current => toggleStar(current, row))}
+                  onToggleRead={toggleRead}
+                  isDone={chatDone.available ? isRowDone : undefined}
+                  onDone={chatDone.available ? chatDone.toggle : undefined}
+                  onDelete={async row => {
+                    if (await ask(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`, { confirm: t('Delete'), destructive: true }))
+                      void chatAction(row, null)
+                  }}
+                  onProjects={() => setProjectsOpen(true)}
+                  searchScope={markHost}
+                  onPinnedReplies={pins.length ? () => setPinSheet({ scope: 'all' }) : undefined}
+                  moveTargets={moveTargets}
+                  onMove={(row, target) => void moveToProject(row, target)}
+                  otherRows={otherChats}
+                  badgeFor={badgeFor}
+                  onOpenOther={openOtherChat}
+                  onHide={() => hideList(true)}
+                />
+              )}
+            </div>
             {listHidden ? null : (
               <ColumnDivider
                 label={t('Chat list width')}
@@ -2086,29 +2117,31 @@ function Shell({
               </div>
               {screenOpen ? <BotScreen profile={screenProfile} botName={botTitle} onClose={() => setScreenOpen(false)} /> : null}
               <FileLinks.Provider value={openPath}>
-                <ConnectionActionsContext.Provider value={connectionActions}>
-                  <Transcript
-                    state={transcript}
-                    loading={loading}
-                    error={error}
-                    requests={openRequests}
-                    expired={expiredQuestions}
-                    profile={selected.profile}
-                    author={botTitle}
-                    face={chatFace}
-                    onQuote={setQuote}
-                    onCommand={text => void onSend(text)}
-                    teammates={glowBots}
-                    display={chatDisplay}
-                    sessionId={chat.liveId ?? undefined}
-                    calls={chatCallList}
-                    onOpenCall={setOpenCall}
-                    followedUp={followedUp}
-                    pins={pinControls}
-                    onReact={chat.liveId ? reactTo : undefined}
-                    onBranch={chat.liveId && !transcript.running ? branchFrom : undefined}
-                  />
-                </ConnectionActionsContext.Provider>
+                <WorkLinks.Provider value={workLinkActions}>
+                  <ConnectionActionsContext.Provider value={connectionActions}>
+                    <Transcript
+                      state={transcript}
+                      loading={loading}
+                      error={error}
+                      requests={openRequests}
+                      expired={expiredQuestions}
+                      profile={selected.profile}
+                      author={botTitle}
+                      face={chatFace}
+                      onQuote={setQuote}
+                      onCommand={text => void onSend(text)}
+                      teammates={glowBots}
+                      display={chatDisplay}
+                      sessionId={chat.liveId ?? undefined}
+                      calls={chatCallList}
+                      onOpenCall={setOpenCall}
+                      followedUp={followedUp}
+                      pins={pinControls}
+                      onReact={chat.liveId ? reactTo : undefined}
+                      onBranch={chat.liveId && !transcript.running ? branchFrom : undefined}
+                    />
+                  </ConnectionActionsContext.Provider>
+                </WorkLinks.Provider>
               </FileLinks.Provider>
               {pinSheet ? (
                 <PinnedRepliesSheet
