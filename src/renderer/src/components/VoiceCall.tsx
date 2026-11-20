@@ -4,6 +4,7 @@ import { useRecorder } from '../state/useRecorder'
 import { stopReading } from '../state/readAloud'
 import { blobToBase64, speak, spokenText, transcribe } from '../state/voice'
 import { callStep, micScale, type CallPhase } from '../state/call'
+import { speakOnComputer, speechOutput } from '../state/speechOutput'
 import { Icon } from './icons'
 
 interface Props {
@@ -41,6 +42,8 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
   // A sent turn that never started (Hermes dropped it): after a while, Listen goes on without it.
   const [stalled, setStalled] = useState(false)
   const audio = useRef<HTMLAudioElement | null>(null)
+  /** Stops this computer's voice while it speaks a reply. */
+  const stopComputer = useRef<(() => void) | null>(null)
   const ended = useRef(false)
   const waitingFrom = useRef<number | null>(null)
   const voice = useRef({ heard: false, loudAt: 0, quietSince: 0 })
@@ -64,6 +67,7 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
       ended.current = true
       recorder.cancel()
       audio.current?.pause()
+      stopComputer.current?.()
     }
   }, [])
 
@@ -112,6 +116,23 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
     const words = spokenText(lastReply ?? '')
     if (!words) return void listen()
     setPhase('speaking')
+    if (speechOutput(profile) === 'computer') {
+      const spoken = speakOnComputer(words)
+      stopComputer.current = spoken.stop
+      spoken.done
+        .catch(e => {
+          if (!ended.current) setProblem(t("This computer couldn't read this aloud: {error}", { error: e instanceof Error ? e.message : String(e) }))
+        })
+        .finally(() => {
+          // Interrupted: the interrupt already moved on.
+          if (stopComputer.current !== spoken.stop) return
+          stopComputer.current = null
+          if (ended.current) return
+          if (!mutedNow.current) void listen()
+          else setPhase('muted')
+        })
+      return
+    }
     speak(words, profile)
       .then(url => {
         if (ended.current) return
@@ -143,6 +164,9 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
     if (phase === 'speaking') {
       audio.current?.pause()
       audio.current = null
+      const stop = stopComputer.current
+      stopComputer.current = null
+      stop?.()
       if (mutedNow.current) setPhase('muted')
       else void listen()
     } else if (phase === 'thinking') {
