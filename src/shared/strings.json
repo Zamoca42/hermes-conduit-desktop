@@ -20924,6 +20924,21 @@
     "zh-Hans": "通知",
     "zh-Hant": "通知"
   },
+  "Opens a new chat with “{prompt}” ready to send. Send it, and Conduit rings when Hermes replies.": {
+    "de": "Öffnet einen neuen Chat mit „{prompt}“, bereit zum Senden. Sende es, und Conduit klingelt, wenn Hermes antwortet.",
+    "es": "Abre un chat nuevo con «{prompt}» listo para enviar. Envíalo y Conduit sonará cuando Hermes responda.",
+    "fr": "Ouvre une nouvelle discussion avec « {prompt} » prêt à envoyer. Envoyez-le, et Conduit sonne quand Hermes répond.",
+    "id": "Membuka obrolan baru dengan “{prompt}” siap dikirim. Kirim, dan Conduit berdering saat Hermes membalas.",
+    "it": "Apre una nuova chat con «{prompt}» pronto da inviare. Invialo e Conduit squillerà quando Hermes risponde.",
+    "ja": "「{prompt}」を入力済みの新しいチャットを開きます。送信すると、Hermesが返信したときにConduitが着信します。",
+    "ko": "“{prompt}” 문구가 입력된 새 채팅을 열어요. 보내면 Hermes가 답할 때 Conduit가 울려요.",
+    "pl": "Otwiera nowy czat z gotową do wysłania wiadomością „{prompt}”. Wyślij ją, a Conduit zadzwoni, gdy Hermes odpowie.",
+    "pt-BR": "Abre um chat novo com “{prompt}” pronto para enviar. Envie, e o Conduit toca quando o Hermes responder.",
+    "ru": "Открывает новый чат с готовым к отправке сообщением «{prompt}». Отправьте его, и Conduit зазвонит, когда Hermes ответит.",
+    "tr": "Gönderilmeye hazır “{prompt}” mesajıyla yeni bir sohbet açar. Gönderin; Hermes yanıt verdiğinde Conduit çalar.",
+    "zh-Hans": "打开一个新聊天，已填好“{prompt}”。发送后，Hermes 回复时 Conduit 就会响铃。",
+    "zh-Hant": "開啟一個新聊天，已填好「{prompt}」。傳送後，Hermes 回覆時 Conduit 就會響鈴。"
+  },
   "Runs when the memory or skill interval below is reached. Off, Hermes reviews a chat only when you ask with /refine.": {
     "de": "Läuft, sobald das Gedächtnis- oder Skill-Intervall unten erreicht ist. Aus prüft Hermes einen Chat nur, wenn du mit /refine darum bittest.",
     "es": "Se ejecuta cuando se alcanza el intervalo de memoria o de habilidades de abajo. Desactivada, Hermes revisa un chat solo cuando lo pides con /refine.",
@@ -37079,20 +37094,20 @@
     "zh-Hans": "Pulse 何时提醒",
     "zh-Hant": "Pulse 何時提醒"
   },
-  "When a job you asked about is done, Hermes calls you so you can talk it through. Your iPhone rings like a phone call; where it can't, a “Hermes wants to talk” notification comes instead: tap Talk to answer.": {
-    "de": "Wenn ein Job fertig ist, nach dem du gefragt hast, ruft Hermes dich an, damit ihr darüber sprechen könnt. Dein iPhone klingelt wie bei einem Telefonanruf; wo das nicht geht, kommt stattdessen die Mitteilung „Hermes möchte sprechen“: Tippe auf „Sprechen“, um anzunehmen.",
-    "es": "Cuando termina un trabajo por el que preguntaste, Hermes te llama para que lo comenten. Tu iPhone suena como una llamada telefónica; donde no puede, llega en su lugar una notificación «Hermes quiere hablar»: toca Hablar para contestar.",
-    "fr": "Quand un job dont vous avez demandé des nouvelles est terminé, Hermes vous appelle pour en parler. Votre iPhone sonne comme pour un appel téléphonique ; quand ce n'est pas possible, une notification « Hermes veut vous parler » arrive à la place : touchez Parler pour répondre.",
-    "id": "Saat pekerjaan yang Anda tanyakan selesai, Hermes menelepon Anda agar bisa membahasnya. iPhone Anda berdering seperti panggilan telepon; jika tidak bisa, pemberitahuan “Hermes ingin bicara” muncul sebagai gantinya: ketuk Bicara untuk menjawab.",
-    "it": "Quando un job di cui hai chiesto è terminato, Hermes ti chiama per parlarne. L'iPhone squilla come per una telefonata; dove non è possibile, arriva invece la notifica «Hermes vuole parlarti»: tocca Parla per rispondere.",
-    "ja": "依頼したジョブが完了すると、Hermesが電話をかけてきて、結果について話せます。iPhoneは通常の電話のように着信します。着信できない場合は、代わりに「Hermesが話したがっています」という通知が届きます。「話す」をタップして応答してください。",
-    "ko": "물어본 작업이 끝나면 Hermes가 전화해서 결과를 함께 이야기할 수 있어요. iPhone이 일반 전화처럼 울리고, 그럴 수 없을 때는 대신 “Hermes가 이야기하고 싶어 해요” 알림이 와요. 대화를 탭해 받으세요.",
-    "pl": "Gdy zlecenie, o które pytasz, zostanie zakończone, Hermes dzwoni, żebyście mogli o nim porozmawiać. iPhone dzwoni jak przy zwykłym połączeniu; gdy to niemożliwe, przychodzi zamiast tego powiadomienie „Hermes chce porozmawiać”: stuknij Rozmawiaj, aby odebrać.",
-    "pt-BR": "Quando um trabalho sobre o qual você perguntou termina, o Hermes liga para você para conversarem sobre ele. Seu iPhone toca como em uma ligação telefônica; quando não é possível, chega no lugar uma notificação “O Hermes quer conversar”: toque em Conversar para atender.",
-    "ru": "Когда задание, о котором вы просили, будет готово, Hermes позвонит, чтобы вы могли его обсудить. iPhone звонит, как при обычном телефонном звонке; если это невозможно, вместо этого приходит уведомление «Hermes хочет поговорить»: нажмите «Говорить», чтобы ответить.",
-    "tr": "Sorduğunuz bir iş bittiğinde, Hermes sonucu konuşabilmeniz için sizi arar. iPhone'unuz normal bir telefon araması gibi çalar; bunun mümkün olmadığı yerlerde bunun yerine “Hermes konuşmak istiyor” bildirimi gelir: yanıtlamak için Konuş'a dokunun.",
-    "zh-Hans": "你询问的任务完成后，Hermes 会给你打电话，方便你们聊聊结果。你的 iPhone 会像普通来电一样响铃；无法响铃时，会改为收到“Hermes 想和你通话”通知：轻点“通话”即可接听。",
-    "zh-Hant": "你詢問的工作完成後，Hermes 會打電話給你，方便你們聊聊結果。你的 iPhone 會像一般來電一樣響鈴；無法響鈴時，會改為收到「Hermes 想跟你通話」通知：點一下「通話」即可接聽。"
+  "When a job you asked about is done, Hermes calls you so you can talk it through. Conduit rings on this computer while it's open, and your iPhone rings too if you use Conduit there.": {
+    "de": "Wenn ein Job fertig ist, nach dem du gefragt hast, ruft Hermes dich an, damit ihr darüber sprechen könnt. Conduit klingelt auf diesem Computer, solange es geöffnet ist, und auch dein iPhone, wenn du Conduit dort nutzt.",
+    "es": "Cuando termina un trabajo por el que preguntaste, Hermes te llama para que lo comenten. Conduit suena en este ordenador mientras está abierto, y también tu iPhone si usas Conduit en él.",
+    "fr": "Quand un job dont vous avez demandé des nouvelles est terminé, Hermes vous appelle pour en parler. Conduit sonne sur cet ordinateur tant qu'il est ouvert, et votre iPhone aussi si vous y utilisez Conduit.",
+    "id": "Saat pekerjaan yang Anda tanyakan selesai, Hermes menelepon Anda agar bisa membahasnya. Conduit berdering di komputer ini selama terbuka, dan iPhone Anda juga berdering jika Anda memakai Conduit di sana.",
+    "it": "Quando un job di cui hai chiesto è terminato, Hermes ti chiama per parlarne. Conduit squilla su questo computer finché è aperto, e squilla anche l'iPhone se lì usi Conduit.",
+    "ja": "依頼したジョブが完了すると、Hermesが電話をかけてきて、結果について話せます。Conduitを開いている間はこのコンピュータで着信し、iPhoneでConduitを使っている場合はiPhoneも着信します。",
+    "ko": "물어본 작업이 끝나면 Hermes가 전화해서 결과를 함께 이야기할 수 있어요. Conduit가 열려 있는 동안 이 컴퓨터에서 울리고, iPhone에서 Conduit를 쓰면 iPhone도 울려요.",
+    "pl": "Gdy zlecenie, o które pytasz, zostanie zakończone, Hermes dzwoni, żebyście mogli o nim porozmawiać. Conduit dzwoni na tym komputerze, gdy jest otwarty, a jeśli używasz Conduit na iPhonie, dzwoni też iPhone.",
+    "pt-BR": "Quando um trabalho sobre o qual você perguntou termina, o Hermes liga para você para conversarem sobre ele. O Conduit toca neste computador enquanto estiver aberto, e seu iPhone também toca se você usa o Conduit nele.",
+    "ru": "Когда задание, о котором вы просили, будет готово, Hermes позвонит, чтобы вы могли его обсудить. Conduit звонит на этом компьютере, пока он открыт, а если вы пользуетесь Conduit на iPhone, звонит и iPhone.",
+    "tr": "Sorduğunuz bir iş bittiğinde, Hermes sonucu konuşabilmeniz için sizi arar. Conduit açık olduğu sürece bu bilgisayarda çalar; Conduit'i iPhone'da kullanıyorsanız iPhone'unuz da çalar.",
+    "zh-Hans": "你询问的任务完成后，Hermes 会给你打电话，方便你们聊聊结果。Conduit 打开时会在这台电脑上响铃；如果你在 iPhone 上使用 Conduit，iPhone 也会响铃。",
+    "zh-Hant": "你詢問的工作完成後，Hermes 會打電話給你，方便你們聊聊結果。Conduit 開啟時會在這台電腦上響鈴；如果你在 iPhone 上使用 Conduit，iPhone 也會響鈴。"
   },
   "When a reply finishes or something needs you in a chat you’re not looking at": {
     "de": "Wenn eine Antwort fertig ist oder etwas dich in einem Chat braucht, den du gerade nicht ansiehst",
@@ -42163,21 +42178,6 @@
     "tr": "Bunu Hermes takip etsin",
     "zh-Hans": "让 Hermes 留意这件事",
     "zh-Hant": "讓 Hermes 留意這件事"
-  },
-  "Opens a new chat with “{prompt}” ready to send. Send it, and your iPhone rings when Hermes replies.": {
-    "de": "Öffnet einen neuen Chat mit „{prompt}“, bereit zum Senden. Sende es, und dein iPhone klingelt, wenn Hermes antwortet.",
-    "es": "Abre un chat nuevo con «{prompt}» listo para enviar. Envíalo y tu iPhone sonará cuando Hermes responda.",
-    "fr": "Ouvre une nouvelle discussion avec « {prompt} » prêt à envoyer. Envoyez-le, et votre iPhone sonne quand Hermes répond.",
-    "id": "Membuka obrolan baru dengan “{prompt}” siap dikirim. Kirim, dan iPhone Anda berdering saat Hermes membalas.",
-    "it": "Apre una nuova chat con «{prompt}» pronto da inviare. Invialo e l'iPhone squillerà quando Hermes risponde.",
-    "ja": "「{prompt}」を入力済みの新しいチャットを開きます。送信すると、Hermesが返信したときにiPhoneが着信します。",
-    "ko": "“{prompt}” 문구가 입력된 새 채팅을 열어요. 보내면 Hermes가 답할 때 iPhone이 울려요.",
-    "pl": "Otwiera nowy czat z gotową do wysłania wiadomością „{prompt}”. Wyślij ją, a iPhone zadzwoni, gdy Hermes odpowie.",
-    "pt-BR": "Abre um chat novo com “{prompt}” pronto para enviar. Envie, e seu iPhone toca quando o Hermes responder.",
-    "ru": "Открывает новый чат с готовым к отправке сообщением «{prompt}». Отправьте его, и iPhone зазвонит, когда Hermes ответит.",
-    "tr": "Gönderilmeye hazır “{prompt}” mesajıyla yeni bir sohbet açar. Gönderin; Hermes yanıt verdiğinde iPhone'unuz çalar.",
-    "zh-Hans": "打开一个新聊天，已填好“{prompt}”。发送后，Hermes 回复时你的 iPhone 就会响铃。",
-    "zh-Hant": "開啟一個新聊天，已填好「{prompt}」。傳送後，Hermes 回覆時你的 iPhone 就會響鈴。"
   },
   "Make my scheduled checks that call me match this note. Update the ones I already have instead of adding new ones:\n{note}": {
     "de": "Gleiche meine geplanten Prüfungen, die mich anrufen, mit dieser Notiz ab. Passe die vorhandenen an, statt neue hinzuzufügen:\n{note}",

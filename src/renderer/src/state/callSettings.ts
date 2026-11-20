@@ -24,6 +24,8 @@ export interface Bounds {
 
 export interface CallsStatus {
   paired: boolean
+  /** Calls can ring somewhere: this computer (it asks the plugin for rings) or a paired iPhone. A plugin from before can_ring says paired alone. */
+  canRing: boolean
   settings: CallSettings
   bounds: { min_gap_s: Bounds; per_hour: Bounds; per_day: Bounds }
   rulesMax: number
@@ -42,6 +44,7 @@ export function parseCallsStatus(raw: unknown): CallsStatus | null {
   const bounds = (r.bounds ?? {}) as Record<string, unknown>
   return {
     paired: r.paired === true,
+    canRing: r.can_ring === true || r.paired === true,
     settings: {
       ...s,
       enabled: s.enabled,

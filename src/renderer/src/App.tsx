@@ -1552,8 +1552,9 @@ function Shell({
   }
   const declineRing = (call: Ring, missed: boolean) => {
     rings.dismiss(call.id)
-    // A miss is the iPhone's to report (it may still be answered there); a decline is the user's, from here.
+    // A miss is the iPhone's to report (it may still be answered there), unless no iPhone is paired; a decline is the user's, from here.
     if (!missed) declineOnHost(call)
+    else if (call.reportsMiss) declineOnHost(call, 'missed')
     if (missed && notificationsEnabled() && typeof Notification !== 'undefined')
       new Notification(call.name ? t('Missed call from {name}', { name: call.name }) : t('Missed call from Hermes'), {
         body: call.body || call.reason,

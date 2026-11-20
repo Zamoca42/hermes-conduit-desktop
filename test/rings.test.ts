@@ -63,4 +63,14 @@ describe('calls from Hermes on this computer', () => {
       age_s: 0
     })
   })
+
+  it('reports a miss itself only when no iPhone is paired', () => {
+    const raw = [{ id: 'watch_a', session_ids: ['s1'], at: 1 }]
+    const [alone] = ringsFrom({ now: 1, paired: false, rings: raw }).rings
+    expect(alone.reportsMiss).toBe(true)
+    expect(declineBody(alone, 'missed')).toMatchObject({ call_id: 'watch_a', outcome: 'missed' })
+    expect(ringsFrom({ now: 1, paired: true, rings: raw }).rings[0].reportsMiss).toBe(false)
+    // An older plugin says nothing: its calls rang an iPhone.
+    expect(ringsFrom({ now: 1, rings: raw }).rings[0].reportsMiss).toBe(false)
+  })
 })
