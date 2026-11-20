@@ -42238,5 +42238,35 @@
     "tr": "Yeniden bağlanıyor…",
     "zh-Hans": "正在重新连接…",
     "zh-Hant": "正在重新連線…"
+  },
+  "App icon": {
+    "de": "App-Symbol",
+    "es": "Icono de la app",
+    "fr": "Icône de l'app",
+    "id": "Ikon app",
+    "it": "Icona dell'app",
+    "ja": "Appアイコン",
+    "ko": "앱 아이콘",
+    "pl": "Ikona aplikacji",
+    "pt-BR": "Ícone do app",
+    "ru": "Значок приложения",
+    "tr": "Uygulama simgesi",
+    "zh-Hans": "App 图标",
+    "zh-Hant": "App 圖像"
+  },
+  "Choose the icon shown in the Dock or taskbar while Conduit runs.": {
+    "de": "Wähle das Symbol, das im Dock oder in der Taskleiste angezeigt wird, solange Conduit läuft.",
+    "es": "Elige el icono que se muestra en el Dock o la barra de tareas mientras Conduit está abierto.",
+    "fr": "Choisissez l'icône affichée dans le Dock ou la barre des tâches pendant que Conduit est ouvert.",
+    "id": "Pilih ikon yang ditampilkan di Dock atau bilah tugas saat Conduit berjalan.",
+    "it": "Scegli l'icona mostrata nel Dock o nella barra delle applicazioni mentre Conduit è aperto.",
+    "ja": "Conduitの実行中にDockまたはタスクバーに表示するアイコンを選択します。",
+    "ko": "Conduit이 실행 중일 때 Dock 또는 작업 표시줄에 표시할 아이콘을 선택하세요.",
+    "pl": "Wybierz ikonę wyświetlaną w Docku lub na pasku zadań, gdy Conduit działa.",
+    "pt-BR": "Escolha o ícone exibido no Dock ou na barra de tarefas enquanto o Conduit estiver aberto.",
+    "ru": "Выберите значок, который показывается в Dock или на панели задач, пока Conduit запущен.",
+    "tr": "Conduit çalışırken Dock'ta veya görev çubuğunda gösterilecek simgeyi seçin.",
+    "zh-Hans": "选择 Conduit 运行时在程序坞或任务栏中显示的图标。",
+    "zh-Hant": "選擇 Conduit 執行時在 Dock 或工作列中顯示的圖像。"
   }
 }

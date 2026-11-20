@@ -62,6 +62,8 @@ const api: ConduitApi = {
   setLanguage: choice => ipcRenderer.send(IPC.setLanguage, choice),
   theme: ipcRenderer.sendSync(IPC.theme) as ConduitApi['theme'],
   setTheme: choice => ipcRenderer.send(IPC.setTheme, choice),
+  appIcon: ipcRenderer.sendSync(IPC.appIcon) as ConduitApi['appIcon'],
+  setAppIcon: choice => ipcRenderer.send(IPC.setAppIcon, choice),
   appLock: () => ipcRenderer.invoke(IPC.appLock),
   setAppLock: on => ipcRenderer.invoke(IPC.setAppLock, on),
   askHostAtLaunch: () => ipcRenderer.invoke(IPC.askHost),

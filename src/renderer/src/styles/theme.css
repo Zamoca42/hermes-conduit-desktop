@@ -37,6 +37,8 @@
   --text-3: rgba(235, 235, 245, 0.6);
   --text-4: rgba(235, 235, 245, 0.45);
   --code-bg: rgba(255, 255, 255, 0.06);
+  /* A dropdown's open list: solid, since Windows draws it on white when the field's background is see-through. */
+  --menu: #1c1f26;
   --bubble-shadow: 0 6px 14px rgba(224, 171, 71, 0.16);
 
   --radius-bubble: 21px;
@@ -77,6 +79,14 @@
     --text-3: rgba(60, 60, 67, 0.65);
     --text-4: rgba(60, 60, 67, 0.5);
     --code-bg: rgba(0, 0, 0, 0.05);
+    --menu: #ffffff;
     --bubble-shadow: 0 6px 14px rgba(185, 131, 31, 0.18);
   }
+}
+
+/* Every dropdown's options, in the theme's colors rather than white until highlighted. */
+select option,
+select optgroup {
+  background-color: var(--menu);
+  color: var(--text);
 }

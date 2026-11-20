@@ -4,6 +4,8 @@ import { Icon } from './icons'
 import { t } from '@shared/i18n'
 import { hostBadge, keptStateLabel, useKeptHosts } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
+import appIcon from '../assets/app-icon.png'
+import appIconLight from '../assets/app-icon-light.png'
 
 export function hostName(url: string): string {
   try {
@@ -43,9 +45,10 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
   return (
     <header className="titlebar" onDoubleClick={event => event.target === event.currentTarget && win.toggleMaximize()}>
       <div className="brand">
-        <span className="brand-mark" aria-hidden="true">
-          C
-        </span>
+        <picture aria-hidden="true">
+          <source media="(prefers-color-scheme: light)" srcSet={appIconLight} />
+          <img className="brand-mark" src={appIcon} alt="" draggable={false} />
+        </picture>
         <span className="brand-name">Conduit</span>
         {subtitle && switchable ? (
           <span className="host-switch">

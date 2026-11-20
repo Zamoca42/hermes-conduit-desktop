@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
-import type { ThemeChoice } from '@shared/ipc'
+import type { AppIconChoice, ThemeChoice } from '@shared/ipc'
 import {
   ACCENTS,
   CHAT_FONTS,
@@ -21,6 +21,13 @@ import { LAUNCH_CHOICES, TABS_SYNC_KEY, keepTabs, keptTabs, launchPage, withFirs
 import { DEVICE_NAME, PREFS_PATH, installationId } from '../state/pinnedOrder'
 import { gateway } from '../gateway'
 import { Icon } from './icons'
+import appIconDark from '../assets/app-icon.png'
+import appIconLight from '../assets/app-icon-light.png'
+
+const APP_ICONS: { choice: AppIconChoice; src: string }[] = [
+  { choice: 'dark', src: appIconDark },
+  { choice: 'light', src: appIconLight }
+]
 
 const pageTitle = (page: LaunchPage) =>
   page === 'bots' ? t('Bots') : page === 'chats' ? t('Chats') : page === 'tasks' ? t('Tasks') : page === 'pulse' ? t('Pulse') : t('Artifacts')
@@ -72,6 +79,7 @@ export function AppearancePage({ host, onBack }: { host: string; onBack: () => v
       .catch(() => setOpenFailed(true))
   }
   const [theme, setTheme] = useState<ThemeChoice>(window.conduit.theme)
+  const [appIcon, setAppIcon] = useState<AppIconChoice>(window.conduit.appIcon)
   const [accent, setAccent] = useState<Accent>(readAccent)
   const [lastCustom, setLastCustom] = useState(readLastCustom)
   const [font, setFont] = useState<ChatFontStyle>(readChatFont)
@@ -115,6 +123,31 @@ export function AppearancePage({ host, onBack }: { host: string; onBack: () => v
               }}
             >
               {themeTitle(choice)}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="pset-section">
+        <h2>{t('App icon')}</h2>
+        <p className="meta">{t('Choose the icon shown in the Dock or taskbar while Conduit runs.')}</p>
+        <div className="app-icon-choices" role="radiogroup" aria-label={t('App icon')}>
+          {APP_ICONS.map(({ choice, src }) => (
+            <button
+              key={choice}
+              role="radio"
+              aria-checked={appIcon === choice}
+              className={appIcon === choice ? 'app-icon-choice on' : 'app-icon-choice'}
+              onClick={() => {
+                setAppIcon(choice)
+                window.conduit.setAppIcon(choice)
+              }}
+            >
+              <img src={src} alt="" draggable={false} />
+              <span>
+                {themeTitle(choice)}
+                {appIcon === choice ? <Icon name="check" /> : null}
+              </span>
             </button>
           ))}
         </div>
