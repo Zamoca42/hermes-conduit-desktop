@@ -349,6 +349,8 @@ interface HostActions {
   host: string
   update: UpdateState
   restart: RestartState
+  /** The host's version from its last check or update, kept when a dismissed row clears the check. */
+  version?: string
 }
 
 let current: HostActions = { host: '', update: { kind: 'idle' }, restart: { kind: 'idle' } }
@@ -357,6 +359,9 @@ let runs = 0
 
 function set(next: Partial<HostActions>) {
   current = { ...current, ...next }
+  const update = next.update
+  if (update?.kind === 'checked' && update.check.currentVersion) current.version = update.check.currentVersion
+  else if (update?.kind === 'updated') current.version = update.version
   for (const listener of listeners) listener()
 }
 
