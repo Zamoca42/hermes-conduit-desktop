@@ -77,6 +77,7 @@ import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 import { dashboardProfilePath, dashboardProfileQuery } from '../state/dashboardProfile'
+import { RECONNECT_ATTEMPTS, isRefusalClose, reconnectDelayMs } from '@shared/liveReconnect'
 
 interface Props {
   profile?: string
@@ -111,7 +112,7 @@ interface Props {
   resume?: CallResume
 }
 
-type Phase = 'starting' | 'listening' | 'speaking' | 'failed'
+type Phase = 'starting' | 'reconnecting' | 'listening' | 'speaking' | 'failed'
 interface Line {
   id: number
   who: 'user' | 'assistant'
@@ -236,6 +237,10 @@ export function LocalLiveCall({
   const queue = useRef<string[]>([])
   const active = useRef<{ from: number; at: number; started: boolean } | null>(null)
   const answered = useRef(new Set<string>())
+  // A dropped connection opens a new session, as on the phone; a call from the old one can't be answered on it.
+  const connection = useRef(0)
+  const attempt = useRef(0)
+  const callConnection = useRef(new Map<string, number>())
   // Answers the fast model may have stopped waiting for, by call: said as an update when the plugin says so.
   const answers = useRef(new Map<string, { name: string; result: Record<string, string> }>())
   const live = useRef({ items, running, turnsDone, lastReply, onSay, onCorrected, chatId, requests, liveId })
@@ -382,6 +387,7 @@ export function LocalLiveCall({
   }
 
   const answer = (id: string, name: string, result: Record<string, string>, speak = false) => {
+    if ((callConnection.current.get(id) ?? connection.current) !== connection.current) return void trace.current?.step('Tool answer dropped: its connection was replaced')
     trace.current?.step(`Tool answered: ${result.status ?? 'ok'}`)
     if (speak) answers.current.set(id, { name, result })
     send(toolResult(id, result, speak))
@@ -390,6 +396,7 @@ export function LocalLiveCall({
   const toolCall = (event: Extract<AgentFrame, { type: 'toolCall' }>) => {
     if (answered.current.has(event.id)) return
     answered.current.add(event.id)
+    callConnection.current.set(event.id, connection.current)
     trace.current?.step(`Tool call: ${event.name}`)
     if (event.args.invalid_arguments) return answer(event.id, event.name, BAD_ARGUMENTS)
     switch (event.name) {
@@ -605,6 +612,7 @@ export function LocalLiveCall({
   }
 
   const becomeReady = () => {
+    attempt.current = 0
     if (ready.current) return
     ready.current = true
     trace.current?.step(agent.current ? 'Session ready (agent mode, server VAD)' : 'Session ready (Hermes answers each turn, server VAD)')
@@ -723,11 +731,57 @@ export function LocalLiveCall({
         socket.current = null
         trace.current?.step(`Socket closed (${event.code ?? 'no code'})`)
         if (ended.current) return
+        if (!isRefusalClose(event.code, event.reason)) {
+          // A live call that dropped opens a new session at once; a setup that failed is tried again after a pause.
+          if (ready.current) return void reopen(0)
+          if (attempt.current < RECONNECT_ATTEMPTS && connection.current > 0) return void retryAfter(attempt.current)
+        }
         const reason = event.reason.trim() || (event.code === 1000 || event.code === 1005 ? '' : String(event.code))
         if (!ready.current) fail(refusedLine(reason))
         else fail(reason ? refusedLine(reason) : t('The connection to Hermes dropped.'))
       }
     })
+    const openSocket = async (): Promise<boolean> => {
+      trace.current?.step('Opening the socket')
+      const opened = await window.conduit.liveOpen(SOCKET_PATH, dashboardProfileQuery(profile))
+      if (!opened.ok) {
+        trace.current?.step('The socket did not open')
+        if (attempt.current < RECONNECT_ATTEMPTS && connection.current > 0) return retryAfter(attempt.current), false
+        fail(/\b404\b/.test(opened.error) ? PLUGIN_MISSING() : t('Could not open the Local Live connection.'))
+        return false
+      }
+      if (ended.current) {
+        window.conduit.liveClose(opened.id)
+        return false
+      }
+      socket.current = opened.id
+      window.clearTimeout(readyTimer)
+      readyTimer = window.setTimeout(() => {
+        if (!ready.current) fail(READY_TIMED_OUT())
+      }, READY_TIMEOUT_MS)
+      return true
+    }
+    // A new connection, and so a new session: what the old one was saying stops, and the new one is checked again.
+    const reopen = (next: number) => {
+      if (ended.current) return
+      attempt.current = next
+      connection.current += 1
+      marker.current = null
+      checking.current = false
+      if (ready.current) {
+        ready.current = false
+        responding.current = false
+        stopPlayback()
+        setPhase('reconnecting')
+        trace.current?.step('Connection lost: opening a new session')
+      }
+      void openSocket()
+    }
+    const retryAfter = (failed: number) => {
+      window.clearTimeout(readyTimer)
+      trace.current?.step(`Setup failed: trying again in ${reconnectDelayMs(failed) / 1000} s`)
+      window.setTimeout(() => !ended.current && reopen(failed + 1), reconnectDelayMs(failed))
+    }
     const connect = async () => {
       trace.current = startCallTrace('Local Live')
       try {
@@ -758,12 +812,7 @@ export function LocalLiveCall({
           }
           if (ended.current) return
         }
-        trace.current.step('Opening the socket')
-        const opened = await window.conduit.liveOpen(SOCKET_PATH, dashboardProfileQuery(profile))
-        if (!opened.ok) trace.current.step('The socket did not open')
-        if (!opened.ok) return fail(/\b404\b/.test(opened.error) ? PLUGIN_MISSING() : t('Could not open the Local Live connection.'))
-        if (ended.current) return window.conduit.liveClose(opened.id)
-        socket.current = opened.id
+        if (!(await openSocket())) return
         const source = ctx.createMediaStreamSource(stream)
         const node = ctx.createScriptProcessor(2048, 1, 1)
         processor.current = node
@@ -778,9 +827,6 @@ export function LocalLiveCall({
         source.connect(node)
         node.connect(ctx.destination)
         keepalive = window.setInterval(() => send(KEEPALIVE), KEEPALIVE_MS)
-        readyTimer = window.setTimeout(() => {
-          if (!ready.current) fail(READY_TIMED_OUT())
-        }, READY_TIMEOUT_MS)
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e)
         if (e instanceof DOMException && (e.name === 'NotAllowedError' || e.name === 'SecurityError'))
@@ -895,6 +941,8 @@ export function LocalLiveCall({
   const status =
     phase === 'starting'
       ? t('Connecting…')
+      : phase === 'reconnecting'
+        ? t('Reconnecting…')
       : phase === 'listening'
         ? muted
           ? t('Muted')
