@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasOwnModel, helperSummary, helperSwitch, parseModelSettings, switchValue } from '../src/renderer/src/state/helperModels'
+import { hasOwnModel, helperSummary, helperSwitch, intervalValue, parseInterval, parseModelSettings, switchValue } from '../src/renderer/src/state/helperModels'
 
 describe('parseModelSettings', () => {
   const raw = {
@@ -54,5 +54,18 @@ describe('background review and MCP sampling', () => {
     expect(switchValue({ auxiliary: { background_review: { enabled: false } } }, words)).toBe(false)
     expect(switchValue({ auxiliary: { background_review: {} } }, words)).toBe(true)
     expect(switchValue(null, words)).toBe(true)
+    // It runs when a counter reaches its interval, not after every turn, so both show under the switch (hermes-conduit#2905).
+    expect(words.intervals.map(i => i.key)).toEqual(['memory.nudge_interval', 'skills.creation_nudge_interval'])
+    const [memory] = words.intervals
+    expect(intervalValue(null, memory)).toBe(10)
+    expect(intervalValue({ memory: { nudge_interval: 20 } }, memory)).toBe(20)
+    expect(intervalValue({ memory: { nudge_interval: 0 } }, memory)).toBe(0)
+    expect(intervalValue({ memory: { nudge_interval: '30' } }, memory)).toBe(30)
+    expect(intervalValue({ memory: { nudge_interval: 'often' } }, memory)).toBe(10)
+    expect(parseInterval(' 25 ')).toBe(25)
+    expect(parseInterval('0')).toBe(0)
+    expect(parseInterval('-1')).toBeNull()
+    expect(parseInterval('2.5')).toBeNull()
+    expect(parseInterval('')).toBeNull()
   })
 })

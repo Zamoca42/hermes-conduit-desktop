@@ -63,7 +63,7 @@ function builtIn(task: string): { title: string; caption: string } | null {
       return {
         title: t('Background review'),
         caption: t(
-          'Looks back over a chat after each turn to decide what goes into memory and which skills to improve. Its reasoning applies only on a model of its own, which starts without the chat’s prompt cache.'
+          'Every few turns, looks back over a chat to decide what goes into memory and which skills to improve. Its reasoning applies only on a model of its own, which starts without the chat’s prompt cache.'
         )
       }
     case 'conduit_predict':
@@ -78,24 +78,52 @@ function builtIn(task: string): { title: string; caption: string } | null {
   }
 }
 
-/** A helper's own on/off switch, in its `auxiliary.<task>` block. */
+/** A counter in the profile's config: the helper runs each time it reaches this many; 0 turns that kind of run off. */
+export interface HelperInterval {
+  key: string
+  defaultValue: number
+  label: string
+  caption: string
+}
+
+/** A helper's own on/off switch, in its `auxiliary.<task>` block, and the intervals that decide when it runs while on. */
 export interface HelperSwitch {
   key: string
   defaultValue: boolean
   title: string
   label: string
   caption: string
+  intervals: HelperInterval[]
 }
 
-/** The helpers with an on/off switch of their own: Background review's, its biggest cost lever (hermes-conduit#2871). */
+/**
+ * The helpers with an on/off switch of their own: Background review's, its biggest cost lever (hermes-conduit#2871).
+ * Hermes checks two counters after each turn and reviews only when one reaches its interval (`memory.nudge_interval`,
+ * user turns, for memory; `skills.creation_nudge_interval`, tool-calling steps, for skills; both 10 by default, 0 off),
+ * so they show under it (hermes-conduit#2905).
+ */
 export function helperSwitch(task: string): HelperSwitch | null {
   if (task !== 'background_review') return null
   return {
     key: 'auxiliary.background_review.enabled',
     defaultValue: true,
     title: t('Automatic review'),
-    label: t('After every turn'),
-    caption: t('Off, Hermes reviews a chat only when you ask with /refine. It’s the helper that runs most, so turning it off saves the most.')
+    label: t('On'),
+    caption: t('Runs when the memory or skill interval below is reached. Off, Hermes reviews a chat only when you ask with /refine.'),
+    intervals: [
+      {
+        key: 'memory.nudge_interval',
+        defaultValue: 10,
+        label: t('Messages between memory reviews'),
+        caption: t('How many of your messages before Hermes looks for what to remember about you. 0 turns memory review off.')
+      },
+      {
+        key: 'skills.creation_nudge_interval',
+        defaultValue: 10,
+        label: t('Tool steps between skill reviews'),
+        caption: t('How many tool-using steps before Hermes looks for a skill to create or improve. 0 turns skill review off.')
+      }
+    ]
   }
 }
 
@@ -104,6 +132,17 @@ export const switchValue = (config: unknown, words: HelperSwitch): boolean => {
   const value = valueAt(config, words.key)
   return typeof value === 'boolean' ? value : words.defaultValue
 }
+
+/** An interval as Hermes reads it (`int()` of the value); unset or unreadable, Hermes' default. */
+export const intervalValue = (config: unknown, interval: HelperInterval): number => {
+  const value = valueAt(config, interval.key)
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.trunc(value)
+  if (typeof value === 'string' && /^\s*-?\d+\s*$/.test(value)) return Number.parseInt(value, 10)
+  return interval.defaultValue
+}
+
+/** What someone typed in an interval's field: a whole number, 0 or more; null otherwise. */
+export const parseInterval = (raw: string): number | null => (/^\s*\d{1,9}\s*$/.test(raw) ? Number.parseInt(raw, 10) : null)
 
 /** A slot a newer Hermes added: its label, else its key made readable. */
 function slotTitle(task: string, label: string): string {
