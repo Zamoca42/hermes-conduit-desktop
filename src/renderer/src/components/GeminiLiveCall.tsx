@@ -71,6 +71,7 @@ import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote, imageFrame } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
+import { RECONNECT_ATTEMPTS, isRefusalClose, isResumptionLost, reconnectDelayMs, rejoinPrompt } from '@shared/liveReconnect'
 
 interface Props {
   profile?: string
@@ -119,7 +120,7 @@ const COPY = {
   }
 }
 
-type Phase = 'starting' | 'listening' | 'speaking' | 'ending' | 'failed'
+type Phase = 'starting' | 'reconnecting' | 'listening' | 'speaking' | 'ending' | 'failed'
 interface Line {
   id: number
   who: 'user' | 'assistant'
@@ -127,8 +128,6 @@ interface Line {
   open: boolean
 }
 
-/** Reconnects in a row with no ready between before the call ends. */
-const MAX_RESUME_TRIES = 3
 /** Saying goodbye: the call closes once the model's audio has played out, or after this at most. */
 const END_GRACE_MS = 1000
 const END_TIMEOUT_MS = 8000
@@ -215,10 +214,14 @@ export function GeminiLiveCall({
   const ended = useRef(false)
   const ending = useRef(false)
   const ready = useRef(false)
-  // Gemini's session resumption, as on the phone: the newest handle, the tries since the last ready, and the reconnect.
+  // A replaced connection, as on the phone: Gemini's newest resumption handle, the attempt since the last ready,
+  // the connection a GoAway hands off to while the current one serves, and a recap owed to a session that lost the call.
   const resumeHandle = useRef<string | null>(null)
-  const resumeTries = useRef(0)
-  const resumeNow = useRef<(() => void) | null>(null)
+  const attempt = useRef(0)
+  const handoff = useRef<string | null>(null)
+  const connection = useRef(0)
+  const owesRecap = useRef(false)
+  const startHandoff = useRef<((next: number) => void) | null>(null)
   const mutedRef = useRef(false)
   const lineId = useRef(0)
   const modelTurn = useRef(false)
@@ -449,7 +452,12 @@ export function GeminiLiveCall({
   const handle = (event: ServerEvent) => {
     switch (event.type) {
       case 'ready':
-        resumeTries.current = 0
+        attempt.current = 0
+        // A session that started fresh mid-call hears what was said so far.
+        if (owesRecap.current) {
+          owesRecap.current = false
+          send(textTurn(rejoinPrompt(record.current.map(turn => ({ role: turn.role === 'user' ? 'user' : 'assistant', text: turn.text })))))
+        }
         if (!ready.current) {
           ready.current = true
           trace.current?.step('Session ready')
@@ -500,7 +508,7 @@ export function GeminiLiveCall({
         return
       case 'goAway':
         // The connection ends soon: the call goes on, on a new one.
-        if (!qwen && resumeHandle.current) resumeNow.current?.()
+        if (!qwen && resumeHandle.current && !handoff.current) startHandoff.current?.(0)
         return
     }
   }
@@ -535,11 +543,17 @@ export function GeminiLiveCall({
     let toldWith: Parameters<typeof instructions>[0] = {}
     let startedOpen = false
     // A single-use credential per connection, minted by the host and kept in the main process.
-    const open = async (): Promise<boolean> => {
-      trace.current?.step('Opening the socket')
+    // `asHandoff`: Gemini's next connection after a GoAway, set up while the current one keeps serving.
+    const open = async (asHandoff = false): Promise<boolean> => {
+      trace.current?.step(asHandoff ? 'Opening the next connection (GoAway)' : 'Opening the socket')
       const opened = await window.conduit.liveOpenMinted(withProfile(qwen ? QWEN_TOKEN_PATH : TOKEN_PATH, profile))
       if (!opened.ok) {
         trace.current?.step(`The socket did not open${opened.code ? ` (${opened.code})` : ''}`)
+        if (opened.code !== 404 && attempt.current < RECONNECT_ATTEMPTS && (asHandoff || connection.current > 0)) {
+          if (asHandoff) handoffAfter(attempt.current)
+          else retryAfter(attempt.current)
+          return false
+        }
         fail(
           opened.code === 404
             ? t('Install or update the Hermes notifier plugin on your Hermes server.')
@@ -553,6 +567,10 @@ export function GeminiLiveCall({
         window.conduit.liveClose(opened.id)
         return false
       }
+      if (asHandoff) {
+        handoff.current = opened.id
+        return true
+      }
       model = opened.model ?? (qwen ? QWEN_MODEL : DEFAULT_MODEL)
       // The voice picked here, else the host's.
       voice = (qwen ? qwenVoice() : geminiVoice()) || opened.voice
@@ -565,16 +583,85 @@ export function GeminiLiveCall({
       startedOpen = true
       return true
     }
-    resumeNow.current = () => {
-      const old = socket.current
-      socket.current = null
-      if (old) window.conduit.liveClose(old)
-      resumeTries.current += 1
-      trace.current?.step('GoAway: resuming the session on a new connection')
-      ready.current = false
+    // The connection is replaced: answers owed to the old one's function calls can't go on the new one.
+    const replaced = () => {
+      connection.current += 1
+      openCalls.current.clear()
+    }
+    // A new connection after the current one dropped: Gemini resumes the session with its handle; Qwen, with none, starts a new one.
+    const reconnect = (next: number) => {
+      if (ended.current) return
+      attempt.current = next
+      replaced()
+      if (ready.current) {
+        ready.current = false
+        if (qwen || !resumeHandle.current) stopPlayback()
+        setPhase('reconnecting')
+        trace.current?.step(resumeHandle.current && !qwen ? 'Connection lost: resuming the session' : 'Connection lost: opening a new session')
+      }
       void open()
     }
+    const retryAfter = (failed: number) => {
+      // The setup timeout restarts with the next attempt, not during the pause.
+      window.clearTimeout(startTimer)
+      trace.current?.step(`Setup failed: trying again in ${reconnectDelayMs(failed) / 1000} s`)
+      window.setTimeout(() => !ended.current && reconnect(failed + 1), reconnectDelayMs(failed))
+    }
+    startHandoff.current = next => {
+      if (ended.current || ending.current) return
+      attempt.current = next
+      void open(true)
+    }
+    const handoffAfter = (failed: number) => {
+      trace.current?.step(`The next connection failed: trying again in ${reconnectDelayMs(failed) / 1000} s`)
+      window.setTimeout(() => !ended.current && startHandoff.current?.(failed + 1), reconnectDelayMs(failed))
+    }
+    // The handed-off connection is set up: it takes over, and the old one closes.
+    const takeOver = () => {
+      const old = socket.current
+      socket.current = handoff.current
+      handoff.current = null
+      attempt.current = 0
+      replaced()
+      if (old) window.conduit.liveClose(old)
+      trace.current?.step('The next connection took over')
+      // A fresh session (Google lost the old one) hears what was said so far.
+      if (owesRecap.current) {
+        owesRecap.current = false
+        send(textTurn(rejoinPrompt(record.current.map(turn => ({ role: turn.role === 'user' ? 'user' : 'assistant', text: turn.text })))))
+      }
+      if (!ready.current) {
+        ready.current = true
+        setPhase('listening')
+      }
+    }
     const stopListening = window.conduit.onLive(event => {
+      if (handoff.current && event.id === handoff.current) {
+        if (event.type === 'open') window.conduit.liveSend(event.id, JSON.stringify(setupMessage(model, told, voice, recall, search, { handle: resumeHandle.current })))
+        else if (event.type === 'message') {
+          for (const decoded of decode(event.data)) {
+            if (decoded.type === 'resumption' && decoded.resumable && decoded.handle) resumeHandle.current = decoded.handle
+            else if (decoded.type === 'ready') return takeOver()
+          }
+        } else if (event.type === 'close') {
+          handoff.current = null
+          trace.current?.step(`The next connection closed (${event.code ?? 'no code'})`)
+          if (ended.current || ending.current) return
+          if (isRefusalClose(event.code, event.reason)) {
+            // Google lost the session the handle named: a fresh one sets up while the current connection serves.
+            if (resumeHandle.current && isResumptionLost(event.code, event.reason)) {
+              resumeHandle.current = null
+              owesRecap.current = true
+              return startHandoff.current?.(attempt.current)
+            }
+            const reason = closeReason(event.code, event.reason)
+            return fail(reason ? copy.refused(reason) : copy.couldNot())
+          }
+          if (attempt.current < RECONNECT_ATTEMPTS) return handoffAfter(attempt.current)
+          fail(copy.couldNot())
+        }
+        return
+      }
       if (event.id !== socket.current) return
       if (event.type === 'open') {
         trace.current?.step('Socket open, setup sent')
@@ -609,15 +696,28 @@ export function GeminiLiveCall({
           ready.current = false
           return void open()
         }
-        // A dropped connection, or one that stopped taking frames: Gemini continues the session on a new one, three tries at most.
-        if (!qwen && resumeHandle.current && (ready.current || resumeTries.current > 0) && resumeTries.current < MAX_RESUME_TRIES) {
-          resumeTries.current += 1
-          trace.current?.step('Resuming the session on a new connection')
-          ready.current = false
-          return void open()
+        // A GoAway's next connection is setting up: it takes over once ready.
+        if (handoff.current) {
+          if (ready.current) {
+            ready.current = false
+            setPhase('reconnecting')
+          }
+          return
+        }
+        // A live connection that closed, for any reason but a spent quota, opens again at once, as on the phone.
+        if (ready.current) return reconnect(0)
+        if (connection.current > 0) {
+          if (isRefusalClose(event.code, event.reason)) {
+            // Google lost the session the handle named: the same attempt starts a fresh one, once, and tells it the call so far.
+            if (!qwen && resumeHandle.current && isResumptionLost(event.code, event.reason)) {
+              resumeHandle.current = null
+              owesRecap.current = true
+              return reconnect(attempt.current)
+            }
+          } else if (attempt.current < RECONNECT_ATTEMPTS) return retryAfter(attempt.current)
         }
         const reason = closeReason(event.code, event.reason)
-        if (resumeTries.current > 0) fail(reason ? copy.refused(reason) : copy.couldNot())
+        if (connection.current > 0) fail(reason ? copy.refused(reason) : copy.couldNot())
         else if (!ready.current) fail(reason ? copy.couldNotBecause(reason) : copy.couldNot())
         else fail(reason ? copy.refused(reason) : copy.couldNot())
       }
@@ -746,6 +846,8 @@ export function GeminiLiveCall({
   const status =
     phase === 'starting'
       ? t('Connecting…')
+      : phase === 'reconnecting'
+        ? t('Reconnecting…')
       : phase === 'listening'
         ? muted
           ? t('Muted')

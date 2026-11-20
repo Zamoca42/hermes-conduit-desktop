@@ -12,8 +12,7 @@
 export const AUDIO_BACKLOG_BYTES = 192 * 1024
 /** Past this, a frame that isn't audio finds a socket that stopped taking them. */
 export const STALLED_BYTES = 2 * 1024 * 1024
-export const STALLED_CLOSE_CODE = 4000
-export const STALLED_REASON = 'The connection stopped taking what the call sends.'
+export { STALLED_CLOSE_CODE, STALLED_REASON } from '../shared/liveReconnect'
 
 const AUDIO_PREFIXES = ['{"type":"input_audio_buffer.append"', '{"realtimeInput":{"audio":']
 

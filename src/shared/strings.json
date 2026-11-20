@@ -42223,5 +42223,20 @@
     "tr": "{count} onay bekliyor",
     "zh-Hans": "{count} 个待批准",
     "zh-Hant": "{count} 個待核准"
+  },
+  "Reconnecting…": {
+    "de": "Wird neu verbunden …",
+    "es": "Reconectando…",
+    "fr": "Reconnexion…",
+    "id": "Menghubungkan ulang…",
+    "it": "Riconnessione…",
+    "ja": "再接続中…",
+    "ko": "다시 연결 중…",
+    "pl": "Ponowne łączenie…",
+    "pt-BR": "Reconectando…",
+    "ru": "Переподключение…",
+    "tr": "Yeniden bağlanıyor…",
+    "zh-Hans": "正在重新连接…",
+    "zh-Hant": "正在重新連線…"
   }
 }

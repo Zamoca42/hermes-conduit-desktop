@@ -45,6 +45,7 @@ import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote } from '../state/callPicture'
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 import { dashboardProfileQuery } from '../state/dashboardProfile'
+import { RECONNECT_ATTEMPTS, isRefusalClose, reconnectDelayMs } from '@shared/liveReconnect'
 
 interface Props {
   profile?: string
@@ -75,7 +76,7 @@ interface Props {
   resume?: CallResume
 }
 
-type Phase = 'starting' | 'listening' | 'speaking' | 'ending' | 'failed'
+type Phase = 'starting' | 'reconnecting' | 'listening' | 'speaking' | 'ending' | 'failed'
 interface Line {
   id: number
   who: 'user' | 'assistant'
@@ -175,6 +176,10 @@ export function GrokLiveCall({
   const userSpeaking = useRef(false)
   const userSpokeAt = useRef(0)
   const answered = useRef(new Set<string>())
+  // xAI has no session resumption: a dropped connection opens a new session, and a call from the old one can't be answered on it.
+  const connection = useRef(0)
+  const attempt = useRef(0)
+  const callConnection = useRef(new Map<string, number>())
   const spoken = useRef('')
   // Updates for the model (Hermes' replies), sent once the conversation is quiet.
   const updates = useRef<string[]>([])
@@ -328,6 +333,7 @@ export function GrokLiveCall({
   }
 
   const answer = (id: string, result: Record<string, string>, speaks = true) => {
+    if ((callConnection.current.get(id) ?? connection.current) !== connection.current) return void trace.current?.step('Tool answer dropped: its connection was replaced')
     trace.current?.step(`Tool answered: ${result.status ?? 'ok'}`)
     send(toolOutput(id, result))
     if (speaks) respond()
@@ -337,6 +343,7 @@ export function GrokLiveCall({
     // The arguments event and the finished item carry the same call: run it once.
     if (answered.current.has(event.id)) return
     answered.current.add(event.id)
+    callConnection.current.set(event.id, connection.current)
     trace.current?.step(`Tool call: ${event.name}`)
     if (event.args.invalid_arguments) return answer(event.id, BAD_ARGUMENTS)
     switch (event.name) {
@@ -411,6 +418,7 @@ export function GrokLiveCall({
   const handle = (event: ServerEvent) => {
     switch (event.type) {
       case 'ready':
+        attempt.current = 0
         if (!ready.current) {
           ready.current = true
           trace.current?.step('Session ready (server VAD, 700 ms silence, 300 ms padding)')
@@ -505,11 +513,55 @@ export function GrokLiveCall({
         socket.current = null
         trace.current?.step(`Socket closed (${event.code ?? 'no code'})`)
         if (ending.current) return void (!ended.current && finish())
+        if (!isRefusalClose(event.code, event.reason)) {
+          // A live call that dropped opens a new session at once; a setup that failed is tried again after a pause.
+          if (ready.current) return void reopen(0)
+          if (attempt.current < RECONNECT_ATTEMPTS && connection.current > 0) return void retryAfter(attempt.current)
+        }
         const reason = closeReason(event.code, event.reason)
         if (!ready.current) fail(reason ? t("Couldn't connect to Grok Live: {reason}", { reason }) : t("Couldn't connect to Grok Live."))
         else fail(reason ? t('Grok Live refused the connection: {reason}', { reason }) : t('The connection to Hermes dropped.'))
       }
     })
+    const openSocket = async (): Promise<boolean> => {
+      trace.current?.step('Opening the socket')
+      const opened = await window.conduit.liveOpen(SOCKET_PATH, dashboardProfileQuery(profile))
+      if (!opened.ok) {
+        trace.current?.step('The socket did not open')
+        if (attempt.current < RECONNECT_ATTEMPTS && connection.current > 0) return retryAfter(attempt.current), false
+        fail(t("Couldn't connect to Grok Live: {reason}", { reason: opened.error }))
+        return false
+      }
+      if (ended.current) {
+        window.conduit.liveClose(opened.id)
+        return false
+      }
+      socket.current = opened.id
+      window.clearTimeout(startTimer)
+      startTimer = window.setTimeout(() => {
+        if (!ready.current) fail(t("Couldn't connect to Grok Live."))
+      }, START_TIMEOUT_MS)
+      return true
+    }
+    // A new connection, and so a new xAI session: what the old one was saying stops.
+    const reopen = (next: number) => {
+      if (ended.current) return
+      attempt.current = next
+      connection.current += 1
+      if (ready.current) {
+        ready.current = false
+        responding.current = false
+        stopPlayback()
+        setPhase('reconnecting')
+        trace.current?.step('Connection lost: opening a new session')
+      }
+      void openSocket()
+    }
+    const retryAfter = (failed: number) => {
+      window.clearTimeout(startTimer)
+      trace.current?.step(`Setup failed: trying again in ${reconnectDelayMs(failed) / 1000} s`)
+      window.setTimeout(() => !ended.current && reopen(failed + 1), reconnectDelayMs(failed))
+    }
     const connect = async () => {
       trace.current = startCallTrace('Grok Live')
       try {
@@ -536,12 +588,7 @@ export function GrokLiveCall({
         if (ended.current) return
         recall = memory.recall
         told = instructions({ language: language(), persona, memory: memory.text, recall, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) })
-        trace.current.step('Opening the socket')
-        const opened = await window.conduit.liveOpen(SOCKET_PATH, dashboardProfileQuery(profile))
-        if (!opened.ok) trace.current.step('The socket did not open')
-        if (!opened.ok) return fail(t("Couldn't connect to Grok Live: {reason}", { reason: opened.error }))
-        if (ended.current) return window.conduit.liveClose(opened.id)
-        socket.current = opened.id
+        if (!(await openSocket())) return
         // The microphone, as 24 kHz PCM, while the call listens.
         const source = ctx.createMediaStreamSource(stream)
         const node = ctx.createScriptProcessor(2048, 1, 1)
@@ -556,9 +603,6 @@ export function GrokLiveCall({
         }
         source.connect(node)
         node.connect(ctx.destination)
-        startTimer = window.setTimeout(() => {
-          if (!ready.current) fail(t("Couldn't connect to Grok Live."))
-        }, START_TIMEOUT_MS)
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e)
         if (e instanceof DOMException && (e.name === 'NotAllowedError' || e.name === 'SecurityError'))
@@ -626,6 +670,8 @@ export function GrokLiveCall({
   const status =
     phase === 'starting'
       ? t('Connecting…')
+      : phase === 'reconnecting'
+        ? t('Reconnecting…')
       : phase === 'listening'
         ? muted
           ? t('Muted')
