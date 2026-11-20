@@ -10978,3 +10978,49 @@ button.ghost:disabled {
 .column-divider.closing::after {
   background: var(--accent);
 }
+
+/*
+ * A narrow chat (a small window with the side panel open) keeps the header's
+ * buttons from running over the title or the panel: the title shrinks first,
+ * then Call drops its word, then the voice mode and the status chip go (the
+ * crumb and the panel's Work tab still say where the work is).
+ */
+.chat-head.soft > .chat-titles {
+  overflow: hidden;
+}
+
+.chat-head.soft .chat-title {
+  flex: 0 1 auto;
+  min-width: 3em;
+}
+
+@container chat (max-width: 640px) {
+  .call-pill-call > span {
+    display: none;
+  }
+
+  .call-pill-call {
+    padding: 0 10px 0 12px;
+  }
+
+  .call-pill-mode select {
+    max-width: 104px;
+  }
+}
+
+@container chat (max-width: 500px) {
+  .call-pill-line,
+  .call-pill-mode,
+  .chat-head.soft .status-chip {
+    display: none;
+  }
+
+  .call-pill-call {
+    border-radius: 999px;
+    padding: 0 12px;
+  }
+
+  .chat-head.soft {
+    padding-left: 16px;
+  }
+}
