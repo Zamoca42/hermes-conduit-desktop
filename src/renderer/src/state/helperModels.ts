@@ -76,7 +76,7 @@ function builtIn(task: string): { title: string; caption: string } | null {
         )
       }
     case 'group_router':
-      // Listed by the Conduit plugin from 0.186.0 until Hermes lists it (hermes-conduit#2909).
+      // Listed by the Conduit plugin from 0.187.0 until Hermes lists it (hermes-conduit#2909).
       return {
         title: t('Group router'),
         caption: t(
@@ -202,7 +202,7 @@ export function parseModelSettings(raw: unknown, profile = 'default'): ModelSett
 /** A slot with a model of its own; "auto" with no model is the chat model. */
 export const hasOwnModel = (slot: HelperSlot) => !!slot.model && slot.provider !== 'auto'
 
-/** The default profile's Group router slot in its /api/model/auxiliary answer, or null before plugin 0.186.0. */
+/** The default profile's Group router slot in its /api/model/auxiliary answer, or null before plugin 0.187.0. */
 export const groupRouterSlot = (raw: unknown): HelperSlot | null => parseModelSettings(raw).slots.find(slot => slot.task === GROUP_ROUTER) ?? null
 
 /** "All use the chat model", or how many have one of their own. */
