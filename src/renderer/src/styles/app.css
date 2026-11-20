@@ -10332,3 +10332,50 @@ button.secondary.danger {
   background: var(--accent-soft);
   border-color: var(--accent-line);
 }
+
+/* The bots sidebar beside a bot opened from Bots home (BotSideList). */
+.bot-side-home {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.bot-side-bot {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.bot-side-face {
+  flex: none;
+  display: flex;
+}
+.bot-side-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bot-side-bot.open:not([aria-current='true']) {
+  background: var(--surface);
+}
+.bot-side-pill.needs {
+  color: var(--warning);
+}
+.bot-side-work {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 6px 28px;
+  padding-left: 10px;
+  border-left: 1px solid var(--line-strong);
+}
+.bot-side-stream {
+  padding: 7px 10px;
+  gap: 2px;
+}
+.bot-side-stream .row-title {
+  font-size: 13px;
+  font-weight: 500;
+}
