@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { declineBody, freshRings, holdCallPresence, PRESENCE_CAPABILITY, PRESENCE_S, ringChanges, ringsFrom } from '../src/renderer/src/state/rings'
+import { declineBody, freshRings, holdCallPresence, PRESENCE_CAPABILITY, PRESENCE_S, ringChanges, ringsFrom, startOver } from '../src/renderer/src/state/rings'
 import { askPluginStatus, type PluginStatus } from '../src/renderer/src/state/plugin'
 
 describe('calls from Hermes on this computer', () => {
@@ -50,6 +50,27 @@ describe('calls from Hermes on this computer', () => {
     expect(rings.map(r => r.state)).toEqual(['answered', 'ringing', 'declined', 'ringing'])
     expect(ringChanges(rings, new Set(['watch_d']))).toEqual({ added: [rings[1]], settled: ['watch_a', 'watch_c'] })
     expect(freshRings(rings, 1000).map(r => r.id)).toEqual(['watch_b', 'watch_d'])
+  })
+
+  it('rings again for a call still ringing after the connection drops and comes back (desktop#205)', () => {
+    const answer = { now: 1000, paired: false, rings: [{ id: 'watch_a', kind: 'done', session_ids: ['s1'], at: 990 }] }
+    const state = { after: new Map<string, number>(), served: new Map<string, boolean>(), seen: new Set<string>() }
+    const first = ringsFrom(answer)
+    const { added } = ringChanges(freshRings(first.rings, first.now), state.seen)
+    added.forEach(ring => state.seen.add(ring.id))
+    state.after.set('', 1000)
+    state.served.set('', true)
+    expect(added.map(r => r.id)).toEqual(['watch_a'])
+
+    startOver(state)
+    expect(state).toEqual({ after: new Map(), served: new Map(), seen: new Set() })
+
+    // The host still has it ringing, inside the fresh window: it rings here again, so its miss is still reported.
+    const back = ringsFrom({ ...answer, now: 1005 })
+    expect(ringChanges(freshRings(back.rings, back.now), state.seen).added.map(r => r.id)).toEqual(['watch_a'])
+    // One declined before the drop is settled on the host and doesn't come back.
+    const settled = ringsFrom({ now: 1005, rings: [{ id: 'watch_a', at: 990, state: 'declined' }] })
+    expect(ringChanges(freshRings(settled.rings, settled.now), state.seen).added).toEqual([])
   })
 
   it('declines as the iPhone reports a decline', () => {
