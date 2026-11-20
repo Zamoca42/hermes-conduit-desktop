@@ -269,6 +269,9 @@ export function useChat(storedId: string | null, profile: string | undefined, se
 
   // Resume when the chat (or the connection) changes.
   useEffect(() => {
+    // A dropped connection clears what was kept, whatever is open, before any return below
+    // (desktop#201). It also drops what this re-run's cleanup just kept: React runs that first.
+    if (!connected) forgetTranscripts()
     // A chat just created here: its first turn is already drawn, so no resume, but leaving it keeps it.
     if (storedId && storedId === created.current) return () => keepTranscript(storedId, profile, transcriptRef.current)
     created.current = null
@@ -278,8 +281,6 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     setQueue([])
     setChat(storedId || !folder ? { storedId, liveId: null } : { storedId, liveId: null, cwd: folder })
     setError(null)
-    // A dropped connection clears what was kept, whatever is open (desktop#201).
-    if (!connected) forgetTranscripts()
     if (!storedId) {
       dispatch({ type: 'reset', state: emptyTranscript })
       return
