@@ -25,6 +25,13 @@ describe('work links', () => {
     expect(splitWorkLinks('No links [here](https://example.com)')).toBeNull()
   })
 
+  it('leaves a work link quoted in code as written', () => {
+    const quoted = `The plugin writes \`[Open W3](${W19}) @session:zhongli/20261120_165155_a24bea\` for each.`
+    expect(splitWorkLinks(quoted)).toBeNull()
+    const fenced = `Like this:\n\n\`\`\`\n[Open W3](${W19})\n\`\`\`\n\nand [Open W4](${W19})`
+    expect(splitWorkLinks(fenced)).toEqual({ text: `Like this:\n\n\`\`\`\n[Open W3](${W19})\n\`\`\`\n\nand`, links: [{ ref: 'W4', sessionId: '20261120_165155_a24bea', profile: 'zhongli' }] })
+  })
+
   it('reads the id and profile of a chat link', () => {
     expect(sessionInLink(W19)).toEqual({ sessionId: '20261120_165155_a24bea', profile: 'zhongli' })
     expect(sessionInLink('conduit://session/abc')).toEqual({ sessionId: 'abc', profile: undefined })
@@ -45,6 +52,10 @@ describe('references to chats', () => {
   it('makes a reference used as a link’s address a chat link, and leaves code and words in links alone', () => {
     expect(linkSessionRefs('[that chat](@session:hermes/s1)', titleOf, 'Open chat')).toBe('[that chat](conduit://session/s1?profile=hermes)')
     expect(linkSessionRefs('`@session:hermes/s1`', titleOf, 'Open chat')).toBe('`@session:hermes/s1`')
+    expect(linkSessionRefs('``a @session:hermes/s1 b``', titleOf, 'Open chat')).toBe('``a @session:hermes/s1 b``')
+    expect(linkSessionRefs('~~~\n@session:hermes/s1\n~~~', titleOf, 'Open chat')).toBe('~~~\n@session:hermes/s1\n~~~')
+    // A sentence's full stop isn't part of the id.
+    expect(linkSessionRefs('[that chat](@session:hermes/s1.)', titleOf, 'Open chat')).toBe('[that chat](conduit://session/s1?profile=hermes)')
     expect(linkSessionRefs('mail me@session:x', titleOf, 'Open chat')).toBe('mail me@session:x')
   })
 })
