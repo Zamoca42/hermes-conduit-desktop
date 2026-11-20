@@ -144,3 +144,17 @@ describe('show_on_screen', () => {
     expect(functionDeclarations().find(d => d.name === 'show_on_screen')?.behavior).toBe('BLOCKING')
   })
 })
+
+describe('Gemini Live session resumption', () => {
+  it('asks for handles, then continues a session with one', () => {
+    expect((setupMessage('m', 'x', null, false, 'none', {}).setup as Record<string, unknown>).sessionResumption).toEqual({})
+    expect((setupMessage('m', 'x', null, false, 'none', { handle: 'h1' }).setup as Record<string, unknown>).sessionResumption).toEqual({ handle: 'h1' })
+    // Qwen's setup asks for none.
+    expect('sessionResumption' in (setupMessage('m', 'x').setup as Record<string, unknown>)).toBe(false)
+  })
+
+  it('reads the newest handle', () => {
+    expect(decode(JSON.stringify({ sessionResumptionUpdate: { newHandle: 'h2', resumable: true } }))).toEqual([{ type: 'resumption', handle: 'h2', resumable: true }])
+    expect(decode(JSON.stringify({ sessionResumptionUpdate: { resumable: false } }))).toEqual([{ type: 'resumption', handle: null, resumable: false }])
+  })
+})

@@ -121,7 +121,19 @@ export function functionDeclarations(recall = false, webSearch = false): Row[] {
 }
 
 /** The session's setup: audio replies, the instructions, the tools (with Google Search or the host's web_search), and both transcriptions. */
-export function setupMessage(model: string, systemInstruction: string, voice?: string | null, recall = false, search: Search = 'google'): Row {
+/**
+ * `resumption`: Gemini's session resumption, as on the phone. `{}` asks for
+ * handles; a handle continues that session on a new connection (after a
+ * GoAway, or a socket that dropped or stopped taking frames). Qwen has none.
+ */
+export function setupMessage(
+  model: string,
+  systemInstruction: string,
+  voice?: string | null,
+  recall = false,
+  search: Search = 'google',
+  resumption?: { handle?: string | null }
+): Row {
   const generationConfig: Row = { responseModalities: ['AUDIO'] }
   if (voice) generationConfig.speechConfig = { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } }
   return {
@@ -137,7 +149,8 @@ export function setupMessage(model: string, systemInstruction: string, voice?: s
       },
       contextWindowCompression: { slidingWindow: {} },
       inputAudioTranscription: {},
-      outputAudioTranscription: {}
+      outputAudioTranscription: {},
+      ...(resumption ? { sessionResumption: resumption.handle ? { handle: resumption.handle } : {} } : {})
     }
   }
 }
@@ -179,6 +192,7 @@ export type ServerEvent =
   | { type: 'toolCall'; id: string; name: string; args: Record<string, string> }
   | { type: 'toolCancel'; ids: string[] }
   | { type: 'goAway' }
+  | { type: 'resumption'; handle: string | null; resumable: boolean }
 
 /** One frame can carry several events (audio, a transcription and turnComplete together). */
 export function decode(text: string): ServerEvent[] {
@@ -223,6 +237,8 @@ export function decode(text: string): ServerEvent[] {
   const cancelled = (o.toolCallCancellation as Row | undefined)?.ids
   if (Array.isArray(cancelled) && cancelled.length) events.push({ type: 'toolCancel', ids: cancelled.filter((id): id is string => typeof id === 'string') })
   if (o.goAway !== undefined) events.push({ type: 'goAway' })
+  const update = o.sessionResumptionUpdate as Row | undefined
+  if (update && typeof update === 'object') events.push({ type: 'resumption', handle: str(update.newHandle) ?? null, resumable: update.resumable === true })
   return events
 }
 

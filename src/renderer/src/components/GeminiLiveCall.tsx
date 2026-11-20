@@ -127,6 +127,8 @@ interface Line {
   open: boolean
 }
 
+/** Reconnects in a row with no ready between before the call ends. */
+const MAX_RESUME_TRIES = 3
 /** Saying goodbye: the call closes once the model's audio has played out, or after this at most. */
 const END_GRACE_MS = 1000
 const END_TIMEOUT_MS = 8000
@@ -213,6 +215,10 @@ export function GeminiLiveCall({
   const ended = useRef(false)
   const ending = useRef(false)
   const ready = useRef(false)
+  // Gemini's session resumption, as on the phone: the newest handle, the tries since the last ready, and the reconnect.
+  const resumeHandle = useRef<string | null>(null)
+  const resumeTries = useRef(0)
+  const resumeNow = useRef<(() => void) | null>(null)
   const mutedRef = useRef(false)
   const lineId = useRef(0)
   const modelTurn = useRef(false)
@@ -443,6 +449,7 @@ export function GeminiLiveCall({
   const handle = (event: ServerEvent) => {
     switch (event.type) {
       case 'ready':
+        resumeTries.current = 0
         if (!ready.current) {
           ready.current = true
           trace.current?.step('Session ready')
@@ -488,7 +495,12 @@ export function GeminiLiveCall({
         // Calls the model gave up on: their outcome goes as a message instead.
         for (const id of event.ids) openCalls.current.delete(id)
         return
+      case 'resumption':
+        if (event.resumable && event.handle) resumeHandle.current = event.handle
+        return
       case 'goAway':
+        // The connection ends soon: the call goes on, on a new one.
+        if (!qwen && resumeHandle.current) resumeNow.current?.()
         return
     }
   }
@@ -553,11 +565,20 @@ export function GeminiLiveCall({
       startedOpen = true
       return true
     }
+    resumeNow.current = () => {
+      const old = socket.current
+      socket.current = null
+      if (old) window.conduit.liveClose(old)
+      resumeTries.current += 1
+      trace.current?.step('GoAway: resuming the session on a new connection')
+      ready.current = false
+      void open()
+    }
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
       if (event.type === 'open') {
         trace.current?.step('Socket open, setup sent')
-        send(setupMessage(model, told, voice, recall, search))
+        send(setupMessage(model, told, voice, recall, search, qwen ? undefined : { handle: resumeHandle.current }))
       } else if (event.type === 'message') {
         let frame: string | null = event.data
         // Qwen's turn steps, from its own frames before they're made Gemini's.
@@ -588,8 +609,16 @@ export function GeminiLiveCall({
           ready.current = false
           return void open()
         }
+        // A dropped connection, or one that stopped taking frames: Gemini continues the session on a new one, three tries at most.
+        if (!qwen && resumeHandle.current && (ready.current || resumeTries.current > 0) && resumeTries.current < MAX_RESUME_TRIES) {
+          resumeTries.current += 1
+          trace.current?.step('Resuming the session on a new connection')
+          ready.current = false
+          return void open()
+        }
         const reason = closeReason(event.code, event.reason)
-        if (!ready.current) fail(reason ? copy.couldNotBecause(reason) : copy.couldNot())
+        if (resumeTries.current > 0) fail(reason ? copy.refused(reason) : copy.couldNot())
+        else if (!ready.current) fail(reason ? copy.couldNotBecause(reason) : copy.couldNot())
         else fail(reason ? copy.refused(reason) : copy.couldNot())
       }
     })
