@@ -11023,6 +11023,7 @@ button.ghost:disabled {
   .chat-head.soft {
     padding-left: 16px;
   }
+}
 
 /* A reply's links to its work, drawn as cards under it (the phone's BotWorkLinkCard, app #1637). */
 .work-links {
@@ -11110,4 +11111,13 @@ button.ghost:disabled {
 
 .work-link-status.tone-failed {
   color: var(--danger);
+}
+
+/* The chat list's wrapper lays nothing out; hidden, the list stays mounted with its search and open project. */
+.list-keeper {
+  display: contents;
+}
+
+.list-keeper[hidden] {
+  display: none;
 }
