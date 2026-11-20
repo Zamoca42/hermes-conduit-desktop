@@ -2387,6 +2387,16 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             linkRequest={linkRequest}
             onLinkRequestTaken={() => setLinkRequest(null)}
             personPicture={personPicture}
+            onNewChatWith={
+              connected
+                ? draft => {
+                    // A new chat's canvas: what's sent from it goes only into the chat it makes (A new chat that something waits on).
+                    setSelected({ id: null, profile: selected.profile })
+                    setSection('chats')
+                    setQuote(quoteRequest({ draft }))
+                  }
+                : undefined
+            }
           />
         )}
       </div>
@@ -2446,7 +2456,8 @@ function Settings({
   onAppsRequestTaken,
   linkRequest,
   onLinkRequestTaken,
-  personPicture
+  personPicture,
+  onNewChatWith
 }: {
   status: ConnectionStatus
   onAddHost: () => void
@@ -2465,6 +2476,8 @@ function Settings({
   onLinkRequestTaken: () => void
   /** The picture you show in rooms over Links. */
   personPicture: PersonPicture
+  /** A new chat with `draft` in its composer, for the user to send (Try a test call, Have Hermes watch for this). */
+  onNewChatWith?: (draft: string) => void
 }) {
   const kept = useKeptHosts()
   const keptState = (url: string) => kept.find(h => h.url === url)?.state ?? null
@@ -2783,7 +2796,7 @@ function Settings({
         ) : null}
         <dt>{t('Calls from Hermes')}</dt>
         <dd>
-          <HermesCallSettings profile={profile} />
+          <HermesCallSettings profile={profile} onNewChat={onNewChatWith} />
         </dd>
         <dt>{t('Last live call')}</dt>
         <dd>

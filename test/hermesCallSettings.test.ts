@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cleanRules, gapChoices, gapText, parseCallsStatus } from '../src/renderer/src/state/callSettings'
+import { cleanRules, gapChoices, gapText, parseCallsStatus, testCallPrompt, watchPrompt } from '../src/renderer/src/state/callSettings'
 
 describe('Calls from Hermes settings', () => {
   it('reads the host status, keeping settings older plugins lack absent', () => {
@@ -27,5 +27,12 @@ describe('Calls from Hermes settings', () => {
 
   it('keeps the note as the host does', () => {
     expect(cleanRules('  only prod \n\n never before 9 \n')).toBe('only prod\nnever before 9')
+  })
+
+  it("leaves the phone's test call and watch requests, the note trimmed as the host keeps it", () => {
+    expect(testCallPrompt()).toBe('Call me now to test calls.')
+    expect(watchPrompt('  only prod \n\n never before 9 \n')).toBe(
+      'Make my scheduled checks that call me match this note. Update the ones I already have instead of adding new ones:\nonly prod\nnever before 9'
+    )
   })
 })
