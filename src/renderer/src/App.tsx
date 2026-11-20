@@ -734,6 +734,7 @@ function Shell({
   }, [section])
   /** The phone's Profiles card Edit (and Settings > Edit profile): Edit Bot for any profile, Bots or not, then back where it was opened. */
   const editProfile = (bot: Bot) => {
+    setNewBot(false)
     if (section !== 'bots') {
       profileEditReturn.current = section
       keepEditor.current = true
@@ -743,6 +744,8 @@ function Shell({
   }
   /** New Bot from the bots sidebar: it opens on Bots wherever the sidebar is. */
   const newBotFromSide = () => {
+    setEditingBot(null)
+    profileEditReturn.current = null
     if (section !== 'bots') setSection('bots')
     setNewBot(true)
   }
@@ -809,7 +812,9 @@ function Shell({
   const outputs = useMemo(() => transcript.items.filter(item => item.kind === 'output').length, [transcript.items])
   const controlPulse = turnsDone + outputs
   const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
-  const showWork = workOpen && (!!openBotChat || !!workItem)
+  // A bot's chat (its Bot Chat, one not resolved yet, or a workstream's) offers its work once the host answers with some.
+  const workHere = !!openBotChat || !!workItem || selected.botChat === true
+  const showWork = workOpen && workHere && (!!work.snapshot || !!work.error)
   // The bot's screen (Hermes' Bot Screen), offered only where the host can have one, as the phone checks.
   const screenProfile = selected.profile ?? 'default'
   const [screenOpen, setScreenOpen] = useState(false)
@@ -1980,7 +1985,7 @@ function Shell({
                   ) : null}
                 </div>
                 <div className="chat-head-actions">
-                  {openBotChat || workItem ? (
+                  {workHere && work.snapshot ? (
                     <button
                       className={`chat-head-work${showWork ? ' active' : ''}${(work.snapshot?.needsYou ?? 0) > 0 ? ' needs' : ''}`}
                       aria-pressed={showWork}
@@ -2322,6 +2327,7 @@ function Shell({
               />
             ) : showWork ? (
               <WorkPanel
+                key={selected.profile ?? 'default'}
                 profile={selected.profile}
                 botName={workBot?.title ?? 'Hermes'}
                 snapshot={work.snapshot}

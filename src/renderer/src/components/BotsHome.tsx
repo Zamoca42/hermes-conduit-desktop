@@ -218,10 +218,11 @@ interface Draft {
 }
 
 /**
- * Bots home: one bot gets the whole page with an Ask field, two sit side by
- * side, and more make a grid of portraits (the phone's layouts). A bot opens
- * its Bot Chat. A bot dropped on another starts a group chat: a bar lists
- * the bots, more join by a drop or a click, and Create makes the room.
+ * The bots sidebar beside a Bot Chat or a group chat, Bots home's place on
+ * the phone: the bots as rows with their work pill, Group chats under them,
+ * Hidden at the end. A bot opens its Bot Chat. A bot dropped on another
+ * starts a group chat: a bar lists the bots, more join by a drop or a click,
+ * and Create makes the room.
  */
 export function BotsHome({
   bots,
@@ -841,7 +842,7 @@ export function BotsHome({
               ? hidden.map((bot) => (
                   <div key={bot.name} className="row bot-side-bot hidden-row">
                     <span className="bot-side-face">
-                      <BotAvatar bot={bot} size={30} />
+                      <BotAvatar bot={bot} size={30} moving />
                     </span>
                     <span className="bot-side-text">
                       <span className="row-title">{bot.title}</span>

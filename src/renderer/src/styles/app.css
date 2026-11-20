@@ -1915,26 +1915,6 @@ html[data-window='quick'] body {
   object-fit: cover;
 }
 
-.bot-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 24px 0;
-  text-align: center;
-}
-
-.bot-hero h2 {
-  margin: 8px 0 0;
-  font-size: 26px;
-}
-
-.bot-hero .meta {
-  white-space: normal;
-  max-width: 520px;
-  font-size: 14px;
-}
-
 .bot-hero-face {
   border: 0;
   padding: 0;
@@ -1968,72 +1948,6 @@ html[data-window='quick'] body {
   overflow: hidden;
 }
 
-.bot-ask {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: 560px;
-  margin-top: 8px;
-  padding: 6px 6px 6px 18px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-composer);
-  background: var(--composer);
-}
-
-.bot-ask input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: none;
-  font-size: 15px;
-  user-select: text;
-}
-
-.bot-ask input:focus-visible {
-  outline: 0;
-}
-
-.bots-two {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  padding-top: 16px;
-}
-
-.bots-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--bot-column, 168px), 1fr));
-  gap: 12px;
-}
-
-.bot-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  padding: 18px 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  text-align: center;
-}
-
-.bot-tile:hover {
-  background: var(--surface-hover);
-}
-
-.bot-tile.large {
-  padding: 28px 18px 20px;
-  gap: 8px;
-}
-
-.bot-tile .bot-avatar {
-  margin-bottom: 6px;
-}
-
 .bot-name {
   display: flex;
   align-items: center;
@@ -2046,28 +1960,8 @@ html[data-window='quick'] body {
   text-overflow: ellipsis;
 }
 
-.bot-tile.large .bot-name {
-  font-size: 18px;
-}
-
 .bot-name .pin {
   color: var(--accent);
-}
-
-.bot-tile .bot-line {
-  max-width: 100%;
-}
-
-.bot-tile.large .bot-line {
-  white-space: normal;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  font-size: 13px;
-}
-
-.bot-tile .running {
-  justify-content: center;
 }
 
 .bot-time {
@@ -2083,55 +1977,9 @@ html[data-window='quick'] body {
   transition: transform 0.15s ease;
 }
 
-.bot-tile .bot-tile-face .bot-avatar {
-  margin-bottom: 0;
-}
-
 /* The pill on the face's lower edge, centered on it (1b). */
-.bot-tile-pill {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translate(-50%, 50%);
-  max-width: calc(100% + 40px);
-  white-space: nowrap;
-}
-
-.bot-tile-pill:empty {
-  display: none;
-}
-
-.bot-tile-pill .work-pill {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-}
-
-.bot-tile-pill .work-pill.needs {
-  background: color-mix(in srgb, var(--warning) 16%, var(--surface));
-  border-color: color-mix(in srgb, var(--warning) 50%, transparent);
-}
-
-.bot-tile.drop-target .bot-tile-face {
-  transform: scale(1.08);
-}
-
-.bot-tile.drop-target {
-  border-color: var(--accent);
-}
 
 /* A portrait carried here takes this one's place. */
-.bot-tile.move-target {
-  border-color: var(--accent);
-  border-style: dashed;
-}
-
-.bot-tile.picked {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
 
 .drop-plus {
   position: absolute;
@@ -2726,7 +2574,6 @@ html[data-window='quick'] body {
   background: var(--surface-hover);
   color: var(--text);
 }
-
 
 /* Pictures in messages, and the viewer that opens them larger. */
 .picture-button {
@@ -6725,23 +6572,7 @@ button.cap-row-text {
 }
 
 /* Bots home: New Bot by the title, the Hidden list. */
-.bots-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.bots-head h1 {
-  flex: 1;
-}
-.bots-head .secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.bots-head .secondary svg {
-  width: 14px;
-  height: 14px;
-}
+
 .bots-notice .link {
   margin-left: 6px;
 }
@@ -7854,7 +7685,6 @@ button.cap-row-text {
   display: block;
   margin: 10px auto;
 }
-
 
 .artifact-text {
   white-space: pre-wrap;
