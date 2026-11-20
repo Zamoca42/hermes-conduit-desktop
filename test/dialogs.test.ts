@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ask, askText, dialogText, dismissAllDialogs, tell } from '../src/renderer/src/state/dialogs'
+import { ask, askText, cancelFrontDialog, dialogText, dismissAllDialogs, tell } from '../src/renderer/src/state/dialogs'
 import { updateBanner } from '../src/renderer/src/state/hostActions'
 
 describe("Conduit's own dialogs", () => {
@@ -25,5 +25,24 @@ describe('the connection banner during an update', () => {
     expect(updateBanner({ kind: 'failed', detail: 'x' })).toBe('failed')
     expect(updateBanner({ kind: 'idle' })).toBeNull()
     expect(updateBanner({ kind: 'updated' })).toBeNull()
+  })
+})
+
+describe('a dialog in front', () => {
+  it('cancels on a back press, leaving the one behind it', async () => {
+    const first = ask('First?')
+    const second = tell('Second')
+    expect(cancelFrontDialog()).toBe(true)
+    expect(await first).toBe(false)
+    expect(cancelFrontDialog()).toBe(true)
+    await second
+    expect(cancelFrontDialog()).toBe(false)
+  })
+})
+
+describe("a finished update's outcome", () => {
+  it('stops speaking for the banner once Hermes is reachable', () => {
+    expect(updateBanner({ kind: 'failed' })).toBe('failed')
+    expect(updateBanner({ kind: 'failed', back: true })).toBeNull()
   })
 })

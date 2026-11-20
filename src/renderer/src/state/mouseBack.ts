@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { cancelFrontDialog } from './dialogs'
 
 /**
  * The mouse's back button, or Alt+Left, goes back one step, as the Back on
@@ -78,6 +79,8 @@ function backsOnScreen(root: ParentNode): HTMLElement[] {
 /** Goes back one step; false when nothing on screen answers. */
 function goBack(near: EventTarget | null): boolean {
   const target = near instanceof Element ? near : null
+  // A Conduit dialog cancels on its own, so a sheet under it stays open.
+  if (cancelFrontDialog()) return true
   const modals = [...document.querySelectorAll<HTMLElement>(MODAL_SELECTOR)].filter(m => m.getClientRects().length > 0)
   const modal = modals.at(-1)
   if (modal) {

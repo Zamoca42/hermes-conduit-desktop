@@ -83,7 +83,7 @@ import { isResetCommand, looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
-import { updateBanner, useHostActions } from './state/hostActions'
+import { hostReachable, updateBanner, useHostActions } from './state/hostActions'
 import { ArtifactsPanel } from './components/ArtifactsPanel'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
 import { onAppsDirectory, type AppsRequest } from './state/appsDirectory'
@@ -1582,7 +1582,11 @@ function Shell({
     setSection('chats')
   }
   // While an update started here has Hermes away, the banner follows it instead of a bare "reconnecting".
-  const updateAway = updateBanner(useHostActions(status.url ?? '').update)
+  const hostUpdate = useHostActions(status.url ?? '').update
+  const updateAway = updateBanner(hostUpdate)
+  useEffect(() => {
+    if (connected && status.url) hostReachable(status.url)
+  }, [connected, status.url, hostUpdate.kind])
   // The backdrop glows in the open chat's agent's color, and elsewhere in the profile in use's.
   const glowOf = useGlowColors(glowBots, status.url ?? '')
   const roomChatsServed = roomInvites.capabilities.includes(ROOM_CHATS_CAPABILITY)

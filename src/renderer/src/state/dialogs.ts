@@ -74,6 +74,16 @@ export function useFrontDialog(): Dialog | null {
   )
 }
 
+/** Cancels the dialog in front, as Esc does; false when none is open. */
+export function cancelFrontDialog(): boolean {
+  const dialog = queue[0]
+  if (!dialog) return false
+  if (dialog.kind === 'ask') dialog.settle(false)
+  else if (dialog.kind === 'text') dialog.settle(null)
+  else dialog.settle()
+  return true
+}
+
 /** Cancels every open dialog (tests, a window that's closing). */
 export function dismissAllDialogs() {
   for (const dialog of [...queue]) {

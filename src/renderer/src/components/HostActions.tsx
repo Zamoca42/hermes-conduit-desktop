@@ -5,6 +5,7 @@ import {
   CHECK_PATH,
   canUpdateHere,
   dismissRestart,
+  dismissUpdate,
   restartInProgress,
   startCheck,
   startRestart,
@@ -172,7 +173,7 @@ export function HostActions({ host, connected }: { host: string; connected: bool
       <dt>{t('Version')}</dt>
       <dd className="host-actions">
         {check?.currentVersion ? <div>{check.currentVersion}</div> : null}
-        {row ? <Status row={row} /> : null}
+        {row ? <Status row={row} onDismiss={update.kind === 'checked' || update.kind === 'checking' ? undefined : () => dismissUpdate(host)} /> : null}
         {check && canUpdateHere(check) && check.commits.length ? (
           <div className="host-news">
             <div className="meta">{t("What's new")}</div>
