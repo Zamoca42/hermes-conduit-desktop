@@ -28364,21 +28364,6 @@
     "zh-Hans": "显示卡片的完整摘要和 Hermes 写下的那一行。",
     "zh-Hant": "顯示卡片的完整摘要和 Hermes 寫下的那一行。"
   },
-  "Shows this bot’s work": {
-    "de": "Zeigt die Arbeit dieses Bots",
-    "es": "Muestra el trabajo de este bot",
-    "fr": "Affiche le travail de ce bot",
-    "id": "Menampilkan pekerjaan bot ini",
-    "it": "Mostra il lavoro di questo bot",
-    "ja": "このボットの作業を表示",
-    "ko": "이 봇의 작업 표시",
-    "pl": "Pokazuje pracę tego bota",
-    "pt-BR": "Mostra o trabalho deste bot",
-    "ru": "Показывает работу этого бота",
-    "tr": "Bu botun işini gösterir",
-    "zh-Hans": "显示此机器人的工作",
-    "zh-Hant": "顯示此機器人的工作"
-  },
   "Shows you as {name}": {
     "de": "Zeigt dich als {name}",
     "es": "Te muestra como {name}",

@@ -10605,8 +10605,13 @@ button.secondary.danger {
   justify-content: center;
 }
 
+/* The count's colour is its status's: needs you orange, ready green, working blue. */
 .chat-head-count.ready {
-  background: var(--accent);
+  background: var(--success);
+}
+
+.chat-head-count.working {
+  background: var(--working);
 }
 
 /*

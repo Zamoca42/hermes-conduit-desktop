@@ -224,16 +224,6 @@ export function statusText(item: WorkItem): string {
   return statusWord(item.status)
 }
 
-/** The words under a Bot Chat's title ("2 working · 1 needs you"), or null with no work to show. */
-export function stripText(snapshot: WorkSnapshot): string | null {
-  const parts: string[] = []
-  if (snapshot.working > 0) parts.push(t('{count} working', { count: snapshot.working }))
-  if (snapshot.needsYou > 0) parts.push(t('{count} needs you', { count: snapshot.needsYou }))
-  if (snapshot.ready > 0) parts.push(t('{count} ready', { count: snapshot.ready }))
-  if (!parts.length && (snapshot.items.length || snapshot.resolvedCount > 0)) return t('Work')
-  return parts.length ? parts.join(' · ') : null
-}
-
 /** The panel's lists: Pinned, Active (what needs you first), Recent. */
 export function sections(items: WorkItem[]): { pinned: WorkItem[]; active: WorkItem[]; recent: WorkItem[] } {
   const pinned = items.filter(item => item.pinned)
