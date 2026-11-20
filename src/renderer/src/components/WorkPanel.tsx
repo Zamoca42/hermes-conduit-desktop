@@ -176,12 +176,15 @@ function WorkCard({
                   {actionTitle(action)}
                 </button>
               ))}
-            <span className="work-buttons-gap" />
-            {item.manage.map(manage => (
-              <button key={manage} className="ghost" disabled={busy} onClick={() => void act(manage)}>
-                {manageTitle(manage, botName)}
-              </button>
-            ))}
+            {item.manage.length ? (
+              <span className="work-manage">
+                {item.manage.map(manage => (
+                  <button key={manage} className="ghost" disabled={busy} onClick={() => void act(manage)}>
+                    {manageTitle(manage, botName)}
+                  </button>
+                ))}
+              </span>
+            ) : null}
           </div>
         </>
       ) : null}
