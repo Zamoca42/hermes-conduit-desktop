@@ -45,7 +45,9 @@ describe('rooms with people you’ve linked, before they start', () => {
     const ended = { ...draft, id: 'e', status: 'ended', reason: 'lapsed' }
     const disbanded = { ...draft, id: 'd', status: 'ended', reason: 'disbanded' }
     const started = { ...draft, id: 's', status: 'started' }
-    expect(draftRows([draft, ended, disbanded, started], new Set()).map(d => d.id)).toEqual(['conduit-1', 'e'])
+    // Taken back on another device: that device removed it, so this one leaves it out too.
+    const withdrawn = { ...draft, id: 'w', status: 'ended', reason: 'withdrawn' }
+    expect(draftRows([draft, ended, disbanded, started, withdrawn], new Set()).map(d => d.id)).toEqual(['conduit-1', 'e'])
     expect(draftRows([ended], new Set(['e']))).toEqual([])
   })
 
