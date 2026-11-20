@@ -34,6 +34,8 @@ mac:
   # Signing and notarizing come with the Developer ID secrets.
   identity: null
 win:
+  # Full size, as Windows icons are drawn; build/icon.png keeps the Mac's margin.
+  icon: build/icon-win.png
   target:
     - target: nsis
       arch: [x64, arm64]
