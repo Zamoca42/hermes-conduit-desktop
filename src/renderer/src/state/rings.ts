@@ -91,6 +91,19 @@ export function ringChanges(rings: Ring[], seen: ReadonlySet<string>): { added: 
   }
 }
 
+/**
+ * What a dropped connection forgets: each host's clock, what its plugin serves,
+ * and the rings already shown. A ring still ringing when the connection comes
+ * back rings again, as it would on a fresh launch, so its miss is still
+ * reported; one already declined or missed is settled on the host and stays
+ * gone (desktop#205).
+ */
+export function startOver(state: { after: Map<string, number>; served: Map<string, boolean>; seen: Set<string> }) {
+  state.after.clear()
+  state.served.clear()
+  state.seen.clear()
+}
+
 export const OUTCOMES_PATH = '/api/plugins/conduit_push/calls/outcomes'
 export const PRESENCE_PATH = '/api/plugins/conduit_push/calls/presence'
 export const PRESENCE_CAPABILITY = 'hermes-call-presence'
@@ -214,11 +227,10 @@ export function useRings(connected: boolean, profiles: readonly string[]) {
     return () => clearInterval(timer)
   }, [connected, read])
 
-  // A host change starts over: the next host's clock and calls are its own.
+  // A host change or a dropped connection starts over: the next host's clock and calls are its own.
   useEffect(() => {
     if (connected) return
-    after.current.clear()
-    served.current.clear()
+    startOver({ after: after.current, served: served.current, seen: seen.current })
     setRinging([])
   }, [connected])
 

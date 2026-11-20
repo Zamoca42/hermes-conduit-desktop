@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { dataUrlBytes as hostBytes, hostFileName, hostFilePath } from '../src/main/hostFiles'
+import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { ReadableStream } from 'node:stream/web'
+import { dataUrlBytes as hostBytes, hostFileName, hostFilePath, streamToFile } from '../src/main/hostFiles'
 import { dataUrlBytes, pictureFileName } from '../src/renderer/src/state/saveMedia'
 
 describe('saving pictures, files and audio to this computer', () => {
@@ -14,6 +18,36 @@ describe('saving pictures, files and audio to this computer', () => {
     expect(hostFilePath('download', '/a b.png')).toBe('/api/fs/download?path=%2Fa%20b.png')
     expect(hostFilePath('read-data-url', '/x', 'nahida')).toBe('/api/fs/read-data-url?path=%2Fx&profile=nahida')
     expect(hostFilePath('download', '/x', 'default')).toBe('/api/fs/download?path=%2Fx')
+  })
+
+  it('writes a download into place only once every byte is in (desktop#206)', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'conduit-save-'))
+    const whole = join(dir, 'whole.png')
+    await streamToFile(bytesThen(['ab', 'cd']), whole)
+    expect(await readFile(whole, 'utf8')).toBe('abcd')
+
+    const cut = join(dir, 'cut.png')
+    await expect(streamToFile(bytesThen(['ab'], new Error('socket hang up')), cut)).rejects.toThrow('socket hang up')
+    expect(await readdir(dir)).toEqual(['whole.png'])
+
+    // A file already at the chosen path stays as it was.
+    await expect(streamToFile(bytesThen(['xy'], new Error('reset')), whole)).rejects.toThrow('reset')
+    expect(await readFile(whole, 'utf8')).toBe('abcd')
+  })
+
+  it('gives up on a download that stops sending, and stops its request', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'conduit-save-'))
+    const target = join(dir, 'stalled.bin')
+    await writeFile(join(dir, 'other'), '')
+    let aborted = false
+    const stalled = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode('ab'))
+      }
+    })
+    await expect(streamToFile(stalled, target, () => (aborted = true), 30)).rejects.toThrow('stopped sending')
+    expect(aborted).toBe(true)
+    expect(await readdir(dir)).toEqual(['other'])
   })
 
   it("decodes a data URL's bytes", () => {
@@ -31,3 +65,14 @@ describe('saving pictures, files and audio to this computer', () => {
     expect(pictureFileName('cat', 'blob:x')).toBe('cat')
   })
 })
+
+/** A download body that sends `chunks`, then fails with `error` or ends. */
+function bytesThen(chunks: string[], error?: Error): ReadableStream<Uint8Array> {
+  return new ReadableStream<Uint8Array>({
+    start(controller) {
+      for (const chunk of chunks) controller.enqueue(new TextEncoder().encode(chunk))
+      if (error) controller.error(error)
+      else controller.close()
+    }
+  })
+}
