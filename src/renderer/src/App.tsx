@@ -724,6 +724,7 @@ function Shell({
   /** The phone's Profiles card Edit (and Settings > Edit profile): Edit Bot for any profile, Bots or not, then back where it was opened. */
   const editProfile = (bot: Bot) => {
     setNewBot(false)
+    setCarriedBot(null)
     if (section !== 'bots') {
       profileEditReturn.current = section
       keepEditor.current = true
@@ -734,6 +735,7 @@ function Shell({
   /** New Bot from the bots sidebar: it opens on Bots wherever the sidebar is. */
   const newBotFromSide = () => {
     setEditingBot(null)
+    setCarriedBot(null)
     profileEditReturn.current = null
     if (section !== 'bots') setSection('bots')
     setNewBot(true)

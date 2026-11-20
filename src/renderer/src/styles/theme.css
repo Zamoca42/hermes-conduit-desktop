@@ -18,6 +18,9 @@
   --warning: #ffa83d;
   --success: #30d158;
   --danger: #ff6b6b;
+  /* Status colors (Eric, 2026-11-20: each status its own; gold is for buttons): working, and Pulse. */
+  --working: #7fa8ff;
+  --pulse: #c58af9;
 
   --backdrop: #0b0d12;
   --canvas: radial-gradient(60% 70% at 55% 18%, color-mix(in srgb, var(--glow, #e0ab47) 20%, transparent), transparent 70%),
@@ -61,6 +64,8 @@
     --warning: #c76a00;
     --success: #1f9d48;
     --danger: #d43c3c;
+    --working: #2f62d0;
+    --pulse: #8a3fc4;
 
     --backdrop: #f5f5f7;
     --canvas: radial-gradient(60% 70% at 55% 18%, color-mix(in srgb, var(--glow, #e0ab47) 16%, transparent), transparent 70%),

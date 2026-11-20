@@ -8,6 +8,7 @@ import {
   doneCount,
   manageTitle,
   needsYou,
+  workTone,
   parseWork,
   sections,
   shownTitle,
@@ -65,28 +66,28 @@ function WorkCard({
     }
   }
 
-  const tone = needsYou(item)
-    ? 'needs'
-    : item.status === 'running' || item.status === 'starting'
-      ? 'working'
-      : item.status === 'ready' || item.status === 'done'
-        ? 'ready'
-        : 'other'
+  const tone = workTone(item)
+  const mark = tone === 'needs' ? 'bell' : tone === 'working' ? 'spinner' : tone === 'failed' ? 'close' : 'check'
 
   return (
     <div className={`work-card tone-${tone}`}>
-      <button className="work-card-head" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>
-        <span className="work-ref">{item.ref}</span>
-        <span className="work-card-title">{shownTitle(item)}</span>
-        {item.pinned ? (
-          <span className="meta" aria-label={t('Pinned')}>
-            •
+      <div className="work-card-top">
+        <span className={`status-mark tone-${tone}`} aria-hidden="true">
+          <Icon name={mark} />
+        </span>
+        <button className="work-card-head" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>
+          <span className="work-card-line">
+            <span className="work-ref">{item.ref}</span>
+            {now ? <span className="meta">{now}</span> : null}
+            {item.pinned ? (
+              <span className="meta" aria-label={t('Pinned')}>
+                <Icon name="pin" />
+              </span>
+            ) : null}
+            <span className={`status-chip tone-${tone}`}>{statusText(item)}</span>
           </span>
-        ) : null}
-      </button>
-      <div className="work-status">
-        <span className="work-status-word">{statusText(item)}</span>
-        {now ? <span className="meta"> · {now}</span> : null}
+          <span className="work-card-title">{shownTitle(item)}</span>
+        </button>
       </div>
       {item.model ? <div className="meta work-model">{t('Runs on {model}', { model: item.model })}</div> : null}
       {item.checklist.length ? (
@@ -162,6 +163,7 @@ function WorkCard({
           <div className="work-buttons">
             {item.sessionId && item.kind === 'workstream' ? (
               <button className="secondary" onClick={() => onOpenChat(item)}>
+                <Icon name="chats" />
                 {t('Open {ref}’s chat', { ref: item.ref })}
               </button>
             ) : null}
@@ -172,8 +174,9 @@ function WorkCard({
                   {actionTitle(action)}
                 </button>
               ))}
+            <span className="work-buttons-gap" />
             {item.manage.map(manage => (
-              <button key={manage} className="link" disabled={busy} onClick={() => void act(manage)}>
+              <button key={manage} className="ghost" disabled={busy} onClick={() => void act(manage)}>
                 {manageTitle(manage, botName)}
               </button>
             ))}

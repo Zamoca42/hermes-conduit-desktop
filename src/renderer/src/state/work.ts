@@ -160,6 +160,17 @@ export const isActive = (item: WorkItem) =>
 export const needsYou = (item: WorkItem) =>
   item.kind === 'workstream' && !item.closed && (item.status === 'needs_you' || item.status === 'interrupted' || !!item.screenAsk)
 
+/** A card's status color (Eric, 2026-11-20): needs you orange, working blue, ready green, failed red, the rest grey. */
+export type WorkTone = 'needs' | 'working' | 'ready' | 'failed' | 'done'
+export function workTone(item: WorkItem): WorkTone {
+  if (needsYou(item)) return 'needs'
+  if (item.closed) return 'done'
+  if (item.status === 'running' || item.status === 'starting' || item.status === 'waiting') return 'working'
+  if (item.status === 'ready') return 'ready'
+  if (item.status === 'failed' || item.status === 'stopped') return 'failed'
+  return 'done'
+}
+
 export const doneCount = (item: WorkItem) => item.checklist.filter(step => step.state === 'done').length
 
 export function shownTitle(item: WorkItem): string {
