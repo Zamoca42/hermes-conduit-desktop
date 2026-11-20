@@ -5773,7 +5773,9 @@ code.file-link:hover {
 .work-manage {
   margin-left: auto;
   display: flex;
-  flex-wrap: nowrap;
+  /* Only a group wider than the whole card (a long bot name) breaks inside. */
+  flex-wrap: wrap;
+  max-width: 100%;
   gap: 2px;
 }
 
