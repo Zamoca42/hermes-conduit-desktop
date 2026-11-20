@@ -14,6 +14,24 @@ import { arrangePinned, moved, usePinnedOrder } from '../state/pinnedOrder'
 import { gateway } from '../gateway'
 import type { HostBadge, OtherChatRow } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
+import { EMPTY_NESTING, ancestorsOf, descendants, nestRows, nestSummary } from '../state/chatNesting'
+
+const EXPANDED_NESTS = 'conduit.expanded-nests'
+function readExpandedNests(): Set<string> {
+  try {
+    const saved = JSON.parse(localStorage.getItem(EXPANDED_NESTS) ?? '[]') as unknown
+    return new Set(Array.isArray(saved) ? saved.filter((id): id is string => typeof id === 'string') : [])
+  } catch {
+    return new Set()
+  }
+}
+function writeExpandedNests(ids: Set<string>): void {
+  try {
+    localStorage.setItem(EXPANDED_NESTS, JSON.stringify([...ids].slice(-200)))
+  } catch {
+    // Kept for this window only.
+  }
+}
 
 const FILTERS: { value: ChatFilter; label: () => string }[] = [
   { value: 'all', label: () => t('All') },
@@ -200,7 +218,7 @@ export function ChatList({
   }
   // Pinned rows move while the list shows every pinned chat: not during a search or under a filter, nor grouped by profile.
   const canReorder = !query.trim() && filter === 'all' && !source
-  const { sections, listed, allowed, pinnedSection } = useMemo(() => {
+  const { sections, listed, allowed, pinnedSection, nesting } = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile
       ? (rows ?? []).filter(r => sameProfile(r, profile))
@@ -247,7 +265,14 @@ export function ChatList({
         })
       }
     }
-    return { sections: arranged, listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined, pinnedSection: pinned }
+    // A job under the call or chat it came from, while the list is a browse: a search or a filter lists every row flat (the phone's nests).
+    const nesting = !q && filter === 'all' && !source ? nestRows(arranged.flatMap(section => section.rows.filter(r => !isOther(r)))) : EMPTY_NESTING
+    const nestedOut = nesting.nested.size
+      ? arranged
+          .map(section => ({ ...section, rows: section.rows.filter(r => isOther(r) || !nesting.nested.has(r.id)) }))
+          .filter(section => section.profile !== undefined || section.rows.length)
+      : arranged
+    return { sections: nestedOut, listed: filtered, allowed: filter !== 'all' || source ? sourced : undefined, pinnedSection: pinned, nesting }
   }, [rows, query, profile, marks, filter, runningIds, waitingIds, isDone, source, pinOrder.orders, grouped, showingAll, selectedId, bots, botNames, allLeftOut, otherRows, badgeFor])
   /**
    * The pins a pinned row moves among: the Pinned section, or grouped by
@@ -263,6 +288,31 @@ export function ChatList({
     const from = pins.findIndex(r => r.id === row.id)
     const next = moved(pins, from, to)
     if (next !== pins) pinOrder.reorder(next)
+  }
+  const [expandedNests, setExpandedNests] = useState<Set<string>>(readExpandedNests)
+  // The open chat's parents stay open, so its row shows.
+  const openAncestors = useMemo(() => ancestorsOf(nesting, selectedId), [nesting, selectedId])
+  const toggleNest = (id: string, open: boolean) =>
+    setExpandedNests(current => {
+      const next = new Set(current)
+      if (open) next.add(id)
+      else next.delete(id)
+      writeExpandedNests(next)
+      return next
+    })
+  type Item = { row: ChatRow; depth: number } | { nest: ChatRow; depth: number; open: boolean }
+  const withNests = (list: ChatRow[]): Item[] => {
+    if (!nesting.children.size) return list.map(row => ({ row, depth: 0 }))
+    const out: Item[] = []
+    const walk = (row: ChatRow, depth: number) => {
+      out.push({ row, depth })
+      if (!nesting.children.has(row.id)) return
+      const open = expandedNests.has(row.id) || openAncestors.has(row.id)
+      out.push({ nest: row, depth, open })
+      if (open) for (const child of nesting.children.get(row.id)!) walk(child, depth + 1)
+    }
+    for (const row of list) walk(row, 0)
+    return out
   }
   const [dragging, setDragging] = useState<string | null>(null)
   const [dropAt, setDropAt] = useState<{ id: string; after: boolean } | null>(null)
@@ -415,7 +465,33 @@ export function ChatList({
             ) : (
               <div className="sect">{section.title}</div>
             )}
-            {(section.profile && closedSections.includes(section.profile) ? [] : section.rows).map(row => {
+            {withNests(section.profile && closedSections.includes(section.profile) ? [] : section.rows).map(item => {
+              if ('nest' in item) {
+                const below = descendants(nesting, item.nest)
+                const summary = nestSummary(
+                  below,
+                  r => runningIds.has(r.id),
+                  r => waitingIds.has(r.id)
+                )
+                return (
+                  <button
+                    key={`nest:${item.nest.id}`}
+                    className="nest-toggle"
+                    style={{ paddingInlineStart: `${12 + item.depth * 16}px` }}
+                    aria-expanded={item.open}
+                    aria-label={`${item.nest.title}, ${summary}`}
+                    onClick={() => toggleNest(item.nest.id, !item.open)}
+                  >
+                    <Icon name="chevronDown" className={item.open ? undefined : 'closed'} />
+                    {summary}
+                  </button>
+                )
+              }
+              const row = item.row
+              const depth = item.depth
+              // A closed nest's unread reply shows on its parent, so it never hides.
+              const nestUnread =
+                !!marks && nesting.children.has(row.id) && !(expandedNests.has(row.id) || openAncestors.has(row.id)) && descendants(nesting, row).some(r => isUnread(marks, r) && r.id !== selectedId)
               if (isOther(row)) {
                 const badge = badgeFor?.(row.host) ?? null
                 return (
@@ -443,7 +519,8 @@ export function ChatList({
               return (
                 <div
                   key={row.id}
-                  className={`row-wrap${dragging === row.id ? ' dragging' : ''}${dropAt?.id === row.id ? (dropAt.after ? ' drop-after' : ' drop-before') : ''}`}
+                  style={depth ? { marginInlineStart: `${14 + (depth - 1) * 16}px` } : undefined}
+                  className={`row-wrap${depth ? ' nested' : ''}${dragging === row.id ? ' dragging' : ''}${dropAt?.id === row.id ? (dropAt.after ? ' drop-after' : ' drop-before') : ''}`}
                   draggable={canReorder && row.pinned && !renaming ? true : undefined}
                   onDragStart={
                     canReorder && row.pinned
@@ -509,7 +586,7 @@ export function ChatList({
                     <button className={isDone?.(row) ? 'row done' : 'row'} aria-current={row.id === selectedId ? 'true' : undefined} onClick={() => onSelect(row)}>
                       <span className="row-top">
                         <span className="row-title">
-                          {marks && isUnread(marks, row) && row.id !== selectedId ? <span className="unread-dot" role="img" aria-label={t('Unread')} /> : null}
+                          {(marks && isUnread(marks, row) && row.id !== selectedId) || nestUnread ? <span className="unread-dot" role="img" aria-label={t('Unread')} /> : null}
                           {row.pinned ? <Icon name="pin" className="row-pin" /> : null}
                           {marks && isStarred(marks, row) ? <Icon name="star" className="row-pin row-star" /> : null}
                           {isDone?.(row) ? <Icon name="check" className="row-pin row-done" aria-label={t('Done')} /> : null}
