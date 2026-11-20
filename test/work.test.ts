@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { noteDashboardProfiles, setDashboardProfilesHost } from '../src/renderer/src/state/dashboardProfile'
-import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, stripText, workPath, needsYou, sameWork } from '../src/renderer/src/state/work'
+import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, stripText, workPath, needsYou, sameWork, workTone } from '../src/renderer/src/state/work'
 
 const answer = {
   policy: 'on',
@@ -91,5 +91,19 @@ describe('a work read that says the same', () => {
     expect(sameWork(current, new Set(['b', 'a']), new Map([['atlas', { working: 1, needsYou: 0 }]]))).toBe(true)
     expect(sameWork(current, new Set(['a']), new Map([['atlas', { working: 1, needsYou: 0 }]]))).toBe(false)
     expect(sameWork(current, new Set(['a', 'b']), new Map([['atlas', { working: 1, needsYou: 1 }]]))).toBe(false)
+  })
+})
+
+describe('workTone', () => {
+  it('gives each status its own colour', () => {
+    const tone = (o: Record<string, unknown>) => workTone(parseItem({ ref: 'W9', kind: 'workstream', ...o })!)
+    expect(tone({ status: 'needs_you', session_id: 's' })).toBe('needs')
+    expect(tone({ status: 'interrupted' })).toBe('needs')
+    expect(tone({ status: 'running' })).toBe('working')
+    expect(tone({ status: 'starting' })).toBe('working')
+    expect(tone({ status: 'ready' })).toBe('ready')
+    expect(tone({ status: 'failed' })).toBe('failed')
+    expect(tone({ status: 'done' })).toBe('done')
+    expect(tone({ status: 'running', closed: true })).toBe('done')
   })
 })

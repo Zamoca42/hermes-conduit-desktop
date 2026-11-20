@@ -5591,37 +5591,51 @@ code.file-link:hover {
 .work-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
+  gap: 10px;
+  padding: 14px;
   border: 1px solid var(--line);
-  border-left: 3px solid var(--line-strong);
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   background: var(--surface);
   font-size: 13px;
 }
 
+/* Only a card that needs you changes colour (the phone's BotWorkRow). */
 .work-card.tone-needs {
-  border-left-color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 9%, transparent);
+  border-color: color-mix(in srgb, var(--warning) 32%, transparent);
 }
 
-.work-card.tone-working {
-  border-left-color: var(--accent);
-}
-
-.work-card.tone-ready {
-  border-left-color: var(--success, #2e9e5b);
+.work-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .work-card-head {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  gap: 3px;
   border: 0;
   background: none;
   padding: 0;
   font: inherit;
   color: var(--text);
   text-align: left;
+  cursor: pointer;
+}
+
+.work-card-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.work-card-line .meta svg {
+  width: 12px;
+  height: 12px;
 }
 
 .work-ref {
@@ -5631,16 +5645,9 @@ code.file-link:hover {
 }
 
 .work-card-title {
-  flex: 1;
+  font-size: 15px;
   font-weight: 600;
-}
-
-.work-status-word {
-  font-weight: 500;
-}
-
-.work-card.tone-needs .work-status-word {
-  color: var(--warning);
+  line-height: 1.3;
 }
 
 .work-progress {
@@ -5687,21 +5694,57 @@ code.file-link:hover {
   font-size: 12px;
 }
 
+/* The reply box carries its own send, as the phone's does. */
 .work-reply {
   display: flex;
+  align-items: center;
   gap: 6px;
+  padding: 4px 4px 4px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--line-strong);
+  background: var(--field);
 }
 
 .work-reply input {
   flex: 1;
   min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 4px 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.work-reply .round.send {
+  width: 30px;
+  height: 30px;
+}
+
+.work-progress .usage-meter > span {
+  background: var(--working);
 }
 
 .work-buttons {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
+}
+
+.work-buttons > .secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 4px;
+}
+
+.work-buttons > .secondary svg {
+  width: 15px;
+  height: 15px;
+}
+
+.work-buttons-gap {
+  flex: 1;
 }
 
 .work-empty {
@@ -10543,4 +10586,130 @@ button.secondary.danger {
 
 .chat-head-count.ready {
   background: var(--accent);
+}
+
+/*
+ * Status, the same on every card (Eric, 2026-11-20, option D): a round mark
+ * beside the title and a chip at the top right. Needs you orange, working
+ * blue, ready green, failed red, the rest grey; gold stays for buttons.
+ */
+.status-mark {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-hover);
+  color: var(--text-3);
+}
+
+.status-mark svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.4;
+}
+
+.status-mark.small {
+  width: 24px;
+  height: 24px;
+}
+
+.status-mark.small svg {
+  width: 12px;
+  height: 12px;
+}
+
+.status-mark.tone-needs {
+  background: var(--warning);
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.status-mark.tone-working {
+  background: color-mix(in srgb, var(--working) 18%, transparent);
+  color: var(--working);
+}
+
+.status-mark.tone-ready {
+  background: color-mix(in srgb, var(--success) 16%, transparent);
+  color: var(--success);
+}
+
+.status-mark.tone-failed {
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+  color: var(--danger);
+}
+
+.status-mark.tone-pulse {
+  background: color-mix(in srgb, var(--pulse) 18%, transparent);
+  color: var(--pulse);
+}
+
+.status-chip {
+  margin-left: auto;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--surface-hover);
+  color: var(--text-2);
+}
+
+.status-chip:not(.tone-done)::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-chip.tone-needs {
+  background: var(--warning);
+  color: #1a1100;
+}
+
+.status-chip.tone-working {
+  background: color-mix(in srgb, var(--working) 16%, transparent);
+  color: var(--working);
+}
+
+.status-chip.tone-ready {
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+}
+
+.status-chip.tone-failed {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+}
+
+/* A quiet text button beside a card's main one (Pin, Resolve, Leave Alone). */
+button.ghost {
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+button.ghost:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+button.ghost:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
