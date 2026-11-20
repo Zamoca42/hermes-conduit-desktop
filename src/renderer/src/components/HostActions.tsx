@@ -28,14 +28,14 @@ interface Row {
   /** The detail is Hermes' own log line, shown verbatim. */
   log?: boolean
   command?: string
-  tone: 'busy' | 'good' | 'warn' | 'bad'
+  tone: 'busy' | 'good' | 'news' | 'warn' | 'bad'
 }
 
 function Status({ row, onDismiss }: { row: Row; onDismiss?: () => void }) {
   return (
     <div className={`host-status tone-${row.tone}`} role="status">
       <span className="host-status-mark" aria-hidden="true">
-        {row.tone === 'busy' ? <span className="spinner" /> : row.tone === 'good' ? '✓' : '!'}
+        {row.tone === 'busy' ? <span className="spinner" /> : row.tone === 'good' ? '✓' : row.tone === 'news' ? '↑' : '!'}
       </span>
       <div className="host-status-text">
         <strong>{row.title}</strong>
@@ -68,7 +68,7 @@ function updateRow(state: UpdateState): Row | null {
       return { title: t('Checking for updates…'), tone: 'busy' }
     case 'checked': {
       const check = state.check
-      if (canUpdateHere(check)) return { title: available(check), tone: 'good' }
+      if (canUpdateHere(check)) return { title: available(check), tone: 'news' }
       // An install this dashboard can't update in place.
       if (check.updateAvailable) return { title: available(check), detail: check.message, command: check.updateCommand, tone: 'warn' }
       if (check.behind === undefined && !check.canApply && check.updateCommand)

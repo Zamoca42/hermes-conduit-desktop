@@ -5933,7 +5933,8 @@ code.file-link:hover {
   text-align: center;
   font-weight: 700;
 }
-.host-status.tone-good .host-status-mark {
+.host-status.tone-good .host-status-mark,
+.host-status.tone-news .host-status-mark {
   color: var(--ok, #2f9e55);
 }
 .host-status.tone-warn .host-status-mark {
