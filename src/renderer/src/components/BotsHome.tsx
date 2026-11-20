@@ -40,7 +40,8 @@ export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delet
  * memoized replies aren't redrawn each time the roster is read again.
  */
 export function useReplyFace(bot: Bot | undefined): ((moving: boolean) => ReactNode) | undefined {
-  const look = bot ? JSON.stringify(bot) : "";
+  // Only what the face draws, so a new last line doesn't redraw every reply.
+  const look = bot ? [bot.name, bot.title, bot.hasAvatar, bot.face, bot.color ?? ""].join("\t") : "";
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => (bot ? (moving: boolean) => <BotAvatar bot={bot} size={22} moving={moving} /> : undefined), [look]);
 }
