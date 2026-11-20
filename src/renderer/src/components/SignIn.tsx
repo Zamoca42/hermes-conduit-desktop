@@ -6,6 +6,8 @@ import { PairWithPhone } from './PairWithPhone'
 import { Troubleshooting } from './Troubleshooting'
 import { composerDrafts } from '../state/composerDrafts'
 import { copyHostData, finishHostMove, undoHostCopy } from '../state/hostData'
+import { switchEndingCall } from '../state/callSwitch'
+import { hostName } from './TitleBar'
 
 /** "Name: value" lines into headers, or the first line that isn't one. */
 export function parseHeaderLines(text: string): { ok: true; headers: Record<string, string> } | { ok: false; line: string } {
@@ -29,7 +31,24 @@ const methodLabels = (): Record<SignInMethod, string> => ({
 /** Connect to a Hermes dashboard: its address first, then whatever sign-in it asks for. */
 /** `onCancel`, when adding another host, goes back to the one that's open. */
 /** `editing`: Edit Connection for the open host, its address and user name filled in; `onDone` after it signs in. */
-export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string; onCancel?: () => void; editing?: HostSummary; onDone?: () => void }) {
+/**
+ * `repairing`, with `editing`: the phone's Repair Connection, for a host that
+ * can't connect. It changes that host in its place, as Edit Connection does;
+ * an address saved as another dashboard offers to switch to it instead.
+ */
+export function SignIn({
+  notice,
+  onCancel,
+  editing,
+  repairing,
+  onDone
+}: {
+  notice?: string
+  onCancel?: () => void
+  editing?: HostSummary
+  repairing?: boolean
+  onDone?: () => void
+}) {
   const [address, setAddress] = useState(editing?.url ?? '')
   const [url, setUrl] = useState<string | null>(null)
   const [methods, setMethods] = useState<SignInMethod[]>([])
@@ -39,6 +58,8 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
   const [token, setToken] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(notice ?? null)
+  /** Repair's address saved as another dashboard: Switch goes there. */
+  const [savedAs, setSavedAs] = useState<string | null>(null)
   const [pairing, setPairing] = useState(false)
   const [proxyOpen, setProxyOpen] = useState(false)
   const [accessId, setAccessId] = useState('')
@@ -66,6 +87,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
     event.preventDefault()
     setBusy(true)
     setError(null)
+    setSavedAs(null)
     setUntrusted(null)
     setHelp(null)
     const proxy = proxyHeaders()
@@ -94,6 +116,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
   async function signIn(target: string, chosen: SignInMethod) {
     setBusy(true)
     setError(null)
+    setSavedAs(null)
     const proxy = proxyHeaders()
     const headers = proxy.ok ? proxy.headers : undefined
     if (editing) {
@@ -103,7 +126,10 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
       setBusy(false)
       if (!result.ok) {
         undoHostCopy(copied)
-        setError(result.error)
+        if (repairing && result.savedAs) {
+          setSavedAs(result.savedAs)
+          setError(t("This address is your saved dashboard “{name}”. Repair won't change its sign-in; switch to it instead.", { name: hostName(result.savedAs) }))
+        } else setError(result.error)
         return
       }
       finishHostMove(editing.url, result.url)
@@ -115,6 +141,12 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
     setBusy(false)
     if (!result.ok) setError(result.error)
   }
+
+  const switchToSaved = savedAs ? (
+    <button className="secondary" type="button" onClick={() => switchEndingCall(hostName(savedAs)) && void window.conduit.switchHost(savedAs)}>
+      {t('Switch')}
+    </button>
+  ) : null
 
   function submit(event: FormEvent) {
     event.preventDefault()
@@ -141,7 +173,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
     <div className="signin">
       {url === null ? (
         <form className="signin-card" onSubmit={findHost}>
-          <h1>{editing ? t('Connection Setup') : onCancel ? t('Add another Hermes') : t('Connect to Hermes')}</h1>
+          <h1>{repairing ? t('Repair Connection') : editing ? t('Connection Setup') : onCancel ? t('Add another Hermes') : t('Connect to Hermes')}</h1>
           <p>
             {editing
               ? t('Change this dashboard’s address or how Conduit signs in. Conduit signs in again before it keeps the change, and leaves the connection as it was if that fails.')
@@ -184,6 +216,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
             </fieldset>
           ) : null}
           {error ? <div className="error-text" role="alert">{error}</div> : null}
+          {switchToSaved}
           {untrusted ? <ServerCertificate url={untrusted} /> : null}
           {error && help ? (
             <button className="link-button" type="button" onClick={() => setTroubleshooting(help)}>
@@ -247,6 +280,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
           ) : null}
           {method === 'open' ? <p>{t('This dashboard doesn’t ask for a sign-in.')}</p> : null}
           {error ? <div className="error-text" role="alert">{error}</div> : null}
+          {switchToSaved}
           <button className="primary" type="submit" disabled={busy}>
             {busy ? t('Signing in…') : t('Sign in')}
           </button>
@@ -256,6 +290,7 @@ export function SignIn({ notice, onCancel, editing, onDone }: { notice?: string;
             onClick={() => {
               setUrl(null)
               setError(null)
+              setSavedAs(null)
             }}
           >
             {t('Use a different address')}

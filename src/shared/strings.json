@@ -42073,5 +42073,35 @@
     "tr": "Hermes, notunuzda anlatılanı kendiliğinden kontrol etmez. Bu, gerçekleştiğinde sizi arayan zamanlanmış kontroller kurmasını isteyen yeni bir sohbet açar. Notu değiştirdikten sonra kontrolleri güncellemek için tekrar dokunun.",
     "zh-Hans": "Hermes 不会主动检查你的说明里写的事。这会打开一个新聊天，请它设置定时检查，在事情发生时给你打电话。修改说明后，再点一次即可更新这些检查。",
     "zh-Hant": "Hermes 不會主動檢查你的說明裡寫的事。這會開啟一個新聊天，請它設定定時檢查，在事情發生時打電話給你。修改說明後，再點一次即可更新這些檢查。"
+  },
+  "Repair Connection": {
+    "de": "Verbindung reparieren",
+    "es": "Reparar conexión",
+    "fr": "Réparer la connexion",
+    "id": "Perbaiki Koneksi",
+    "it": "Ripara connessione",
+    "ja": "接続を修復",
+    "ko": "연결 복구",
+    "pl": "Napraw połączenie",
+    "pt-BR": "Reparar Conexão",
+    "ru": "Исправить подключение",
+    "tr": "Bağlantıyı Onar",
+    "zh-Hans": "修复连接",
+    "zh-Hant": "修復連線"
+  },
+  "This address is your saved dashboard “{name}”. Repair won't change its sign-in; switch to it instead.": {
+    "de": "Diese Adresse gehört zu deinem gespeicherten Dashboard „{name}“. Die Reparatur ändert seine Anmeldung nicht; wechsle stattdessen dorthin.",
+    "es": "Esta dirección es tu panel guardado «{name}». La reparación no cambiará su inicio de sesión; cambia a él.",
+    "fr": "Cette adresse est celle de votre tableau de bord enregistré « {name} ». La réparation ne modifiera pas sa connexion ; basculez plutôt vers celui-ci.",
+    "id": "Alamat ini adalah dasbor tersimpan Anda “{name}”. Perbaikan tidak akan mengubah info masuknya; beralihlah ke dasbor itu.",
+    "it": "Questo indirizzo è la tua dashboard salvata “{name}”. La riparazione non cambierà il suo accesso; passa a quella.",
+    "ja": "このアドレスは保存済みのダッシュボード「{name}」のものです。修復ではそのサインインは変更されません。そちらに切り替えてください。",
+    "ko": "이 주소는 저장된 대시보드 “{name}”의 주소예요. 복구해도 그 로그인은 바뀌지 않으니 그 대시보드로 전환하세요.",
+    "pl": "Ten adres należy do zapisanego panelu „{name}”. Naprawa nie zmieni jego logowania; zamiast tego przełącz się na niego.",
+    "pt-BR": "Este endereço é do seu painel salvo “{name}”. O reparo não altera o login dele; mude para ele.",
+    "ru": "Этот адрес принадлежит сохранённому дашборду «{name}». Восстановление не изменит его вход; переключитесь на него.",
+    "tr": "Bu adres kayıtlı panelin “{name}” adresi. Onarım onun girişini değiştirmez; bunun yerine ona geç.",
+    "zh-Hans": "此地址属于你已保存的仪表板“{name}”。修复不会更改它的登录信息，请改为切换到它。",
+    "zh-Hant": "此位址屬於你已儲存的儀表板「{name}」。修復不會變更它的登入資訊，請改為切換到它。"
   }
 }

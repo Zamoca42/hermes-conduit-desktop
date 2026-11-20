@@ -202,6 +202,9 @@ export function App() {
   const [adding, setAdding] = useState(false)
   // Edit Connection: the open host's address and sign-in, on the sign-in card.
   const [editing, setEditing] = useState<HostSummary | null>(null)
+  // Repair Connection: a host that can't connect, changed in its place. It
+  // stays up through its own sign-in's connecting until the host opens.
+  const [repairing, setRepairing] = useState<HostSummary | null>(null)
   // A new host signed in (or the sign-in screen otherwise left): back to the app.
   const url = status?.url
   useEffect(() => setAdding(false), [url])
@@ -216,8 +219,13 @@ export function App() {
   setDashboardProfilesHost(url ?? '')
   setDesktopCardsHost(url ?? '')
   setKanbanHost(url ?? '')
-  // Whether this dashboard's plugin reads ?conduit_profile= for another profile's routes, or an older one keeps ?profile=.
   const phase = status?.phase
+  // A host Hermes signed out opens on Repair; one that opens needs none.
+  useEffect(() => {
+    if (phase === 'open') setRepairing(null)
+    else if (phase === 'failed' && url) setRepairing(current => (current?.url === url ? current : savedHost(status?.hosts, url)))
+  }, [phase, url]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Whether this dashboard's plugin reads ?conduit_profile= for another profile's routes, or an older one keeps ?profile=.
   useEffect(() => {
     if (phase !== 'open' || !url) return
     gateway
@@ -247,7 +255,11 @@ export function App() {
         subtitle={signedOut ? undefined : status.hostLabel}
         hosts={status.hosts}
         currentUrl={status.url}
-        onSwitch={url => switchEndingCall(hostName(url)) && void window.conduit.switchHost(url)}
+        onSwitch={url => {
+          if (!switchEndingCall(hostName(url))) return
+          setRepairing(null)
+          void window.conduit.switchHost(url)
+        }}
       />
       {status.phase === 'locked' ? (
         <LockedScreen />
@@ -255,6 +267,15 @@ export function App() {
         <SignIn editing={editing} onCancel={() => setEditing(null)} onDone={() => setEditing(null)} />
       ) : adding ? (
         <SignIn onCancel={() => setAdding(false)} />
+      ) : repairing && status.phase !== 'open' ? (
+        <SignIn
+          key={repairing.url}
+          editing={repairing}
+          repairing
+          notice={status.phase === 'failed' ? status.error : undefined}
+          onCancel={status.phase === 'reconnecting' ? () => setRepairing(null) : undefined}
+          onDone={() => setRepairing(null)}
+        />
       ) : status.phase === 'signed-out' && status.choosing && status.hosts?.length ? (
         <DashboardChoice hosts={status.hosts} onAdd={() => setAdding(true)} />
       ) : signedOut || status.phase === 'failed' ? (
@@ -267,6 +288,7 @@ export function App() {
             status={status}
             onAddHost={() => switchEndingCall(null) && setAdding(true)}
             onEditHost={host => switchEndingCall(null) && setEditing(host)}
+            onRepair={() => status.url && setRepairing(savedHost(status.hosts, status.url))}
           />
         </SummaryHost.Provider>
       )}
@@ -305,7 +327,22 @@ function reopenedSection(host: string): Section {
   return launchPage(host)
 }
 
-function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; onAddHost: () => void; onEditHost: (host: HostSummary) => void }) {
+/** The saved host at `url`, or its address alone when the list doesn't have it yet. */
+function savedHost(hosts: HostSummary[] | undefined, url: string): HostSummary {
+  return hosts?.find(host => host.url === url) ?? { url, method: 'password' }
+}
+
+function Shell({
+  status,
+  onAddHost,
+  onEditHost,
+  onRepair
+}: {
+  status: ConnectionStatus
+  onAddHost: () => void
+  onEditHost: (host: HostSummary) => void
+  onRepair: () => void
+}) {
   // Before any picture is read for this host.
   useState(forgetAvatars)
   const connected = status.phase === 'open'
@@ -1650,6 +1687,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
             ? t('Connecting to Hermes…')
             : `${status.error ?? t('Not connected.')}${status.retryInSeconds ? ` ${t('Trying again in {seconds}s.', { seconds: status.retryInSeconds })}` : ''}`}
           {status.phase === 'reconnecting' ? <button onClick={() => void window.conduit.reconnect()}>{t('Try now')}</button> : null}
+          {status.phase === 'reconnecting' && status.url ? <button onClick={onRepair}>{t('Repair Connection')}</button> : null}
         </div>
       ) : null}
       <CrashReportBanner />
