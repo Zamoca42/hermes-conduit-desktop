@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { couldBecomeMarker, isSilenceMarker, silenceShown, streamShown } from '../src/renderer/src/state/silence'
 import { applyEvent, emptyTranscript, fromHistory, type TranscriptState } from '../src/renderer/src/state/transcript'
 import { lastLineOf } from '../src/renderer/src/state/bots'
+import { rowsFromResponse } from '../src/renderer/src/state/chats'
 
 const play = (events: { type: string; payload?: unknown }[]) => events.reduce<TranscriptState>(applyEvent, emptyTranscript)
 const replies = (state: TranscriptState) => state.items.flatMap(i => (i.kind === 'assistant' ? [i.text] : []))
@@ -47,5 +48,12 @@ describe("Hermes' silence marker", () => {
   it("isn't a bot's last line on Bots", () => {
     expect(lastLineOf('[SILENT]')).toBeUndefined()
     expect(lastLineOf('Morning!')).toBe('Morning!')
+    expect(lastLineOf('Done for today.\n[SILENT]')).toBe('Done for today.')
+  })
+
+  it('is cut from a chat preview, alone or closing one', () => {
+    const preview = (text: string) => rowsFromResponse({ sessions: [{ id: 's1', title: 'Inbox', preview: text }] })[0]?.preview
+    expect(preview('NO_REPLY')).toBeFalsy()
+    expect(preview('Checked it.\n[SILENT]')).toBe('Checked it.')
   })
 })

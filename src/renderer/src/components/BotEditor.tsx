@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { BOTS_META_KEY, botsFromProfiles, keptColor, type Bot } from '../state/bots'
 import {
   FACE_COUNT,
@@ -48,12 +49,14 @@ function CapabilityList({
   title,
   list,
   rows,
-  onToggle
+  onToggle,
+  disabled
 }: {
   title: string
   list: keyof Capabilities
   rows: Capabilities[keyof Capabilities]
   onToggle: (list: keyof Capabilities, name: string, on: boolean) => void
+  disabled?: boolean
 }) {
   const [open, setOpen] = useState(false)
   if (!rows.length) return null
@@ -68,7 +71,7 @@ function CapabilityList({
         <div className="bot-caps-list">
           {rows.map(row => (
             <label key={row.name} className="toggle" title={row.description}>
-              <input type="checkbox" checked={row.enabled} onChange={e => onToggle(list, row.name, e.target.checked)} />
+              <input type="checkbox" checked={row.enabled} disabled={disabled} onChange={e => onToggle(list, row.name, e.target.checked)} />
               <span>
                 {row.label ?? row.name}
                 {row.description ? <span className="meta"> · {row.description}</span> : null}
@@ -89,6 +92,14 @@ function CapabilityList({
 export function BotEditor({ bot, onClose, onSaved }: Props) {
   const [draft, setDraft] = useState<Draft>(() => draftFor(bot))
   const [details, setDetails] = useState<BotDetails | null>(null)
+  // Shown from the last answer on this dashboard while Hermes answers again, and changed only once it has (Screens that open on their last answer).
+  const describeRoute = `rpc:profiles.describe?name=${encodeURIComponent(bot.name)}`
+  const kept = useMemo(() => {
+    const answer = keptAnswer(describeRoute)
+    return answer === undefined ? null : parseDetails(answer)
+  }, [describeRoute])
+  const shown = details ?? kept
+  const capabilitiesShown = draft.capabilities ?? kept?.capabilities ?? null
   const [detailsError, setDetailsError] = useState<string | null>(null)
   const catalog = useModelCatalog(useMemo(() => ({ profile: bot.name, explicit_only: true }), [bot.name]))
   const providers = catalog.providers
@@ -110,8 +121,11 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
   const loadDetails = async () => {
     setDetailsError(null)
     try {
-      const loaded = parseDetails(await gateway.rpc('profiles.describe', { name: bot.name }))
+      const keep = answerKeeper(describeRoute)
+      const answer = await gateway.rpc('profiles.describe', { name: bot.name })
+      const loaded = parseDetails(answer)
       setDetails(loaded)
+      keep(answer)
       // What's typed stays: only what wasn't touched takes Hermes' answer.
       setDraft(current => ({
         ...current,
@@ -391,22 +405,24 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
 
         <section className="pset-section">
           <h2>{t('Personality')}</h2>
-          {details ? (
+          {shown ? (
             <textarea
               className="pset-note bot-soul"
               rows={12}
-              value={draft.soul}
+              value={details ? draft.soul : shown.soul}
+              readOnly={!details}
               onChange={e => update({ soul: e.target.value })}
               aria-label={t('Personality')}
             />
-          ) : detailsError ? (
+          ) : null}
+          {details ? null : detailsError ? (
             <div className="pset-row">
               <span className="meta">{t("Could not load this bot's personality.")}</span>
               <button className="secondary" onClick={() => void loadDetails()}>
                 {t('Try Again')}
               </button>
             </div>
-          ) : (
+          ) : shown ? null : (
             <p className="meta">{t('Loading…')}</p>
           )}
           <p className="meta">{t("Saved as the bot's SOUL.md.")}</p>
@@ -417,26 +433,26 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
             {t('Model')}
             <RefreshModelsButton catalog={catalog} />
           </h2>
-          {details && (providers || catalog.failed) ? (
+          {shown && (providers || catalog.failed) ? (
             <ModelChooser
-              value={modelValue}
+              value={details ? modelValue : shown.provider && shown.model ? `${shown.provider}\n${shown.model}` : ''}
               providers={providers}
               defaultLabel={null}
               emptyLabel={t('Default')}
               label={t('Model')}
-              disabled={!catalog.answered}
+              disabled={!catalog.answered || !details}
               onChange={next => {
                 const [provider = '', model = ''] = next.split('\n')
                 update({ provider, model })
               }}
             />
-          ) : !details ? (
+          ) : !shown ? (
             <p className="meta">{detailsError ? '—' : t('Loading…')}</p>
           ) : null}
-          {details ? <ModelCatalogNote catalog={catalog} /> : null}
+          {shown ? <ModelCatalogNote catalog={catalog} /> : null}
         </section>
 
-        {draft.capabilities && (draft.capabilities.skills.length || draft.capabilities.toolsets.length || draft.capabilities.mcpServers.length) ? (
+        {capabilitiesShown && (capabilitiesShown.skills.length || capabilitiesShown.toolsets.length || capabilitiesShown.mcpServers.length) ? (
           <section className="pset-section">
             <h2>{t('Skills and tools')}</h2>
             {(['skills', 'toolsets', 'mcpServers'] as const).map(list => (
@@ -444,7 +460,8 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
                 key={list}
                 title={list === 'skills' ? t('Skills') : list === 'toolsets' ? t('Tools') : t('MCP Servers')}
                 list={list}
-                rows={draft.capabilities![list]}
+                rows={capabilitiesShown[list]}
+                disabled={!draft.capabilities}
                 onToggle={(which, name, on) =>
                   setDraft(current => (current.capabilities ? { ...current, capabilities: setCapability(current.capabilities, which, name, on) } : current))
                 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
+import { useKeptStatus } from '../state/useKeptStatus'
 import { locale, t } from '@shared/i18n'
-import { GatewayError, gateway } from '../gateway'
 import {
   API_VOICES,
   LIMIT_CHOICES,
@@ -34,6 +34,8 @@ import {
   grokSendsPersona,
   setGrokSendsMemory,
   setGrokSendsPersona,
+  packGrokLine,
+  unpackGrokLine,
   via,
   type Availability as GrokAvailability
 } from '../state/grokLive'
@@ -76,87 +78,31 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [geminiSearch, setGeminiSearch] = useState<SearchMode>(() => searchMode('gemini'))
   const [qwenSearch, setQwenSearch] = useState<SearchMode>(() => searchMode('qwen'))
   const [billing, setBilling] = useState<Billing>(gptLiveBilling)
+  const status = useKeptStatus<Availability>(mode === 'gpt', withProfile(STATUS_PATH, profile), body => availability(body, billing), { timeout: 12_000, variant: billing })
   const [voice, setVoice] = useState(() => gptLiveVoice(gptLiveBilling()))
   const [limit, setLimit] = useState(apiLimitMinutes)
   const [memory, setMemory] = useState(sendsMemory)
   const [persona, setPersona] = useState(sendsPersona)
-  const [status, setStatus] = useState<Availability | 'checking' | 'missing' | null>(null)
   const [saveCalls, setSaveCalls] = useState(savesCalls)
   const [geminiMemory, setGeminiMemory] = useState(geminiSendsMemory)
   const [geminiPersona, setGeminiPersona] = useState(geminiSendsPersona)
   const [geminiPick, setGeminiPick] = useState(geminiVoice)
-  const [geminiStatus, setGeminiStatus] = useState<GeminiAvailability | 'checking' | 'missing' | null>(null)
+  const geminiStatus = useKeptStatus<GeminiAvailability>(mode === 'gemini', withProfile(GEMINI_STATUS_PATH, profile), geminiAvailability, { timeout: 12_000 })
 
-  useEffect(() => {
-    if (mode !== 'gemini') return setGeminiStatus(null)
-    let live = true
-    setGeminiStatus('checking')
-    gateway
-      .http('GET', withProfile(GEMINI_STATUS_PATH, profile), undefined, 12_000)
-      .then(body => live && setGeminiStatus(geminiAvailability(body)))
-      .catch((e: unknown) => {
-        if (!live) return
-        setGeminiStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
-      })
-    return () => {
-      live = false
-    }
-  }, [mode, profile])
   const [qwenMemory, setQwenMemory] = useState(qwenSendsMemory)
   const [qwenPersona, setQwenPersona] = useState(qwenSendsPersona)
   const [qwenPick, setQwenPick] = useState(qwenVoice)
-  const [qwenStatus, setQwenStatus] = useState<QwenAvailability | 'checking' | 'missing' | null>(null)
+  const qwenStatus = useKeptStatus<QwenAvailability>(mode === 'qwen', withProfile(QWEN_STATUS_PATH, profile), qwenAvailability, { timeout: 12_000 })
 
-  useEffect(() => {
-    if (mode !== 'qwen') return setQwenStatus(null)
-    let live = true
-    setQwenStatus('checking')
-    gateway
-      .http('GET', withProfile(QWEN_STATUS_PATH, profile), undefined, 12_000)
-      .then(body => live && setQwenStatus(qwenAvailability(body)))
-      .catch((e: unknown) => {
-        if (!live) return
-        setQwenStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
-      })
-    return () => {
-      live = false
-    }
-  }, [mode, profile])
   const [grokMemory, setGrokMemory] = useState(grokSendsMemory)
   const [grokPersona, setGrokPersona] = useState(grokSendsPersona)
-  const [grokStatus, setGrokStatus] = useState<GrokAvailability | 'checking' | 'missing' | null>(null)
+  const grokStatus = useKeptStatus<GrokAvailability>(mode === 'grok', withProfile(GROK_STATUS_PATH, profile), grokAvailability, {
+    timeout: 30_000,
+    pack: packGrokLine,
+    unpack: unpackGrokLine
+  })
 
-  useEffect(() => {
-    if (mode !== 'grok') return setGrokStatus(null)
-    let live = true
-    setGrokStatus('checking')
-    gateway
-      .http('GET', withProfile(GROK_STATUS_PATH, profile), undefined, 30_000)
-      .then(body => live && setGrokStatus(grokAvailability(body)))
-      .catch((e: unknown) => {
-        if (!live) return
-        setGrokStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
-      })
-    return () => {
-      live = false
-    }
-  }, [mode, profile])
 
-  useEffect(() => {
-    if (mode !== 'gpt') return setStatus(null)
-    let live = true
-    setStatus('checking')
-    gateway
-      .http('GET', withProfile(STATUS_PATH, profile), undefined, 12_000)
-      .then(body => live && setStatus(availability(body, billing)))
-      .catch((e: unknown) => {
-        if (!live) return
-        setStatus(e instanceof GatewayError && e.code === 404 ? 'missing' : { ok: false, reason: e instanceof Error ? e.message : String(e) })
-      })
-    return () => {
-      live = false
-    }
-  }, [mode, billing, profile])
 
   useEffect(() => {
     const changed = () => setMode(voiceMode())
