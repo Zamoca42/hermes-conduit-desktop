@@ -59,6 +59,7 @@ import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
 import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
 import { useRequests, useWaiting } from './state/useNeedsYou'
+import { clearExpired, useExpiredQuestions } from './state/expiredQuestions'
 import {
   askNotification,
   inviteNotification,
@@ -927,6 +928,8 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
       } else {
         created = await send(withMentionNote(text, roster.bots, selected.profile ?? 'default'), attachments, undefined, options)
         if (created === false) return false
+        // The message answers the questions Hermes stopped waiting for here.
+        clearExpired(chat.liveId)
       }
       if (created) {
         setSelected(s => ({ ...s, id: created }))
@@ -934,7 +937,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
       }
       return true
     },
-    [send, command, notice, commands, newChat, list, botTitle, roster.bots, selected.profile, selected.botChat, openBotChat]
+    [send, command, notice, commands, newChat, list, botTitle, roster.bots, selected.profile, selected.botChat, openBotChat, chat.liveId]
   )
   // The bots a chat can tag, in their order: every shown bot but the chat's own.
   const mentionBots = useMemo(() => mentionCandidates(orderedRoster, '', selected.profile ?? 'default'), [orderedRoster, selected.profile])
@@ -1244,6 +1247,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
   )
   const needsCount = requests.length + waitingRows.length + otherWaiting.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
+  const expiredQuestions = useExpiredQuestions(chat.liveId)
   // Running and Needs approval on the list's rows: the gateway's live registry while the list shows, the
   // plugin's waiting list, and the open chat's own turn and requests.
   const liveProfiles = useMemo(() => (chatProfile ? [chatProfile] : profiles.slice(0, 8)), [chatProfile, profiles])
@@ -1871,6 +1875,7 @@ function Shell({ status, onAddHost, onEditHost }: { status: ConnectionStatus; on
                     loading={loading}
                     error={error}
                     requests={openRequests}
+                    expired={expiredQuestions}
                     profile={selected.profile}
                     author={botTitle}
                     onQuote={setQuote}

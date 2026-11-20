@@ -10160,3 +10160,15 @@ button.secondary.danger {
 .wake-settings .meta {
   white-space: normal;
 }
+
+/* A question Hermes stopped waiting for (issue 2850): its choices answer in a message. */
+.ask.expired .ask-choice {
+  color: var(--muted);
+  background: transparent;
+}
+.ask-choices-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 14px;
+}

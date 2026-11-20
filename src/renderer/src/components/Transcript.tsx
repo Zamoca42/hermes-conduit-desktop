@@ -6,7 +6,8 @@ import { displayName } from '../state/attachments'
 import type { PendingRequest } from '@shared/ipc'
 import { TAPBACKS, type Reaction, type ToolItem, type TranscriptItem, type TranscriptState } from '../state/transcript'
 import type { DelegationEntry } from '../state/timeline'
-import { RequestCard } from './RequestCard'
+import { ExpiredClarifyCard, RequestCard } from './RequestCard'
+import type { ExpiredQuestion } from '../state/expiredQuestions'
 import { Icon, type IconName } from './icons'
 import { Markdown } from './Markdown'
 import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
@@ -916,6 +917,7 @@ export function Transcript({
   loading,
   error,
   requests = [],
+  expired = [],
   profile,
   author = 'Hermes',
   onQuote,
@@ -935,6 +937,8 @@ export function Transcript({
   error: string | null
   /** The approvals and questions this chat waits on, drawn after its last item. */
   requests?: PendingRequest[]
+  /** Questions Hermes stopped waiting for in this chat, kept to answer in a message. */
+  expired?: ExpiredQuestion[]
   /** The chat's profile, whose files its pictures are read from. */
   profile?: string
   /** Who answers in this chat, named on "Replying to". */
@@ -1058,7 +1062,7 @@ export function Transcript({
   useLayoutEffect(() => {
     const el = scroller.current
     if (el && pinned.current) el.scrollTop = el.scrollHeight
-  }, [state, requests])
+  }, [state, requests, expired])
 
   // Pins: which reply each shows, the bar's order, and the row ids replies pinned as they arrived took.
   const pinList = pins?.list
@@ -1182,6 +1186,11 @@ export function Transcript({
               renderItem(row.item)
             )
           )}
+          {expired
+            .filter(e => !requests.some(r => r.id === e.request.id))
+            .map(e => (
+              <ExpiredClarifyCard key={`expired-${e.request.id}`} expired={e} onAnswer={onQuote ? text => onQuote(quoteRequest({ text })) : undefined} />
+            ))}
           {requests.map(request => (
             <RequestCard key={request.id} request={request} />
           ))}

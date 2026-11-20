@@ -1,16 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
 import { isNeedsYouRequest, type PendingRequest } from '../../../shared/ipc'
+import { noteRequests, takeCancel } from './expiredQuestions'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 
 /** The approvals and questions waiting on this window, as the main process holds them; `all` adds the screen install's sudo asks. */
 export function useRequests(all = false): PendingRequest[] {
   const [requests, setRequests] = useState<PendingRequest[]>([])
   useEffect(() => {
-    const take = (list: PendingRequest[]) => setRequests(all ? list : list.filter(isNeedsYouRequest))
+    const take = (list: PendingRequest[]) => {
+      // Remembered, so a question whose wait runs out keeps its card (expiredQuestions.ts).
+      noteRequests(list)
+      setRequests(all ? list : list.filter(isNeedsYouRequest))
+    }
     const off = window.conduit.onRequests(take)
+    const offCancel = window.conduit.onEvent(event => {
+      if (event.type === 'request.cancel') takeCancel(event.payload)
+    })
     void window.conduit.requests().then(take)
-    return off
+    return () => {
+      off()
+      offCancel()
+    }
   }, [all])
   return requests
 }
