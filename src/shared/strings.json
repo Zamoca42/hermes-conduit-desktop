@@ -2309,21 +2309,6 @@
     "zh-Hans": "请对方用 iPhone 相机扫描它，或把邀请发给对方。邀请会在 Conduit 中打开。",
     "zh-Hant": "請對方用 iPhone 相機掃描它，或把邀請傳給對方。邀請會在 Conduit 中開啟。"
   },
-  "Ask {name}": {
-    "de": "{name} fragen",
-    "es": "Preguntar a {name}",
-    "fr": "Demander à {name}",
-    "id": "Tanya {name}",
-    "it": "Chiedi a {name}",
-    "ja": "{name} に聞く",
-    "ko": "{name}에게 묻기",
-    "pl": "Zapytaj {name}",
-    "pt-BR": "Perguntar a {name}",
-    "ru": "Спросить {name}",
-    "tr": "{name} adlı bota sor",
-    "zh-Hans": "问 {name}",
-    "zh-Hant": "問 {name}"
-  },
   "Ask {name} about this room": {
     "de": "{name} zu diesem Raum fragen",
     "es": "Preguntar a {name} sobre esta sala",
@@ -2338,21 +2323,6 @@
     "tr": "Bu oda hakkında {name} adlı ajana sor",
     "zh-Hans": "向 {name} 询问这个房间",
     "zh-Hant": "向 {name} 詢問這個房間"
-  },
-  "Ask {name}…": {
-    "de": "{name} fragen…",
-    "es": "Preguntar a {name}…",
-    "fr": "Demander à {name}…",
-    "id": "Tanya {name}…",
-    "it": "Chiedi a {name}…",
-    "ja": "{name} に聞く…",
-    "ko": "{name}에게 묻기…",
-    "pl": "Zapytaj {name}…",
-    "pt-BR": "Perguntar a {name}…",
-    "ru": "Спросить {name}…",
-    "tr": "{name} adlı bota sor…",
-    "zh-Hans": "问 {name}…",
-    "zh-Hant": "問 {name}…"
   },
   "Asked in {name}": {
     "de": "Gefragt in {name}",
@@ -19469,21 +19439,6 @@
     "zh-Hans": "没有等待你回复的聊天。",
     "zh-Hant": "沒有等待你回覆的聊天。"
   },
-  "No chats yet": {
-    "de": "Noch keine Chats",
-    "es": "Aún no hay chats",
-    "fr": "Aucune discussion",
-    "id": "Belum ada obrolan",
-    "it": "Ancora nessuna chat",
-    "ja": "チャットはまだありません",
-    "ko": "아직 채팅이 없습니다",
-    "pl": "Brak czatów",
-    "pt-BR": "Nenhuma conversa ainda",
-    "ru": "Чатов пока нет",
-    "tr": "Henüz sohbet yok",
-    "zh-Hans": "还没有聊天",
-    "zh-Hant": "還沒有聊天"
-  },
   "No chats yet. Start one with the + button.": {
     "de": "Noch keine Chats. Starte einen mit der Taste +.",
     "es": "Aún no hay chats. Empieza uno con el botón +.",
@@ -21778,21 +21733,6 @@
     "tr": "Hermes'inizi benimkine bağlamak için bunu Conduit'te açın.",
     "zh-Hans": "在 Conduit 中打开这个邀请，将你的 Hermes 与我的关联。",
     "zh-Hant": "在 Conduit 中開啟這個邀請，將你的 Hermes 與我的連結。"
-  },
-  "Open {name}": {
-    "de": "{name} öffnen",
-    "es": "Abrir {name}",
-    "fr": "Ouvrir {name}",
-    "id": "Buka {name}",
-    "it": "Apri {name}",
-    "ja": "{name} を開く",
-    "ko": "{name} 열기",
-    "pl": "Otwórz {name}",
-    "pt-BR": "Abrir {name}",
-    "ru": "Открыть {name}",
-    "tr": "{name} aç",
-    "zh-Hans": "打开 {name}",
-    "zh-Hant": "打開 {name}"
   },
   "Open {ref}’s chat": {
     "de": "Chat von {ref} öffnen",
@@ -37379,21 +37319,6 @@
     "zh-Hans": "打开 Conduit 时，用 Windows Hello 解锁已保存的登录信息。",
     "zh-Hant": "開啟 Conduit 時，用 Windows Hello 解鎖已儲存的登入資訊。"
   },
-  "With linked people": {
-    "de": "Mit verknüpften Personen",
-    "es": "Con personas vinculadas",
-    "fr": "Avec des personnes liées",
-    "id": "Dengan orang yang ditautkan",
-    "it": "Con persone collegate",
-    "ja": "リンクした人と",
-    "ko": "연결한 사람과 함께",
-    "pl": "Z połączonymi osobami",
-    "pt-BR": "Com pessoas vinculadas",
-    "ru": "Со связанными людьми",
-    "tr": "Bağlı kişilerle",
-    "zh-Hans": "有已关联的人",
-    "zh-Hant": "有已連結的人"
-  },
   "With nudging": {
     "de": "Wie beim Anstupsen",
     "es": "Según los recordatorios",
@@ -42538,5 +42463,50 @@
     "tr": "Bu, {name} profilinin Grup yönlendirici yardımcısı. Bu Hermes'te otomatik seçecek şekilde ayarlanan her grup sohbetinde kimin yanıtlayacağını seçer.",
     "zh-Hans": "这是 {name} 的群组路由辅助模型。它为这台 Hermes 上所有设为自动选择的群聊决定谁来回答。",
     "zh-Hant": "這是 {name} 的群組路由輔助模型。它為這台 Hermes 上所有設為自動選擇的群組聊天決定誰來回答。"
+  },
+  "Workstreams": {
+    "de": "Workstreams",
+    "es": "Flujos de trabajo",
+    "fr": "Flux de travail",
+    "id": "Alur kerja",
+    "it": "Flussi di lavoro",
+    "ja": "ワークストリーム",
+    "ko": "작업 스트림",
+    "pl": "Wątki pracy",
+    "pt-BR": "Fluxos de trabalho",
+    "ru": "Рабочие потоки",
+    "tr": "İş akışları",
+    "zh-Hans": "工作流",
+    "zh-Hant": "工作流程"
+  },
+  "Show workstreams": {
+    "de": "Workstreams anzeigen",
+    "es": "Mostrar flujos de trabajo",
+    "fr": "Afficher les flux de travail",
+    "id": "Tampilkan alur kerja",
+    "it": "Mostra flussi di lavoro",
+    "ja": "ワークストリームを表示",
+    "ko": "작업 스트림 보기",
+    "pl": "Pokaż wątki pracy",
+    "pt-BR": "Mostrar fluxos de trabalho",
+    "ru": "Показать рабочие потоки",
+    "tr": "İş akışlarını göster",
+    "zh-Hans": "显示工作流",
+    "zh-Hant": "顯示工作流程"
+  },
+  "Hide workstreams": {
+    "de": "Workstreams ausblenden",
+    "es": "Ocultar flujos de trabajo",
+    "fr": "Masquer les flux de travail",
+    "id": "Sembunyikan alur kerja",
+    "it": "Nascondi flussi di lavoro",
+    "ja": "ワークストリームを隠す",
+    "ko": "작업 스트림 숨기기",
+    "pl": "Ukryj wątki pracy",
+    "pt-BR": "Ocultar fluxos de trabalho",
+    "ru": "Скрыть рабочие потоки",
+    "tr": "İş akışlarını gizle",
+    "zh-Hans": "隐藏工作流",
+    "zh-Hant": "隱藏工作流程"
   }
 }

@@ -143,4 +143,14 @@ describe("a finished update's outcome in the store", () => {
     dismissUpdate('https://a.example')
     expect(hostActionsNow().update.kind).toBe('idle')
   })
+
+  it('keeps the version from the last check when a dismissed row clears it', async () => {
+    const { startCheck, dismissUpdate, hostActionsNow } = await import('../src/renderer/src/state/hostActions')
+    await startCheck('https://b.example', async () => ({ current_version: '0.23.4', update_available: false, behind: 0 }), false)
+    expect(hostActionsNow().version).toBe('0.23.4')
+    await startCheck('https://b.example', () => Promise.reject(new Error('timed out')), true)
+    expect(hostActionsNow().update.kind).toBe('checkFailed')
+    dismissUpdate('https://b.example')
+    expect(hostActionsNow()).toMatchObject({ update: { kind: 'idle' }, version: '0.23.4' })
+  })
 })

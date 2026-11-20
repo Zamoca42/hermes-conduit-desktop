@@ -29,6 +29,7 @@ export function BesideChatPane({
   sessionAuthority,
   connected,
   author,
+  face,
   display,
   onSwap,
   onClose,
@@ -39,6 +40,8 @@ export function BesideChatPane({
   sessionAuthority: boolean
   connected: boolean
   author: string
+  /** The answering bot's picture over each reply. */
+  face?: (moving: boolean) => React.ReactNode
   display?: ChatDisplay
   onSwap?: () => void
   onClose?: () => void
@@ -105,6 +108,7 @@ export function BesideChatPane({
           error={error}
           profile={chat.profile}
           author={author}
+          face={face}
           display={display}
           sessionId={open.liveId ?? undefined}
         />

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { avatarUrl, botColor, botsFromProfiles, gridStep, homeLayout, keptColor, lastLineOf } from '../src/renderer/src/state/bots'
+import { avatarUrl, botColor, botsFromProfiles, keptColor, lastLineOf } from '../src/renderer/src/state/bots'
 import { assignFaces, faceColor, starterFace } from '../src/renderer/src/state/starterFaces'
 
 const profile = (over: Record<string, unknown>) => ({ name: 'p', ...over })
@@ -84,19 +84,6 @@ describe('botsFromProfiles', () => {
   it('answers nothing for an odd body', () => {
     expect(botsFromProfiles(null)).toEqual([])
     expect(botsFromProfiles({ profiles: 'x' })).toEqual([])
-  })
-})
-
-describe('homeLayout', () => {
-  it('picks one, two or the grid', () => {
-    expect(homeLayout(0)).toBe('one')
-    expect(homeLayout(1)).toBe('one')
-    expect(homeLayout(2)).toBe('two')
-    expect(homeLayout(7)).toBe('grid')
-  })
-
-  it('steps the grid’s faces down as bots are added', () => {
-    expect([3, 4, 5, 9, 10, 12, 13].map(n => gridStep(n).face)).toEqual([112, 112, 96, 96, 84, 84, 72])
   })
 })
 

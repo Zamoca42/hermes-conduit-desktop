@@ -507,11 +507,15 @@ function toolTitle(name: string, done: boolean): string {
 }
 
 interface ItemProps {
+  newest?: boolean
   /** This reply answers a turn Hermes took on its own (Predictive follow-ups). */
   followedUp?: boolean
   item: TranscriptItem
   /** Who answers in this chat, for "Replying to". */
   author: string
+  /** The answering bot's picture, heading each reply with its name and time, as on the phone. */
+  /** The bot's face on a reply, moving on the newest one. */
+  face?: (moving: boolean) => React.ReactNode
   onQuote?: (request: QuoteRequest) => void
   /** The card's click for a quote, when the quoted reply is loaded. */
   jump: (quote: string) => (() => void) | undefined
@@ -676,6 +680,8 @@ function sameItemProps(a: ItemProps, b: ItemProps): boolean {
     a.expandTools === b.expandTools &&
     a.repliedTo === b.repliedTo &&
     a.jump === b.jump &&
+    a.face === b.face &&
+    a.newest === b.newest &&
     sameTeammates(a.teammates, b.teammates) &&
     a.thinkingToggle?.label === b.thinkingToggle?.label &&
     a.pinToggle?.label === b.pinToggle?.label &&
@@ -694,6 +700,8 @@ const sameTeammates = (a: ItemProps['teammates'], b: ItemProps['teammates']) =>
 const Item = memo(function Item({
   item,
   author,
+  face,
+  newest,
   onQuote,
   jump,
   onRetry,
@@ -760,6 +768,15 @@ const Item = memo(function Item({
     case 'assistant': {
       const reply = (
         <div className={`assistant${item.streaming ? ' streaming' : ''}`} data-key={item.key}>
+          <div className="reply-head">
+            {face?.(!!newest) ?? (
+              <span className="reply-mark" aria-hidden="true">
+                {author.trim().charAt(0).toUpperCase() || 'H'}
+              </span>
+            )}
+            <span className="reply-name">{author}</span>
+            {item.at ? <span className="time">{clock(item.at)}</span> : null}
+          </div>
           {followedUp ? (
             <span className="followed-up">
               <span aria-hidden="true">✦</span>
@@ -997,6 +1014,7 @@ export function Transcript({
   expired = [],
   profile,
   author = 'Hermes',
+  face,
   onQuote,
   onCommand,
   display = DEFAULT_DISPLAY,
@@ -1018,8 +1036,11 @@ export function Transcript({
   expired?: ExpiredQuestion[]
   /** The chat's profile, whose files its pictures are read from. */
   profile?: string
-  /** Who answers in this chat, named on "Replying to". */
+  /** Who answers in this chat, named on "Replying to" and over each reply. */
   author?: string
+  /** The answering bot's picture over each reply; its initial when left out. */
+  /** The bot's face on a reply, moving on the newest one. */
+  face?: (moving: boolean) => React.ReactNode
   /** Quote goes to the composer; without it there is only Copy. */
   onQuote?: (request: QuoteRequest) => void
   /** Runs a slash command for ⋯'s Retry (`/retry`) and Edit and resend (`/undo N`). */
@@ -1217,6 +1238,8 @@ export function Transcript({
       key={item.key}
       item={item}
       author={author}
+      face={face}
+      newest={item.key === newestReply}
       onQuote={onQuote ? stable.quote : undefined}
       jump={jump}
       onRetry={actions.retryKey.has(item.key) ? stable.retry : undefined}

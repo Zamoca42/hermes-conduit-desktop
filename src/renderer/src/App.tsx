@@ -1,17 +1,16 @@
 import { ROOM_RULES_CAPABILITY } from './state/roomChoices'
 import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps } from 'react'
 import { gateway } from './gateway'
 import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
 import { arrange, farBotFor, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
-import { BotsHome, type BotAction } from './components/BotsHome'
+import { BotsHome, useReplyFace, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
 import { BotScreen } from './components/BotScreen'
 import { ChatList, type MoveTarget } from './components/ChatList'
-import { BotSideList } from './components/BotSideList'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
 import { ContextPanel } from './components/ContextPanel'
@@ -505,7 +504,9 @@ function Shell({
   const glowBots = useMemo(() => [...(roster.bots ?? []), ...roster.hidden], [roster.bots, roster.hidden])
   // Thinking and Tool cards as the profile's settings say; read again after a visit to Settings.
   const chatDisplay = useChatDisplay(selected.profile, connected, section === 'chats')
-  const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
+  const chatBot = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))
+  const botTitle = chatBot?.title ?? 'Hermes'
+  const chatFace = useReplyFace(chatBot)
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
   // A quote lands in the composer it was made for, not again on the way back to Chats.
   useEffect(() => {
@@ -722,12 +723,20 @@ function Shell({
   }, [section])
   /** The phone's Profiles card Edit (and Settings > Edit profile): Edit Bot for any profile, Bots or not, then back where it was opened. */
   const editProfile = (bot: Bot) => {
+    setNewBot(false)
     if (section !== 'bots') {
       profileEditReturn.current = section
       keepEditor.current = true
       setSection('bots')
     }
     setEditingBot(bot)
+  }
+  /** New Bot from the bots sidebar: it opens on Bots wherever the sidebar is. */
+  const newBotFromSide = () => {
+    setEditingBot(null)
+    profileEditReturn.current = null
+    if (section !== 'bots') setSection('bots')
+    setNewBot(true)
   }
   const closeBotEditor = () => {
     setEditingBot(null)
@@ -775,6 +784,8 @@ function Shell({
   const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined
   // The bots sidebar shows while the chat on screen is a bot's: its Bot Chat (or a new one) or one of its workstreams.
   const botsSideShown = botsSide && !!roster.bots?.length && (selected.botChat === true || !!openBotChat || workSessions.has(selected.id ?? ''))
+  // Wherever the bots list shows: beside a bot's chat, a group chat, or New Bot and Edit Bot.
+  const botsListShown = section === 'bots' || section === 'room' || (section === 'chats' && botsSideShown)
   const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || botsSideShown || !!openBotChat || workSessions.has(selected.id ?? '')))
   const workItem: WorkItem | undefined = selected.id
     ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id)
@@ -790,7 +801,9 @@ function Shell({
   const outputs = useMemo(() => transcript.items.filter(item => item.kind === 'output').length, [transcript.items])
   const controlPulse = turnsDone + outputs
   const workBot = roster.bots?.find(bot => bot.name === (selected.profile ?? 'default'))
-  const showWork = workOpen && (!!openBotChat || !!workItem)
+  // A bot's chat (its Bot Chat, one not resolved yet, or a workstream's) offers its work once the host answers with some.
+  const workHere = !!openBotChat || !!workItem || selected.botChat === true
+  const showWork = workOpen && workHere && (!!work.snapshot || !!work.error)
   // The bot's screen (Hermes' Bot Screen), offered only where the host can have one, as the phone checks.
   const screenProfile = selected.profile ?? 'default'
   const [screenOpen, setScreenOpen] = useState(false)
@@ -825,6 +838,8 @@ function Shell({
   const panelWidth = shownPanelWidth(panelLive ?? panelStored, windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
   // A chat beside the open one: only where both fit, else the pane hides until the window widens.
   const [beside, setBeside] = useState<BesideChat | null>(null)
+  const besideBot = beside ? roster.bots?.find(b => b.name === (beside.profile ?? 'default')) : undefined
+  const besideFace = useReplyFace(besideBot)
   const besideFits = besideChatFits(windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
   const sameProfileAs = (a?: string, b?: string) => (a ?? 'default').toLowerCase() === (b ?? 'default').toLowerCase()
   // The chats in windows of their own (up to three), from the main process.
@@ -1121,7 +1136,9 @@ function Shell({
   }
 
   // Bots home: a bot opens its Bot Chat (or a new chat in its profile); Ask sends there once it's open.
+  const lastBot = useRef<string | null>(null)
   const openBot = useCallback((bot: Bot) => {
+    lastBot.current = bot.name
     setSelected({ id: bot.botChatId ?? null, profile: bot.name, title: bot.title, botChat: true })
     setSection('chats')
     setBotsSide(true)
@@ -1161,7 +1178,8 @@ function Shell({
           if (!canDelete(bot)) return null
           if (
             !(await ask(
-              `${t('Delete {name}?', { name: bot.title })}\n\n${t("This permanently removes the bot's profile, chats, memory and skills from the gateway.")}`
+              `${t('Delete {name}?', { name: bot.title })}\n\n${t("This permanently removes the bot's profile, chats, memory and skills from the gateway.")}`,
+              { confirm: t('Delete'), destructive: true }
             ))
           )
             return null
@@ -1268,7 +1286,7 @@ function Shell({
   const keptChats = useKeptChats(keptHosts, section === 'chats')
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   // ...and their bots, on Bots Home.
-  const otherBots = useKeptBots(keptHosts, section === 'bots')
+  const otherBots = useKeptBots(keptHosts, botsListShown)
   // ...mixed with this host's in one order the person arranges, kept on this computer.
   const combinedCount = savedHosts ? savedHosts.filter(h => h.combined).length : null
   const mixedBotOrder = useMixedBotOrder(combinedCount === null ? null : combinedCount > 1)
@@ -1285,9 +1303,9 @@ function Shell({
   )
   const hasOtherBots = otherBots.length > 0
   useEffect(() => {
-    if (section === 'bots' && hasOtherBots) void roomDrafts.refreshPeople()
+    if (botsListShown && hasOtherBots) void roomDrafts.refreshPeople()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [section, hasOtherBots])
+  }, [botsListShown, hasOtherBots])
   const createFarDraft = useCallback(
     async (name: string, bots: Bot[], far: OwnHermesBot[]): Promise<'made' | 'sending'> => {
       const agents = draftAgents(bots)
@@ -1663,14 +1681,15 @@ function Shell({
   )
   // How the rooms over Links look: Bots Home's, or the open one's, each read at most every 30 s while the window shows.
   const looksRooms = useMemo(() => {
-    if (section === 'room') {
-      if (shownCopy) return { ids: [shownCopy.roomId], over: isOver(shownCopy) ? [shownCopy.roomId] : [] }
-      return openRoom && openRoom.members.some(m => m.peer) ? { ids: [openRoom.roomId], over: [] } : { ids: [], over: [] }
-    }
-    if (section !== 'bots') return { ids: [], over: [] }
+    if (!botsListShown) return { ids: [], over: [] }
+    // The bots list's rooms over Links, and the open one's.
     const hosted = (groupRooms.rooms ?? []).filter(r => r.linked).map(r => r.roomId)
-    return { ids: [...hosted, ...roomCopies.copies.map(c => c.roomId)], over: roomCopies.copies.filter(isOver).map(c => c.roomId) }
-  }, [section, shownCopy, openRoom, groupRooms.rooms, roomCopies.copies])
+    const ids = new Set([...hosted, ...roomCopies.copies.map(c => c.roomId)])
+    const over = new Set(roomCopies.copies.filter(isOver).map(c => c.roomId))
+    if (section === 'room' && shownCopy) ids.add(shownCopy.roomId)
+    if (section === 'room' && !shownCopy && openRoom?.members.some(m => m.peer)) ids.add(openRoom.roomId)
+    return { ids: [...ids], over: [...over] }
+  }, [botsListShown, section, shownCopy, openRoom, groupRooms.rooms, roomCopies.copies])
   const looksKey = `${looksRooms.ids.join(',')}|${looksRooms.over.join(',')}`
   const readLooks = roomLooks.read
   useEffect(() => {
@@ -1691,6 +1710,63 @@ function Shell({
     },
     []
   )
+  // Bots has no page of its own (Eric, 2026-11-20): it opens the bot last opened here, else the one used most recently.
+  useEffect(() => {
+    if (section !== 'bots' || newBot || editingBot) return
+    const bots = orderedRoster ?? roster.bots
+    if (!bots?.length) return
+    const same = (name: string | null) => bots.find(b => b.name.toLowerCase() === name?.toLowerCase())
+    openBot(same(lastBot.current) ?? [...bots].sort((a, b) => (b.lastActive ?? 0) - (a.lastActive ?? 0))[0])
+  }, [section, newBot, editingBot, orderedRoster, roster.bots, openBot])
+  const botsHomeProps: Omit<ComponentProps<typeof BotsHome>, 'side'> = {
+    bots: orderedRoster,
+    error: roster.error,
+    runningProfiles: runningProfiles,
+    rooms: orderedRooms,
+    canStartRooms: groupRooms.capabilities?.supported === true && connected,
+    onOpen: openBot,
+    onOpenRoom: showRoom,
+    onCreateRoom: groupRooms.create,
+    // Beside a chat or a group chat, Edit Bot and New Bot open on Bots, and closing goes back.
+    onEdit: connected ? editProfile : undefined,
+    hidden: roster.hidden,
+    onNewBot: connected ? newBotFromSide : undefined,
+    onAction: connected ? botAction : undefined,
+    notice: botNotice,
+    onDismissNotice: () => setBotNotice(null),
+    invites: roomInvites.rows,
+    onOpenInvite: invite => setOpenInvite(invite.id),
+    drafts: roomDrafts.rows,
+    onOpenDraft: draft => setOpenDraft(draft.id),
+    roomLooks: roomLooks.looks,
+    otherBots: otherBots,
+    badgeFor: badgeFor,
+    onOpenOther: openOtherBot,
+    hostUrl: statusUrl,
+    savedHosts: savedHostUrls,
+    mixedOrder: mixedBotOrder.order,
+    onMoveMixed: mixedBotOrder.drop,
+    onMoveBot: botOrder.drop,
+    onMoveRoom: roomOrder.drop,
+    farFor: farFor,
+    onCreateFarDraft: roomDrafts.ownBots.length ? createFarDraft : undefined,
+    onNewGroup: connected && groupRooms.capabilities?.supported === true
+                ? () => {
+                    setNewGroupOpen(true)
+                    void roomDrafts.refresh()
+                    void roomDrafts.refreshPeople()
+                  }
+                : undefined,
+    copies: roomCopies.copies,
+    copiesWaiting: copiesWaiting,
+    onOpenCopy: copy => {
+              setOpenCopy(copy.id)
+              setOpenRoom(null)
+              setSection('room')
+            },
+    work: workByBot,
+  }
+
   return (
     <GlowContext.Provider value={glowOf}>
       {shownConfirm && !ring ? (
@@ -1827,16 +1903,7 @@ function Shell({
                 runningIds={runningIds}
               />
             ) : botsSideShown && orderedRoster ? (
-              <BotSideList
-                bots={orderedRoster}
-                profile={selected.profile ?? 'default'}
-                selectedId={chat.storedId ?? selected.id}
-                work={work.snapshot}
-                workByBot={workByBot}
-                onOpenBot={openBot}
-                onOpenWork={item => setSelected({ id: item.sessionId, profile: selected.profile, title: shownTitle(item) })}
-                onBotsHome={() => setSection('bots')}
-              />
+              <BotsHome {...botsHomeProps} side={{ openProfile: selected.profile ?? 'default' }} />
             ) : (
               <ChatList
                 rows={listedRows}
@@ -1908,6 +1975,32 @@ function Shell({
                   ) : null}
                 </div>
                 <div className="chat-head-actions">
+                  {workHere && work.snapshot ? (
+                    <button
+                      className={`chat-head-work${showWork ? ' active' : ''}${(work.snapshot?.needsYou ?? 0) > 0 ? ' needs' : ''}`}
+                      aria-pressed={showWork}
+                      title={showWork ? t('Hide workstreams') : t('Show workstreams')}
+                      onClick={() => {
+                        if (!workOpen) {
+                          showFiles(false)
+                          setArtifactsOpen(false)
+                        }
+                        setWorkOpen(!workOpen)
+                      }}
+                    >
+                      <Icon name="tasks" />
+                      <span>{t('Workstreams')}</span>
+                      {(work.snapshot?.needsYou ?? 0) > 0 ? (
+                        <span className="chat-head-count" aria-label={t('{count} needs you', { count: work.snapshot?.needsYou ?? 0 })}>
+                          {work.snapshot?.needsYou}
+                        </span>
+                      ) : (work.snapshot?.ready ?? 0) > 0 ? (
+                        <span className="chat-head-count ready" aria-label={t('{count} ready', { count: work.snapshot?.ready ?? 0 })}>
+                          {work.snapshot?.ready}
+                        </span>
+                      ) : null}
+                    </button>
+                  ) : null}
                   <select
                     className="chat-head-mode"
                     aria-label={t('Voice mode')}
@@ -1982,6 +2075,7 @@ function Shell({
                     expired={expiredQuestions}
                     profile={selected.profile}
                     author={botTitle}
+                    face={chatFace}
                     onQuote={setQuote}
                     onCommand={text => void onSend(text)}
                     teammates={glowBots}
@@ -2223,6 +2317,7 @@ function Shell({
               />
             ) : showWork ? (
               <WorkPanel
+                key={selected.profile ?? 'default'}
                 profile={selected.profile}
                 botName={workBot?.title ?? 'Hermes'}
                 snapshot={work.snapshot}
@@ -2246,7 +2341,8 @@ function Shell({
                 chat={beside}
                 sessionAuthority={status.sessionAuthority === true}
                 connected={connected}
-                author={roster.bots?.find(b => b.name === (beside.profile ?? 'default'))?.title ?? 'Hermes'}
+                author={besideBot?.title ?? 'Hermes'}
+                face={besideFace}
                 display={chatDisplay}
                 onSwap={swapBeside}
                 onClose={() => setBeside(null)}
@@ -2258,6 +2354,13 @@ function Shell({
               />
             ) : null}
           </KeptPane>
+        ) : null}
+        {/* A group chat, New Bot and Edit Bot keep the bots beside them, as an open Bot Chat does. */}
+        {section === 'room' || section === 'bots' ? (
+          <BotsHome
+            {...botsHomeProps}
+            side={{ openRoomId: section === 'room' ? (shownCopy?.roomId ?? openRoom?.roomId) : undefined, openProfile: editingBot?.name }}
+          />
         ) : null}
         {section === 'chats' ? null : section === 'bots' && newBot ? (
           <NewBot
@@ -2283,65 +2386,7 @@ function Shell({
           />
         ) : section === 'bots' && editingBot ? (
           <BotEditor key={editingBot.name} bot={editingBot} onClose={closeBotEditor} onSaved={() => void roster.refresh()} />
-        ) : section === 'bots' ? (
-          <BotsHome
-            bots={orderedRoster}
-            error={roster.error}
-            runningProfiles={runningProfiles}
-            rooms={orderedRooms}
-            canStartRooms={groupRooms.capabilities?.supported === true && connected}
-            onOpen={openBot}
-            onAsk={askBot}
-            onOpenRoom={showRoom}
-            onCreateRoom={groupRooms.create}
-            onEdit={connected ? setEditingBot : undefined}
-            hidden={roster.hidden}
-            onNewBot={connected ? () => setNewBot(true) : undefined}
-            onAction={connected ? botAction : undefined}
-            notice={botNotice}
-            onDismissNotice={() => setBotNotice(null)}
-            invites={roomInvites.rows}
-            onOpenInvite={invite => setOpenInvite(invite.id)}
-            drafts={roomDrafts.rows}
-            onOpenDraft={draft => setOpenDraft(draft.id)}
-            roomLooks={roomLooks.looks}
-            otherBots={otherBots}
-            badgeFor={badgeFor}
-            onOpenOther={openOtherBot}
-            hostUrl={statusUrl}
-            savedHosts={savedHostUrls}
-            mixedOrder={mixedBotOrder.order}
-            onMoveMixed={mixedBotOrder.drop}
-            onMoveBot={botOrder.drop}
-            onMoveRoom={roomOrder.drop}
-            farFor={farFor}
-            onCreateFarDraft={roomDrafts.ownBots.length ? createFarDraft : undefined}
-            onNewGroup={
-              connected && groupRooms.capabilities?.supported === true
-                ? () => {
-                    setNewGroupOpen(true)
-                    void roomDrafts.refresh()
-                    void roomDrafts.refreshPeople()
-                  }
-                : undefined
-            }
-            copies={roomCopies.copies}
-            copiesWaiting={copiesWaiting}
-            onOpenCopy={copy => {
-              setOpenCopy(copy.id)
-              setOpenRoom(null)
-              setSection('room')
-            }}
-            work={workByBot}
-            onWork={bot => {
-              openBot(bot)
-              if (bot.botChatId) {
-                showFiles(false)
-                setWorkOpen(true)
-              }
-            }}
-          />
-        ) : section === 'tasks' ? (
+        ) : section === 'bots' ? null : section === 'tasks' ? (
           <Tasks
             bots={orderedRoster}
             connected={connected}

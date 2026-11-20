@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { ChatWindowRequest, ConnectionStatus } from '@shared/ipc'
 import { useChatDisplay } from '../state/display'
+import { useBots } from '../state/useBots'
 import { useDashboardProfiles } from '../state/useDashboardProfiles'
 import { BesideChatPane } from './BesideChat'
+import { useReplyFace } from './BotsHome'
 
 /**
  * A chat in a window of its own, after the phone's V2ChatWindow: the pane's
@@ -19,6 +21,8 @@ export function ChatWindow({ chat }: { chat: ChatWindowRequest }) {
   const connected = status?.phase === 'open'
   useDashboardProfiles(status?.phase, status?.url)
   const display = useChatDisplay(chat.profile, connected, true)
+  // The chat's bot, for the face on each reply as in the main window.
+  const face = useReplyFace(useBots(connected).bots?.find(b => b.name === (chat.profile ?? 'default')))
   useEffect(() => {
     document.title = chat.title || 'Conduit'
   }, [chat.title])
@@ -34,6 +38,7 @@ export function ChatWindow({ chat }: { chat: ChatWindowRequest }) {
         connected={connected}
         author={chat.author ?? 'Hermes'}
         display={display}
+        face={face}
         onOpenInMain={() => {
           window.conduit.openChat({ storedId: chat.id, profile: chat.profile, title: chat.title })
           window.close()

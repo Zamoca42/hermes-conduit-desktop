@@ -140,7 +140,7 @@ function restartRow(state: RestartState): Row | null {
  * Hermes, Check for Updates, and Restart Gateway with each step as it lands.
  */
 export function HostActions({ host, connected }: { host: string; connected: boolean }) {
-  const { update, restart } = useHostActions(host)
+  const { update, restart, version } = useHostActions(host)
   const busy = updateInProgress(update) || restartInProgress(restart) || !connected
 
   // Hermes answers from its cache, so opening Settings is cheap; an update's outcome stays.
@@ -179,7 +179,7 @@ export function HostActions({ host, connected }: { host: string; connected: bool
     <>
       <dt>{t('Version')}</dt>
       <dd className="host-actions">
-        {check?.currentVersion ? <div>{check.currentVersion}</div> : null}
+        {(check?.currentVersion ?? version) ? <div>{check?.currentVersion ?? version}</div> : null}
         {row ? <Status row={row} onDismiss={update.kind === 'checked' || update.kind === 'checking' ? undefined : () => dismissUpdate(host)} /> : null}
         {check && canUpdateHere(check) && check.commits.length ? (
           <div className="host-news">
