@@ -6,7 +6,7 @@
  * picked in Settings. The relay's pushes reach phones only, so this is how a
  * computer hears of a call. A ring settled on another device (answered on
  * the iPhone, declined) stops here at the next ask; a decline here tells
- * Hermes, as the iPhone's does.
+ * Hermes, as the iPhone's does, and so does a miss when no iPhone is paired.
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
@@ -42,6 +42,8 @@ export interface Ring {
   at: number
   /** Still ringing, or settled on some device: answered (a call started anywhere), declined or missed. */
   state: 'ringing' | 'answered' | 'declined' | 'missed'
+  /** No iPhone is paired with its profile: a miss here is this computer's to tell Hermes. */
+  reportsMiss: boolean
 }
 
 const STATES = ['ringing', 'answered', 'declined', 'missed'] as const
@@ -52,6 +54,8 @@ const str = (v: unknown) => (typeof v === 'string' ? v : '')
 export function ringsFrom(body: unknown, profile?: string): { rings: Ring[]; now: number | null } {
   const r = (body ?? {}) as Record<string, unknown>
   const now = typeof r.now === 'number' ? r.now : null
+  // An older plugin leaves it out: its calls rang an iPhone, which reports the miss.
+  const reportsMiss = r.paired === false
   const rings = (Array.isArray(r.rings) ? r.rings : []).flatMap((raw): Ring[] => {
     const e = (raw ?? {}) as Record<string, unknown>
     if (!str(e.id) || typeof e.at !== 'number') return []
@@ -67,7 +71,8 @@ export function ringsFrom(body: unknown, profile?: string): { rings: Ring[]; now
         title: str(e.title),
         sessionIds: Array.isArray(e.session_ids) ? e.session_ids.filter((s): s is string => typeof s === 'string' && !!s) : [],
         at: e.at,
-        state: (STATES as readonly string[]).includes(str(e.state)) ? (e.state as Ring['state']) : 'ringing'
+        state: (STATES as readonly string[]).includes(str(e.state)) ? (e.state as Ring['state']) : 'ringing',
+        reportsMiss
       }
     ]
   })
@@ -92,20 +97,20 @@ export const PRESENCE_CAPABILITY = 'hermes-call-presence'
 const PRESENCE_S = 90
 const PRESENCE_RENEW_MS = 30_000
 
-/** The decline Hermes hears in that chat's next turn, as the iPhone reports one; it also stops this ring wherever it still rings on a computer. */
-export const declineBody = (ring: Ring) => ({
+/** The decline or miss Hermes hears in that chat's next turn, as the iPhone reports one; it also stops this ring wherever it still rings on a computer. */
+export const declineBody = (ring: Ring, outcome: 'declined' | 'missed' = 'declined') => ({
   call_id: ring.id,
   session_ids: ring.sessionIds,
-  outcome: 'declined',
+  outcome,
   kind: ring.kind,
   title: ring.title,
   reason: ring.reason,
   age_s: 0
 })
 
-export function declineOnHost(ring: Ring): void {
+export function declineOnHost(ring: Ring, outcome: 'declined' | 'missed' = 'declined'): void {
   if (!ring.sessionIds.length) return
-  void gateway.http('POST', withProfile(OUTCOMES_PATH, ring.profile), declineBody(ring), 10_000).catch(() => undefined)
+  void gateway.http('POST', withProfile(OUTCOMES_PATH, ring.profile), declineBody(ring, outcome), 10_000).catch(() => undefined)
 }
 
 /**
