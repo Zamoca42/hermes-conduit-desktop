@@ -510,6 +510,8 @@ interface ItemProps {
   item: TranscriptItem
   /** Who answers in this chat, for "Replying to". */
   author: string
+  /** The answering bot's picture, heading each reply with its name and time, as on the phone. */
+  face?: React.ReactNode
   onQuote?: (request: QuoteRequest) => void
   /** The card's click for a quote, when the quoted reply is loaded. */
   jump: (quote: string) => (() => void) | undefined
@@ -662,6 +664,7 @@ function ReplyActions({ messageKey, text, menu, react }: { messageKey: string; t
 function Item({
   item,
   author,
+  face,
   onQuote,
   jump,
   onRetry,
@@ -728,6 +731,15 @@ function Item({
     case 'assistant': {
       const reply = (
         <div className={`assistant${item.streaming ? ' streaming' : ''}`} data-key={item.key}>
+          <div className="reply-head">
+            {face ?? (
+              <span className="reply-mark" aria-hidden="true">
+                {author.trim().charAt(0).toUpperCase() || 'H'}
+              </span>
+            )}
+            <span className="reply-name">{author}</span>
+            {item.at ? <span className="time">{clock(item.at)}</span> : null}
+          </div>
           {followedUp ? (
             <span className="followed-up">
               <span aria-hidden="true">✦</span>
@@ -965,6 +977,7 @@ export function Transcript({
   expired = [],
   profile,
   author = 'Hermes',
+  face,
   onQuote,
   onCommand,
   display = DEFAULT_DISPLAY,
@@ -986,8 +999,10 @@ export function Transcript({
   expired?: ExpiredQuestion[]
   /** The chat's profile, whose files its pictures are read from. */
   profile?: string
-  /** Who answers in this chat, named on "Replying to". */
+  /** Who answers in this chat, named on "Replying to" and over each reply. */
   author?: string
+  /** The answering bot's picture over each reply; its initial when left out. */
+  face?: React.ReactNode
   /** Quote goes to the composer; without it there is only Copy. */
   onQuote?: (request: QuoteRequest) => void
   /** Runs a slash command for ⋯'s Retry (`/retry`) and Edit and resend (`/undo N`). */
@@ -1150,6 +1165,7 @@ export function Transcript({
       key={item.key}
       item={item}
       author={author}
+      face={face}
       onQuote={onQuote}
       jump={jump}
       onRetry={actions.retryKey.has(item.key) ? retry : undefined}

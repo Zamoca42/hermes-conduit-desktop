@@ -7,7 +7,7 @@ import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
 import { arrange, farBotFor, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
-import { BotsHome, type BotAction } from './components/BotsHome'
+import { BotAvatar, BotsHome, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
 import { BotScreen } from './components/BotScreen'
 import { ChatList, type MoveTarget } from './components/ChatList'
@@ -517,7 +517,8 @@ function Shell({
   const glowBots = useMemo(() => [...(roster.bots ?? []), ...roster.hidden], [roster.bots, roster.hidden])
   // Thinking and Tool cards as the profile's settings say; read again after a visit to Settings.
   const chatDisplay = useChatDisplay(selected.profile, connected, section === 'chats')
-  const botTitle = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))?.title ?? 'Hermes'
+  const chatBot = roster.bots?.find(b => b.name === (selected.profile ?? 'default'))
+  const botTitle = chatBot?.title ?? 'Hermes'
   const [quote, setQuote] = useState<QuoteRequest | null>(null)
   // A quote lands in the composer it was made for, not again on the way back to Chats.
   useEffect(() => {
@@ -837,6 +838,7 @@ function Shell({
   const panelWidth = shownPanelWidth(panelLive ?? panelStored, windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
   // A chat beside the open one: only where both fit, else the pane hides until the window widens.
   const [beside, setBeside] = useState<BesideChat | null>(null)
+  const besideBot = beside ? roster.bots?.find(b => b.name === (beside.profile ?? 'default')) : undefined
   const besideFits = besideChatFits(windowWidth, listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
   const sameProfileAs = (a?: string, b?: string) => (a ?? 'default').toLowerCase() === (b ?? 'default').toLowerCase()
   // The chats in windows of their own (up to three), from the main process.
@@ -1994,6 +1996,7 @@ function Shell({
                     expired={expiredQuestions}
                     profile={selected.profile}
                     author={botTitle}
+                    face={chatBot ? <BotAvatar bot={chatBot} size={22} /> : undefined}
                     onQuote={setQuote}
                     onCommand={text => void onSend(text)}
                     teammates={glowBots}
@@ -2258,7 +2261,8 @@ function Shell({
                 chat={beside}
                 sessionAuthority={status.sessionAuthority === true}
                 connected={connected}
-                author={roster.bots?.find(b => b.name === (beside.profile ?? 'default'))?.title ?? 'Hermes'}
+                author={besideBot?.title ?? 'Hermes'}
+                face={besideBot ? <BotAvatar bot={besideBot} size={22} /> : undefined}
                 display={chatDisplay}
                 onSwap={swapBeside}
                 onClose={() => setBeside(null)}
