@@ -21734,6 +21734,21 @@
     "zh-Hans": "在 Conduit 中打开这个邀请，将你的 Hermes 与我的关联。",
     "zh-Hant": "在 Conduit 中開啟這個邀請，將你的 Hermes 與我的連結。"
   },
+  "Open chat": {
+    "de": "Chat öffnen",
+    "es": "Abrir chat",
+    "fr": "Ouvrir le chat",
+    "id": "Buka obrolan",
+    "it": "Apri chat",
+    "ja": "チャットを開く",
+    "ko": "채팅 열기",
+    "pl": "Otwórz czat",
+    "pt-BR": "Abrir chat",
+    "ru": "Открыть чат",
+    "tr": "Sohbeti aç",
+    "zh-Hans": "打开聊天",
+    "zh-Hant": "打開聊天"
+  },
   "Open {ref}’s chat": {
     "de": "Chat von {ref} öffnen",
     "es": "Abrir el chat de {ref}",
@@ -28348,21 +28363,6 @@
     "tr": "Kartın tam özetini ve Hermes’in yazdığı satırı gösterir.",
     "zh-Hans": "显示卡片的完整摘要和 Hermes 写下的那一行。",
     "zh-Hant": "顯示卡片的完整摘要和 Hermes 寫下的那一行。"
-  },
-  "Shows this bot’s work": {
-    "de": "Zeigt die Arbeit dieses Bots",
-    "es": "Muestra el trabajo de este bot",
-    "fr": "Affiche le travail de ce bot",
-    "id": "Menampilkan pekerjaan bot ini",
-    "it": "Mostra il lavoro di questo bot",
-    "ja": "このボットの作業を表示",
-    "ko": "이 봇의 작업 표시",
-    "pl": "Pokazuje pracę tego bota",
-    "pt-BR": "Mostra o trabalho deste bot",
-    "ru": "Показывает работу этого бота",
-    "tr": "Bu botun işini gösterir",
-    "zh-Hans": "显示此机器人的工作",
-    "zh-Hant": "顯示此機器人的工作"
   },
   "Shows you as {name}": {
     "de": "Zeigt dich als {name}",

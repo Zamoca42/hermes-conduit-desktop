@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { noteDashboardProfiles, setDashboardProfilesHost } from '../src/renderer/src/state/dashboardProfile'
-import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, stripText, workPath, needsYou, sameWork, workTone } from '../src/renderer/src/state/work'
+import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, workPath, needsYou, sameWork, workTone } from '../src/renderer/src/state/work'
 
 const answer = {
   policy: 'on',
@@ -48,9 +48,6 @@ describe('workstreams', () => {
     expect(statusText(snapshot.items[1]!)).toBe('Needs you')
     expect(statusText(snapshot.items[3]!)).toBe('Waiting on Nahida')
     expect(needsYou(snapshot.items[1]!)).toBe(true)
-    expect(stripText(snapshot)).toBe('2 working · 1 needs you')
-    expect(stripText(parseWork({ resolved_count: 1 }))).toBe('Work')
-    expect(stripText(parseWork({}))).toBeNull()
   })
 
   it('lists pinned, then active with what needs you first, then recent', () => {
@@ -105,5 +102,10 @@ describe('workTone', () => {
     expect(tone({ status: 'failed' })).toBe('failed')
     expect(tone({ status: 'done' })).toBe('done')
     expect(tone({ status: 'running', closed: true })).toBe('done')
+    expect(tone({ status: 'waiting' })).toBe('working')
+    expect(tone({ status: 'stopped' })).toBe('done')
+    expect(workTone(parseItem({ ref: 'A1', kind: 'ask_out', status: 'waiting', bot: 'Nahida' })!)).toBe('working')
+    expect(workTone(parseItem({ ref: 'A2', kind: 'ask_in', status: 'needs_you', bot: 'Nahida' })!)).toBe('needs')
+    expect(workTone(parseItem({ ref: 'A3', kind: 'ask_out', status: 'answered' })!)).toBe('done')
   })
 })

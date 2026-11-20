@@ -165,9 +165,11 @@ export type WorkTone = 'needs' | 'working' | 'ready' | 'failed' | 'done'
 export function workTone(item: WorkItem): WorkTone {
   if (needsYou(item)) return 'needs'
   if (item.closed) return 'done'
+  // As the phone's BotWorkLook.tint: a status that needs you is orange on an ask's row too.
+  if (item.status === 'needs_you' || item.status === 'interrupted') return 'needs'
   if (item.status === 'running' || item.status === 'starting' || item.status === 'waiting') return 'working'
   if (item.status === 'ready') return 'ready'
-  if (item.status === 'failed' || item.status === 'stopped') return 'failed'
+  if (item.status === 'failed') return 'failed'
   return 'done'
 }
 
@@ -220,16 +222,6 @@ export function statusText(item: WorkItem): string {
   }
   if (item.kind === 'ask_in') return item.status === 'done' ? t('Answered') : t('{bot} asks', { bot: other })
   return statusWord(item.status)
-}
-
-/** The words under a Bot Chat's title ("2 working · 1 needs you"), or null with no work to show. */
-export function stripText(snapshot: WorkSnapshot): string | null {
-  const parts: string[] = []
-  if (snapshot.working > 0) parts.push(t('{count} working', { count: snapshot.working }))
-  if (snapshot.needsYou > 0) parts.push(t('{count} needs you', { count: snapshot.needsYou }))
-  if (snapshot.ready > 0) parts.push(t('{count} ready', { count: snapshot.ready }))
-  if (!parts.length && (snapshot.items.length || snapshot.resolvedCount > 0)) return t('Work')
-  return parts.length ? parts.join(' · ') : null
 }
 
 /** The panel's lists: Pinned, Active (what needs you first), Recent. */

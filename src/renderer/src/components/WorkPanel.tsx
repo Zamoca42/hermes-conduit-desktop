@@ -67,7 +67,9 @@ function WorkCard({
   }
 
   const tone = workTone(item)
-  const mark = tone === 'needs' ? 'bell' : tone === 'working' ? 'spinner' : tone === 'failed' ? 'close' : 'check'
+  // The mark follows the status, as the phone's BotWorkLook.symbol: a stopped card is grey with a stop mark, not a check.
+  const mark =
+    tone === 'needs' ? 'bell' : tone === 'working' ? 'spinner' : tone === 'failed' ? 'close' : !item.closed && item.status === 'stopped' ? 'stop' : 'check'
 
   return (
     <div className={`work-card tone-${tone}`}>
@@ -84,7 +86,9 @@ function WorkCard({
                 <Icon name="pin" />
               </span>
             ) : null}
-            <span className={`status-chip tone-${tone}`}>{statusText(item)}</span>
+            <span className={`status-chip tone-${tone}`} title={statusText(item)}>
+              <span className="status-chip-text">{statusText(item)}</span>
+            </span>
           </span>
           <span className="work-card-title">{shownTitle(item)}</span>
         </button>
@@ -162,9 +166,9 @@ function WorkCard({
           ) : null}
           <div className="work-buttons">
             {item.sessionId && item.kind === 'workstream' ? (
-              <button className="secondary" onClick={() => onOpenChat(item)}>
+              <button className="secondary" aria-label={t('Open {ref}’s chat', { ref: item.ref })} onClick={() => onOpenChat(item)}>
                 <Icon name="chats" />
-                {t('Open {ref}’s chat', { ref: item.ref })}
+                {t('Open chat')}
               </button>
             ) : null}
             {item.actions
@@ -174,12 +178,15 @@ function WorkCard({
                   {actionTitle(action)}
                 </button>
               ))}
-            <span className="work-buttons-gap" />
-            {item.manage.map(manage => (
-              <button key={manage} className="ghost" disabled={busy} onClick={() => void act(manage)}>
-                {manageTitle(manage, botName)}
-              </button>
-            ))}
+            {item.manage.length ? (
+              <span className="work-manage">
+                {item.manage.map(manage => (
+                  <button key={manage} className="ghost" disabled={busy} onClick={() => void act(manage)}>
+                    {manageTitle(manage, botName)}
+                  </button>
+                ))}
+              </span>
+            ) : null}
           </div>
         </>
       ) : null}

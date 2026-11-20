@@ -154,7 +154,7 @@ import { advancedSections, chatSections, workspaceSections } from './state/profi
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
 import { WorkPanel } from './components/WorkPanel'
 import { useWork, useWorkSessions } from './state/useWork'
-import { shownTitle, statusText, stripText, type WorkItem } from './state/work'
+import { shownTitle, statusText, type WorkItem } from './state/work'
 import { VoiceCall } from './components/VoiceCall'
 import { VoiceModeCapsule } from './components/VoiceModeCapsule'
 import { CallPictureControls } from './components/CallPictureControls'
@@ -1953,22 +1953,8 @@ function Shell({
               <div className="chat-head">
                 <div className="chat-titles">
                   {title ? <div className="chat-title">{title}</div> : null}
-                  {openBotChat && work.snapshot && stripText(work.snapshot) ? (
-                    <button
-                      className={`chat-subtitle work-line${work.snapshot.needsYou ? ' needs' : ''}`}
-                      aria-expanded={workOpen}
-                      title={t('Shows this bot’s work')}
-                      onClick={() => {
-                        if (!workOpen) {
-                          showFiles(false)
-                          setArtifactsOpen(false)
-                        }
-                        setWorkOpen(!workOpen)
-                      }}
-                    >
-                      {stripText(work.snapshot)}
-                    </button>
-                  ) : workItem && workBot ? (
+                  {/* A Bot Chat's work is counted on the Workstreams button beside it (Eric, 2026-11-20), not again under its name. */}
+                  {workItem && workBot ? (
                     <button
                       className="chat-subtitle"
                       title={t('Back to {bot}', { bot: workBot.title })}
@@ -2003,6 +1989,10 @@ function Shell({
                       ) : (work.snapshot?.ready ?? 0) > 0 ? (
                         <span className="chat-head-count ready" aria-label={t('{count} ready', { count: work.snapshot?.ready ?? 0 })}>
                           {work.snapshot?.ready}
+                        </span>
+                      ) : (work.snapshot?.working ?? 0) > 0 ? (
+                        <span className="chat-head-count working" aria-label={t('{count} working', { count: work.snapshot?.working ?? 0 })}>
+                          {work.snapshot?.working}
                         </span>
                       ) : null}
                     </button>
