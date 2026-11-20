@@ -741,6 +741,11 @@ function Shell({
     }
     setEditingBot(bot)
   }
+  /** New Bot from the bots sidebar: it opens on Bots wherever the sidebar is. */
+  const newBotFromSide = () => {
+    if (section !== 'bots') setSection('bots')
+    setNewBot(true)
+  }
   const closeBotEditor = () => {
     setEditingBot(null)
     const back = profileEditReturn.current
@@ -1718,19 +1723,19 @@ function Shell({
     const same = (name: string | null) => bots.find(b => b.name.toLowerCase() === name?.toLowerCase())
     openBot(same(lastBot.current) ?? [...bots].sort((a, b) => (b.lastActive ?? 0) - (a.lastActive ?? 0))[0])
   }, [section, newBot, editingBot, orderedRoster, roster.bots, openBot])
-  const botsHomeProps: ComponentProps<typeof BotsHome> = {
+  const botsHomeProps: Omit<ComponentProps<typeof BotsHome>, 'side'> = {
     bots: orderedRoster,
     error: roster.error,
     runningProfiles: runningProfiles,
     rooms: orderedRooms,
     canStartRooms: groupRooms.capabilities?.supported === true && connected,
     onOpen: openBot,
-    onAsk: askBot,
     onOpenRoom: showRoom,
     onCreateRoom: groupRooms.create,
-    onEdit: connected ? setEditingBot : undefined,
+    // Beside a chat or a group chat, Edit Bot and New Bot open on Bots, and closing goes back.
+    onEdit: connected ? editProfile : undefined,
     hidden: roster.hidden,
-    onNewBot: connected ? () => setNewBot(true) : undefined,
+    onNewBot: connected ? newBotFromSide : undefined,
     onAction: connected ? botAction : undefined,
     notice: botNotice,
     onDismissNotice: () => setBotNotice(null),
@@ -1765,13 +1770,6 @@ function Shell({
               setSection('room')
             },
     work: workByBot,
-    onWork: bot => {
-              openBot(bot)
-              if (bot.botChatId) {
-                showFiles(false)
-                setWorkOpen(true)
-              }
-            },
   }
 
   return (

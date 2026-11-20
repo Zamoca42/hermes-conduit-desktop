@@ -127,23 +127,6 @@ export function lastLineOf(preview: string | undefined): string | undefined {
   return plainLine(previewText(text), 240) || undefined
 }
 
-/** Bots home's layout for how many bots there are (the phone's C, A and grid). */
-export function homeLayout(count: number): 'one' | 'two' | 'grid' {
-  return count <= 1 ? 'one' : count === 2 ? 'two' : 'grid'
-}
-
-/**
- * The grid's face for the bots it shows, after the phone's BotPortraitStep
- * (Eric, 2026-11-19, 1b): a few large, more smaller, so a quiet Bots home
- * fills and twelve or more still fit. `column` is the narrowest tile.
- */
-export function gridStep(count: number): { face: number; column: number } {
-  if (count <= 4) return { face: 112, column: 200 }
-  if (count <= 9) return { face: 96, column: 176 }
-  if (count <= 12) return { face: 84, column: 160 }
-  return { face: 72, column: 144 }
-}
-
 /** A `profiles.get_asset` answer as an image URL, or null when there's no picture. */
 export function avatarUrl(result: unknown): string | null {
   if (!result || typeof result !== 'object') return null
