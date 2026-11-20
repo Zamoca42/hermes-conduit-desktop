@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import {
+  CHECK_PATH,
   canUpdateHere,
   dismissRestart,
   restartInProgress,
@@ -17,7 +18,9 @@ import {
   type UpdateStep
 } from '../state/hostActions'
 
-const request = (method: 'GET' | 'POST', path: string) => gateway.http(method, path, method === 'POST' ? {} : undefined, 30_000)
+// Hermes' update check probes its checkout's git remotes and can take most of a minute (40 s on a real host).
+const request = (method: 'GET' | 'POST', path: string) =>
+  gateway.http(method, path, method === 'POST' ? {} : undefined, path.startsWith(CHECK_PATH) ? 90_000 : 30_000)
 
 interface Row {
   title: string
