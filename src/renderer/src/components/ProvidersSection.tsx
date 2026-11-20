@@ -27,6 +27,7 @@ import {
 import { readConfig, updateConfig, valueAt, withValue, type Http } from '../state/profileConfig'
 import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 const request = (method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number) => gateway.http(method, path, body, timeoutMs)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -204,6 +205,7 @@ export function ProvidersSection({ profile, profileName, profiles, defaultProvid
 }
 
 function Header({ title, onBack }: { title: string; onBack: () => void }) {
+  useMouseBack(onBack)
   const head = useRef<HTMLDivElement>(null)
   // A page opens where the list was, at the foot of Models: bring it into view.
   useEffect(() => {

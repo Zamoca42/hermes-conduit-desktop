@@ -22,6 +22,7 @@ import { DEVICE_NAME, PREFS_PATH, installationId } from '../state/pinnedOrder'
 import { gateway } from '../gateway'
 import { Icon } from './icons'
 import { APP_ICONS, appIconUrl, chooseAppIcon, useAppIcon } from '../state/appIcon'
+import { useMouseBack } from '../state/mouseBack'
 
 const pageTitle = (page: LaunchPage) =>
   page === 'bots' ? t('Bots') : page === 'chats' ? t('Chats') : page === 'tasks' ? t('Tasks') : page === 'pulse' ? t('Pulse') : t('Artifacts')
@@ -61,6 +62,7 @@ const rgb = (hex: string): [number, number, number] => [1, 3, 5].map(i => parseI
  * the dashboard as the first tab of the phone's layout (launchTab.ts).
  */
 export function AppearancePage({ host, onBack }: { host: string; onBack: () => void }) {
+  useMouseBack(onBack)
   const [opensOn, setOpensOn] = useState<LaunchPage>(() => launchPage(host))
   const [openFailed, setOpenFailed] = useState(false)
   const chooseOpensOn = (page: LaunchPage) => {

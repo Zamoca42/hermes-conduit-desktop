@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import {
+  CHECK_PATH,
   canUpdateHere,
   dismissRestart,
   restartInProgress,
@@ -17,7 +18,9 @@ import {
   type UpdateStep
 } from '../state/hostActions'
 
-const request = (method: 'GET' | 'POST', path: string) => gateway.http(method, path, method === 'POST' ? {} : undefined, 30_000)
+// Hermes' update check probes its checkout's git remotes and can take most of a minute (40 s on a real host).
+const request = (method: 'GET' | 'POST', path: string) =>
+  gateway.http(method, path, method === 'POST' ? {} : undefined, path.startsWith(CHECK_PATH) ? 90_000 : 30_000)
 
 interface Row {
   title: string
@@ -25,14 +28,14 @@ interface Row {
   /** The detail is Hermes' own log line, shown verbatim. */
   log?: boolean
   command?: string
-  tone: 'busy' | 'good' | 'warn' | 'bad'
+  tone: 'busy' | 'good' | 'news' | 'warn' | 'bad'
 }
 
 function Status({ row, onDismiss }: { row: Row; onDismiss?: () => void }) {
   return (
     <div className={`host-status tone-${row.tone}`} role="status">
       <span className="host-status-mark" aria-hidden="true">
-        {row.tone === 'busy' ? <span className="spinner" /> : row.tone === 'good' ? '✓' : '!'}
+        {row.tone === 'busy' ? <span className="spinner" /> : row.tone === 'good' ? '✓' : row.tone === 'news' ? '↑' : '!'}
       </span>
       <div className="host-status-text">
         <strong>{row.title}</strong>
@@ -65,7 +68,7 @@ function updateRow(state: UpdateState): Row | null {
       return { title: t('Checking for updates…'), tone: 'busy' }
     case 'checked': {
       const check = state.check
-      if (canUpdateHere(check)) return { title: available(check), tone: 'good' }
+      if (canUpdateHere(check)) return { title: available(check), tone: 'news' }
       // An install this dashboard can't update in place.
       if (check.updateAvailable) return { title: available(check), detail: check.message, command: check.updateCommand, tone: 'warn' }
       if (check.behind === undefined && !check.canApply && check.updateCommand)

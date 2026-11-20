@@ -27,6 +27,7 @@ import { HostedAppPage, HostedAppsDirectory, HostedAppsSection } from './HostedA
 import { useHostedApps } from '../state/useHostedApps'
 import type { AppsRequest } from '../state/appsDirectory'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -80,6 +81,7 @@ function Switch({ label, checked, disabled, onChange }: { label: string; checked
  * opens on the apps signed in through Nous Portal, above the MCP servers.
  */
 export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, onBack }: Props) {
+  useMouseBack(onBack)
   const [profile, setProfile] = useState(initialProfile)
   const [tab, setTabState] = useState<CapabilityTab>(storedTab)
   const [query, setQuery] = useState('')
@@ -90,6 +92,7 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, on
   const [errors, setErrors] = useState<Partial<Record<CapabilityTab, string>>>({})
   const [problem, setProblem] = useState<string | null>(null)
   const [open, setOpen] = useState<{ skill: Skill; text: string | null; error?: string } | null>(null)
+  useMouseBack(open ? () => setOpen(null) : null)
   const [openServer, setOpenServer] = useState<string | null>(null)
   const [hubOpen, setHubOpen] = useState(false)
   // Connectors' Apps, through Nous Portal: the directory or an app's page over the tab.

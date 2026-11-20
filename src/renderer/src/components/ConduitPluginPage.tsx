@@ -25,6 +25,7 @@ import {
   type UpdateStep
 } from '../state/plugin'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const httpCode = (e: unknown) => (e as { code?: unknown })?.code
@@ -172,6 +173,7 @@ function elapsed(ms: number): string {
 
 /** Settings > Conduit plugin, after the phone's: the version, what an update brings, Update, and what the plugin does here. */
 export function ConduitPluginPage({ onBack }: { onBack: () => void }) {
+  useMouseBack(onBack)
   const [status, setStatus] = useState<PluginStatus>({ state: 'unknown' })
   const [checking, setChecking] = useState(true)
   const [release, setRelease] = useState<PluginRelease>({ version: null, changelog: null })

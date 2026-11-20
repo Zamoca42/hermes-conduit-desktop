@@ -31,6 +31,7 @@ import {
 } from '../state/usage'
 import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 interface Props {
   /** The profiles to choose from, when there's more than one. */
@@ -154,6 +155,7 @@ function DailyBars({ report, language }: { report: UsageReport; language?: strin
 const quotasKey = (profile?: string) => `rpc:model.options:quotas:${profile || 'default'}`
 
 export function UsagePage({ bots, profile: initialProfile, onBack }: Props) {
+  useMouseBack(onBack)
   const language = locale()
   const [days, setDays] = useState(30)
   const [profile, setProfile] = useState(initialProfile)

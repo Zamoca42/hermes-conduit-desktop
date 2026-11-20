@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
 import type { PairEvent, PairHost } from '@shared/ipc'
 import { t } from '@shared/i18n'
+import { useMouseBack } from '../state/mouseBack'
 
 type Stage =
   | { kind: 'starting' }
@@ -24,6 +25,7 @@ function hostLabel(host: PairHost): string {
  * person says they match.
  */
 export function PairWithPhone({ onBack }: { onBack: () => void }) {
+  useMouseBack(onBack)
   const [stage, setStage] = useState<Stage>({ kind: 'starting' })
   const [round, setRound] = useState(0)
   const [now, setNow] = useState(Date.now())

@@ -24,6 +24,7 @@ import {
 } from '../state/hostedApps'
 import type { HostedApps } from '../state/useHostedApps'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 
@@ -131,6 +132,7 @@ export function HostedAppsSection({
 }
 
 function Head({ title, onBack }: { title: string; onBack: () => void }) {
+  useMouseBack(onBack)
   return (
     <div className="pulse-head">
       <button className="staged-remove" aria-label={t('Back')} title={t('Back')} onClick={onBack}>

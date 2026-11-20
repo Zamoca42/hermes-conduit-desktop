@@ -16,6 +16,7 @@ import {
   type Section
 } from '../state/profileConfig'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -41,6 +42,7 @@ interface Props {
  * every other config save, and a row Hermes' schema doesn't list isn't shown.
  */
 export function ConfigPage({ title, subtitle, sections, bots, profile: initialProfile, onBack, children }: Props) {
+  useMouseBack(onBack)
   const [profile, setProfile] = useState(initialProfile)
   const [config, setConfig] = useState<Record<string, unknown> | null>(null)
   const [schema, setSchema] = useState<Set<string> | null>(null)

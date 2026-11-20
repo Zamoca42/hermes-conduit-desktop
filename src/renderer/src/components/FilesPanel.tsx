@@ -24,6 +24,7 @@ import {
   type WorkspaceSearch
 } from '../state/workspace'
 import { Icon } from './icons'
+import { useMouseBack } from '../state/mouseBack'
 import { saveHostFile, sayIfFailed } from '../state/saveMedia'
 
 interface Props {
@@ -304,10 +305,13 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
     return listed.entries.map(entry => row(entry, depth))
   }
 
+  const closeViewer = () => (open?.draft !== undefined && !window.confirm(t('Discard unsaved changes?')) ? undefined : setOpen(null))
+  useMouseBack(open ? closeViewer : null)
+
   const viewer = open ? (
     <div className="ws-viewer">
       <div className="ws-viewer-head">
-        <button className="staged-remove" aria-label={t('Back')} title={t('Back')} onClick={() => (open.draft !== undefined && !window.confirm(t('Discard unsaved changes?')) ? undefined : setOpen(null))}>
+        <button className="staged-remove" aria-label={t('Back')} title={t('Back')} onClick={closeViewer}>
           ‹
         </button>
         <span className="ws-viewer-name" title={open.entry.path}>
