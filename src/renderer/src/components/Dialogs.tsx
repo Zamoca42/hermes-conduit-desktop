@@ -42,7 +42,8 @@ function DialogSheet({ dialog }: { dialog: Dialog }) {
 
   const label = dialog.options.confirm ?? t('OK')
   return (
-    <div className="shortcuts-backdrop dialog-backdrop" onClick={() => cancel(dialog)}>
+    // Its presses stay its own, so a popover under it (the Model picker) doesn't take one as a click outside.
+    <div className="shortcuts-backdrop dialog-backdrop" onMouseDown={e => e.stopPropagation()} onClick={() => cancel(dialog)}>
       <div
         className="shortcuts-sheet consent-sheet conduit-dialog"
         role={dialog.kind === 'tell' ? 'alertdialog' : 'dialog'}

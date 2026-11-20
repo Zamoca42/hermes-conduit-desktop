@@ -26,8 +26,8 @@ export function isBackButton(event: { button: number }): boolean {
 
 /** What counts as a Back on screen. */
 export const BACK_SELECTOR = 'button[data-back], button:has(> svg[data-icon="back"])'
-/** A dialog or sheet in front of the page. */
-const MODAL_SELECTOR = '[aria-modal="true"], .shortcuts-backdrop'
+/** A dialog, sheet or overlay in front of the page; each closes on Esc. */
+const MODAL_SELECTOR = '[aria-modal="true"], .shortcuts-backdrop, .picture-viewer, .page-full, .model-picker'
 
 interface Node {
   parentElement: Node | null

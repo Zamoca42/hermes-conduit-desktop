@@ -148,6 +148,11 @@ export function HostActions({ host, connected }: { host: string; connected: bool
     if (connected && ['idle', 'checked', 'checkFailed'].includes(update.kind)) void startCheck(host, request, false)
     // Once per host and connection.
   }, [host, connected])
+  // A finished update cleared (dismissed, or Hermes back after it) checks again, so the version shows.
+  const cleared = update.kind === 'idle'
+  useEffect(() => {
+    if (connected && cleared) void startCheck(host, request, false)
+  }, [cleared])
 
   const check = update.kind === 'checked' ? update.check : null
   const row = updateRow(update)

@@ -128,3 +128,19 @@ describe('gateway restart', () => {
     expect(await runRestart(run, () => {})).toEqual({ kind: 'restarted', sharedProfiles: ['default', 'nahida'] })
   })
 })
+
+describe("a finished update's outcome in the store", () => {
+  it('stops speaking for the banner once Hermes is reachable, and dismisses', async () => {
+    const { startUpdate, hostReachable, dismissUpdate, hostActionsNow, updateBanner } = await import('../src/renderer/src/state/hostActions')
+    await startUpdate('https://a.example', () => Promise.reject(new Error('refused')), 'fallback', () => {})
+    expect(hostActionsNow().update.kind).toBe('failed')
+    expect(updateBanner(hostActionsNow().update)).toBe('failed')
+    hostReachable('https://other.example')
+    expect(updateBanner(hostActionsNow().update)).toBe('failed')
+    hostReachable('https://a.example')
+    expect(hostActionsNow().update).toMatchObject({ kind: 'failed', back: true })
+    expect(updateBanner(hostActionsNow().update)).toBeNull()
+    dismissUpdate('https://a.example')
+    expect(hostActionsNow().update.kind).toBe('idle')
+  })
+})
