@@ -2082,7 +2082,7 @@ function Shell({
                     expired={expiredQuestions}
                     profile={selected.profile}
                     author={botTitle}
-                    face={chatBot ? <BotAvatar bot={chatBot} size={22} /> : undefined}
+                    face={chatBot ? moving => <BotAvatar bot={chatBot} size={22} moving={moving} /> : undefined}
                     onQuote={setQuote}
                     onCommand={text => void onSend(text)}
                     teammates={glowBots}
@@ -2348,7 +2348,7 @@ function Shell({
                 sessionAuthority={status.sessionAuthority === true}
                 connected={connected}
                 author={besideBot?.title ?? 'Hermes'}
-                face={besideBot ? <BotAvatar bot={besideBot} size={22} /> : undefined}
+                face={besideBot ? moving => <BotAvatar bot={besideBot} size={22} moving={moving} /> : undefined}
                 display={chatDisplay}
                 onSwap={swapBeside}
                 onClose={() => setBeside(null)}

@@ -41,7 +41,7 @@ export function BesideChatPane({
   connected: boolean
   author: string
   /** The answering bot's picture over each reply. */
-  face?: React.ReactNode
+  face?: (moving: boolean) => React.ReactNode
   display?: ChatDisplay
   onSwap?: () => void
   onClose?: () => void

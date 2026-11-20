@@ -37,7 +37,7 @@ export type BotAction = "pin" | "unpin" | "duplicate" | "hide" | "show" | "delet
 /** A bot's picture, else its starter face (on the color Hermes keeps for it, when it has one). */
 /**
  * A bot's face. A moving picture plays only where the face is what you're
- * looking at (`moving`: the open bot in the bots sidebar, the editor), as on the phone,
+ * looking at (`moving`: the bots sidebar, the newest reply's face, the editor),
  * and never with Reduce Motion; everywhere else it keeps its first frame.
  */
 export function BotAvatar({ bot, size, moving = false, host }: { bot: Bot; size: number; moving?: boolean; host?: string }) {
@@ -781,7 +781,7 @@ export function BotsHome({
                 {...tileDrag(tile)}
               >
                 <span className="bot-side-face bot-tile-face">
-                  <BotAvatar bot={bot} size={30} moving={open} host={tile.own ? undefined : tile.host} />
+                  <BotAvatar bot={bot} size={30} moving host={tile.own ? undefined : tile.host} />
                   {dropTarget === tile.key ? (
                     <span className="drop-plus" aria-hidden="true">
                       <Icon name="plus" />

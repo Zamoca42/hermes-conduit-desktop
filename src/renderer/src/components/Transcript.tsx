@@ -505,13 +505,15 @@ function toolTitle(name: string, done: boolean): string {
 }
 
 interface ItemProps {
+  newest?: boolean
   /** This reply answers a turn Hermes took on its own (Predictive follow-ups). */
   followedUp?: boolean
   item: TranscriptItem
   /** Who answers in this chat, for "Replying to". */
   author: string
   /** The answering bot's picture, heading each reply with its name and time, as on the phone. */
-  face?: React.ReactNode
+  /** The bot's face on a reply, moving on the newest one. */
+  face?: (moving: boolean) => React.ReactNode
   onQuote?: (request: QuoteRequest) => void
   /** The card's click for a quote, when the quoted reply is loaded. */
   jump: (quote: string) => (() => void) | undefined
@@ -665,6 +667,7 @@ function Item({
   item,
   author,
   face,
+  newest,
   onQuote,
   jump,
   onRetry,
@@ -732,7 +735,7 @@ function Item({
       const reply = (
         <div className={`assistant${item.streaming ? ' streaming' : ''}`} data-key={item.key}>
           <div className="reply-head">
-            {face ?? (
+            {face?.(!!newest) ?? (
               <span className="reply-mark" aria-hidden="true">
                 {author.trim().charAt(0).toUpperCase() || 'H'}
               </span>
@@ -1002,7 +1005,8 @@ export function Transcript({
   /** Who answers in this chat, named on "Replying to" and over each reply. */
   author?: string
   /** The answering bot's picture over each reply; its initial when left out. */
-  face?: React.ReactNode
+  /** The bot's face on a reply, moving on the newest one. */
+  face?: (moving: boolean) => React.ReactNode
   /** Quote goes to the composer; without it there is only Copy. */
   onQuote?: (request: QuoteRequest) => void
   /** Runs a slash command for ⋯'s Retry (`/retry`) and Edit and resend (`/undo N`). */
@@ -1166,6 +1170,7 @@ export function Transcript({
       item={item}
       author={author}
       face={face}
+      newest={item.key === newestReply}
       onQuote={onQuote}
       jump={jump}
       onRetry={actions.retryKey.has(item.key) ? retry : undefined}
