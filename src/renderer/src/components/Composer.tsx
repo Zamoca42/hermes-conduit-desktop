@@ -48,6 +48,10 @@ interface Props {
   checkAttachments?: (attachments: StagedAttachment[]) => string | null
   /** A quote from the transcript: words go in the draft, a whole message becomes the "Replying to" chip. */
   quote?: QuoteRequest | null
+  /** Files to stage now (Quick ask's screenshot), once per id. */
+  stageFiles?: { id: number; files: File[] } | null
+  /** Ask Hermes About Screen beside Attach: takes the screen and stages it (Quick ask); `capturing` while it runs. */
+  screenshot?: { take: () => void; capturing: boolean }
   /** Bumped to send what's in the draft now (a tapped takeover made the chat Conduit's). */
   sendNow?: number
   /** Suggested replies, best first: shown while the draft is empty and nothing is staged. */
@@ -97,6 +101,8 @@ export function Composer({
   onStagedChange,
   checkAttachments,
   quote,
+  stageFiles,
+  screenshot,
   sendNow = 0,
   replies: guessed,
   onSuggestion,
@@ -208,6 +214,9 @@ export function Composer({
   // Files dropped on the chat around the composer attach too.
   const stageRef = useRef(stage)
   stageRef.current = stage
+  useEffect(() => {
+    if (stageFiles?.files.length) void stageRef.current(stageFiles.files)
+  }, [stageFiles])
   useEffect(() => {
     const zone = dropZone?.current
     if (!zone || !canAttach) return
@@ -798,6 +807,17 @@ export function Composer({
                   e.target.value = ''
                 }}
               />
+              {screenshot ? (
+                <button
+                  className="attach"
+                  aria-label={t('Ask Hermes About Screen')}
+                  title={t('Ask Hermes About Screen')}
+                  disabled={disabled || screenshot.capturing}
+                  onClick={screenshot.take}
+                >
+                  <Icon name={screenshot.capturing ? 'spinner' : 'image'} />
+                </button>
+              ) : null}
             </>
           ) : null}
           {mentionBots?.length ? (

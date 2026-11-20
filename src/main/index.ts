@@ -445,7 +445,8 @@ function registerIpc(): void {
     }
   })
   ipcMain.handle(IPC.pageUrl, (_event, html: unknown) => pageUrl(html))
-  ipcMain.handle(IPC.screenshot, () => captureScreen())
+  // From the window that asks: a call's screenshot steps the main window aside, Quick ask's steps itself aside.
+  ipcMain.handle(IPC.screenshot, event => captureScreen(BrowserWindow.fromWebContents(event.sender) ?? mainWindow))
   ipcMain.handle(IPC.liveOpenMinted, async (event, path: unknown) => {
     if (typeof path !== 'string' || !LIVE_TOKEN_PATHS.some(allowed => path === allowed || path.startsWith(`${allowed}?`)))
       return { ok: false, error: 'Not a live token route.' }
@@ -611,13 +612,12 @@ function macMenu(): Menu {
 }
 
 /**
- * The screen Conduit's window is on, for a call's screenshot (the phone's
- * Ask Hermes About Screen): the window steps aside for the capture, then
- * comes back. Null when the system gives no picture (on a Mac, until Screen
- * Recording is allowed for Conduit).
+ * The screen the asking window is on, for a call's screenshot or Quick ask's
+ * (the phone's Ask Hermes About Screen): the window steps aside for the
+ * capture, then comes back. Null when the system gives no picture (on a Mac,
+ * until Screen Recording is allowed for Conduit).
  */
-async function captureScreen(): Promise<string | null> {
-  const win = mainWindow
+async function captureScreen(win: BrowserWindow | null): Promise<string | null> {
   const display = win ? screen.getDisplayMatching(win.getBounds()) : screen.getPrimaryDisplay()
   const size = { width: Math.round(display.size.width * display.scaleFactor), height: Math.round(display.size.height * display.scaleFactor) }
   const shown = !!win && win.isVisible() && !win.isMinimized()
@@ -633,6 +633,9 @@ async function captureScreen(): Promise<string | null> {
   } catch {
     return null
   } finally {
-    if (shown) win!.show()
+    if (shown) {
+      win!.show()
+      win!.focus()
+    }
   }
 }
