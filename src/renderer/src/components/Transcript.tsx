@@ -9,6 +9,7 @@ import type { DelegationEntry } from '../state/timeline'
 import { ExpiredClarifyCard, RequestCard } from './RequestCard'
 import type { ExpiredQuestion } from '../state/expiredQuestions'
 import { Icon, type IconName } from './icons'
+import { JumpToLatest, atEnd } from './JumpToLatest'
 import { Markdown } from './Markdown'
 import { GatewayPicture, PictureImage, PictureProfile } from './Picture'
 import { gateway } from '../gateway'
@@ -1044,7 +1045,7 @@ export function Transcript({
     const el = scroller.current
     if (!el) return
     const onScroll = () => {
-      pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48
+      pinned.current = atEnd(el)
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
@@ -1246,6 +1247,7 @@ export function Transcript({
             </div>
           ) : null}
         </div>
+        <JumpToLatest scroller={scroller} onJump={() => (pinned.current = true)} />
       </div>
       {selectionMenu ? <SelectionMenu at={selectionMenu} items={selectionItems(selectionMenu)} onClose={closeSelectionMenu} /> : null}
     </PictureProfile.Provider>

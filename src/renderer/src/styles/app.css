@@ -468,6 +468,35 @@ a:hover {
   user-select: text;
 }
 
+.jump-latest-dock {
+  position: sticky;
+  bottom: 14px;
+  height: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.jump-latest {
+  pointer-events: auto;
+  transform: translateY(-100%);
+  width: 38px;
+  height: 38px;
+  border-radius: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.jump-latest:hover {
+  background: var(--accent-soft);
+}
+
 .transcript-inner {
   max-width: 780px;
   margin: 0 auto;

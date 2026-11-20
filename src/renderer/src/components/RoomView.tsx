@@ -36,6 +36,7 @@ import { displayName, roomUploadProblem } from "../state/attachments";
 import { keptPictures, keptStoredPicture, readRoomPicture, readStoredPicture } from "../state/roomPictures";
 import { isStoredRoomFile, linkedRoomFilesProblem } from "../state/roomFiles";
 import { t } from "@shared/i18n";
+import { JumpToLatest, atEnd } from "./JumpToLatest";
 
 interface Props {
   room: Room;
@@ -506,8 +507,7 @@ export function RoomView({ room: givenRoom, storesFiles = false, readsStoredFile
         aria-live="polite"
         onScroll={(e) => {
           const el = e.currentTarget;
-          pinned.current =
-            el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+          pinned.current = atEnd(el);
         }}
       >
         <div className="transcript-inner">
@@ -751,6 +751,7 @@ export function RoomView({ room: givenRoom, storesFiles = false, readsStoredFile
             </div>
           ) : null}
         </div>
+        <JumpToLatest scroller={scroller} onJump={() => (pinned.current = true)} />
       </div>
       <div className="room-confirms">
           {deleting === "asking" || deleting === "deleting" ? (

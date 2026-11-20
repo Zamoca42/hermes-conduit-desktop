@@ -20954,6 +20954,21 @@
     "zh-Hans": "你发送多少条消息后，Hermes 会查看有哪些关于你的内容值得记住。设为 0 则关闭记忆复盘。",
     "zh-Hant": "你傳送多少則訊息後，Hermes 會查看有哪些關於你的內容值得記住。設為 0 則關閉記憶複盤。"
   },
+  "Scroll to latest message": {
+    "de": "Zur neuesten Nachricht scrollen",
+    "es": "Desplazarse al último mensaje",
+    "fr": "Faire défiler jusqu'au dernier message",
+    "id": "Gulir ke pesan terbaru",
+    "it": "Scorri all'ultimo messaggio",
+    "ja": "最新のメッセージまでスクロール",
+    "ko": "최신 메시지로 스크롤",
+    "pl": "Przewiń do najnowszej wiadomości",
+    "pt-BR": "Rolar até a mensagem mais recente",
+    "ru": "Прокрутить к последнему сообщению",
+    "tr": "En son mesaja kaydır",
+    "zh-Hans": "滚动到最新消息",
+    "zh-Hant": "捲動到最新訊息"
+  },
   "Tool steps between skill reviews": {
     "de": "Werkzeugschritte zwischen Skill-Prüfungen",
     "es": "Pasos con herramientas entre revisiones de habilidades",
