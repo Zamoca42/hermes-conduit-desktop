@@ -38,6 +38,7 @@ import { HostBadgeMark } from './CombinedDashboards'
 import { Markdown } from './Markdown'
 import { PulseLearnedView, PulseLeftOutView } from './PulseLearned'
 import { PulseSettings } from './PulseSettings'
+import { ask } from '../state/dialogs'
 
 interface Props {
   pulse: PulseState
@@ -319,9 +320,9 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard, chips = [], onPickHo
           </button>
         </div>
       )
-    const undo = () => {
+    const undo = async () => {
       const question = proposal.kind === 'add_event' ? t('Remove it from your calendar?') : t('Remove it from your reminders?')
-      if (window.confirm(`${question}\n\n${proposal.line || card.title}`)) void act(card, () => pulse.proposal(proposal.id, 'undo'))
+      if (await ask(`${question}\n\n${proposal.line || card.title}`)) void act(card, () => pulse.proposal(proposal.id, 'undo'))
     }
     return (
       <div className="pulse-proposal-state">

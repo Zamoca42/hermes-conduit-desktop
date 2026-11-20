@@ -19,6 +19,7 @@ import {
 } from '../state/vault'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { ask } from '../state/dialogs'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const unsupported = (e: unknown) => /method not found|unknown method|-32601/i.test(message(e)) || (e as { code?: unknown })?.code === -32601
@@ -110,8 +111,8 @@ export function VaultPage({ bots, profile: initialProfile, onBack }: Props) {
     })
   }
 
-  const remove = (item: VaultItem) => {
-    if (!window.confirm(`${t('Remove this item?')}\n\n${t("Hermes forgets “{name}”. This can't be undone.", { name: item.label })}`)) return
+  const remove = async (item: VaultItem) => {
+    if (!(await ask(`${t('Remove this item?')}\n\n${t("Hermes forgets “{name}”. This can't be undone.", { name: item.label })}`, { confirm: t('Remove'), destructive: true }))) return
     void run(item.id, () => call('vault.remove', { id: item.id }))
   }
 

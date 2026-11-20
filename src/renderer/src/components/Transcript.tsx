@@ -30,6 +30,7 @@ import { ConnectionCardView } from './ConnectionCardView'
 import { PinnedReplyBar, type PinControls } from './PinnedReplies'
 import { barOrder, pinFor, pinForPassage, pinnedWhole, refreshed, resolved } from '../state/pinnedReplies'
 import { delivery, inbound, teammateName, teammateReplies } from '../state/teammateMessages'
+import { ask } from '../state/dialogs'
 
 export interface MessageMenuItem {
   label: string
@@ -1081,21 +1082,21 @@ export function Transcript({
     return { retryKey, editTurns, followUpKey }
   }, [state, onCommand])
 
-  const retry = () => {
+  const retry = async () => {
     const lastUser = state.items.map(i => i.kind).lastIndexOf('user')
     const ranSteps = state.items.slice(lastUser + 1).some(i => i.kind === 'tool')
     // Steps run again: a file written, a message sent, twice.
-    if (ranSteps && !window.confirm(`${t('Retry this reply?')}\n\n${t('Steps ran for this reply, and retrying runs them again.')}`)) return
+    if (ranSteps && !(await ask(`${t('Retry this reply?')}\n\n${t('Steps ran for this reply, and retrying runs them again.')}`))) return
     onCommand?.('/retry')
   }
 
-  const edit = (turns: number) => {
+  const edit = async (turns: number) => {
     const later = turns > 1
     if (
       later &&
-      !window.confirm(
+      !(await ask(
         `${t('Edit and resend this message?')}\n\n${t('Your later messages and the replies to them leave the chat, and this one goes back in the composer to change and send again.')}`
-      )
+      ))
     )
       return
     onCommand?.(turns > 1 ? `/undo ${turns}` : '/undo')

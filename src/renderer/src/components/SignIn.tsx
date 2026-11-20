@@ -146,7 +146,7 @@ export function SignIn({
   }
 
   const switchToSaved = savedAs ? (
-    <button className="secondary" type="button" onClick={() => switchEndingCall(hostName(savedAs)) && void window.conduit.switchHost(savedAs)}>
+    <button className="secondary" type="button" onClick={() => void switchEndingCall(hostName(savedAs)).then(ok => ok && window.conduit.switchHost(savedAs))}>
       {t('Switch')}
     </button>
   ) : null

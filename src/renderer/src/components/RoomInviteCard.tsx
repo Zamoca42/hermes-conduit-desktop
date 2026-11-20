@@ -20,6 +20,7 @@ import {
   type RoomInvite
 } from '../state/roomInvites'
 import { BotAvatar } from './BotsHome'
+import { ask } from '../state/dialogs'
 
 /**
  * An invite's join card, after the phone's RoomInviteSheet: the room, who
@@ -109,8 +110,8 @@ export function RoomInviteCard({
     void answer(joining)
   }
 
-  const decline = () => {
-    if (!window.confirm(`${t('Decline {name}?', { name: invite.name })}\n\n${t('The person who invited you is told.')}`)) return
+  const decline = async () => {
+    if (!(await ask(`${t('Decline {name}?', { name: invite.name })}\n\n${t('The person who invited you is told.')}`))) return
     void answer([])
   }
 

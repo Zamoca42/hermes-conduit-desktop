@@ -16,6 +16,7 @@ import {
   type SetupChoice,
   type SetupResult
 } from '../state/roomSetup'
+import { ask } from '../state/dialogs'
 
 interface Outcome {
   text: string
@@ -93,13 +94,13 @@ export function RoomSetupSection({ host, profile, profileName, conduitProfile }:
     setOutcome({ text: t('The gateway is taking a while to start its API server.'), checksAgain: true })
   }
 
-  const follow = (result: SetupResult, at: string) => {
+  const follow = async (result: SetupResult, at: string) => {
     const restart = result.restart
     if (!restart) return setOutcome({ text: t('Saved') })
     if (restart.busy) {
       setOutcome({ text: t('Saved. The API server starts the next time the gateway restarts.') })
       const stops = t('Chats running on it stop if it restarts now.')
-      if (window.confirm(`${t('Restart the gateway now?')}\n\n${restart.error ? `${restart.error}\n\n` : ''}${stops}`)) void setUp(true)
+      if (await ask(`${t('Restart the gateway now?')}\n\n${restart.error ? `${restart.error}\n\n` : ''}${stops}`)) void setUp(true)
     } else if (restart.started) {
       setOutcome({ text: t('Saved. The gateway is restarting to start the API server…') })
       void followRestart(at, result.state.apiServer.error)
@@ -128,17 +129,17 @@ export function RoomSetupSection({ host, profile, profileName, conduitProfile }:
     }
   }
 
-  const save = () => {
+  const save = async () => {
     if (!shown) return
     // Each room pins its members' tools when it starts: a change stops the agent answering in rooms already going.
     if (
       changesSavedCeiling(shown, picked, servers) &&
-      !window.confirm(
+      !(await ask(
         `${t('Change what rooms may use?')}\n\n${t(
           '{name} then stops answering in rooms already started with other people\'s agents, which hold it to the tools it had when they started. New rooms use these.',
           { name: profileName }
         )}`
-      )
+      ))
     )
       return
     void setUp()

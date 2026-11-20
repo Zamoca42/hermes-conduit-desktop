@@ -21,6 +21,7 @@ import {
   type ScreenStatus
 } from '../state/botScreen'
 import { Icon } from './icons'
+import { ask } from '../state/dialogs'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 type Stream = 'idle' | 'connecting' | 'live' | { lost: string }
@@ -312,8 +313,8 @@ export function BotScreen({ profile, botName, onClose }: { profile: string; botN
       const next = parseStatus(await display('display.start'))
       if (next) apply(next)
     })
-  const stop = () => {
-    if (!window.confirm(`${t('Stop the screen?')}\n\n${t("The bot's open windows close. It starts again the next time it's needed.")}`)) return
+  const stop = async () => {
+    if (!(await ask(`${t('Stop the screen?')}\n\n${t("The bot's open windows close. It starts again the next time it's needed.")}`))) return
     void perform(async () => {
       const answer = await display('display.stop')
       detach()

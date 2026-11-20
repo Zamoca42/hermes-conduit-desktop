@@ -22,6 +22,7 @@ import {
 import { scoped } from '../state/capabilities'
 import { settingsRow } from '../state/pluginSettings'
 import { PluginSettingsForm } from './PluginSettingsForm'
+import { ask, tell } from '../state/dialogs'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const restartRequest = (method: 'GET' | 'POST', path: string) => gateway.http(method, path, method === 'POST' ? {} : undefined, 30_000)
@@ -109,7 +110,7 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
     try {
       await run()
     } catch (e) {
-      window.alert(message(e))
+      void tell(message(e))
     } finally {
       setBusy(null)
       void load()
@@ -128,7 +129,7 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
     act(plugin.name, async () => {
       const outcome = parseUpdate(await gateway.http('POST', `${pluginPath(plugin.folder)}/update`, accept ? { accept_capabilities: true } : {}, 180_000))
       if (outcome.kind === 'consent') {
-        if (window.confirm(`${t('Plugin requires approval for {name}', { name: plugin.name })}\n\n${outcome.lines.join('\n')}`)) {
+        if (await ask(`${t('Plugin requires approval for {name}', { name: plugin.name })}\n\n${outcome.lines.join('\n')}`)) {
           setBusy(null)
           await update(plugin, true)
         }
@@ -138,16 +139,16 @@ export function PluginsTab({ profile, query, host }: { profile: string; query: s
       else if (outcome.restart) setRestart(true)
     })
 
-  const remove = (plugin: InstalledPlugin) => {
-    if (!window.confirm(t('Remove {name}?', { name: plugin.name }))) return
+  const remove = async (plugin: InstalledPlugin) => {
+    if (!(await ask(t('Remove {name}?', { name: plugin.name }), { confirm: t('Remove'), destructive: true }))) return
     void act(plugin.name, async () => {
       await gateway.http('DELETE', pluginPath(plugin.folder), undefined, 60_000)
       setRestart(true)
     })
   }
 
-  const install = (entry: CatalogPlugin) => {
-    if (!window.confirm(t('Install {name}?', { name: entry.title }))) return
+  const install = async (entry: CatalogPlugin) => {
+    if (!(await ask(t('Install {name}?', { name: entry.title })))) return
     void act(entry.name, async () => {
       const outcome = parseInstall(await gateway.http('POST', INSTALL_PATH, installBody(entry), 180_000), entry)
       if (outcome.restart) setRestart(true)

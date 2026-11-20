@@ -83,6 +83,7 @@ import { isResetCommand, looksLikeSlashCommand } from './state/slash'
 import { UsagePage } from './components/UsagePage'
 import { ModelsPage } from './components/ModelsPage'
 import { HostActions } from './components/HostActions'
+import { updateBanner, useHostActions } from './state/hostActions'
 import { ArtifactsPanel } from './components/ArtifactsPanel'
 import { CapabilitiesPage } from './components/CapabilitiesPage'
 import { onAppsDirectory, type AppsRequest } from './state/appsDirectory'
@@ -189,6 +190,7 @@ import { consented, isLive } from './state/consent'
 import { loadChatCalls, type CallTranscript, type ChatCall } from './state/voiceCalls'
 import type { CallResume } from './state/voiceSave'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
+import { ask, tell } from './state/dialogs'
 
 /** The host's synced preferences, for the bots' order. */
 const prefsHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
@@ -258,8 +260,8 @@ export function App() {
         subtitle={signedOut ? undefined : status.hostLabel}
         hosts={status.hosts}
         currentUrl={status.url}
-        onSwitch={url => {
-          if (!switchEndingCall(hostName(url))) return
+        onSwitch={async url => {
+          if (!(await switchEndingCall(hostName(url)))) return
           setRepairing(null)
           void window.conduit.switchHost(url)
         }}
@@ -289,8 +291,8 @@ export function App() {
           <Shell
             key={status.url}
             status={status}
-            onAddHost={() => switchEndingCall(null) && setAdding(true)}
-            onEditHost={host => switchEndingCall(null) && setEditing(host)}
+            onAddHost={() => void switchEndingCall(null).then(ok => ok && setAdding(true))}
+            onEditHost={host => void switchEndingCall(null).then(ok => ok && setEditing(host))}
             onRepair={() => status.url && setRepairing(savedHost(status.hosts, status.url))}
           />
         </SummaryHost.Provider>
@@ -342,6 +344,14 @@ function reopenedSection(host: string): Section {
 /** The saved host at `url`, or its address alone when the list doesn't have it yet. */
 function savedHost(hosts: HostSummary[] | undefined, url: string): HostSummary {
   return hosts?.find(host => host.url === url) ?? { url, method: 'password' }
+}
+
+/** The connection banner's words while an update started here has Hermes away (state/hostActions' updateBanner). */
+function updateAwayText(away: NonNullable<ReturnType<typeof updateBanner>>): string {
+  if (away === 'updating') return `${t('Updating Hermes…')} ${t("Conduit reconnects when it's back.")}`
+  if (away === 'restarting') return `${t('Hermes is restarting on the new version…')} ${t("Conduit reconnects when it's back.")}`
+  if (away === 'notBack') return `${t("Hermes hasn't come back after its update.")} ${t('The update may have stopped. If Hermes stays away, start it on the host.')}`
+  return `${t("Couldn't update Hermes")}. ${t('The update may have stopped. If Hermes stays away, start it on the host.')}`
 }
 
 function Shell({
@@ -602,7 +612,7 @@ function Shell({
       const named = file instanceof File ? file : new File([file], kind === 'screenshot' ? 'Screenshot.png' : 'Picture.png', { type: file.type || 'image/png' })
       const [attachment, frame] = await Promise.all([stageFile(named, `call-picture-${id}`), modelFrame(named)])
       if (attachment.kind !== 'image') {
-        window.alert(t('That file isn’t a picture Conduit can show.'))
+        void tell(t('That file isn’t a picture Conduit can show.'))
         return
       }
       setCallPicture({ id, kind, attachment, frame })
@@ -616,7 +626,7 @@ function Shell({
     const shot = await window.conduit.screenshot().catch(() => null)
     setPictureBusy(false)
     if (!shot) {
-      window.alert(t('Conduit couldn’t capture the screen. On a Mac, allow Screen Recording for Conduit in System Settings, then try again.'))
+      void tell(t('Conduit couldn’t capture the screen. On a Mac, allow Screen Recording for Conduit in System Settings, then try again.'))
       return
     }
     await showPicture(dataUrlBlob(shot), 'screenshot')
@@ -924,7 +934,7 @@ function Shell({
       try {
         await mutateSession(gateway.http, row.id, row.profile, patch)
       } catch (e) {
-        window.alert(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: e instanceof Error ? e.message : String(e) }))
+        void tell(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: e instanceof Error ? e.message : String(e) }))
       }
       list.refresh()
     },
@@ -941,7 +951,7 @@ function Shell({
       try {
         await moveChat(gateway.rpc, gateway.http, row.id, row.profile, target.path, status.sessionAuthority === true)
       } catch (e) {
-        window.alert(
+        void tell(
           t('Couldn’t move “{title}” to {project}: {reason}', { title: row.title, project: target.title, reason: e instanceof Error ? e.message : String(e) })
         )
       }
@@ -1162,9 +1172,9 @@ function Shell({
         } else if (kind === 'delete') {
           if (!canDelete(bot)) return null
           if (
-            !window.confirm(
+            !(await ask(
               `${t('Delete {name}?', { name: bot.title })}\n\n${t("This permanently removes the bot's profile, chats, memory and skills from the gateway.")}`
-            )
+            ))
           )
             return null
           await gateway.http('DELETE', `/api/profiles/${encodeURIComponent(bot.name)}`, undefined, 30000)
@@ -1421,14 +1431,14 @@ function Shell({
     [list.rows]
   )
 
-  const openOtherWaiting = useCallback((row: KeptWaitingRow) => {
-    if (!switchEndingCall(hostName(row.host))) return
+  const openOtherWaiting = useCallback(async (row: KeptWaitingRow) => {
+    if (!(await switchEndingCall(hostName(row.host)))) return
     openAfterSwitch(row)
     void window.conduit.switchHost(row.host)
   }, [])
   const statusUrl = status.url ?? ''
-  const openOtherChat = useCallback((row: OtherChatRow) => {
-    if (!switchEndingCall(hostName(row.host))) return
+  const openOtherChat = useCallback(async (row: OtherChatRow) => {
+    if (!(await switchEndingCall(hostName(row.host)))) return
     openChatAfterSwitch(row)
     void window.conduit.switchHost(row.host)
   }, [])
@@ -1451,13 +1461,13 @@ function Shell({
     setSection('bots')
     setNewBot(true)
   }, [connected, statusUrl, roster.bots])
-  const createBotElsewhere = useCallback((url: string, bot: NewBotCarry) => {
-    if (!switchEndingCall(hostName(url))) return
+  const createBotElsewhere = useCallback(async (url: string, bot: NewBotCarry) => {
+    if (!(await switchEndingCall(hostName(url)))) return
     newBotAfterSwitch(url, bot)
     void window.conduit.switchHost(url)
   }, [])
-  const openOtherBot = useCallback((other: OtherBot) => {
-    if (!switchEndingCall(hostName(other.host))) return
+  const openOtherBot = useCallback(async (other: OtherBot) => {
+    if (!(await switchEndingCall(hostName(other.host)))) return
     openBotAfterSwitch(other)
     void window.conduit.switchHost(other.host)
   }, [])
@@ -1571,6 +1581,8 @@ function Shell({
     setSelected({ id, profile: known?.profile ?? call.profile, title: known?.title ?? call.title })
     setSection('chats')
   }
+  // While an update started here has Hermes away, the banner follows it instead of a bare "reconnecting".
+  const updateAway = updateBanner(useHostActions(status.url ?? '').update)
   // The backdrop glows in the open chat's agent's color, and elsewhere in the profile in use's.
   const glowOf = useGlowColors(glowBots, status.url ?? '')
   const roomChatsServed = roomInvites.capabilities.includes(ROOM_CHATS_CAPABILITY)
@@ -1711,10 +1723,12 @@ function Shell({
       {ring ? <IncomingCall key={ring.id} ring={ring} onAnswer={() => answerRing(ring)} onDecline={missed => declineRing(ring, missed)} /> : null}
       {status.phase !== 'open' ? (
         <div className="banner" role="status">
-          <span className="dot warn" />
-          {status.phase === 'connecting'
-            ? t('Connecting to Hermes…')
-            : `${status.error ?? t('Not connected.')}${status.retryInSeconds ? ` ${t('Trying again in {seconds}s.', { seconds: status.retryInSeconds })}` : ''}`}
+          <span className={updateAway === 'updating' || updateAway === 'restarting' ? 'spinner' : 'dot warn'} />
+          {updateAway
+            ? updateAwayText(updateAway)
+            : status.phase === 'connecting'
+              ? t('Connecting to Hermes…')
+              : `${status.error ?? t('Not connected.')}${status.retryInSeconds ? ` ${t('Trying again in {seconds}s.', { seconds: status.retryInSeconds })}` : ''}`}
           {status.phase === 'reconnecting' ? <button onClick={() => void window.conduit.reconnect()}>{t('Try now')}</button> : null}
           {status.phase === 'reconnecting' && status.url ? <button onClick={onRepair}>{t('Repair Connection')}</button> : null}
         </div>
@@ -1855,8 +1869,8 @@ function Shell({
                 onToggleRead={toggleRead}
                 isDone={chatDone.available ? isRowDone : undefined}
                 onDone={chatDone.available ? chatDone.toggle : undefined}
-                onDelete={row => {
-                  if (window.confirm(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`))
+                onDelete={async row => {
+                  if (await ask(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`, { confirm: t('Delete'), destructive: true }))
                     void chatAction(row, null)
                 }}
                 onProjects={() => setProjectsOpen(true)}
@@ -2378,8 +2392,8 @@ function Shell({
             }}
             onOpenBoard={() => setSection('tasks')}
             chips={pulseHostChips}
-            onPickHost={url => {
-              if (!switchEndingCall(hostName(url))) return
+            onPickHost={async url => {
+              if (!(await switchEndingCall(hostName(url)))) return
               openPageAfterSwitch(url, 'pulse')
               void window.conduit.switchHost(url)
             }}
@@ -2854,15 +2868,15 @@ function Settings({
                       <span className="meta">{keptStateLabel(keptState(host.url)!)}</span>
                     ) : null}
                     {host.url === status.url ? null : (
-                      <button className="link" onClick={() => switchEndingCall(hostName(host.url)) && void window.conduit.switchHost(host.url)}>
+                      <button className="link" onClick={() => void switchEndingCall(hostName(host.url)).then(ok => ok && window.conduit.switchHost(host.url))}>
                         {t('Switch')}
                       </button>
                     )}
                     {host.url !== status.url ? (
                       <button
                         className="link danger"
-                        onClick={() => {
-                          if (window.confirm(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) {
+                        onClick={async () => {
+                          if (await ask(t('Sign out of {host} on this computer?', { host: hostName(host.url) }))) {
                             composerDrafts.dropHost(host.url)
                             void window.conduit.removeHost(host.url)
                           }

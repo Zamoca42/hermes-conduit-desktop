@@ -3,6 +3,7 @@ import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { actionNote, goalCaption, heartbeatCaption, isEmpty, loopCaption, parseControl, type SessionControl } from '../state/sessionControl'
 import { Icon } from './icons'
+import { ask } from '../state/dialogs'
 
 interface Props {
   liveId: string | null
@@ -62,7 +63,7 @@ export function ControlDock({ liveId, profile, connected, pulse }: Props) {
   const act = async (action: string, args?: Record<string, unknown>, confirm?: { title: string; body: string }) => {
     const sid = current.current
     if (!sid) return
-    if (confirm && !window.confirm(`${confirm.title}\n\n${confirm.body}`)) return
+    if (confirm && !(await ask(`${confirm.title}\n\n${confirm.body}`))) return
     setWorking(action)
     setNote(null)
     try {

@@ -330,6 +330,19 @@ export async function runRestart(run: Runner, progress: (s: RestartState) => voi
   }
 }
 
+/**
+ * What the connection banner says while Hermes is away because of an update
+ * started here, in place of a bare "reconnecting": the update's step, or
+ * that it didn't come back (the update may have stopped, and Hermes may need
+ * starting on the host). Null for anything else.
+ */
+export function updateBanner(update: UpdateState): 'updating' | 'restarting' | 'notBack' | 'failed' | null {
+  if (update.kind === 'updating') return update.step === 'restarting' ? 'restarting' : 'updating'
+  if (update.kind === 'notBackYet') return 'notBack'
+  if (update.kind === 'failed') return 'failed'
+  return null
+}
+
 /** The window's one update and one restart, for the host they started on. */
 interface HostActions {
   host: string

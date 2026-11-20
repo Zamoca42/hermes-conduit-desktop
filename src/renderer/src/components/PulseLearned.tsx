@@ -21,6 +21,7 @@ import {
 } from '../state/pulseLearned'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { ask } from '../state/dialogs'
 
 function Head({ title, onBack }: { title: string; onBack: () => void }) {
   useMouseBack(onBack)
@@ -143,9 +144,9 @@ export function PulseLearnedView({ onBack, onChanged }: { onBack: () => void; on
               <button
                 className="link danger pset-start-over"
                 disabled={working}
-                onClick={() => {
+                onClick={async () => {
                   if (
-                    window.confirm(
+                    await ask(
                       `${t('Forget everything Pulse learned?')}\n\n${t('Pulse forgets what your thumbs, Do it and Done taught it so far and learns again from what you do next. The levels you set and the lessons from your reasons stay, and Undo takes it back.')}`
                     )
                   )

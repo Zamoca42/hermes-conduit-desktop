@@ -7,6 +7,7 @@
  * filters what's listed, so no profile pick ends a call.
  */
 import { t } from '../../../shared/i18n'
+import { ask } from './dialogs'
 
 let endCall: (() => void) | null = null
 
@@ -22,11 +23,16 @@ export const callRunning = (): boolean => endCall !== null
  * signed in to yet) may go ahead: at once with no call, or once the user
  * said End Call and Switch, the call ended first.
  */
-export function switchEndingCall(destination: string | null, confirm: (message: string) => boolean = message => window.confirm(message)): boolean {
+export async function switchEndingCall(
+  destination: string | null,
+  confirm: (message: string) => boolean | Promise<boolean> = message => ask(message, { confirm: t('End Call and Switch'), destructive: true })
+): Promise<boolean> {
   const end = endCall
   if (!end) return true
   const question = t('End the call and switch?')
-  if (!confirm(destination ? `${question}\n\n${t("Switching to {destination} ends the call that's running.", { destination })}` : question)) return false
+  if (!(await confirm(destination ? `${question}\n\n${t("Switching to {destination} ends the call that's running.", { destination })}` : question))) return false
+  // The call may have ended while the question was up.
+  if (endCall !== end) return true
   end()
   endCall = null
   return true

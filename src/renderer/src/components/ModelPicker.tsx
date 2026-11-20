@@ -8,6 +8,7 @@ import { ProviderLogo } from './ProviderLogo'
 import { useModelQuickPicks } from './ModelOptions'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
+import { ask } from '../state/dialogs'
 
 interface Props {
   chat: OpenChat
@@ -79,7 +80,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
     let outcome = await setModel(model, provider)
     // A model Hermes guards (an expensive one, say) asks on the click; Cancel leaves the chat where it was.
     if (outcome.kind === 'confirm') {
-      outcome = window.confirm(outcome.message) ? await setModel(model, provider, true) : { kind: 'switched', deferred: false }
+      outcome = await ask(outcome.message) ? await setModel(model, provider, true) : { kind: 'switched', deferred: false }
     }
     // A switch leads the recent models, with the one left a click away.
     if (outcome.kind === 'switched') quick.switched({ model, provider }, inUse)

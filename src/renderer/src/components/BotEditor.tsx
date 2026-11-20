@@ -35,6 +35,7 @@ import { Icon } from './icons'
 import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
+import { ask } from '../state/dialogs'
 
 interface Props {
   bot: Bot
@@ -254,7 +255,7 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
           const answer = (await gateway.rpc('profiles.configure', pin)) as { confirm_required?: unknown; confirm_message?: unknown } | null
           if (answer?.confirm_required === true) {
             const note = typeof answer.confirm_message === 'string' && answer.confirm_message ? answer.confirm_message : t('Use This Model?')
-            if (window.confirm(note)) await gateway.rpc('profiles.configure', { ...pin, confirm_expensive_model: true })
+            if (await ask(note)) await gateway.rpc('profiles.configure', { ...pin, confirm_expensive_model: true })
             else problems.push(t('The model was not saved.'))
           }
         } catch {

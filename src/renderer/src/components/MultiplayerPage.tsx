@@ -26,6 +26,7 @@ import { lookPicture } from '../state/lookPictures'
 import type { PersonPicture } from '../state/useRoomLooks'
 import { ROOM_DASHBOARD_PROFILES_CAPABILITY, ROOM_SETUP_CAPABILITY } from '../state/roomSetup'
 import { useMouseBack } from '../state/mouseBack'
+import { ask } from '../state/dialogs'
 
 const client = roomLinksClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -156,7 +157,7 @@ export function MultiplayerPage({
 
   const unlink = async (link: RoomLink) => {
     if (changing) return
-    if (!window.confirm(`${t('Unlink {name}?', { name: link.name })}\n\n${t("This unlinks {name}'s Hermes from yours, on both sides. Linking again takes a new invite.", { name: link.name })}`)) return
+    if (!(await ask(`${t('Unlink {name}?', { name: link.name })}\n\n${t("This unlinks {name}'s Hermes from yours, on both sides. Linking again takes a new invite.", { name: link.name })}`))) return
     setChanging(link.id)
     setActionError(null)
     try {

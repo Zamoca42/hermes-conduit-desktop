@@ -5,6 +5,7 @@ import { QuickAsk } from './components/QuickAsk'
 import { ChatWindow } from './components/ChatWindow'
 import { chatWindowRequest } from '@shared/chatWindows'
 import { PictureViewerHost } from './components/Picture'
+import { DialogHost } from './components/Dialogs'
 import './styles/theme.css'
 import './styles/app.css'
 import { setLanguage } from '@shared/i18n'
@@ -23,6 +24,9 @@ if (chatWindow) document.documentElement.dataset.window = 'chat'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PictureViewerHost>{quick ? <QuickAsk /> : chatWindow ? <ChatWindow chat={chatWindow} /> : <App />}</PictureViewerHost>
+    <PictureViewerHost>
+      {quick ? <QuickAsk /> : chatWindow ? <ChatWindow chat={chatWindow} /> : <App />}
+      <DialogHost />
+    </PictureViewerHost>
   </StrictMode>
 )

@@ -26,6 +26,7 @@ import {
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
 import { saveHostFile, sayIfFailed } from '../state/saveMedia'
+import { ask, askText } from '../state/dialogs'
 
 interface Props {
   /** The chat's working folder: the tree never goes above it. */
@@ -50,6 +51,10 @@ type OpenFile = {
   /** The text being edited; undefined while reading. */
   draft?: string
   saving?: boolean
+  /** A folder's entries, for a folder a reply named (or one opened from it). */
+  folder?: WorkspaceListing
+  /** The folders opened before this one in the viewer, newest last: Back returns to them. */
+  back?: WorkspaceEntry[]
 }
 
 type Menu = { entry: WorkspaceEntry; x: number; y: number }
@@ -184,8 +189,21 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
     })
   }
 
-  const openFile = async (entry: WorkspaceEntry) => {
-    setOpen({ entry, preview: null })
+  // A folder over the tree, wherever it is on the host: its entries, each opening in turn.
+  const openFolder = async (entry: WorkspaceEntry, back: WorkspaceEntry[] = []) => {
+    const folder = { ...entry, isDirectory: true }
+    setOpen({ entry: folder, preview: null, back })
+    try {
+      const listing = parseListing(await gateway.http('GET', fsListPath(folder.path, profile)))
+      setOpen(current => (current?.entry.path === folder.path ? { ...current, folder: listing } : current))
+    } catch (e) {
+      setOpen(current => (current?.entry.path === folder.path ? { ...current, error: message(e) } : current))
+    }
+  }
+
+  const openFile = async (entry: WorkspaceEntry, back: WorkspaceEntry[] = []) => {
+    if (entry.isDirectory) return openFolder(entry, back)
+    setOpen({ entry, preview: null, back })
     try {
       if (isImage(entry.name)) {
         const raw = (await gateway.http('GET', dataUrlPath(entry.path, profile))) as { data_url?: unknown; dataUrl?: unknown } | null
@@ -206,6 +224,8 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
       }
       setOpen(current => (current?.entry.path === entry.path ? { ...current, entry: dated, preview } : current))
     } catch (e) {
+      // A path a reply named that turns out to be a folder (Hermes: "Path points to a directory") shows its entries.
+      if (/director/i.test(message(e))) return openFolder(entry, back)
       setOpen(current => (current?.entry.path === entry.path ? { ...current, error: message(e) } : current))
     }
   }
@@ -215,7 +235,8 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
   useEffect(() => {
     if (!reveal || reveal.id === revealed.current) return
     revealed.current = reveal.id
-    void openFile({ name: baseName(reveal.path), path: reveal.path.replace(/[\\/]+$/, ''), isDirectory: false })
+    const path = reveal.path.replace(/[\\/]+$/, '') || reveal.path
+    void openFile({ name: baseName(path), path, isDirectory: /[\\/]$/.test(reveal.path) })
   })
 
   const change = async (action: Parameters<typeof changePath>[0], body: Record<string, unknown>, folders: string[]) => {
@@ -230,8 +251,8 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
     }
   }
 
-  const askName = (title: string, initial = '') => {
-    const name = window.prompt(title, initial)
+  const askName = async (title: string, initial = '') => {
+    const name = await askText(title, initial)
     if (name === null) return null
     if (!validName(name)) {
       setNote(t('That name can’t be used.'))
@@ -241,7 +262,7 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
   }
 
   const create = async (folder: string, kind: 'file' | 'folder') => {
-    const name = askName(kind === 'file' ? t('New file name') : t('New folder name'))
+    const name = await askName(kind === 'file' ? t('New file name') : t('New folder name'))
     if (!name) return
     setExpanded(current => new Set(current).add(folder))
     const made = await change(kind === 'file' ? 'new-file' : 'mkdir', { path: folder, name }, [folder])
@@ -270,7 +291,7 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
       void list(parentPath(entry.path))
     } catch (e) {
       setOpen(current => (current ? { ...current, saving: false } : current))
-      if ((e as { code?: unknown }).code === 409 && window.confirm(`${message(e)}\n\n${t('Replace it with your changes?')}`)) void save(true)
+      if ((e as { code?: unknown }).code === 409 && await ask(`${message(e)}\n\n${t('Replace it with your changes?')}`)) void save(true)
       else setNote(message(e))
     }
   }
@@ -305,7 +326,14 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
     return listed.entries.map(entry => row(entry, depth))
   }
 
-  const closeViewer = () => (open?.draft !== undefined && !window.confirm(t('Discard unsaved changes?')) ? undefined : setOpen(null))
+  const closeViewer = async () => {
+    if (open?.draft !== undefined && !(await ask(t('Discard unsaved changes?')))) return
+    // Back to the folder this was opened from, if any.
+    const back = open?.back ?? []
+    const previous = back.at(-1)
+    if (previous) void openFolder(previous, back.slice(0, -1))
+    else setOpen(null)
+  }
   useMouseBack(open ? closeViewer : null)
 
   const viewer = open ? (
@@ -328,7 +356,7 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
               {open.saving ? t('Saving…') : t('Save')}
             </button>
           </>
-        ) : (
+        ) : open.entry.isDirectory ? null : (
           <>
             <button className="secondary" onClick={() => void saveHostFile(open.entry.path, profile).then(sayIfFailed)}>
               {t('Download')}
@@ -342,7 +370,26 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
         )}
       </div>
       {open.error ? <p className="error-text">{open.error}</p> : null}
-      {open.image ? (
+      {open.folder ? (
+        <div className="ws-folder">
+          {open.folder.entries.length ? null : <p className="meta">{t('Empty Folder')}</p>}
+          {open.folder.entries.map(entry => (
+            <button
+              key={entry.path}
+              className="ws-row"
+              title={entry.path}
+              draggable
+              onDragStart={e => e.dataTransfer.setData('text/plain', entry.path)}
+              onClick={() => void openFile(entry, [...(open.back ?? []), open.entry])}
+            >
+              <span className="ws-twisty" />
+              <Icon name={entry.isDirectory ? 'folder' : isImage(entry.name) ? 'image' : 'file'} />
+              <span className="ws-name">{entry.name}</span>
+              {!entry.isDirectory && entry.size !== undefined ? <span className="meta">{sizeText(entry.size)}</span> : null}
+            </button>
+          ))}
+        </div>
+      ) : open.image ? (
         <div className="ws-image">
           <img src={open.image} alt={open.entry.name} />
         </div>
@@ -516,10 +563,10 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
               ) : null}
               <button
                 role="menuitem"
-                onClick={() => {
+                onClick={async () => {
                   const entry = menu.entry
                   setMenu(null)
-                  const name = askName(t('Rename'), entry.name)
+                  const name = await askName(t('Rename'), entry.name)
                   if (name && name !== entry.name) void change('move', { path: entry.path, to: parentPath(entry.path), name }, [parentPath(entry.path)])
                 }}
               >
@@ -538,10 +585,10 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
               <button
                 role="menuitem"
                 className="danger"
-                onClick={() => {
+                onClick={async () => {
                   const entry = menu.entry
                   setMenu(null)
-                  if (window.confirm(t('Delete “{name}”? This can’t be undone.', { name: entry.name }))) void change('delete', { path: entry.path }, [parentPath(entry.path)])
+                  if (await ask(t('Delete “{name}”? This can’t be undone.', { name: entry.name }), { confirm: t('Delete'), destructive: true })) void change('delete', { path: entry.path }, [parentPath(entry.path)])
                 }}
               >
                 {t('Delete')}
