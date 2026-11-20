@@ -1,3 +1,4 @@
+import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
@@ -29,6 +30,22 @@ import { Icon } from './icons'
 const request = (method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number) => gateway.http(method, path, body, timeoutMs)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 
+/** The connected providers as last shown, kept per dashboard and profile (Screens that open on their last answer). */
+interface KeptProvider {
+  id: string
+  name: string
+  title: string
+  warn: boolean
+}
+const summaryKey = (profile: string) => `providers:summary:${profile || 'default'}`
+function keptSummary(profile: string): KeptProvider[] | null {
+  const raw = keptAnswer(summaryKey(profile))
+  if (!Array.isArray(raw)) return null
+  return raw.filter(
+    (e): e is KeptProvider => !!e && typeof e.id === 'string' && typeof e.name === 'string' && typeof e.title === 'string'
+  ).map(e => ({ ...e, warn: e.warn === true }))
+}
+
 interface Props {
   profile: string
   profileName: string
@@ -58,15 +75,22 @@ export function ProvidersSection({ profile, profileName, profiles, defaultProvid
     const mine = ++generation.current
     setError(null)
     try {
+      const keep = answerKeeper(summaryKey(profile))
       const fresh = await service.read()
-      if (generation.current === mine) setEntries(fresh)
+      if (generation.current === mine) {
+        setEntries(fresh)
+        // Which providers are connected and how, never a key, a preview or a sign-in.
+        keep(fresh.filter(isConnected).map(e => ({ id: e.id, name: e.name, title: statusTitle(e), warn: providerStatus(e) === 'oldCopy' })))
+      }
     } catch (e) {
       if (generation.current === mine) setError(message(e))
     }
   }, [service])
 
+  const [kept, setKept] = useState<KeptProvider[] | null>(null)
   useEffect(() => {
     setEntries(null)
+    setKept(keptSummary(profile))
     setOpen(null)
     setAdding(false)
     void reload()
@@ -130,6 +154,21 @@ export function ProvidersSection({ profile, profileName, profiles, defaultProvid
               {t('Try Again')}
             </button>
           </div>
+        ) : kept?.length ? (
+          // The providers connected last time, until Hermes answers; a row opens once it has.
+          <ul className="provider-list">
+            {kept.map(e => (
+              <li key={e.id}>
+                <button className="provider-row" disabled>
+                  <ProviderLogo slug={e.id} title={e.name} />
+                  <strong>{e.name}</strong>
+                  <span className="spacer" />
+                  <span className={`meta${e.warn ? ' pset-warn' : ''}`}>{e.title}</span>
+                  <Icon name="chevron" />
+                </button>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p className="meta">{t('Loading…')}</p>
         )
