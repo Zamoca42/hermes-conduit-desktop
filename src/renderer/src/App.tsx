@@ -1798,9 +1798,9 @@ function Shell({
                 isUnread={projectChatUnread}
                 runningIds={runningIds}
               />
-            ) : botsSideShown && roster.bots ? (
+            ) : botsSideShown && orderedRoster ? (
               <BotSideList
-                bots={roster.bots}
+                bots={orderedRoster}
                 profile={selected.profile ?? 'default'}
                 selectedId={chat.storedId ?? selected.id}
                 work={work.snapshot}
