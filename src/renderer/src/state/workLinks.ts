@@ -50,16 +50,33 @@ const DESKTOP_REF = new RegExp(
   'g'
 )
 
+/** Code: a fenced block (``` or ~~~, open to the end when unclosed) or an inline span of one or more backticks. */
+const CODE = /(```|~~~)[\s\S]*?(?:\1|$)|(`+)[^`]*?\2/g
+
+/** Where `text` has code, as [start, end) offsets. */
+function codeRanges(text: string): [number, number][] {
+  return [...text.matchAll(CODE)].map(m => [m.index!, m.index! + m[0].length])
+}
+
+const inCode = (ranges: [number, number][], start: number, end: number) => ranges.some(([a, b]) => start < b && end > a)
+
 /** The reply's words without its work links (and Desktop's references to them), and the links in order, each workstream once; null when it has none. */
 export function splitWorkLinks(original: string): { text: string; links: WorkLink[] } | null {
   if (!original.includes(SESSION_LINK)) return null
-  const text = original.includes('@session:') ? original.replace(DESKTOP_REF, '$1') : original
+  // A link quoted in code stays there as written.
+  const originalCode = codeRanges(original)
+  const text = original.includes('@session:')
+    ? original.replace(DESKTOP_REF, (whole: string, link: string, _id: string, offset: number) =>
+        inCode(originalCode, offset, offset + whole.length) ? whole : link
+      )
+    : original
+  const code = codeRanges(text)
   const links: WorkLink[] = []
   let kept = ''
   let cursor = 0
   for (const match of text.matchAll(WORK_LINK)) {
     const session = sessionInLink(match[2]!)
-    if (!session) continue
+    if (!session || inCode(code, match.index!, match.index! + match[0].length)) continue
     const ref = match[1]!
     if (!links.some(link => link.ref === ref)) links.push({ ref, ...session })
     let start = match.index!
@@ -80,16 +97,19 @@ export function splitWorkLinks(original: string): { text: string; links: WorkLin
 
 const REF = String.raw`@session:(?:([A-Za-z0-9][A-Za-z0-9_-]{0,63})/)?([A-Za-z0-9_](?:[A-Za-z0-9_.:-]{0,126}[A-Za-z0-9_])?)`
 const BARE_REF = new RegExp(String.raw`(?<![\w/\`@])${REF}`, 'g')
-const TARGET_REF = new RegExp(String.raw`\]\(\s*@session:(?:([A-Za-z0-9][A-Za-z0-9_-]{0,63})/)?([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})\s*\)`, 'g')
+const TARGET_REF = new RegExp(String.raw`\]\(\s*@session:(?:([A-Za-z0-9][A-Za-z0-9_-]{0,63})/)?([A-Za-z0-9_](?:[A-Za-z0-9_.:-]{0,126}[A-Za-z0-9_])?)[.:-]*\s*\)`, 'g')
 /** What's already a link: a Markdown link (its words and its address), an autolink and a bare URL. */
 const LINK_SPANS = /!?\[[^\]\n]*\]\([^)\n]*\)|<[^>\s]+>|\b[A-Za-z][A-Za-z0-9+.-]*:\/\/[^\s)]+/g
 
 /** Runs `transform` on the parts of `text` outside inline code. */
 function outsideCode(text: string, transform: (prose: string) => string): string {
-  return text
-    .split('`')
-    .map((piece, i) => (i % 2 ? piece : transform(piece)))
-    .join('`')
+  let out = ''
+  let cursor = 0
+  for (const [start, end] of codeRanges(text)) {
+    out += transform(text.slice(cursor, start)) + text.slice(start, end)
+    cursor = end
+  }
+  return out + transform(text.slice(cursor))
 }
 
 /** Runs `transform` on the parts of `text` outside links. */

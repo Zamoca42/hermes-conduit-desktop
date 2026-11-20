@@ -458,7 +458,8 @@ function AttachmentChips({ attachments }: { attachments: Attachment[] }) {
 export const Reply = memo(function Reply({ text, streaming = false }: { text: string; streaming?: boolean }) {
   // Its links to its work become cards under it, and Hermes' references to chats links to them (workLinks).
   const links = useContext(WorkLinks)
-  const split = useMemo(() => splitWorkLinks(text), [text])
+  // Only where a card can open its chat: elsewhere (a chat beside, a window, a room) the reply stays as written.
+  const split = useMemo(() => (links ? splitWorkLinks(text) : null), [text, links])
   const shown = useMemo(() => {
     const words = split ? split.text : text
     if (!links) return words
