@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
-import type { AppIconChoice, ThemeChoice } from '@shared/ipc'
+import type { ThemeChoice } from '@shared/ipc'
 import {
   ACCENTS,
   CHAT_FONTS,
@@ -21,13 +21,7 @@ import { LAUNCH_CHOICES, TABS_SYNC_KEY, keepTabs, keptTabs, launchPage, withFirs
 import { DEVICE_NAME, PREFS_PATH, installationId } from '../state/pinnedOrder'
 import { gateway } from '../gateway'
 import { Icon } from './icons'
-import appIconDark from '../assets/app-icon.png'
-import appIconLight from '../assets/app-icon-light.png'
-
-const APP_ICONS: { choice: AppIconChoice; src: string }[] = [
-  { choice: 'dark', src: appIconDark },
-  { choice: 'light', src: appIconLight }
-]
+import { APP_ICONS, appIconUrl, chooseAppIcon, useAppIcon } from '../state/appIcon'
 
 const pageTitle = (page: LaunchPage) =>
   page === 'bots' ? t('Bots') : page === 'chats' ? t('Chats') : page === 'tasks' ? t('Tasks') : page === 'pulse' ? t('Pulse') : t('Artifacts')
@@ -79,11 +73,11 @@ export function AppearancePage({ host, onBack }: { host: string; onBack: () => v
       .catch(() => setOpenFailed(true))
   }
   const [theme, setTheme] = useState<ThemeChoice>(window.conduit.theme)
-  const [appIcon, setAppIcon] = useState<AppIconChoice>(window.conduit.appIcon)
   const [accent, setAccent] = useState<Accent>(readAccent)
   const [lastCustom, setLastCustom] = useState(readLastCustom)
   const [font, setFont] = useState<ChatFontStyle>(readChatFont)
   const dark = useDark()
+  const icon = useAppIcon()
 
   return (
     <div className="pset">
@@ -130,23 +124,18 @@ export function AppearancePage({ host, onBack }: { host: string; onBack: () => v
 
       <section className="pset-section">
         <h2>{t('App icon')}</h2>
-        <p className="meta">{t('Choose the icon shown in the Dock or taskbar while Conduit runs.')}</p>
-        <div className="app-icon-choices" role="radiogroup" aria-label={t('App icon')}>
-          {APP_ICONS.map(({ choice, src }) => (
-            <button
-              key={choice}
-              role="radio"
-              aria-checked={appIcon === choice}
-              className={appIcon === choice ? 'app-icon-choice on' : 'app-icon-choice'}
-              onClick={() => {
-                setAppIcon(choice)
-                window.conduit.setAppIcon(choice)
-              }}
-            >
-              <img src={src} alt="" draggable={false} />
+        <p className="meta">
+          {window.conduit.platform === 'darwin'
+            ? t('Choose the icon shown in the Dock and the title bar.')
+            : t('Choose the icon shown on the taskbar, in the notification area and in the title bar.')}
+        </p>
+        <div className="app-icon-choices" role="group" aria-label={t('App icon')}>
+          {APP_ICONS.map(choice => (
+            <button key={choice} className="app-icon-choice" aria-pressed={icon === choice} onClick={() => chooseAppIcon(choice)}>
+              <img src={appIconUrl(choice)} alt="" draggable={false} />
               <span>
-                {themeTitle(choice)}
-                {appIcon === choice ? <Icon name="check" /> : null}
+                {choice === 'light' ? t('Light') : t('Dark')}
+                {icon === choice ? <Icon name="check" /> : null}
               </span>
             </button>
           ))}

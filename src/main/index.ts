@@ -7,7 +7,6 @@ import {
   desktopCapturer,
   globalShortcut,
   ipcMain,
-  nativeImage,
   nativeTheme,
   screen,
   shell,
@@ -19,7 +18,6 @@ import WebSocket from 'ws'
 import { LINK_SCHEME, linkUrl, linkUrlFromArgs } from '../shared/linkUrls'
 import {
   IPC,
-  type AppIconChoice,
   type GatewayEventMessage,
   type LanguageChoice,
   type MenuAction,
@@ -27,7 +25,8 @@ import {
   type OpenChatRequest,
   type RpcOutcome,
   type SignInRequest,
-  type ThemeChoice
+  type ThemeChoice,
+  type AppIconChoice
 } from '../shared/ipc'
 import { probeHost } from './auth'
 import { isPageUrl, pageUrl, registerPageScheme, servePages } from './pages'
@@ -42,7 +41,8 @@ import { createFileStore } from './store'
 import { QUICK_ASK_ACCELERATOR, QuickAsk } from './quickAsk'
 import { ChatWindowSet } from './chatWindowSet'
 import { createChatWindow } from './chatWindows'
-import { ConduitTray, trayIconPath } from './tray'
+import { ConduitTray } from './tray'
+import { applyAppIcon, watchNewWindows } from './appIcon'
 import {
   appIconChoice,
   askHostAtLaunch,
@@ -66,23 +66,6 @@ import { STALLED_CLOSE_CODE, STALLED_REASON, liveSendDecision } from './liveBack
 import { trustSystemRoots } from './systemRoots'
 
 const isMac = process.platform === 'darwin'
-
-/**
- * Settings > Appearance > App icon, after the phone's: the Dock's icon on the
- * Mac, each window's taskbar and title bar icon elsewhere. The installed app
- * keeps its own (dark) icon in Finder and the Start menu.
- */
-function applyAppIcon(window?: BrowserWindow): void {
-  const image = nativeImage.createFromPath(trayIconPath(`icon-${appIconChoice()}.png`))
-  if (image.isEmpty()) return
-  if (isMac) {
-    if (!window) app.dock?.setIcon(image)
-    return
-  }
-  for (const each of window ? [window] : BrowserWindow.getAllWindows()) {
-    if (!each.isDestroyed()) each.setIcon(image)
-  }
-}
 let mainWindow: BrowserWindow | null = null
 /** Set by Quit: until then, closing the window only hides it (Conduit stays in the tray). */
 let quitting = false
@@ -270,15 +253,20 @@ function registerIpc(): void {
       if (!window.isDestroyed()) window.webContents.reload()
     }
   })
+  ipcMain.on(IPC.theme, event => {
+    event.returnValue = themeChoice()
+  })
   ipcMain.on(IPC.appIcon, event => {
     event.returnValue = appIconChoice()
   })
-  ipcMain.on(IPC.setAppIcon, (_event, choice: AppIconChoice) => {
-    chooseAppIcon(choice)
-    applyAppIcon()
-  })
-  ipcMain.on(IPC.theme, event => {
-    event.returnValue = themeChoice()
+  ipcMain.on(IPC.setAppIcon, (event, choice: AppIconChoice) => {
+    const valid = chooseAppIcon(choice)
+    applyAppIcon(valid)
+    tray.setAppIcon(valid)
+    // Every window's title bar follows, not only the one that changed it.
+    for (const window of BrowserWindow.getAllWindows()) {
+      if (!window.isDestroyed() && window.webContents !== event.sender) window.webContents.send(IPC.setAppIcon, valid)
+    }
   })
   ipcMain.on(IPC.setTheme, (_event, choice: ThemeChoice) => {
     chooseTheme(choice)
@@ -562,12 +550,12 @@ if (!app.requestSingleInstanceLock()) {
     servePages()
     setLanguage(resolvedLanguage())
     chooseTheme(themeChoice(), false)
-    applyAppIcon()
-    app.on('browser-window-created', (_event, window) => applyAppIcon(window))
+    watchNewWindows()
     registerIpc()
     watchDeviceReports(() => send(IPC.deviceReportsChanged, null))
     createWindow()
-    tray.create()
+    applyAppIcon(appIconChoice())
+    tray.create(appIconChoice())
     quickAsk.register()
     void openSavedHosts()
     // The Dock icon brings the hidden window back.

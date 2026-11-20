@@ -11,9 +11,9 @@ import type { AppIconChoice, LanguageChoice, ThemeChoice } from '../shared/ipc'
 
 const path = () => join(app.getPath('userData'), 'settings.json')
 
-function read(): { language?: unknown; theme?: unknown; icon?: unknown; lock?: unknown; askHost?: unknown } {
+function read(): { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown; appIcon?: unknown } {
   try {
-    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown; icon?: unknown; lock?: unknown; askHost?: unknown }
+    return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown }
   } catch {
     return {}
   }
@@ -44,6 +44,21 @@ export function chooseLanguage(choice: LanguageChoice): Language {
 
 const THEMES: readonly ThemeChoice[] = ['system', 'dark', 'light']
 
+/** Settings > Appearance > App icon, as on the phone: the dark icon (the default) or the light one. */
+export function appIconChoice(): AppIconChoice {
+  return read().appIcon === 'light' ? 'light' : 'dark'
+}
+
+export function chooseAppIcon(choice: AppIconChoice): AppIconChoice {
+  const valid: AppIconChoice = choice === 'light' ? 'light' : 'dark'
+  try {
+    writeFileSync(path(), JSON.stringify({ ...read(), appIcon: valid }, null, 2))
+  } catch {
+    // Not saved: it still applies until Conduit quits.
+  }
+  return valid
+}
+
 export function themeChoice(): ThemeChoice {
   const stored = read().theme
   return THEMES.includes(stored as ThemeChoice) ? (stored as ThemeChoice) : 'system'
@@ -60,19 +75,6 @@ export function chooseTheme(choice: ThemeChoice = themeChoice(), save = true): T
     }
   }
   nativeTheme.themeSource = valid
-  return valid
-}
-
-/** The app icon picked in Settings > Appearance, dark (the phone's first) unless light was picked. */
-export const appIconChoice = (): AppIconChoice => (read().icon === 'light' ? 'light' : 'dark')
-
-export function chooseAppIcon(choice: AppIconChoice): AppIconChoice {
-  const valid: AppIconChoice = choice === 'light' ? 'light' : 'dark'
-  try {
-    writeFileSync(path(), JSON.stringify({ ...read(), icon: valid }, null, 2))
-  } catch {
-    // Not saved: it still applies until Conduit quits.
-  }
   return valid
 }
 
