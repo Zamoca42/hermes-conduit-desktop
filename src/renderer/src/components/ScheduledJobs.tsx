@@ -34,9 +34,9 @@ import {
 import { useCron } from '../state/useCron'
 import { ProfileStrip } from './ChatList'
 import { Icon } from './icons'
-import { REASONING_LEVELS, groupModels, reasoningTitle } from '../state/models'
+import { REASONING_LEVELS, reasoningTitle } from '../state/models'
 import { useModelCatalog } from '../state/modelCatalog'
-import { ModelOptions } from './ModelOptions'
+import { ModelChooser } from './ModelChooser'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 
 interface Props {
@@ -451,9 +451,7 @@ function JobEditor({
   }, [owner, loadTargets])
 
   const catalog = useModelCatalog(useMemo(() => ({ profile: owner, explicit_only: true }), [owner]))
-  const groups = useMemo(() => groupModels(catalog.providers ?? [], ''), [catalog.providers])
   const modelValue = draft.provider || draft.model ? `${draft.provider}\n${draft.model}` : ''
-  const listed = !modelValue || groups.some(group => group.slug === draft.provider && group.models.includes(draft.model))
 
   const schedule = draft.schedule
   const setSchedule = (patch: Partial<JobDraft['schedule']>) => setDraft(d => ({ ...d, schedule: { ...d.schedule, ...patch } }))
@@ -596,18 +594,17 @@ function JobEditor({
         <div className="field job-model-field">
           <label>
             {t('Model')}
-            <select
+            <ModelChooser
               value={modelValue}
+              providers={catalog.providers}
+              defaultLabel={t('Profile default')}
+              label={t('Model')}
               disabled={saving || !catalog.answered}
-              onChange={e => {
-                const [provider = '', model = ''] = e.target.value.split('\n')
+              onChange={next => {
+                const [provider = '', model = ''] = next.split('\n')
                 setDraft(d => ({ ...d, provider, model }))
               }}
-            >
-              <option value="">{t('Profile default')}</option>
-              {!listed ? <option value={modelValue}>{draft.model || draft.provider}</option> : null}
-              <ModelOptions providers={catalog.providers ?? []} groups={groups} />
-            </select>
+            />
           </label>
           <label>
             {t('Reasoning')}
