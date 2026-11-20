@@ -1131,6 +1131,19 @@ a:hover {
   margin-top: 8px;
 }
 
+/* A control's own top margin would put it below its label. */
+.settings .settings-card > dd > :first-child {
+  margin-top: 0;
+}
+
+/* A card of one block (a page whose content draws its own rows). */
+.settings-card-single {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card);
+}
+
 .settings .settings-card > :is(dt, .settings-link):first-child,
 .settings .settings-card > dt:first-child + dd {
   border-top: 0;

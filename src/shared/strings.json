@@ -20984,6 +20984,21 @@
     "zh-Hans": "滚动到最新消息",
     "zh-Hant": "捲動到最新訊息"
   },
+  "Speech providers, credentials, and device opt-in": {
+    "de": "Sprachanbieter, Zugangsdaten und Aktivierung auf dem Gerät",
+    "es": "Proveedores de voz, credenciales y activación en el dispositivo",
+    "fr": "Fournisseurs vocaux, identifiants et activation sur l'appareil",
+    "id": "Penyedia ucapan, kredensial, dan keikutsertaan perangkat",
+    "it": "Provider vocali, credenziali e attivazione sul dispositivo",
+    "ja": "音声プロバイダ、認証情報、デバイスでの有効化",
+    "ko": "음성 제공자, 자격 증명 및 기기 사용 설정",
+    "pl": "Dostawcy mowy, dane uwierzytelniające i włączenie na tym urządzeniu",
+    "pt-BR": "Provedores de fala, credenciais e ativação no aparelho",
+    "ru": "Провайдеры речи, учётные данные и включение на устройстве",
+    "tr": "Konuşma sağlayıcıları, kimlik bilgileri ve cihaz katılımı",
+    "zh-Hans": "语音提供方、凭据与设备端启用",
+    "zh-Hant": "語音供應商、認證資訊與裝置啟用設定"
+  },
   "Support": {
     "de": "Support",
     "es": "Soporte",
@@ -37018,6 +37033,21 @@
     "tr": "Conduit açıldığında, en son kullandığınız panele giriş yapmak yerine siz birini seçene kadar panelleriniz listelenir.",
     "zh-Hans": "打开 Conduit 时，仪表板会一直列出，直到你选择一个，而不是登录到你上次使用的那个。",
     "zh-Hant": "開啟 Conduit 時，儀表板會一直列出，直到你選擇一個，而不是登入你上次使用的那個。"
+  },
+  "When Hermes may phone you": {
+    "de": "Wann Hermes dich anrufen darf",
+    "es": "Cuándo puede llamarte Hermes",
+    "fr": "Quand Hermes peut vous appeler",
+    "id": "Kapan Hermes boleh menelepon Anda",
+    "it": "Quando Hermes può chiamarti",
+    "ja": "Hermesが電話してよいとき",
+    "ko": "Hermes가 전화해도 되는 때",
+    "pl": "Kiedy Hermes może do Ciebie dzwonić",
+    "pt-BR": "Quando o Hermes pode ligar para você",
+    "ru": "Когда Hermes может вам звонить",
+    "tr": "Hermes'in sizi ne zaman arayabileceği",
+    "zh-Hans": "Hermes 何时可以给你打电话",
+    "zh-Hant": "Hermes 何時可以打電話給你"
   },
   "When Hermes updates itself from an app, keep local source edits or throw them away. Terminal updates always ask.": {
     "de": "Wenn Hermes sich aus einer App aktualisiert: lokale Quelltextänderungen behalten oder verwerfen. Updates im Terminal fragen immer nach.",

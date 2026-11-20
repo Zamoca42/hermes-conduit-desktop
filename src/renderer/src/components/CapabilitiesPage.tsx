@@ -92,6 +92,7 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, on
   const [errors, setErrors] = useState<Partial<Record<CapabilityTab, string>>>({})
   const [problem, setProblem] = useState<string | null>(null)
   const [open, setOpen] = useState<{ skill: Skill; text: string | null; error?: string } | null>(null)
+  useMouseBack(open ? () => setOpen(null) : null)
   const [openServer, setOpenServer] = useState<string | null>(null)
   const [hubOpen, setHubOpen] = useState(false)
   // Connectors' Apps, through Nous Portal: the directory or an app's page over the tab.

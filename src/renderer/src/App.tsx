@@ -36,6 +36,7 @@ import { absolutePath, pathForDraft } from './state/workspace'
 import { FileLinks } from './components/Markdown'
 import { usePulse } from './state/usePulse'
 import { Icon } from './components/icons'
+import { useMouseBack } from './state/mouseBack'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
 import { TitleBar, hostName } from './components/TitleBar'
@@ -315,6 +316,15 @@ function KeptPane({ away, children }: { away: boolean; children: ReactNode }) {
 type Section = 'bots' | 'room' | 'chats' | 'tasks' | 'pulse' | 'artifacts' | 'needs' | 'settings'
 
 const REOPEN_SECTION = 'conduit.reopen-section'
+
+/** Comes back to Settings once a page that takes the whole window (Connection Setup, Add another Hermes) closes. */
+function reopenSettings(): void {
+  try {
+    sessionStorage.setItem(REOPEN_SECTION, 'settings')
+  } catch {
+    // Opens on the first tab instead.
+  }
+}
 
 /** Settings after a language change reloads the window, else the first tab the phone's layout shows (Bots until it's reordered). */
 function reopenedSection(host: string): Section {
@@ -2442,8 +2452,14 @@ function Shell({
         ) : (
           <Settings
             status={status}
-            onAddHost={onAddHost}
-            onEditHost={onEditHost}
+            onAddHost={() => {
+              reopenSettings()
+              onAddHost()
+            }}
+            onEditHost={host => {
+              reopenSettings()
+              onEditHost(host)
+            }}
             bots={(roster.bots ?? []).map(bot => ({ name: bot.name, title: bot.title }))}
             profile={selected.profile ?? 'default'}
             onEditProfile={
@@ -2517,6 +2533,22 @@ function Shell({
   )
 }
 
+/** A Settings page of rows moved off Settings home: its title and Back, as the other pages have. */
+function SettingsSubpage({ title, onBack, children }: { title: string; onBack: () => void; children: ReactNode }) {
+  useMouseBack(onBack)
+  return (
+    <div className="pset">
+      <div className="pulse-head">
+        <button className="staged-remove" aria-label={t('Back')} title={t('Back')} onClick={onBack}>
+          <Icon name="back" />
+        </button>
+        <h1>{title}</h1>
+      </div>
+      {children}
+    </div>
+  )
+}
+
 /** A Settings row that opens a page: the whole row is the button, its label on the left, what's inside on the right. */
 function SettingsLink({ label, detail, disabled, onOpen }: { label: string; detail: string; disabled?: boolean; onOpen: () => void }) {
   return (
@@ -2572,7 +2604,7 @@ function Settings({
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
   const [page, setPage] = useState<
-    'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance' | 'multiplayer'
+    'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance' | 'multiplayer' | 'voice' | 'calls'
   >('main')
   // Multiplayer shows while the host's plugin keeps Links.
   const [pluginCapabilities, setPluginCapabilities] = useState<string[]>([])
@@ -2607,6 +2639,52 @@ function Settings({
     setPage('multiplayer')
     onLinkRequestTaken()
   }, [linkRequest, onLinkRequestTaken])
+  if (page === 'voice')
+    return (
+      <main className="settings">
+        <SettingsSubpage title={t('Voice')} onBack={() => setPage('main')}>
+          <dl className="settings-card">
+            <dt>{t('Read Aloud')}</dt>
+            <dd>
+              <label className="toggle">
+                <input
+                  type="checkbox"
+                  checked={readAloudOn}
+                  onChange={e => {
+                    setReadsRepliesAloud(e.target.checked)
+                    setReadAloudOn(e.target.checked)
+                  }}
+                />
+                {t('Read replies aloud')}
+              </label>
+              <p className="meta settings-caption">
+                {t('Each reply in the open chat is read aloud as it finishes, in the voice below. Calls speak their own replies.')}
+              </p>
+              <ReadAloudVoiceSetting profile={profile} />
+              <VoiceModeSettings profile={profile} />
+            </dd>
+            {status.url ? (
+              <>
+                <dt>{t('Wake phrase')}</dt>
+                <dd>
+                  <WakePhraseSettings host={status.url} profile={profile} />
+                </dd>
+              </>
+            ) : null}
+          </dl>
+        </SettingsSubpage>
+      </main>
+    )
+  if (page === 'calls')
+    return (
+      <main className="settings">
+        <SettingsSubpage title={t('Calls from Hermes')} onBack={() => setPage('main')}>
+          <div className="settings-card settings-card-single">
+            <HermesCallSettings profile={profile} onNewChat={onNewChatWith} />
+          </div>
+        </SettingsSubpage>
+      </main>
+    )
   if (page === 'usage')
     return (
       <main className="settings">
@@ -2803,37 +2881,8 @@ function Settings({
       <section className="settings-group">
         <h2>{t('Voice')}</h2>
         <dl className="settings-card">
-          <dt>{t('Voice')}</dt>
-          <dd>
-            <label className="toggle">
-              <input
-                type="checkbox"
-                checked={readAloudOn}
-                onChange={e => {
-                  setReadsRepliesAloud(e.target.checked)
-                  setReadAloudOn(e.target.checked)
-                }}
-              />
-              {t('Read replies aloud')}
-            </label>
-            <p className="meta settings-caption">
-              {t('Each reply in the open chat is read aloud as it finishes, in the voice below. Calls speak their own replies.')}
-            </p>
-            <ReadAloudVoiceSetting profile={profile} />
-            <VoiceModeSettings profile={profile} />
-          </dd>
-          {status.url ? (
-            <>
-              <dt>{t('Wake phrase')}</dt>
-              <dd>
-                <WakePhraseSettings host={status.url} profile={profile} />
-              </dd>
-            </>
-          ) : null}
-          <dt>{t('Calls from Hermes')}</dt>
-          <dd>
-            <HermesCallSettings profile={profile} onNewChat={onNewChatWith} />
-          </dd>
+          <SettingsLink label={t('Voice')} detail={t('Speech providers, credentials, and device opt-in')} onOpen={() => setPage('voice')} />
+          <SettingsLink label={t('Calls from Hermes')} detail={t('When Hermes may phone you')} onOpen={() => setPage('calls')} />
         </dl>
       </section>
       <section className="settings-group">
