@@ -614,6 +614,36 @@
     "zh-Hans": "被 Hermes 重启停下的工作流会保持中断，不会自动接着做，因为插件没找到这个 Hermes 停止回合的方式。",
     "zh-Hant": "被 Hermes 重新啟動停下的工作流程會維持中斷，不會自動接著做，因為外掛找不到這個 Hermes 停止回合的方式。"
   },
+  "After every turn": {
+    "de": "Nach jedem Zug",
+    "es": "Después de cada turno",
+    "fr": "Après chaque tour",
+    "id": "Setelah setiap giliran",
+    "it": "Dopo ogni turno",
+    "ja": "毎ターンの後",
+    "ko": "매 턴 후",
+    "pl": "Po każdej turze",
+    "pt-BR": "Depois de cada turno",
+    "ru": "После каждого хода",
+    "tr": "Her turdan sonra",
+    "zh-Hans": "每轮之后",
+    "zh-Hant": "每輪之後"
+  },
+  "Answers when an MCP server asks Hermes’ model to write something. It doesn’t choose tools.": {
+    "de": "Antwortet, wenn ein MCP-Server Hermes’ Modell bittet, etwas zu schreiben. Werkzeuge wählt es nicht aus.",
+    "es": "Responde cuando un servidor MCP pide al modelo de Hermes que escriba algo. No elige herramientas.",
+    "fr": "Répond quand un serveur MCP demande au modèle de Hermes d’écrire quelque chose. Il ne choisit pas les outils.",
+    "id": "Menjawab saat server MCP meminta model Hermes menulis sesuatu. Tidak memilih alat.",
+    "it": "Risponde quando un server MCP chiede al modello di Hermes di scrivere qualcosa. Non sceglie gli strumenti.",
+    "ja": "MCPサーバーがHermesのモデルに文章の生成を求めたときに応答します。ツールは選びません。",
+    "ko": "MCP 서버가 Hermes의 모델에 무언가를 작성해 달라고 요청할 때 답합니다. 도구를 고르지는 않습니다.",
+    "pl": "Odpowiada, gdy serwer MCP prosi model Hermesa o napisanie czegoś. Nie wybiera narzędzi.",
+    "pt-BR": "Responde quando um servidor MCP pede ao modelo do Hermes que escreva algo. Não escolhe ferramentas.",
+    "ru": "Отвечает, когда сервер MCP просит модель Hermes что-то написать. Инструменты не выбирает.",
+    "tr": "Bir MCP sunucusu Hermes’in modelinden bir şey yazmasını istediğinde yanıt verir. Araç seçmez.",
+    "zh-Hans": "在 MCP 服务器请求 Hermes 的模型生成内容时作答。不负责挑选工具。",
+    "zh-Hant": "在 MCP 伺服器請求 Hermes 的模型產生內容時作答。不負責挑選工具。"
+  },
   "API calls": {
     "de": "API-Aufrufe",
     "es": "Llamadas a la API",
@@ -2699,6 +2729,21 @@
     "zh-Hans": "自动",
     "zh-Hant": "自動"
   },
+  "Automatic review": {
+    "de": "Automatische Prüfung",
+    "es": "Revisión automática",
+    "fr": "Revue automatique",
+    "id": "Tinjauan otomatis",
+    "it": "Revisione automatica",
+    "ja": "自動レビュー",
+    "ko": "자동 검토",
+    "pl": "Automatyczny przegląd",
+    "pt-BR": "Revisão automática",
+    "ru": "Автоматический разбор",
+    "tr": "Otomatik inceleme",
+    "zh-Hans": "自动复盘",
+    "zh-Hant": "自動複盤"
+  },
   "Available ({model})": {
     "de": "Verfügbar ({model})",
     "es": "Disponible ({model})",
@@ -2983,6 +3028,21 @@
     "tr": "Durdurulan arka plan işlemleri: {count}",
     "zh-Hans": "已停止的后台进程：{count}",
     "zh-Hant": "已停止的背景程序：{count}"
+  },
+  "Background review": {
+    "de": "Hintergrundprüfung",
+    "es": "Revisión en segundo plano",
+    "fr": "Revue en arrière-plan",
+    "id": "Tinjauan latar belakang",
+    "it": "Revisione in background",
+    "ja": "バックグラウンドレビュー",
+    "ko": "백그라운드 검토",
+    "pl": "Przegląd w tle",
+    "pt-BR": "Revisão em segundo plano",
+    "ru": "Фоновый разбор",
+    "tr": "Arka plan incelemesi",
+    "zh-Hans": "后台复盘",
+    "zh-Hant": "背景複盤"
   },
   "Bad request.": {
     "de": "Ungültige Anfrage.",
@@ -17084,6 +17144,21 @@
     "zh-Hans": "查看你的聊天",
     "zh-Hant": "查看你的聊天"
   },
+  "Looks back over a chat after each turn to decide what goes into memory and which skills to improve. Its reasoning applies only on a model of its own, which starts without the chat’s prompt cache.": {
+    "de": "Sieht sich einen Chat nach jedem Zug noch einmal an und entscheidet, was ins Gedächtnis kommt und welche Skills verbessert werden. Das Nachdenken gilt nur mit einem eigenen Modell, das ohne den Prompt-Cache des Chats beginnt.",
+    "es": "Repasa un chat después de cada turno para decidir qué va a la memoria y qué habilidades mejorar. Su razonamiento solo se aplica con un modelo propio, que empieza sin la caché de prompts del chat.",
+    "fr": "Relit une discussion après chaque tour pour décider ce qui va en mémoire et quelles compétences améliorer. Son raisonnement ne s’applique qu’avec un modèle à lui, qui démarre sans le cache de prompt de la discussion.",
+    "id": "Meninjau ulang obrolan setelah tiap giliran untuk memutuskan apa yang masuk ke memori dan skill mana yang diperbaiki. Penalarannya hanya berlaku pada model tersendiri, yang mulai tanpa cache prompt obrolan.",
+    "it": "Ripercorre una chat dopo ogni turno per decidere cosa va in memoria e quali skill migliorare. Il suo ragionamento vale solo con un modello proprio, che parte senza la cache del prompt della chat.",
+    "ja": "各ターンの後にチャットを振り返り、何を記憶に残し、どのスキルを改善するかを決めます。推論の設定は専用のモデルでのみ有効で、そのモデルはチャットのプロンプトキャッシュなしで始まります。",
+    "ko": "매 턴 후 채팅을 되돌아보며 무엇을 메모리에 남기고 어떤 스킬을 개선할지 정합니다. 추론 설정은 별도 모델에서만 적용되며, 그 모델은 채팅의 프롬프트 캐시 없이 시작합니다.",
+    "pl": "Po każdej turze przegląda czat i decyduje, co trafi do pamięci i które umiejętności poprawić. Rozumowanie działa tylko na osobnym modelu, który zaczyna bez pamięci podręcznej promptu czatu.",
+    "pt-BR": "Revê a conversa depois de cada turno para decidir o que vai para a memória e quais habilidades melhorar. O raciocínio só vale com um modelo próprio, que começa sem o cache de prompt da conversa.",
+    "ru": "После каждого хода просматривает чат и решает, что сохранить в памяти и какие навыки улучшить. Настройка рассуждений действует только на отдельной модели, которая начинает без кэша промпта чата.",
+    "tr": "Her turdan sonra sohbete dönüp bakar; neyin belleğe gireceğine ve hangi becerilerin iyileştirileceğine karar verir. Akıl yürütme ayarı yalnızca ayrı bir modelde geçerlidir; o model sohbetin istem önbelleği olmadan başlar.",
+    "zh-Hans": "每轮结束后回顾对话，决定哪些内容写入记忆、改进哪些技能。推理设置只在单独的模型上生效，该模型不带对话的提示缓存。",
+    "zh-Hant": "每輪結束後回顧對話，決定哪些內容寫入記憶、改進哪些技能。推理設定只在單獨的模型上生效，該模型不帶對話的提示快取。"
+  },
   "Looks through your chats at": {
     "de": "Sieht deine Chats durch um",
     "es": "Revisa tus chats a las",
@@ -17204,6 +17279,21 @@
     "zh-Hans": "低",
     "zh-Hant": "低"
   },
+  "MCP sampling": {
+    "de": "MCP-Sampling",
+    "es": "Muestreo MCP",
+    "fr": "Échantillonnage MCP",
+    "id": "Sampling MCP",
+    "it": "Campionamento MCP",
+    "ja": "MCPサンプリング",
+    "ko": "MCP 샘플링",
+    "pl": "Próbkowanie MCP",
+    "pt-BR": "Amostragem MCP",
+    "ru": "Сэмплинг MCP",
+    "tr": "MCP örnekleme",
+    "zh-Hans": "MCP 采样",
+    "zh-Hant": "MCP 取樣"
+  },
   "MCP Servers": {
     "de": "MCP-Server",
     "es": "Servidores MCP",
@@ -17248,21 +17338,6 @@
     "tr": "MCP sunucuları da: {list}, Özel seçimi araçlarını adlandıran odalarda.",
     "zh-Hans": "还有 MCP 服务器：{list}，仅在“自定义”选择中列出其工具的群聊里。",
     "zh-Hant": "還有 MCP 伺服器：{list}，僅在「自訂」選擇中列出其工具的群組裡。"
-  },
-  "MCP tool routing": {
-    "de": "MCP-Werkzeugauswahl",
-    "es": "Selección de herramientas MCP",
-    "fr": "Choix des outils MCP",
-    "id": "Pemilihan alat MCP",
-    "it": "Scelta degli strumenti MCP",
-    "ja": "MCPツールの振り分け",
-    "ko": "MCP 도구 선택",
-    "pl": "Wybór narzędzi MCP",
-    "pt-BR": "Escolha de ferramentas MCP",
-    "ru": "Выбор инструментов MCP",
-    "tr": "MCP araç seçimi",
-    "zh-Hans": "MCP 工具路由",
-    "zh-Hant": "MCP 工具路由"
   },
   "MCP · Custom": {
     "de": "MCP · Eigener",
@@ -20894,6 +20969,21 @@
     "zh-Hans": "通知",
     "zh-Hant": "通知"
   },
+  "Off, Hermes reviews a chat only when you ask with /refine. It’s the helper that runs most, so turning it off saves the most.": {
+    "de": "Aus prüft Hermes einen Chat nur, wenn du mit /refine darum bittest. Sie ist das Hilfsmodell, das am häufigsten läuft, also spart Ausschalten am meisten.",
+    "es": "Desactivada, Hermes revisa un chat solo cuando lo pides con /refine. Es el modelo auxiliar que más se ejecuta, así que desactivarla es lo que más ahorra.",
+    "fr": "Désactivée, Hermes ne relit une discussion que si vous le demandez avec /refine. C’est le modèle auxiliaire qui tourne le plus, donc la désactiver économise le plus.",
+    "id": "Jika mati, Hermes meninjau obrolan hanya saat Anda memintanya dengan /refine. Ini model pembantu yang paling sering berjalan, jadi mematikannya paling menghemat.",
+    "it": "Se disattivata, Hermes rivede una chat solo quando lo chiedi con /refine. È il modello ausiliario che gira di più, quindi disattivarla fa risparmiare di più.",
+    "ja": "オフにすると、Hermesは /refine で頼んだときだけチャットを振り返ります。最も頻繁に動くヘルパーなので、オフにすると最も節約になります。",
+    "ko": "끄면 Hermes는 /refine으로 요청할 때만 채팅을 검토합니다. 가장 자주 실행되는 도우미 모델이라 끄면 가장 많이 절약됩니다.",
+    "pl": "Po wyłączeniu Hermes przegląda czat tylko, gdy poprosisz o to poleceniem /refine. To model pomocniczy, który działa najczęściej, więc jego wyłączenie oszczędza najwięcej.",
+    "pt-BR": "Desligada, o Hermes revê uma conversa só quando você pede com /refine. É o modelo auxiliar que mais roda, então desligá-la é o que mais economiza.",
+    "ru": "Если выключить, Hermes разбирает чат, только когда вы просите об этом командой /refine. Это вспомогательная модель, которая запускается чаще всех, поэтому её отключение экономит больше всего.",
+    "tr": "Kapalıyken Hermes bir sohbeti yalnızca /refine ile istediğinizde inceler. En sık çalışan yardımcı model bu olduğundan kapatmak en çok tasarrufu sağlar.",
+    "zh-Hans": "关闭后，Hermes 只在你用 /refine 要求时才复盘对话。它是运行最频繁的辅助模型，关闭它最省钱。",
+    "zh-Hant": "關閉後，Hermes 只在你用 /refine 要求時才複盤對話。它是執行最頻繁的輔助模型，關閉它最省錢。"
+  },
   "OK": {
     "de": "OK",
     "es": "OK",
@@ -22408,21 +22498,6 @@
     "tr": "Seçildi ama rapor doluydu",
     "zh-Hans": "选中了，但报告已满",
     "zh-Hant": "選中了，但報告已滿"
-  },
-  "Picks which MCP tools a turn needs.": {
-    "de": "Wählt aus, welche MCP-Werkzeuge ein Zug braucht.",
-    "es": "Elige qué herramientas MCP necesita un turno.",
-    "fr": "Choisit les outils MCP dont un tour a besoin.",
-    "id": "Memilih alat MCP yang dibutuhkan satu giliran.",
-    "it": "Sceglie quali strumenti MCP servono a un turno.",
-    "ja": "各ターンに必要なMCPツールを選びます。",
-    "ko": "한 턴에 필요한 MCP 도구를 고릅니다.",
-    "pl": "Wybiera narzędzia MCP potrzebne w danej turze.",
-    "pt-BR": "Escolhe quais ferramentas MCP um turno precisa.",
-    "ru": "Выбирает, какие инструменты MCP нужны ходу.",
-    "tr": "Bir turun hangi MCP araçlarına ihtiyacı olduğunu seçer.",
-    "zh-Hans": "挑选每轮需要的 MCP 工具。",
-    "zh-Hant": "挑選每輪需要的 MCP 工具。"
   },
   "Picture": {
     "de": "Bild",
