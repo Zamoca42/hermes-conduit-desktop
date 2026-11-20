@@ -42538,5 +42538,50 @@
     "tr": "Bu, {name} profilinin Grup yönlendirici yardımcısı. Bu Hermes'te otomatik seçecek şekilde ayarlanan her grup sohbetinde kimin yanıtlayacağını seçer.",
     "zh-Hans": "这是 {name} 的群组路由辅助模型。它为这台 Hermes 上所有设为自动选择的群聊决定谁来回答。",
     "zh-Hant": "這是 {name} 的群組路由輔助模型。它為這台 Hermes 上所有設為自動選擇的群組聊天決定誰來回答。"
+  },
+  "Workstreams": {
+    "de": "Workstreams",
+    "es": "Flujos de trabajo",
+    "fr": "Flux de travail",
+    "id": "Alur kerja",
+    "it": "Flussi di lavoro",
+    "ja": "ワークストリーム",
+    "ko": "작업 스트림",
+    "pl": "Wątki pracy",
+    "pt-BR": "Fluxos de trabalho",
+    "ru": "Рабочие потоки",
+    "tr": "İş akışları",
+    "zh-Hans": "工作流",
+    "zh-Hant": "工作流程"
+  },
+  "Show workstreams": {
+    "de": "Workstreams anzeigen",
+    "es": "Mostrar flujos de trabajo",
+    "fr": "Afficher les flux de travail",
+    "id": "Tampilkan alur kerja",
+    "it": "Mostra flussi di lavoro",
+    "ja": "ワークストリームを表示",
+    "ko": "작업 스트림 보기",
+    "pl": "Pokaż wątki pracy",
+    "pt-BR": "Mostrar fluxos de trabalho",
+    "ru": "Показать рабочие потоки",
+    "tr": "İş akışlarını göster",
+    "zh-Hans": "显示工作流",
+    "zh-Hant": "顯示工作流程"
+  },
+  "Hide workstreams": {
+    "de": "Workstreams ausblenden",
+    "es": "Ocultar flujos de trabajo",
+    "fr": "Masquer les flux de travail",
+    "id": "Sembunyikan alur kerja",
+    "it": "Nascondi flussi di lavoro",
+    "ja": "ワークストリームを隠す",
+    "ko": "작업 스트림 숨기기",
+    "pl": "Ukryj wątki pracy",
+    "pt-BR": "Ocultar fluxos de trabalho",
+    "ru": "Скрыть рабочие потоки",
+    "tr": "İş akışlarını gizle",
+    "zh-Hans": "隐藏工作流",
+    "zh-Hant": "隱藏工作流程"
   }
 }

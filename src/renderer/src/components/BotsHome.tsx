@@ -186,6 +186,12 @@ interface Props {
   onOpenOther?: (other: OtherBot) => void;
   /** The host on screen: in a combined group its bots carry its badge too, so the group reads as one set. */
   hostUrl?: string;
+  /**
+   * Drawn as the sidebar beside the open chat or group chat instead of a
+   * page (Eric, 2026-11-20): the bots as rows, Group chats under them, and
+   * New Bot and New Group Chat on their headings. Names what's open.
+   */
+  side?: { openProfile?: string; openRoomId?: string };
 }
 
 /** A bot's pill: what needs you first, then what's working, else nothing. */
@@ -283,6 +289,7 @@ export function BotsHome({
   onMoveRoom,
   farFor,
   onCreateFarDraft,
+  side,
 }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -573,6 +580,322 @@ export function BotsHome({
     else join(bot.name);
   };
 
+  const draftForm = draft ? (
+        <form
+          className="room-draft"
+          onSubmit={create}
+          onDragOver={(e) => {
+            if (e.dataTransfer.types.includes(BOT_DRAG)) e.preventDefault();
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const dragged = e.dataTransfer.getData(BOT_DRAG);
+            if (dragged) join(dragged);
+          }}
+        >
+          <div className="room-draft-faces">
+            {draftBots.map((bot) => (
+              <button
+                key={bot.name}
+                type="button"
+                className="draft-face"
+                title={t('Take {name} out', { name: bot.title })}
+                onClick={() => leave(bot.name)}
+                disabled={draft.busy}
+              >
+                <BotAvatar bot={bot} size={36} />
+                <span className="draft-x" aria-hidden="true">
+                  <Icon name="close" />
+                </span>
+              </button>
+            ))}
+            {draftFar.map((member) => {
+              const badge = badgeFor?.(member.host) ?? null;
+              return (
+                <button
+                  key={member.key}
+                  type="button"
+                  className="draft-face"
+                  title={t('Take {name} out', { name: member.bot.title })}
+                  onClick={() => leaveFar(member.key)}
+                  disabled={draft.busy}
+                >
+                  <BotAvatar bot={member.bot} size={36} host={member.host} />
+                  {badge ? <span className="draft-badge"><HostBadgeMark badge={badge} /></span> : null}
+                  <span className="draft-x" aria-hidden="true">
+                    <Icon name="close" />
+                  </span>
+                </button>
+              );
+            })}
+            <span className="meta">
+              {draftCount < ROOM_MIN_MEMBERS
+                ? t('Drop or click one more bot.')
+                : draftCount >= ROOM_MAX_MEMBERS
+                  ? t('Six is the most a room holds.')
+                  : t('Click or drop more bots to add them.')}
+            </span>
+          </div>
+          <input
+            value={draft.name}
+            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+            placeholder={
+              draftCount
+                ? defaultRoomName(draftTitles)
+                : t('Room name')
+            }
+            aria-label={t('Group chat name')}
+            disabled={draft.busy}
+            autoFocus
+          />
+          <div className="room-draft-actions">
+            {draft.error ? (
+              <span className="draft-error">{draft.error}</span>
+            ) : null}
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => setDraft(null)}
+              disabled={draft.busy}
+            >
+              {t('Cancel')}
+            </button>
+            <button
+              type="submit"
+              className="primary"
+              disabled={draftCount < ROOM_MIN_MEMBERS || draft.busy}
+            >
+              {draft.busy ? t('Creating…') : t('Create')}
+            </button>
+          </div>
+        </form>
+      ) : null;
+  const menuEl = menu && onEdit ? (
+        <div
+          className="host-menu row-menu"
+          role="menu"
+          style={{
+            left: Math.min(menu.x, window.innerWidth - 200),
+            top: Math.min(menu.y, window.innerHeight - (onAction ? 220 : 80) - (canMove ? 72 : 0)),
+          }}
+        >
+          <button role="menuitem" onClick={() => onEdit(menu.bot)}>
+            {t("Edit Bot")}
+          </button>
+          {canMove ? (
+            <>
+              <button role="menuitem" disabled={!step(menu.bot, -1)} onClick={() => step(menu.bot, -1)?.()}>
+                {t("Move Earlier")}
+              </button>
+              <button role="menuitem" disabled={!step(menu.bot, 1)} onClick={() => step(menu.bot, 1)?.()}>
+                {t("Move Later")}
+              </button>
+            </>
+          ) : null}
+          {onAction ? (
+            <>
+              <button role="menuitem" disabled={busy} onClick={() => act(menu.bot.pinned ? "unpin" : "pin", menu.bot)}>
+                {menu.bot.pinned ? t("Unpin") : t("Pin")}
+              </button>
+              <button role="menuitem" disabled={busy} onClick={() => act("duplicate", menu.bot)}>
+                {t("Duplicate")}
+              </button>
+              <button role="menuitem" disabled={busy} onClick={() => act("hide", menu.bot)}>
+                {t("Hide")}
+              </button>
+              {canDelete(menu.bot) ? (
+                <button role="menuitem" className="danger" disabled={busy} onClick={() => act("delete", menu.bot)}>
+                  {t("Delete Bot")}
+                </button>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+      ) : null;
+
+  if (side) {
+    const roomRow = (key: string, faces: ReactNode, name: string, line: string | null, onClick: () => void, extra?: { className?: string; current?: boolean; waiting?: boolean; drag?: object }) => (
+      <button
+        key={key}
+        className={`row bot-side-bot bot-side-room${extra?.className ? ` ${extra.className}` : ""}`}
+        aria-current={extra?.current ? "true" : undefined}
+        onClick={onClick}
+        {...extra?.drag}
+      >
+        <span className="bot-side-face">{faces}</span>
+        <span className="bot-side-text">
+          <span className="row-title">{name}</span>
+          {line ? <span className={`meta${extra?.waiting ? " bot-side-pill needs" : ""}`}>{line}</span> : null}
+        </span>
+      </button>
+    );
+    const glyph = (name: Parameters<typeof Icon>[0]["name"]) => (
+      <span className="invite-glyph bot-side-glyph" aria-hidden="true">
+        <Icon name={name} />
+      </span>
+    );
+    const showRooms = !!rooms && (rooms.length > 0 || canDrag || !!onNewGroup || (invites?.length ?? 0) > 0 || (copies?.length ?? 0) > 0 || (drafts?.length ?? 0) > 0);
+    return (
+      <section className={`chatlist bot-side${draft ? " drafting" : ""}`} aria-label={t("Bots")}>
+        <div className="chatlist-head bot-side-head">
+          <h1>{t("Bots")}</h1>
+          {onNewBot ? (
+            <button className="round" aria-label={t("New Bot")} title={t("New Bot")} onClick={onNewBot} disabled={busy}>
+              <Icon name="plus" />
+            </button>
+          ) : null}
+        </div>
+        {notice || actionError ? (
+          <p className="error-text bots-notice bot-side-notice">
+            {actionError ?? notice}{" "}
+            {!actionError && onDismissNotice ? (
+              <button className="link" onClick={onDismissNotice}>
+                {t("OK")}
+              </button>
+            ) : null}
+          </p>
+        ) : null}
+        <div className="chatlist-scroll" {...gridDrop}>
+          {bots === null && !error ? <div className="empty">{t("Loading your bots…")}</div> : null}
+          {error ? <div className="empty">{t("Couldn’t load your bots: {error}", { error })}</div> : null}
+          {tiles.map((tile) => {
+            const { bot } = tile;
+            const open = tile.own && !side.openRoomId && !!side.openProfile && side.openProfile.toLowerCase() === bot.name.toLowerCase();
+            const picked = tile.own ? (draft?.members.includes(bot.name) ?? false) : draftFar.some((m) => m.key === tile.key);
+            const pill = tile.own ? workPill(work?.get(bot.name)) : null;
+            const badge = tile.own ? ownBadge : (badgeFor?.(tile.host) ?? null);
+            return (
+              <button
+                key={tile.key}
+                className={`row bot-side-bot${open ? " open" : ""}${picked ? " picked" : ""}${dropTarget === tile.key ? " drop-target" : ""}${moveTarget === tile.key ? " move-target" : ""}`}
+                aria-current={open ? "true" : undefined}
+                aria-pressed={picked || undefined}
+                onClick={() => {
+                  if (tile.own) return openOrPick(bot);
+                  const far = draft ? farOf(tile) : null;
+                  if (!far) return onOpenOther?.({ host: tile.host, bot });
+                  if (draftFar.some((m) => m.key === tile.key)) leaveFar(tile.key);
+                  else joinMixed([], [far]);
+                }}
+                onContextMenu={tile.own ? openMenu?.(bot) : undefined}
+                {...tileDrag(tile)}
+              >
+                <span className="bot-side-face bot-tile-face">
+                  <BotAvatar bot={bot} size={30} host={tile.own ? undefined : tile.host} />
+                  {dropTarget === tile.key ? (
+                    <span className="drop-plus" aria-hidden="true">
+                      <Icon name="plus" />
+                    </span>
+                  ) : null}
+                  {badge ? <span className="bot-tile-badge">{<HostBadgeMark badge={badge} />}</span> : null}
+                </span>
+                <span className="bot-side-text">
+                  <span className="row-title">
+                    {bot.pinned ? (
+                      <span className="pin" aria-label={t("Pinned")}>
+                        •{" "}
+                      </span>
+                    ) : null}
+                    {bot.title}
+                  </span>
+                  {pill ? (
+                    <span className={`meta bot-side-pill${pill.needs ? " needs" : ""}`}>{pill.text}</span>
+                  ) : tile.own && runningProfiles.has(bot.name) ? (
+                    <span className="meta bot-side-pill">{t("Working")}</span>
+                  ) : bot.lastLine ? (
+                    <span className="meta">{bot.lastLine}</span>
+                  ) : null}
+                </span>
+              </button>
+            );
+          })}
+          {showRooms ? (
+            <div className="bot-side-section" role="group" aria-label={t("Group chats")} {...roomsGridDrop}>
+              <div className="bot-side-section-head">
+                <h2>{t("Group chats")}</h2>
+                {onNewGroup ? (
+                  <button className="round small" aria-label={t("New Group Chat")} title={t("New Group Chat")} onClick={onNewGroup}>
+                    <Icon name="plus" />
+                  </button>
+                ) : null}
+              </div>
+              {rooms!.length === 0 && !draft && canDrag ? <p className="meta hint bot-side-hint">{t("Drag one bot onto another to start a group chat.")}</p> : null}
+              {(drafts ?? []).map((d) => roomRow(d.id, glyph(d.status === "ended" ? "bell" : "clock"), d.name, draftLine(d), () => onOpenDraft?.(d), { className: `draft-tile ${d.status}` }))}
+              {(copies ?? []).map((copy) =>
+                roomRow(
+                  copy.id,
+                  <RoomFaces room={copyRoom(copy)} bots={bots ?? []} size={22} looks={roomLooks?.[copy.roomId]} />,
+                  copy.name,
+                  copiesWaiting?.has(copy.id) ? t("Approval needed") : copyLine(copy),
+                  () => onOpenCopy?.(copy),
+                  { className: isOver(copy) ? "over" : undefined, current: side.openRoomId === copy.roomId, waiting: copiesWaiting?.has(copy.id) },
+                ),
+              )}
+              {(invites ?? [])
+                .filter((invite) => !copies?.some((c) => c.id === invite.id))
+                .map((invite) =>
+                  roomRow(
+                    invite.id,
+                    glyph(invite.status === "waiting" ? "envelope" : invite.status === "joined" ? "clock" : invite.status === "started" ? "check" : "bell"),
+                    invite.name,
+                    inviteRowLine(invite),
+                    () => onOpenInvite?.(invite),
+                    { className: `invite-tile ${invite.status}`, waiting: invite.status === "waiting" },
+                  ),
+                )}
+              {rooms!.map((room) =>
+                roomRow(
+                  room.roomId,
+                  <RoomFaces room={room} bots={bots ?? []} size={22} looks={room.linked ? roomLooks?.[room.roomId] : undefined} />,
+                  room.name,
+                  room.updatedAt ? timeLabel(room.updatedAt) : null,
+                  () => onOpenRoom(room),
+                  { className: roomTarget === room.roomId ? "move-target" : undefined, current: side.openRoomId === room.roomId, drag: roomDrag(room.roomId) },
+                ),
+              )}
+              {draft ? (
+                <div className="row bot-side-bot bot-side-room starting" aria-label={t("Group chat being started")}>
+                  <span className="bot-side-face">
+                    <RoomFaces room={{ members: draft.members.map((m) => ({ memberId: m, profile: m })) }} bots={bots ?? []} size={22} />
+                  </span>
+                  <span className="bot-side-text">
+                    <span className="row-title">{draft.name.trim() || t("New room")}</span>
+                  </span>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+          {hidden && hidden.length > 0 ? (
+            <div className="bot-side-section bots-hidden">
+              <button className="link bot-side-hidden" aria-expanded={showHidden} onClick={() => setShowHidden(!showHidden)}>
+                {t("Hidden")} ({hidden.length})
+              </button>
+              {showHidden
+                ? hidden.map((bot) => (
+                    <div key={bot.name} className="row bot-side-bot hidden-row">
+                      <span className="bot-side-face">
+                        <BotAvatar bot={bot} size={30} />
+                      </span>
+                      <span className="bot-side-text">
+                        <span className="row-title">{bot.title}</span>
+                      </span>
+                      {onAction ? (
+                        <button className="secondary" disabled={busy} onClick={() => act("show", bot)}>
+                          {t("Unhide")}
+                        </button>
+                      ) : null}
+                    </div>
+                  ))
+                : null}
+            </div>
+          ) : null}
+        </div>
+        {draftForm}
+        {menuEl}
+      </section>
+    );
+  }
+
   return (
     <main className={`bots${draft ? " drafting" : ""}`}>
       <div className="bots-scroll">
@@ -799,138 +1122,8 @@ export function BotsHome({
           ) : null}
         </div>
       </div>
-      {draft ? (
-        <form
-          className="room-draft"
-          onSubmit={create}
-          onDragOver={(e) => {
-            if (e.dataTransfer.types.includes(BOT_DRAG)) e.preventDefault();
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            const dragged = e.dataTransfer.getData(BOT_DRAG);
-            if (dragged) join(dragged);
-          }}
-        >
-          <div className="room-draft-faces">
-            {draftBots.map((bot) => (
-              <button
-                key={bot.name}
-                type="button"
-                className="draft-face"
-                title={t('Take {name} out', { name: bot.title })}
-                onClick={() => leave(bot.name)}
-                disabled={draft.busy}
-              >
-                <BotAvatar bot={bot} size={36} />
-                <span className="draft-x" aria-hidden="true">
-                  <Icon name="close" />
-                </span>
-              </button>
-            ))}
-            {draftFar.map((member) => {
-              const badge = badgeFor?.(member.host) ?? null;
-              return (
-                <button
-                  key={member.key}
-                  type="button"
-                  className="draft-face"
-                  title={t('Take {name} out', { name: member.bot.title })}
-                  onClick={() => leaveFar(member.key)}
-                  disabled={draft.busy}
-                >
-                  <BotAvatar bot={member.bot} size={36} host={member.host} />
-                  {badge ? <span className="draft-badge"><HostBadgeMark badge={badge} /></span> : null}
-                  <span className="draft-x" aria-hidden="true">
-                    <Icon name="close" />
-                  </span>
-                </button>
-              );
-            })}
-            <span className="meta">
-              {draftCount < ROOM_MIN_MEMBERS
-                ? t('Drop or click one more bot.')
-                : draftCount >= ROOM_MAX_MEMBERS
-                  ? t('Six is the most a room holds.')
-                  : t('Click or drop more bots to add them.')}
-            </span>
-          </div>
-          <input
-            value={draft.name}
-            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-            placeholder={
-              draftCount
-                ? defaultRoomName(draftTitles)
-                : t('Room name')
-            }
-            aria-label={t('Group chat name')}
-            disabled={draft.busy}
-            autoFocus
-          />
-          <div className="room-draft-actions">
-            {draft.error ? (
-              <span className="draft-error">{draft.error}</span>
-            ) : null}
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => setDraft(null)}
-              disabled={draft.busy}
-            >
-              {t('Cancel')}
-            </button>
-            <button
-              type="submit"
-              className="primary"
-              disabled={draftCount < ROOM_MIN_MEMBERS || draft.busy}
-            >
-              {draft.busy ? t('Creating…') : t('Create')}
-            </button>
-          </div>
-        </form>
-      ) : null}
-      {menu && onEdit ? (
-        <div
-          className="host-menu row-menu"
-          role="menu"
-          style={{
-            left: Math.min(menu.x, window.innerWidth - 200),
-            top: Math.min(menu.y, window.innerHeight - (onAction ? 220 : 80) - (canMove ? 72 : 0)),
-          }}
-        >
-          <button role="menuitem" onClick={() => onEdit(menu.bot)}>
-            {t("Edit Bot")}
-          </button>
-          {canMove ? (
-            <>
-              <button role="menuitem" disabled={!step(menu.bot, -1)} onClick={() => step(menu.bot, -1)?.()}>
-                {t("Move Earlier")}
-              </button>
-              <button role="menuitem" disabled={!step(menu.bot, 1)} onClick={() => step(menu.bot, 1)?.()}>
-                {t("Move Later")}
-              </button>
-            </>
-          ) : null}
-          {onAction ? (
-            <>
-              <button role="menuitem" disabled={busy} onClick={() => act(menu.bot.pinned ? "unpin" : "pin", menu.bot)}>
-                {menu.bot.pinned ? t("Unpin") : t("Pin")}
-              </button>
-              <button role="menuitem" disabled={busy} onClick={() => act("duplicate", menu.bot)}>
-                {t("Duplicate")}
-              </button>
-              <button role="menuitem" disabled={busy} onClick={() => act("hide", menu.bot)}>
-                {t("Hide")}
-              </button>
-              {canDelete(menu.bot) ? (
-                <button role="menuitem" className="danger" disabled={busy} onClick={() => act("delete", menu.bot)}>
-                  {t("Delete Bot")}
-                </button>
-              ) : null}
-            </>
-          ) : null}
-        </div>
-      ) : null}
+      {draftForm}
+      {menuEl}
     </main>
   );
 }
