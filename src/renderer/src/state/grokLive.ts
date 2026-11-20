@@ -7,7 +7,7 @@
  * conversation.item.create and response.create out; audio and transcript
  * deltas, function calls and response.done back.
  */
-import { TOOL_SPECS, clockInstructions, liveInstructions, pcmBase64 } from './liveCall'
+import { RECALL_SPEC, TOOL_SPECS, clockInstructions, liveInstructions, pcmBase64 } from './liveCall'
 
 export {
   ASK_THREAD,
@@ -84,7 +84,7 @@ const CLAIMS =
  * Grok's instructions: the shared ones with Grok's additions (Hermes work goes
  * to Hermes, no claims a tool didn't confirm, the computer's clock).
  */
-export function instructions(options: { language?: string; persona?: string; memory?: string; chat?: string; now?: Date; timeZone?: string }): string {
+export function instructions(options: { language?: string; persona?: string; memory?: string; recall?: boolean; chat?: string; now?: Date; timeZone?: string }): string {
   const timeZone = options.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
   return liveInstructions({
     ...options,
@@ -97,8 +97,8 @@ export function instructions(options: { language?: string; persona?: string; mem
 
 // MARK: Client → server
 
-/** The session's configuration: server turn detection, PCM both ways, the instructions and the tools. */
-export function sessionUpdate(text: string, voice?: string | null): Row {
+/** The session's configuration: server turn detection, PCM both ways, the instructions and the tools (recall_memory when the host's memory provider can be searched). */
+export function sessionUpdate(text: string, voice?: string | null, recall = false): Row {
   const session: Row = {
     instructions: text,
     // Fast replies: this is a conversation, the work goes to Hermes.
@@ -108,7 +108,7 @@ export function sessionUpdate(text: string, voice?: string | null): Row {
       input: { format: { type: 'audio/pcm', rate: SAMPLE_RATE }, transcription: { model: TRANSCRIPTION_MODEL } },
       output: { format: { type: 'audio/pcm', rate: SAMPLE_RATE } }
     },
-    tools: [...NATIVE_TOOLS, ...FUNCTION_TOOLS],
+    tools: [...NATIVE_TOOLS, ...FUNCTION_TOOLS, ...(recall ? [{ type: 'function', ...RECALL_SPEC }] : [])],
     tool_choice: 'auto'
   }
   if (voice) session.voice = voice

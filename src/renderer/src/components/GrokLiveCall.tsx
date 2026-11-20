@@ -34,7 +34,7 @@ import {
   toolOutput,
   type ServerEvent
 } from '../state/grokLive'
-import { SHOW_ON_SCREEN, screenCard, withCard, type ScreenCard } from '../state/liveCall'
+import { MEMORY_RECALL_PATH, RECALL_MEMORY, SHOW_ON_SCREEN, canRecall, recallAnswer, screenCard, withCard, type ScreenCard } from '../state/liveCall'
 import { newCallId, saveCall, type CallResume, type CallTurn } from '../state/voiceSave'
 import type { PendingRequest } from '@shared/ipc'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
@@ -390,6 +390,16 @@ export function GrokLiveCall({
       case ANSWER_QUESTION:
         void answerQuestion(live.current.requests, event.args.answer ?? '').then(result => !ended.current && answer(event.id, result))
         return
+      case RECALL_MEMORY: {
+        // Grok holds its turn on every call, as on the phone.
+        const query = (event.args.query ?? '').trim()
+        if (!query) return answer(event.id, { status: 'error', error: 'No query was given.' })
+        void gateway
+          .http('POST', withProfile(MEMORY_RECALL_PATH, profile), { query }, 15_000)
+          .then(recallAnswer, (e: unknown) => ({ status: 'error', error: e instanceof Error ? e.message : String(e) }))
+          .then(result => !ended.current && answer(event.id, result))
+        return
+      }
       case END_CONVERSATION:
         // Left unanswered: the call closes once the goodbye has played.
         return endCall()
@@ -481,12 +491,13 @@ export function GrokLiveCall({
     stopReading()
     let startTimer = 0
     let told = ''
+    let recall = false
     const stopListening = window.conduit.onLive(event => {
       if (event.id !== socket.current) return
       // The relay passes frames on once xAI's socket is up.
       if (event.type === 'open') {
         trace.current?.step('Socket open, setup sent')
-        send(sessionUpdate(told))
+        send(sessionUpdate(told, undefined, recall))
       } else if (event.type === 'message') {
         const decoded = decode(event.data)
         if (decoded) handle(decoded)
@@ -515,10 +526,16 @@ export function GrokLiveCall({
         // The persona and memory only when switched on; a host without them starts the call without.
         const [persona, memory] = await Promise.all([
           grokSendsPersona() ? gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : '',
-          grokSendsMemory() ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(memoryText, () => '') : ''
+          grokSendsMemory()
+            ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(
+                r => ({ text: memoryText(r), recall: canRecall(r) }),
+                () => ({ text: '', recall: false })
+              )
+            : { text: '', recall: false }
         ])
         if (ended.current) return
-        told = instructions({ language: language(), persona, memory, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) })
+        recall = memory.recall
+        told = instructions({ language: language(), persona, memory: memory.text, recall, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) })
         trace.current.step('Opening the socket')
         const opened = await window.conduit.liveOpen(SOCKET_PATH, dashboardProfileQuery(profile))
         if (!opened.ok) trace.current.step('The socket did not open')
