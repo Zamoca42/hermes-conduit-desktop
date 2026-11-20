@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import {
@@ -148,11 +148,13 @@ export function HostActions({ host, connected }: { host: string; connected: bool
     if (connected && ['idle', 'checked', 'checkFailed'].includes(update.kind)) void startCheck(host, request, false)
     // Once per host and connection.
   }, [host, connected])
-  // A finished update cleared (dismissed, or Hermes back after it) checks again, so the version shows.
-  const cleared = update.kind === 'idle'
+  // Hermes back after an update that wasn't back yet checks again, so the version shows. A dismissed row stays dismissed.
+  const previous = useRef(update.kind)
   useEffect(() => {
-    if (connected && cleared) void startCheck(host, request, false)
-  }, [cleared])
+    const was = previous.current
+    previous.current = update.kind
+    if (connected && was === 'notBackYet' && update.kind === 'idle') void startCheck(host, request, false)
+  }, [update.kind, host, connected])
 
   const check = update.kind === 'checked' ? update.check : null
   const row = updateRow(update)
