@@ -1,0 +1,49 @@
+/**
+ * Saving what a chat or the workspace shows to this computer, where the
+ * person picks: a file on the Hermes host (streamed by the main process), or
+ * a picture already drawn from its data.
+ */
+
+/** Saves a host file; null when saved or cancelled, else what went wrong. */
+export async function saveHostFile(path: string, profile?: string | null): Promise<string | null> {
+  const outcome = await window.conduit.saveHostFile(path, profile ?? undefined)
+  return outcome === 'saved' || outcome === 'cancelled' ? null : outcome
+}
+
+/** Saves a picture from the data or blob URL it's drawn from; false when cancelled or unreadable. */
+export async function saveFromUrl(src: string, name: string): Promise<boolean> {
+  try {
+    // The page's policy keeps fetch to its own files, so a data URL is decoded here.
+    const bytes = src.startsWith('data:') ? dataUrlBytes(src) : await (await fetch(src)).arrayBuffer()
+    return bytes ? await window.conduit.saveBytes(name, bytes) : false
+  } catch {
+    return false
+  }
+}
+
+/** Says what went wrong, if anything. */
+export function sayIfFailed(error: string | null): void {
+  if (error) window.alert(error)
+}
+
+/** A base64 data URL's bytes, or null when it isn't one. */
+export function dataUrlBytes(src: string): ArrayBuffer | null {
+  const match = /^data:[^,]*;base64,(.*)$/s.exec(src)
+  if (!match) return null
+  try {
+    const text = atob(match[1]!)
+    const bytes = new Uint8Array(text.length)
+    for (let i = 0; i < text.length; i++) bytes[i] = text.charCodeAt(i)
+    return bytes.buffer
+  } catch {
+    return null
+  }
+}
+
+/** A file name for a picture, with the extension its data URL names when it has none. */
+export function pictureFileName(name: string, src: string): string {
+  if (/\.[a-z0-9]{2,5}$/i.test(name)) return name
+  const type = /^data:image\/([a-z0-9+.-]+)/i.exec(src)?.[1]?.toLowerCase()
+  const ext = type === 'jpeg' ? 'jpg' : type === 'svg+xml' ? 'svg' : type
+  return ext ? `${name || 'Picture'}.${ext}` : name || 'Picture'
+}

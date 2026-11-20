@@ -35,6 +35,10 @@ import { cleanHeaders } from './proxyHeaders'
 import { KeptHosts } from './keptHosts'
 import { readServerCertificate } from './serverCertificate'
 import { writeFile } from 'node:fs/promises'
+import { createWriteStream } from 'node:fs'
+import { Readable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
+import { hostFileName, hostFilePath, dataUrlBytes } from './hostFiles'
 import { Connection, DISPLAY_SOCKET_PATH } from './connection'
 import { Pairing } from './pairing'
 import { createFileStore } from './store'
@@ -354,6 +358,44 @@ function registerIpc(): void {
     if (picked.canceled || !picked.filePath) return false
     await writeFile(picked.filePath, checked.pem)
     shell.showItemInFolder(picked.filePath)
+    return true
+  })
+  // Save a file on the Hermes host (a reply's picture, audio or file, a workspace file) where the person picks.
+  ipcMain.handle(IPC.saveHostFile, async (event, path: unknown, profile: unknown): Promise<string> => {
+    if (typeof path !== 'string' || !path) return t("Couldn't open this file")
+    const owner = BrowserWindow.fromWebContents(event.sender)
+    const name = hostFileName(path)
+    const picked = owner ? await dialog.showSaveDialog(owner, { defaultPath: name }) : await dialog.showSaveDialog({ defaultPath: name })
+    if (picked.canceled || !picked.filePath) return 'cancelled'
+    const shownProfile = typeof profile === 'string' ? profile : undefined
+    try {
+      const response = await connection.download(hostFilePath('download', path, shownProfile))
+      // A dashboard that serves its page for a route it doesn't know has no download route.
+      if (/text\/html/i.test(response.headers.get('content-type') ?? '')) throw Object.assign(new Error('no download route'), { code: 404 })
+      if (!response.body) throw new Error(t("Couldn't open this file"))
+      await pipeline(Readable.fromWeb(response.body as import('node:stream/web').ReadableStream), createWriteStream(picked.filePath))
+      return 'saved'
+    } catch (error) {
+      // A Hermes without /api/fs/download: the data URL its files are read as, up to 16 MB.
+      if ((error as { code?: unknown }).code !== 404 && (error as { code?: unknown }).code !== 405) return error instanceof Error ? error.message : String(error)
+    }
+    try {
+      const answer = await connection.http<{ dataUrl?: unknown; data_url?: unknown }>('GET', hostFilePath('read-data-url', path, shownProfile))
+      const bytes = dataUrlBytes(answer?.dataUrl ?? answer?.data_url)
+      if (!bytes) return t("Couldn't open this file")
+      await writeFile(picked.filePath, bytes)
+      return 'saved'
+    } catch (error) {
+      return error instanceof Error ? error.message : String(error)
+    }
+  })
+  ipcMain.handle(IPC.saveBytes, async (event, name: unknown, bytes: unknown) => {
+    if (typeof name !== 'string' || !(bytes instanceof ArrayBuffer || ArrayBuffer.isView(bytes))) return false
+    const owner = BrowserWindow.fromWebContents(event.sender)
+    const file = hostFileName(name)
+    const picked = owner ? await dialog.showSaveDialog(owner, { defaultPath: file }) : await dialog.showSaveDialog({ defaultPath: file })
+    if (picked.canceled || !picked.filePath) return false
+    await writeFile(picked.filePath, bytes instanceof ArrayBuffer ? Buffer.from(bytes) : Buffer.from((bytes as ArrayBufferView).buffer))
     return true
   })
   ipcMain.handle(IPC.keptHosts, () => keptHosts.list())

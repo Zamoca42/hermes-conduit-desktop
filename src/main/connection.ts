@@ -403,33 +403,7 @@ export class Connection {
    * password sign-in whose session ran out signs in again once.
    */
   async http<T>(method: string, path: string, body?: unknown, timeoutMs = 30_000): Promise<T> {
-    const saved = this.saved
-    if (!saved) throw new Error(t('Not signed in.'))
-    if (!path.startsWith('/api/')) throw new Error('Only dashboard API paths can be called.')
-    const send = async (): Promise<Response> => {
-      const headers: Record<string, string> = { Accept: 'application/json', [CONDUIT_CLIENT_HEADER]: 'conduit' }
-      if (body !== undefined) headers['Content-Type'] = 'application/json'
-      if (saved.method === 'password' && saved.cookies) headers.Cookie = cookieHeader(saved.cookies)
-      if (saved.method === 'token' && saved.token) headers[SESSION_TOKEN_HEADER] = saved.token
-      if (saved.method === 'open') {
-        this.openToken ??= await readOpenSessionToken(saved.url, this.fetchFor(saved))
-        headers[SESSION_TOKEN_HEADER] = this.openToken
-      }
-      return this.fetchFor(saved)(endpoint(saved.url, path), {
-        method,
-        headers,
-        body: body === undefined ? undefined : JSON.stringify(body),
-        signal: AbortSignal.timeout(timeoutMs)
-      })
-    }
-    let response = await send()
-    if (response.status === 401 && saved.method === 'password' && saved.username && saved.password) {
-      this.keepCookies(saved, await passwordLogin(saved.url, saved.username, saved.password, this.fetchFor(saved)))
-      response = await send()
-    } else if (response.status === 401 && saved.method === 'open') {
-      this.openToken = null
-      response = await send()
-    }
+    const response = await this.request(method, path, body, AbortSignal.timeout(timeoutMs))
     const text = await response.text()
     let parsed: unknown = null
     try {
@@ -441,6 +415,59 @@ export class Connection {
       throw Object.assign(new Error(httpErrorText((parsed as { detail?: unknown } | null)?.detail, response.status)), { code: response.status })
     }
     return parsed as T
+  }
+
+  /**
+   * A dashboard file's bytes (`/api/fs/download`), as a response to stream to
+   * disk: a file too large for a data URL saves this way, as on the phone (#569).
+   * Throws Hermes' refusal as `http` does.
+   */
+  async download(path: string, signal?: AbortSignal): Promise<Response> {
+    if (!path.startsWith('/api/fs/')) throw new Error('Only dashboard file paths can be downloaded.')
+    const response = await this.request('GET', path, undefined, signal, '*/*')
+    if (!response.ok) {
+      const text = await response.text().catch(() => '')
+      let detail: unknown
+      try {
+        detail = (JSON.parse(text) as { detail?: unknown } | null)?.detail
+      } catch {
+        detail = undefined
+      }
+      throw Object.assign(new Error(httpErrorText(detail, response.status)), { code: response.status })
+    }
+    return response
+  }
+
+  /** One dashboard request with this sign-in's credential; a password sign-in whose session ran out signs in again once. */
+  private async request(method: string, path: string, body: unknown, signal: AbortSignal | undefined, accept = 'application/json'): Promise<Response> {
+    const saved = this.saved
+    if (!saved) throw new Error(t('Not signed in.'))
+    if (!path.startsWith('/api/')) throw new Error('Only dashboard API paths can be called.')
+    const send = async (): Promise<Response> => {
+      const headers: Record<string, string> = { Accept: accept, [CONDUIT_CLIENT_HEADER]: 'conduit' }
+      if (body !== undefined) headers['Content-Type'] = 'application/json'
+      if (saved.method === 'password' && saved.cookies) headers.Cookie = cookieHeader(saved.cookies)
+      if (saved.method === 'token' && saved.token) headers[SESSION_TOKEN_HEADER] = saved.token
+      if (saved.method === 'open') {
+        this.openToken ??= await readOpenSessionToken(saved.url, this.fetchFor(saved))
+        headers[SESSION_TOKEN_HEADER] = this.openToken
+      }
+      return this.fetchFor(saved)(endpoint(saved.url, path), {
+        method,
+        headers,
+        body: body === undefined ? undefined : JSON.stringify(body),
+        signal
+      })
+    }
+    let response = await send()
+    if (response.status === 401 && saved.method === 'password' && saved.username && saved.password) {
+      this.keepCookies(saved, await passwordLogin(saved.url, saved.username, saved.password, this.fetchFor(saved)))
+      response = await send()
+    } else if (response.status === 401 && saved.method === 'open') {
+      this.openToken = null
+      response = await send()
+    }
+    return response
   }
 
   /**

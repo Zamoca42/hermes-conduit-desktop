@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { keptPicture, readGatewayPicture } from '../state/gatewayPictures'
 import { t } from '@shared/i18n'
+import { pictureFileName, saveFromUrl } from '../state/saveMedia'
 
 /** The profile whose files a transcript's pictures are read from. */
 export const PictureProfile = createContext<string | undefined>(undefined)
@@ -28,6 +29,15 @@ export function PictureViewerHost({ children }: { children: ReactNode }) {
       {shown ? (
         <div className="picture-viewer" role="dialog" aria-label={shown.name} onClick={() => setShown(null)}>
           <img src={shown.src} alt={shown.name} />
+          <button
+            className="picture-viewer-save"
+            onClick={event => {
+              event.stopPropagation()
+              void saveFromUrl(shown.src, pictureFileName(shown.name, shown.src))
+            }}
+          >
+            {t('Download')}
+          </button>
           <button className="picture-viewer-close" aria-label={t('Close')} onClick={() => setShown(null)}>
             ×
           </button>

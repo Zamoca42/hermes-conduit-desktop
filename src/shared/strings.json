@@ -42343,5 +42343,20 @@
     "tr": "Görev çubuğunda, bildirim alanında ve başlık çubuğunda gösterilecek simgeyi seçin.",
     "zh-Hans": "选择在任务栏、通知区域和标题栏中显示的图标。",
     "zh-Hant": "選擇在工作列、通知區域和標題列中顯示的圖像。"
+  },
+  "Play": {
+    "de": "Abspielen",
+    "es": "Reproducir",
+    "fr": "Lire",
+    "id": "Putar",
+    "it": "Riproduci",
+    "ja": "再生",
+    "ko": "재생",
+    "pl": "Odtwórz",
+    "pt-BR": "Reproduzir",
+    "ru": "Воспроизвести",
+    "tr": "Oynat",
+    "zh-Hans": "播放",
+    "zh-Hant": "播放"
   }
 }

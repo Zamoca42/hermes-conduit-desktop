@@ -240,6 +240,14 @@ export interface ConduitApi {
   checkCertificate(url: string): Promise<CertificateCheck>
   /** Saves the root certificate last read for `url` where the person picks; false when they didn't. */
   saveCertificate(url: string): Promise<boolean>
+  /**
+   * Saves a file on the Hermes host where the person picks: streamed from the
+   * dashboard's /api/fs/download, else read as a data URL. 'saved', 'cancelled',
+   * or what went wrong.
+   */
+  saveHostFile(path: string, profile?: string): Promise<string>
+  /** Saves bytes already on hand (a picture's data) where the person picks; false when they didn't. */
+  saveBytes(name: string, bytes: ArrayBuffer): Promise<boolean>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
   /** Edit Connection: the open host signs in again at a new address or with a new sign-in, in its place. */
   editHost(from: string, request: SignInRequest): Promise<{ ok: true; url: string } | { ok: false; error: string; savedAs?: string }>
@@ -408,6 +416,8 @@ export const IPC = {
   keptHttp: 'conduit:kept-http',
   checkCertificate: 'conduit:check-certificate',
   saveCertificate: 'conduit:save-certificate',
+  saveHostFile: 'conduit:save-host-file',
+  saveBytes: 'conduit:save-bytes',
   keptRpc: 'conduit:kept-rpc',
   reconnect: 'conduit:reconnect',
   rpc: 'conduit:rpc',

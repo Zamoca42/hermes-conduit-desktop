@@ -24,6 +24,7 @@ import {
   type WorkspaceSearch
 } from '../state/workspace'
 import { Icon } from './icons'
+import { saveHostFile, sayIfFailed } from '../state/saveMedia'
 
 interface Props {
   /** The chat's working folder: the tree never goes above it. */
@@ -323,11 +324,18 @@ export function FilesPanel({ root, profile, refreshKey, reveal, onInsertPath, on
               {open.saving ? t('Saving…') : t('Save')}
             </button>
           </>
-        ) : plugin && open.preview && !open.preview.binary && !open.preview.truncated ? (
-          <button className="secondary" onClick={() => setOpen({ ...open, draft: open.preview!.text })}>
-            {t('Edit')}
-          </button>
-        ) : null}
+        ) : (
+          <>
+            <button className="secondary" onClick={() => void saveHostFile(open.entry.path, profile).then(sayIfFailed)}>
+              {t('Download')}
+            </button>
+            {plugin && open.preview && !open.preview.binary && !open.preview.truncated ? (
+              <button className="secondary" onClick={() => setOpen({ ...open, draft: open.preview!.text })}>
+                {t('Edit')}
+              </button>
+            ) : null}
+          </>
+        )}
       </div>
       {open.error ? <p className="error-text">{open.error}</p> : null}
       {open.image ? (
