@@ -1,5 +1,6 @@
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { answerKeeper, keptAnswer } from './keptAnswers'
 import { LIVE_BOARD_POLL_MS, startKanbanStream, windowSockets } from './kanbanEvents'
 import { boardPath, boardPollDelay, defaultAssignee, failedInTransit, FIRST_READ_RETRY_MS, parseBoard, parseBoards, parseTask, parseTaskDetail, type KanbanBoard, type KanbanBoardRow, type KanbanTask, type KanbanTaskDetail } from './kanban'
 
@@ -31,6 +32,22 @@ export function setKanbanHost(host: string): void {
   keptBoards = null
 }
 
+/** This run's board, else the one kept on this computer from the last (keptAnswers.ts), so a launch opens on it too. */
+function keptBoard(slug: string | null): KanbanBoard | null {
+  const key = keptKey(slug)
+  if (!kept.has(key)) {
+    const raw = keptAnswer(boardPath('/board', slug))
+    if (raw !== undefined) {
+      try {
+        kept.set(key, parseBoard(raw))
+      } catch {
+        // Not a board any more: read afresh.
+      }
+    }
+  }
+  return kept.get(key) ?? null
+}
+
 /** Hermes says so when there's no board plugin: a 404 on its routes. */
 const missing = (error: unknown) => (error as { code?: unknown } | null)?.code === 404 || /\b404\b|not found/i.test(error instanceof Error ? error.message : String(error))
 
@@ -42,7 +59,7 @@ const missing = (error: unknown) => (error as { code?: unknown } | null)?.code =
 export function useKanban(connected: boolean, shown: boolean) {
   const [boards, setBoards] = useState<KanbanBoardRow[] | null>(keptBoards)
   const [slug, setSlug] = useState<string | null>(savedBoard)
-  const [board, setBoard] = useState<KanbanBoard | null>(() => kept.get(keptKey(slug)) ?? null)
+  const [board, setBoard] = useState<KanbanBoard | null>(() => keptBoard(slug))
   const [error, setError] = useState<string | null>(null)
   const [unavailable, setUnavailable] = useState(false)
   const [assignee, setAssignee] = useState('default')
@@ -67,12 +84,16 @@ export function useKanban(connected: boolean, shown: boolean) {
     const key = keptKey(slug)
     for (let attempt = 0; ; attempt++) {
       try {
-        const raw = await gateway.http('GET', boardPath('/board', slug))
+        const path = boardPath('/board', slug)
+        const keep = answerKeeper(path)
+        const raw = await gateway.http('GET', path)
         if (mine !== generation.current) return
         const read = parseBoard(raw)
         const before = kept.get(key)
         const same = before !== undefined && JSON.stringify(before) === JSON.stringify(read)
         unchanged.current = same ? unchanged.current + 1 : 0
+        // Written only when it changed: the poll reads every few seconds.
+        if (!same || keptAnswer(path) === undefined) keep(raw)
         kept.set(key, read)
         // The same read keeps the board drawn, unless a move shown at once is still on it.
         setBoard(current => (same && current === before ? current : read))
@@ -176,7 +197,7 @@ export function useKanban(connected: boolean, shown: boolean) {
 
   const pickBoard = useCallback((next: string | null) => {
     setSlug(next)
-    setBoard(kept.get(keptKey(next)) ?? null)
+    setBoard(keptBoard(next))
     try {
       if (next) localStorage.setItem(BOARD_KEY, next)
       else localStorage.removeItem(BOARD_KEY)
