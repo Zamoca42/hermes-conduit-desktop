@@ -43,3 +43,30 @@ feature is never held or narrowed for it (Eric, 2026-11-11).
     pnpm typecheck
     pnpm test
     pnpm build
+
+## Reviews
+
+Two opencode reviewers review every PR, as in the phone's and the plugin's
+repos (`.github/workflows/opencode-review.yml`, models in `opencode.json`;
+hermes-conduit's feature map entry Review bots has the rulings). GLM-5.3-Flash
+reviews first, and the second reviewer (DeepSeek, then Beam) runs only when
+GLM finds no blockers. A PR that only touches docs and config gets GLM alone.
+The workflow runs main's copy, so a change to it is first exercised by the
+review after it merges.
+
+## Fork PRs
+
+Open a PR from a fork as a draft, and mark it ready when you've finished
+pushing. The opencode reviews run on a trusted contributor's PR (the list in
+`.github/workflows/opencode-review.yml`) once it's ready and on every push
+after that, never while it's a draft. Anyone else's fork PR is reviewed after
+a maintainer adds the `run-review` label. CI builds every push, once GitHub
+no longer asks a maintainer to approve a first-time contributor's runs.
+
+## Review labels
+
+A PR labeled `waiting on contributor` is waiting on its author. Push or comment
+on the PR when you've answered it, and a workflow swaps the label for
+`waiting on Eric`, so the maintainer knows it's his turn again. Putting
+`waiting on contributor` back on takes `waiting on Eric` off. A reply inside a
+review thread doesn't count, so also comment on the PR itself or push.
