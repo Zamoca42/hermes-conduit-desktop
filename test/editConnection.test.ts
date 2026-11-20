@@ -84,7 +84,8 @@ describe('Edit Connection', () => {
     await h.connection.signIn({ url: 'https://b.example', method: 'password', username: 'eric', password: 'pw-b' })
     const logins = h.logins.length
     const result = await h.connection.editHost('https://b.example', { url: 'a.example', method: 'password', username: 'eric', password: 'pw-b' })
-    expect(result).toMatchObject({ ok: false })
+    // Repair offers to switch to the dashboard the address belongs to.
+    expect(result).toMatchObject({ ok: false, savedAs: 'https://a.example' })
     expect(h.logins).toHaveLength(logins)
     expect(h.hostList.get!('https://a.example')).toMatchObject({ password: 'pw-a' })
     expect(h.hostList.list!().map(host => host.url)).toEqual(['https://a.example', 'https://b.example'])

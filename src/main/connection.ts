@@ -206,7 +206,7 @@ export class Connection {
    * that host is written (the two never merge). A sign-in that fails leaves
    * the host as it was. The proxy's headers stay when none are given.
    */
-  async editHost(from: string, request: SignInRequest): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+  async editHost(from: string, request: SignInRequest): Promise<{ ok: true; url: string } | { ok: false; error: string; savedAs?: string }> {
     if (this.locked) return { ok: false, error: t('Unlock Conduit first.') }
     const previous = this.deps.store.get?.(from) ?? (this.saved?.url === from ? this.saved : null)
     if (!previous) return { ok: false, error: t('That dashboard is no longer saved.') }
@@ -217,7 +217,7 @@ export class Connection {
       return { ok: false, error: (error as Error).message }
     }
     if (url !== from && this.deps.store.get?.(url)) {
-      return { ok: false, error: t('That address is already saved as another dashboard, so the connection was not changed. Switch to it, or sign out of it first.') }
+      return { ok: false, error: t('That address is already saved as another dashboard, so the connection was not changed. Switch to it, or sign out of it first.'), savedAs: url }
     }
     const keepHeaders = request.headers === undefined && previous.headers && new URL(url).origin === new URL(from).origin
     const result = await this.trySignIn({ ...request, url, headers: keepHeaders ? previous.headers : request.headers }, from)

@@ -234,7 +234,7 @@ export interface ConduitApi {
   saveCertificate(url: string): Promise<boolean>
   signIn(request: SignInRequest): Promise<{ ok: true } | { ok: false; error: string }>
   /** Edit Connection: the open host signs in again at a new address or with a new sign-in, in its place. */
-  editHost(from: string, request: SignInRequest): Promise<{ ok: true; url: string } | { ok: false; error: string }>
+  editHost(from: string, request: SignInRequest): Promise<{ ok: true; url: string } | { ok: false; error: string; savedAs?: string }>
   signOut(): Promise<void>
   /** Opens another signed-in host in place of this one. */
   switchHost(url: string): Promise<boolean>
