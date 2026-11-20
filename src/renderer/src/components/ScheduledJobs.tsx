@@ -34,7 +34,7 @@ import {
 import { useCron } from '../state/useCron'
 import { ProfileStrip } from './ChatList'
 import { Icon } from './icons'
-import { REASONING_LEVELS, reasoningTitle } from '../state/models'
+import { REASONING_LEVELS } from '../state/models'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelChooser } from './ModelChooser'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
@@ -604,21 +604,13 @@ function JobEditor({
                 const [provider = '', model = ''] = next.split('\n')
                 setDraft(d => ({ ...d, provider, model }))
               }}
+              reasoning={{
+                value: draft.reasoning,
+                levels: REASONING_LEVELS,
+                inheritLabel: t('Profile default'),
+                onChange: reasoning => setDraft(d => ({ ...d, reasoning }))
+              }}
             />
-          </label>
-          <label>
-            {t('Reasoning')}
-            <select value={draft.reasoning} disabled={saving} onChange={e => setDraft(d => ({ ...d, reasoning: e.target.value }))}>
-              <option value="">{t('Profile default')}</option>
-              {draft.reasoning && !(REASONING_LEVELS as readonly string[]).includes(draft.reasoning) ? (
-                <option value={draft.reasoning}>{draft.reasoning}</option>
-              ) : null}
-              {REASONING_LEVELS.map(level => (
-                <option key={level} value={level}>
-                  {reasoningTitle(level)}
-                </option>
-              ))}
-            </select>
           </label>
           <div className="job-model-refresh">
             <ModelCatalogNote catalog={catalog} />

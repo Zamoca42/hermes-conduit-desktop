@@ -10244,3 +10244,11 @@ button.secondary.danger {
   width: 12px;
   height: 12px;
 }
+
+.model-chooser-reasoning {
+  flex-wrap: wrap;
+}
+
+.model-chooser .model-current .staged-remove {
+  margin-left: auto;
+}
