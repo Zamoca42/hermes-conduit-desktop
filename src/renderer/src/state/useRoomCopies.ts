@@ -18,6 +18,7 @@ import type { RoomApprovalAnswer } from './useGroups'
 import { t } from '../../../shared/i18n'
 import type { RoomInvite } from './roomInvites'
 import { everyWhileVisible } from './visibility'
+import { keepsFor } from './savedHosts'
 
 const client = roomCopiesClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 /** One empty list, so what's derived from an unserved host's copies keeps its identity between renders. */
@@ -85,7 +86,7 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
     try {
       const list = await client.list()
       if (read !== reads.current) return
-      keptCopies.set(host, list)
+      if (keepsFor(host)) keptCopies.set(host, list)
       setReadHere(true)
       // Unchanged, nothing re-renders: the open room reads them every few seconds.
       setCopies(current => (JSON.stringify(current) === JSON.stringify(list) ? current : list))

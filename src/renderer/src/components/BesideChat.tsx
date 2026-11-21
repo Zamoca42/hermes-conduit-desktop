@@ -26,7 +26,7 @@ export const BESIDE_ROWS = 60
  */
 export function BesideChatPane({
   chat,
-  host = '',
+  host,
   sessionAuthority,
   connected,
   author,
@@ -39,7 +39,7 @@ export function BesideChatPane({
 }: {
   chat: BesideChat
   /** The dashboard it's on, so it shares the main pane's kept transcripts. */
-  host?: string
+  host: string
   sessionAuthority: boolean
   connected: boolean
   author: string

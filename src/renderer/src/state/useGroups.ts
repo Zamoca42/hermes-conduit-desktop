@@ -22,6 +22,7 @@ import {
 import type { Bot } from './bots'
 import { t } from '../../../shared/i18n'
 import { everyWhileVisible } from './visibility'
+import { keepsFor } from './savedHosts'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const uuid = () => crypto.randomUUID()
@@ -45,7 +46,7 @@ export function useRooms(connected: boolean, host = '') {
         return
       }
       const listed = roomsFromList(await gateway.rpc('groups.list', { include_disbanded: false }))
-      keptOwnRooms.set(host, { capabilities: caps, rooms: listed, at: Date.now() })
+      if (keepsFor(host)) keptOwnRooms.set(host, { capabilities: caps, rooms: listed, at: Date.now() })
       setRooms(listed)
       setError(null)
     } catch (e) {

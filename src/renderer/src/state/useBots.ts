@@ -2,6 +2,7 @@ import { isMovingDataUrl, stillOf, stillReady } from './movingPicture'
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { avatarUrl, keptRosters, rosterFromProfiles, type Bot } from './bots'
+import { keepsFor } from './savedHosts'
 
 /** The bots roster, read when the connection opens, when profiles change and when a turn ends. */
 
@@ -18,7 +19,7 @@ export function useBots(connected: boolean, host = '') {
     try {
       const body = await gateway.rpc('profiles.list', { include_sessions: true })
       const roster = rosterFromProfiles(body)
-      keptRosters.set(host, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
+      if (keepsFor(host)) keptRosters.set(host, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
       setBots(roster.bots)
       setHidden(roster.hidden)
       setProtocol(roster.protocol)

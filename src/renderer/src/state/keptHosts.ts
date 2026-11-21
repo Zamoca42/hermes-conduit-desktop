@@ -22,6 +22,7 @@ import { WORK, parseWork } from './work'
 import { STATUS_PATH, pluginStatus } from './plugin'
 import { DASHBOARD_PROFILES_CAPABILITY } from './dashboardProfile'
 import type { BotWork } from './useWork'
+import { keepsFor } from './savedHosts'
 
 export const keptStateLabel = (state: KeptHostState): string =>
   state === 'live'
@@ -402,7 +403,7 @@ export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string
           const rooms = listed.ok ? roomsFromList(listed.result).filter(r => !r.disbanded) : (last?.rooms ?? [])
           const copies = (copied.ok ? parseCopies(copied.result) : null) ?? last?.copies ?? []
           if (!listed.ok && !copied.ok && !last) return
-          keptRoomsByHost.set(url, { rooms, copies, at: Date.now() })
+          if (keepsFor(url)) keptRoomsByHost.set(url, { rooms, copies, at: Date.now() })
         })
       )
       if (!stopped) show()
@@ -555,7 +556,7 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
           const outcome = await window.conduit.keptRpc(url, 'profiles.list', { include_sessions: true })
           if (!outcome.ok || stopped) return
           const roster = rosterFromProfiles(outcome.result)
-          keptRosters.set(url, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
+          if (keepsFor(url)) keptRosters.set(url, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
         })
       )
       if (!stopped) show()
