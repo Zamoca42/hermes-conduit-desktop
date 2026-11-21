@@ -18,6 +18,8 @@ import {
   roomItems,
   roomMembers,
   roomsFromList,
+  listAllRooms,
+  ROOM_LIST_MAX_PAGES,
   type Room
 } from '../src/renderer/src/state/groups'
 
@@ -329,5 +331,44 @@ describe('the To row', () => {
 
   it('leaves an @all message as it is', () => {
     expect(addressing('@all hi', ['furina'], members)).toBe('@all hi')
+  })
+})
+
+describe("groups.list's pages (desktop#231)", () => {
+  const wire = (id: string, updated: number) => ({ room_id: id, name: id, members: [], updated_at: updated })
+  it('follows next_offset, each room once, up to the page cap', async () => {
+    const asked: unknown[] = []
+    const pages: Record<number, unknown> = {
+      0: { rooms: [wire('a', 3), wire('b', 2)], next_offset: 2 },
+      2: { rooms: [wire('b', 2), wire('c', 1)] }
+    }
+    const rooms = await listAllRooms(async (_m, params) => {
+      asked.push(params)
+      return pages[(params.offset as number | undefined) ?? 0]
+    })
+    expect(rooms.map(r => r.roomId)).toEqual(['a', 'b', 'c'])
+    expect(asked).toEqual([{ include_disbanded: false }, { include_disbanded: false, offset: 2 }])
+
+    let calls = 0
+    await listAllRooms(async (_m, params) => {
+      calls++
+      return { rooms: [wire(`r${calls}`, 1)], next_offset: ((params.offset as number | undefined) ?? 0) + 1 }
+    })
+    expect(calls).toBe(ROOM_LIST_MAX_PAGES)
+  })
+
+  it('stops on an offset that goes nowhere, and fails with a page that fails', async () => {
+    let calls = 0
+    await listAllRooms(async () => {
+      calls++
+      return { rooms: [], next_offset: 0 }
+    })
+    expect(calls).toBe(1)
+    await expect(
+      listAllRooms(async (_m, params) => {
+        if (params.offset) throw new Error('down')
+        return { rooms: [wire('a', 1)], next_offset: 1 }
+      })
+    ).rejects.toThrow('down')
   })
 })

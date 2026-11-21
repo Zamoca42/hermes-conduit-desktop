@@ -14,7 +14,7 @@ import { CHAT_LIST_PAGE, CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from '
 import { keptRosters, rosterFromProfiles, type Bot } from './bots'
 import { PULSE, parseFeed } from './pulse'
 import { listPath, parsePage, type ArtifactFilter, type ArtifactItem } from './artifacts'
-import { roomsFromList, type Room } from './groups'
+import { listAllRooms, type Room } from './groups'
 import { COPIES_PATH, parseCopies, type RoomCopy } from './roomCopies'
 import { keptCopies } from './useRoomCopies'
 import { keptOwnRooms } from './useGroups'
@@ -394,14 +394,18 @@ export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string
       await Promise.all(
         urls.map(async url => {
           const [listed, copied] = await Promise.all([
-            window.conduit.keptRpc(url, 'groups.list', { include_disbanded: false }),
+            listAllRooms(async (method, params) => {
+              const outcome = await window.conduit.keptRpc(url, method, params)
+              if (!outcome.ok) throw new Error(outcome.error)
+              return outcome.result
+            }).catch(() => null),
             window.conduit.keptHttp(url, COPIES_PATH)
           ])
           if (stopped) return
           const last = keptRoomsByHost.get(url)
-          const rooms = listed.ok ? roomsFromList(listed.result).filter(r => !r.disbanded) : (last?.rooms ?? [])
+          const rooms = listed ?? last?.rooms ?? []
           const copies = (copied.ok ? parseCopies(copied.result) : null) ?? last?.copies ?? []
-          if (!listed.ok && !copied.ok && !last) return
+          if (!listed && !copied.ok && !last) return
           keptRoomsByHost.set(url, { rooms, copies, at: Date.now() })
         })
       )
@@ -496,12 +500,10 @@ export function takeRoomAfterSwitch(
   copies: readonly RoomCopy[] | null,
   now = Date.now()
 ): { room: Room } | { copy: RoomCopy } | null {
+  // An expired one goes at the next look, whichever host asks.
+  if (pendingRoom && now - pendingRoom.at > ROOM_AFTER_SWITCH_MS) pendingRoom = null
   if (!pendingRoom || pendingRoom.host !== host) return null
-  const { kind, id, at } = pendingRoom
-  if (now - at > ROOM_AFTER_SWITCH_MS) {
-    pendingRoom = null
-    return null
-  }
+  const { kind, id } = pendingRoom
   if (kind === 'room') {
     if (!rooms) return null
     pendingRoom = null
@@ -594,19 +596,26 @@ export function useKeptWork(others: readonly OtherBot[], on: boolean): ReadonlyM
   const [work, setWork] = useState<ReadonlyMap<string, BotWork>>(new Map())
   const byBot = useRef(new Map<string, BotWork>())
   const served = useRef(new Map<string, boolean>())
-  const key = on
+  // The names as each host lists them, so a bot renamed only in case is read under its new name.
+  const names = on
     ? others
-        .map(o => keptWorkKey(o.host, o.bot.name))
+        .map(o => `${o.host}\u0000${o.bot.name}`)
         .sort()
         .join('\n')
     : ''
 
   useEffect(() => {
-    const bots = key ? key.split('\n').map(k => ({ key: k, host: k.split('\u0000')[0]!, name: k.split('\u0000')[1]! })) : []
+    const bots = names
+      ? names.split('\n').map(entry => {
+          const [host, name] = entry.split('\u0000') as [string, string]
+          return { key: keptWorkKey(host, name), host, name }
+        })
+      : []
     const hosts = new Set(bots.map(b => b.host))
     for (const k of [...byBot.current.keys()]) if (!bots.some(b => b.key === k)) byBot.current.delete(k)
     for (const host of [...served.current.keys()]) if (!hosts.has(host)) served.current.delete(host)
-    const show = () => setWork(new Map(byBot.current))
+    // The same answer keeps the same map, so the Bots list doesn't redraw for nothing, as useWorkSessions's sameWork does.
+    const show = () => setWork(current => (sameBotWork(current, byBot.current) ? current : new Map(byBot.current)))
     show()
     if (!bots.length) return
     let stopped = false
@@ -626,9 +635,7 @@ export function useKeptWork(others: readonly OtherBot[], on: boolean): ReadonlyM
             bots
               .filter(b => b.host === host)
               .map(async b => {
-                // The name as its host lists it: the key is lower-cased.
-                const name = others.find(o => o.host === host && o.bot.name.toLowerCase() === b.name)?.bot.name ?? b.name
-                const outcome = await window.conduit.keptHttp(host, keptWorkPath(name, dashboardProfiles))
+                const outcome = await window.conduit.keptHttp(host, keptWorkPath(b.name, dashboardProfiles))
                 if (stopped || !outcome.ok) return
                 const answer = parseWork(outcome.result)
                 byBot.current.set(b.key, { working: answer.working, needsYou: answer.needsYou })
@@ -650,10 +657,19 @@ export function useKeptWork(others: readonly OtherBot[], on: boolean): ReadonlyM
       clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisible)
     }
-    // `others` is read for names only; `key` holds who they are.
-  }, [key])
+  }, [names])
 
   return work
+}
+
+/** Whether two maps of bots' work say the same. */
+export function sameBotWork(a: ReadonlyMap<string, BotWork>, b: ReadonlyMap<string, BotWork>): boolean {
+  if (a.size !== b.size) return false
+  for (const [key, work] of a) {
+    const other = b.get(key)
+    if (!other || other.working !== work.working || other.needsYou !== work.needsYou) return false
+  }
+  return true
 }
 
 /** A bot opened on another host: the new host's window opens it once its bots are read. */
