@@ -52,6 +52,16 @@ const avatarValues = new Map<string, string | null>()
 /** The dashboard this window shows: its pictures are kept under it, beside other dashboards' (desktop: combined dashboards). */
 let avatarHost = ''
 
+/** The faces read for dashboards no longer saved go. */
+export function forgetAvatarHosts(hosts: readonly string[]): void {
+  for (const key of [...avatarCache.keys(), ...avatarValues.keys()]) {
+    if (!hosts.includes(key.slice(0, key.indexOf('\u0000')))) {
+      avatarCache.delete(key)
+      avatarValues.delete(key)
+    }
+  }
+}
+
 const avatarKey = (name: string, host?: string) => `${host ?? avatarHost}\u0000${name}`
 
 /** The dashboard whose bots this window's own pictures are, set as its window opens. */

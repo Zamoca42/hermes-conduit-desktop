@@ -110,8 +110,10 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
     for (const profile of profiles) await client.forgetSessions(copy.roomId, profile)
     await client.forget(copy.roomId)
     reads.current++
+    const kept = keptCopies.get(host)
+    if (kept) keptCopies.set(host, kept.filter(c => c.id !== copy.id))
     setCopies(current => (current ?? []).filter(c => c.id !== copy.id))
-  }, [])
+  }, [host])
 
   /** Run or Reject, once: sent, its card goes; refused, the plugin's words, and the list is read again. */
   const answer = useCallback(

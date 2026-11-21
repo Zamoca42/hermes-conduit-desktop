@@ -27,7 +27,10 @@ export function keepTranscript(storedId: string | null, profile: string | undefi
   kept.delete(key)
   if (!settled(state)) return
   kept.set(key, state)
-  while (kept.size > TRANSCRIPT_CACHE_SIZE) kept.delete(kept.keys().next().value!)
+  // Each dashboard keeps its own six, so opening chats on one doesn't push out another's.
+  const prefix = `${host}\n`
+  const mine = [...kept.keys()].filter(k => k.startsWith(prefix))
+  for (const old of mine.slice(0, Math.max(0, mine.length - TRANSCRIPT_CACHE_SIZE))) kept.delete(old)
 }
 
 /** The transcript kept for a chat, to draw while it resumes; null when none. */
@@ -40,7 +43,13 @@ export function keptTranscript(storedId: string, profile: string | undefined, ho
   return state
 }
 
-/** The connection dropped: what was kept may not be current. */
-export function forgetTranscripts(): void {
-  kept.clear()
+/** The chats kept for dashboards no longer saved go. */
+export function forgetTranscriptHosts(hosts: readonly string[]): void {
+  for (const key of [...kept.keys()]) if (!hosts.includes(key.slice(0, key.indexOf('\n')))) kept.delete(key)
+}
+
+/** A dashboard's connection dropped: what was kept for it may not be current. The others' stay. */
+export function forgetTranscripts(host = ''): void {
+  const prefix = `${host}\n`
+  for (const key of [...kept.keys()]) if (key.startsWith(prefix)) kept.delete(key)
 }
