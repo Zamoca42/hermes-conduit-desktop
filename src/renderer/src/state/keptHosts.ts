@@ -514,17 +514,11 @@ export interface OtherBot {
   bot: Bot
 }
 
-/** Every live kept host's bots, read on Bots Home once a minute; a failed read keeps what the host showed. */
-/** Each kept host's bots as last read, beside the window's own rosters (keptRosters), for the next window to start from. */
-const keptBotsByHost = new Map<string, { bots: OtherBot[]; at: number }>()
-
-/** A host's bots from whichever read is newer: as another dashboard, or as the open one. */
-function botsOf(url: string): OtherBot[] {
-  const kept = keptBotsByHost.get(url)
-  const roster = keptRosters.get(url)
-  if (roster && (!kept || roster.at > kept.at)) return roster.bots.map(bot => ({ host: url, bot }))
-  return kept?.bots ?? []
-}
+/**
+ * Every live kept host's bots, read on Bots Home once a minute; a failed read keeps what the host showed. A read
+ * is the roster the host's own window reads (keptRosters), so the first switch there draws its bots at once too.
+ */
+const botsOf = (url: string): OtherBot[] => (keptRosters.get(url)?.bots ?? []).map(bot => ({ host: url, bot }))
 
 export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] {
   // Drawn while live or reconnecting (the host a switch left is dialed again, which over the internet takes most
@@ -554,7 +548,8 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
         urls.map(async url => {
           const outcome = await window.conduit.keptRpc(url, 'profiles.list', { include_sessions: true })
           if (!outcome.ok || stopped) return
-          keptBotsByHost.set(url, { bots: rosterFromProfiles(outcome.result).bots.map(bot => ({ host: url, bot })), at: Date.now() })
+          const roster = rosterFromProfiles(outcome.result)
+          keptRosters.set(url, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
         })
       )
       if (!stopped) show()
