@@ -28,6 +28,8 @@ import {
   takeBotAfterSwitch,
   takeChatAfterSwitch,
   takeOpenAfterSwitch,
+  keptWorkKey,
+  keptWorkPath,
   type KeptWaitingRow,
   type OtherChatRow
 } from '../src/renderer/src/state/keptHosts'
@@ -461,5 +463,16 @@ describe('New Bot on another combined dashboard', () => {
     expect(takeNewBotAfterSwitch('https://a.example')).toBeNull()
     expect(takeNewBotAfterSwitch('https://b.example')).toEqual(bot)
     expect(takeNewBotAfterSwitch('https://b.example')).toBeNull()
+  })
+})
+
+describe("another host's bots' pills", () => {
+  it('reads each bot\'s work as its host names it, keyed by host and name', () => {
+    expect(keptWorkPath('default', true)).toBe('/api/plugins/conduit_push/workstreams')
+    expect(keptWorkPath('Conduit Chan', true)).toBe('/api/plugins/conduit_push/workstreams?conduit_profile=Conduit%20Chan')
+    // A plugin that doesn't list dashboard-profiles reads ?profile=.
+    expect(keptWorkPath('mira', false)).toBe('/api/plugins/conduit_push/workstreams?profile=mira')
+    expect(keptWorkKey('https://a.example', 'Mira')).toBe(keptWorkKey('https://a.example', 'mira'))
+    expect(keptWorkKey('https://a.example', 'mira')).not.toBe(keptWorkKey('https://b.example', 'mira'))
   })
 })
