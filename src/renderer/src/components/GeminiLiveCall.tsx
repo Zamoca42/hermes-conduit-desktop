@@ -73,6 +73,7 @@ import { pictureNoteText, type PictureNote, imageFrame } from '../state/callPict
 import { CANCEL_JOB, INTERRUPT_JOB, LIST_JOBS, START_JOB, VoiceJobs, type VoiceJob } from '../state/voiceJobs'
 import { RECONNECT_ATTEMPTS, isRefusalClose, isResumptionLost, reconnectDelayMs, rejoinPrompt } from '@shared/liveReconnect'
 import { LiveHandoff } from '@shared/liveHandoff'
+import { askedQuestionsForCall } from '../state/askedForCalls'
 
 interface Props {
   profile?: string
@@ -755,10 +756,11 @@ export function GeminiLiveCall({
           // beside function tools, and Gemini's Google Search is metered on a quota of its own.
           webSearchAvailable(profile)
         ])
+        const asked = await askedQuestionsForCall(profile)
         if (ended.current) return
         recall = memory.recall
         search = resolvedSearch(searchMode(provider), searches, provider)
-        toldWith = { language: language(), persona, memory: memory.text, recall, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) }
+        toldWith = { language: language(), persona, memory: memory.text, recall, asked, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) }
         told = instructions({ ...toldWith, search })
         if (!(await open())) return
         // The microphone, as 16 kHz PCM, while the call listens.

@@ -3,6 +3,7 @@ import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
+import { askedQuestionsForCall } from '../state/askedForCalls'
 import { stopReading } from '../state/readAloud'
 import type { TranscriptItem } from '../state/transcript'
 import { MEMORY_PATH, NO_REPLY, PERSONALITY_PATH, memoryText, personaText, replyPrompt, withProfile } from '../state/gptLive'
@@ -585,9 +586,10 @@ export function GrokLiveCall({
               )
             : { text: '', recall: false }
         ])
+        const asked = await askedQuestionsForCall(profile)
         if (ended.current) return
         recall = memory.recall
-        told = instructions({ language: language(), persona, memory: memory.text, recall, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) })
+        told = instructions({ language: language(), persona, memory: memory.text, recall, asked, chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current) })
         if (!(await openSocket())) return
         // The microphone, as 24 kHz PCM, while the call listens.
         const source = ctx.createMediaStreamSource(stream)

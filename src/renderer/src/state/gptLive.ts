@@ -348,10 +348,11 @@ const memoryBlock = (body: string) =>
  * the plugin takes: the memory is cut first, then the persona, so the rules
  * always go whole. Written for the model, not UI copy.
  */
-export function briefing(language?: string, persona = '', memory = ''): string {
+export function briefing(language?: string, persona = '', memory = '', asked = ''): string {
   let personaText = persona.replace(/<\/hermes_persona>/gi, '</ hermes_persona>')
   let memoryText = memory.replace(/<\/hermes_memory>/gi, '</ hermes_memory>')
-  const assembled = () => rules + personaBlock(personaText) + memoryBlock(memoryText) + languageRule(language)
+  // The waiting questions go whole, as the rules do: only the persona and memory are cut.
+  const assembled = () => rules + personaBlock(personaText) + memoryBlock(memoryText) + asked + languageRule(language)
   let text = assembled()
   let excess = codePoints(text) - MAX_BRIEFING_CHARACTERS
   if (excess > 0 && memoryText) {

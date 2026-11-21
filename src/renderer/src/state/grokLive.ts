@@ -98,7 +98,16 @@ const CLAIMS =
  * Grok's instructions: the shared ones with Grok's additions (Hermes work goes
  * to Hermes, no claims a tool didn't confirm, the computer's clock).
  */
-export function instructions(options: { language?: string; persona?: string; memory?: string; recall?: boolean; chat?: string; now?: Date; timeZone?: string }): string {
+export function instructions(options: {
+  language?: string
+  persona?: string
+  memory?: string
+  recall?: boolean
+  asked?: string
+  chat?: string
+  now?: Date
+  timeZone?: string
+}): string {
   const timeZone = options.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
   return liveInstructions({
     ...options,

@@ -11594,6 +11594,20 @@ button.ghost:disabled {
   display: contents;
 }
 
+/* A question the bot asked in this chat that waits past its turn, over the transcript (the phone's ChatAskedQuestionBar). */
+.asked-question-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 16px 6px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.asked-question-more {
+  align-self: flex-end;
+}
+
 /* The chat list's profiles in a column beside it (Eric, 2026-11-21), and its Filter button. */
 .chatlist.has-column {
   flex-direction: row;

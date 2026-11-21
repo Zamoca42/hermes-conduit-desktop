@@ -14,6 +14,7 @@
  */
 import type { PendingRequest } from '../../../shared/ipc'
 import { cleanTitle } from './text'
+import { parseQuestion, type WorkQuestion } from './work'
 import { inputPromptView } from './inputPrompts'
 import { t } from '../../../shared/i18n'
 
@@ -34,6 +35,8 @@ export interface WaitingRow {
   /** When the wait began, in milliseconds. */
   at: number
   profile?: string
+  /** A question that waits past its turn: its card, drawn in the chat that asked. */
+  question?: WorkQuestion
 }
 
 export function waitingPath(profile?: string): string {
@@ -62,6 +65,18 @@ export function waitingFromResponse(body: unknown, profile?: string): WaitingRow
   return [...rows, ...askedRows(body, profile)]
 }
 
+/**
+ * The questions waiting past their turn in the chat on screen, oldest first:
+ * its profile's rows that name one of the ids it goes by.
+ */
+export function askedInChat(rows: readonly WaitingRow[], profile: string | undefined, ids: readonly (string | null | undefined)[]): WaitingRow[] {
+  const own = new Set(ids.filter((id): id is string => !!id))
+  const name = profile && profile !== 'default' ? profile : ''
+  return rows
+    .filter(row => row.question && (row.profile && row.profile !== 'default' ? row.profile : '') === name && row.sessionIds.some(id => own.has(id)))
+    .sort((a, b) => (a.at || Infinity) - (b.at || Infinity))
+}
+
 /** A row for a question that waits past its turn (from /waiting's questions). */
 export const isAsked = (row: WaitingRow) => row.id.startsWith('asked-')
 
@@ -87,7 +102,8 @@ function askedRows(body: unknown, profile?: string): WaitingRow[] {
       summary: typeof item.text === 'string' ? item.text.trim() : '',
       questions: 1,
       at: at > 0 && at < 1e11 ? at * 1000 : at,
-      profile
+      profile,
+      question: parseQuestion(item) ?? undefined
     })
   }
   return rows
@@ -179,6 +195,40 @@ export function unmatchedWaiting(rows: WaitingRow[], requests: PendingRequest[])
   const live = new Set(requests.map(r => r.sessionId))
   // A question that waits past its turn is a wait of its own, not the request its chat holds now.
   return rows.filter(row => isAsked(row) || !row.sessionIds.some(id => live.has(id)))
+}
+
+/** At most this many waiting questions go into a live call's instructions. */
+export const ASKED_SPOKEN = 5
+
+/**
+ * What a live call is told about the questions its bot asked that wait past
+ * their turn, after the phone's askedQuestionsBlock (written for the model,
+ * so not translated): oldest first, with their choices. The user's answer
+ * goes to Hermes as a request naming its id; Hermes' spoken turn records it
+ * for the chat that asked (notifier 0.191.0). Empty when none waits.
+ */
+export function askedQuestionsBlock(rows: readonly WaitingRow[]): string {
+  const open = rows
+    .flatMap(row => (row.question ? [row.question] : []))
+    .sort((a, b) => (a.at || Infinity) - (b.at || Infinity))
+    .slice(0, ASKED_SPOKEN)
+  if (!open.length) return ''
+  const lines = open.map(question => {
+    let line = `- ${question.id}: «${question.text}»`
+    // A yes or no only when its card offers the pair; otherwise it's answered in words, as the card says.
+    const yesOrNo = question.actions.includes('approve') && question.actions.includes('decline')
+    if (question.choices.length) line += ` Choices: «${question.choices.join('», «')}».`
+    else if (yesOrNo) line += ' A yes or no.'
+    if (question.recommended) line += ` Hermes recommends «${question.recommended}».`
+    return line
+  })
+  return (
+    '\n\nQuestions Hermes asked the user that still wait on their answer (on their Needs you list):\n' +
+    lines.join('\n') +
+    "\nSay them when the user asks what's waiting on them, reading the choices out. When they answer one, " +
+    'send their answer to Hermes as a request that names its id, like "My answer to P7: <what they said>": ' +
+    'Hermes records it, and the chat that asked acts on it.'
+  )
 }
 
 /**

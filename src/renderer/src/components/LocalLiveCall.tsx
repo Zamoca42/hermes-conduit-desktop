@@ -6,6 +6,7 @@ import type { PendingRequest } from '@shared/ipc'
 import { stopReading } from '../state/readAloud'
 import type { TranscriptItem } from '../state/transcript'
 import { gateway } from '../gateway'
+import { askedQuestionsForCall } from '../state/askedForCalls'
 import { PERSONALITY_PATH, NO_REPLY, personaText, replyPrompt, withProfile } from '../state/gptLive'
 import { FUNCTION_TOOLS, audioAppend, decode, pcmSamples, responseCreate, textTurn } from '../state/grokLive'
 import {
@@ -801,12 +802,14 @@ export function LocalLiveCall({
               item.kind === 'user' || item.kind === 'assistant' ? [{ role: item.kind, text: item.text }] : []
             )
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+            const asked = await askedQuestionsForCall(profile)
             agent.current = liveInstructions({
               lookups: AGENT_LOOKUPS,
               announces: false,
               extra: AGENT_INSTRUCTIONS + clockInstructions(new Date(), timeZone),
               language: language(),
               persona,
+              asked,
               chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current)
             })
           }

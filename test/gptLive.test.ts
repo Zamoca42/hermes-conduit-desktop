@@ -122,6 +122,11 @@ describe('what Conduit sends', () => {
     expect(briefing()).toContain('"End call:"')
     expect(briefing()).toContain('"Read back:"')
   })
+
+  it('tells the call the questions waiting on the user, whole', () => {
+    const asked = '\n\nQuestions Hermes asked the user that still wait on their answer:\n- P7: «Which branch?»'
+    expect(briefing(undefined, 'p'.repeat(20000), 'm'.repeat(20000), asked)).toContain('- P7: «Which branch?»')
+  })
 })
 
 describe('delegations', () => {

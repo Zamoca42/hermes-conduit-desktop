@@ -139,6 +139,11 @@ describe('questions that wait past their turn', () => {
     expect(parseWork(answer).questions).toEqual([])
   })
 
+  it('keeps a question time already in milliseconds', () => {
+    expect(parseQuestions([card({ at: 1_700_000_000_000 })])[0].at).toBe(1_700_000_000_000)
+    expect(parseQuestions([card({ at: 100 })])[0].at).toBe(100_000)
+  })
+
   it('answers a yes-or-no question with Approve or Decline', () => {
     const question = parseQuestions([card({})])[0]
     expect(questionButtons(question).map(b => b.label)).toEqual(['Approve', 'Decline'])

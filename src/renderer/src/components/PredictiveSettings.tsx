@@ -35,6 +35,15 @@ import { Select } from './Select'
  * computer, cut at the plugin's limit, sent only with that kind's questions,
  * and off, with the reason, on a plugin that would ignore them.
  */
+/** What a screen reader calls each kind's box, so the three don't all read as "Your instructions". */
+function instructionsLabel(kind: PredictKind): string {
+  switch (kind) {
+    case 'replies': return t('Instructions for suggested replies')
+    case 'draft': return t('Instructions for guesses while I pause')
+    case 'turn': return t('Instructions for follow-ups')
+  }
+}
+
 function InstructionsBox({ kind, on, served, placeholder }: { kind: PredictKind; on: boolean; served: boolean | null; placeholder: string }) {
   const [text, setText] = useState(() => storedInstructions(kind))
   if (!on) return null
@@ -46,7 +55,7 @@ function InstructionsBox({ kind, on, served, placeholder }: { kind: PredictKind;
         value={text}
         disabled={served === false}
         placeholder={placeholder}
-        aria-label={t('Your instructions')}
+        aria-label={instructionsLabel(kind)}
         onChange={e => {
           setInstructions(kind, e.target.value)
           setText(storedInstructions(kind))
