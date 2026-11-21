@@ -43483,5 +43483,20 @@
     "tr": "Başlık kopyalandı",
     "zh-Hans": "已复制标题",
     "zh-Hant": "已拷貝標題"
+  },
+  "Lanes": {
+    "de": "Spalten",
+    "es": "Columnas",
+    "fr": "Colonnes",
+    "id": "Kolom",
+    "it": "Colonne",
+    "ja": "レーン",
+    "ko": "레인",
+    "pl": "Kolumny",
+    "pt-BR": "Colunas",
+    "ru": "Колонки",
+    "tr": "Sütunlar",
+    "zh-Hans": "泳道",
+    "zh-Hant": "泳道"
   }
 }

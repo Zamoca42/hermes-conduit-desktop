@@ -93,6 +93,11 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
 
   // A menu opened on one board never acts on another.
   useEffect(() => setMenu(null), [kanban.slug, kanban.unavailable])
+  // With no board picked, the board is whatever Hermes calls current, which another client can change:
+  // a menu whose task left the board read closes rather than act on the new one.
+  useEffect(() => {
+    if (menu && !kanban.board?.columns.some(column => column.tasks.some(task => task.id === menu.task.id))) setMenu(null)
+  }, [kanban.board, menu])
 
   function copy(text: string, done: string) {
     navigator.clipboard.writeText(text).then(
@@ -174,7 +179,7 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
         <div
           className="board-jump"
           role="toolbar"
-          aria-label={t('Board')}
+          aria-label={t('Lanes')}
           onWheel={e => {
             // A narrow window clips the chips: the wheel moves them along.
             if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY
