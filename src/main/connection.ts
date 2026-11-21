@@ -32,7 +32,7 @@ import {
 } from './auth'
 import { cleanHeaders, httpsIssue, proxyFetch, withProxyHeaders, type ProxyHeaders } from './proxyHeaders'
 import { t } from '../shared/i18n'
-import { addressName, addressNamesNothing } from '../shared/hostNames'
+import { addressNamesNothing } from '../shared/hostNames'
 import { describeConnectionFailure } from './connectionFailure'
 
 /** What we keep between launches. Secrets are encrypted by the store. */
@@ -284,8 +284,8 @@ export class Connection {
     }
     if (replacing && this.deps.store.replace) this.deps.store.replace(replacing, saved)
     else this.deps.store.save(saved)
-    // The host list now holds it.
-    this.setStatus({ ...this.status, hosts: this.hosts() })
+    // The host list now holds it, and its name.
+    this.setStatus({ ...this.status, hosts: this.hosts(), hostLabel: this.identityOf(saved).hostLabel })
     return { ok: true }
   }
 
@@ -514,9 +514,9 @@ export class Connection {
     const here = new URL(saved.url)
     // The port too when another saved host shares the name.
     const shared = hosts.some(h => h.url !== saved.url && new URL(h.url).hostname === here.hostname)
-    // A name the person or its Hermes gave wins over the address (shared/hostNames.ts).
-    const named = hosts.find(h => h.url === saved.url)?.name
-    const hostLabel = named && named !== addressName(saved.url) ? named : shared ? here.host : here.hostname
+    // The host list's name, as Settings and the menus show it (shared/hostNames.ts).
+    const listed = hosts.find(h => h.url === saved.url)?.name
+    const hostLabel = listed || (shared ? here.host : here.hostname)
     return { url: saved.url, hostLabel, username: saved.username, method: saved.method, hosts }
   }
 
