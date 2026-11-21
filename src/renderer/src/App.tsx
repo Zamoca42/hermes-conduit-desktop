@@ -2824,7 +2824,8 @@ function Shell({
               connected
                 ? draft => {
                     // A new chat's canvas: what's sent from it goes only into the chat it makes (A new chat that something waits on).
-                    setSelected({ id: null, profile: selected.profile })
+                    // In the profile the Calls page showed and edited (the resolved one, never a hidden or gone name).
+                    setSelected({ id: null, profile: settingsProfile })
                     setSection('chats')
                     setQuote(quoteRequest({ draft }))
                   }
