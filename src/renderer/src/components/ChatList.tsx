@@ -17,6 +17,8 @@ import type { HostBadge, OtherChatRow } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
 import { EMPTY_NESTING, ancestorsOf, descendants, nestRows, nestSummary } from '../state/chatNesting'
 import { ChatFilterMenu, type FilterChoice } from './ChatFilterMenu'
+import { filterProjects, hiddenNow, hiddenProjectsSlot, hidesChat, projectIndex, projectOf, readHiddenProjects, writeHiddenProjects, NO_PROJECT } from '../state/hiddenProjects'
+import type { Project } from '../state/projects'
 import { ProfileColumn } from './ProfileColumn'
 import type { MixedTile } from '../state/botOrder'
 
@@ -121,6 +123,14 @@ interface Props {
   onDone?: (row: ChatRow) => void
   /** Opens Projects, the phone's Chats › Projects. */
   onProjects?: () => void
+  /**
+   * Filter › Projects: the profile the list shows and its project tree (null
+   * while it's read); left out in All with several profiles, where projects
+   * belong to no one profile.
+   */
+  projects?: { profile: string; list: Project[] | null }
+  /** Filter › Needs you: every profile's waiting chats, where the list is served. */
+  onNeedsYou?: () => void
   /** The host, so a Hermes without message search isn't asked again. */
   searchScope?: string
   /** Opens every pinned reply; left out while there are none. */
@@ -197,6 +207,8 @@ export function ChatList({
   isDone,
   onDone,
   onProjects,
+  projects: projectTree,
+  onNeedsYou,
   onPinnedReplies,
   searchScope = '',
   moveTargets,
@@ -230,6 +242,30 @@ export function ChatList({
     writeSelection(next)
   }
   const [filterOpen, setFilterOpen] = useState(false)
+  // Filter › Projects, kept per dashboard and profile; only the projects listed now count.
+  const projectsSlot = projectTree?.profile ?? null
+  const projects = projectTree?.list
+  const [keptHidden, setKeptHidden] = useState<{ slot: string; ids: string[] } | null>(null)
+  const keptKey = projectsSlot ? hiddenProjectsSlot(searchScope, projectsSlot) : null
+  const keptIds = useMemo(
+    () => (!keptKey || !projectsSlot ? [] : keptHidden?.slot === keptKey ? keptHidden.ids : readHiddenProjects(searchScope, projectsSlot)),
+    [keptKey, keptHidden, searchScope, projectsSlot]
+  )
+  const hiddenProjects = useMemo(() => (projectsSlot ? hiddenNow(keptIds, projects) : new Set<string>()), [projectsSlot, keptIds, projects])
+  const setHiddenProjects = (ids: string[]) => {
+    if (!keptKey) return
+    setKeptHidden({ slot: keptKey, ids })
+    writeHiddenProjects(searchScope, projectsSlot!, ids)
+  }
+  const projectsIndex = useMemo(() => projectIndex(projects), [projects])
+  const homeTitle = projects?.find(p => p.isHome)?.title
+  const projectChoices = useMemo(() => {
+    const offered = projectsSlot ? filterProjects(projects) : []
+    return offered.length
+      ? { home: homeTitle, list: offered.map(p => ({ id: p.id, title: p.title })), hidden: hiddenProjects, onHidden: (ids: string[]) => setHiddenProjects(ids) }
+      : undefined
+    // setHiddenProjects reads keptKey, which projectsSlot and searchScope make.
+  }, [projectsSlot, projects, homeTitle, hiddenProjects, searchScope])
 
   useEffect(() => {
     if (!menu) return
@@ -302,14 +338,20 @@ export function ChatList({
   const canReorder = !query.trim() && !active.length
   // Only grouped by profile does the open chat change what's listed (its section keeps it past the cap), so a click elsewhere doesn't list again.
   const groupOpenId = grouped ? selectedId : null
-  const { sections, listed, allowed, pinnedSection, nesting } = useMemo(() => {
+  const { sections, listed, allowed, pinnedSection, nesting, hidesEverything } = useMemo(() => {
     const q = query.trim().toLowerCase()
     const inProfile = profile
       ? (rows ?? []).filter(r => sameProfile(r, profile))
       : allLeftOut.length
         ? (rows ?? []).filter(r => shownInAll(r.profile, botNames, allLeftOut))
         : (rows ?? [])
-    const sourced = marks && active.length ? selectRows(inProfile, active, filterContext!) : inProfile
+    const selected = marks && active.length ? selectRows(inProfile, active, filterContext!) : inProfile
+    // A search looks through every chat, a hidden project's too; Needs approval keeps every wait, as the amber dot counts them.
+    const listsWaits = active.includes('waiting')
+    const sourced =
+      q || !hiddenProjects.size
+        ? selected
+        : selected.filter(r => !hidesChat(projectOf(projectsIndex, r), r.pinned, listsWaits && waitingIds.has(r.id), hiddenProjects))
     const filtered = q ? sourced.filter(r => searchText(r).includes(q)) : sourced
     // Another combined host's chats, only in All with no filter: found by title or by the host's name.
     const others =
@@ -355,8 +397,15 @@ export function ChatList({
           .map(section => ({ ...section, rows: section.rows.filter(r => isOther(r) || !nesting.nested.has(r.id)) }))
           .filter(section => section.profile !== undefined || section.rows.length)
       : arranged
-    return { sections: nestedOut, listed: filtered, allowed: active.length ? sourced : undefined, pinnedSection: pinned, nesting }
-  }, [rows, query, profile, marks, active, looksUp, filterContext, pinOrder.orders, grouped, showingAll, groupOpenId, bots, botNames, allLeftOut, otherRows, badgeFor])
+    return {
+      sections: nestedOut,
+      listed: filtered,
+      allowed: active.length ? sourced : undefined,
+      pinnedSection: pinned,
+      nesting,
+      hidesEverything: !filtered.length && selected.length > 0 && !q
+    }
+  }, [rows, query, profile, marks, active, looksUp, filterContext, pinOrder.orders, grouped, showingAll, groupOpenId, bots, botNames, allLeftOut, otherRows, badgeFor, hiddenProjects, projectsIndex, waitingIds])
   /**
    * The pins a pinned row moves among: the Pinned section, or grouped by
    * profile its own section's, so a move there orders only that profile's
@@ -441,6 +490,13 @@ export function ChatList({
     active.find(k => k === 'inprogress' || k === 'done') ??
     active.find(k => k === 'unread' || k === 'running' || k === 'waiting') ??
     null
+  // The chip: the filters chosen, or All, then what Filter › Projects hides (Home by name, since its chats are in no project).
+  const hiddenOthers = [...hiddenProjects].filter(id => id !== NO_PROJECT).length
+  const chipParts = [
+    ...active.map(k => (isSourceKey(k) ? sourceName(k.slice(7) as ChatSource) : FILTER_LABELS[k]())),
+    ...(hiddenProjects.has(NO_PROJECT) ? [homeTitle ? t('{name} hidden', { name: homeTitle }) : t('Chats outside projects hidden')] : []),
+    ...(hiddenOthers ? [hiddenOthers === 1 ? t('1 project hidden') : t('{count} projects hidden', { count: hiddenOthers })] : [])
+  ]
   const waitingShown = useMemo(() => inShown.filter(r => waitingIds.has(r.id)).length, [inShown, waitingIds])
   const botName = (row: ChatRow) => {
     if (!row.profile || row.profile === 'default' || profile) return null
@@ -582,15 +638,25 @@ export function ChatList({
             }
             open={filterOpen}
             onOpen={setFilterOpen}
+            onNeedsYou={onNeedsYou}
+            projects={projectChoices}
           />
         ) : null}
       </div>
-      {active.length ? (
+      {active.length || hiddenProjects.size ? (
         <div className="filter-active">
           <button className="filter-active-chip" onClick={() => setFilterOpen(true)}>
-            {active.map(k => (isSourceKey(k) ? sourceName(k.slice(7) as ChatSource) : FILTER_LABELS[k]())).join(', ')}
+            {chipParts.join(', ')}
           </button>
-          <button className="filter-active-clear" aria-label={t('Clear')} title={t('Clear')} onClick={() => setSelection([])}>
+          <button
+            className="filter-active-clear"
+            aria-label={t('Clear')}
+            title={t('Clear')}
+            onClick={() => {
+              setSelection([])
+              if (hiddenProjects.size) setHiddenProjects([])
+            }}
+          >
             <Icon name="close" />
           </button>
         </div>
@@ -600,7 +666,9 @@ export function ChatList({
         {error ? <div className="empty">{t('Couldn’t load your chats: {error}', { error })}</div> : null}
         {rows && sections.length === 0 && !query.trim() ? (
           <div className="empty">
-            {emptyFilter === 'starred'
+            {hidesEverything && hiddenProjects.size
+              ? t('The chats here are hidden in Filter > Projects. Tick them again to show them.')
+              : emptyFilter === 'starred'
               ? t('No starred chats. Star one from its menu to keep it here.')
               : emptyFilter === 'unread'
                 ? t('No unread chats.')
