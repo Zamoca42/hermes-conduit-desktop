@@ -74,7 +74,7 @@ export function askedInChat(rows: readonly WaitingRow[], profile: string | undef
   const name = profile && profile !== 'default' ? profile : ''
   return rows
     .filter(row => row.question && (row.profile && row.profile !== 'default' ? row.profile : '') === name && row.sessionIds.some(id => own.has(id)))
-    .sort((a, b) => a.at - b.at)
+    .sort((a, b) => (a.at || Infinity) - (b.at || Infinity))
 }
 
 /** A row for a question that waits past its turn (from /waiting's questions). */

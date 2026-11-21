@@ -164,7 +164,8 @@ export function parseQuestion(row: Row): WorkQuestion | null {
     refs: strings(row.refs),
     title: str(row.title).trim(),
     text: str(row.text).trim(),
-    at: num(row.at) * 1000,
+    // Seconds, as the plugin sends; milliseconds kept as they are.
+    at: num(row.at) > 0 && num(row.at) < 1e11 ? num(row.at) * 1000 : num(row.at),
     actions: (Array.isArray(row.actions) ? row.actions : []).filter((a): a is WorkQuestion['actions'][number] =>
       (QUESTION_ACTIONS as readonly unknown[]).includes(a)
     ),

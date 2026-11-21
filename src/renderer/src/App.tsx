@@ -1433,7 +1433,7 @@ function Shell({
   const waitingRows = useMemo(() => unmatchedWaiting(waiting.rows, requests), [waiting.rows, requests])
   // The open chat's questions that wait past their turn, drawn over its transcript.
   const askedHere = useMemo(
-    () => (selected.id || chat.storedId ? askedInChat(waiting.rows, selected.profile, [chat.storedId, selected.id, chat.liveId]) : []),
+    () => askedInChat(waiting.rows, selected.profile, [chat.storedId, selected.id, chat.liveId]),
     [waiting.rows, selected.profile, selected.id, chat.storedId, chat.liveId]
   )
   // Combined dashboards: the other hosts' waits, badged, each opening through a switch.
