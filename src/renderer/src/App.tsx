@@ -1552,12 +1552,13 @@ function Shell({
   watching.current = { liveId: chat.liveId, onChats: section === 'chats' }
   const notify = useCallback(async (spec: NotificationSpec, sessionId: string) => {
     if (!notificationsEnabled() || typeof Notification === 'undefined') return
-    // A chat in a window of its own notifies from that window.
-    if (await window.conduit.chatWindowOf(sessionId)) return
+    // A chat in a window of its own notifies from that window, one still opening its session included.
+    const storedId = chats.current.get(sessionId)?.storedId ?? undefined
+    if (await window.conduit.chatWindowOf(sessionId, false, storedId)) return
     const n = new Notification(spec.title, { body: spec.body, tag: spec.tag, silent: false })
     n.onclick = async () => {
       // A chat in a window of its own opens there.
-      if (await window.conduit.chatWindowOf(sessionId, true)) return
+      if (await window.conduit.chatWindowOf(sessionId, true, storedId)) return
       window.conduit.window.show()
       const ref = chats.current.get(sessionId)
       if (ref?.storedId) {

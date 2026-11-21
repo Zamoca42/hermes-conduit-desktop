@@ -31,7 +31,8 @@ import {
   type AppIconChoice
 } from '../shared/ipc'
 import { probeHost } from './auth'
-import { isPageUrl, pageUrl, registerPageScheme, servePages } from './pages'
+import { pageUrl, registerPageScheme, servePages } from './pages'
+import { confineNavigation } from './navigation'
 import { pluginRelease } from './pluginRelease'
 import { cleanHeaders } from './proxyHeaders'
 import { KeptHosts } from './keptHosts'
@@ -173,10 +174,16 @@ app.on('browser-window-created', (_event, window) => {
 /** The chat windows' own BrowserWindows, so a notification can find the one that has its chat. */
 const chatBrowserWindows = new WeakSet<BrowserWindow>()
 // Asking again for a chat's window brings it back, out of the dock or the taskbar too.
+/** Each chat window by its chat's stored id, so it's found before its session opens. */
+const chatBrowserById = new Map<string, BrowserWindow>()
 const chatWindows = new ChatWindowSet(
   (chat, onClosed) => {
     const window = createChatWindow(chat, onClosed)
     chatBrowserWindows.add(window)
+    chatBrowserById.set(chat.id, window)
+    window.on('closed', () => {
+      if (chatBrowserById.get(chat.id) === window) chatBrowserById.delete(chat.id)
+    })
     if (chat.host) chatWindowHosts.set(window.webContents.id, chat.host)
     return {
       focus: () => {
@@ -327,23 +334,7 @@ function createWindow(): void {
     if (mainWindow === window) mainWindow = null
   })
   // Links open in the browser, never inside the app.
-  window.webContents.setWindowOpenHandler(({ url }) => {
-    // Web pages, and a Pulse card's mail, phone and message links; Maps and Calendar links on a Mac.
-    if (/^(https?:\/\/|mailto:|tel:|sms:)/i.test(url) || (isMac && /^(maps:|calshow:|x-apple-reminderkit:)/i.test(url))) void shell.openExternal(url)
-    return { action: 'deny' }
-  })
-  // A page Hermes drew stays in its frame: a link it follows opens in the browser.
-  window.webContents.on('will-frame-navigate', event => {
-    if (event.isMainFrame || isPageUrl(event.url)) return
-    event.preventDefault()
-    if (/^https?:\/\//.test(event.url)) void shell.openExternal(event.url)
-  })
-  window.webContents.on('will-navigate', (event, url) => {
-    if (url !== window.webContents.getURL()) {
-      event.preventDefault()
-      if (/^https?:\/\//.test(url)) void shell.openExternal(url)
-    }
-  })
+  confineNavigation(window.webContents)
 
   if (process.env.ELECTRON_RENDERER_URL) {
     void window.loadURL(process.env.ELECTRON_RENDERER_URL)
@@ -433,10 +424,14 @@ function registerIpc(): void {
   })
   ipcMain.on(IPC.closeChatWindows, (_event, ids: unknown) => chatWindows.close(Array.isArray(ids) ? ids.filter((id): id is string => typeof id === 'string') : undefined))
   ipcMain.handle(IPC.chatWindows, () => chatWindows.ids())
-  ipcMain.handle(IPC.chatWindowOf, (_event, sessionId: unknown, show: unknown) => {
+  ipcMain.handle(IPC.chatWindowOf, (_event, sessionId: unknown, show: unknown, storedId: unknown) => {
     if (typeof sessionId !== 'string' || !sessionId) return null
     const openers = new Set(eventRouter.openers(sessionId))
-    const window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed() && w !== mainWindow && openers.has(w.webContents.id) && chatBrowserWindows.has(w))
+    // A window that hasn't opened its session yet is found by its chat's stored id.
+    const byStored = typeof storedId === 'string' && storedId ? chatBrowserById.get(storedId) : undefined
+    const window =
+      BrowserWindow.getAllWindows().find(w => !w.isDestroyed() && w !== mainWindow && openers.has(w.webContents.id) && chatBrowserWindows.has(w)) ??
+      (byStored && !byStored.isDestroyed() ? byStored : undefined)
     if (!window) return null
     const watching = window.isVisible() && !window.isMinimized() && window.isFocused()
     if (show === true) {
