@@ -981,6 +981,11 @@ function Shell({
       const far = !!target.host && target.host !== status.url
       const bot = far ? undefined : roster.bots?.find(b => sameProfileAs(b.name, target.profile))
       const onScreen = !far && (target.id === selected.id || target.id === chat.storedId)
+      // A call in the chat on screen would end with it: the header says so, and a row's menu does the same.
+      if (onScreen && calling) {
+        void tell(t('End the call to move this chat to a window of its own'))
+        return
+      }
       // Away first, so the main window isn't still showing it when its window opens (which would close it).
       if (onScreen) setSelected({ id: null, profile: selected.profile })
       const opened = await window.conduit.openChatWindow({
@@ -993,12 +998,14 @@ function Shell({
       })
       if (!opened) {
         if (onScreen) setSelected(current => (current.id === null ? { id: target.id, profile: target.profile, title: target.title, botChat: target.botChat } : current))
-        void tell(t('Up to {count} chats can have windows of their own. Close one to open another.', { count: CHAT_WINDOW_LIMIT }))
+        // At the limit, say so; otherwise its dashboard went (a sign-out, a switch) as it opened.
+        if (chatWindowIds.length >= CHAT_WINDOW_LIMIT) void tell(t('Up to {count} chats can have windows of their own. Close one to open another.', { count: CHAT_WINDOW_LIMIT }))
+        else void tell(t('The chat didn’t open. Try again.'))
         return
       }
       setBeside(current => (current?.id === target.id ? null : current))
     },
-    [roster.bots, selected.id, selected.profile, chat.storedId, status.url]
+    [roster.bots, selected.id, selected.profile, chat.storedId, status.url, calling, chatWindowIds]
   )
   /** A row whose chat has a window of its own brings that window to the front; any other opens here. */
   const selectRow = useCallback(
@@ -1545,8 +1552,8 @@ function Shell({
   watching.current = { liveId: chat.liveId, onChats: section === 'chats' }
   const notify = useCallback(async (spec: NotificationSpec, sessionId: string) => {
     if (!notificationsEnabled() || typeof Notification === 'undefined') return
-    // A chat in a window of its own that's in front is being watched there.
-    if ((await window.conduit.chatWindowOf(sessionId)) === 'watching') return
+    // A chat in a window of its own notifies from that window.
+    if (await window.conduit.chatWindowOf(sessionId)) return
     const n = new Notification(spec.title, { body: spec.body, tag: spec.tag, silent: false })
     n.onclick = async () => {
       // A chat in a window of its own opens there.
