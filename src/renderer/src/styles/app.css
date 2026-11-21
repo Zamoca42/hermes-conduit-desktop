@@ -1474,7 +1474,7 @@ body.resizing-columns {
   text-align: center;
 }
 
-.needs {
+main.needs {
   flex: 1;
   overflow-y: auto;
   padding: 28px 24px 48px;
@@ -1488,7 +1488,7 @@ body.resizing-columns {
   gap: 12px;
 }
 
-.needs h1 {
+main.needs h1 {
   margin: 0;
   font-size: 28px;
 }
