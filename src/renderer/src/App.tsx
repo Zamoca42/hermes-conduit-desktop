@@ -46,7 +46,8 @@ import { TitleBar } from './components/TitleBar'
 import { setRunningCall, switchEndingCall } from './state/callSwitch'
 import { LiveTranscript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { useTranscriptValue } from './state/transcriptStore'
-import { lastReplyOf, revealedKey } from './state/transcriptReads'
+import { lastReplyOf } from './state/transcriptReads'
+import { useRevealRow } from './state/revealRow'
 import type { TranscriptItem } from './state/transcript'
 import { forgetSummaries } from './state/stepSummaries'
 import { WAKE_EVENT, wakeBindings, wakeChat, wakeProfiles, type WakeBinding } from './state/wakeSettings'
@@ -1046,26 +1047,8 @@ function Shell({
     setPanelStored(width)
     writeWidth(PANEL_COLUMN, width)
   }
-  // An artifact's Show in Chat: the message it came from, once its chat's transcript has it (after the phone's ArtifactReveal).
-  const [revealRow, setRevealRow] = useState<{ sessionId: string; messageId: number; until: number } | null>(null)
-  // chat.storedId, not selected.id: it changes in useChat's effect with the
-  // store's reset, so the render between the two never reads the previous
-  // chat's rows for the row being revealed.
-  const revealing = revealRow && selected.id === revealRow.sessionId && chat.storedId === revealRow.sessionId ? revealRow.messageId : null
-  const revealKey = useTranscriptValue(transcriptStore, state => (revealing === null ? null : revealedKey(state.items, revealing)))
-  useEffect(() => {
-    if (!revealRow || selected.id !== revealRow.sessionId) return
-    const left = revealRow.until - Date.now()
-    if (left <= 0) return setRevealRow(null)
-    if (revealKey) {
-      setRevealRow(null)
-      requestAnimationFrame(() => revealMessage(chatPane.current, revealKey))
-      return
-    }
-    // The row may never come: the wait ends on time, not on the next change to the transcript.
-    const timer = window.setTimeout(() => setRevealRow(current => (current === revealRow ? null : current)), left)
-    return () => window.clearTimeout(timer)
-  }, [revealRow, selected.id, revealKey])
+  // An artifact's Show in Chat (state/revealRow.ts).
+  const showInChat = useRevealRow(transcriptStore, selected.id, chat.storedId, key => requestAnimationFrame(() => revealMessage(chatPane.current, key)))
   const [modelOpen, setModelOpen] = useState(false)
   const closeModel = useCallback(() => setModelOpen(false), [])
   const [contextOpen, setContextOpen] = useState(false)
@@ -2584,7 +2567,7 @@ function Shell({
                   setArtifactsOpen(false)
                   openPath?.(path)
                 }}
-                onOpenChat={item => setRevealRow({ sessionId: item.sessionId, messageId: item.messageId, until: Date.now() + 20_000 })}
+                onOpenChat={item => showInChat(item.sessionId, item.messageId)}
                 onClose={() => setArtifactsOpen(false)}
                 tabs={panelTabBar}
               />
@@ -2687,7 +2670,7 @@ function Shell({
                 onOpenChat={item => {
                   setSelected({ id: item.sessionId, profile: chatProfile ?? undefined, title: item.sessionTitle })
                   setSection('chats')
-                  setRevealRow({ sessionId: item.sessionId, messageId: item.messageId, until: Date.now() + 20_000 })
+                  showInChat(item.sessionId, item.messageId)
                 }}
               />
             </div>

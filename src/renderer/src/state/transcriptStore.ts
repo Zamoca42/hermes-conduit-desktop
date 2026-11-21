@@ -36,6 +36,9 @@ export function useTranscript(store: TranscriptStore): TranscriptState {
   return useSyncExternalStore(store.subscribe, store.get)
 }
 
+/** Said once: React reads every subscription on each update, so a bad read would say it many times over. */
+let warnedUnstable = false
+
 /**
  * A value read from the transcript: the component runs only when it
  * changes. `read` must answer a primitive, or a part of the state as it is
@@ -45,7 +48,10 @@ export function useTranscriptValue<T>(store: TranscriptStore, read: (state: Tran
   return useSyncExternalStore(store.subscribe, () => {
     const value = read(store.get())
     // A read that makes a new object each time would draw over and over: say so while developing.
-    if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV && !Object.is(value, read(store.get()))) console.error('useTranscriptValue: the read must answer a primitive or a part of the state, not a new object.')
+    if (!warnedUnstable && (import.meta as { env?: { DEV?: boolean } }).env?.DEV && !Object.is(value, read(store.get()))) {
+      warnedUnstable = true
+      console.error('useTranscriptValue: the read must answer a primitive or a part of the state, not a new object. It answered:', value, read)
+    }
     return value
   })
 }
