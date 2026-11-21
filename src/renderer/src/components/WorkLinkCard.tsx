@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import { t } from '@shared/i18n'
 import { shownTitle, statusText, workTone, type WorkItem } from '../state/work'
 import type { WorkLink } from '../state/workLinks'
@@ -10,6 +10,8 @@ export interface WorkLinkActions {
   open: (sessionId: string, profile?: string) => void
   /** The open bot's workstream by its ref, for its card. */
   item: (ref: string) => WorkItem | undefined
+  /** Asks for the bot's resolved work, when a card names work its open list doesn't. */
+  missing?: () => void
   /** In a Bot Chat, a ref its work lists, for a named "W3" to link to. */
   chatOf?: (ref: string) => { sessionId: string; profile?: string } | undefined
   /** A listed chat's name, for a reference's link. */
@@ -26,6 +28,8 @@ export const WorkLinks = createContext<WorkLinkActions | null>(null)
 export function WorkLinkCard({ link }: { link: WorkLink }) {
   const actions = useContext(WorkLinks)
   const item = actions?.item(link.ref)
+  const missing = !item ? actions?.missing : undefined
+  useEffect(() => missing?.(), [missing])
   const tone = item ? workTone(item) : null
   const mark = !item
     ? 'linked'

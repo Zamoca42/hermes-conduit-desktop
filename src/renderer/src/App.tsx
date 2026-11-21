@@ -810,9 +810,15 @@ function Shell({
   // Wherever the bots list shows: beside a bot's chat, a group chat, or New Bot and Edit Bot.
   const botsListShown = section === 'bots' || section === 'room' || (section === 'chats' && botsSideShown)
   const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || botsSideShown || !!openBotChat || workSessions.has(selected.id ?? '')))
-  const workItem: WorkItem | undefined = selected.id
-    ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id)
-    : undefined
+  // A resolved workstream is on the bot's Resolved page, so its chat keeps its title line, as the phone's does.
+  const openWorkItem = selected.id ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined
+  const workItem: WorkItem | undefined =
+    openWorkItem ?? (selected.id ? work.resolved?.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined)
+  const readResolvedForChat = work.readResolved
+  const resolvedChatOpen = !!selected.id && !!work.snapshot && !openWorkItem && workSessions.has(selected.id)
+  useEffect(() => {
+    if (resolvedChatOpen) readResolvedForChat()
+  }, [resolvedChatOpen, readResolvedForChat])
   // A workstream's checklist is its chat's plan, ahead of Hermes' own todo list there.
   const workChecklist = workItem?.checklist
   const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
@@ -830,17 +836,27 @@ function Shell({
   // A reply's links to its work and to other chats (workLinks): a card or a link opens the chat here, as on the phone.
   const workSnapshot = work.snapshot
   const listRows = list.rows
+  const workResolved = work.resolved
+  const readResolvedWork = work.readResolved
+  const inBotChat = !!openBotChat || selected.botChat === true
+  // A Bot Chat names resolved work too: its Resolved page gives those refs their chats.
+  useEffect(() => {
+    if (inBotChat) readResolvedWork()
+  }, [inBotChat, readResolvedWork])
   const workLinkActions = useMemo<WorkLinkActions>(() => {
-    const workstream = (ref: string) => workSnapshot?.items.find(item => item.kind === 'workstream' && item.ref === ref && !!item.sessionId)
-    const inBotChat = !!openBotChat || selected.botChat === true
+    // The open list first, then the Resolved page, as the phone's cards read them.
+    const known = [...(workSnapshot?.items ?? []), ...(workResolved ?? [])]
+    const workstream = (ref: string) => known.find(item => item.kind === 'workstream' && item.ref === ref && !!item.sessionId)
+    const ofSession = (sessionId: string) => known.find(i => i.sessionId === sessionId)
     return {
       open: (sessionId, profile) => {
-        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        const item = ofSession(sessionId)
         const row = listRows?.find(r => r.id === sessionId)
         setSelected({ id: sessionId, profile: profile ?? selected.profile, title: item ? shownTitle(item) : row?.title })
         setSection('chats')
       },
       item: workstream,
+      missing: readResolvedWork,
       chatOf: inBotChat
         ? ref => {
             const item = workstream(ref)
@@ -848,11 +864,11 @@ function Shell({
           }
         : undefined,
       titleOf: sessionId => {
-        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        const item = ofSession(sessionId)
         return item ? shownTitle(item) : listRows?.find(r => r.id === sessionId)?.title || undefined
       }
     }
-  }, [workSnapshot, listRows, openBotChat, selected.botChat, selected.profile])
+  }, [workSnapshot, workResolved, readResolvedWork, listRows, inBotChat, selected.profile])
   // The bot's screen (Hermes' Bot Screen), offered only where the host can have one, as the phone checks.
   const screenProfile = selected.profile ?? 'default'
   const [screenOpen, setScreenOpen] = useState(false)

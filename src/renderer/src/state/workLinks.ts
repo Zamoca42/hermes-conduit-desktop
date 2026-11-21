@@ -20,7 +20,8 @@ export const SESSION_LINK = 'conduit://session/'
 export function sessionInLink(href: string): { sessionId: string; profile?: string } | null {
   if (!href.startsWith(SESSION_LINK)) return null
   const rest = href.slice(SESSION_LINK.length)
-  const raw = rest.split(/[?#)\]> \n]/)[0] ?? ''
+  // A sentence's full stop after it isn't part of the id.
+  const raw = (rest.split(/[?#)\]> \n]/)[0] ?? '').replace(/[.:-]+$/, '')
   const sessionId = decode(raw)
   if (!sessionId) return null
   const query = rest.includes('?') ? rest.slice(rest.indexOf('?') + 1) : ''
@@ -50,8 +51,12 @@ const DESKTOP_REF = new RegExp(
   'g'
 )
 
-/** Code: a fenced block (``` or ~~~, open to the end when unclosed) or an inline span of one or more backticks. */
-const CODE = /(```|~~~)[\s\S]*?(?:\1|$)|(`+)[^`]*?\2/g
+/**
+ * Code: a fenced block (``` or ~~~ at a line's start, open to the end when
+ * unclosed) or an inline span, closed by a run of as many backticks as opened
+ * it (so ``a ` b`` is one span) within its paragraph.
+ */
+const CODE = /(?<=^|\n)[ \t]{0,3}(```|~~~)[\s\S]*?(?:\n[ \t]{0,3}\1|$)|(?<!`)(`+)(?!`)(?:(?!\n[ \t]*\n)[\s\S])*?(?<!`)\2(?!`)/g
 
 /** Where `text` has code, as [start, end) offsets. */
 function codeRanges(text: string): [number, number][] {

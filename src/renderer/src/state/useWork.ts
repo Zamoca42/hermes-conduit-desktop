@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { gateway } from '../gateway'
-import { WORK, parseWork, sameWork, workPath, type WorkSnapshot } from './work'
+import { WORK, parseWork, sameWork, workPath, type WorkItem, type WorkSnapshot } from './work'
 import { everyWhileVisible } from './visibility'
 
 /**
@@ -54,7 +54,35 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
     return everyWhileVisible(() => void load(), 6000)
   }, [connected, live, load])
 
-  return { snapshot, error, reload: load }
+  // The first page of the bot's Resolved list, read when a reply's card or
+  // ref names work its open list doesn't (the phone's resolvedLists), and
+  // again once more work is resolved. Kept per count, so a card asks once.
+  const [resolved, setResolved] = useState<{ bot: string; count: number; items: WorkItem[] } | null>(null)
+  const resolvedRead = useRef<string | null>(null)
+  const resolvedCount = snapshot?.resolvedCount ?? 0
+  const readResolved = useCallback(() => {
+    if (!connected || resolvedCount <= 0) return
+    const key = `${bot}\u001f${resolvedCount}`
+    if (resolvedRead.current === key) return
+    resolvedRead.current = key
+    const mine = generation.current
+    gateway
+      .http('GET', workPath(`${WORK}?resolved=1`, bot))
+      .then(answer => {
+        if (generation.current !== mine) return
+        setResolved({ bot, count: resolvedCount, items: parseWork(answer).items })
+      })
+      .catch(() => {
+        // Asked again by the next card or count, not in a loop.
+        if (resolvedRead.current === key) resolvedRead.current = null
+      })
+  }, [bot, connected, resolvedCount])
+  useEffect(() => {
+    resolvedRead.current = null
+    setResolved(null)
+  }, [bot, connected])
+
+  return { snapshot, error, reload: load, resolved: resolved?.bot === bot ? resolved.items : null, readResolved }
 }
 
 /**
