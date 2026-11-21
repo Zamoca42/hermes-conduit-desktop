@@ -20939,21 +20939,6 @@
     "zh-Hans": "通知",
     "zh-Hant": "通知"
   },
-  "Only you message or stop it now.": {
-    "de": "Jetzt schreibst nur du ihm oder stoppst es.",
-    "es": "Ahora solo tú le escribes o lo detienes.",
-    "fr": "Désormais, vous seul lui écrivez ou l’arrêtez.",
-    "id": "Sekarang hanya Anda yang mengirim pesan atau menghentikannya.",
-    "it": "Ora solo tu gli scrivi o lo fermi.",
-    "ja": "今はあなただけがメッセージを送ったり停止したりできます。",
-    "ko": "이제 직접만 메시지를 보내거나 중지할 수 있습니다.",
-    "pl": "Teraz tylko ty do niego piszesz lub go zatrzymujesz.",
-    "pt-BR": "Agora só você envia mensagens ou o para.",
-    "ru": "Теперь писать ему или останавливать его можете только вы.",
-    "tr": "Artık ona yalnızca sen mesaj gönderir veya durdurursun.",
-    "zh-Hans": "现在只有你会给它发消息或停止它。",
-    "zh-Hant": "現在只有你會給它傳訊息或停止它。"
-  },
   "Opens a new chat with “{prompt}” ready to send. Send it, and Conduit rings when Hermes replies.": {
     "de": "Öffnet einen neuen Chat mit „{prompt}“, bereit zum Senden. Sende es, und Conduit klingelt, wenn Hermes antwortet.",
     "es": "Abre un chat nuevo con «{prompt}» listo para enviar. Envíalo y Conduit sonará cuando Hermes responda.",
@@ -39313,6 +39298,21 @@
     "tr": "{bot} soruyor",
     "zh-Hans": "{bot} 提问",
     "zh-Hant": "{bot} 提問"
+  },
+  "{bot} can message or stop it again.": {
+    "de": "{bot} kann ihm wieder schreiben oder es stoppen.",
+    "es": "{bot} podrá volver a escribirle o detenerlo.",
+    "fr": "{bot} pourra de nouveau lui écrire ou l’arrêter.",
+    "id": "{bot} bisa mengirim pesan atau menghentikannya lagi.",
+    "it": "{bot} potrà di nuovo scrivergli o fermarlo.",
+    "ja": "{bot}が再びメッセージを送ったり停止したりできるようになります。",
+    "ko": "{bot}이(가) 다시 메시지를 보내거나 중지할 수 있습니다.",
+    "pl": "{bot} znów będzie mógł do niego pisać lub go zatrzymać.",
+    "pt-BR": "{bot} poderá enviar mensagens ou pará-lo de novo.",
+    "ru": "{bot} снова сможет писать ему или останавливать его.",
+    "tr": "{bot} yeniden ona mesaj gönderebilir veya onu durdurabilir.",
+    "zh-Hans": "{bot} 将可以再次给它发消息或停止它。",
+    "zh-Hant": "{bot} 將可以再次給它傳訊息或停止它。"
   },
   "{bot} couldn’t answer.": {
     "de": "{bot} konnte nicht antworten.",
