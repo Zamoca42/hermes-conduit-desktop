@@ -2897,7 +2897,8 @@ html[data-window='quick'] body {
   bottom: 108px;
   transform: translateX(-50%);
   width: min(460px, calc(100% - 32px));
-  max-height: min(700px, calc(100% - 130px));
+  /* A set height, so the card stays put as a search fills the list, and the top stays clear of the chat's header. */
+  height: min(600px, calc(100% - 190px));
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -3233,12 +3234,12 @@ html[data-window='quick'] body {
   border: 0;
   border-radius: 10px;
   background: none;
-  color: var(--text-4);
+  color: var(--text-3);
 }
 
 .pick-row-pin .ico {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
 }
 
 .pick-row-pin.pinned {
@@ -9386,6 +9387,11 @@ button.secondary.danger {
   gap: 6px;
 }
 
+.pick-row-provider .provider-logo.initial {
+  background: var(--line-strong);
+  color: var(--text);
+}
+
 .model-group-name .provider-logo {
   color: var(--text-2);
 }
@@ -10695,7 +10701,7 @@ button.secondary.danger {
   position: static;
   transform: none;
   width: min(480px, 100%);
-  max-height: min(700px, 100%);
+  height: min(700px, 100%);
 }
 
 .model-group-toggle {

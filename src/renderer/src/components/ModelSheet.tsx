@@ -182,7 +182,7 @@ export function PickRow({
           <span className="pick-row-name">{model}</span>
           {withProvider ? (
             <span className="pick-row-provider">
-              <ProviderLogo slug={provider} title={name} size={13} />
+              <ProviderLogo slug={provider} title={name} size={15} />
               {name}
             </span>
           ) : null}

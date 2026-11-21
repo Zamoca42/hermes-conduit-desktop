@@ -96,7 +96,9 @@ function ModelChooserPage({
   const [query, setQuery] = useState('')
   const [toggled, setToggled] = useState<Record<string, boolean>>({})
   const search = useRef<HTMLInputElement>(null)
-  useEffect(() => search.current?.focus(), [])
+  useEffect(() => {
+    search.current?.focus()
+  }, [])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
@@ -119,8 +121,12 @@ function ModelChooserPage({
   )
   const [highlight, setHighlight] = useState(0)
   const highlighted = useRef<HTMLDivElement | null>(null)
-  useEffect(() => setHighlight(0), [query])
-  useEffect(() => highlighted.current?.scrollIntoView({ block: 'nearest' }), [highlight])
+  useEffect(() => {
+    setHighlight(0)
+  }, [query])
+  useEffect(() => {
+    highlighted.current?.scrollIntoView({ block: 'nearest' })
+  }, [highlight])
   const pinned = searching ? [] : pinnedRows(quick.picks, providers ?? [])
   const recent = searching ? [] : recentRows(quick.picks, providers ?? [], current)
   const typedId = typedModelId(query)

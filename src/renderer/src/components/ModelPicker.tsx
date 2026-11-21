@@ -47,7 +47,9 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
   }, [chat.liveId, profile])
   const catalog = useModelCatalog(params)
   const providers = catalog.providers
-  useEffect(() => search.current?.focus(), [allProviders])
+  useEffect(() => {
+    search.current?.focus()
+  }, [allProviders])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -76,8 +78,12 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
     () => (searching ? groupModels(providers ?? [], query).flatMap(group => group.models.map(model => ({ model, provider: group.slug }))) : []),
     [providers, query, searching]
   )
-  useEffect(() => setHighlight(0), [query])
-  useEffect(() => highlighted.current?.scrollIntoView({ block: 'nearest' }), [highlight])
+  useEffect(() => {
+    setHighlight(0)
+  }, [query])
+  useEffect(() => {
+    highlighted.current?.scrollIntoView({ block: 'nearest' })
+  }, [highlight])
   // A model Hermes doesn't list, typed as its id, on any provider (issue 2841): one row under the matches.
   const typedId = typedModelId(query)
   const typedProviders = typedId && catalog.answered ? typedModelProviders(providers ?? [], typedId, chat.provider) : []
