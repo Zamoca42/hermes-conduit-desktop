@@ -210,14 +210,15 @@ export const ASKED_SPOKEN = 5
 export function askedQuestionsBlock(rows: readonly WaitingRow[]): string {
   const open = rows
     .flatMap(row => (row.question ? [row.question] : []))
-    .sort((a, b) => a.at - b.at)
+    .sort((a, b) => (a.at || Infinity) - (b.at || Infinity))
     .slice(0, ASKED_SPOKEN)
   if (!open.length) return ''
   const lines = open.map(question => {
     let line = `- ${question.id}: «${question.text}»`
-    const inWords = !question.choices.length && question.actions.includes('answer')
+    // A yes or no only when its card offers the pair; otherwise it's answered in words, as the card says.
+    const yesOrNo = question.actions.includes('approve') && question.actions.includes('decline')
     if (question.choices.length) line += ` Choices: «${question.choices.join('», «')}».`
-    else if (!inWords) line += ' A yes or no.'
+    else if (yesOrNo) line += ' A yes or no.'
     if (question.recommended) line += ` Hermes recommends «${question.recommended}».`
     return line
   })

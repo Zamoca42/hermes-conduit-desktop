@@ -144,4 +144,19 @@ describe('the waiting list', () => {
     expect(block).toContain('My answer to P7')
     expect(askedQuestionsBlock([])).toBe('')
   })
+
+  it('puts a question with no time last, and calls one a yes or no only when its card offers the pair', () => {
+    const body = {
+      questions: [
+        { id: 'P5', kind: 'proposal', status: 'open', text: 'Untimed', session_ids: ['s4'], actions: ['approve'] },
+        { id: 'P6', kind: 'proposal', status: 'open', text: 'Timed', at: 2, session_ids: ['s4'], actions: ['approve', 'decline'] }
+      ]
+    }
+    const rows = waitingFromResponse(body, 'work')
+    expect(askedInChat(rows, 'work', ['s4']).map(r => r.question?.id)).toEqual(['P6', 'P5'])
+    const block = askedQuestionsBlock(rows)
+    expect(block.indexOf('P6:')).toBeLessThan(block.indexOf('P5:'))
+    expect(block).toContain('- P5: «Untimed»\n')
+    expect(block).toContain('- P6: «Timed» A yes or no.')
+  })
 })
