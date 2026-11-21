@@ -1101,7 +1101,9 @@ function Shell({
     },
     [list, selected.id, chat.storedId, newChat, updatePins]
   )
-  // Filter › Projects: the project tree of the profile the list shows (with one profile, All is that one), read again as turns end.
+  // Filter › Projects: the project tree of the profile the list shows (with one profile, All is that one), read again as
+  // turns end, as Projects closes (a project made, renamed or deleted there) and after Move to Project.
+  const [projectsChanged, setProjectsChanged] = useState(0)
   const filterProfile = chatProfile ?? (roster.bots?.length === 1 ? roster.bots[0].name : null)
   const [filterTree, setFilterTree] = useState<{ key: string; list: Project[] } | null>(null)
   const filterTreeKey = filterProfile && connected && status.url ? `${status.url}\t${filterProfile}` : null
@@ -1117,7 +1119,7 @@ function Shell({
     return () => {
       live = false
     }
-  }, [filterTreeKey, filterProfile, section, turnsDone])
+  }, [filterTreeKey, filterProfile, section, turnsDone, projectsOpen, projectsChanged])
   const projectFilter = useMemo(
     () => (filterProfile && filterTreeKey ? { profile: filterProfile, list: filterTree?.key === filterTreeKey ? filterTree.list : null } : undefined),
     [filterProfile, filterTreeKey, filterTree]
@@ -1132,6 +1134,7 @@ function Shell({
     async (row: ChatRow, target: MoveTarget) => {
       try {
         await moveChat(gateway.rpc, gateway.http, row.id, row.profile, target.path, status.sessionAuthority === true)
+        setProjectsChanged(n => n + 1)
       } catch (e) {
         void tell(
           t('Couldn’t move “{title}” to {project}: {reason}', { title: row.title, project: target.title, reason: e instanceof Error ? e.message : String(e) })

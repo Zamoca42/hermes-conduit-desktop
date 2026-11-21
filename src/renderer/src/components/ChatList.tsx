@@ -17,7 +17,7 @@ import type { HostBadge, OtherChatRow } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
 import { EMPTY_NESTING, ancestorsOf, descendants, nestRows, nestSummary } from '../state/chatNesting'
 import { ChatFilterMenu, type FilterChoice } from './ChatFilterMenu'
-import { filterProjects, hiddenNow, hidesChat, projectIndex, projectOf, readHiddenProjects, writeHiddenProjects, NO_PROJECT } from '../state/hiddenProjects'
+import { filterProjects, hiddenNow, hiddenProjectsSlot, hidesChat, projectIndex, projectOf, readHiddenProjects, writeHiddenProjects, NO_PROJECT } from '../state/hiddenProjects'
 import type { Project } from '../state/projects'
 import { ProfileColumn } from './ProfileColumn'
 import type { MixedTile } from '../state/botOrder'
@@ -246,7 +246,7 @@ export function ChatList({
   const projectsSlot = projectTree?.profile ?? null
   const projects = projectTree?.list
   const [keptHidden, setKeptHidden] = useState<{ slot: string; ids: string[] } | null>(null)
-  const keptKey = projectsSlot ? `${searchScope}\t${projectsSlot.toLowerCase()}` : null
+  const keptKey = projectsSlot ? hiddenProjectsSlot(searchScope, projectsSlot) : null
   const keptIds = useMemo(
     () => (!keptKey || !projectsSlot ? [] : keptHidden?.slot === keptKey ? keptHidden.ids : readHiddenProjects(searchScope, projectsSlot)),
     [keptKey, keptHidden, searchScope, projectsSlot]
@@ -258,8 +258,14 @@ export function ChatList({
     writeHiddenProjects(searchScope, projectsSlot!, ids)
   }
   const projectsIndex = useMemo(() => projectIndex(projects), [projects])
-  const offeredProjects = projectsSlot ? filterProjects(projects) : []
   const homeTitle = projects?.find(p => p.isHome)?.title
+  const projectChoices = useMemo(() => {
+    const offered = projectsSlot ? filterProjects(projects) : []
+    return offered.length
+      ? { home: homeTitle, list: offered.map(p => ({ id: p.id, title: p.title })), hidden: hiddenProjects, onHidden: (ids: string[]) => setHiddenProjects(ids) }
+      : undefined
+    // setHiddenProjects reads keptKey, which projectsSlot and searchScope make.
+  }, [projectsSlot, projects, homeTitle, hiddenProjects, searchScope])
 
   useEffect(() => {
     if (!menu) return
@@ -487,7 +493,7 @@ export function ChatList({
   // The chip: the filters chosen, or All, then what Filter › Projects hides (Home by name, since its chats are in no project).
   const hiddenOthers = [...hiddenProjects].filter(id => id !== NO_PROJECT).length
   const chipParts = [
-    ...(active.length ? active.map(k => (isSourceKey(k) ? sourceName(k.slice(7) as ChatSource) : FILTER_LABELS[k]())) : [t('All')]),
+    ...active.map(k => (isSourceKey(k) ? sourceName(k.slice(7) as ChatSource) : FILTER_LABELS[k]())),
     ...(hiddenProjects.has(NO_PROJECT) ? [homeTitle ? t('{name} hidden', { name: homeTitle }) : t('Chats outside projects hidden')] : []),
     ...(hiddenOthers ? [hiddenOthers === 1 ? t('1 project hidden') : t('{count} projects hidden', { count: hiddenOthers })] : [])
   ]
@@ -633,11 +639,7 @@ export function ChatList({
             open={filterOpen}
             onOpen={setFilterOpen}
             onNeedsYou={onNeedsYou}
-            projects={
-              offeredProjects.length
-                ? { home: homeTitle, list: offeredProjects.map(p => ({ id: p.id, title: p.title })), hidden: hiddenProjects, onHidden: setHiddenProjects }
-                : undefined
-            }
+            projects={projectChoices}
           />
         ) : null}
       </div>

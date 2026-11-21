@@ -145,6 +145,8 @@ describe('the chat list draws', () => {
     expect(shown).not.toContain('Website copy')
     expect(shown).toContain('Website pinned')
     expect(shown).toContain('1 project hidden')
+    // With no filter chosen the chip names only what's hidden, as the phone's does.
+    expect(shown).not.toMatch(/filter-active-chip[^>]*>All/)
     // Until the tree loads nothing is hidden, and without a tree (All with several profiles) nothing is offered.
     expect(render({ projects: { profile: 'coder', list: null } })).toContain('Website copy')
     expect(render({})).toContain('Website copy')

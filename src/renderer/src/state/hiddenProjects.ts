@@ -12,7 +12,8 @@ export const NO_PROJECT = '__no_project__'
 const KEY = 'conduit.hiddenChatProjects'
 
 type Stored = Record<string, string[]>
-const slot = (host: string, profile: string) => `${host}\t${profile.toLowerCase()}`
+/** Where a dashboard's profile keeps its choice. */
+export const hiddenProjectsSlot = (host: string, profile: string) => `${host}\t${profile.toLowerCase()}`
 
 function readAll(): Stored {
   try {
@@ -25,15 +26,15 @@ function readAll(): Stored {
 
 /** The projects hidden on a dashboard's profile, as kept. */
 export function readHiddenProjects(host: string, profile: string): string[] {
-  const ids = readAll()[slot(host, profile)]
+  const ids = readAll()[hiddenProjectsSlot(host, profile)]
   return Array.isArray(ids) ? ids.filter(id => typeof id === 'string') : []
 }
 
 export function writeHiddenProjects(host: string, profile: string, ids: readonly string[]): void {
   try {
     const all = readAll()
-    if (ids.length) all[slot(host, profile)] = [...ids]
-    else delete all[slot(host, profile)]
+    if (ids.length) all[hiddenProjectsSlot(host, profile)] = [...ids]
+    else delete all[hiddenProjectsSlot(host, profile)]
     localStorage.setItem(KEY, JSON.stringify(all))
   } catch {
     // Kept for this window only.
