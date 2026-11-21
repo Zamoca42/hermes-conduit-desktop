@@ -18,8 +18,6 @@ interface Props {
   defaultLabel: string | null
   /** The row's name when nothing is picked and there's no default to name. */
   emptyLabel?: string
-  /** Picking emptyLabel clears the setting (a bot's model), so the page offers it once a model is picked. */
-  clearable?: boolean
   label: string
   disabled?: boolean
   className?: string
@@ -41,7 +39,7 @@ export interface ChooserReasoning {
  * Eric 2026-11-08: no drop-down menus). The setting keeps its own saves;
  * this only hands back a pick.
  */
-export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLabel, clearable, label, disabled, className, reasoning }: Props) {
+export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLabel, label, disabled, className, reasoning }: Props) {
   const [open, setOpen] = useState(false)
   const lines = chooserLines(value, providers, defaultLabel ?? emptyLabel ?? t('Not set'))
   return (
@@ -66,7 +64,6 @@ export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLa
           providers={providers}
           defaultLabel={defaultLabel}
           emptyLabel={emptyLabel}
-          clearable={clearable}
           label={label}
           reasoning={reasoning}
           onClose={() => setOpen(false)}
@@ -86,7 +83,6 @@ function ModelChooserPage({
   providers,
   defaultLabel,
   emptyLabel,
-  clearable,
   label,
   reasoning,
   onClose,
@@ -96,7 +92,6 @@ function ModelChooserPage({
   providers: ModelProviderRow[] | null
   defaultLabel: string | null
   emptyLabel?: string
-  clearable?: boolean
   label: string
   reasoning?: ChooserReasoning
   onClose: () => void
@@ -141,8 +136,6 @@ function ModelChooserPage({
   const typedId = typedModelId(query)
   const typedProviders = typedId && providers ? typedModelProviders(providers, typedId, current?.provider) : []
   const lines = chooserLines(value, providers, defaultLabel ?? emptyLabel ?? t('Not set'))
-  // A setting whose no-pick reads as Default (a bot's model) offers it once a model is picked, so it can go back.
-  const resetLabel = defaultLabel ?? (clearable && value && emptyLabel ? emptyLabel : null)
 
   function row(model: string, provider: string, withProvider: boolean, index?: number) {
     const v = chooserValue(provider, model)
@@ -212,12 +205,12 @@ function ModelChooserPage({
           />
         </label>
         <div className="model-list">
-          {resetLabel !== null && !searching ? (
+          {defaultLabel !== null && !searching ? (
             <section className="model-group-card">
               <div className={`pick-row-wrap${!value ? ' on' : ''}`}>
                 <button className="pick-row" aria-pressed={!value} onClick={() => onPick('')}>
                   <span className="pick-row-text">
-                    <span className="pick-row-name">{resetLabel}</span>
+                    <span className="pick-row-name">{defaultLabel}</span>
                   </span>
                   {!value ? <Icon name="check" className="pick-row-check" /> : null}
                 </button>
