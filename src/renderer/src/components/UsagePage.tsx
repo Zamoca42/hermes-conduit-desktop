@@ -32,6 +32,7 @@ import {
 import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { Select } from './Select'
 
 interface Props {
   /** The profiles to choose from, when there's more than one. */
@@ -229,13 +230,13 @@ export function UsagePage({ bots, profile: initialProfile, onBack }: Props) {
           ))}
         </div>
         {bots.length > 1 ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
 

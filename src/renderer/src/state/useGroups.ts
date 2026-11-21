@@ -12,7 +12,7 @@ import {
   roomCapabilities,
   roomFromWire,
   roomMembers,
-  roomsFromList,
+  listAllRooms,
   type DriverStatus,
   type Room,
   type RoomApproval,
@@ -45,7 +45,7 @@ export function useRooms(connected: boolean, host = '') {
         setRooms([])
         return
       }
-      const listed = roomsFromList(await gateway.rpc('groups.list', { include_disbanded: false }))
+      const listed = await listAllRooms((method, params) => gateway.rpc(method, params))
       if (keepsFor(host)) keptOwnRooms.set(host, { capabilities: caps, rooms: listed, at: Date.now() })
       setRooms(listed)
       setError(null)

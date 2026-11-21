@@ -7,6 +7,7 @@ import { timeLabel } from '../state/chats'
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 interface Props {
   connected: boolean
@@ -66,13 +67,13 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
       <div className="board-head">
         {segment}
         {kanban.boards && kanban.boards.length > 1 ? (
-          <select className="board-picker" aria-label={t('Board')} value={kanban.slug ?? kanban.boards.find(b => b.current)?.slug ?? ''} onChange={e => kanban.pickBoard(e.target.value || null)}>
+          <Select className="board-picker" aria-label={t('Board')} value={kanban.slug ?? kanban.boards.find(b => b.current)?.slug ?? ''} onChange={picked => kanban.pickBoard(picked || null)}>
             {kanban.boards.map(row => (
               <option key={row.slug} value={row.slug}>
                 {row.name} ({row.total})
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
         <label className="chatlist-search board-search">
           <Icon name="search" />
@@ -353,34 +354,34 @@ function TaskPanel({
         <div className="task-controls">
           <label>
             {t('Status')}
-            <select value={shown.status} disabled={busy || !movable} onChange={e => void run(() => onPatch({ status: e.target.value }))}>
+            <Select value={shown.status} disabled={busy || !movable} onChange={picked => void run(() => onPatch({ status: picked }))}>
               {[...new Set([shown.status, ...MOVABLE])].map(status => (
                 <option key={status} value={status} disabled={status !== shown.status && !MOVABLE.includes(status)}>
                   {columnTitle(status)}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label>
             {t('Assigned to')}
-            <select value={shown.assignee ?? ''} disabled={busy} onChange={e => void run(() => onPatch({ assignee: e.target.value }))}>
+            <Select value={shown.assignee ?? ''} disabled={busy} onChange={picked => void run(() => onPatch({ assignee: picked }))}>
               <option value="">{t("Parked (won't run)")}</option>
               {[...new Set([...(shown.assignee ? [shown.assignee] : []), ...assignees])].map(name => (
                 <option key={name} value={name}>
                   {botTitle(name)}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label>
             {t('Priority')}
-            <select value={shown.priority} disabled={busy} onChange={e => void run(() => onPatch({ priority: Number(e.target.value) }))}>
+            <Select value={shown.priority} disabled={busy} onChange={picked => void run(() => onPatch({ priority: Number(picked) }))}>
               {[...new Set([shown.priority, ...PRIORITIES])].sort().map(priority => (
                 <option key={priority} value={priority}>
                   {priorityTitle(priority)}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         </div>
         {error ? <div className="error-text">{error}</div> : null}
@@ -592,34 +593,34 @@ function TaskComposer({
         <div className="task-controls">
           <label>
             {t('Assigned to')}
-            <select value={assignee} onChange={e => setAssignee(e.target.value)}>
+            <Select value={assignee} onChange={picked => setAssignee(picked)}>
               {[...new Set([defaultAssignee, ...assignees])].map(name => (
                 <option key={name} value={name}>
                   {name === defaultAssignee ? t('Default ({name})', { name: botTitle(name) }) : botTitle(name)}
                 </option>
               ))}
               <option value="">{t("Parked (won't run)")}</option>
-            </select>
+            </Select>
           </label>
           <label>
             {t('Priority')}
-            <select value={priority} onChange={e => setPriority(Number(e.target.value))}>
+            <Select value={priority} onChange={picked => setPriority(Number(picked))}>
               {PRIORITIES.map(value => (
                 <option key={value} value={value}>
                   {priorityTitle(value)}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label>
             {t('Starts in')}
-            <select value={status} onChange={e => setStatus(e.target.value)}>
+            <Select value={status} onChange={picked => setStatus(picked)}>
               {CREATABLE.filter(name => name === 'triage' || name === 'ready').map(name => (
                 <option key={name} value={name}>
                   {columnTitle(name)}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         </div>
         <span className="meta">

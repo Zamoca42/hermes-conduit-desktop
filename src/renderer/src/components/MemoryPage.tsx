@@ -24,6 +24,7 @@ import { ModelChooser } from './ModelChooser'
 import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 import { useMouseBack } from '../state/mouseBack'
+import { Select } from './Select'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -104,13 +105,13 @@ export function MemoryPage({ bots, profile: initialProfile, onBack }: Props) {
         <h1>{t('Memory & delegation')}</h1>
         <span className="spacer" />
         {bots.length > 1 ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
       {saveError ? <p className="error-text">{saveError}</p> : null}

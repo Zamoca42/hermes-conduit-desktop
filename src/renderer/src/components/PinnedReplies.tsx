@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { Icon } from './icons'
 import { nextBarIndex, normalizedLabel, overview, pinTitle, shownText, type PinnedReply } from '../state/pinnedReplies'
+import { inSelectMenu } from './Select'
 
 /** What a chat's transcript is given to pin replies and draw the bar. */
 export interface PinControls {
@@ -150,7 +151,7 @@ export function PinnedRepliesSheet({
   useEffect(() => {
     if (!editingFirst) done.current?.focus()
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return
+      if (event.key !== 'Escape' || inSelectMenu(event)) return
       event.preventDefault()
       event.stopPropagation()
       onClose()

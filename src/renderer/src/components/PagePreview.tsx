@@ -3,6 +3,7 @@ import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { parsePreview, readTextPath } from '../state/workspace'
 import { PictureProfile } from './Picture'
+import { inSelectMenu } from './Select'
 
 const PLACEHOLDER = 280
 const MIN_HEIGHT = 60
@@ -69,7 +70,7 @@ export function PagePreview({ path, name, fallback }: { path: string; name: stri
   useEffect(() => {
     if (!full) return
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !inSelectMenu(event)) {
         event.preventDefault()
         event.stopPropagation()
         setFull(false)

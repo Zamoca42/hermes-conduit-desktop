@@ -23,6 +23,7 @@ import { useModelCatalog } from '../state/modelCatalog'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 import { useMouseBack } from '../state/mouseBack'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -129,13 +130,13 @@ export function ModelsPage({ bots, profile: initialProfile, onBack }: Props) {
         <h1>{t('Models')}</h1>
         <span className="spacer" />
         {bots.length > 1 ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
       {saveError ? <p className="error-text">{saveError}</p> : null}

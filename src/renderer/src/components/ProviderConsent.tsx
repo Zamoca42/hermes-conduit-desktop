@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { company, consented, modeName, setConsented, type LiveMode } from '../state/consent'
+import { inSelectMenu } from './Select'
 
 /** Before a live mode's first call: the phone's "Send your voice to …?" sheet. Allow starts the call; Not Now or Esc doesn't. */
 export function ProviderConsentSheet({ mode, onAllow, onCancel }: { mode: LiveMode; onAllow: () => void; onCancel: () => void }) {
@@ -8,7 +9,7 @@ export function ProviderConsentSheet({ mode, onAllow, onCancel }: { mode: LiveMo
   useEffect(() => {
     allow.current?.focus()
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !inSelectMenu(event)) {
         event.preventDefault()
         event.stopPropagation()
         onCancel()

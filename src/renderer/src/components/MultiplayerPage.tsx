@@ -27,6 +27,7 @@ import type { PersonPicture } from '../state/useRoomLooks'
 import { ROOM_DASHBOARD_PROFILES_CAPABILITY, ROOM_SETUP_CAPABILITY } from '../state/roomSetup'
 import { useMouseBack } from '../state/mouseBack'
 import { ask } from '../state/dialogs'
+import { inSelectMenu, Select } from './Select'
 
 const client = roomLinksClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -201,13 +202,13 @@ export function MultiplayerPage({
         <h1>{t('Multiplayer')}</h1>
         <span className="spacer" />
         {bots.length > 1 && capabilities.includes(ROOM_SETUP_CAPABILITY) ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
 
@@ -466,7 +467,7 @@ function NameField({ name, setName, caption }: { name: string; setName: (name: s
 function Sheet({ title, working, done, onClose, children }: { title: string; working: boolean; done: boolean; onClose: () => void; children: React.ReactNode }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !working) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !working) {
         event.preventDefault()
         event.stopPropagation()
         onClose()

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { t } from '@shared/i18n'
 import { shortcutGroups } from '../state/shortcuts'
+import { inSelectMenu } from './Select'
 
 /** ⌘/ (Ctrl+/) and Settings > Keyboard: every shortcut, grouped as the phone's sheet is. Esc, Done or ⌘/ again closes it. */
 export function ShortcutsSheet({ onClose }: { onClose: () => void }) {
@@ -8,7 +9,7 @@ export function ShortcutsSheet({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     done.current?.focus()
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !inSelectMenu(event)) {
         event.preventDefault()
         event.stopPropagation()
         onClose()

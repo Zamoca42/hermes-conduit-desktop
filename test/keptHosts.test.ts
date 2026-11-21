@@ -22,6 +22,7 @@ import {
   combinedRooms,
   openRoomAfterSwitch,
   takeRoomAfterSwitch,
+  sameBotWork,
   ROOM_AFTER_SWITCH_MS,
   KEPT_CHATS_PER_PROFILE,
   otherHostsWaiting,
@@ -490,6 +491,10 @@ describe('group chats in a combined group', () => {
     openRoomAfterSwitch({ host: mac, kind: 'room', room: room('trip', ['raiden']) }, 1_000)
     expect(takeRoomAfterSwitch(mac, [room('trip', ['raiden'])], null, 1_000 + ROOM_AFTER_SWITCH_MS + 1)).toBeNull()
     expect(takeRoomAfterSwitch(mac, [room('trip', ['raiden'])], null, 1_000 + ROOM_AFTER_SWITCH_MS + 2)).toBeNull()
+    // An expired one goes at the next look from any host, so it can't wait for its own (desktop#231).
+    openRoomAfterSwitch({ host: mac, kind: 'room', room: room('trip', ['raiden']) }, 1_000)
+    expect(takeRoomAfterSwitch(vps, [], null, 1_000 + ROOM_AFTER_SWITCH_MS + 1)).toBeNull()
+    expect(takeRoomAfterSwitch(mac, [room('trip', ['raiden'])], null, 1_000)).toBeNull()
   })
 })
 
@@ -512,6 +517,15 @@ describe("another host's bots' pills", () => {
     expect(keptWorkPath('mira', false)).toBe('/api/plugins/conduit_push/workstreams?profile=mira')
     expect(keptWorkKey('https://a.example', 'Mira')).toBe(keptWorkKey('https://a.example', 'mira'))
     expect(keptWorkKey('https://a.example', 'mira')).not.toBe(keptWorkKey('https://b.example', 'mira'))
+  })
+})
+
+describe("other hosts' bots' work (desktop#231)", () => {
+  it('reads the same answer as no change', () => {
+    const a = new Map([[keptWorkKey('https://mac.example', 'Nahida'), { working: 1, needsYou: 0 }]])
+    expect(sameBotWork(a, new Map([[keptWorkKey('https://mac.example', 'nahida'), { working: 1, needsYou: 0 }]]))).toBe(true)
+    expect(sameBotWork(a, new Map([[keptWorkKey('https://mac.example', 'nahida'), { working: 1, needsYou: 1 }]]))).toBe(false)
+    expect(sameBotWork(a, new Map())).toBe(false)
   })
 })
 

@@ -48,6 +48,7 @@ import { createScreenWindow } from './screenWindows'
 import { releaseScreen } from '../shared/screenWindows'
 import { ConduitTray } from './tray'
 import { applyAppIcon, watchNewWindows } from './appIcon'
+import { watchEditMenu } from './editMenu'
 import {
   appIconChoice,
   askHostAtLaunch,
@@ -140,7 +141,7 @@ const chatWindows = new ChatWindowSet(createChatWindow, ids => send(IPC.chatWind
 const screenWindows = new ScreenWindowSet(
   createScreenWindow,
   profiles => send(IPC.screenWindowsChanged, profiles),
-  (profile, viewerId) => void releaseScreen((method, params) => connection.rpc(method, params), profile, viewerId)
+  (profile, viewerId, owed) => releaseScreen((method, params) => connection.rpc(method, params), profile, viewerId, owed)
 )
 /** The dashboard the chat windows belong to: another one closes them. */
 let chatWindowsHost: string | null = null
@@ -653,6 +654,8 @@ if (!app.requestSingleInstanceLock()) {
     setLanguage(resolvedLanguage())
     chooseTheme(themeChoice(), false)
     watchNewWindows()
+    // Every window's text gets the right-click menu: the main window, chat windows, Quick Ask, Bot's Screen.
+    app.on('web-contents-created', (_event, contents) => watchEditMenu(contents))
     registerIpc()
     watchDeviceReports(() => send(IPC.deviceReportsChanged, null))
     createWindow()

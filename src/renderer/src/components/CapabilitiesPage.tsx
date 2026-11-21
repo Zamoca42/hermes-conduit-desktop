@@ -28,6 +28,7 @@ import { useHostedApps } from '../state/useHostedApps'
 import type { AppsRequest } from '../state/appsDirectory'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { Select } from './Select'
 
 interface Props {
   bots: { name: string; title: string }[]
@@ -482,13 +483,13 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, on
         <h1>{t('Capabilities')}</h1>
         <span className="spacer" />
         {bots.length > 1 ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
       <div className="cap-bar">

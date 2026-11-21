@@ -7,6 +7,7 @@ import { isPinned, pinnedRows, recentRows } from '../state/modelQuickPicks'
 import { chooserLines, chooserListed, chooserPick, chooserValue, providerStartsOpen } from '../state/modelChooser'
 import { useModelQuickPicks } from './ModelOptions'
 import { Icon } from './icons'
+import { inSelectMenu } from './Select'
 
 interface Props {
   /** "provider\nmodel", or '' for the setting's default. */
@@ -104,7 +105,7 @@ function ModelChooserPage({
   }, [])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
+      if (e.key !== 'Escape' || inSelectMenu(e)) return
       e.preventDefault()
       e.stopPropagation()
       onClose()

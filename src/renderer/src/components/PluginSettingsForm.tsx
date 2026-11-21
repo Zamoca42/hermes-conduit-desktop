@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { isDirty, parseFields, planSave, type PluginSettingField } from '../state/pluginSettings'
+import { Select } from './Select'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 
@@ -88,13 +89,13 @@ export function PluginSettingsForm({
             <label className="plugin-setting-label">
               <FieldTitle field={f} />
               {f.kind === 'enum' ? (
-                <select value={value(f)} disabled={disabled} onChange={e => set(f, e.target.value)}>
+                <Select value={value(f)} disabled={disabled} onChange={picked => set(f, picked)}>
                   {f.choices.map(c => (
                     <option key={c} value={c}>
                       {c}
                     </option>
                   ))}
-                </select>
+                </Select>
               ) : f.kind === 'json' ? (
                 <textarea className="mono" rows={4} spellCheck={false} value={value(f)} disabled={disabled} onChange={e => set(f, e.target.value)} />
               ) : (

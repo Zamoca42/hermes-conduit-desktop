@@ -22,6 +22,7 @@ import {
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 function Head({ title, onBack }: { title: string; onBack: () => void }) {
   useMouseBack(onBack)
@@ -103,18 +104,18 @@ export function PulseLearnedView({ onBack, onChanged }: { onBack: () => void; on
               .map(kind => (
                 <div key={kind} className="pset-row">
                   <span>{kindName(kind)}</span>
-                  <select
+                  <Select
                     className="language-select"
                     value={learned.levels[kind]}
                     disabled={working}
-                    onChange={e => void run(() => gateway.http('PUT', `${PULSE}/levels`, { kind, level: e.target.value }))}
+                    onChange={picked => void run(() => gateway.http('PUT', `${PULSE}/levels`, { kind, level: picked }))}
                   >
                     {LEVELS.map(level => (
                       <option key={level} value={level}>
                         {levelTitle(level)}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </div>
               ))}
             <p className="meta">{t('The loudest Pulse gets for each. Within that, your thumbs, Do it and Done teach it what to bring up and how loudly.')}</p>

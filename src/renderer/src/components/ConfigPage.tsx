@@ -17,6 +17,7 @@ import {
 } from '../state/profileConfig'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { Select } from './Select'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -101,13 +102,13 @@ export function ConfigPage({ title, subtitle, sections, bots, profile: initialPr
         <h1>{title}</h1>
         <span className="spacer" />
         {bots.length > 1 ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
       <p className="meta">{subtitle}</p>
@@ -250,13 +251,13 @@ export function FieldRow({ field, value, busy, onSave }: { field: Field; value: 
           onBlur={commitList}
         />
       ) : (
-        <select className="language-select" value={String(value)} disabled={busy} aria-label={field.label} onChange={e => onSave(e.target.value)}>
+        <Select className="language-select" value={String(value)} disabled={busy} aria-label={field.label} onChange={picked => onSave(picked)}>
           {control.options.map(option => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
-        </select>
+        </Select>
       )}
     </div>
   )

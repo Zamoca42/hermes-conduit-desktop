@@ -5,7 +5,8 @@
  */
 import { createWriteStream } from 'node:fs'
 import { randomBytes } from 'node:crypto'
-import { open, rename, rm } from 'node:fs/promises'
+import { open, readdir, rename, rm, stat } from 'node:fs/promises'
+import { basename, dirname, join } from 'node:path'
 import { Readable, Transform } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import type { ReadableStream } from 'node:stream/web'
@@ -41,10 +42,13 @@ export function dataUrlBytes(value: unknown): Buffer | null {
  * as it was (desktop#206). Each save has its own part file, so two saves to
  * the same path never write into one, and it's flushed to disk before the
  * rename, so a crash can't leave an empty file in its place (desktop#216).
+ * Its name stays short (a Windows path near MAX_PATH), and part files of the
+ * same destination a crash left over a day ago are swept as a save starts.
  * `abort` stops the request that feeds `body`.
  */
 export async function streamToFile(body: ReadableStream, destination: string, abort?: () => void, idleMs = DOWNLOAD_IDLE_MS): Promise<void> {
-  const part = `${destination}.${process.pid}-${randomBytes(4).toString('hex')}.conduit-part`
+  const part = `${destination}.${randomBytes(3).toString('hex')}.conduit-part`
+  await sweepStaleParts(destination)
   let timer: ReturnType<typeof setTimeout> | undefined
   const stalled = new Transform({
     transform(chunk, _encoding, done) {
@@ -74,5 +78,23 @@ export async function streamToFile(body: ReadableStream, destination: string, ab
     throw error
   } finally {
     clearTimeout(timer)
+  }
+}
+
+export const STALE_PART_MS = 24 * 60 * 60 * 1000
+
+/** Removes `destination`'s part files older than STALE_PART_MS, left by a save a crash cut off. */
+export async function sweepStaleParts(destination: string, now = Date.now()): Promise<void> {
+  const dir = dirname(destination)
+  const prefix = `${basename(destination)}.`
+  try {
+    for (const name of await readdir(dir)) {
+      if (!name.startsWith(prefix) || !name.endsWith('.conduit-part')) continue
+      const path = join(dir, name)
+      const info = await stat(path).catch(() => null)
+      if (info && now - info.mtimeMs > STALE_PART_MS) await rm(path, { force: true }).catch(() => undefined)
+    }
+  } catch {
+    // A folder that can't be listed has nothing to sweep here; the save says what's wrong.
   }
 }

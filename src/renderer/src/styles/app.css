@@ -1078,6 +1078,7 @@ a:hover {
 }
 
 .segmented button[aria-pressed='true'],
+.segmented button[aria-checked='true'],
 .segmented button.on {
   border-color: transparent;
   background: var(--accent-soft);
@@ -1232,6 +1233,78 @@ a:hover {
   width: 14px;
   height: 14px;
   opacity: 0.7;
+}
+
+/* Every dropdown (components/Select.tsx): a field that opens the app's rounded menu, never the
+   system's square list. A screen's own class sets its size and colors; this is the default. */
+.conduit-select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--field);
+  color: var(--text);
+  text-align: left;
+}
+
+.conduit-select:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.conduit-select-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conduit-select .conduit-select-chevron {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}
+
+.conduit-select-menu {
+  z-index: 1000;
+  max-width: min(420px, calc(100vw - 16px));
+  overflow-y: auto;
+  gap: 1px;
+}
+
+.conduit-select-menu button {
+  justify-content: space-between;
+  color: var(--text);
+}
+
+.conduit-select-menu button.active:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.conduit-select-menu button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.conduit-select-menu button:focus-visible {
+  outline: none;
+}
+
+.conduit-select-row {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conduit-segments {
+  flex-wrap: wrap;
 }
 
 .language-select {
@@ -3819,7 +3892,7 @@ html[data-window='quick'] body {
   font-size: 26px;
 }
 
-.job-editor select,
+.job-editor .conduit-select,
 .job-editor .job-inline input,
 .job-editor .job-custom {
   height: 36px;
@@ -3941,7 +4014,7 @@ html[data-window='quick'] body {
 }
 
 .board-picker,
-.task-controls select {
+.task-controls .conduit-select {
   height: 32px;
   border-radius: 10px;
   border: 1px solid var(--line-strong);
@@ -5642,7 +5715,7 @@ code.file-link:hover {
   gap: 10px;
 }
 /* Settings > Voice's pickers (Gemini's voice, web lookups) in the fields' look, not Windows' default. */
-.voice-mode-pick select {
+.voice-mode-pick .conduit-select {
   height: 32px;
   padding: 0 8px;
   border-radius: 8px;
@@ -5652,7 +5725,7 @@ code.file-link:hover {
   font: inherit;
   outline: none;
 }
-.voice-mode-pick select:focus {
+.voice-mode-pick .conduit-select:focus-visible {
   border-color: var(--accent);
 }
 
@@ -6324,7 +6397,7 @@ button.cap-row-text {
 }
 .plugin-setting input[type='text'],
 .plugin-setting input[type='password'],
-.plugin-setting select,
+.plugin-setting .conduit-select,
 .plugin-setting textarea {
   border-radius: 10px;
   border: 1px solid var(--line-strong);
@@ -6336,7 +6409,7 @@ button.cap-row-text {
 }
 .plugin-setting input[type='text'],
 .plugin-setting input[type='password'],
-.plugin-setting select {
+.plugin-setting .conduit-select {
   height: 34px;
 }
 .plugin-setting textarea {
@@ -6344,7 +6417,7 @@ button.cap-row-text {
   resize: vertical;
 }
 .plugin-setting input:focus,
-.plugin-setting select:focus,
+.plugin-setting .conduit-select:focus-visible,
 .plugin-setting textarea:focus {
   border-color: var(--accent);
 }
@@ -6962,7 +7035,7 @@ button.cap-row-text {
   gap: 6px;
   justify-content: flex-start;
 }
-.fallback-list select {
+.fallback-list .conduit-select {
   flex: 1;
   min-width: 0;
 }
@@ -10183,7 +10256,8 @@ button.secondary.danger {
   gap: 4px;
   padding: 8px 2px 0;
 }
-.invite-choices label:not(.toggle) {
+.invite-choices label:not(.toggle),
+.invite-choices .invite-choice {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -11164,37 +11238,20 @@ button.ghost:disabled {
   color: #fff;
 }
 
-.call-pill-mode select {
-  appearance: none;
+.call-pill-mode .conduit-select {
   height: 38px;
   max-width: 150px;
   border: 0;
   border-radius: 0 999px 999px 0;
   background: transparent;
   color: inherit;
-  font: inherit;
   font-size: 13px;
   font-weight: 500;
-  padding: 0 30px 0 10px;
-  cursor: pointer;
-  text-overflow: ellipsis;
+  padding: 0 11px 0 10px;
 }
 
-.call-pill-mode select:hover {
+.call-pill-mode .conduit-select:hover {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
-}
-
-.call-pill-mode option {
-  background: var(--menu);
-  color: var(--text);
-}
-
-.call-pill-mode svg {
-  position: absolute;
-  right: 11px;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
 }
 
 .chat-head-toggle {
@@ -11367,7 +11424,7 @@ button.ghost:disabled {
     padding: 0 10px 0 12px;
   }
 
-  .call-pill-mode select {
+  .call-pill-mode .conduit-select {
     max-width: 104px;
   }
 }

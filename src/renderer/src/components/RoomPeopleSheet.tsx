@@ -7,6 +7,7 @@ import { roomCopiesClient, outLine, type RoomCopy } from '../state/roomCopies'
 import { shareDetail, toolsDetail } from '../state/roomInvites'
 import { linksMessage } from '../state/roomLinks'
 import { ask } from '../state/dialogs'
+import { inSelectMenu, Select } from './Select'
 
 const choicesClient = roomChoicesClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 const copiesClient = roomCopiesClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
@@ -50,7 +51,7 @@ export function RoomPeopleSheet({
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !working) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !working) {
         event.preventDefault()
         event.stopPropagation()
         onClose()
@@ -186,23 +187,23 @@ function AgentChoicesEditor({ roomId, profile, name, freeBusy }: { roomId: strin
       {!choices.saved ? <p className="meta">{t("These are {name}'s defaults. A change here applies to this room only.", { name })}</p> : null}
       <label>
         <span>{t('What it can do')}</span>
-        <select className="language-select" value={choices.tools} disabled={saving} onChange={e => void change('tools', e.target.value, { tools: e.target.value })}>
+        <Select className="language-select" value={choices.tools} disabled={saving} onChange={picked => void change('tools', picked, { tools: picked })}>
           {tools.map(([id, title]) => (
             <option key={id} value={id}>
               {title}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <p className="meta">{toolsDetail(choices, freeBusy)}</p>
-      <label>
+      <div className="invite-choice">
         <span>{t('What it may share')}</span>
-        <select className="language-select" value={choices.share} disabled={saving} onChange={e => void change('share', e.target.value, { share: e.target.value })}>
+        <Select segments aria-label={t('What it may share')} value={choices.share} disabled={saving} onChange={picked => void change('share', picked, { share: picked })}>
           <option value="helps">{t('What helps')}</option>
           <option value="ask">{t('Ask me first')}</option>
           <option value="nothing">{t('Nothing personal')}</option>
-        </select>
-      </label>
+        </Select>
+      </div>
       <p className="meta">{shareDetail(choices.share)}</p>
       <label className="toggle">
         <input type="checkbox" checked={choices.searchChats} disabled={saving} onChange={e => void change('search_chats', e.target.checked, { searchChats: e.target.checked })} />

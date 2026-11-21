@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { keptPicture, pictureHost, readGatewayPicture } from '../state/gatewayPictures'
 import { t } from '@shared/i18n'
 import { pictureFileName, saveFromUrl } from '../state/saveMedia'
+import { inSelectMenu } from './Select'
 
 /** The profile whose files a transcript's pictures are read from. */
 export const PictureProfile = createContext<string | undefined>(undefined)
@@ -14,7 +15,7 @@ export function PictureViewerHost({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!shown) return
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !inSelectMenu(event)) {
         event.preventDefault()
         event.stopPropagation()
         setShown(null)
