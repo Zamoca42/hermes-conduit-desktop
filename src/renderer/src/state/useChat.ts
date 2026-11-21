@@ -55,7 +55,7 @@ import { discardTurnSurface, reportTurnSurface } from './turnSurface'
 import { readsRepliesAloud } from './readAloud'
 import { dashboardProfilePath } from './dashboardProfile'
 import { authorityModelPick } from './chatActions'
-import { isResumeTooLong, joinRows, longChatItems, newestRows } from './longChat'
+import { isResumeTooLong, longChatItems, newestRows, rowsSince } from './longChat'
 
 type Action =
   | { type: 'reset'; state: TranscriptState }
@@ -109,11 +109,12 @@ async function resumeChat(
     // No rows to draw: the refusal, which says what to do, beats a note over nothing.
     if (!rows.length) throw e
     if (result.running) {
-      // The chat's events reach it only once the open settles: its turn as
-      // it is after the page reads, and its newest rows again if it ended
-      // meanwhile, so it doesn't sit there still streaming.
-      result = await gateway.rpc<ResumeResult>('session.resume', compact)
-      if (!result.running) rows = joinRows(rows, await newestRows(http, stored, profile, 1).catch(() => []))
+      // The chat's events reach it only once the open settles, so it is
+      // read again after its pages: its turn as it is now (a re-read that
+      // fails keeps the open, without the first read's stale reply text),
+      // and the rows it wrote meanwhile, its steps or its ended turn.
+      result = await gateway.rpc<ResumeResult>('session.resume', compact).catch(() => ({ ...result, inflight: null }))
+      rows = await rowsSince(http, rows, stored, profile).catch(() => rows)
     }
     return { result, rows }
   }

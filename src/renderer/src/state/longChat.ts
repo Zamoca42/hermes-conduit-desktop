@@ -47,15 +47,31 @@ function hasWords(rows: HistoryRow[]): boolean {
  * them. A page of only tool steps (a bot working through its inbox) reads
  * the page before it, up to LONG_CHAT_PAGES, so the chat opens on words.
  */
-export async function newestRows(http: Http, storedId: string, profile?: string, pages = LONG_CHAT_PAGES): Promise<HistoryRow[]> {
+export async function newestRows(
+  http: Http,
+  storedId: string,
+  profile?: string,
+  enough: (rows: HistoryRow[]) => boolean = hasWords
+): Promise<HistoryRow[]> {
   let rows: HistoryRow[] = []
-  for (let page = 0; page < pages; page++) {
+  for (let page = 0; page < LONG_CHAT_PAGES; page++) {
     const answer = (await http('GET', pagePath(storedId, profile, page * LONG_CHAT_PAGE))) as { messages?: unknown } | null
     const got = Array.isArray(answer?.messages) ? (answer.messages as HistoryRow[]).map(storedRow) : []
     rows = joinRows(got, rows)
-    if (got.length < LONG_CHAT_PAGE || hasWords(rows)) break
+    if (got.length < LONG_CHAT_PAGE || enough(rows)) break
   }
   return rows
+}
+
+/**
+ * The rows written since `held` was read, joined after it: pages back from
+ * the newest row until one reaches a row `held` has (or the page limit),
+ * so a turn that wrote more than a page meanwhile leaves no hole.
+ */
+export async function rowsSince(http: Http, held: HistoryRow[], storedId: string, profile?: string): Promise<HistoryRow[]> {
+  const known = new Set(held.flatMap(row => (row.row_id == null ? [] : [row.row_id])))
+  const newer = await newestRows(http, storedId, profile, rows => rows.some(row => row.row_id != null && known.has(row.row_id)))
+  return joinRows(held, newer)
 }
 
 /**
