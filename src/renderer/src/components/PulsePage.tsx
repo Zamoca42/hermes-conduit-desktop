@@ -123,7 +123,9 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard, chips = [], onPickHo
   }
 
   const cardView = (card: PulseCard) => {
-    const cleared = isCleared(card) || clearedIds.has(card.id)
+    // An older morning brief a newer one replaced: under Done and cleared, though not done or swiped away.
+    const replaced = !isCleared(card) && clearedIds.has(card.id)
+    const cleared = isCleared(card) || replaced
     const isBusy = busy.has(card.id)
     const reason = backReason(card, Date.now(), language) ?? card.why
     const looked = lookedText(card, language)
@@ -224,7 +226,7 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard, chips = [], onPickHo
           <div className="pulse-actions">
             <span className={`pulse-cleared${isResting(card) ? '' : ' done'}`}>
               <Icon name={isResting(card) ? 'clock' : 'check'} />
-              {clearedTitle(card, Date.now(), language)}
+              {replaced ? t('Replaced by a newer brief') : clearedTitle(card, Date.now(), language)}
             </span>
             <span className="spacer" />
             {isResting(card) ? (
