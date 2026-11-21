@@ -3,6 +3,7 @@ import { t } from '@shared/i18n'
 import { loadCallTranscript, speaker, type CallTranscript } from '../state/voiceCalls'
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
+import { inSelectMenu } from './Select'
 
 /** What was said on a call saved with the chat, read from the host when its card is opened, after the phone's VoiceChatCallTranscriptSheet. */
 export function CallTranscriptSheet({
@@ -44,7 +45,7 @@ export function CallTranscriptSheet({
   useEffect(() => {
     done.current?.focus()
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !inSelectMenu(event)) {
         event.preventDefault()
         event.stopPropagation()
         onClose()

@@ -7,6 +7,7 @@ import { chooserLines, chooserListed, chooserPick, chooserValue, providerStartsO
 import { useModelQuickPicks } from './ModelOptions'
 import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
+import { inSelectMenu } from './Select'
 
 interface Props {
   /** "provider\nmodel", or '' for the setting's default. */
@@ -99,7 +100,7 @@ function ModelChooserPage({
   useEffect(() => search.current?.focus(), [])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
+      if (e.key !== 'Escape' || inSelectMenu(e)) return
       e.preventDefault()
       e.stopPropagation()
       onClose()

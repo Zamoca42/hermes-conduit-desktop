@@ -21,6 +21,7 @@ import {
 } from '../state/botScreen'
 import { Icon } from './icons'
 import { ask } from '../state/dialogs'
+import { inSelectMenu } from './Select'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 type Stream = 'idle' | 'connecting' | 'live' | { lost: string }
@@ -381,7 +382,7 @@ export function BotScreen({
   useEffect(() => {
     if (!full) return
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !iHold) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !iHold) {
         event.preventDefault()
         setFull(false)
       }

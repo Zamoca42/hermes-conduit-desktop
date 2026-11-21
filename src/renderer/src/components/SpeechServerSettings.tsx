@@ -22,6 +22,7 @@ import {
   type SpeechServerStatus,
   type SpeechServerTest
 } from '../state/speechServer'
+import { Select } from './Select'
 
 const http: Http = (method, path, body) => gateway.http(method, path, body)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -183,11 +184,11 @@ export function SpeechServerSettings({ profile, onChanged }: { profile?: string;
       {status?.namesItsModel && presets.length ? (
         <label className="local-live-field">
           <span className="meta">{t('Known servers')}</span>
-          <select
+          <Select
             value={picked?.id ?? ''}
             disabled={saving}
-            onChange={e => {
-              const preset = presets.find(p => p.id === e.target.value)
+            onChange={picked => {
+              const preset = presets.find(p => p.id === picked)
               if (preset) pick(preset)
             }}
           >
@@ -199,7 +200,7 @@ export function SpeechServerSettings({ profile, onChanged }: { profile?: string;
                 {preset.name}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       ) : null}
       <label className="local-live-field">

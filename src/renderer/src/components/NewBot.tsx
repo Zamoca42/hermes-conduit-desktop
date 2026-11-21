@@ -26,6 +26,7 @@ import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 import { mayMove, movingPicture, TooLargeError } from '../state/movingPicture'
 import type { HostBadge, NewBotCarry } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
+import { Select } from './Select'
 
 /** A dashboard New Bot can make the bot on, in a combined group: the one on screen and every other kept connected. */
 export interface NewBotDashboard {
@@ -331,14 +332,14 @@ export function NewBot({ bots, protocol, onClose, onCreated, dashboards, onCreat
           <h2>{t('Advanced')}</h2>
           <div className="pset-row">
             <span>{t('Start From')}</span>
-            <select className="language-select" value={cloneFrom} aria-label={t('Start From')} onChange={e => setCloneFrom(e.target.value)}>
+            <Select className="language-select" value={cloneFrom} aria-label={t('Start From')} onChange={picked => setCloneFrom(picked)}>
               {startFrom.map(n => (
                 <option key={n} value={n}>
                   {startTitle(n)}
                 </option>
               ))}
               <option value="">{t('Fresh Profile')}</option>
-            </select>
+            </Select>
           </div>
           <label className="toggle">
             <input type="checkbox" checked={shareAuth} onChange={e => setShareAuth(e.target.checked)} />

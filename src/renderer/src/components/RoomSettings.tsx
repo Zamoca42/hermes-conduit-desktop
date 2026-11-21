@@ -5,6 +5,7 @@ import { gateway } from '../gateway'
 import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { groupRouterSlot, hasOwnModel, type HelperSlot } from '../state/helperModels'
 import { openModelsSettings } from '../state/modelsLink'
+import { inSelectMenu } from './Select'
 
 const AUXILIARY = '/api/model/auxiliary'
 
@@ -93,7 +94,7 @@ export function RoomSettings({
   useEffect(() => {
     first.current?.focus()
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !saving) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !saving) {
         event.preventDefault()
         event.stopPropagation()
         onClose()

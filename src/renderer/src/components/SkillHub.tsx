@@ -21,6 +21,7 @@ import {
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { Select } from './Select'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const missingRoute = (e: unknown) => e instanceof GatewayError && (e.code === 404 || e.code === 405)
@@ -320,14 +321,14 @@ export function SkillHub({ profile, onBack, onChanged }: { profile: string; onBa
               aria-label={t('Search the skill hub')}
             />
             {hub && hub.sources.length > 1 ? (
-              <select className="language-select" value={source} aria-label={t('Source')} onChange={e => setSource(e.target.value)}>
+              <Select className="language-select" value={source} aria-label={t('Source')} onChange={picked => setSource(picked)}>
                 <option value="all">{t('All Sources')}</option>
                 {hub.sources.map(s => (
                   <option key={s.id} value={s.id}>
                     {s.label}
                   </option>
                 ))}
-              </select>
+              </Select>
             ) : null}
           </form>
           {searching ? <p className="meta">{t('Loading…')}</p> : null}
@@ -372,14 +373,14 @@ export function SkillHub({ profile, onBack, onChanged }: { profile: string; onBa
               <div className="hub-head">
                 <h2>{t('Available to install')}</h2>
                 <span className="spacer" />
-                <select className="language-select" value={category} aria-label={t('Category')} onChange={e => setCategory(e.target.value)}>
+                <Select className="language-select" value={category} aria-label={t('Category')} onChange={picked => setCategory(picked)}>
                   <option value="">{t('All Categories')}</option>
                   {categories.map(group => (
                     <option key={group.category} value={group.category}>
                       {group.title}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
               <p className="meta">{t("From Hermes' official skills catalog. Hermes scans each skill before it installs.")}</p>
               {shownGroups.map(group => (

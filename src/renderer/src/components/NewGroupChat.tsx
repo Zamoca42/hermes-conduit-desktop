@@ -6,6 +6,7 @@ import { canCreateWithFar, canPickBot, canPickFar, canPickPerson, draftAgents, o
 import type { RoomLink } from '../state/roomLinks'
 import { BotAvatar } from './BotsHome'
 import { Icon } from './icons'
+import { inSelectMenu } from './Select'
 
 /**
  * New Group Chat, after the phone's GroupCreateSheet: a name, 2 to 6 of your
@@ -57,7 +58,7 @@ export function NewGroupChat({
   useEffect(() => {
     nameField.current?.focus()
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !busy) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !busy) {
         event.preventDefault()
         event.stopPropagation()
         onClose()

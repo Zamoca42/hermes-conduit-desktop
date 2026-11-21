@@ -72,6 +72,7 @@ import {
   type Availability as GeminiAvailability
 } from '../state/geminiLive'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
@@ -172,11 +173,11 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           </p>
           <label className="voice-mode-pick">
             <span className="meta">{t('Voice')}</span>
-            <select
+            <Select
               value={geminiPick}
-              onChange={e => {
-                setGeminiPick(e.target.value)
-                setGeminiVoice(e.target.value)
+              onChange={picked => {
+                setGeminiPick(picked)
+                setGeminiVoice(picked)
               }}
             >
               <option value="">{t('Gemini default')}</option>
@@ -186,15 +187,15 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
                 </option>
               ))}
               {geminiPick && !GEMINI_VOICES.some(([name]) => name === geminiPick) ? <option value={geminiPick}>{geminiPick}</option> : null}
-            </select>
+            </Select>
           </label>
           <p className="meta settings-caption">{t('The voice Gemini speaks with. Applies to the next conversation.')}</p>
           <label className="voice-mode-pick">
             <span className="meta">{t('Web lookups')}</span>
-            <select
+            <Select
               value={geminiSearch}
-              onChange={e => {
-                const next = e.target.value as SearchMode
+              onChange={picked => {
+                const next = picked as SearchMode
                 setGeminiSearch(next)
                 setSearchMode('gemini', next)
               }}
@@ -203,7 +204,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
               <option value="hermes">{t('Hermes web search')}</option>
               <option value="google">{t('Google Search')}</option>
               <option value="off">{t('Off')}</option>
-            </select>
+            </Select>
           </label>
           <p className="meta settings-caption">
             {t(
@@ -279,12 +280,12 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
             />
           </label>
           <p className="meta settings-caption">{t('The voice Qwen speaks with. Applies to the next conversation.')}</p>
-          <label className="voice-mode-pick">
+          <div className="voice-mode-pick">
             <span className="meta">{t('Web lookups')}</span>
-            <select
+            <Select segments aria-label={t('Web lookups')}
               value={qwenSearch}
-              onChange={e => {
-                const next = e.target.value as SearchMode
+              onChange={picked => {
+                const next = picked as SearchMode
                 setQwenSearch(next)
                 setSearchMode('qwen', next)
               }}
@@ -292,9 +293,8 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
               <option value="automatic">{t('Automatic')}</option>
               <option value="hermes">{t('Hermes web search')}</option>
               <option value="off">{t('Off')}</option>
-            </select>
-          </label>
-          <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
+            </Select>
+          </div>
           <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
           <label className="toggle">
             <input
@@ -404,11 +404,11 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
           </p>
           <label className="voice-mode-pick">
             <span className="meta">{t('Voice')}</span>
-            <select
+            <Select
               value={voice}
-              onChange={e => {
-                setVoice(e.target.value)
-                setGptLiveVoice(billing, e.target.value)
+              onChange={picked => {
+                setVoice(picked)
+                setGptLiveVoice(billing, picked)
               }}
             >
               <option value="">{t('Server default')}</option>
@@ -426,7 +426,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
               {voice && !(billing === 'api' ? API_VOICES.includes(voice) : PLAN_VOICES.some(v => v.name === voice)) ? (
                 <option value={voice}>{voice}</option>
               ) : null}
-            </select>
+            </Select>
           </label>
           <p className="meta settings-caption">
             {billing === 'api'
@@ -441,11 +441,11 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
             <>
               <label className="voice-mode-pick">
                 <span className="meta">{t('Time limit per call')}</span>
-                <select
+                <Select
                   value={limit}
-                  onChange={e => {
-                    setLimit(Number(e.target.value))
-                    setApiLimitMinutes(Number(e.target.value))
+                  onChange={picked => {
+                    setLimit(Number(picked))
+                    setApiLimitMinutes(Number(picked))
                   }}
                 >
                   {(LIMIT_CHOICES.includes(limit) ? LIMIT_CHOICES : [limit, ...LIMIT_CHOICES]).map(minutes => (
@@ -453,7 +453,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
                       {limitTitle(minutes, locale())}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
               <p className="meta settings-caption">{t('An API-key call says goodbye and ends when it reaches this limit.')}</p>
             </>

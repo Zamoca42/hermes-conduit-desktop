@@ -24,6 +24,7 @@ import {
   type PredictModel
 } from '../state/predictive'
 import { predictionsServed } from '../state/usePredictions'
+import { Select } from './Select'
 
 /** Settings > Chat > Predictive, after the phone's: suggested replies, kept on this computer and off by default. */
 export function PredictiveSettings() {
@@ -87,13 +88,13 @@ export function PredictiveSettings() {
       </div>
       <div className="pset-row">
         <span>{t('How many')}</span>
-        <select
+        <Select
           className="language-select"
           value={count}
           disabled={!on}
           aria-label={t('How many')}
-          onChange={e => {
-            const n = Number(e.target.value)
+          onChange={picked => {
+            const n = Number(picked)
             setCount(n)
             setReplyCount(n)
           }}
@@ -103,7 +104,7 @@ export function PredictiveSettings() {
               {n}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <p className="meta">
         {t(
@@ -127,13 +128,13 @@ export function PredictiveSettings() {
       </div>
       <div className="pset-row">
         <span>{t('Pause before asking')}</span>
-        <select
+        <Select
           className="language-select"
           value={delay}
           disabled={!pause}
           aria-label={t('Pause before asking')}
-          onChange={e => {
-            const n = Number(e.target.value)
+          onChange={picked => {
+            const n = Number(picked)
             setDelay(n)
             setPauseDelay(n)
           }}
@@ -143,7 +144,7 @@ export function PredictiveSettings() {
               {t('{number} s', { number: n.toLocaleString(language()) })}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <p className="meta">
         {t(
@@ -167,13 +168,13 @@ export function PredictiveSettings() {
       </div>
       <div className="pset-row">
         <span>{t('Start asking after')}</span>
-        <select
+        <Select
           className="language-select"
           value={wait}
           disabled={!followUp}
           aria-label={t('Start asking after')}
-          onChange={e => {
-            const n = Number(e.target.value)
+          onChange={picked => {
+            const n = Number(picked)
             setWait(n)
             setFollowUpDelay(n)
           }}
@@ -183,24 +184,23 @@ export function PredictiveSettings() {
               {n < 60 ? t('{number} s', { number: String(n) }) : t('{minutes} min', { minutes: String(n / 60) })}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <div className="pset-row">
         <span>{t('Predictions use')}</span>
-        <select
-          className="language-select"
+        <Select segments
           value={model}
           disabled={!on && !pause && !followUp}
           aria-label={t('Predictions use')}
-          onChange={e => {
-            const m = e.target.value as PredictModel
+          onChange={picked => {
+            const m = picked as PredictModel
             setModel(m)
             setPredictModel(m)
           }}
         >
           <option value="fast">{t('Fast model')}</option>
           <option value="chat">{t('Same as chat')}</option>
-        </select>
+        </Select>
       </div>
       {host && model === 'fast' ? (
         <p className="meta">

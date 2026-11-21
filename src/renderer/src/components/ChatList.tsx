@@ -16,6 +16,7 @@ import { gateway } from '../gateway'
 import type { HostBadge, OtherChatRow } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
 import { EMPTY_NESTING, ancestorsOf, descendants, nestRows, nestSummary } from '../state/chatNesting'
+import { Select } from './Select'
 
 const EXPANDED_NESTS = 'conduit.expanded-nests'
 function readExpandedNests(): Set<string> {
@@ -479,11 +480,11 @@ export function ChatList({
             </button>
           ) : null}
           {sources.length > 1 ? (
-            <select
+            <Select
               className={`source-filter${source ? ' on' : ''}`}
               aria-label={t('Source')}
               value={source ?? ''}
-              onChange={e => setSource((e.target.value || null) as ChatSource | null)}
+              onChange={picked => setSource((picked || null) as ChatSource | null)}
             >
               <option value="">{t('All Sources')}</option>
               {sources.map(kind => (
@@ -491,7 +492,7 @@ export function ChatList({
                   {sourceName(kind)}
                 </option>
               ))}
-            </select>
+            </Select>
           ) : null}
         </div>
       ) : null}
