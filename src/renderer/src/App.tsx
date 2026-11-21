@@ -960,7 +960,9 @@ function Shell({
   // ...with their pills, from their work read there (Eric, 2026-11-21: another host's "needs you" didn't show).
   const otherWork = useKeptWork(otherBots, botsListShown || section === 'chats')
   // The chat list's profile column, beside the list's own width: the list gives way to it before the chat does.
-  const columnShown = section === 'chats' && !listHidden && !projectsOpen && !botsSideShown && (orderedRoster?.length ?? 0) + otherBots.length > 1
+  // The same tiles ChatList draws (profileTiles below): none until this host's roster is read, other dashboards' once it has an address.
+  const columnTiles = orderedRoster ? orderedRoster.length + (status.url ? otherBots.length : 0) : 0
+  const columnShown = section === 'chats' && !listHidden && !projectsOpen && !botsSideShown && columnTiles > 1
   const listColumn = columnShown ? PROFILE_COLUMN_WIDTH : 0
   const listWidth = shownListWidth(listLive ?? listStored, windowWidth - listColumn)
   const listTaken = section === 'chats' && listHidden ? 0 : (listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28))) + listColumn
