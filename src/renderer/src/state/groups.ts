@@ -118,6 +118,30 @@ export function roomsFromList(result: unknown): Room[] {
     .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
 }
 
+/** How many pages of `groups.list` one read follows, as the phone's combined read does. */
+export const ROOM_LIST_MAX_PAGES = 10
+
+/**
+ * Every page of `groups.list`, following `next_offset` up to
+ * ROOM_LIST_MAX_PAGES, so a Hermes with more rooms than one page shows them
+ * all (desktop#231, as hermes-conduit#2944 reads another dashboard's). A page
+ * that fails fails the read, so the caller keeps what it showed rather than
+ * a list missing rooms.
+ */
+export async function listAllRooms(rpc: (method: string, params: Record<string, unknown>) => Promise<unknown>): Promise<Room[]> {
+  const rows: unknown[] = []
+  let offset: number | undefined
+  for (let page = 0; page < ROOM_LIST_MAX_PAGES; page++) {
+    const result = obj(await rpc('groups.list', offset === undefined ? { include_disbanded: false } : { include_disbanded: false, offset }))
+    if (Array.isArray(result?.rooms)) rows.push(...result.rooms)
+    const next = int(result?.next_offset)
+    if (next === undefined || next <= (offset ?? 0)) break
+    offset = next
+  }
+  const seen = new Set<string>()
+  return roomsFromList({ rooms: rows }).filter(room => !seen.has(room.roomId) && !!seen.add(room.roomId))
+}
+
 export function eventFromWire(value: unknown): RoomEvent | null {
   const row = obj(value)
   const seq = int(row?.seq)

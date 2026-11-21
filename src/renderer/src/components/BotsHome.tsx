@@ -743,6 +743,7 @@ export function BotsHome({
     return roomRow(
       `${other.host}\u0000${other.kind === "room" ? other.room.roomId : other.copy.id}`,
       <>
+        {/* No looks: another host's room looks aren't read, as on the phone (CombinedRoomIcon), so its tile draws that host's bots and not other people's agents. */}
         <RoomFaces room={room} bots={otherBots.filter((o) => o.host === other.host).map((o) => o.bot)} size={22} host={other.host} />
         {badge ? <span className="bot-tile-badge">{<HostBadgeMark badge={badge} />}</span> : null}
       </>,

@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { act } from 'react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderHook, settle } from './hookHarness'
 import { useChat } from '../src/renderer/src/state/useChat'
 import { forgetTranscripts } from '../src/renderer/src/state/transcriptCache'
@@ -43,17 +43,28 @@ const history = (...texts: string[]) => texts.flatMap(text => [
   { role: 'user', content: text },
   { role: 'assistant', content: `re: ${text}` }
 ])
+let mounted: { unmount: () => void }[] = []
+afterEach(() => {
+  mounted.forEach(hook => hook.unmount())
+  mounted = []
+})
+
 const words = (state: { items: { kind: string; text?: string }[] }) => state.items.map(i => i.text ?? i.kind)
 type Props = { storedId: string | null; connected: boolean; url?: string }
 // As App calls it: each dashboard keeps its own transcripts (desktop#233).
 const chatInApp = ({ storedId, connected, url }: Props) => useChat(storedId, undefined, false, connected, false, undefined, url)
+const mount: typeof renderHook = (hook, props) => {
+  const rendered = renderHook(hook, props)
+  mounted.push(rendered)
+  return rendered
+}
 const emit = (event: Event) => act(() => listeners.forEach(l => l(event)))
 
 describe("the transcript cache's wiring (desktop#218)", () => {
   it('draws a chat left a moment ago at once while its resume runs', async () => {
     resumes.a = { messages: history('one') }
     resumes.b = { messages: history('two') }
-    const hook = renderHook(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
+    const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
     await settle()
     hook.rerender({ storedId: 'b', connected: true, url: 'h1' })
     await settle()
@@ -67,7 +78,7 @@ describe("the transcript cache's wiring (desktop#218)", () => {
     ['with none open', null]
   ])('forgets every kept transcript when the connection drops, %s', async (_label, open) => {
     resumes.a = { messages: history('one') }
-    const hook = renderHook(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
+    const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
     await settle()
     hook.rerender({ storedId: open, connected: true, url: 'h1' })
     await settle()
@@ -81,7 +92,7 @@ describe("the transcript cache's wiring (desktop#218)", () => {
 
   it("keeps each dashboard's transcripts apart, and the old one's for coming back", async () => {
     resumes.a = { messages: history('one') }
-    const hook = renderHook(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
+    const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
     await settle()
     holdResumes = true
     // Another dashboard's chat of the same id never draws this one's rows.
@@ -93,7 +104,7 @@ describe("the transcript cache's wiring (desktop#218)", () => {
 
   it('keeps a chat created here on its first leave, without resuming it', async () => {
     resumes.b = { messages: history('two') }
-    const hook = renderHook(chatInApp, { storedId: null, connected: true, url: 'h1' })
+    const hook = mount(chatInApp, { storedId: null, connected: true, url: 'h1' })
     await settle()
     await act(async () => {
       await hook.result().send('hello')
@@ -119,7 +130,7 @@ describe("a reply's delta queue (desktop#212)", () => {
     try {
       resumes.a = { messages: [] }
       resumes.b = { messages: [] }
-      const hook = renderHook(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
+      const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
       await settle()
       emit({ type: 'message.start', session_id: 'live-a' })
       emit({ type: 'message.delta', session_id: 'live-a', payload: { text: 'Hel' } })
