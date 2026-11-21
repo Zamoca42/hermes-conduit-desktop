@@ -75,7 +75,6 @@ export function TitleBar({ subtitle, hosts = [], currentUrl, onSwitch }: Props) 
                       <span className="host-label">{hostName(host.url)}</span>
                       {state ? <span className="meta">{keptStateLabel(state)}</span> : null}
                     </span>
-                    {host.username ? <span className="meta">{host.username}</span> : null}
                   </button>
                   )
                 })}
