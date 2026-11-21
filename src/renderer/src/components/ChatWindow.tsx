@@ -5,7 +5,8 @@ import { useChatDisplay } from '../state/display'
 import { useBots } from '../state/useBots'
 import { useDashboardProfiles } from '../state/useDashboardProfiles'
 import { useChat } from '../state/useChat'
-import { useRequests } from '../state/useNeedsYou'
+import { useRequests, useWaiting } from '../state/useNeedsYou'
+import { askedInChat } from '../state/needsYou'
 import { useCommands } from '../state/useCommands'
 import { useAgents } from '../state/useAgents'
 import { usePredictions } from '../state/usePredictions'
@@ -30,6 +31,7 @@ import { ControlDock } from './ControlDock'
 import { ChatQueueDock } from './ChatQueueDock'
 import { ConnectionActionsContext } from './ConnectionCardView'
 import { useReplyFace } from './BotsHome'
+import { AskedQuestionBar } from './WorkPanel'
 
 /**
  * A chat in a window of its own (Eric, 2026-11-21): the whole chat, live,
@@ -108,6 +110,13 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
 
   const requests = useRequests()
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
+  // A question the bot asked here that waits past its turn, as in the main window.
+  const waitingProfiles = useMemo(() => [profile ?? ''], [profile])
+  const waiting = useWaiting(connected, waitingProfiles)
+  const askedHere = useMemo(
+    () => askedInChat(waiting.rows, profile, [chat.storedId, request.id, chat.liveId]),
+    [waiting.rows, profile, chat.storedId, request.id, chat.liveId]
+  )
   const commands = useCommands(profile, connected)
   const delegates = useAgents(chat.liveId, connected, transcript.running)
   const predictions = usePredictions(transcript, connected ? (chat.liveId ?? undefined) : undefined)
@@ -215,6 +224,7 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
             </button>
           </div>
         </div>
+        <AskedQuestionBar rows={askedHere} onChanged={() => void waiting.refresh()} />
         <ConnectionActionsContext.Provider value={connectionActions}>
           <Transcript
             state={transcript}

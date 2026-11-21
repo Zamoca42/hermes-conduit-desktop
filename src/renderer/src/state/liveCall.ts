@@ -209,6 +209,8 @@ export function liveInstructions(options: {
   memory?: string
   /** The host's memory provider can be searched (recall_memory). */
   recall?: boolean
+  /** The questions the bot asked that wait past their turn (askedQuestionsBlock). */
+  asked?: string
   chat?: string
 }): string {
   const persona = options.persona ?? ''
@@ -227,6 +229,7 @@ When the user says goodbye to you, or asks to end, hang up or close the call, sa
     personaBlock(persona) +
     memoryBlock(options.memory ?? '', options.recall) +
     speechRule(persona) +
+    (options.asked ?? '') +
     (options.chat ?? '') +
     languageRule(options.language)
   )
