@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
+import { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type FormEvent, type MouseEvent, type ReactNode } from "react";
 import type { BotWork } from "../state/useWork";
 import { timeLabel } from "../state/chats";
 import { keptColor, type Bot } from "../state/bots";
@@ -26,6 +26,7 @@ import { keptWorkKey } from "../state/keptHosts";
 import { canAddFar, mixedBotKey, mixedTiles, neighbour, type MixedTile } from "../state/botOrder";
 import type { OwnHermesBot } from "../state/roomDrafts";
 import { HostBadgeMark } from "./CombinedDashboards";
+import { botSideScroll } from "../state/keptScroll";
 
 const BOT_DRAG = "application/x-conduit-bot";
 /** A portrait carried to another place: its tile key (the bot's name, or the mixed grid's key). */
@@ -754,6 +755,12 @@ export function BotsHome({
     );
   };
   const otherRooms = [...otherRoomsBefore, ...otherRoomsAfter];
+  // A tap on another dashboard's group chat draws the window afresh: the list opens where it was.
+  const scroller = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => botSideScroll.opened(), []);
+  useLayoutEffect(() => {
+    if (scroller.current) botSideScroll.drew(scroller.current);
+  });
   // Other hosts' group chats, and this host's copies (one may wait for your
   // approval), show though this host's rooms aren't read (or can't be).
   const showRooms =
@@ -782,7 +789,15 @@ export function BotsHome({
           ) : null}
         </p>
       ) : null}
-      <div className="chatlist-scroll" {...gridDrop}>
+      <div
+        ref={scroller}
+        className="chatlist-scroll"
+        onScroll={(e) => botSideScroll.scrolled(e.currentTarget)}
+        onWheel={() => botSideScroll.touched()}
+        onPointerDown={() => botSideScroll.touched()}
+        onKeyDown={() => botSideScroll.touched()}
+        {...gridDrop}
+      >
         {bots === null && !error ? <div className="empty">{t("Loading your bots…")}</div> : null}
         {error ? <div className="empty">{t("Couldn’t load your bots: {error}", { error })}</div> : null}
         {tiles.map((tile) => {
