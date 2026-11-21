@@ -248,6 +248,36 @@ describe('a chat too long to resume whole (Hermes 4130)', () => {
     expect(words(hook.result().transcript).slice(1)).toEqual(['check my mail', 'All sorted.'])
   })
 
+  it('fills in more than a page a running chat wrote while its pages were read', async () => {
+    let reads = 0
+    serve([])
+    const conduit = (window as unknown as { conduit: Record<string, unknown> }).conduit
+    conduit.rpcOutcome = (method: string, params: Record<string, unknown>) => {
+      if (method !== 'session.resume') return Promise.resolve({ ok: true, result: {} })
+      if (!params.omit_messages) return Promise.resolve({ ok: false, error: TOO_LONG, code: 4130 })
+      reads++
+      if (reads === 2) return Promise.resolve({ ok: false, error: 'busy', code: 5000 })
+      return Promise.resolve({ ok: true, result: { session_id: 'live-long', stored_session_id: 'long', messages: [], running: true, inflight: { assistant: 'stale' } } })
+    }
+    // First read: the prompt. Then 700 tool rows were written: the newest page is ids 202-701, the one before 2-201 plus the prompt.
+    let first = true
+    conduit.httpOutcome = async (_method: string, path: string) => {
+      const offset = Number(/offset=(\d+)/.exec(path)?.[1] ?? 0)
+      if (first) {
+        first = false
+        return { ok: true, result: { messages: [{ id: 1, role: 'user', content: 'check my mail' }] } }
+      }
+      const all = [{ id: 1, role: 'user', content: 'check my mail' }, ...steps(2, 700)]
+      return { ok: true, result: { messages: all.slice(Math.max(0, all.length - offset - 500), all.length - offset) } }
+    }
+    const hook = mount(chatInApp, { storedId: 'long', connected: true, url: 'h1' })
+    await settle()
+    expect(hook.result().error).toBeNull()
+    const items = hook.result().transcript.items
+    expect(items.filter(i => i.kind === 'tool')).toHaveLength(350)
+    expect(words(hook.result().transcript)).not.toContain('stale')
+  })
+
   it('shows the refusal when the stored pages bring no rows', async () => {
     serve([[]])
     const hook = mount(chatInApp, { storedId: 'long', connected: true, url: 'h1' })
