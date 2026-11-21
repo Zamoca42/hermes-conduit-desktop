@@ -124,7 +124,7 @@ export function ReasoningBars({
           const moves: Record<string, number> = { ArrowLeft: index - 1, ArrowDown: index - 1, ArrowRight: index + 1, ArrowUp: index + 1, Home: 0, End: levels.length - 1 }
           if (!(e.key in moves)) return
           e.preventDefault()
-          // From no level, only a step up picks one (the first); the rest leave it unset.
+          // From no level, a step up picks the first and End the last; the rest leave it unset.
           if (index < 0) {
             if (e.key === 'ArrowRight' || e.key === 'ArrowUp') step(0)
             else if (e.key === 'End') step(levels.length - 1)

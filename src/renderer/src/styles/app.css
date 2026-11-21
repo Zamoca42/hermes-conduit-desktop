@@ -10793,6 +10793,8 @@ button.secondary.danger {
   transform: none;
   width: min(480px, 100%);
   height: min(700px, 100%);
+  /* A page over Settings, with no chat header or composer to keep clear of. */
+  max-height: none;
 }
 
 /* Settings > Appearance > App icon: the phone's two tiles, the picked one tinted with the accent. */

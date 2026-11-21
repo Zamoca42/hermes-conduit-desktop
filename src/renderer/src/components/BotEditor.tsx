@@ -440,6 +440,7 @@ export function BotEditor({ bot, onClose, onSaved }: Props) {
               providers={providers}
               defaultLabel={null}
               emptyLabel={t('Default')}
+              clearable
               label={t('Model')}
               disabled={!catalog.answered || !details}
               onChange={next => {

@@ -165,7 +165,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
         </>
       }
     >
-      <ReasoningBars levels={REASONING_LEVELS} value={reasoning} unsetTitle={t('Default')} disabled={!!busy} onPick={level => void apply('reasoning', () => setReasoning(level))} />
+      <ReasoningBars levels={REASONING_LEVELS} value={reasoning} unsetTitle={reasoning ? undefined : t('Default')} disabled={!!busy} onPick={level => void apply('reasoning', () => setReasoning(level))} />
     </ModelCard>
   )
 
