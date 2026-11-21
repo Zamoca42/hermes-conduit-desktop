@@ -11617,3 +11617,17 @@ button.ghost:disabled {
 .work-details {
   display: contents;
 }
+
+/* A question the bot asked in this chat that waits past its turn, over the transcript (the phone's ChatAskedQuestionBar). */
+.asked-question-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 16px 6px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.asked-question-more {
+  align-self: flex-end;
+}

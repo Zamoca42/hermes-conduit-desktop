@@ -5,6 +5,7 @@ import {
   clarifyQuestions,
   lockedAnswers,
   requestSummary,
+  askedInChat,
   unmatchedWaiting,
   waitingFromResponse,
   waitingPath
@@ -79,8 +80,35 @@ describe('the waiting list', () => {
       'work'
     )
     expect(rows).toEqual([
-      { id: 'asked-work-P7-s4', kind: 'question', sessionIds: ['s4'], title: 'Deploys', summary: 'Roll back the deploy?', questions: 1, at: 1_763_000_000_000, profile: 'work' }
+      {
+        id: 'asked-work-P7-s4',
+        kind: 'question',
+        sessionIds: ['s4'],
+        title: 'Deploys',
+        summary: 'Roll back the deploy?',
+        questions: 1,
+        at: 1_763_000_000_000,
+        profile: 'work',
+        question: expect.objectContaining({ id: 'P7', text: 'Roll back the deploy?', chat: 's4' })
+      }
     ])
+  })
+
+  it('draws the questions waiting past their turn in the chat that asked, oldest first', () => {
+    const body = {
+      questions: [
+        { id: 'P9', kind: 'proposal', status: 'open', text: 'Newer', at: 3, session_ids: ['s4'], choices: ['A', 'B'], recommended: 'B', actions: ['answer'] },
+        { id: 'P7', kind: 'proposal', status: 'open', text: 'Older', at: 1, session_ids: ['s4'], actions: ['approve', 'decline'] },
+        { id: 'P8', kind: 'proposal', status: 'open', text: 'Elsewhere', at: 2, session_ids: ['s5'] }
+      ]
+    }
+    const rows = [...waitingFromResponse(body, 'work'), ...waitingFromResponse(body)]
+    const here = askedInChat(rows, 'work', ['s4', null])
+    expect(here.map(r => r.question?.id)).toEqual(['P7', 'P9'])
+    expect(here[1].question).toMatchObject({ choices: ['A', 'B'], recommended: 'B' })
+    // The default profile's chat, named either way, takes only its own.
+    expect(askedInChat(rows, 'default', ['s5']).map(r => r.id)).toEqual(['asked--P8-s5'])
+    expect(askedInChat(rows, undefined, ['nothing'])).toEqual([])
   })
 
   it('keeps a question that waits past its turn listed while its chat holds a live request', () => {

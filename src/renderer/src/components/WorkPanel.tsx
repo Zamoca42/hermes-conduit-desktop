@@ -30,6 +30,7 @@ import {
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
 import { timeLabel } from '../state/chats'
+import type { WaitingRow } from '../state/needsYou'
 
 interface Props {
   profile?: string
@@ -243,7 +244,18 @@ function WorkCard({
  * recommended one filled; a kept clarify question with no choices is answered
  * in its chat in words. The answer wakes the chat that asked.
  */
-export function QuestionCard({ question, profile, onChanged }: { question: WorkQuestion; profile?: string; onChanged: () => void }) {
+export function QuestionCard({
+  question,
+  profile,
+  onChanged,
+  inChat = false
+}: {
+  question: WorkQuestion
+  profile?: string
+  onChanged: () => void
+  /** Drawn over the chat that asked, whose composer answers one with no buttons. */
+  inChat?: boolean
+}) {
   const [busy, setBusy] = useState(false)
   const [problem, setProblem] = useState<string | null>(null)
   const going = goingAheadText(question)
@@ -278,7 +290,7 @@ export function QuestionCard({ question, profile, onChanged }: { question: WorkQ
       ) : null}
       {going ? <div className="meta work-question-state">{going}</div> : null}
       {buttons.length === 0 ? (
-        <div className="meta">{t('Answer it in its chat, in your own words.')}</div>
+        <div className="meta">{inChat ? t('Answer it below, in your own words.') : t('Answer it in its chat, in your own words.')}</div>
       ) : (
         <div className="pset-actions work-question-answers">
           {buttons.map((button, index) => (
@@ -295,6 +307,22 @@ export function QuestionCard({ question, profile, onChanged }: { question: WorkQ
         </div>
       )}
       {problem ? <div className="error-text">{problem}</div> : null}
+    </div>
+  )
+}
+
+/**
+ * The question the chat on screen's bot asked that waits past its turn, over
+ * its transcript, after the phone's ChatAskedQuestionBar: the oldest first,
+ * the next once it's answered.
+ */
+export function AskedQuestionBar({ rows, onChanged }: { rows: readonly WaitingRow[]; onChanged: () => void }) {
+  const first = rows[0]
+  if (!first?.question) return null
+  return (
+    <div className="asked-question-bar">
+      <QuestionCard key={first.id} question={first.question} profile={first.profile} onChanged={onChanged} inChat />
+      {rows.length > 1 ? <div className="meta asked-question-more">{t('{count} more waiting', { count: rows.length - 1 })}</div> : null}
     </div>
   )
 }

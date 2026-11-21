@@ -14,6 +14,7 @@
  */
 import type { PendingRequest } from '../../../shared/ipc'
 import { cleanTitle } from './text'
+import { parseQuestion, type WorkQuestion } from './work'
 import { inputPromptView } from './inputPrompts'
 import { t } from '../../../shared/i18n'
 
@@ -34,6 +35,8 @@ export interface WaitingRow {
   /** When the wait began, in milliseconds. */
   at: number
   profile?: string
+  /** A question that waits past its turn: its card, drawn in the chat that asked. */
+  question?: WorkQuestion
 }
 
 export function waitingPath(profile?: string): string {
@@ -62,6 +65,18 @@ export function waitingFromResponse(body: unknown, profile?: string): WaitingRow
   return [...rows, ...askedRows(body, profile)]
 }
 
+/**
+ * The questions waiting past their turn in the chat on screen, oldest first:
+ * its profile's rows that name one of the ids it goes by.
+ */
+export function askedInChat(rows: readonly WaitingRow[], profile: string | undefined, ids: readonly (string | null | undefined)[]): WaitingRow[] {
+  const own = new Set(ids.filter((id): id is string => !!id))
+  const name = profile && profile !== 'default' ? profile : ''
+  return rows
+    .filter(row => row.question && (row.profile && row.profile !== 'default' ? row.profile : '') === name && row.sessionIds.some(id => own.has(id)))
+    .sort((a, b) => a.at - b.at)
+}
+
 /** A row for a question that waits past its turn (from /waiting's questions). */
 export const isAsked = (row: WaitingRow) => row.id.startsWith('asked-')
 
@@ -87,7 +102,8 @@ function askedRows(body: unknown, profile?: string): WaitingRow[] {
       summary: typeof item.text === 'string' ? item.text.trim() : '',
       questions: 1,
       at: at > 0 && at < 1e11 ? at * 1000 : at,
-      profile
+      profile,
+      question: parseQuestion(item) ?? undefined
     })
   }
   return rows

@@ -63,7 +63,7 @@ import type { Room } from './state/groups'
 import { useRooms } from './state/useGroups'
 import { useChat } from './state/useChat'
 import { useChatList } from './state/useChatList'
-import { unmatchedWaiting, type WaitingRow } from './state/needsYou'
+import { askedInChat, unmatchedWaiting, type WaitingRow } from './state/needsYou'
 import { useRequests, useWaiting } from './state/useNeedsYou'
 import { clearExpired, useExpiredQuestions } from './state/expiredQuestions'
 import {
@@ -162,7 +162,7 @@ import { StepSummarySettings } from './components/StepSummarySettings'
 import { PredictiveSettings } from './components/PredictiveSettings'
 import { advancedSections, chatSections, workspaceSections } from './state/profileConfig'
 import { canDelete, duplicateBot, writeMeta } from './state/botActions'
-import { WorkPanel } from './components/WorkPanel'
+import { AskedQuestionBar, WorkPanel } from './components/WorkPanel'
 import { PanelTabs, workCount, type PanelTab } from './components/PanelTabs'
 import { useWork, useWorkSessions } from './state/useWork'
 import { shownTitle, statusText, workTone, type WorkItem } from './state/work'
@@ -1431,6 +1431,11 @@ function Shell({
   const profiles = useMemo(() => [...new Set((list.rows ?? []).map(r => r.profile ?? ''))].sort(), [list.rows])
   const waiting = useWaiting(connected, profiles)
   const waitingRows = useMemo(() => unmatchedWaiting(waiting.rows, requests), [waiting.rows, requests])
+  // The open chat's questions that wait past their turn, drawn over its transcript.
+  const askedHere = useMemo(
+    () => (selected.id || chat.storedId ? askedInChat(waiting.rows, selected.profile, [chat.storedId, selected.id, chat.liveId]) : []),
+    [waiting.rows, selected.profile, selected.id, chat.storedId, chat.liveId]
+  )
   // Combined dashboards: the other hosts' waits, badged, each opening through a switch.
   const keptHosts = useKeptHosts(status.url ?? '')
   const keptWaiting = useKeptWaiting(keptHosts)
@@ -2261,6 +2266,8 @@ function Shell({
                   ) : null}
                 </div>
               </div>
+              {/* A question the bot asked here that waits past its turn. */}
+              <AskedQuestionBar rows={askedHere} onChanged={() => void waiting.refresh()} />
               <FileLinks.Provider value={openPath}>
                 <WorkLinks.Provider value={workLinkActions}>
                   <ConnectionActionsContext.Provider value={connectionActions}>

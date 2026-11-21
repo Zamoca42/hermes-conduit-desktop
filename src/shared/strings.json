@@ -614,6 +614,21 @@
     "zh-Hans": "被 Hermes 重启停下的工作流会保持中断，不会自动接着做，因为插件没找到这个 Hermes 停止回合的方式。",
     "zh-Hant": "被 Hermes 重新啟動停下的工作流程會維持中斷，不會自動接著做，因為外掛找不到這個 Hermes 停止回合的方式。"
   },
+  "Answer it below, in your own words.": {
+    "de": "Beantworte sie unten, in deinen eigenen Worten.",
+    "es": "Respóndela abajo, con tus propias palabras.",
+    "fr": "Répondez ci-dessous, avec vos propres mots.",
+    "id": "Jawab di bawah, dengan kata-kata Anda sendiri.",
+    "it": "Rispondi qui sotto, con parole tue.",
+    "ja": "下のメッセージで、自分の言葉で答えてください。",
+    "ko": "아래에 직접 답해 주세요.",
+    "pl": "Odpowiedz poniżej, własnymi słowami.",
+    "pt-BR": "Responda abaixo, com suas próprias palavras.",
+    "ru": "Ответьте ниже своими словами.",
+    "tr": "Aşağıda kendi sözlerinizle yanıtlayın.",
+    "zh-Hans": "请在下方用你自己的话回答。",
+    "zh-Hant": "請在下方用你自己的話回答。"
+  },
   "Answer it in its chat, in your own words.": {
     "de": "Beantworte sie im Chat, in deinen eigenen Worten.",
     "es": "Respóndela en su chat, con tus propias palabras.",
@@ -43003,5 +43018,20 @@
     "tr": "Bu sohbeti ana pencerede açar ve bu pencereyi kapatır.",
     "zh-Hans": "在主窗口中打开此聊天并关闭此窗口。",
     "zh-Hant": "在主視窗中開啟此聊天並關閉此視窗。"
+  },
+  "{count} more waiting": {
+    "de": "{count} weitere warten",
+    "es": "{count} más en espera",
+    "fr": "{count} autres en attente",
+    "id": "{count} lagi menunggu",
+    "it": "{count} altri in attesa",
+    "ja": "ほかに{count}件が待機中",
+    "ko": "대기 중인 항목 {count}개 더",
+    "pl": "Czeka jeszcze {count}",
+    "pt-BR": "Mais {count} aguardando",
+    "ru": "Ещё {count} ожидают",
+    "tr": "{count} tane daha bekliyor",
+    "zh-Hans": "还有 {count} 项等待处理",
+    "zh-Hant": "還有 {count} 項等待處理"
   }
 }
