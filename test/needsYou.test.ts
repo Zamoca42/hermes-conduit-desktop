@@ -67,6 +67,22 @@ describe('the waiting list', () => {
     ])
   })
 
+  it('lists a question that waits past its turn as a row that opens the chat that asked', () => {
+    const rows = waitingFromResponse(
+      {
+        waiting: [],
+        questions: [
+          { id: 'P7', kind: 'proposal', status: 'open', text: 'Roll back the deploy?', at: 1_763_000_000, chat: 's4', session_ids: ['s4'], chat_title: 'Deploys' },
+          { id: 'P8', kind: 'proposal', status: 'open', text: 'No chat to open', at: 1, session_ids: [] }
+        ]
+      },
+      'work'
+    )
+    expect(rows).toEqual([
+      { id: 'asked-P7', kind: 'question', sessionIds: ['s4'], title: 'Deploys', summary: 'Roll back the deploy?', questions: 1, at: 1_763_000_000_000, profile: 'work' }
+    ])
+  })
+
   it('asks per profile', () => {
     expect(waitingPath()).toBe('/api/plugins/conduit_push/waiting')
     expect(waitingPath('my bot')).toBe('/api/plugins/conduit_push/waiting?profile=my%20bot')

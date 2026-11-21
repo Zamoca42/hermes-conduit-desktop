@@ -614,6 +614,21 @@
     "zh-Hans": "被 Hermes 重启停下的工作流会保持中断，不会自动接着做，因为插件没找到这个 Hermes 停止回合的方式。",
     "zh-Hant": "被 Hermes 重新啟動停下的工作流程會維持中斷，不會自動接著做，因為外掛找不到這個 Hermes 停止回合的方式。"
   },
+  "Answer it in its chat, in your own words.": {
+    "de": "Beantworte sie im Chat, in deinen eigenen Worten.",
+    "es": "Respóndela en su chat, con tus propias palabras.",
+    "fr": "Répondez dans sa discussion, avec vos propres mots.",
+    "id": "Jawab di obrolannya, dengan kata-kata Anda sendiri.",
+    "it": "Rispondi nella sua chat, con parole tue.",
+    "ja": "そのチャットで、自分の言葉で答えてください。",
+    "ko": "해당 채팅에서 직접 답해 주세요.",
+    "pl": "Odpowiedz w jego czacie, własnymi słowami.",
+    "pt-BR": "Responda no chat dela, com suas próprias palavras.",
+    "ru": "Ответьте в его чате своими словами.",
+    "tr": "Sohbetinde kendi sözlerinizle yanıtlayın.",
+    "zh-Hans": "请在对应聊天中用你自己的话回答。",
+    "zh-Hant": "請在對應聊天中用你自己的話回答。"
+  },
   "Answers when an MCP server asks Hermes’ model to write something. It doesn’t choose tools.": {
     "de": "Antwortet, wenn ein MCP-Server Hermes’ Modell bittet, etwas zu schreiben. Werkzeuge wählt es nicht aus.",
     "es": "Responde cuando un servidor MCP pide al modelo de Hermes que escriba algo. No elige herramientas.",
@@ -2383,6 +2398,36 @@
     "tr": "Bir tarihte müsait olup olmadığın sorulduğunda Hermes'in, telefonunun {name} ile paylaştığı takvime bakarak bunu ve o gün ne zaman meşgul olduğunu (yalnızca saatleri) sana sormadan söyler.",
     "zh-Hans": "被问到你某天是否有空时，你的 Hermes 会根据你的手机与 {name} 共享的日历回答，并说出你那天忙的时间（只说时间），不会问你。",
     "zh-Hant": "被問到你某天是否有空時，你的 Hermes 會根據你的手機與 {name} 共享的行事曆回答，並說出你那天忙的時間（只說時間），不會問你。"
+  },
+  "Asked you": {
+    "de": "Hat dich gefragt",
+    "es": "Te preguntó",
+    "fr": "Vous a demandé",
+    "id": "Bertanya kepada Anda",
+    "it": "Ti ha chiesto",
+    "ja": "あなたに確認",
+    "ko": "사용자에게 물어봄",
+    "pl": "Zapytał Cię",
+    "pt-BR": "Perguntou a você",
+    "ru": "Спросил вас",
+    "tr": "Size sordu",
+    "zh-Hans": "已询问你",
+    "zh-Hant": "已詢問你"
+  },
+  "Asked you about {refs}": {
+    "de": "Hat dich zu {refs} gefragt",
+    "es": "Te preguntó sobre {refs}",
+    "fr": "Vous a demandé à propos de {refs}",
+    "id": "Bertanya kepada Anda tentang {refs}",
+    "it": "Ti ha chiesto di {refs}",
+    "ja": "{refs} についてあなたに確認",
+    "ko": "{refs}에 대해 물어봄",
+    "pl": "Zapytał Cię o {refs}",
+    "pt-BR": "Perguntou a você sobre {refs}",
+    "ru": "Спросил вас о {refs}",
+    "tr": "Size {refs} hakkında sordu",
+    "zh-Hans": "已就 {refs} 询问你",
+    "zh-Hant": "已就 {refs} 詢問你"
   },
   "Asking Hermes to restart the gateway…": {
     "de": "Hermes wird gebeten, das Gateway neu zu starten …",
@@ -11578,6 +11623,36 @@
     "tr": "Kartın tamamı Hermes Desktop'ta",
     "zh-Hans": "完整卡片在 Hermes Desktop 中",
     "zh-Hant": "完整卡片在 Hermes Desktop 中"
+  },
+  "Going ahead unless you say no": {
+    "de": "Macht weiter, außer du sagst nein",
+    "es": "Sigue adelante salvo que digas que no",
+    "fr": "Continue sauf si vous dites non",
+    "id": "Lanjut kecuali Anda bilang tidak",
+    "it": "Va avanti a meno che tu dica di no",
+    "ja": "「いいえ」と言わない限り進めます",
+    "ko": "거절하지 않으면 진행합니다",
+    "pl": "Działa dalej, chyba że odmówisz",
+    "pt-BR": "Seguindo em frente, a menos que você diga não",
+    "ru": "Продолжает, если вы не скажете «нет»",
+    "tr": "Hayır demezseniz devam ediyor",
+    "zh-Hans": "除非你说不，否则继续",
+    "zh-Hant": "除非你說不，否則繼續"
+  },
+  "Going ahead with “{choice}” unless you pick another": {
+    "de": "Macht mit „{choice}“ weiter, außer du wählst etwas anderes",
+    "es": "Sigue con «{choice}» salvo que elijas otra opción",
+    "fr": "Continue avec « {choice} » sauf si vous choisissez autre chose",
+    "id": "Lanjut dengan “{choice}” kecuali Anda memilih yang lain",
+    "it": "Va avanti con “{choice}” a meno che tu ne scelga un'altra",
+    "ja": "別のものを選ばない限り「{choice}」で進めます",
+    "ko": "다른 것을 고르지 않으면 “{choice}”(으)로 진행합니다",
+    "pl": "Działa dalej z „{choice}”, chyba że wybierzesz coś innego",
+    "pt-BR": "Seguindo com “{choice}”, a menos que você escolha outra",
+    "ru": "Продолжает с «{choice}», если вы не выберете другое",
+    "tr": "Başka birini seçmezseniz “{choice}” ile devam ediyor",
+    "zh-Hans": "除非你选别的，否则按“{choice}”继续",
+    "zh-Hant": "除非你選別的，否則按「{choice}」繼續"
   },
   "GPT-Live": {
     "de": "GPT-Live",
@@ -20953,6 +21028,21 @@
     "tr": "Gönderilmeye hazır “{prompt}” mesajıyla yeni bir sohbet açar. Gönderin; Hermes yanıt verdiğinde Conduit çalar.",
     "zh-Hans": "打开一个新聊天，已填好“{prompt}”。发送后，Hermes 回复时 Conduit 就会响铃。",
     "zh-Hant": "開啟一個新聊天，已填好「{prompt}」。傳送後，Hermes 回覆時 Conduit 就會響鈴。"
+  },
+  "Recommended": {
+    "de": "Empfohlen",
+    "es": "Recomendado",
+    "fr": "Recommandé",
+    "id": "Disarankan",
+    "it": "Consigliato",
+    "ja": "おすすめ",
+    "ko": "추천",
+    "pl": "Polecane",
+    "pt-BR": "Recomendado",
+    "ru": "Рекомендуется",
+    "tr": "Önerilen",
+    "zh-Hans": "推荐",
+    "zh-Hant": "推薦"
   },
   "Runs when the memory or skill interval below is reached. Off, Hermes reviews a chat only when you ask with /refine.": {
     "de": "Läuft, sobald das Gedächtnis- oder Skill-Intervall unten erreicht ist. Aus prüft Hermes einen Chat nur, wenn du mit /refine darum bittest.",

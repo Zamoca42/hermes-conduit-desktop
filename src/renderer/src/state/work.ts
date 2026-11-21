@@ -68,7 +68,32 @@ export interface WorkSnapshot {
   resolvedCount: number
   /** Every workstream's chat, listed or not, kept out of the chat lists. */
   sessionIds: string[]
+  /** What the bot asked the user and waits on past its turn (work_propose, and clarify questions kept after
+   *  they ran out): its Bot Chat's, and its other chats'. */
+  questions: WorkQuestion[]
 }
+
+/** An open question the bot asked, as the plugin's question_card draws it (notifier 0.189.0). */
+export interface WorkQuestion {
+  /** Its id (P7): the answer goes to /workstreams/<id>/approve, decline or answer. */
+  id: string
+  refs: string[]
+  /** The titles of the workstreams it's about, joined. */
+  title: string
+  text: string
+  at: number
+  /** Approve and Decline, or one button per choice; none when it's answered in its chat in words. */
+  actions: ('approve' | 'decline' | 'answer')[]
+  choices: string[]
+  recommended: string
+  /** Auto coordination: the bot goes ahead on its recommendation unless the user picks another. */
+  goingAhead: boolean
+  /** The chat that asked; "" is the Bot Chat. */
+  chat: string
+}
+
+/** How the user answers a question: the route's action and its body. */
+export type QuestionAnswer = { kind: 'approve' } | { kind: 'decline' } | { kind: 'choice'; choice: string }
 
 type Row = Record<string, unknown>
 const str = (v: unknown) => (typeof v === 'string' ? v : '')
@@ -127,6 +152,77 @@ export function parseItem(row: Row): WorkItem | null {
   }
 }
 
+const QUESTION_ACTIONS = ['approve', 'decline', 'answer'] as const
+const strings = (v: unknown) => (Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string' && s.trim() !== '') : [])
+
+/** A question card's row, or null when it isn't an open question. */
+export function parseQuestion(row: Row): WorkQuestion | null {
+  const id = str(row.id).trim()
+  if (!id || row.kind !== 'proposal' || str(row.status) !== 'open') return null
+  return {
+    id,
+    refs: strings(row.refs),
+    title: str(row.title).trim(),
+    text: str(row.text).trim(),
+    at: num(row.at) * 1000,
+    actions: (Array.isArray(row.actions) ? row.actions : []).filter((a): a is WorkQuestion['actions'][number] =>
+      (QUESTION_ACTIONS as readonly unknown[]).includes(a)
+    ),
+    choices: strings(row.choices),
+    recommended: str(row.recommended),
+    goingAhead: row.going_ahead === true,
+    chat: str(row.chat)
+  }
+}
+
+/** The open questions in a /workstreams read's coordination list (or a /waiting read's questions). */
+export function parseQuestions(list: unknown): WorkQuestion[] {
+  const seen = new Set<string>()
+  const out: WorkQuestion[] = []
+  for (const row of rows(list)) {
+    const question = parseQuestion(row)
+    if (question && !seen.has(question.id)) {
+      seen.add(question.id)
+      out.push(question)
+    }
+  }
+  return out
+}
+
+/** Answered in its chat in words: a kept clarify question with no choices offers its card no buttons. */
+export const answersInWords = (question: WorkQuestion) =>
+  question.actions.includes('answer') && question.choices.length === 0
+
+/** The buttons a question's card offers: one per choice, or Approve and Decline. */
+export function questionButtons(question: WorkQuestion): { answer: QuestionAnswer; label: string; recommended: boolean }[] {
+  if (question.actions.includes('answer'))
+    return question.choices.map(choice => ({ answer: { kind: 'choice', choice }, label: choice, recommended: choice === question.recommended }))
+  if (question.actions.includes('approve') && question.actions.includes('decline'))
+    return [
+      { answer: { kind: 'approve' }, label: t('Approve'), recommended: false },
+      { answer: { kind: 'decline' }, label: t('Decline'), recommended: false }
+    ]
+  return []
+}
+
+/** The route's action and body for an answer. */
+export function answerRequest(answer: QuestionAnswer): { action: string; body: Record<string, unknown> } {
+  return answer.kind === 'choice' ? { action: 'answer', body: { choice: answer.choice } } : { action: answer.kind, body: {} }
+}
+
+/** The card's headline: what it's about, as the phone's. */
+export function questionHeadline(question: WorkQuestion): string {
+  return question.refs.length ? t('Asked you about {refs}', { refs: question.refs.join(', ') }) : t('Asked you')
+}
+
+/** Under an open question that the bot goes ahead on: what it does unless the user answers. */
+export function goingAheadText(question: WorkQuestion): string | null {
+  if (!question.goingAhead) return null
+  return question.recommended
+    ? t('Going ahead with “{choice}” unless you pick another', { choice: question.recommended })
+    : t('Going ahead unless you say no')
+}
+
 export function parseWork(raw: unknown): WorkSnapshot {
   const o = (raw && typeof raw === 'object' ? raw : {}) as Row
   const counts = (o.counts && typeof o.counts === 'object' ? o.counts : {}) as Row
@@ -146,7 +242,8 @@ export function parseWork(raw: unknown): WorkSnapshot {
     needsYou: num(counts.needs_you),
     ready: num(counts.ready),
     resolvedCount: num(o.resolved_count),
-    sessionIds: (Array.isArray(o.workstream_sessions) ? o.workstream_sessions : []).filter((id): id is string => typeof id === 'string' && !!id)
+    sessionIds: (Array.isArray(o.workstream_sessions) ? o.workstream_sessions : []).filter((id): id is string => typeof id === 'string' && !!id),
+    questions: parseQuestions(o.coordination && typeof o.coordination === 'object' ? (o.coordination as Row).items : undefined)
   }
 }
 

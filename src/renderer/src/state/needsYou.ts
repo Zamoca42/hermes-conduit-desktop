@@ -7,6 +7,10 @@
  *   every chat of a profile with a wait, the phone's Needs you list
  *   (hermes-conduit issue 1705). It only reads; a row opens its chat, where
  *   the resume replays the request as a card.
+ * - Its questions: what a bot asked that waits past its turn (work_propose,
+ *   and clarify questions kept after they ran out, notifier 0.189.0). Each is a
+ *   row that opens the chat that asked, as the phone's (open-only, Eric
+ *   2026-11-05); the Work panel's card answers it with a tap.
  */
 import type { PendingRequest } from '../../../shared/ipc'
 import { cleanTitle } from './text'
@@ -52,6 +56,32 @@ export function waitingFromResponse(body: unknown, profile?: string): WaitingRow
       title: cleanTitle(typeof item.title === 'string' ? item.title : '') || 'A chat',
       summary: typeof item.summary === 'string' ? item.summary : '',
       questions: typeof item.questions === 'number' ? item.questions : 0,
+      at: at > 0 && at < 1e11 ? at * 1000 : at,
+      profile
+    })
+  }
+  return [...rows, ...askedRows(body, profile)]
+}
+
+/** The questions a /waiting read lists past their turn, as rows that open the chat that asked. */
+function askedRows(body: unknown, profile?: string): WaitingRow[] {
+  const list = body && typeof body === 'object' ? (body as { questions?: unknown }).questions : undefined
+  if (!Array.isArray(list)) return []
+  const rows: WaitingRow[] = []
+  for (const raw of list) {
+    if (!raw || typeof raw !== 'object') continue
+    const item = raw as Record<string, unknown>
+    const sessionIds = Array.isArray(item.session_ids) ? item.session_ids.filter((s): s is string => typeof s === 'string' && !!s) : []
+    // A row opens its chat, so one with no chat to open isn't listed.
+    if (typeof item.id !== 'string' || !item.id || item.status !== 'open' || !sessionIds.length) continue
+    const at = typeof item.at === 'number' ? item.at : 0
+    rows.push({
+      id: `asked-${item.id}`,
+      kind: 'question',
+      sessionIds,
+      title: cleanTitle(typeof item.chat_title === 'string' ? item.chat_title : '') || 'A chat',
+      summary: typeof item.text === 'string' ? item.text.trim() : '',
+      questions: 1,
       at: at > 0 && at < 1e11 ? at * 1000 : at,
       profile
     })
