@@ -69,7 +69,8 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
     gateway
       .http('GET', workPath(`${WORK}?resolved=1`, bot))
       .then(answer => {
-        if (generation.current !== mine) return
+        // A read for an older count, answered after a newer one was asked, is dropped.
+        if (generation.current !== mine || resolvedRead.current !== key) return
         setResolved({ bot, count: resolvedCount, items: parseWork(answer).items })
       })
       .catch(() => {
@@ -81,6 +82,13 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
     resolvedRead.current = null
     setResolved(null)
   }, [bot, connected])
+  // A count that fell (the plugin's history started over) makes the page kept stale.
+  useEffect(() => {
+    if (resolved && resolvedCount < resolved.count) {
+      resolvedRead.current = null
+      setResolved(null)
+    }
+  }, [resolved, resolvedCount])
 
   return { snapshot, error, reload: load, resolved: resolved?.bot === bot ? resolved.items : null, readResolved }
 }
