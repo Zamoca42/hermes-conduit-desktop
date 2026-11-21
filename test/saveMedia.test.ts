@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, utimes, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { ReadableStream } from 'node:stream/web'
-import { dataUrlBytes as hostBytes, hostFileName, hostFilePath, streamToFile } from '../src/main/hostFiles'
+import { dataUrlBytes as hostBytes, hostFileName, hostFilePath, streamToFile, STALE_PART_MS } from '../src/main/hostFiles'
 import { dataUrlBytes, pictureFileName } from '../src/renderer/src/state/saveMedia'
 
 describe('saving pictures, files and audio to this computer', () => {
@@ -44,6 +44,20 @@ describe('saving pictures, files and audio to this computer', () => {
     expect(text.length).toBe(64 * 4096)
     expect(new Set(text).size).toBe(1)
     expect(await readdir(dir)).toEqual(['same.txt'])
+  })
+
+  it("sweeps a destination's part files a crash left a day ago", async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'conduit-save-'))
+    const target = join(dir, 'a.png')
+    const old = join(dir, 'a.png.abc123.conduit-part')
+    const fresh = join(dir, 'a.png.def456.conduit-part')
+    const other = join(dir, 'b.png.abc123.conduit-part')
+    for (const path of [old, fresh, other]) await writeFile(path, 'x')
+    const then = new Date(Date.now() - STALE_PART_MS - 60_000)
+    await utimes(old, then, then)
+    await utimes(other, then, then)
+    await streamToFile(bytesThen(['ok']), target)
+    expect((await readdir(dir)).sort()).toEqual(['a.png', 'a.png.def456.conduit-part', 'b.png.abc123.conduit-part'])
   })
 
   it('gives up on a download that stops sending, and stops its request', async () => {
