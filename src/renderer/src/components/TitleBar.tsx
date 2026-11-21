@@ -5,14 +5,7 @@ import { t } from '@shared/i18n'
 import { hostBadge, keptStateLabel, useKeptHosts } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
 import { appIconUrl, useAppIcon } from '../state/appIcon'
-
-export function hostName(url: string): string {
-  try {
-    return new URL(url).host
-  } catch {
-    return url
-  }
-}
+import { hostName } from '../state/hostNames'
 
 interface Props {
   subtitle?: string

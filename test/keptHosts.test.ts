@@ -5,6 +5,7 @@ import { KEPT_BACKOFF, KEPT_RPC_METHODS, KeptHosts, MAX_KEPT } from '../src/main
 import { Connection, type SavedConnection } from '../src/main/connection'
 import type { ConnectionStatus, KeptHost } from '../src/shared/ipc'
 import type { WebSocketLike } from '../src/vendor/hermes-shared/json-rpc-gateway'
+import { badgeLetters } from '../src/shared/hostNames'
 import {
   badgeColor,
   BADGE_PALETTE,
@@ -27,6 +28,8 @@ import {
   takeBotAfterSwitch,
   takeChatAfterSwitch,
   takeOpenAfterSwitch,
+  keptWorkKey,
+  keptWorkPath,
   type KeptWaitingRow,
   type OtherChatRow
 } from '../src/renderer/src/state/keptHosts'
@@ -85,8 +88,10 @@ function harness(hosts: SavedConnection[], opts: { refuse?: string[]; down?: str
     }
     if (url.pathname === '/api/auth/ws-ticket') return opts.refuse?.includes(origin) ? json({ detail: 'Not authenticated' }, 401) : json({ ticket: 'T' })
     if (url.pathname === '/api/profiles') return json({ profiles: [{ name: 'default' }, { name: 'mira' }] })
+    if (url.pathname === '/api/plugins/conduit_push/capabilities') return json({ ok: true, name: `Hermes at ${url.hostname}` })
     return json({ detail: 'Not Found' }, 404)
   }
+  const hermesNames: [string, string][] = []
   const kept = new KeptHosts({
     fetch: fetchImpl,
     store,
@@ -96,14 +101,23 @@ function harness(hosts: SavedConnection[], opts: { refuse?: string[]; down?: str
       return socket as unknown as WebSocketLike
     },
     onChange: list => changes.push(list),
+    onHermesName: (url, name) => hermesNames.push([url, name]),
     setTimeout: (fn, ms) => timers.push({ fn, ms }),
     clearTimeout: () => undefined
   })
   const state = (url: string) => kept.list().find(h => h.url === url)?.state
-  return { kept, store, sockets, changes, timers, written, state }
+  return { kept, store, sockets, changes, timers, written, state, hermesNames }
 }
 
 describe('combined dashboards in the main process', () => {
+  it("reads each kept host's Hermes name once it connects", async () => {
+    const h = harness([host('https://a.example'), host('https://b.example'), host('http://10.0.0.2:9119')])
+    h.kept.sync(open('https://a.example'))
+    await until(() => h.state('https://b.example') === 'live' && h.hermesNames.length > 0)
+    // Only an address that names nothing asks: a DNS name is never replaced.
+    expect(h.hermesNames).toEqual([['http://10.0.0.2:9119', 'Hermes at 10.0.0.2']])
+  })
+
   it("connects the group's others once the one on screen has, and drops their events", async () => {
     const h = harness([host('https://a.example'), host('https://b.example'), host('https://c.example')])
     h.kept.sync({ phase: 'connecting', url: 'https://a.example' })
@@ -264,6 +278,18 @@ describe('combined dashboards in the window', () => {
     expect(hostBadge(hosts, 'https://studio.example', name)).toMatchObject({ letter: 'S', color: BADGE_PALETTE[1] })
     expect(hostBadge(hosts, 'https://alone.example', name)).toBeNull()
     expect(hostBadge([hosts[0]!], 'https://home.example', name)).toBeNull()
+  })
+
+  it('numbers the group where two names start alike, so no two badges read the same', () => {
+    const lan = [
+      { url: 'http://192.168.1.5:9119', method: 'open' as const, combined: true },
+      { url: 'http://192.168.1.6:9119', method: 'open' as const, combined: true },
+      { url: 'https://studio.example', method: 'open' as const, combined: true }
+    ]
+    expect(lan.map(h => hostBadge(lan, h.url, name)?.letter)).toEqual(['1', '2', 'S'])
+    expect(badgeLetters(['Furina', 'conduit'])).toEqual(['F', 'C'])
+    // A place number that would match another's letter: every badge its place.
+    expect(badgeLetters(['192.168.1.5', '192.168.1.6', '2nd home'])).toEqual(['1', '2', '3'])
   })
 
   it('gives a seventh member a hue of its own', () => {
@@ -437,5 +463,16 @@ describe('New Bot on another combined dashboard', () => {
     expect(takeNewBotAfterSwitch('https://a.example')).toBeNull()
     expect(takeNewBotAfterSwitch('https://b.example')).toEqual(bot)
     expect(takeNewBotAfterSwitch('https://b.example')).toBeNull()
+  })
+})
+
+describe("another host's bots' pills", () => {
+  it('reads each bot\'s work as its host names it, keyed by host and name', () => {
+    expect(keptWorkPath('default', true)).toBe('/api/plugins/conduit_push/workstreams')
+    expect(keptWorkPath('Conduit Chan', true)).toBe('/api/plugins/conduit_push/workstreams?conduit_profile=Conduit%20Chan')
+    // A plugin that doesn't list dashboard-profiles reads ?profile=.
+    expect(keptWorkPath('mira', false)).toBe('/api/plugins/conduit_push/workstreams?profile=mira')
+    expect(keptWorkKey('https://a.example', 'Mira')).toBe(keptWorkKey('https://a.example', 'mira'))
+    expect(keptWorkKey('https://a.example', 'mira')).not.toBe(keptWorkKey('https://b.example', 'mira'))
   })
 })

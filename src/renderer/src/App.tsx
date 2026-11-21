@@ -6,6 +6,8 @@ import { gateway } from './gateway'
 import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
 import { arrange, farBotFor, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
+import { hostName, rememberHostNames } from './state/hostNames'
+import { HOST_NAME_MAX } from '@shared/hostNames'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, useReplyFace, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
@@ -39,7 +41,7 @@ import { Icon } from './components/icons'
 import { useMouseBack } from './state/mouseBack'
 import { NeedsYou } from './components/NeedsYou'
 import { SignIn } from './components/SignIn'
-import { TitleBar, hostName } from './components/TitleBar'
+import { TitleBar } from './components/TitleBar'
 import { setRunningCall, switchEndingCall } from './state/callSwitch'
 import { Transcript, prefillRequest, quoteRequest, revealMessage } from './components/Transcript'
 import { forgetSummaries } from './state/stepSummaries'
@@ -121,7 +123,7 @@ import { ROOM_LINKS_CAPABILITY } from './state/roomLinks'
 import { ChatQueueDock } from './components/ChatQueueDock'
 import { AppLockSetting, LockedScreen } from './components/AppLock'
 import { AskDashboardSetting, DashboardChoice } from './components/AskDashboard'
-import { CombineDashboardsSetting } from './components/CombinedDashboards'
+import { CombineDashboardsSetting, HostBadgeMark } from './components/CombinedDashboards'
 import {
   hostBadge,
   keptStateLabel,
@@ -141,6 +143,7 @@ import {
   takeOpenAfterSwitch,
   takePageAfterSwitch,
   useKeptBots,
+  useKeptWork,
   useKeptRooms,
   combinedRooms,
   type OtherRoom,
@@ -196,7 +199,7 @@ import { consented, isLive } from './state/consent'
 import { loadChatCalls, type CallTranscript, type ChatCall } from './state/voiceCalls'
 import type { CallResume } from './state/voiceSave'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
-import { ask, tell } from './state/dialogs'
+import { ask, askText, tell } from './state/dialogs'
 
 /** The host's synced preferences, for the bots' order. */
 const prefsHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
@@ -205,8 +208,14 @@ export function App() {
   const [status, setStatus] = useState<ConnectionStatus | null>(null)
 
   useEffect(() => {
-    const off = window.conduit.onStatus(setStatus)
-    void window.conduit.status().then(s => setStatus(current => current ?? s))
+    const off = window.conduit.onStatus(s => {
+      rememberHostNames(s.hosts)
+      setStatus(s)
+    })
+    void window.conduit.status().then(s => {
+      rememberHostNames(s.hosts)
+      setStatus(current => current ?? s)
+    })
     return off
   }, [])
 
@@ -1372,6 +1381,8 @@ function Shell({
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   // ...and their bots, on Bots Home.
   const otherBots = useKeptBots(keptHosts, botsListShown)
+  // ...with their pills, from their work read there (Eric, 2026-11-21: another host's "needs you" didn't show).
+  const otherWork = useKeptWork(otherBots, botsListShown)
   // ...mixed with this host's in one order the person arranges, kept on this computer.
   const combinedCount = savedHosts ? savedHosts.filter(h => h.combined).length : null
   const mixedBotOrder = useMixedBotOrder(combinedCount === null ? null : combinedCount > 1)
@@ -1847,6 +1858,7 @@ function Shell({
     onOpenDraft: draft => setOpenDraft(draft.id),
     roomLooks: roomLooks.looks,
     otherBots: otherBots,
+    otherWork: otherWork,
     badgeFor: badgeFor,
     onOpenOther: openOtherBot,
     hostUrl: statusUrl,
@@ -2969,6 +2981,7 @@ function Settings({
       </main>
     )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
+  const settingsBadge = (url: string) => hostBadge(status.hosts ?? [], url, hostName)
   return (
     <main className="settings">
       <h1>{t('Settings')}</h1>
@@ -2986,11 +2999,25 @@ function Settings({
               {(status.hosts?.length ? status.hosts : status.url ? [{ url: status.url, method: status.method ?? 'open', username: status.username }] : []).map(
                 host => (
                   <li key={host.url} className={host.url === status.url ? 'current' : undefined}>
+                    {settingsBadge(host.url) ? <HostBadgeMark badge={settingsBadge(host.url)!} /> : null}
                     <span className="host-label" title={host.url}>
                       {hostName(host.url)}
                     </span>
                     {host.username ? <span className="meta">{host.username}</span> : null}
                     <span className="spacer" />
+                    <button
+                      className="link"
+                      onClick={async () => {
+                        const name = await askText(
+                          `${t('Rename Dashboard')}\n\n${t("Its badge shows the name's first letter. Leave it empty to go back to the automatic name.")}`,
+                          host.named ? hostName(host.url) : '',
+                          { confirm: t('Save'), maxLength: HOST_NAME_MAX }
+                        )
+                        if (name !== null) void window.conduit.renameHost(host.url, name)
+                      }}
+                    >
+                      {t('Rename')}
+                    </button>
                     {host.url === status.url ? (
                       <>
                         <span className="meta">{t('In use')}</span>

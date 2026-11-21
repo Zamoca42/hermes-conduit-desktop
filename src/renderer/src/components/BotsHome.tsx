@@ -22,6 +22,7 @@ import { lookPictureUrl, memberLook, type RoomLook, type RoomLooks } from "../st
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
 import type { HostBadge, OtherBot, OtherRoom } from "../state/keptHosts";
+import { keptWorkKey } from "../state/keptHosts";
 import { canAddFar, mixedBotKey, mixedTiles, neighbour, type MixedTile } from "../state/botOrder";
 import type { OwnHermesBot } from "../state/roomDrafts";
 import { HostBadgeMark } from "./CombinedDashboards";
@@ -199,6 +200,8 @@ interface Props {
   onOpenOther?: (other: OtherBot) => void;
   /** Combined dashboards: the other hosts' group chats, badged, each room once under the host you talk in it from, opening through a switch. */
   otherRooms?: OtherRoom[];
+  /** The other hosts' bots' work, by keptWorkKey, for their pills. */
+  otherWork?: ReadonlyMap<string, BotWork>;
   onOpenOtherRoom?: (other: OtherRoom) => void;
   /** The host on screen: in a combined group its bots carry its badge too, so the group reads as one set. */
   hostUrl?: string;
@@ -272,6 +275,7 @@ export function BotsHome({
   roomLooks,
   otherBots = [],
   otherRooms = [],
+  otherWork,
   onOpenOtherRoom,
   badgeFor,
   onOpenOther,
@@ -761,7 +765,7 @@ export function BotsHome({
           const { bot } = tile;
           const open = tile.own && !side.openRoomId && !!side.openProfile && side.openProfile.toLowerCase() === bot.name.toLowerCase();
           const picked = tile.own ? (draft?.members.includes(bot.name) ?? false) : draftFar.some((m) => m.key === tile.key);
-          const pill = tile.own ? workPill(work?.get(bot.name)) : null;
+          const pill = workPill(tile.own ? work?.get(bot.name) : otherWork?.get(keptWorkKey(tile.host, bot.name)));
           const badge = tile.own ? ownBadge : (badgeFor?.(tile.host) ?? null);
           return (
             <button

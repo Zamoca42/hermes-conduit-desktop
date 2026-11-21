@@ -8,6 +8,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { HostSummary, KeptHost, KeptHostState } from '../../../shared/ipc'
 import { t } from '../../../shared/i18n'
+import { badgeLetters } from '../../../shared/hostNames'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 import { CHAT_LIST_PAGE, CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
 import { keptRosters, rosterFromProfiles, type Bot } from './bots'
@@ -17,6 +18,10 @@ import { roomsFromList, type Room } from './groups'
 import { COPIES_PATH, parseCopies, type RoomCopy } from './roomCopies'
 import { keptCopies } from './useRoomCopies'
 import { keptOwnRooms } from './useGroups'
+import { WORK, parseWork } from './work'
+import { STATUS_PATH, pluginStatus } from './plugin'
+import { DASHBOARD_PROFILES_CAPABILITY } from './dashboardProfile'
+import type { BotWork } from './useWork'
 
 export const keptStateLabel = (state: KeptHostState): string =>
   state === 'live'
@@ -65,8 +70,9 @@ export function hostBadge(hosts: readonly HostSummary[], url: string, name: (url
   const group = hosts.filter(h => h.combined)
   const index = group.findIndex(h => h.url === url)
   if (group.length < 2 || index < 0) return null
-  const label = name(url).trim()
-  return { letter: (Array.from(label)[0] ?? '?').toUpperCase(), color: badgeColor(index), name: label }
+  const labels = group.map(h => name(h.url).trim())
+  // Its name's first letter, or its place where two names start alike.
+  return { letter: badgeLetters(labels)[index]!, color: badgeColor(index), name: labels[index]! }
 }
 
 /** How long an emptied kept-host list waits before it's believed. */
@@ -563,6 +569,91 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
   }, [shown, live, on])
 
   return bots
+}
+
+/** Another host's bot's key in `useKeptWork`'s map. */
+export const keptWorkKey = (host: string, name: string): string => `${host}\u0000${name.toLowerCase()}`
+
+/**
+ * Another host's bot's workstreams route, named as that host's plugin reads
+ * it: `?conduit_profile=` when it lists `dashboard-profiles`, else `?profile=`
+ * (dashboardProfile.ts has why); the dashboard's own bot goes with neither.
+ */
+export function keptWorkPath(name: string, dashboardProfiles: boolean): string {
+  if (!name || name === 'default') return WORK
+  return `${WORK}?${dashboardProfiles ? 'conduit_profile' : 'profile'}=${encodeURIComponent(name)}`
+}
+
+/**
+ * The other hosts' bots' work, read through each one's connection while Bots
+ * shows, as this host's bots' is (useWorkSessions): what needs you and
+ * what's working, for their rows' pills. A bot whose work can't be read
+ * keeps what it showed; a host let go shows nothing more.
+ */
+export function useKeptWork(others: readonly OtherBot[], on: boolean): ReadonlyMap<string, BotWork> {
+  const [work, setWork] = useState<ReadonlyMap<string, BotWork>>(new Map())
+  const byBot = useRef(new Map<string, BotWork>())
+  const served = useRef(new Map<string, boolean>())
+  const key = on
+    ? others
+        .map(o => keptWorkKey(o.host, o.bot.name))
+        .sort()
+        .join('\n')
+    : ''
+
+  useEffect(() => {
+    const bots = key ? key.split('\n').map(k => ({ key: k, host: k.split('\u0000')[0]!, name: k.split('\u0000')[1]! })) : []
+    const hosts = new Set(bots.map(b => b.host))
+    for (const k of [...byBot.current.keys()]) if (!bots.some(b => b.key === k)) byBot.current.delete(k)
+    for (const host of [...served.current.keys()]) if (!hosts.has(host)) served.current.delete(host)
+    const show = () => setWork(new Map(byBot.current))
+    show()
+    if (!bots.length) return
+    let stopped = false
+    const read = async () => {
+      if (document.hidden) return
+      await Promise.all(
+        [...hosts].map(async host => {
+          if (!served.current.has(host)) {
+            const status = await window.conduit.keptHttp(host, STATUS_PATH)
+            if (status.ok) {
+              const read = pluginStatus(status.result)
+              served.current.set(host, read.state === 'reported' && read.capabilities.includes(DASHBOARD_PROFILES_CAPABILITY))
+            }
+          }
+          const dashboardProfiles = served.current.get(host) ?? false
+          await Promise.all(
+            bots
+              .filter(b => b.host === host)
+              .map(async b => {
+                // The name as its host lists it: the key is lower-cased.
+                const name = others.find(o => o.host === host && o.bot.name.toLowerCase() === b.name)?.bot.name ?? b.name
+                const outcome = await window.conduit.keptHttp(host, keptWorkPath(name, dashboardProfiles))
+                if (stopped || !outcome.ok) return
+                const answer = parseWork(outcome.result)
+                byBot.current.set(b.key, { working: answer.working, needsYou: answer.needsYou })
+              })
+          )
+        })
+      )
+      if (!stopped) show()
+    }
+    void read()
+    // As often as Needs you's waits, so a pill shows about when its row does.
+    const timer = setInterval(() => void read(), WAITING_POLL_MS)
+    const onVisible = () => {
+      if (!document.hidden) void read()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      stopped = true
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+    // `others` is read for names only; `key` holds who they are.
+  }, [key])
+
+  return work
 }
 
 /** A bot opened on another host: the new host's window opens it once its bots are read. */
