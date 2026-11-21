@@ -196,3 +196,36 @@ export function unmatchedWaiting(rows: WaitingRow[], requests: PendingRequest[])
   // A question that waits past its turn is a wait of its own, not the request its chat holds now.
   return rows.filter(row => isAsked(row) || !row.sessionIds.some(id => live.has(id)))
 }
+
+/** At most this many waiting questions go into a live call's instructions. */
+export const ASKED_SPOKEN = 5
+
+/**
+ * What a live call is told about the questions its bot asked that wait past
+ * their turn, after the phone's askedQuestionsBlock (written for the model,
+ * so not translated): oldest first, with their choices. The user's answer
+ * goes to Hermes as a request naming its id; Hermes' spoken turn records it
+ * for the chat that asked (notifier 0.191.0). Empty when none waits.
+ */
+export function askedQuestionsBlock(rows: readonly WaitingRow[]): string {
+  const open = rows
+    .flatMap(row => (row.question ? [row.question] : []))
+    .sort((a, b) => a.at - b.at)
+    .slice(0, ASKED_SPOKEN)
+  if (!open.length) return ''
+  const lines = open.map(question => {
+    let line = `- ${question.id}: «${question.text}»`
+    const inWords = !question.choices.length && question.actions.includes('answer')
+    if (question.choices.length) line += ` Choices: «${question.choices.join('», «')}».`
+    else if (!inWords) line += ' A yes or no.'
+    if (question.recommended) line += ` Hermes recommends «${question.recommended}».`
+    return line
+  })
+  return (
+    '\n\nQuestions Hermes asked the user that still wait on their answer (on their Needs you list):\n' +
+    lines.join('\n') +
+    "\nSay them when the user asks what's waiting on them, reading the choices out. When they answer one, " +
+    'send their answer to Hermes as a request that names its id, like "My answer to P7: <what they said>": ' +
+    'Hermes records it, and the chat that asked acts on it.'
+  )
+}

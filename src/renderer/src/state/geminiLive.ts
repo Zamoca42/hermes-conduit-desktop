@@ -90,7 +90,15 @@ const LOOKUPS: Record<Search, string> = {
  * with quick facts looked up where `search` says, and the request
  * acknowledged as it goes (its ask_thread call stays open until Hermes replies).
  */
-export function instructions(options: { language?: string; persona?: string; memory?: string; recall?: boolean; chat?: string; search?: Search }): string {
+export function instructions(options: {
+  language?: string
+  persona?: string
+  memory?: string
+  recall?: boolean
+  asked?: string
+  chat?: string
+  search?: Search
+}): string {
   return liveInstructions({
     ...options,
     lookups: LOOKUPS[options.search ?? 'google'],

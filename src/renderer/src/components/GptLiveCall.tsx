@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { CallBacks, callMeMarker, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
 import { gateway } from '../gateway'
+import { askedQuestionsForCall } from '../state/askedForCalls'
 import { stopReading } from '../state/readAloud'
 import type { TranscriptItem } from '../state/transcript'
 import {
@@ -501,8 +502,9 @@ export function GptLiveCall({
           sendsPersona() ? gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : '',
           sendsMemory() ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(memoryText, () => '') : ''
         ])
+        const asked = await askedQuestionsForCall(profile)
         if (ended.current) return
-        const told = briefing(language(), persona, memory)
+        const told = briefing(language(), persona, memory, asked)
         const body: Record<string, unknown> = { sdp: peer.localDescription?.sdp ?? '', billing, briefing: told }
         if (seed.length) body.history = seed
         if (voice) body.voice = voice

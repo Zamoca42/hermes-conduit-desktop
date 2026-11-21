@@ -6,6 +6,7 @@ import {
   lockedAnswers,
   requestSummary,
   askedInChat,
+  askedQuestionsBlock,
   unmatchedWaiting,
   waitingFromResponse,
   waitingPath
@@ -124,5 +125,23 @@ describe('the waiting list', () => {
   it('lists a wait once when a live request already shows it', () => {
     const rows = waitingFromResponse({ waiting: [{ id: 'w1', kind: 'approval', session_ids: ['stored-1', 'live-1'], at: 1 }, { id: 'w2', kind: 'approval', session_ids: ['stored-2'], at: 1 }] })
     expect(unmatchedWaiting(rows, [request({ sessionId: 'live-1' })]).map(r => r.id)).toEqual(['w2'])
+  })
+
+  it('tells a live call the questions waiting past their turn, oldest first, with their choices', () => {
+    const rows = waitingFromResponse({
+      questions: [
+        { id: 'P9', kind: 'proposal', status: 'open', text: 'Tag it now?', at: 3, session_ids: ['s1'], actions: ['approve', 'decline'] },
+        { id: 'P7', kind: 'proposal', status: 'open', text: 'Which branch?', at: 1, session_ids: ['s2'], choices: ['main', 'release/2.4'], recommended: 'release/2.4', actions: ['answer'] },
+        { id: 'P8', kind: 'proposal', status: 'open', text: 'What should it be called?', at: 2, session_ids: ['s3'], actions: ['answer'] }
+      ]
+    })
+    const block = askedQuestionsBlock(rows)
+    expect(block).toContain('- P7: «Which branch?» Choices: «main», «release/2.4». Hermes recommends «release/2.4».')
+    expect(block).toContain('- P9: «Tag it now?» A yes or no.')
+    expect(block).toContain('- P8: «What should it be called?»\n')
+    expect(block.indexOf('P7:')).toBeLessThan(block.indexOf('P8:'))
+    expect(block.indexOf('P8:')).toBeLessThan(block.indexOf('P9:'))
+    expect(block).toContain('My answer to P7')
+    expect(askedQuestionsBlock([])).toBe('')
   })
 })
