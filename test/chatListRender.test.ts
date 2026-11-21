@@ -79,4 +79,37 @@ describe('the chat list draws', () => {
     expect(html).not.toContain('filter-chips')
     expect(html).not.toContain('Group by profile')
   })
+
+  it('sits out a saved source the chats shown don’t come from, rather than empty the list', async () => {
+    const path = '../src/renderer/src/components/ChatList.tsx'
+    const { ChatList } = (await import(/* @vite-ignore */ path)) as { ChatList: unknown }
+    const now = Date.now()
+    localStorage.setItem('conduit.chatFilters', JSON.stringify(['source:telegram']))
+    const rows = [
+      { id: 'a', title: 'Alpha', activeAt: now, pinned: false, profile: 'coder' },
+      { id: 't', title: 'Tele', activeAt: now, pinned: false, profile: 'writer', sourceKind: 'telegram' }
+    ]
+    const render = (profile: string | null) =>
+      renderToStaticMarkup(
+        createElement(ChatList as never, {
+          rows,
+          error: null,
+          selectedId: null,
+          runningIds: new Set(),
+          onSelect: () => {},
+          onNewChat: () => {},
+          profile,
+          marks: { stars: [], seen: {}, baseline: now + 1, unread: [] }
+        } as never)
+      )
+    const coder = render('coder')
+    expect(coder).toContain('Alpha')
+    expect(coder).not.toContain('filter-active')
+    const all = render(null)
+    expect(all).toContain('Tele')
+    expect(all).not.toContain('Alpha')
+    expect(all).toContain('filter-active')
+    localStorage.removeItem('conduit.chatFilters')
+  })
 })
+

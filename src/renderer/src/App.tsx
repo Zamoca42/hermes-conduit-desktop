@@ -953,9 +953,16 @@ function Shell({
     setListHidden(hidden)
     writeListHidden(hidden)
   }, [])
-  const listWidth = shownListWidth(listLive ?? listStored, windowWidth)
-  // The chat list's profile column, beside the list's own width (set once the column's profiles are known, below).
-  const [listColumn, setListColumn] = useState(0)
+  // Combined dashboards: the other hosts kept connected beside this one...
+  const keptHosts = useKeptHosts(status.url ?? '')
+  // ...their bots, on Bots Home and in the chat list's profile column (Eric, 2026-11-21: Chats held only this dashboard's).
+  const otherBots = useKeptBots(keptHosts, botsListShown || section === 'chats')
+  // ...with their pills, from their work read there (Eric, 2026-11-21: another host's "needs you" didn't show).
+  const otherWork = useKeptWork(otherBots, botsListShown || section === 'chats')
+  // The chat list's profile column, beside the list's own width: the list gives way to it before the chat does.
+  const columnShown = section === 'chats' && !listHidden && !projectsOpen && !botsSideShown && (orderedRoster?.length ?? 0) + otherBots.length > 1
+  const listColumn = columnShown ? PROFILE_COLUMN_WIDTH : 0
+  const listWidth = shownListWidth(listLive ?? listStored, windowWidth - listColumn)
   const listTaken = section === 'chats' && listHidden ? 0 : (listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28))) + listColumn
   const panelWidth = shownPanelWidth(panelLive ?? panelStored, windowWidth, listTaken)
   // A chat beside the open one: only where both fit, else the pane hides until the window widens.
@@ -1437,8 +1444,7 @@ function Shell({
   const profiles = useMemo(() => [...new Set((list.rows ?? []).map(r => r.profile ?? ''))].sort(), [list.rows])
   const waiting = useWaiting(connected, profiles)
   const waitingRows = useMemo(() => unmatchedWaiting(waiting.rows, requests), [waiting.rows, requests])
-  // Combined dashboards: the other hosts' waits, badged, each opening through a switch.
-  const keptHosts = useKeptHosts(status.url ?? '')
+  // ...and their waits, badged, each opening through a switch.
   const keptWaiting = useKeptWaiting(keptHosts)
   const otherWaiting = useMemo(() => otherHostsWaiting(keptWaiting, waiting.rows), [keptWaiting, waiting.rows])
   const savedHosts = status.hosts
@@ -1446,11 +1452,6 @@ function Shell({
   // ...and their chats, in All.
   const keptChats = useKeptChats(keptHosts, section === 'chats')
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
-  // ...and their bots, on Bots Home.
-  // ...and on the chat list's profile column (Eric, 2026-11-21: Chats held only this dashboard's).
-  const otherBots = useKeptBots(keptHosts, botsListShown || section === 'chats')
-  // ...with their pills, from their work read there (Eric, 2026-11-21: another host's "needs you" didn't show).
-  const otherWork = useKeptWork(otherBots, botsListShown || section === 'chats')
   // ...mixed with this host's in one order the person arranges, kept on this computer.
   const combinedCount = savedHosts ? savedHosts.filter(h => h.combined).length : null
   const mixedBotOrder = useMixedBotOrder(combinedCount === null ? null : combinedCount > 1)
@@ -1465,8 +1466,6 @@ function Shell({
           : orderedRoster.map(bot => ({ key: bot.name, host: status.url ?? '', bot, own: true })),
     [otherBots, status.url, orderedRoster, savedHostUrls, mixedBotOrder.order]
   )
-  const columnShown = section === 'chats' && !listHidden && !projectsOpen && !botsSideShown && (profileTiles?.length ?? 0) > 1
-  useEffect(() => setListColumn(columnShown ? PROFILE_COLUMN_WIDTH : 0), [columnShown])
   const tileBadge = useCallback((tile: MixedTile) => badgeFor(tile.own ? (status.url ?? '') : tile.host), [badgeFor, status.url])
   const otherWaits = useCallback((tile: MixedTile) => otherWork.get(keptWorkKey(tile.host, tile.bot.name))?.needsYou ?? 0, [otherWork])
   // A room started by dragging across dashboards brings the other's bots over your own Link to it.
