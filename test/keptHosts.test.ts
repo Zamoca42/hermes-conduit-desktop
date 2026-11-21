@@ -14,6 +14,8 @@ import {
   openAfterSwitch,
   openBotAfterSwitch,
   openChatAfterSwitch,
+  openPageAfterSwitch,
+  takePageAfterSwitch,
   otherHostsChats,
   keptChatsPath,
   mergeKeptChats,
@@ -510,5 +512,14 @@ describe("another host's bots' pills", () => {
     expect(keptWorkPath('mira', false)).toBe('/api/plugins/conduit_push/workstreams?profile=mira')
     expect(keptWorkKey('https://a.example', 'Mira')).toBe(keptWorkKey('https://a.example', 'mira'))
     expect(keptWorkKey('https://a.example', 'mira')).not.toBe(keptWorkKey('https://b.example', 'mira'))
+  })
+})
+
+describe('a page picked on another host', () => {
+  it('opens there once, and only on that host', () => {
+    openPageAfterSwitch('https://b.example', 'pulse')
+    expect(takePageAfterSwitch('https://a.example')).toBeNull()
+    expect(takePageAfterSwitch('https://b.example')).toBe('pulse')
+    expect(takePageAfterSwitch('https://b.example')).toBeNull()
   })
 })
