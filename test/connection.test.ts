@@ -275,6 +275,16 @@ describe('more than one Hermes', () => {
     expect(h.connection.current()).toEqual({ phase: 'signed-out', hosts: [] })
   })
 
+  it('labels the open host by the name it was given', async () => {
+    const h = harness({ hosts: true })
+    await h.connection.signIn({ url: 'https://one', method: 'token', token: 'a' })
+    await tick()
+    expect(h.connection.current()).toMatchObject({ hostLabel: 'one' })
+    h.hostList.rename!('https://one', 'Studio')
+    h.connection.hostsChanged()
+    expect(h.connection.current()).toMatchObject({ hostLabel: 'Studio' })
+  })
+
   it('a failed sign-in to another host goes back to the open one', async () => {
     const h = harness({ hosts: true })
     await h.connection.signIn({ url: 'https://one', method: 'token', token: 'a' })
@@ -283,7 +293,7 @@ describe('more than one Hermes', () => {
     expect(result.ok).toBe(false)
     await tick()
     expect(h.connection.current()).toMatchObject({ phase: 'open', url: 'https://one' })
-    expect(h.hostList.list!()).toEqual([{ url: 'https://one', method: 'token', username: undefined }])
+    expect(h.hostList.list!()).toEqual([{ url: 'https://one', method: 'token', username: undefined, name: 'one' }])
   })
 
   it('stays shut while locked, then opens the last host once unlocked', async () => {
@@ -292,9 +302,9 @@ describe('more than one Hermes', () => {
     await h.connection.signIn({ url: 'https://two', method: 'token', token: 'b' })
     await tick()
     const fresh = harness({ hosts: true })
-    for (const host of h.hostList.list!()) fresh.hostList.save({ ...host, token: host.url === 'https://one' ? 'a' : 'b' })
+    for (const host of h.hostList.list!()) fresh.hostList.save({ url: host.url, method: host.method, token: host.url === 'https://one' ? 'a' : 'b' })
     fresh.connection.lock()
-    expect(fresh.connection.current()).toEqual({ phase: 'locked', hosts: [{ url: 'https://one', method: 'token', username: undefined }, { url: 'https://two', method: 'token', username: undefined }] })
+    expect(fresh.connection.current()).toEqual({ phase: 'locked', hosts: [{ url: 'https://one', method: 'token', username: undefined, name: 'one' }, { url: 'https://two', method: 'token', username: undefined, name: 'two' }] })
     await fresh.connection.restore()
     expect(fresh.connection.switchHost('https://one')).toBe(false)
     expect((await fresh.connection.signIn({ url: 'https://three', method: 'token', token: 'c' })).ok).toBe(false)
