@@ -43034,21 +43034,6 @@
     "zh-Hans": "还有 {count} 项等待处理",
     "zh-Hant": "還有 {count} 項等待處理"
   },
-  "Your instructions": {
-    "de": "Deine Anweisungen",
-    "es": "Tus instrucciones",
-    "fr": "Vos instructions",
-    "id": "Instruksi Anda",
-    "it": "Le tue istruzioni",
-    "ja": "あなたの指示",
-    "ko": "내 지시사항",
-    "pl": "Twoje instrukcje",
-    "pt-BR": "Suas instruções",
-    "ru": "Ваши инструкции",
-    "tr": "Talimatlarınız",
-    "zh-Hans": "你的指令",
-    "zh-Hant": "你的指示"
-  },
   "Guides only these guesses, not your agent's usual replies. Kept on this device and sent with each of these requests to your Hermes host's model.": {
     "de": "Steuert nur diese Vorschläge, nicht die üblichen Antworten deines Agenten. Bleibt auf diesem Gerät und wird mit jeder dieser Anfragen an das Modell deines Hermes-Hosts gesendet.",
     "es": "Solo guía estas sugerencias, no las respuestas habituales de tu agente. Se guarda en este dispositivo y se envía con cada una de estas solicitudes al modelo de tu host de Hermes.",
@@ -43138,5 +43123,50 @@
     "tr": "Kaynaklar",
     "zh-Hans": "来源",
     "zh-Hant": "來源"
+  },
+  "Instructions for suggested replies": {
+    "de": "Anweisungen für Antwortvorschläge",
+    "es": "Instrucciones para respuestas sugeridas",
+    "fr": "Instructions pour les réponses suggérées",
+    "id": "Instruksi untuk saran balasan",
+    "it": "Istruzioni per le risposte suggerite",
+    "ja": "返信候補への指示",
+    "ko": "추천 답장 지침",
+    "pl": "Instrukcje dla sugerowanych odpowiedzi",
+    "pt-BR": "Instruções para respostas sugeridas",
+    "ru": "Указания для предложенных ответов",
+    "tr": "Önerilen yanıtlar için talimatlar",
+    "zh-Hans": "建议回复的说明",
+    "zh-Hant": "建議回覆的說明"
+  },
+  "Instructions for guesses while I pause": {
+    "de": "Anweisungen für Vorschläge, während ich pausiere",
+    "es": "Instrucciones para sugerencias mientras hago una pausa",
+    "fr": "Instructions pour les suggestions pendant mes pauses",
+    "id": "Instruksi untuk tebakan saat saya berhenti sejenak",
+    "it": "Istruzioni per i suggerimenti mentre faccio una pausa",
+    "ja": "入力を止めたときの候補への指示",
+    "ko": "잠시 멈출 때의 추천 지침",
+    "pl": "Instrukcje dla podpowiedzi podczas pauzy",
+    "pt-BR": "Instruções para sugestões enquanto pauso",
+    "ru": "Указания для подсказок во время паузы",
+    "tr": "Duraksadığımda öneriler için talimatlar",
+    "zh-Hans": "我停顿时猜测的说明",
+    "zh-Hant": "我停頓時猜測的說明"
+  },
+  "Instructions for follow-ups": {
+    "de": "Anweisungen für Nachfragen",
+    "es": "Instrucciones para seguimientos",
+    "fr": "Instructions pour les relances",
+    "id": "Instruksi untuk tindak lanjut",
+    "it": "Istruzioni per i follow-up",
+    "ja": "フォローアップへの指示",
+    "ko": "후속 조치 지침",
+    "pl": "Instrukcje dla dopowiedzeń",
+    "pt-BR": "Instruções para acompanhamentos",
+    "ru": "Указания для продолжений",
+    "tr": "Takipler için talimatlar",
+    "zh-Hans": "跟进的说明",
+    "zh-Hant": "跟進的說明"
   }
 }
