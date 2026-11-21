@@ -115,6 +115,6 @@ describe('the hand-off', () => {
     expect(manageTitle('leave_alone', 'Furina')).toBe('Keep Furina out of this')
     expect(manageTitle('coordinate', 'Furina')).toBe('Let Furina coordinate this')
     expect(handOverCaption('leave_alone', 'Furina')).toBe('Furina won’t message or stop it. You still can.')
-    expect(handOverCaption('coordinate', 'Furina')).toBe('Only you message or stop it now.')
+    expect(handOverCaption('coordinate', 'Furina')).toBe('Furina can message or stop it again.')
   })
 })

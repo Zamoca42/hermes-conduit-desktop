@@ -109,7 +109,7 @@ function WorkCard({
             className="work-card-more"
             aria-expanded={expanded}
             aria-label={`${item.ref}: ${t('Details')}`}
-            aria-controls={`work-details-${item.ref}`}
+            aria-controls={expanded ? `work-details-${item.ref}` : undefined}
             title={t('Details')}
             onClick={() => setExpanded(!expanded)}
           >

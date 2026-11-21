@@ -250,7 +250,7 @@ export function actionTitle(action: WorkAction): string {
 
 /** What Keep {bot} out of this means, under its button (the phone's handOverCaption). */
 export function handOverCaption(manage: 'leave_alone' | 'coordinate', botName: string): string {
-  return manage === 'leave_alone' ? t('{bot} won’t message or stop it. You still can.', { bot: botName }) : t('Only you message or stop it now.')
+  return manage === 'leave_alone' ? t('{bot} won’t message or stop it. You still can.', { bot: botName }) : t('{bot} can message or stop it again.', { bot: botName })
 }
 
 export function manageTitle(manage: WorkManage, botName: string): string {
