@@ -43094,5 +43094,20 @@
     "tr": "Talimatlar için Hermes sunucunda daha yeni bir Conduit eklentisi gerekir ({version} veya sonrası).",
     "zh-Hans": "指示需要你的 Hermes 主机上装有更新的 Conduit 插件（{version} 或更高版本）。",
     "zh-Hant": "指示需要你的 Hermes 主機上裝有更新的 Conduit 外掛（{version} 或更新版本）。"
+  },
+  "Sources": {
+    "de": "Quellen",
+    "es": "Fuentes",
+    "fr": "Sources",
+    "id": "Sumber",
+    "it": "Fonti",
+    "ja": "ソース",
+    "ko": "소스",
+    "pl": "Źródła",
+    "pt-BR": "Fontes",
+    "ru": "Источники",
+    "tr": "Kaynaklar",
+    "zh-Hans": "来源",
+    "zh-Hant": "來源"
   }
 }

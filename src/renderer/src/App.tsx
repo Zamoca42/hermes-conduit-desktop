@@ -4,7 +4,7 @@ import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps } from 'react'
 import { gateway } from './gateway'
 import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
-import { arrange, farBotFor, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder } from './state/botOrder'
+import { arrange, farBotFor, mixedTiles, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder, type MixedTile } from './state/botOrder'
 import { STATUS_PATH as PLUGIN_STATUS_PATH, pluginStatus } from './state/plugin'
 import { hostName, rememberHostNames } from './state/hostNames'
 import { HOST_NAME_MAX } from '@shared/hostNames'
@@ -12,6 +12,7 @@ import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '
 import { BotsHome, useReplyFace, type BotAction } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
 import { ChatList, type MoveTarget } from './components/ChatList'
+import { PROFILE_COLUMN_WIDTH } from './components/ProfileColumn'
 import { Composer } from './components/Composer'
 import { ModelPicker } from './components/ModelPicker'
 import { ContextPanel } from './components/ContextPanel'
@@ -130,6 +131,7 @@ import {
   keptStateLabel,
   openAfterSwitch,
   openBotAfterSwitch,
+  showProfileAfterSwitch,
   openRoomAfterSwitch,
   openChatAfterSwitch,
   openPageAfterSwitch,
@@ -139,6 +141,8 @@ import {
   otherHostsChats,
   otherHostsWaiting,
   takeBotAfterSwitch,
+  takeProfileAfterSwitch,
+  keptWorkKey,
   takeChatAfterSwitch,
   takeRoomAfterSwitch,
   takeOpenAfterSwitch,
@@ -950,7 +954,9 @@ function Shell({
     writeListHidden(hidden)
   }, [])
   const listWidth = shownListWidth(listLive ?? listStored, windowWidth)
-  const listTaken = section === 'chats' && listHidden ? 0 : (listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28)))
+  // The chat list's profile column, beside the list's own width (set once the column's profiles are known, below).
+  const [listColumn, setListColumn] = useState(0)
+  const listTaken = section === 'chats' && listHidden ? 0 : (listWidth ?? Math.min(320, Math.max(240, windowWidth * 0.28))) + listColumn
   const panelWidth = shownPanelWidth(panelLive ?? panelStored, windowWidth, listTaken)
   // A chat beside the open one: only where both fit, else the pane hides until the window widens.
   const [beside, setBeside] = useState<BesideChat | null>(null)
@@ -1441,13 +1447,28 @@ function Shell({
   const keptChats = useKeptChats(keptHosts, section === 'chats')
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   // ...and their bots, on Bots Home.
-  const otherBots = useKeptBots(keptHosts, botsListShown)
+  // ...and on the chat list's profile column (Eric, 2026-11-21: Chats held only this dashboard's).
+  const otherBots = useKeptBots(keptHosts, botsListShown || section === 'chats')
   // ...with their pills, from their work read there (Eric, 2026-11-21: another host's "needs you" didn't show).
-  const otherWork = useKeptWork(otherBots, botsListShown)
+  const otherWork = useKeptWork(otherBots, botsListShown || section === 'chats')
   // ...mixed with this host's in one order the person arranges, kept on this computer.
   const combinedCount = savedHosts ? savedHosts.filter(h => h.combined).length : null
   const mixedBotOrder = useMixedBotOrder(combinedCount === null ? null : combinedCount > 1)
   const savedHostUrls = useMemo(() => (savedHosts ?? []).map(h => h.url), [savedHosts])
+  // The chat list's column, in Bots Home's order: in a combined group every dashboard's profiles, in the group's.
+  const profileTiles = useMemo<MixedTile[] | undefined>(
+    () =>
+      !orderedRoster
+        ? undefined
+        : otherBots.length && status.url
+          ? mixedTiles(status.url, orderedRoster, otherBots, savedHostUrls, mixedBotOrder.order)
+          : orderedRoster.map(bot => ({ key: bot.name, host: status.url ?? '', bot, own: true })),
+    [otherBots, status.url, orderedRoster, savedHostUrls, mixedBotOrder.order]
+  )
+  const columnShown = section === 'chats' && !listHidden && !projectsOpen && !botsSideShown && (profileTiles?.length ?? 0) > 1
+  useEffect(() => setListColumn(columnShown ? PROFILE_COLUMN_WIDTH : 0), [columnShown])
+  const tileBadge = useCallback((tile: MixedTile) => badgeFor(tile.own ? (status.url ?? '') : tile.host), [badgeFor, status.url])
+  const otherWaits = useCallback((tile: MixedTile) => otherWork.get(keptWorkKey(tile.host, tile.bot.name))?.needsYou ?? 0, [otherWork])
   // A room started by dragging across dashboards brings the other's bots over your own Link to it.
   const farFor = useCallback(
     (host: string, name: string) =>
@@ -1656,6 +1677,20 @@ function Shell({
     const bot = takeBotAfterSwitch(statusUrl, roster.bots)
     if (bot) openBot(bot)
   }, [statusUrl, roster.bots, openBot])
+  // Another dashboard's face in the chat list's column: switch there and show that profile's chats.
+  const showOtherProfile = useCallback(async (tile: MixedTile) => {
+    if (!(await switchEndingCall(hostName(tile.host)))) return
+    showProfileAfterSwitch({ host: tile.host, bot: tile.bot })
+    void window.conduit.switchHost(tile.host)
+  }, [])
+  const listReady = !!listedRows
+  useEffect(() => {
+    if (!connected || !listReady) return
+    const bot = takeProfileAfterSwitch(statusUrl, roster.bots)
+    if (!bot) return
+    setSection('chats')
+    chooseProfile(bot.name)
+  }, [connected, listReady, statusUrl, roster.bots, chooseProfile])
   const openOtherRoom = useCallback(async (other: OtherRoom) => {
     if (!(await switchEndingCall(hostName(other.host)))) return
     openRoomAfterSwitch(other)
@@ -2131,6 +2166,10 @@ function Shell({
                   profile={chatProfile}
                   onProfile={chooseProfile}
                   onEditProfile={connected ? editProfile : undefined}
+                  profileTiles={profileTiles}
+                  tileBadge={tileBadge}
+                  otherWaits={otherWaits}
+                  onOtherProfile={showOtherProfile}
                   onPin={row => void chatAction(row, { pinned: !row.pinned })}
                   onRename={(row, title) => void chatAction(row, { title })}
                   marks={marks}
