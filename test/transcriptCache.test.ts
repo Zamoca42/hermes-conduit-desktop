@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { forgetTranscripts, keepTranscript, keptTranscript, TRANSCRIPT_CACHE_SIZE } from '../src/renderer/src/state/transcriptCache'
+import { forgetTranscriptHosts, forgetTranscripts, keepTranscript, keptTranscript, TRANSCRIPT_CACHE_SIZE } from '../src/renderer/src/state/transcriptCache'
 import type { TranscriptState } from '../src/renderer/src/state/transcript'
 
 const state = (text: string, extra: Partial<TranscriptState> = {}): TranscriptState => ({
@@ -8,7 +8,9 @@ const state = (text: string, extra: Partial<TranscriptState> = {}): TranscriptSt
   ...extra
 })
 
-beforeEach(() => forgetTranscripts())
+const A = 'https://a.example'
+const B = 'https://b.example'
+beforeEach(() => [undefined, A, B].forEach(host => forgetTranscripts(host)))
 
 describe('the transcripts kept for coming back', () => {
   it('keeps each dashboard’s chats apart, so switching back draws its chat at once', () => {
@@ -19,6 +21,28 @@ describe('the transcripts kept for coming back', () => {
     expect(keptTranscript('s1', 'zhongli', 'https://a.example')).toBe(here)
     expect(keptTranscript('s1', 'zhongli', 'https://b.example')).toBe(there)
     expect(keptTranscript('s1', 'zhongli')).toBeNull()
+  })
+
+  it('forgets only the dropped dashboard’s chats, and keeps six for each', () => {
+    const there = state('there')
+    keepTranscript('s1', undefined, state('here'), A)
+    keepTranscript('s1', undefined, there, B)
+    forgetTranscripts(A)
+    expect(keptTranscript('s1', undefined, A)).toBeNull()
+    expect(keptTranscript('s1', undefined, B)).toBe(there)
+    for (let i = 0; i < TRANSCRIPT_CACHE_SIZE + 2; i++) keepTranscript(`a${i}`, undefined, state(String(i)), A)
+    expect(keptTranscript('s1', undefined, B)).toBe(there)
+    expect(keptTranscript('a0', undefined, A)).toBeNull()
+    expect(keptTranscript('a2', undefined, A)).not.toBeNull()
+  })
+
+  it('lets a dashboard no longer saved take its chats with it', () => {
+    const kept = state('kept')
+    keepTranscript('s1', undefined, kept, A)
+    keepTranscript('s1', undefined, state('gone'), B)
+    forgetTranscriptHosts([A])
+    expect(keptTranscript('s1', undefined, A)).toBe(kept)
+    expect(keptTranscript('s1', undefined, B)).toBeNull()
   })
 
   it('gives back a chat as it was left, per profile', () => {

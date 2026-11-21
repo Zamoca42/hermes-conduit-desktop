@@ -46,9 +46,9 @@ export async function readCapabilities(): Promise<string[]> {
  * (every 30 s while the window shows), for a plugin that keeps them.
  */
 /** Each dashboard's plugin capabilities as last read, so a window a switch opened knows them at once. */
-const keptCapabilities = new Map<string, string[]>()
+export const keptCapabilities = new Map<string, string[]>()
 /** Each dashboard's invites as last read, so a switch draws a started room's row at once. */
-const keptInvites = new Map<string, RoomInvite[]>()
+export const keptInvites = new Map<string, RoomInvite[]>()
 
 export function useRoomInvites(connected: boolean, host: string) {
   const [capabilities, setCapabilities] = useState<string[]>(() => keptCapabilities.get(host) ?? [])
@@ -99,13 +99,16 @@ export function useRoomInvites(connected: boolean, host: string) {
     return everyWhileVisible(() => void refresh(), 30_000)
   }, [connected, served, refresh])
 
-  const adopt = useCallback((invite: RoomInvite) => {
-    reads.current++
-    setInvites(current => {
-      const list = current ?? []
-      return list.some(i => i.id === invite.id) ? list.map(i => (i.id === invite.id ? invite : i)) : [invite, ...list]
-    })
-  }, [])
+  const adopt = useCallback(
+    (invite: RoomInvite) => {
+      reads.current++
+      const merged = (list: RoomInvite[]) => (list.some(i => i.id === invite.id) ? list.map(i => (i.id === invite.id ? invite : i)) : [invite, ...list])
+      // What a switch draws from takes it too, so a switch back before the next read doesn't show the old one.
+      keptInvites.set(host, merged(keptInvites.get(host) ?? []))
+      setInvites(current => merged(current ?? []))
+    },
+    [host]
+  )
 
   const answer = useCallback(
     async (invite: RoomInvite, joining: Record<string, unknown>[], justMe = false): Promise<Answering> => {

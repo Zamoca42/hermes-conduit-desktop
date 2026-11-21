@@ -58,6 +58,8 @@ describe('work links', () => {
     expect(quoted?.text).toBe('`@session:p/c` more')
     expect(quoted?.links.map(l => l.ref)).toEqual(['W3'])
     expect(splitWorkLinks('Done: [W7: fix the `nil` crash](conduit://session/w7) @session:p/w7.')?.text).toBe('Done:.')
+    // A span opening in the link's title and closing after the reference quotes it: it stays as written.
+    expect(splitWorkLinks('Done: [W7: `note](conduit://session/w7) @session:p/w7`')).toEqual({ text: 'Done: @session:p/w7`', links: [{ ref: 'W7', sessionId: 'w7' }] })
     expect(splitWorkLinks('`note\r\n\r\n[Open W3](conduit://session/c)`')?.links.map(l => l.ref)).toEqual(['W3'])
   })
 

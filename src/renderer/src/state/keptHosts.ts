@@ -355,7 +355,7 @@ export interface HostRooms {
  * showed; a host let go shows nothing more.
  */
 /** Each kept host's rooms as last read, for the next window to start from. */
-const keptRoomsByHost = new Map<string, HostRooms & { at: number }>()
+export const keptRoomsByHost = new Map<string, HostRooms & { at: number }>()
 
 /** A host's rooms from whichever read is newer: as another dashboard, or as the open one (keptOwnRooms, keptCopies). */
 function roomsOf(url: string): HostRooms | null {

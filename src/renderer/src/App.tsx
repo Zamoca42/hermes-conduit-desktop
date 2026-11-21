@@ -49,6 +49,7 @@ import { forgetSummaries } from './state/stepSummaries'
 import { WAKE_EVENT, wakeBindings, wakeChat, wakeProfiles, type WakeBinding } from './state/wakeSettings'
 import { forgetChatLists } from './state/savedChatList'
 import { forgetKeptAnswers, setKeptAnswersHost } from './state/keptAnswers'
+import { forgetHostCaches } from './state/hostCaches'
 import { keepTabs, launchPage, syncedTabs } from './state/launchTab'
 import { PREFS_PATH } from './state/pinnedOrder'
 import { useFollowUps, usePredictions } from './state/usePredictions'
@@ -255,6 +256,7 @@ export function App() {
     forgetSummaries(hostList ? hostList.split('\n') : [])
     forgetChatLists(hostList ? hostList.split('\n') : [])
     forgetKeptAnswers(hostList ? hostList.split('\n') : [])
+    forgetHostCaches(hostList ? hostList.split('\n') : [])
   }, [hostList])
 
   if (!status) return <div className="app" />
@@ -2450,6 +2452,7 @@ function Shell({
               <BesideChatPane
                 key={beside.id}
                 chat={beside}
+                host={status.url ?? ''}
                 sessionAuthority={status.sessionAuthority === true}
                 connected={connected}
                 author={besideBot?.title ?? 'Hermes'}

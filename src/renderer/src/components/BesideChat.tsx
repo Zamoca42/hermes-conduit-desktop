@@ -26,6 +26,7 @@ export const BESIDE_ROWS = 60
  */
 export function BesideChatPane({
   chat,
+  host = '',
   sessionAuthority,
   connected,
   author,
@@ -37,6 +38,8 @@ export function BesideChatPane({
   onOpenInMain
 }: {
   chat: BesideChat
+  /** The dashboard it's on, so it shares the main pane's kept transcripts. */
+  host?: string
   sessionAuthority: boolean
   connected: boolean
   author: string
@@ -50,7 +53,7 @@ export function BesideChatPane({
   /** In a chat window of its own: Open in Main Window, in place of Swap and Close. */
   onOpenInMain?: () => void
 }) {
-  const { transcript, chat: open, loading, error, send } = useChat(chat.id, chat.profile, sessionAuthority, connected)
+  const { transcript, chat: open, loading, error, send } = useChat(chat.id, chat.profile, sessionAuthority, connected, false, undefined, host)
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
   const box = useRef<HTMLTextAreaElement>(null)

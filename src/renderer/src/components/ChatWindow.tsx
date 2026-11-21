@@ -34,6 +34,7 @@ export function ChatWindow({ chat }: { chat: ChatWindowRequest }) {
     <div className="chat-window-page">
       <BesideChatPane
         chat={chat}
+        host={status?.url ?? ''}
         sessionAuthority={status.sessionAuthority === true}
         connected={connected}
         author={chat.author ?? 'Hermes'}
