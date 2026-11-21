@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { t } from '@shared/i18n'
 import { groupModels, reasoningTitle, typedModelId, typedModelProviders, type ModelProviderRow } from '../state/models'
+import { ModelCard, PickRow, ProviderHeader, ReasoningBars, TypedIdRow } from './ModelSheet'
 import { isPinned, pinnedRows, recentRows } from '../state/modelQuickPicks'
 import { chooserLines, chooserListed, chooserPick, chooserValue, providerStartsOpen } from '../state/modelChooser'
 import { useModelQuickPicks } from './ModelOptions'
-import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
 
 interface Props {
@@ -109,38 +109,41 @@ function ModelChooserPage({
   }, [onClose])
 
   const all = useMemo(() => groupModels(providers ?? [], ''), [providers])
-  const groups = useMemo(() => groupModels(providers ?? [], query), [providers, query])
   const quick = useModelQuickPicks()
   const searching = !!query.trim()
   const current = value ? chooserPick(value) : null
+  // Every match names its provider, as on the phone; ↑ ↓ move a highlight and Return picks it.
+  const matches = useMemo(
+    () => (searching ? groupModels(providers ?? [], query).flatMap(group => group.models.map(model => ({ model, provider: group.slug }))) : []),
+    [providers, query, searching]
+  )
+  const [highlight, setHighlight] = useState(0)
+  const highlighted = useRef<HTMLDivElement | null>(null)
+  useEffect(() => setHighlight(0), [query])
+  useEffect(() => highlighted.current?.scrollIntoView({ block: 'nearest' }), [highlight])
   const pinned = searching ? [] : pinnedRows(quick.picks, providers ?? [])
   const recent = searching ? [] : recentRows(quick.picks, providers ?? [], current)
   const typedId = typedModelId(query)
   const typedProviders = typedId && providers ? typedModelProviders(providers, typedId, current?.provider) : []
-  const name = (slug: string) => providers?.find(p => p.slug === slug)?.name || slug
   const lines = chooserLines(value, providers, defaultLabel ?? t('Not set'))
 
-  function row(model: string, provider: string, withProvider: boolean) {
+  function row(model: string, provider: string, withProvider: boolean, index?: number) {
     const v = chooserValue(provider, model)
-    const on = v === value
-    const pin = isPinned(quick.picks, { model, provider })
+    const lit = index !== undefined && index === highlight
     return (
-      <div key={v} className={`model-row-wrap${pin ? ' pinned' : ''}`}>
-        <button className={`model-row${on ? ' on' : ''}`} aria-pressed={on} onClick={() => onPick(v)}>
-          <span className="model-row-name">{model}</span>
-          {withProvider ? <span className="meta model-row-provider">{name(provider)}</span> : null}
-          {on ? <Icon name="check" /> : null}
-        </button>
-        <button
-          className="model-pin"
-          aria-label={pin ? t('Unpin') : t('Pin')}
-          title={pin ? t('Unpin') : t('Pin')}
-          aria-pressed={pin}
-          onClick={() => quick.toggle({ model, provider })}
-        >
-          <Icon name="pin" />
-        </button>
-      </div>
+      <PickRow
+        key={v}
+        model={model}
+        provider={provider}
+        providers={providers}
+        withProvider={withProvider}
+        on={v === value}
+        highlighted={lit}
+        pinned={isPinned(quick.picks, { model, provider })}
+        onPick={() => onPick(v)}
+        onPin={() => quick.toggle({ model, provider })}
+        rowRef={lit ? node => (highlighted.current = node) : undefined}
+      />
     )
   }
 
@@ -154,75 +157,93 @@ function ModelChooserPage({
         if (e.target === e.currentTarget) onClose()
       }}
     >
-      <div className="model-picker model-chooser" role="dialog" aria-label={label}>
-        <div className="model-current">
-          <span className="model-current-name">{lines.title}</span>
-          {lines.detail ? <span className="meta">{lines.detail}</span> : null}
-          {value && !chooserListed(value, all) ? <span className="meta">{t('Saved')}</span> : null}
-          <button className="staged-remove" aria-label={t('Close')} onClick={onClose}>
-            <Icon name="close" />
-          </button>
-        </div>
-        {reasoning ? <ReasoningChoice reasoning={reasoning} /> : null}
-        <input
-          ref={search}
-          className="model-search"
-          type="search"
-          placeholder={t('Search providers or models')}
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          onKeyDown={e => {
-            // Return picks the first match, as on the phone.
-            if (e.key === 'Enter' && groups[0]?.models[0]) {
-              e.preventDefault()
-              onPick(chooserValue(groups[0].slug, groups[0].models[0]))
-            }
-          }}
-        />
+      <div className="model-picker model-sheet model-chooser" role="dialog" aria-label={label}>
+        <ModelCard
+          model={lines.title}
+          provider={current?.model ? current.provider : null}
+          providers={providers}
+          note={value && !chooserListed(value, all) ? t('Saved') : undefined}
+          actions={
+            <button className="staged-remove" aria-label={t('Close')} onClick={onClose}>
+              <Icon name="close" />
+            </button>
+          }
+        >
+          {reasoning ? <ReasoningChoice reasoning={reasoning} /> : null}
+        </ModelCard>
+        <label className="model-search-field">
+          <Icon name="search" />
+          <input
+            ref={search}
+            type="search"
+            placeholder={t('Search providers or models')}
+            aria-label={t('Search providers or models')}
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={e => {
+              if (!matches.length) return
+              if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault()
+                setHighlight(h => Math.min(matches.length - 1, Math.max(0, h + (e.key === 'ArrowDown' ? 1 : -1))))
+              } else if (e.key === 'Enter') {
+                // Return picks the highlighted match, as on the phone.
+                e.preventDefault()
+                const match = matches[Math.min(highlight, matches.length - 1)]
+                if (match) onPick(chooserValue(match.provider, match.model))
+              }
+            }}
+          />
+        </label>
         <div className="model-list">
           {defaultLabel !== null && !searching ? (
-            <section className="model-group">
-              <div className="model-row-wrap">
-                <button className={`model-row${!value ? ' on' : ''}`} aria-pressed={!value} onClick={() => onPick('')}>
-                  <span className="model-row-name">{defaultLabel}</span>
-                  {!value ? <Icon name="check" /> : null}
+            <section className="model-group-card">
+              <div className={`pick-row-wrap${!value ? ' on' : ''}`}>
+                <button className="pick-row" aria-pressed={!value} onClick={() => onPick('')}>
+                  <span className="pick-row-text">
+                    <span className="pick-row-name">{defaultLabel}</span>
+                  </span>
+                  {!value ? <Icon name="check" className="pick-row-check" /> : null}
                 </button>
               </div>
             </section>
           ) : null}
-          {providers && searching && !groups.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
-          {pinned.length || recent.length ? (
-            <section className="model-group model-quick" aria-label={t('Quick picks')}>
-              {pinned.length ? <div className="model-group-name">{t('Pinned')}</div> : null}
-              {pinned.map(p => row(p.model, p.provider, true))}
-              {recent.length ? <div className="model-group-name">{t('Recent')}</div> : null}
-              {recent.map(p => row(p.model, p.provider, true))}
-            </section>
-          ) : null}
-          {groups.map(group => {
-            const opened = toggled[group.slug] ?? providerStartsOpen(group.slug, value, query)
-            return (
-              <section key={group.slug} className="model-group">
-                <button
-                  className="model-group-name model-group-toggle"
-                  aria-expanded={opened}
-                  onClick={() => setToggled(s => ({ ...s, [group.slug]: !opened }))}
-                >
-                  <ProviderLogo slug={group.slug} title={group.name} size={16} />
-                  <span className="model-row-name">{group.name}</span>
-                  <span className="meta">{group.models.length}</span>
-                  <Icon name={opened ? 'chevronDown' : 'chevron'} />
-                </button>
-                {opened ? group.models.map(model => row(model, group.slug, false)) : null}
-              </section>
-            )
-          })}
-          {typedId && typedProviders.length ? (
-            <section className="model-group model-typed" aria-label={t('Use “{id}” as a model ID', { id: typedId })}>
-              <div className="model-group-name">{t('Use “{id}” as a model ID', { id: typedId })}</div>
-              {typedProviders.map(provider => row(typedId, provider.slug, true))}
-            </section>
-          ) : null}
+          {searching ? (
+            <>
+              {providers && !matches.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
+              {matches.length ? <section className="model-group-card">{matches.map((m, i) => row(m.model, m.provider, true, i))}</section> : null}
+              {typedId && typedProviders.length ? (
+                <TypedIdRow id={typedId}>{typedProviders.map(provider => row(typedId, provider.slug, true))}</TypedIdRow>
+              ) : null}
+            </>
+          ) : (
+            <>
+              {pinned.length || recent.length ? (
+                <section className="model-group-card" aria-label={t('Quick picks')}>
+                  {pinned.length ? <div className="model-group-name">{t('Pinned')}</div> : null}
+                  {pinned.map(p => row(p.model, p.provider, true))}
+                  {recent.length ? <div className="model-group-name">{t('Recent')}</div> : null}
+                  {recent.map(p => row(p.model, p.provider, true))}
+                </section>
+              ) : null}
+              {all.map(group => {
+                const opened = toggled[group.slug] ?? providerStartsOpen(group.slug, value, '')
+                return (
+                  <section key={group.slug} className="provider-section">
+                    <ProviderHeader
+                      provider={group.slug}
+                      name={group.name}
+                      row={providers?.find(p => p.slug === group.slug)}
+                      count={group.models.length}
+                      open={opened}
+                      holdsPick={current?.provider === group.slug}
+                      onToggle={() => setToggled(s => ({ ...s, [group.slug]: !opened }))}
+                    />
+                    {opened ? group.models.map(model => row(model, group.slug, false)) : null}
+                  </section>
+                )
+              })}
+            </>
+          )}
         </div>
       </div>
     </div>,
@@ -230,26 +251,16 @@ function ModelChooserPage({
   )
 }
 
-/** The setting's reasoning in the top card: its inherit choice, then its own levels (a saved level it doesn't list stays). */
+/** The setting's reasoning in the top card: the rising bars at its own levels (a saved level it doesn't list stays), its inherit choice under them. */
 function ReasoningChoice({ reasoning }: { reasoning: ChooserReasoning }) {
   const levels = reasoning.value && !reasoning.levels.includes(reasoning.value) ? [...reasoning.levels, reasoning.value] : reasoning.levels
-  const choices = [{ value: '', title: reasoning.inheritLabel }, ...levels.map(level => ({ value: level, title: reasoningTitle(level) }))]
   return (
-    <div className="model-setting">
-      <span className="model-setting-label">{t('Reasoning')}</span>
-      <div className="segmented model-chooser-reasoning" role="radiogroup" aria-label={t('Reasoning')}>
-        {choices.map(choice => (
-          <button
-            key={choice.value || 'inherit'}
-            role="radio"
-            aria-checked={reasoning.value === choice.value}
-            className={reasoning.value === choice.value ? 'on' : undefined}
-            onClick={() => reasoning.onChange(choice.value)}
-          >
-            {choice.title}
-          </button>
-        ))}
-      </div>
-    </div>
+    <>
+      <ReasoningBars levels={levels} value={reasoning.value} unsetTitle={reasoning.inheritLabel} onPick={reasoning.onChange} />
+      <button className={`model-inherit${!reasoning.value ? ' on' : ''}`} aria-pressed={!reasoning.value} onClick={() => reasoning.onChange('')}>
+        <Icon name={!reasoning.value ? 'check' : 'chevron'} />
+        {reasoning.inheritLabel}
+      </button>
+    </>
   )
 }
