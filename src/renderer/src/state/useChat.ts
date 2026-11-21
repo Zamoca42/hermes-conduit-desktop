@@ -112,7 +112,8 @@ async function resumeChat(
       // The chat's events reach it only once the open settles: its turn as
       // it is after the page reads, and its newest rows again if it ended
       // meanwhile, so it doesn't sit there still streaming.
-      result = await gateway.rpc<ResumeResult>('session.resume', compact)
+      // A re-read that fails keeps the open, without the first read's stale reply text.
+      result = await gateway.rpc<ResumeResult>('session.resume', compact).catch(() => ({ ...result, inflight: null }))
       if (!result.running) rows = joinRows(rows, await newestRows(http, stored, profile, 1).catch(() => []))
     }
     return { result, rows }
