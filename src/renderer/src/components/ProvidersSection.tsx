@@ -699,7 +699,7 @@ function KeySection({
           disabled={busy || checking}
         />
         {!onMain ? (
-          <Select segments className="language-select" value={scope} onChange={picked => setScope(picked as 'all' | 'profile')} aria-label={t('Use for')}>
+          <Select segments value={scope} onChange={picked => setScope(picked as 'all' | 'profile')} aria-label={t('Use for')}>
             <option value="all">{t('All profiles')}</option>
             <option value="profile">{t('Only this profile')}</option>
           </Select>

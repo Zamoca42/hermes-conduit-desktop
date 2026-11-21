@@ -187,7 +187,6 @@ export function BotWorkSettings({ bot, botName, providers }: Props) {
           <div className="pset-row">
             <span>{t('Between Workstreams')}</span>
             <Select segments
-              className="language-select"
               value={settings.coordination}
               disabled={saving}
               onChange={picked => void save({ coordination: picked }, { coordination: picked as WorkSettings['coordination'] })}
@@ -230,7 +229,6 @@ export function BotWorkSettings({ bot, botName, providers }: Props) {
           <div className="pset-row">
             <span>{t('After a Restart')}</span>
             <Select segments
-              className="language-select"
               value={settings.afterRestart}
               disabled={saving}
               onChange={picked => void save({ after_restart: picked }, { afterRestart: picked as WorkSettings['afterRestart'] })}
@@ -243,7 +241,6 @@ export function BotWorkSettings({ bot, botName, providers }: Props) {
           <div className="pset-row">
             <span>{t('Approvals in Workstreams')}</span>
             <Select segments
-              className="language-select"
               value={settings.approvals}
               disabled={saving}
               onChange={picked => void save({ workstream_approvals: picked }, { approvals: picked as WorkSettings['approvals'] })}

@@ -344,7 +344,6 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
             <div className="pset-row">
               <span>{t('Profiles')}</span>
               <Select segments
-                className="language-select"
                 value={state.reportProfiles}
                 disabled={saving}
                 onChange={picked => void change({ report_profiles: picked })}

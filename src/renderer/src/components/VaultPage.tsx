@@ -332,7 +332,7 @@ function AddForm({
       {draft.kind === 'login' ? (
         <>
           <span className="meta">{t('Signs in with')}</span>
-          <Select segments className="language-select" value={draft.identifierType} aria-label={t('Signs in with')} onChange={picked => setDraft(d => ({ ...d, identifierType: picked as VaultDraft['identifierType'] }))}>
+          <Select segments value={draft.identifierType} aria-label={t('Signs in with')} onChange={picked => setDraft(d => ({ ...d, identifierType: picked as VaultDraft['identifierType'] }))}>
             <option value="email">{t('Email')}</option>
             <option value="phone">{t('Phone')}</option>
             <option value="username">{t('Username')}</option>

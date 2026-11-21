@@ -189,7 +189,6 @@ export function PredictiveSettings() {
       <div className="pset-row">
         <span>{t('Predictions use')}</span>
         <Select segments
-          className="language-select"
           value={model}
           disabled={!on && !pause && !followUp}
           aria-label={t('Predictions use')}

@@ -296,7 +296,6 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
             </Select>
           </div>
           <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
-          <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
           <label className="toggle">
             <input
               type="checkbox"

@@ -17,7 +17,7 @@ describe('the app dropdown', () => {
     ])
   })
 
-  it('shows the matching row, else the first, and steps over disabled rows', async () => {
+  it('shows the matching row, else blank, and steps over disabled rows', async () => {
     const { selectOptions, shownOption, stepOption } = await import(path)
     const rows = selectOptions([option('a', 'A'), option('b', 'B', true), option('c', 'C')])
     expect(shownOption(rows, 'c').label).toBe('C')
