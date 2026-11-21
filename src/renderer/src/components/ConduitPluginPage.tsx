@@ -7,8 +7,11 @@ import {
   HOST_FOLLOW_LIMIT_MS,
   REPOSITORY,
   SELF_UPDATE_PATH,
+  STALLED_DETAIL,
   STATUS_PATH,
+  outcomeAfterStall,
   selfUpdatePath,
+  stallLimitMs,
   STEP_COUNT,
   canUpdateHere,
   jobState,
@@ -57,55 +60,90 @@ async function readStatus(): Promise<PluginStatus> {
 }
 
 const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+/** How often the update's watchdog looks at it. */
+const STALL_CHECK_MS = 15_000
 
-/** Hands the update to the host and follows its job, as the phone's runOnHost does. */
-async function runUpdate(onDone: () => void, acceptScan = false) {
+/**
+ * Hands the update to the host and follows its job, as the phone's runOnHost does. A run whose steps go
+ * quiet past their limit (`stallLimitMs`) stops there and asks the host where the update stands, so the
+ * row can't sit on a step for good (Eric, 2026-11-21: "Downloading the plugin…" with nothing on the host).
+ */
+async function runUpdate(onDone: () => void, acceptScan = false, latest: string | null = null) {
   if (running) return
   running = true
   startedAt = Date.now()
+  const runStarted = startedAt
   updateHost = dashboardHost()
-  setUpdate({ phase: 'updating', step: 'downloading' })
+  let live = true
+  let heardAt = Date.now()
+  const set = (next: UpdateState) => {
+    heardAt = Date.now()
+    if (live) setUpdate(next)
+  }
+  set({ phase: 'updating', step: 'downloading' })
+  let watchdog: ReturnType<typeof setInterval> | undefined
+  const stalled = new Promise<void>(resolve => {
+    watchdog = setInterval(() => {
+      const limit = stallLimitMs(update)
+      if (limit === null || Date.now() - heardAt > limit) resolve()
+    }, STALL_CHECK_MS)
+  })
   try {
-    let job: Record<string, unknown> | null = null
-    try {
-      const started = (await gateway.http('POST', selfUpdatePath(acceptScan))) as { job?: Record<string, unknown> }
-      job = started?.job ?? null
-    } catch (e) {
-      // No answer may still have started it: follow one that runs.
-      const code = httpCode(e)
-      if (code !== undefined && code !== 0) return setUpdate({ phase: 'failed', detail: message(e) })
-      const probe = (await gateway.http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: Record<string, unknown> } | null
-      job = probe?.job ?? null
-    }
-    const id = job?.id
-    if (!job || typeof id !== 'string') return setUpdate({ phase: 'failed', detail: null })
-    for (;;) {
-      const state = jobState(job)
-      if (state && state.phase !== 'updating') return setUpdate(state)
-      if (state) setUpdate(state)
-      if (Date.now() - startedAt > HOST_FOLLOW_LIMIT_MS) return setUpdate({ phase: 'runningOnHost' })
-      await pause(2000)
-      // Reads fail while the dashboard restarts; the next poll asks again.
-      let latest: { job?: Record<string, unknown> } | null
-      try {
-        latest = (await gateway.http('GET', SELF_UPDATE_PATH)) as { job?: Record<string, unknown> }
-      } catch {
-        continue
-      }
-      if (!latest?.job || latest.job.id !== id) {
-        // The restarted dashboard lost the job: its report says where it stands.
-        const status = await readStatus()
-        return setUpdate(
-          status.state === 'reported' && !status.restartNeeded
-            ? { phase: 'updated', version: status.loadedVersion ?? status.version }
-            : { phase: 'needsDashboardRestart', detail: null }
-        )
-      }
-      job = latest.job
+    await Promise.race([follow(set, acceptScan), stalled])
+    if (live && update.phase === 'updating') {
+      // Quiet past its limit: whatever it waited on can't land on the row any more.
+      live = false
+      const job = ((await gateway.http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: unknown } | null)?.job
+      const outcome = outcomeAfterStall(job, await readStatus(), latest, runStarted)
+      setUpdate(outcome.phase === 'failed' && outcome.detail === STALLED_DETAIL ? { phase: 'failed', detail: t("The update didn't get going on the host, so Conduit stopped waiting for it. Try again.") } : outcome)
     }
   } finally {
+    live = false
+    clearInterval(watchdog)
     running = false
     onDone()
+  }
+}
+
+/** Starts the host's job and follows it, reporting each step through `set`. */
+async function follow(set: (next: UpdateState) => void, acceptScan: boolean) {
+  let job: Record<string, unknown> | null = null
+  try {
+    const started = (await gateway.http('POST', selfUpdatePath(acceptScan))) as { job?: Record<string, unknown> }
+    job = started?.job ?? null
+  } catch (e) {
+    // No answer may still have started it: follow one that runs.
+    const code = httpCode(e)
+    if (code !== undefined && code !== 0) return set({ phase: 'failed', detail: message(e) })
+    const probe = (await gateway.http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: Record<string, unknown> } | null
+    job = probe?.job ?? null
+  }
+  const id = job?.id
+  if (!job || typeof id !== 'string') return set({ phase: 'failed', detail: null })
+  for (;;) {
+    const state = jobState(job)
+    if (state && state.phase !== 'updating') return set(state)
+    // Each read counts as word from the host, even when the step is the same.
+    set(state ?? update)
+    if (Date.now() - startedAt > HOST_FOLLOW_LIMIT_MS) return set({ phase: 'runningOnHost' })
+    await pause(2000)
+    // Reads fail while the dashboard restarts; the next poll asks again.
+    let latest: { job?: Record<string, unknown> } | null
+    try {
+      latest = (await gateway.http('GET', SELF_UPDATE_PATH)) as { job?: Record<string, unknown> }
+    } catch {
+      continue
+    }
+    if (!latest?.job || latest.job.id !== id) {
+      // The restarted dashboard lost the job: its report says where it stands.
+      const status = await readStatus()
+      return set(
+        status.state === 'reported' && !status.restartNeeded
+          ? { phase: 'updated', version: status.loadedVersion ?? status.version }
+          : { phase: 'needsDashboardRestart', detail: null }
+      )
+    }
+    job = latest.job
   }
 }
 
@@ -326,7 +364,7 @@ export function ConduitPluginPage({ onBack }: { onBack: () => void }) {
                     className="primary"
                     onClick={() => {
                       setConfirming(false)
-                      void runUpdate(() => void refresh())
+                      void runUpdate(() => void refresh(), false, latest)
                     }}
                   >
                     {managed || (restart && !available) ? t('Restart Hermes') : t('Update and Restart Hermes')}
@@ -344,7 +382,7 @@ export function ConduitPluginPage({ onBack }: { onBack: () => void }) {
         <UpdateRow
           state={current}
           onDismiss={() => setUpdate({ phase: 'idle' })}
-          onAcceptScan={canUpdate ? () => void runUpdate(() => void refresh(), true) : null}
+          onAcceptScan={canUpdate ? () => void runUpdate(() => void refresh(), true, latest) : null}
         />
       </section>
 

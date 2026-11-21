@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isOlder, jobState, parseChangelog, selfUpdatePath, pluginStatus, releaseNotes, runningVersion, serves, updateAvailable } from '../src/renderer/src/state/plugin'
+import { STALLED_DETAIL, isOlder, jobState, outcomeAfterStall, parseChangelog, selfUpdatePath, pluginStatus, releaseNotes, runningVersion, serves, stallLimitMs, updateAvailable } from '../src/renderer/src/state/plugin'
 import { versionFromManifest } from '../src/main/pluginRelease'
 
 const CHANGELOG = `# Conduit plugin changelog
@@ -120,5 +120,35 @@ describe('host update job', () => {
     expect(jobState({ step: 'failed', detail: '' })).toEqual({ phase: 'failed', detail: null })
     expect(jobState({ step: 'something_new' })).toEqual({ phase: 'updating', step: 'downloading' })
     expect(jobState(null)).toBeNull()
+  })
+})
+
+describe('an update that goes quiet', () => {
+  it('stops waiting on a download after six quiet minutes, longer on the restarts', () => {
+    expect(stallLimitMs({ phase: 'updating', step: 'downloading' })).toBe(360_000)
+    expect(stallLimitMs({ phase: 'updating', step: 'restartingDashboard' })).toBe(1_800_000)
+    expect(stallLimitMs({ phase: 'failed', detail: null })).toBeNull()
+  })
+
+  it('says where the host stands', () => {
+    const runStarted = 1_000_000_000
+    const old = pluginStatus({ version: '0.10.0', loaded_version: '0.10.0', restart_needed: false, capabilities: [] })
+    const current = pluginStatus({ version: '0.192.0', loaded_version: '0.192.0', restart_needed: false, capabilities: [] })
+    // Nothing on the host and the old plugin still runs: it never got going.
+    expect(outcomeAfterStall(null, old, '0.192.0', runStarted)).toEqual({ phase: 'failed', detail: STALLED_DETAIL })
+    // An earlier update's finished job isn't this one's.
+    expect(outcomeAfterStall({ id: 'old', step: 'done', loaded_version: '0.10.0', started_at: 900_000 }, old, '0.192.0', runStarted)).toEqual({
+      phase: 'failed',
+      detail: STALLED_DETAIL
+    })
+    // Still running on the host: left to it.
+    expect(outcomeAfterStall({ id: 'j', step: 'downloading', started_at: 1_000_010 }, old, '0.192.0', runStarted)).toEqual({ phase: 'runningOnHost' })
+    // One this run started that ended says how.
+    expect(outcomeAfterStall({ id: 'j', step: 'failed', detail: 'no route', started_at: 1_000_010 }, old, '0.192.0', runStarted)).toEqual({
+      phase: 'failed',
+      detail: 'no route'
+    })
+    // The offered version runs: updated.
+    expect(outcomeAfterStall(null, current, '0.192.0', runStarted)).toEqual({ phase: 'updated', version: '0.192.0' })
   })
 })

@@ -214,6 +214,34 @@ export function jobState(job: unknown): UpdateState | null {
   }
 }
 
+/**
+ * How long an update may go without word from its steps before the page stops waiting on it, as the
+ * phone's watchdog does (NotifierPluginUpdater.stallLimit). Every request has its own timeout and a
+ * followed job is read every two seconds, so a quiet download past six minutes is stuck for good.
+ */
+export function stallLimitMs(state: UpdateState): number | null {
+  if (state.phase !== 'updating') return null
+  return state.step === 'downloading' ? 360_000 : 1_800_000
+}
+
+export const STALLED_DETAIL = "The update didn't get going on the host, so Conduit stopped waiting for it. Try again."
+
+/**
+ * How an update that went quiet ended: a job still running is left to the host, one this run started
+ * (after `runStartedMs`) says how it ended, a plugin that runs the offered version is updated, and
+ * anything else never got going (`STALLED_DETAIL`, shown translated).
+ */
+export function outcomeAfterStall(job: unknown, status: PluginStatus, latest: string | null, runStartedMs: number): UpdateState {
+  const state = jobState(job)
+  if (state?.phase === 'updating') return { phase: 'runningOnHost' }
+  const started = job && typeof job === 'object' ? (job as Record<string, unknown>).started_at : undefined
+  // An earlier update's job (yesterday's "done") says nothing about this one.
+  if (state && typeof started === 'number' && started * 1000 >= runStartedMs - 5000) return state
+  if (status.state === 'reported' && !status.restartNeeded && latest && !updateAvailable(status, latest))
+    return { phase: 'updated', version: runningVersion(status) }
+  return { phase: 'failed', detail: STALLED_DETAIL }
+}
+
 /** The features Conduit uses from the plugin, by capability id, as Settings lists them on the phone. */
 export const FEATURES: { id: string; capabilities: string[] }[] = [
   { id: 'chatTakeover', capabilities: ['session-takeover', 'desktop-views'] },

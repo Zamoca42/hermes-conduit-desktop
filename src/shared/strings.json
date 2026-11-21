@@ -43498,5 +43498,20 @@
     "tr": "Sütunlar",
     "zh-Hans": "泳道",
     "zh-Hant": "泳道"
+  },
+  "The update didn't get going on the host, so Conduit stopped waiting for it. Try again.": {
+    "de": "Das Update ist auf dem Host nicht in Gang gekommen, daher wartet Conduit nicht mehr darauf. Versuche es noch einmal.",
+    "es": "La actualización no llegó a empezar en el host, así que Conduit dejó de esperarla. Inténtalo de nuevo.",
+    "fr": "La mise à jour n’a pas démarré sur l’hôte, Conduit a donc cessé de l’attendre. Réessayez.",
+    "id": "Pembaruan tidak berjalan di host, jadi Conduit berhenti menunggunya. Coba lagi.",
+    "it": "L’aggiornamento non è partito sull’host, quindi Conduit ha smesso di aspettarlo. Riprova.",
+    "ja": "ホストで更新が始まらなかったため、Conduit は待つのをやめました。もう一度お試しください。",
+    "ko": "호스트에서 업데이트가 시작되지 않아 Conduit가 기다리기를 멈췄어요. 다시 시도하세요.",
+    "pl": "Aktualizacja nie ruszyła na hoście, więc Conduit przestał na nią czekać. Spróbuj ponownie.",
+    "pt-BR": "A atualização não começou no host, então o Conduit parou de esperar por ela. Tente de novo.",
+    "ru": "Обновление так и не началось на хосте, поэтому Conduit перестал его ждать. Попробуйте ещё раз.",
+    "tr": "Güncelleme ana makinede başlamadı, bu yüzden Conduit beklemeyi bıraktı. Tekrar dene.",
+    "zh-Hans": "更新没有在主机上开始，所以 Conduit 不再等待。请重试。",
+    "zh-Hant": "更新沒有在主機上開始，所以 Conduit 不再等待。請重試。"
   }
 }
