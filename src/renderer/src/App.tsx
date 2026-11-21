@@ -805,9 +805,15 @@ function Shell({
   // Wherever the bots list shows: beside a bot's chat, a group chat, or New Bot and Edit Bot.
   const botsListShown = section === 'bots' || section === 'room' || (section === 'chats' && botsSideShown)
   const work = useWork(selected.profile, connected, section === 'chats' && (workOpen || botsSideShown || !!openBotChat || workSessions.has(selected.id ?? '')))
-  const workItem: WorkItem | undefined = selected.id
-    ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id)
-    : undefined
+  // A resolved workstream is on the bot's Resolved page, so its chat keeps its title line, as the phone's does.
+  const openWorkItem = selected.id ? work.snapshot?.items.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined
+  const workItem: WorkItem | undefined =
+    openWorkItem ?? (selected.id ? work.resolved?.find(item => item.kind === 'workstream' && item.sessionId === selected.id) : undefined)
+  const readResolvedForChat = work.readResolved
+  const resolvedChatOpen = !!selected.id && !!work.snapshot && !openWorkItem && workSessions.has(selected.id)
+  useEffect(() => {
+    if (resolvedChatOpen) readResolvedForChat()
+  }, [resolvedChatOpen, readResolvedForChat])
   // A workstream's checklist is its chat's plan, ahead of Hermes' own todo list there.
   const workChecklist = workItem?.checklist
   const shownPlan = useMemo(() => (workChecklist?.length ? planFromChecklist(workChecklist) : transcript.plan), [workChecklist, transcript.plan])
