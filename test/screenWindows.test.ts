@@ -104,6 +104,21 @@ describe("bots' screens in windows of their own", () => {
     expect(released).toHaveLength(1)
   })
 
+  it('another dashboard stops a hand back still being tried, and a later one never revives it', () => {
+    const { set, made, owed } = harness()
+    set.show({ profile: 'mira', botName: 'Mira' })
+    set.note('mira', 'v1', true)
+    made[0]!.close()
+    set.close(true)
+    expect(owed[0]!()).toBe(false)
+    set.show({ profile: 'mira', botName: 'Mira' })
+    expect(made[1]!.screen.viewerId).toBeUndefined()
+    set.note('mira', 'v2', true)
+    made[1]!.close()
+    expect(owed[1]!()).toBe(true)
+    expect(owed[0]!()).toBe(false)
+  })
+
   it('another dashboard closes every window and forgets its viewers', () => {
     const { set, made, released } = harness()
     set.show({ profile: 'mira', botName: 'Mira' })

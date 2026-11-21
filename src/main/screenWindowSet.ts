@@ -23,6 +23,8 @@ export class ScreenWindowSet<W extends ScreenWindowHandle = ScreenWindowHandle> 
   private readonly holding = new Set<string>()
   /** Each bot's hand back count: reopening its window or taking over again cancels one still being tried. */
   private readonly handBacks = new Map<string, number>()
+  /** Never reset, so a retry from before a dashboard switch can't match a newer hand back's count. */
+  private handBackCount = 0
   /** Bots whose hand back is still being tried. */
   private readonly pending = new Set<string>()
 
@@ -95,7 +97,7 @@ export class ScreenWindowSet<W extends ScreenWindowHandle = ScreenWindowHandle> 
   }
 
   private cancelHandBack(profile: string): number {
-    const next = (this.handBacks.get(profile) ?? 0) + 1
+    const next = ++this.handBackCount
     this.handBacks.set(profile, next)
     return next
   }
