@@ -141,6 +141,7 @@ import {
   takeOpenAfterSwitch,
   takePageAfterSwitch,
   useKeptBots,
+  useKeptWork,
   useKeptRooms,
   combinedRooms,
   type OtherRoom,
@@ -1376,6 +1377,8 @@ function Shell({
   const otherChats = useMemo(() => otherHostsChats(keptChats, list.rows ?? null), [keptChats, list.rows])
   // ...and their bots, on Bots Home.
   const otherBots = useKeptBots(keptHosts, botsListShown)
+  // ...with their pills, from their work read there (Eric, 2026-11-21: another host's "needs you" didn't show).
+  const otherWork = useKeptWork(otherBots, botsListShown)
   // ...mixed with this host's in one order the person arranges, kept on this computer.
   const combinedCount = savedHosts ? savedHosts.filter(h => h.combined).length : null
   const mixedBotOrder = useMixedBotOrder(combinedCount === null ? null : combinedCount > 1)
@@ -1851,6 +1854,7 @@ function Shell({
     onOpenDraft: draft => setOpenDraft(draft.id),
     roomLooks: roomLooks.looks,
     otherBots: otherBots,
+    otherWork: otherWork,
     badgeFor: badgeFor,
     onOpenOther: openOtherBot,
     hostUrl: statusUrl,
