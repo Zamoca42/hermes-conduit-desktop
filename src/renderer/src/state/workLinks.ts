@@ -52,7 +52,7 @@ const DESKTOP_REF = new RegExp(
 )
 
 /** An inline code span, closed by a run of as many backticks as opened it (so ``a ` b`` is one span) within its paragraph. */
-const INLINE_CODE = /(?<!`)(`+)(?!`)(?:(?!\n[ \t]*\n)[\s\S])*?(?<!`)\1(?!`)/g
+const INLINE_CODE = /(?<!`)(`+)(?!`)(?:(?!\r?\n[ \t]*\r?\n)[\s\S])*?(?<!`)\1(?!`)/g
 
 /** A line that opens a fence: three or more backticks or tildes (the phone's MarkdownFence). */
 function fenceOpening(trimmed: string): { mark: string; length: number } | null {
@@ -109,7 +109,8 @@ export function splitWorkLinks(original: string): { text: string; links: WorkLin
   const originalCode = codeRanges(original)
   const text = original.includes('@session:')
     ? original.replace(DESKTOP_REF, (whole: string, link: string, _id: string, offset: number) =>
-        inCode(originalCode, offset) ? whole : link
+        // Kept when the link starts in code or the reference after it is quoted (a code span in the title doesn't count).
+        inCode(originalCode, offset) || originalCode.some(([a, b]) => a < offset + whole.length && b > offset + link.length) ? whole : link
       )
     : original
   const code = codeRanges(text)

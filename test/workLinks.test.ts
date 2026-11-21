@@ -53,6 +53,14 @@ describe('work links', () => {
     expect(splitWorkLinks('Done: [W7: fix the `nil` crash](conduit://session/w7).')?.links.map(l => l.ref)).toEqual(['W7'])
   })
 
+  it('keeps a quoted reference after a link in prose, and a CRLF blank line ends a span', () => {
+    const quoted = splitWorkLinks('[Open W3](conduit://session/c) `@session:p/c` more')
+    expect(quoted?.text).toBe('`@session:p/c` more')
+    expect(quoted?.links.map(l => l.ref)).toEqual(['W3'])
+    expect(splitWorkLinks('Done: [W7: fix the `nil` crash](conduit://session/w7) @session:p/w7.')?.text).toBe('Done:.')
+    expect(splitWorkLinks('`note\r\n\r\n[Open W3](conduit://session/c)`')?.links.map(l => l.ref)).toEqual(['W3'])
+  })
+
   it('reads the id and profile of a chat link', () => {
     expect(sessionInLink(W19)).toEqual({ sessionId: '20261120_165155_a24bea', profile: 'zhongli' })
     expect(sessionInLink('conduit://session/abc')).toEqual({ sessionId: 'abc', profile: undefined })
