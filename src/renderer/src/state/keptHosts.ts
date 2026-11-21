@@ -15,6 +15,8 @@ import { keptRosters, rosterFromProfiles, type Bot } from './bots'
 import { PULSE, parseFeed } from './pulse'
 import { listPath, parsePage, type ArtifactFilter, type ArtifactItem } from './artifacts'
 import { roomsFromList, type Room } from './groups'
+import { arrange, hostOrder, loadOrder, ROOMS_SYNC_KEY, saveOrder } from './botOrder'
+import { PREFS_PATH } from './pinnedOrder'
 import { COPIES_PATH, parseCopies, type RoomCopy } from './roomCopies'
 import { keptCopies } from './useRoomCopies'
 import { keptOwnRooms } from './useGroups'
@@ -394,11 +396,15 @@ export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string
       if (document.hidden) return
       await Promise.all(
         urls.map(async url => {
-          const [listed, copied] = await Promise.all([
+          const [listed, copied, prefs] = await Promise.all([
             window.conduit.keptRpc(url, 'groups.list', { include_disbanded: false }),
-            window.conduit.keptHttp(url, COPIES_PATH)
+            window.conduit.keptHttp(url, COPIES_PATH),
+            window.conduit.keptHttp(url, PREFS_PATH)
           ])
           if (stopped) return
+          // Its synced room order, so its rows show here as its own window will draw them (combinedRooms reads it).
+          const order = prefs.ok ? hostOrder(prefs.result, ROOMS_SYNC_KEY, 'rooms') : null
+          if (order) saveOrder(url, order, 'rooms')
           const last = keptRoomsByHost.get(url)
           const rooms = listed.ok ? roomsFromList(listed.result).filter(r => !r.disbanded) : (last?.rooms ?? [])
           const copies = (copied.ok ? parseCopies(copied.result) : null) ?? last?.copies ?? []
@@ -435,8 +441,11 @@ const sameMembers = (a: readonly string[], b: readonly string[]) => !a.length ||
  * two addresses), else the first in Saved Dashboards order with a copy.
  * `copies`: this host's copies left to show (one an agent of yours waits in
  * for your approval, `waiting`, always stays, since only its row answers
- * it); `others`: the other hosts' group chats, in Saved Dashboards order,
- * each one's newest first.
+ * it); `before` and `after`: the other hosts' group chats that Saved
+ * Dashboards puts before this host and after it, each host's as it shows
+ * them when it's on screen (its copies, then its rooms in its own order,
+ * `roomOrder`), so opening one, which switches there, moves nothing (Eric,
+ * 2026-11-21: the group chats' order shifted on a tap).
  */
 export function combinedRooms(
   here: string,
@@ -444,9 +453,10 @@ export function combinedRooms(
   hereRooms: readonly Room[],
   hereCopies: readonly RoomCopy[],
   kept: ReadonlyMap<string, HostRooms>,
-  waiting: ReadonlySet<string> = new Set()
-): { copies: RoomCopy[]; others: OtherRoom[] } {
-  if (!kept.size) return { copies: [...hereCopies], others: [] }
+  waiting: ReadonlySet<string> = new Set(),
+  roomOrder: (host: string) => readonly string[] = host => loadOrder(host, 'rooms')
+): { copies: RoomCopy[]; before: OtherRoom[]; after: OtherRoom[] } {
+  if (!kept.size) return { copies: [...hereCopies], before: [], after: [] }
   const lists = order.flatMap(url =>
     url === here ? [{ url, rooms: hereRooms, copies: hereCopies }] : kept.has(url) ? [{ url, ...kept.get(url)! }] : []
   )
@@ -458,20 +468,29 @@ export function combinedRooms(
     return lists.find(l => l.copies.some(c => c.roomId === roomId && sameMembers(memberIds(c.members), members)))?.url ?? null
   }
   const copies = hereCopies.filter(c => waiting.has(c.id) || (home(c.roomId, memberIds(c.members)) ?? here) === here)
-  const others: OtherRoom[] = []
+  const before: OtherRoom[] = []
+  const after: OtherRoom[] = []
+  // This host, saved or not, sits where Saved Dashboards puts it; unsaved, first.
+  let passed = !lists.some(l => l.url === here)
   for (const list of lists) {
-    if (list.url === here) continue
-    const own: (OtherRoom & { at: number })[] = [
-      ...list.rooms
-        .filter(r => home(r.roomId, memberIds(r.members)) === list.url)
-        .map(room => ({ host: list.url, kind: 'room' as const, room, at: room.updatedAt ?? 0 })),
+    if (list.url === here) {
+      passed = true
+      continue
+    }
+    const rooms = arrange(
+      list.rooms.filter(r => home(r.roomId, memberIds(r.members)) === list.url),
+      roomOrder(list.url),
+      r => r.roomId,
+      'rooms'
+    )
+    ;(passed ? after : before).push(
       ...list.copies
         .filter(c => home(c.roomId, memberIds(c.members)) === list.url)
-        .map(copy => ({ host: list.url, kind: 'copy' as const, copy, at: copy.updatedAt }))
-    ]
-    others.push(...own.sort((a, b) => b.at - a.at).map(({ at: _at, ...row }) => row as OtherRoom))
+        .map(copy => ({ host: list.url, kind: 'copy' as const, copy })),
+      ...rooms.map(room => ({ host: list.url, kind: 'room' as const, room }))
+    )
   }
-  return { copies, others }
+  return { copies, before, after }
 }
 
 /** How long a group chat opened on another host waits for the new host to list it. */
