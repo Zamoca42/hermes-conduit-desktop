@@ -101,7 +101,11 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
     let outcome = await setModel(model, provider)
     // A model Hermes guards (an expensive one, say) asks on the click; Cancel leaves the chat where it was.
     if (outcome.kind === 'confirm') {
-      outcome = (await ask(outcome.message)) ? await setModel(model, provider, true) : { kind: 'switched', deferred: false }
+      if (!(await ask(outcome.message))) {
+        setBusy(null)
+        return
+      }
+      outcome = await setModel(model, provider, true)
     }
     // A switch leads the recent models, with the one left a click away.
     if (outcome.kind === 'switched') quick.switched({ model, provider }, inUse)
@@ -161,7 +165,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
         </>
       }
     >
-      <ReasoningBars levels={REASONING_LEVELS} value={reasoning} disabled={!!busy} onPick={level => void apply('reasoning', () => setReasoning(level))} />
+      <ReasoningBars levels={REASONING_LEVELS} value={reasoning} unsetTitle={t('Default')} disabled={!!busy} onPick={level => void apply('reasoning', () => setReasoning(level))} />
     </ModelCard>
   )
 
@@ -192,7 +196,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
   )
 
   return (
-    <div className="model-picker model-sheet" role="dialog" aria-label={t('Model')} ref={panel}>
+    <div className={`model-picker model-sheet${allProviders || searching ? ' tall' : ''}`} role="dialog" aria-label={t('Model')} ref={panel}>
       {allProviders ? (
         <>
           <div className="model-sheet-bar">
@@ -240,7 +244,7 @@ export function ModelPicker({ chat, profile, onClose, setModel, setReasoning, se
                 {matches.length ? <section className="model-group-card">{matches.map((m, i) => row(m.model, m.provider, true, i))}</section> : null}
                 <ModelCatalogNote catalog={catalog} />
                 {typedId && typedProviders.length ? (
-                  <TypedIdRow id={typedId}>{typedProviders.map(provider => row(typedId, provider.slug, true))}</TypedIdRow>
+                  <TypedIdRow key={typedId} id={typedId}>{typedProviders.map(provider => row(typedId, provider.slug, true))}</TypedIdRow>
                 ) : null}
               </>
             ) : (

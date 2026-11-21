@@ -62,6 +62,7 @@ export function ModelChooser({ value, onChange, providers, defaultLabel, emptyLa
           value={value}
           providers={providers}
           defaultLabel={defaultLabel}
+          emptyLabel={emptyLabel}
           label={label}
           reasoning={reasoning}
           onClose={() => setOpen(false)}
@@ -80,6 +81,7 @@ function ModelChooserPage({
   value,
   providers,
   defaultLabel,
+  emptyLabel,
   label,
   reasoning,
   onClose,
@@ -88,6 +90,7 @@ function ModelChooserPage({
   value: string
   providers: ModelProviderRow[] | null
   defaultLabel: string | null
+  emptyLabel?: string
   label: string
   reasoning?: ChooserReasoning
   onClose: () => void
@@ -131,7 +134,9 @@ function ModelChooserPage({
   const recent = searching ? [] : recentRows(quick.picks, providers ?? [], current)
   const typedId = typedModelId(query)
   const typedProviders = typedId && providers ? typedModelProviders(providers, typedId, current?.provider) : []
-  const lines = chooserLines(value, providers, defaultLabel ?? t('Not set'))
+  const lines = chooserLines(value, providers, defaultLabel ?? emptyLabel ?? t('Not set'))
+  // A setting whose no-pick reads as Default (a bot's model) offers it once a model is picked, so it can go back.
+  const resetLabel = defaultLabel ?? (value && emptyLabel ? emptyLabel : null)
 
   function row(model: string, provider: string, withProvider: boolean, index?: number) {
     const v = chooserValue(provider, model)
@@ -201,12 +206,12 @@ function ModelChooserPage({
           />
         </label>
         <div className="model-list">
-          {defaultLabel !== null && !searching ? (
+          {resetLabel !== null && !searching ? (
             <section className="model-group-card">
               <div className={`pick-row-wrap${!value ? ' on' : ''}`}>
                 <button className="pick-row" aria-pressed={!value} onClick={() => onPick('')}>
                   <span className="pick-row-text">
-                    <span className="pick-row-name">{defaultLabel}</span>
+                    <span className="pick-row-name">{resetLabel}</span>
                   </span>
                   {!value ? <Icon name="check" className="pick-row-check" /> : null}
                 </button>
@@ -218,7 +223,7 @@ function ModelChooserPage({
               {providers && !matches.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
               {matches.length ? <section className="model-group-card">{matches.map((m, i) => row(m.model, m.provider, true, i))}</section> : null}
               {typedId && typedProviders.length ? (
-                <TypedIdRow id={typedId}>{typedProviders.map(provider => row(typedId, provider.slug, true))}</TypedIdRow>
+                <TypedIdRow key={typedId} id={typedId}>{typedProviders.map(provider => row(typedId, provider.slug, true))}</TypedIdRow>
               ) : null}
             </>
           ) : (

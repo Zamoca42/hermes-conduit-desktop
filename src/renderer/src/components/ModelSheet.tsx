@@ -101,7 +101,7 @@ export function ReasoningBars({
         aria-label={t('Reasoning')}
         aria-valuemin={0}
         aria-valuemax={levels.length - 1}
-        aria-valuenow={Math.max(0, index)}
+        aria-valuenow={index >= 0 ? index : undefined}
         aria-valuetext={title}
         aria-disabled={disabled || undefined}
         onPointerDown={e => {
@@ -124,7 +124,13 @@ export function ReasoningBars({
           const moves: Record<string, number> = { ArrowLeft: index - 1, ArrowDown: index - 1, ArrowRight: index + 1, ArrowUp: index + 1, Home: 0, End: levels.length - 1 }
           if (!(e.key in moves)) return
           e.preventDefault()
-          step(index < 0 && (e.key === 'ArrowRight' || e.key === 'ArrowUp') ? 0 : moves[e.key]!)
+          // From no level, only a step up picks one (the first); the rest leave it unset.
+          if (index < 0) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') step(0)
+            else if (e.key === 'End') step(levels.length - 1)
+            return
+          }
+          step(moves[e.key]!)
         }}
       >
         {levels.map((level, i) => (

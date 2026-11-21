@@ -2897,8 +2897,8 @@ html[data-window='quick'] body {
   bottom: 108px;
   transform: translateX(-50%);
   width: min(460px, calc(100% - 32px));
-  /* A set height, so the card stays put as a search fills the list, and the top stays clear of the chat's header. */
-  height: min(600px, calc(100% - 190px));
+  /* As tall as its rows, never into the chat's header; searching and All providers take the full height, so the card stays put as a search fills the list. */
+  max-height: min(600px, calc(100% - 190px));
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -9388,6 +9388,10 @@ button.secondary.danger {
 }
 
 .pick-row-provider .provider-logo.initial {
+  /* A letter stands in for a logo, so it needs the room to be read. */
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 10.5px !important;
   background: var(--line-strong);
   color: var(--text);
 }
@@ -10706,40 +10710,15 @@ button.secondary.danger {
   color: var(--text-3);
 }
 
+.model-picker.tall {
+  height: min(600px, calc(100% - 190px));
+}
+
 .model-picker.model-chooser {
   position: static;
   transform: none;
   width: min(480px, 100%);
   height: min(700px, 100%);
-}
-
-.model-group-toggle {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border: 0;
-  border-radius: 8px;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-}
-
-.model-group-toggle:hover {
-  background: var(--surface-hover);
-}
-
-.model-group-toggle svg {
-  width: 12px;
-  height: 12px;
-}
-
-.model-chooser-reasoning {
-  flex-wrap: wrap;
-}
-
-.model-chooser .model-current .staged-remove {
-  margin-left: auto;
 }
 
 /* Settings > Appearance > App icon: the phone's two tiles, the picked one tinted with the accent. */
