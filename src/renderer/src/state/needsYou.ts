@@ -42,9 +42,8 @@ export function waitingPath(profile?: string): string {
 
 export function waitingFromResponse(body: unknown, profile?: string): WaitingRow[] {
   const list = body && typeof body === 'object' ? (body as { waiting?: unknown }).waiting : undefined
-  if (!Array.isArray(list)) return []
   const rows: WaitingRow[] = []
-  for (const raw of list) {
+  for (const raw of Array.isArray(list) ? list : []) {
     if (!raw || typeof raw !== 'object') continue
     const item = raw as Record<string, unknown>
     if (typeof item.id !== 'string' || (item.kind !== 'approval' && item.kind !== 'question')) continue
@@ -63,6 +62,9 @@ export function waitingFromResponse(body: unknown, profile?: string): WaitingRow
   return [...rows, ...askedRows(body, profile)]
 }
 
+/** A row for a question that waits past its turn (from /waiting's questions). */
+export const isAsked = (row: WaitingRow) => row.id.startsWith('asked-')
+
 /** The questions a /waiting read lists past their turn, as rows that open the chat that asked. */
 function askedRows(body: unknown, profile?: string): WaitingRow[] {
   const list = body && typeof body === 'object' ? (body as { questions?: unknown }).questions : undefined
@@ -76,7 +78,9 @@ function askedRows(body: unknown, profile?: string): WaitingRow[] {
     if (typeof item.id !== 'string' || !item.id || item.status !== 'open' || !sessionIds.length) continue
     const at = typeof item.at === 'number' ? item.at : 0
     rows.push({
-      id: `asked-${item.id}`,
+      // A question's id is its bot's (P7): the profile and its chat keep two bots', or two hosts', apart,
+      // while one Hermes saved at two addresses still lists it once.
+      id: `asked-${profile ?? ''}-${item.id}-${sessionIds[0]}`,
       kind: 'question',
       sessionIds,
       title: cleanTitle(typeof item.chat_title === 'string' ? item.chat_title : '') || 'A chat',
@@ -173,5 +177,6 @@ export function requestSummary(request: PendingRequest): string {
 /** The waiting rows no live request already shows, so a wait is listed once. */
 export function unmatchedWaiting(rows: WaitingRow[], requests: PendingRequest[]): WaitingRow[] {
   const live = new Set(requests.map(r => r.sessionId))
-  return rows.filter(row => !row.sessionIds.some(id => live.has(id)))
+  // A question that waits past its turn is a wait of its own, not the request its chat holds now.
+  return rows.filter(row => isAsked(row) || !row.sessionIds.some(id => live.has(id)))
 }

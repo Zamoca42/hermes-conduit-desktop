@@ -5,7 +5,6 @@ import {
   WORK,
   actionTitle,
   answerRequest,
-  answersInWords,
   goingAheadText,
   questionButtons,
   questionHeadline,
@@ -38,6 +37,8 @@ interface Props {
   snapshot: WorkSnapshot | null
   error: string | null
   onReload: () => void
+  /** A question answered here: Needs you reads its list again, so its row goes now. */
+  onAnswered?: () => void
   onOpenChat: (item: WorkItem) => void
   onClose: () => void
   /** The side panel's tabs, atop it. */
@@ -246,6 +247,8 @@ export function QuestionCard({ question, profile, onChanged }: { question: WorkQ
   const [busy, setBusy] = useState(false)
   const [problem, setProblem] = useState<string | null>(null)
   const going = goingAheadText(question)
+  // No button to answer with (words only, or an action this app doesn't know): it's answered in its chat.
+  const buttons = questionButtons(question)
 
   const answer = async (given: QuestionAnswer) => {
     const { action, body } = answerRequest(given)
@@ -274,13 +277,13 @@ export function QuestionCard({ question, profile, onChanged }: { question: WorkQ
         </div>
       ) : null}
       {going ? <div className="meta work-question-state">{going}</div> : null}
-      {answersInWords(question) ? (
+      {buttons.length === 0 ? (
         <div className="meta">{t('Answer it in its chat, in your own words.')}</div>
       ) : (
         <div className="pset-actions work-question-answers">
-          {questionButtons(question).map(button => (
+          {buttons.map((button, index) => (
             <button
-              key={button.label}
+              key={index}
               className={button.recommended || button.answer.kind === 'approve' ? 'primary' : 'secondary'}
               title={button.recommended ? t('Recommended') : undefined}
               disabled={busy}
@@ -302,7 +305,7 @@ export function QuestionCard({ question, profile, onChanged }: { question: WorkQ
  * Resolved list. Each card shows where its workstream is, and takes the
  * user's own actions, which skip the Bot Chat's model.
  */
-export function WorkPanel({ profile, botName, snapshot, error, onReload, onOpenChat, onClose, tabs }: Props) {
+export function WorkPanel({ profile, botName, snapshot, error, onReload, onAnswered, onOpenChat, onClose, tabs }: Props) {
   const [allRecent, setAllRecent] = useState(false)
   const [resolved, setResolved] = useState<WorkItem[] | null>(null)
   const [resolvedError, setResolvedError] = useState<string | null>(null)
@@ -386,7 +389,15 @@ export function WorkPanel({ profile, botName, snapshot, error, onReload, onOpenC
               <section>
                 <h3>{t('Asked you')}</h3>
                 {snapshot.questions.map(question => (
-                  <QuestionCard key={question.id} question={question} profile={profile} onChanged={changed} />
+                  <QuestionCard
+                    key={question.id}
+                    question={question}
+                    profile={profile}
+                    onChanged={() => {
+                      changed()
+                      onAnswered?.()
+                    }}
+                  />
                 ))}
               </section>
             ) : null}

@@ -79,8 +79,13 @@ describe('the waiting list', () => {
       'work'
     )
     expect(rows).toEqual([
-      { id: 'asked-P7', kind: 'question', sessionIds: ['s4'], title: 'Deploys', summary: 'Roll back the deploy?', questions: 1, at: 1_763_000_000_000, profile: 'work' }
+      { id: 'asked-work-P7-s4', kind: 'question', sessionIds: ['s4'], title: 'Deploys', summary: 'Roll back the deploy?', questions: 1, at: 1_763_000_000_000, profile: 'work' }
     ])
+  })
+
+  it('keeps a question that waits past its turn listed while its chat holds a live request', () => {
+    const rows = waitingFromResponse({ questions: [{ id: 'P7', status: 'open', at: 1, session_ids: ['live-1'] }] })
+    expect(unmatchedWaiting(rows, [request({ sessionId: 'live-1' })]).map(r => r.id)).toEqual(['asked--P7-live-1'])
   })
 
   it('asks per profile', () => {

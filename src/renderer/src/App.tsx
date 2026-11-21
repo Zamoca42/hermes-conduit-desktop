@@ -2440,6 +2440,7 @@ function Shell({
                 snapshot={work.snapshot}
                 error={work.error}
                 onReload={() => void work.reload()}
+                onAnswered={() => void waiting.refresh()}
                 onOpenChat={item => setSelected({ id: item.sessionId, profile: selected.profile, title: shownTitle(item) })}
                 onClose={() => setWorkOpen(false)}
                 tabs={panelTabBar}
