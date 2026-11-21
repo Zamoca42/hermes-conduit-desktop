@@ -825,17 +825,27 @@ function Shell({
   // A reply's links to its work and to other chats (workLinks): a card or a link opens the chat here, as on the phone.
   const workSnapshot = work.snapshot
   const listRows = list.rows
+  const workResolved = work.resolved
+  const readResolvedWork = work.readResolved
+  const inBotChat = !!openBotChat || selected.botChat === true
+  // A Bot Chat names resolved work too: its Resolved page gives those refs their chats.
+  useEffect(() => {
+    if (inBotChat) readResolvedWork()
+  }, [inBotChat, readResolvedWork])
   const workLinkActions = useMemo<WorkLinkActions>(() => {
-    const workstream = (ref: string) => workSnapshot?.items.find(item => item.kind === 'workstream' && item.ref === ref && !!item.sessionId)
-    const inBotChat = !!openBotChat || selected.botChat === true
+    // The open list first, then the Resolved page, as the phone's cards read them.
+    const known = [...(workSnapshot?.items ?? []), ...(workResolved ?? [])]
+    const workstream = (ref: string) => known.find(item => item.kind === 'workstream' && item.ref === ref && !!item.sessionId)
+    const ofSession = (sessionId: string) => known.find(i => i.sessionId === sessionId)
     return {
       open: (sessionId, profile) => {
-        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        const item = ofSession(sessionId)
         const row = listRows?.find(r => r.id === sessionId)
         setSelected({ id: sessionId, profile: profile ?? selected.profile, title: item ? shownTitle(item) : row?.title })
         setSection('chats')
       },
       item: workstream,
+      missing: readResolvedWork,
       chatOf: inBotChat
         ? ref => {
             const item = workstream(ref)
@@ -843,11 +853,11 @@ function Shell({
           }
         : undefined,
       titleOf: sessionId => {
-        const item = workSnapshot?.items.find(i => i.sessionId === sessionId)
+        const item = ofSession(sessionId)
         return item ? shownTitle(item) : listRows?.find(r => r.id === sessionId)?.title || undefined
       }
     }
-  }, [workSnapshot, listRows, openBotChat, selected.botChat, selected.profile])
+  }, [workSnapshot, workResolved, readResolvedWork, listRows, inBotChat, selected.profile])
   // The bot's screen (Hermes' Bot Screen), offered only where the host can have one, as the phone checks.
   const screenProfile = selected.profile ?? 'default'
   const [screenOpen, setScreenOpen] = useState(false)
