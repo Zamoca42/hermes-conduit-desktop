@@ -1362,7 +1362,7 @@ function Shell({
   const waiting = useWaiting(connected, profiles)
   const waitingRows = useMemo(() => unmatchedWaiting(waiting.rows, requests), [waiting.rows, requests])
   // Combined dashboards: the other hosts' waits, badged, each opening through a switch.
-  const keptHosts = useKeptHosts()
+  const keptHosts = useKeptHosts(status.url ?? '')
   const keptWaiting = useKeptWaiting(keptHosts)
   const otherWaiting = useMemo(() => otherHostsWaiting(keptWaiting, waiting.rows), [keptWaiting, waiting.rows])
   const savedHosts = status.hosts

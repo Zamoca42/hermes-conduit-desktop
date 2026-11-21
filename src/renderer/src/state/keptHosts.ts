@@ -10,7 +10,7 @@ import type { HostSummary, KeptHost, KeptHostState } from '../../../shared/ipc'
 import { t } from '../../../shared/i18n'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 import { CHAT_LIST_PAGE, CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
-import { rosterFromProfiles, type Bot } from './bots'
+import { keptRosters, rosterFromProfiles, type Bot } from './bots'
 import { PULSE, parseFeed } from './pulse'
 import { listPath, parsePage, type ArtifactFilter, type ArtifactItem } from './artifacts'
 import { roomsFromList, type Room } from './groups'
@@ -68,11 +68,31 @@ export function hostBadge(hosts: readonly HostSummary[], url: string, name: (url
 }
 
 /** The hosts kept beside the open one, as the main process says. */
-export function useKeptHosts(): KeptHost[] {
-  const [hosts, setHosts] = useState<KeptHost[]>([])
+/** The kept hosts as last heard, and the open one then, so a window opened by a switch starts from them. */
+let lastKept: KeptHost[] = []
+let lastOwn = ''
+
+/**
+ * `own`: the open host. A window a switch opened starts from the last list,
+ * the host it left in place of the one it opened, until the main process
+ * says, so the other dashboard's bots and chats don't drop out meanwhile.
+ */
+export function useKeptHosts(own = ''): KeptHost[] {
+  const [hosts, setHosts] = useState<KeptHost[]>(() =>
+    own && lastOwn && own !== lastOwn && lastKept.some(h => h.url === own)
+      ? [...lastKept.filter(h => h.url !== own), { url: lastOwn, state: 'live' as KeptHostState }]
+      : lastKept
+  )
   useEffect(() => {
-    const off = window.conduit.onKeptHosts(setHosts)
-    void window.conduit.keptHosts().then(setHosts)
+    if (own) lastOwn = own
+  }, [own])
+  useEffect(() => {
+    const heard = (list: KeptHost[]) => {
+      lastKept = list
+      setHosts(list)
+    }
+    const off = window.conduit.onKeptHosts(heard)
+    void window.conduit.keptHosts().then(heard)
     return off
   }, [])
   return hosts
@@ -460,20 +480,30 @@ export interface OtherBot {
 }
 
 /** Every live kept host's bots, read on Bots Home once a minute; a failed read keeps what the host showed. */
+/** Each kept host's bots as last read, beside the window's own rosters (keptRosters), for the next window to start from. */
+const keptBotsByHost = new Map<string, { bots: OtherBot[]; at: number }>()
+
+/** A host's bots from whichever read is newer: as another dashboard, or as the open one. */
+function botsOf(url: string): OtherBot[] {
+  const kept = keptBotsByHost.get(url)
+  const roster = keptRosters.get(url)
+  if (roster && (!kept || roster.at > kept.at)) return roster.bots.map(bot => ({ host: url, bot }))
+  return kept?.bots ?? []
+}
+
 export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] {
-  const [bots, setBots] = useState<OtherBot[]>([])
-  const byHost = useRef(new Map<string, OtherBot[]>())
   const live = on
     ? kept
         .filter(h => h.state === 'live')
         .map(h => h.url)
         .join('\n')
     : ''
+  // A window a switch opened draws the other dashboard's bots at once, from the last read (or its roster when it was the open one).
+  const [bots, setBots] = useState<OtherBot[]>(() => (live ? live.split('\n').flatMap(botsOf) : []))
 
   useEffect(() => {
     const urls = live ? live.split('\n') : []
-    for (const url of [...byHost.current.keys()]) if (!urls.includes(url)) byHost.current.delete(url)
-    const show = () => setBots([...byHost.current.values()].flat())
+    const show = () => setBots(urls.flatMap(botsOf))
     show()
     if (!urls.length) return
     let stopped = false
@@ -483,10 +513,7 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
         urls.map(async url => {
           const outcome = await window.conduit.keptRpc(url, 'profiles.list', { include_sessions: true })
           if (!outcome.ok || stopped) return
-          byHost.current.set(
-            url,
-            rosterFromProfiles(outcome.result).bots.map(bot => ({ host: url, bot }))
-          )
+          keptBotsByHost.set(url, { bots: rosterFromProfiles(outcome.result).bots.map(bot => ({ host: url, bot })), at: Date.now() })
         })
       )
       if (!stopped) show()

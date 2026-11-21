@@ -1,11 +1,9 @@
 import { isMovingDataUrl, stillOf, stillReady } from './movingPicture'
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { avatarUrl, rosterFromProfiles, type Bot } from './bots'
+import { avatarUrl, keptRosters, rosterFromProfiles, type Bot } from './bots'
 
 /** The bots roster, read when the connection opens, when profiles change and when a turn ends. */
-/** Each dashboard's roster as last read, so switching between combined dashboards draws its bots at once while they're read again. */
-const keptRosters = new Map<string, { bots: Bot[]; hidden: Bot[]; protocol: boolean }>()
 
 /** `host`: the dashboard this window shows. */
 export function useBots(connected: boolean, host = '') {
@@ -20,7 +18,7 @@ export function useBots(connected: boolean, host = '') {
     try {
       const body = await gateway.rpc('profiles.list', { include_sessions: true })
       const roster = rosterFromProfiles(body)
-      keptRosters.set(host, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol })
+      keptRosters.set(host, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
       setBots(roster.bots)
       setHidden(roster.hidden)
       setProtocol(roster.protocol)

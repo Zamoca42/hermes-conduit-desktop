@@ -220,7 +220,8 @@ const DELTA_FLUSH_MS = 100
 
 /** `host`: the dashboard this window shows, which keeps its own transcripts. */
 export function useChat(storedId: string | null, profile: string | undefined, sessionAuthority: boolean, connected: boolean, botChat = false, folder?: string, host = '') {
-  const [transcript, dispatchNow] = useReducer(reducer, emptyTranscript)
+  // A chat this window opens on, kept from before (a dashboard switch remounts it), draws on the first frame.
+  const [transcript, dispatchNow] = useReducer(reducer, null, () => (storedId && connected ? keptTranscript(storedId, profile, host) : null) ?? emptyTranscript)
   /**
    * A reply's deltas wait for the next frame and go as one (coalesceDeltas),
    * so a fast stream changes the transcript once a frame rather than per
