@@ -45,12 +45,17 @@ export class EventRouter {
     return true
   }
 
+  /** The windows that opened this session. */
+  openers(sessionId: string): number[] {
+    return [...this.opened].filter(([, sessions]) => sessions.has(sessionId)).map(([id]) => id)
+  }
+
   forget(windowId: number): void {
     this.opened.delete(windowId)
   }
 
-  /** Another dashboard: its sessions are opened anew. */
-  clear(): void {
-    this.opened.clear()
+  /** Another dashboard: its sessions are opened anew, but for the windows still open on the dashboard they had (a combined one's chat windows). */
+  clear(keep: readonly number[] = []): void {
+    for (const id of [...this.opened.keys()]) if (!keep.includes(id)) this.opened.delete(id)
   }
 }

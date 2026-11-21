@@ -101,6 +101,10 @@ interface Props {
   /** Open Beside: the row opens and the chat on screen stays beside it; only in a window wide enough for both. */
   onOpenBeside?: (row: ChatRow) => void
   canOpenBeside?: (row: ChatRow) => boolean
+  /** Open in New Window: the chat in a window of its own, or its window to the front when it has one. */
+  onOpenInWindow?: (row: ChatRow) => void
+  /** The chats with windows of their own. */
+  windowIds?: readonly string[]
   /** Combined dashboards: the other hosts' chats, only in All, each opening through a switch. */
   otherRows?: OtherChatRow[]
   badgeFor?: (url: string) => HostBadge | null
@@ -164,6 +168,8 @@ export function ChatList({
   moveTargets,
   onMove,
   onOpenBeside,
+  onOpenInWindow,
+  windowIds,
   canOpenBeside,
   otherRows = NO_ROWS,
   badgeFor,
@@ -557,7 +563,18 @@ export function ChatList({
               if (isOther(row)) {
                 const badge = badgeFor?.(row.host) ?? null
                 return (
-                  <div key={`${row.host}\n${row.id}`} className="row-wrap">
+                  <div
+                    key={`${row.host}\n${row.id}`}
+                    className="row-wrap"
+                    onContextMenu={
+                      onOpenInWindow
+                        ? e => {
+                            e.preventDefault()
+                            setMenu({ row, x: e.clientX, y: e.clientY })
+                          }
+                        : undefined
+                    }
+                  >
                     <button className="row" onClick={() => onOpenOther?.(row)}>
                       <span className="row-top">
                         <span className="row-title">
@@ -660,7 +677,12 @@ export function ChatList({
             top: Math.max(8, Math.min(menu.y, window.innerHeight - (moving ? 52 + 34 * Math.max(1, moving.length) : 220)))
           }}
         >
-          {moving !== false ? (
+          {isOther(menu.row) ? (
+            // Another dashboard's chat: its window, with no switch; everything else opens through a switch.
+            <button role="menuitem" onClick={() => onOpenInWindow?.(menu.row)}>
+              {windowIds?.includes(menu.row.id) ? t('Show Window') : t('Open in New Window')}
+            </button>
+          ) : moving !== false ? (
             <>
               <button
                 role="menuitem"
@@ -684,6 +706,11 @@ export function ChatList({
               {onOpenBeside && canOpenBeside?.(menu.row) ? (
                 <button role="menuitem" onClick={() => onOpenBeside(menu.row)}>
                   {t('Open Beside')}
+                </button>
+              ) : null}
+              {onOpenInWindow ? (
+                <button role="menuitem" onClick={() => onOpenInWindow(menu.row)}>
+                  {windowIds?.includes(menu.row.id) ? t('Show Window') : t('Open in New Window')}
                 </button>
               ) : null}
               {onPin ? (
