@@ -492,20 +492,19 @@ function botsOf(url: string): OtherBot[] {
 }
 
 export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] {
-  const live = on
-    ? kept
-        .filter(h => h.state === 'live')
-        .map(h => h.url)
-        .join('\n')
-    : ''
-  // A window a switch opened draws the other dashboard's bots at once, from the last read (or its roster when it was the open one).
+  const live = kept
+    .filter(h => h.state === 'live')
+    .map(h => h.url)
+    .join('\n')
+  // A window a switch opened draws the other dashboard's bots at once, from the last read (or its roster when
+  // it was the open one), whether or not the list shows yet; they're read again only while it does (`on`).
   const [bots, setBots] = useState<OtherBot[]>(() => (live ? live.split('\n').flatMap(botsOf) : []))
 
   useEffect(() => {
     const urls = live ? live.split('\n') : []
     const show = () => setBots(urls.flatMap(botsOf))
     show()
-    if (!urls.length) return
+    if (!on || !urls.length) return
     let stopped = false
     const read = async () => {
       if (document.hidden) return
@@ -524,7 +523,7 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
       stopped = true
       clearInterval(timer)
     }
-  }, [live])
+  }, [live, on])
 
   return bots
 }
