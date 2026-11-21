@@ -48,10 +48,14 @@ export function editMenuTemplate(params: Params, actions: EditMenuActions): Menu
     items.push({ label: t('Copy'), role: 'copy' })
   }
   if (params.linkURL && copyableLink(params.linkURL)) {
-    // A mail or phone link copies the address or number alone, without its ?subject= or ?body=.
-    const text = params.linkURL.replace(/^(mailto|tel|sms):([^?#]*).*$/i, '$2')
-    if (items.length) items.push({ type: 'separator' })
-    items.push({ label: t('Copy Link'), click: () => actions.copyText(text) })
+    // A mail or phone link copies the address or number alone, without its ?subject= or body
+    // (iOS's sms: links put &body= straight after the number). One with neither, such as
+    // mailto:?subject=, has nothing to copy, so it gets no Copy Link.
+    const text = /^https?:/i.test(params.linkURL) ? params.linkURL : params.linkURL.replace(/^(mailto|tel|sms):([^?#&]*).*$/i, '$2')
+    if (text) {
+      if (items.length) items.push({ type: 'separator' })
+      items.push({ label: t('Copy Link'), click: () => actions.copyText(text) })
+    }
   }
   return items
 }
