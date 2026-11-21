@@ -1881,7 +1881,8 @@ function Shell({
                   }
                 : undefined,
     copies: groupChats.copies,
-    otherRooms: groupChats.others,
+    otherRoomsBefore: groupChats.before,
+    otherRooms: groupChats.after,
     onOpenOtherRoom: openOtherRoom,
     copiesWaiting: copiesWaiting,
     onOpenCopy: copy => {
