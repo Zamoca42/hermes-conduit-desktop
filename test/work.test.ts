@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { noteDashboardProfiles, setDashboardProfilesHost } from '../src/renderer/src/state/dashboardProfile'
-import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, workPath, needsYou, sameWork, workTone, manageTitle, handOverCaption } from '../src/renderer/src/state/work'
+import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, workPath, needsYou, sameWork, workTone, manageTitle, handOverCaption, parseQuestions, questionButtons, questionHeadline, answerRequest, goingAheadText, answersInWords } from '../src/renderer/src/state/work'
 
 const answer = {
   policy: 'on',
@@ -116,5 +116,54 @@ describe('the hand-off', () => {
     expect(manageTitle('coordinate', 'Furina')).toBe('Let Furina coordinate this')
     expect(handOverCaption('leave_alone', 'Furina')).toBe('Furina won’t message or stop it. You still can.')
     expect(handOverCaption('coordinate', 'Furina')).toBe('Furina can message or stop it again.')
+  })
+})
+
+describe('questions that wait past their turn', () => {
+  const card = (extra: Record<string, unknown>) => ({
+    id: 'P7', kind: 'proposal', ref: 'W1', refs: ['W1', 'W2'], title: 'Login · Deploy', at: 100, text: 'Roll back the deploy?',
+    status: 'open', answer: '', why: [], actions: ['approve', 'decline'], choices: [], recommended: '', going_ahead: false, chat: '', ...extra
+  })
+
+  it('reads the open ones from the coordination list, and nothing else there', () => {
+    const snapshot = parseWork({
+      ...answer,
+      coordination: {
+        mode: 'ask',
+        items: [card({}), card({ id: 'P8', status: 'approved', actions: [] }), { id: 'E3', kind: 'flag', ref: 'W1' }, card({})]
+      }
+    })
+    expect(snapshot.questions.map(q => q.id)).toEqual(['P7'])
+    expect(snapshot.questions[0]).toMatchObject({ refs: ['W1', 'W2'], title: 'Login · Deploy', at: 100_000, chat: '' })
+    expect(questionHeadline(snapshot.questions[0])).toBe('Asked you about W1, W2')
+    expect(parseWork(answer).questions).toEqual([])
+  })
+
+  it('answers a yes-or-no question with Approve or Decline', () => {
+    const question = parseQuestions([card({})])[0]
+    expect(questionButtons(question).map(b => b.label)).toEqual(['Approve', 'Decline'])
+    expect(answerRequest({ kind: 'decline' })).toEqual({ action: 'decline', body: {} })
+    expect(goingAheadText(question)).toBeNull()
+  })
+
+  it('answers one with choices with one of them, and says what the bot goes ahead with', () => {
+    const question = parseQuestions([
+      card({ actions: ['answer'], choices: ['Roll back', 'Hotfix', ' '], recommended: 'Hotfix', going_ahead: true, chat: 's4', refs: [] })
+    ])[0]
+    expect(questionButtons(question).map(b => [b.label, b.recommended])).toEqual([
+      ['Roll back', false],
+      ['Hotfix', true]
+    ])
+    expect(answerRequest({ kind: 'choice', choice: 'Hotfix' })).toEqual({ action: 'answer', body: { choice: 'Hotfix' } })
+    expect(goingAheadText(question)).toBe('Going ahead with “Hotfix” unless you pick another')
+    expect(questionHeadline(question)).toBe('Asked you')
+    expect(answersInWords(question)).toBe(false)
+  })
+
+  it('leaves a kept clarify question with no choices to its chat, in words', () => {
+    const question = parseQuestions([card({ actions: ['answer'], source: 'clarify', going_ahead: true })])[0]
+    expect(answersInWords(question)).toBe(true)
+    expect(questionButtons(question)).toEqual([])
+    expect(goingAheadText(question)).toBe('Going ahead unless you say no')
   })
 })

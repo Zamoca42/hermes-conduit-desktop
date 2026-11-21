@@ -4,6 +4,10 @@ import { gateway } from '../gateway'
 import {
   WORK,
   actionTitle,
+  answerRequest,
+  goingAheadText,
+  questionButtons,
+  questionHeadline,
   doing,
   doneCount,
   handOverCaption,
@@ -16,13 +20,16 @@ import {
   statusText,
   workPath,
   workRefusal,
+  type QuestionAnswer,
   type WorkAction,
   type WorkItem,
+  type WorkQuestion,
   type WorkManage,
   type WorkSnapshot
 } from '../state/work'
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
+import { timeLabel } from '../state/chats'
 
 interface Props {
   profile?: string
@@ -30,6 +37,8 @@ interface Props {
   snapshot: WorkSnapshot | null
   error: string | null
   onReload: () => void
+  /** A question answered here: Needs you reads its list again, so its row goes now. */
+  onAnswered?: () => void
   onOpenChat: (item: WorkItem) => void
   onClose: () => void
   /** The side panel's tabs, atop it. */
@@ -229,12 +238,74 @@ function WorkCard({
 }
 
 /**
+ * A question the bot asked and waits on past its turn, after the phone's
+ * BotWorkQuestionCard: Approve and Decline, or one button per choice with the
+ * recommended one filled; a kept clarify question with no choices is answered
+ * in its chat in words. The answer wakes the chat that asked.
+ */
+export function QuestionCard({ question, profile, onChanged }: { question: WorkQuestion; profile?: string; onChanged: () => void }) {
+  const [busy, setBusy] = useState(false)
+  const [problem, setProblem] = useState<string | null>(null)
+  const going = goingAheadText(question)
+  // No button to answer with (words only, or an action this app doesn't know): it's answered in its chat.
+  const buttons = questionButtons(question)
+
+  const answer = async (given: QuestionAnswer) => {
+    const { action, body } = answerRequest(given)
+    setBusy(true)
+    setProblem(null)
+    try {
+      await gateway.http('POST', workPath(`${WORK}/${encodeURIComponent(question.id)}/${action}`, profile), body)
+      onChanged()
+    } catch (e) {
+      setProblem(workRefusal(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="work-card tone-needs work-question">
+      <div className="work-question-top">
+        <span className="work-question-head">{questionHeadline(question)}</span>
+        {question.at ? <span className="meta row-time">{timeLabel(question.at)}</span> : null}
+      </div>
+      {question.title ? <div className="meta work-question-title">{question.title}</div> : null}
+      {question.text ? (
+        <div className="work-question-text">
+          <Markdown text={question.text} />
+        </div>
+      ) : null}
+      {going ? <div className="meta work-question-state">{going}</div> : null}
+      {buttons.length === 0 ? (
+        <div className="meta">{t('Answer it in its chat, in your own words.')}</div>
+      ) : (
+        <div className="pset-actions work-question-answers">
+          {buttons.map((button, index) => (
+            <button
+              key={index}
+              className={button.recommended || button.answer.kind === 'approve' ? 'primary' : 'secondary'}
+              title={button.recommended ? t('Recommended') : undefined}
+              disabled={busy}
+              onClick={() => void answer(button.answer)}
+            >
+              {button.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {problem ? <div className="error-text">{problem}</div> : null}
+    </div>
+  )
+}
+
+/**
  * The Work panel beside a Bot Chat, after the phone's: count chips, then
  * Pinned, Active (what needs you first) and Recent folded to three, and the
  * Resolved list. Each card shows where its workstream is, and takes the
  * user's own actions, which skip the Bot Chat's model.
  */
-export function WorkPanel({ profile, botName, snapshot, error, onReload, onOpenChat, onClose, tabs }: Props) {
+export function WorkPanel({ profile, botName, snapshot, error, onReload, onAnswered, onOpenChat, onClose, tabs }: Props) {
   const [allRecent, setAllRecent] = useState(false)
   const [resolved, setResolved] = useState<WorkItem[] | null>(null)
   const [resolvedError, setResolvedError] = useState<string | null>(null)
@@ -306,12 +377,29 @@ export function WorkPanel({ profile, botName, snapshot, error, onReload, onOpenC
                 {t('Ready')} <strong>{snapshot.ready}</strong>
               </span>
             </div>
-            {!snapshot.items.length ? (
+            {!snapshot.items.length && !snapshot.questions.length ? (
               <p className="meta">
                 {snapshot.policy === 'off'
                   ? t('{bot} does everything in its Bot Chat itself. Work that’s already running carries on.', { bot: botName })
                   : t('No work yet')}
               </p>
+            ) : null}
+            {snapshot.questions.length ? (
+              // What the bot asked and waits on comes first: it holds the work up until the user answers.
+              <section>
+                <h3>{t('Asked you')}</h3>
+                {snapshot.questions.map(question => (
+                  <QuestionCard
+                    key={question.id}
+                    question={question}
+                    profile={profile}
+                    onChanged={() => {
+                      changed()
+                      onAnswered?.()
+                    }}
+                  />
+                ))}
+              </section>
             ) : null}
             {lists!.pinned.length ? (
               <section>

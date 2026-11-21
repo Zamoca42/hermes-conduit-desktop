@@ -6046,6 +6046,32 @@ code.file-link:hover {
   border-color: color-mix(in srgb, var(--warning) 32%, transparent);
 }
 
+/* A question the bot asked (the phone's BotWorkQuestionCard): an orange headline, then its words and answers. */
+.work-question-top {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.work-question-head {
+  flex: 1;
+  font-weight: 600;
+  color: var(--warning);
+}
+
+.work-question-title {
+  font-weight: 600;
+}
+
+.work-question-state {
+  font-weight: 600;
+}
+
+.work-question-answers {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
 .work-card-top {
   display: flex;
   align-items: flex-start;

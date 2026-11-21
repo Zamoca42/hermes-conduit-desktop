@@ -7,6 +7,10 @@
  *   every chat of a profile with a wait, the phone's Needs you list
  *   (hermes-conduit issue 1705). It only reads; a row opens its chat, where
  *   the resume replays the request as a card.
+ * - Its questions: what a bot asked that waits past its turn (work_propose,
+ *   and clarify questions kept after they ran out, notifier 0.189.0). Each is a
+ *   row that opens the chat that asked, as the phone's (open-only, Eric
+ *   2026-11-05); the Work panel's card answers it with a tap.
  */
 import type { PendingRequest } from '../../../shared/ipc'
 import { cleanTitle } from './text'
@@ -38,9 +42,8 @@ export function waitingPath(profile?: string): string {
 
 export function waitingFromResponse(body: unknown, profile?: string): WaitingRow[] {
   const list = body && typeof body === 'object' ? (body as { waiting?: unknown }).waiting : undefined
-  if (!Array.isArray(list)) return []
   const rows: WaitingRow[] = []
-  for (const raw of list) {
+  for (const raw of Array.isArray(list) ? list : []) {
     if (!raw || typeof raw !== 'object') continue
     const item = raw as Record<string, unknown>
     if (typeof item.id !== 'string' || (item.kind !== 'approval' && item.kind !== 'question')) continue
@@ -52,6 +55,37 @@ export function waitingFromResponse(body: unknown, profile?: string): WaitingRow
       title: cleanTitle(typeof item.title === 'string' ? item.title : '') || 'A chat',
       summary: typeof item.summary === 'string' ? item.summary : '',
       questions: typeof item.questions === 'number' ? item.questions : 0,
+      at: at > 0 && at < 1e11 ? at * 1000 : at,
+      profile
+    })
+  }
+  return [...rows, ...askedRows(body, profile)]
+}
+
+/** A row for a question that waits past its turn (from /waiting's questions). */
+export const isAsked = (row: WaitingRow) => row.id.startsWith('asked-')
+
+/** The questions a /waiting read lists past their turn, as rows that open the chat that asked. */
+function askedRows(body: unknown, profile?: string): WaitingRow[] {
+  const list = body && typeof body === 'object' ? (body as { questions?: unknown }).questions : undefined
+  if (!Array.isArray(list)) return []
+  const rows: WaitingRow[] = []
+  for (const raw of list) {
+    if (!raw || typeof raw !== 'object') continue
+    const item = raw as Record<string, unknown>
+    const sessionIds = Array.isArray(item.session_ids) ? item.session_ids.filter((s): s is string => typeof s === 'string' && !!s) : []
+    // A row opens its chat, so one with no chat to open isn't listed.
+    if (typeof item.id !== 'string' || !item.id || item.status !== 'open' || !sessionIds.length) continue
+    const at = typeof item.at === 'number' ? item.at : 0
+    rows.push({
+      // A question's id is its bot's (P7): the profile and its chat keep two bots', or two hosts', apart,
+      // while one Hermes saved at two addresses still lists it once.
+      id: `asked-${profile ?? ''}-${item.id}-${sessionIds[0]}`,
+      kind: 'question',
+      sessionIds,
+      title: cleanTitle(typeof item.chat_title === 'string' ? item.chat_title : '') || 'A chat',
+      summary: typeof item.text === 'string' ? item.text.trim() : '',
+      questions: 1,
       at: at > 0 && at < 1e11 ? at * 1000 : at,
       profile
     })
@@ -143,5 +177,6 @@ export function requestSummary(request: PendingRequest): string {
 /** The waiting rows no live request already shows, so a wait is listed once. */
 export function unmatchedWaiting(rows: WaitingRow[], requests: PendingRequest[]): WaitingRow[] {
   const live = new Set(requests.map(r => r.sessionId))
-  return rows.filter(row => !row.sessionIds.some(id => live.has(id)))
+  // A question that waits past its turn is a wait of its own, not the request its chat holds now.
+  return rows.filter(row => isAsked(row) || !row.sessionIds.some(id => live.has(id)))
 }
