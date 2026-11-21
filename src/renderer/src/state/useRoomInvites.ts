@@ -45,16 +45,22 @@ export async function readCapabilities(): Promise<string[]> {
  * The invites to rooms people you've linked host, read with Group chats
  * (every 30 s while the window shows), for a plugin that keeps them.
  */
+/** Each dashboard's plugin capabilities as last read, so a window a switch opened knows them at once. */
+const keptCapabilities = new Map<string, string[]>()
+
 export function useRoomInvites(connected: boolean, host: string) {
-  const [capabilities, setCapabilities] = useState<string[]>([])
+  const [capabilities, setCapabilities] = useState<string[]>(() => keptCapabilities.get(host) ?? [])
   const [invites, setInvites] = useState<RoomInvite[] | null>(null)
   const [dismissed, setDismissed] = useState<Set<string>>(() => readDismissed(host))
   const reads = useRef(0)
   const served = capabilities.includes(ROOM_INVITES_CAPABILITY)
 
+  const shownHost = useRef(host)
   useEffect(() => {
+    if (shownHost.current === host) return
+    shownHost.current = host
     setInvites(null)
-    setCapabilities([])
+    setCapabilities(keptCapabilities.get(host) ?? [])
     setDismissed(readDismissed(host))
   }, [host])
 
@@ -62,7 +68,10 @@ export function useRoomInvites(connected: boolean, host: string) {
     if (!connected) return
     let live = true
     readCapabilities()
-      .then(list => live && setCapabilities(list))
+      .then(list => {
+        keptCapabilities.set(host, list)
+        if (live) setCapabilities(list)
+      })
       .catch(() => undefined)
     return () => {
       live = false

@@ -1306,7 +1306,7 @@ function Shell({
     pendingAsk.current = null
     void onSend(ask.text)
   }, [selected, loading, error, chat.liveId, chat.storedId, onSend])
-  const groupRooms = useRooms(connected)
+  const groupRooms = useRooms(connected, status.url ?? '')
   // The group chats in the person's order (synced as groups.order), a room it doesn't name first.
   const orderedRooms = useMemo(() => (groupRooms.rooms ? arrange(groupRooms.rooms, roomOrder.order, r => r.roomId, 'rooms') : groupRooms.rooms), [groupRooms.rooms, roomOrder.order])
   const roomInvites = useRoomInvites(connected, status.url ?? '')

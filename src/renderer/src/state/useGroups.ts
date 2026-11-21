@@ -27,9 +27,13 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const uuid = () => crypto.randomUUID()
 
 /** Whether Hermes hosts rooms here, and the rooms it hosts. Rooms are gateway-wide: no profile goes with these calls. */
-export function useRooms(connected: boolean) {
-  const [capabilities, setCapabilities] = useState<RoomCapabilities | null>(null)
-  const [rooms, setRooms] = useState<Room[] | null>(null)
+/** Each dashboard's own rooms as last read, for a window a switch opened to draw at once. */
+export const keptOwnRooms = new Map<string, { capabilities: RoomCapabilities; rooms: Room[]; at: number }>()
+
+/** `host`: the dashboard this window shows. */
+export function useRooms(connected: boolean, host = '') {
+  const [capabilities, setCapabilities] = useState<RoomCapabilities | null>(() => keptOwnRooms.get(host)?.capabilities ?? null)
+  const [rooms, setRooms] = useState<Room[] | null>(() => keptOwnRooms.get(host)?.rooms ?? null)
   const [error, setError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
@@ -40,7 +44,9 @@ export function useRooms(connected: boolean) {
         setRooms([])
         return
       }
-      setRooms(roomsFromList(await gateway.rpc('groups.list', { include_disbanded: false })))
+      const listed = roomsFromList(await gateway.rpc('groups.list', { include_disbanded: false }))
+      keptOwnRooms.set(host, { capabilities: caps, rooms: listed, at: Date.now() })
+      setRooms(listed)
       setError(null)
     } catch (e) {
       // A gateway without the method has no rooms; anything else is worth saying.
@@ -50,7 +56,7 @@ export function useRooms(connected: boolean) {
         setRooms([])
       } else setError(text)
     }
-  }, [])
+  }, [host])
 
   useEffect(() => {
     if (!connected) return

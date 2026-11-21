@@ -15,6 +15,8 @@ import { PULSE, parseFeed } from './pulse'
 import { listPath, parsePage, type ArtifactFilter, type ArtifactItem } from './artifacts'
 import { roomsFromList, type Room } from './groups'
 import { COPIES_PATH, parseCopies, type RoomCopy } from './roomCopies'
+import { keptCopies } from './useRoomCopies'
+import { keptOwnRooms } from './useGroups'
 
 export const keptStateLabel = (state: KeptHostState): string =>
   state === 'live'
@@ -346,22 +348,40 @@ export interface HostRooms {
  * elsewhere (the plugin's copies route). What can't be read keeps what it
  * showed; a host let go shows nothing more.
  */
+/** Each kept host's rooms as last read, for the next window to start from. */
+const keptRoomsByHost = new Map<string, HostRooms & { at: number }>()
+
+/** A host's rooms from whichever read is newer: as another dashboard, or as the open one (keptOwnRooms, keptCopies). */
+function roomsOf(url: string): HostRooms | null {
+  const kept = keptRoomsByHost.get(url)
+  const own = keptOwnRooms.get(url)
+  if (own && (!kept || own.at > kept.at)) return { rooms: own.rooms.filter(r => !r.disbanded), copies: keptCopies.get(url) ?? kept?.copies ?? [] }
+  return kept ? { rooms: kept.rooms, copies: kept.copies } : null
+}
+
+const roomsShown = (urls: string[]) => new Map(urls.flatMap(url => {
+  const rooms = roomsOf(url)
+  return rooms ? [[url, rooms] as const] : []
+}))
+
 export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string, HostRooms> {
-  const [rooms, setRooms] = useState<Map<string, HostRooms>>(new Map())
-  const byHost = useRef(new Map<string, HostRooms>())
-  const live = on
-    ? kept
-        .filter(h => h.state === 'live')
-        .map(h => h.url)
-        .join('\n')
-    : ''
+  // As the bots: drawn while live or reconnecting, from the start; read only while live and shown.
+  const shown = kept
+    .filter(h => h.state === 'live' || h.state === 'connecting')
+    .map(h => h.url)
+    .join('\n')
+  const live = kept
+    .filter(h => h.state === 'live')
+    .map(h => h.url)
+    .join('\n')
+  const [rooms, setRooms] = useState<Map<string, HostRooms>>(() => roomsShown(shown ? shown.split('\n') : []))
 
   useEffect(() => {
+    const drawn = shown ? shown.split('\n') : []
     const urls = live ? live.split('\n') : []
-    for (const url of [...byHost.current.keys()]) if (!urls.includes(url)) byHost.current.delete(url)
-    const show = () => setRooms(new Map(byHost.current))
+    const show = () => setRooms(roomsShown(drawn))
     show()
-    if (!urls.length) return
+    if (!on || !urls.length) return
     let stopped = false
     const read = async () => {
       if (document.hidden) return
@@ -372,11 +392,11 @@ export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string
             window.conduit.keptHttp(url, COPIES_PATH)
           ])
           if (stopped) return
-          const last = byHost.current.get(url)
+          const last = keptRoomsByHost.get(url)
           const rooms = listed.ok ? roomsFromList(listed.result).filter(r => !r.disbanded) : (last?.rooms ?? [])
           const copies = (copied.ok ? parseCopies(copied.result) : null) ?? last?.copies ?? []
           if (!listed.ok && !copied.ok && !last) return
-          byHost.current.set(url, { rooms, copies })
+          keptRoomsByHost.set(url, { rooms, copies, at: Date.now() })
         })
       )
       if (!stopped) show()
@@ -392,7 +412,7 @@ export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string
       clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisible)
     }
-  }, [live])
+  }, [shown, live, on])
 
   return rooms
 }
