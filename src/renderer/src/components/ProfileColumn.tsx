@@ -118,7 +118,7 @@ export function ProfileColumn({
                 </span>
               ) : null}
               {waiting ? (
-                <span className="profile-column-waits" role="img" aria-label={t('Needs approval')}>
+                <span className="profile-column-waits" role="img" aria-label={t('{count} needs you', { count: waiting })}>
                   {waiting}
                 </span>
               ) : fresh ? (

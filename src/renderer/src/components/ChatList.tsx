@@ -230,19 +230,6 @@ export function ChatList({
     writeSelection(next)
   }
   const [filterOpen, setFilterOpen] = useState(false)
-  // The Sources choices show once chats come from more than one place.
-  const sources = useMemo(() => sourcesIn(rows ?? []), [rows])
-  // What applies: without stars and read state nothing filters; In progress and Done sit out on a plugin that keeps
-  // no Done marks, and a source no chat comes from any more sits out, rather than empty the list.
-  const active = useMemo(
-    () =>
-      marks
-        ? selection.filter(k => (isSourceKey(k) ? sources.length > 1 && sources.includes(k.slice(7) as ChatSource) : (k !== 'inprogress' && k !== 'done') || !!isDone))
-        : [],
-    [marks, selection, sources, isDone]
-  )
-  // A status, Starred, In progress or Done is a lookup, not a browse: every match, flat; a source alone is still a browse.
-  const looksUp = active.some(k => !isSourceKey(k))
 
   useEffect(() => {
     if (!menu) return
@@ -293,6 +280,24 @@ export function ChatList({
     () => (marks ? { marks, running: runningIds, waiting: waitingIds, done: isDone ?? (() => false), underSource } : null),
     [marks, runningIds, waitingIds, isDone]
   )
+  // The chats the list shows before any filter: the profile chosen's, or All's.
+  const inShown = useMemo(
+    () => (profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? []).filter(r => shownInAll(r.profile, botNames, allLeftOut))),
+    [rows, profile, botNames, allLeftOut]
+  )
+  // The Sources the menu offers: the ones the chats shown come from, so none lists nothing.
+  const shownSources = useMemo(() => sourcesIn(inShown), [inShown])
+  // What applies: without stars and read state nothing filters; In progress and Done sit out on a plugin that keeps
+  // no Done marks, and a source none of the chats shown comes from sits out, rather than empty the list.
+  const active = useMemo(
+    () =>
+      marks
+        ? selection.filter(k => (isSourceKey(k) ? shownSources.length > 1 && shownSources.includes(k.slice(7) as ChatSource) : (k !== 'inprogress' && k !== 'done') || !!isDone))
+        : [],
+    [marks, selection, shownSources, isDone]
+  )
+  // A status, Starred, In progress or Done is a lookup, not a browse: every match, flat; a source alone is still a browse.
+  const looksUp = active.some(k => !isSourceKey(k))
   // Pinned rows move while the list shows every pinned chat: not during a search or under a filter, nor grouped by profile.
   const canReorder = !query.trim() && !active.length
   // Only grouped by profile does the open chat change what's listed (its section keeps it past the cap), so a click elsewhere doesn't list again.
@@ -425,12 +430,6 @@ export function ChatList({
     return { unread, waits }
   }, [rows, waitingIds, marks])
   // The Filter menu's counts: each choice beside the other groups' choices, alone in its own (the phone's facet).
-  const inShown = useMemo(
-    () => (profile ? (rows ?? []).filter(r => sameProfile(r, profile)) : (rows ?? []).filter(r => shownInAll(r.profile, botNames, allLeftOut))),
-    [rows, profile, botNames, allLeftOut]
-  )
-  // The Sources the menu offers: the ones the chats shown come from, so none lists nothing.
-  const shownSources = useMemo(() => sourcesIn(inShown), [inShown])
   const choice = (key: ChatFilterKey, label: string): FilterChoice => ({
     key,
     label,
