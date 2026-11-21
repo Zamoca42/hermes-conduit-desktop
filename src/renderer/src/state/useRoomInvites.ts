@@ -47,10 +47,12 @@ export async function readCapabilities(): Promise<string[]> {
  */
 /** Each dashboard's plugin capabilities as last read, so a window a switch opened knows them at once. */
 const keptCapabilities = new Map<string, string[]>()
+/** Each dashboard's invites as last read, so a switch draws a started room's row at once. */
+const keptInvites = new Map<string, RoomInvite[]>()
 
 export function useRoomInvites(connected: boolean, host: string) {
   const [capabilities, setCapabilities] = useState<string[]>(() => keptCapabilities.get(host) ?? [])
-  const [invites, setInvites] = useState<RoomInvite[] | null>(null)
+  const [invites, setInvites] = useState<RoomInvite[] | null>(() => keptInvites.get(host) ?? null)
   const [dismissed, setDismissed] = useState<Set<string>>(() => readDismissed(host))
   const reads = useRef(0)
   const served = capabilities.includes(ROOM_INVITES_CAPABILITY)
@@ -59,7 +61,8 @@ export function useRoomInvites(connected: boolean, host: string) {
   useEffect(() => {
     if (shownHost.current === host) return
     shownHost.current = host
-    setInvites(null)
+    reads.current++
+    setInvites(keptInvites.get(host) ?? null)
     setCapabilities(keptCapabilities.get(host) ?? [])
     setDismissed(readDismissed(host))
   }, [host])
@@ -82,11 +85,13 @@ export function useRoomInvites(connected: boolean, host: string) {
     const read = ++reads.current
     try {
       const list = await client.list()
-      if (read === reads.current) setInvites(list)
+      if (read !== reads.current) return
+      keptInvites.set(host, list)
+      setInvites(list)
     } catch {
       // The list stays as it was; the next read tries again.
     }
-  }, [])
+  }, [host])
 
   useEffect(() => {
     if (!connected || !served) return
