@@ -11,11 +11,13 @@ import { t } from '../../../shared/i18n'
 import { badgeLetters } from '../../../shared/hostNames'
 import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } from './needsYou'
 import { CHAT_LIST_PAGE, CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
-import { rosterFromProfiles, type Bot } from './bots'
+import { keptRosters, rosterFromProfiles, type Bot } from './bots'
 import { PULSE, parseFeed } from './pulse'
 import { listPath, parsePage, type ArtifactFilter, type ArtifactItem } from './artifacts'
 import { roomsFromList, type Room } from './groups'
 import { COPIES_PATH, parseCopies, type RoomCopy } from './roomCopies'
+import { keptCopies } from './useRoomCopies'
+import { keptOwnRooms } from './useGroups'
 import { WORK, parseWork } from './work'
 import { STATUS_PATH, pluginStatus } from './plugin'
 import { DASHBOARD_PROFILES_CAPABILITY } from './dashboardProfile'
@@ -73,13 +75,48 @@ export function hostBadge(hosts: readonly HostSummary[], url: string, name: (url
   return { letter: badgeLetters(labels)[index]!, color: badgeColor(index), name: labels[index]! }
 }
 
-/** The hosts kept beside the open one, as the main process says. */
-export function useKeptHosts(): KeptHost[] {
-  const [hosts, setHosts] = useState<KeptHost[]>([])
+/** How long an emptied kept-host list waits before it's believed. */
+const KEPT_EMPTY_WAIT_MS = 400
+
+/** The kept hosts as last heard, and the open one then, so a window opened by a switch starts from them. */
+let lastKept: KeptHost[] = []
+let lastOwn = ''
+
+/**
+ * The hosts kept beside the open one, as the main process says. `own`: the
+ * open host. A window a switch opened starts from the last list, the host it
+ * left in place of the one it opened, until the main process says, so the
+ * other dashboard's bots and chats don't drop out meanwhile.
+ */
+export function useKeptHosts(own = ''): KeptHost[] {
+  const [hosts, setHosts] = useState<KeptHost[]>(() =>
+    own && lastOwn && own !== lastOwn && lastKept.some(h => h.url === own)
+      ? [...lastKept.filter(h => h.url !== own), { url: lastOwn, state: 'live' as KeptHostState }]
+      : lastKept
+  )
   useEffect(() => {
-    const off = window.conduit.onKeptHosts(setHosts)
-    void window.conduit.keptHosts().then(setHosts)
-    return off
+    if (own) lastOwn = own
+  }, [own])
+  useEffect(() => {
+    // A switch empties the list for a moment before the host it left joins it: an empty list waits a beat, so
+    // the other dashboard's bots and chats don't blink out.
+    let emptying: ReturnType<typeof setTimeout> | null = null
+    const heard = (list: KeptHost[]) => {
+      if (emptying) clearTimeout(emptying)
+      emptying = null
+      const apply = () => {
+        lastKept = list
+        setHosts(list)
+      }
+      if (list.length) apply()
+      else emptying = setTimeout(apply, KEPT_EMPTY_WAIT_MS)
+    }
+    const off = window.conduit.onKeptHosts(heard)
+    void window.conduit.keptHosts().then(heard)
+    return () => {
+      off()
+      if (emptying) clearTimeout(emptying)
+    }
   }, [])
   return hosts
 }
@@ -317,22 +354,40 @@ export interface HostRooms {
  * elsewhere (the plugin's copies route). What can't be read keeps what it
  * showed; a host let go shows nothing more.
  */
+/** Each kept host's rooms as last read, for the next window to start from. */
+const keptRoomsByHost = new Map<string, HostRooms & { at: number }>()
+
+/** A host's rooms from whichever read is newer: as another dashboard, or as the open one (keptOwnRooms, keptCopies). */
+function roomsOf(url: string): HostRooms | null {
+  const kept = keptRoomsByHost.get(url)
+  const own = keptOwnRooms.get(url)
+  if (own && (!kept || own.at > kept.at)) return { rooms: own.rooms.filter(r => !r.disbanded), copies: keptCopies.get(url) ?? kept?.copies ?? [] }
+  return kept ? { rooms: kept.rooms, copies: kept.copies } : null
+}
+
+const roomsShown = (urls: string[]) => new Map(urls.flatMap(url => {
+  const rooms = roomsOf(url)
+  return rooms ? [[url, rooms] as const] : []
+}))
+
 export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string, HostRooms> {
-  const [rooms, setRooms] = useState<Map<string, HostRooms>>(new Map())
-  const byHost = useRef(new Map<string, HostRooms>())
-  const live = on
-    ? kept
-        .filter(h => h.state === 'live')
-        .map(h => h.url)
-        .join('\n')
-    : ''
+  // As the bots: drawn while live or reconnecting, from the start; read only while live and shown.
+  const shown = kept
+    .filter(h => h.state === 'live' || h.state === 'connecting')
+    .map(h => h.url)
+    .join('\n')
+  const live = kept
+    .filter(h => h.state === 'live')
+    .map(h => h.url)
+    .join('\n')
+  const [rooms, setRooms] = useState<Map<string, HostRooms>>(() => roomsShown(shown ? shown.split('\n') : []))
 
   useEffect(() => {
+    const drawn = shown ? shown.split('\n') : []
     const urls = live ? live.split('\n') : []
-    for (const url of [...byHost.current.keys()]) if (!urls.includes(url)) byHost.current.delete(url)
-    const show = () => setRooms(new Map(byHost.current))
+    const show = () => setRooms(roomsShown(drawn))
     show()
-    if (!urls.length) return
+    if (!on || !urls.length) return
     let stopped = false
     const read = async () => {
       if (document.hidden) return
@@ -343,11 +398,11 @@ export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string
             window.conduit.keptHttp(url, COPIES_PATH)
           ])
           if (stopped) return
-          const last = byHost.current.get(url)
+          const last = keptRoomsByHost.get(url)
           const rooms = listed.ok ? roomsFromList(listed.result).filter(r => !r.disbanded) : (last?.rooms ?? [])
           const copies = (copied.ok ? parseCopies(copied.result) : null) ?? last?.copies ?? []
           if (!listed.ok && !copied.ok && !last) return
-          byHost.current.set(url, { rooms, copies })
+          keptRoomsByHost.set(url, { rooms, copies, at: Date.now() })
         })
       )
       if (!stopped) show()
@@ -363,7 +418,7 @@ export function useKeptRooms(kept: readonly KeptHost[], on: boolean): Map<string
       clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisible)
     }
-  }, [live])
+  }, [shown, live, on])
 
   return rooms
 }
@@ -465,23 +520,33 @@ export interface OtherBot {
   bot: Bot
 }
 
-/** Every live kept host's bots, read on Bots Home once a minute; a failed read keeps what the host showed. */
+/**
+ * Every live kept host's bots, read on Bots Home once a minute; a failed read keeps what the host showed. A read
+ * is the roster the host's own window reads (keptRosters), so the first switch there draws its bots at once too.
+ */
+const botsOf = (url: string): OtherBot[] => (keptRosters.get(url)?.bots ?? []).map(bot => ({ host: url, bot }))
+
 export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] {
-  const [bots, setBots] = useState<OtherBot[]>([])
-  const byHost = useRef(new Map<string, OtherBot[]>())
-  const live = on
-    ? kept
-        .filter(h => h.state === 'live')
-        .map(h => h.url)
-        .join('\n')
-    : ''
+  // Drawn while live or reconnecting (the host a switch left is dialed again, which over the internet takes most
+  // of a second); read only while live.
+  const shown = kept
+    .filter(h => h.state === 'live' || h.state === 'connecting')
+    .map(h => h.url)
+    .join('\n')
+  const live = kept
+    .filter(h => h.state === 'live')
+    .map(h => h.url)
+    .join('\n')
+  // A window a switch opened draws the other dashboard's bots at once, from the last read (or its roster when
+  // it was the open one), whether or not the list shows yet; they're read again only while it does (`on`).
+  const [bots, setBots] = useState<OtherBot[]>(() => (shown ? shown.split('\n').flatMap(botsOf) : []))
 
   useEffect(() => {
+    const drawn = shown ? shown.split('\n') : []
     const urls = live ? live.split('\n') : []
-    for (const url of [...byHost.current.keys()]) if (!urls.includes(url)) byHost.current.delete(url)
-    const show = () => setBots([...byHost.current.values()].flat())
+    const show = () => setBots(drawn.flatMap(botsOf))
     show()
-    if (!urls.length) return
+    if (!on || !urls.length) return
     let stopped = false
     const read = async () => {
       if (document.hidden) return
@@ -489,10 +554,8 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
         urls.map(async url => {
           const outcome = await window.conduit.keptRpc(url, 'profiles.list', { include_sessions: true })
           if (!outcome.ok || stopped) return
-          byHost.current.set(
-            url,
-            rosterFromProfiles(outcome.result).bots.map(bot => ({ host: url, bot }))
-          )
+          const roster = rosterFromProfiles(outcome.result)
+          keptRosters.set(url, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
         })
       )
       if (!stopped) show()
@@ -503,7 +566,7 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
       stopped = true
       clearInterval(timer)
     }
-  }, [live])
+  }, [shown, live, on])
 
   return bots
 }

@@ -13,16 +13,17 @@ export const TRANSCRIPT_CACHE_SIZE = 6
 
 const kept = new Map<string, TranscriptState>()
 
-const keyOf = (storedId: string, profile: string | undefined) => `${profile || 'default'}\n${storedId}`
+/** Each dashboard's own, so switching between combined dashboards draws the chat it opens at once. */
+const keyOf = (storedId: string, profile: string | undefined, host = '') => `${host}\n${profile || 'default'}\n${storedId}`
 
 export function settled(state: TranscriptState): boolean {
   return !state.running && !state.held?.length && state.items.length > 0 && !state.items.some(i => i.kind === 'user' && i.pending)
 }
 
 /** Keeps a chat's transcript as it was left, the newest first out of TRANSCRIPT_CACHE_SIZE. */
-export function keepTranscript(storedId: string | null, profile: string | undefined, state: TranscriptState): void {
+export function keepTranscript(storedId: string | null, profile: string | undefined, state: TranscriptState, host = ''): void {
   if (!storedId) return
-  const key = keyOf(storedId, profile)
+  const key = keyOf(storedId, profile, host)
   kept.delete(key)
   if (!settled(state)) return
   kept.set(key, state)
@@ -30,8 +31,8 @@ export function keepTranscript(storedId: string | null, profile: string | undefi
 }
 
 /** The transcript kept for a chat, to draw while it resumes; null when none. */
-export function keptTranscript(storedId: string, profile: string | undefined): TranscriptState | null {
-  const key = keyOf(storedId, profile)
+export function keptTranscript(storedId: string, profile: string | undefined, host = ''): TranscriptState | null {
+  const key = keyOf(storedId, profile, host)
   const state = kept.get(key)
   if (!state) return null
   kept.delete(key)
@@ -39,7 +40,7 @@ export function keptTranscript(storedId: string, profile: string | undefined): T
   return state
 }
 
-/** Another dashboard, or the connection dropped: what was kept may not be this host's or current. */
+/** The connection dropped: what was kept may not be current. */
 export function forgetTranscripts(): void {
   kept.clear()
 }

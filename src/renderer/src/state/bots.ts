@@ -155,3 +155,10 @@ export function keptColor(color: string | undefined): string | undefined {
 export function botColor(bot: Pick<Bot, 'color' | 'face'>): string {
   return keptColor(bot.color) ?? faceColor(starterFace(bot.face))
 }
+
+/**
+ * Each dashboard's roster as last read in this window, so switching between
+ * combined dashboards draws its bots at once, its own and the other's, while
+ * they're read again.
+ */
+export const keptRosters = new Map<string, { bots: Bot[]; hidden: Bot[]; protocol: boolean; at: number }>()

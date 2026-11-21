@@ -1,13 +1,16 @@
 import { isMovingDataUrl, stillOf, stillReady } from './movingPicture'
 import { gateway } from '../gateway'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { avatarUrl, rosterFromProfiles, type Bot } from './bots'
+import { avatarUrl, keptRosters, rosterFromProfiles, type Bot } from './bots'
 
 /** The bots roster, read when the connection opens, when profiles change and when a turn ends. */
-export function useBots(connected: boolean) {
-  const [bots, setBots] = useState<Bot[] | null>(null)
-  const [hidden, setHidden] = useState<Bot[]>([])
-  const [protocol, setProtocol] = useState(false)
+
+/** `host`: the dashboard this window shows. */
+export function useBots(connected: boolean, host = '') {
+  const kept = keptRosters.get(host)
+  const [bots, setBots] = useState<Bot[] | null>(kept?.bots ?? null)
+  const [hidden, setHidden] = useState<Bot[]>(kept?.hidden ?? [])
+  const [protocol, setProtocol] = useState(kept?.protocol ?? false)
   const [error, setError] = useState<string | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -15,6 +18,7 @@ export function useBots(connected: boolean) {
     try {
       const body = await gateway.rpc('profiles.list', { include_sessions: true })
       const roster = rosterFromProfiles(body)
+      keptRosters.set(host, { bots: roster.bots, hidden: roster.hidden, protocol: roster.protocol, at: Date.now() })
       setBots(roster.bots)
       setHidden(roster.hidden)
       setProtocol(roster.protocol)
@@ -22,7 +26,7 @@ export function useBots(connected: boolean) {
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     }
-  }, [])
+  }, [host])
 
   useEffect(() => {
     if (!connected) return
@@ -43,26 +47,43 @@ export function useBots(connected: boolean) {
 }
 
 const avatarCache = new Map<string, Promise<string | null>>()
+/** What each read gave, so a picture read before draws on the first frame (a dashboard switch remounts every face). */
+const avatarValues = new Map<string, string | null>()
+/** The dashboard this window shows: its pictures are kept under it, beside other dashboards' (desktop: combined dashboards). */
+let avatarHost = ''
 
-/** Pictures are a host's own: forget them when another host opens. */
+const avatarKey = (name: string, host?: string) => `${host ?? avatarHost}\u0000${name}`
+
+/** The dashboard whose bots this window's own pictures are, set as its window opens. */
+export function setAvatarHost(host: string): void {
+  avatarHost = host
+}
+
+/** This dashboard's pictures are read again (a bot deleted here). */
 export function forgetAvatars(): void {
-  avatarCache.clear()
+  for (const key of [...avatarCache.keys()]) {
+    if (key.startsWith(`${avatarHost}\u0000`)) {
+      avatarCache.delete(key)
+      avatarValues.delete(key)
+    }
+  }
 }
 
 export const AVATAR_CHANGED = 'conduit-avatar-changed'
 
 /** A bot's picture changed here: read it again wherever it shows. */
 export function avatarChanged(name: string): void {
-  avatarCache.delete(name)
+  avatarCache.delete(avatarKey(name))
+  avatarValues.delete(avatarKey(name))
   window.dispatchEvent(new CustomEvent(AVATAR_CHANGED, { detail: name }))
 }
 
 /** A bot's picture as an image URL, read once per launch and again after avatarChanged. */
 export function readAvatar(name: string, host?: string): Promise<string | null> {
-  const key = host ? `${host}\u0000${name}` : name
+  const key = avatarKey(name, host)
   let pending = avatarCache.get(key)
   if (!pending) {
-    pending = host
+    pending = host && host !== avatarHost
       ? // Another combined dashboard's bot, through its kept connection; a failed read is tried again next time.
         window.conduit.keptRpc(host, 'profiles.get_asset', { name, asset: 'avatar' }).then(outcome => {
           if (!outcome.ok) avatarCache.delete(key)
@@ -71,8 +92,15 @@ export function readAvatar(name: string, host?: string): Promise<string | null> 
       : gateway
           .rpc('profiles.get_asset', { name, asset: 'avatar' })
           .then(avatarUrl)
-          .catch(() => null)
+          .catch(() => {
+            // Tried again next time, as another dashboard's is.
+            avatarCache.delete(key)
+            return null
+          })
     avatarCache.set(key, pending)
+    void pending.then(value => {
+      if (avatarCache.get(key) === pending) avatarValues.set(key, value)
+    })
   }
   return pending
 }
@@ -80,7 +108,7 @@ export function readAvatar(name: string, host?: string): Promise<string | null> 
 /** A bot's picture from its profile's asset store, read once per launch and again when Edit Bot changes it. */
 /** `host`: another combined dashboard's bot, read through that host's kept connection. */
 export function useAvatar(name: string, hasAvatar: boolean, host?: string): string | null {
-  const [url, setUrl] = useState<string | null>(null)
+  const [url, setUrl] = useState<string | null>(() => (hasAvatar ? (avatarValues.get(avatarKey(name, host)) ?? null) : null))
   const [version, setVersion] = useState(0)
   useEffect(() => {
     const changed = (event: Event) => {

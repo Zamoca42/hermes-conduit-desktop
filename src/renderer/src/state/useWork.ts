@@ -59,6 +59,8 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
   // again once more work is resolved. Kept per count, so a card asks once.
   const [resolved, setResolved] = useState<{ bot: string; count: number; items: WorkItem[] } | null>(null)
   const resolvedRead = useRef<string | null>(null)
+  /** The newest read asked: only its answer is kept, whatever count it was for. */
+  const resolvedAsk = useRef(0)
   const resolvedCount = snapshot?.resolvedCount ?? 0
   const readResolved = useCallback(() => {
     if (!connected || resolvedCount <= 0) return
@@ -66,11 +68,12 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
     if (resolvedRead.current === key) return
     resolvedRead.current = key
     const mine = generation.current
+    const ask = ++resolvedAsk.current
     gateway
       .http('GET', workPath(`${WORK}?resolved=1`, bot))
       .then(answer => {
-        // A read for an older count, answered after a newer one was asked, is dropped.
-        if (generation.current !== mine || resolvedRead.current !== key) return
+        // A read answered after a newer one was asked is dropped.
+        if (generation.current !== mine || ask !== resolvedAsk.current) return
         setResolved({ bot, count: resolvedCount, items: parseWork(answer).items })
       })
       .catch(() => {
@@ -80,12 +83,17 @@ export function useWork(profile: string | undefined, connected: boolean, live: b
   }, [bot, connected, resolvedCount])
   useEffect(() => {
     resolvedRead.current = null
+    resolvedAsk.current += 1
     setResolved(null)
   }, [bot, connected])
   // A count that fell (the plugin's history started over) makes the page kept stale.
   useEffect(() => {
     if (resolved && resolvedCount < resolved.count) {
-      resolvedRead.current = null
+      // A read already asked at the new count stands; one for the old count is dropped.
+      if (resolvedRead.current === `${resolved.bot}\u001f${resolved.count}`) {
+        resolvedRead.current = null
+        resolvedAsk.current += 1
+      }
       setResolved(null)
     }
   }, [resolved, resolvedCount])

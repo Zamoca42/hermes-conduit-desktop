@@ -1025,6 +1025,9 @@ function ReviewRun({ count, children }: { count: number; children: React.ReactNo
   )
 }
 
+/** Rows a long transcript draws on its first frame, the newest; the rest follow a frame later. */
+const FIRST_ROWS = 40
+
 export function Transcript({
   state,
   loading,
@@ -1108,6 +1111,24 @@ export function Transcript({
     [state.items, showsThinking, display.toolCards, display.showReviews, calls]
   )
   const rows = useMemo(() => foldRuns(shown), [shown])
+  // A long chat opened (or come back to after a dashboard switch) draws its newest
+  // rows on the first frame and the rest just after, so it shows at once
+  // rather than after the whole transcript is laid out.
+  const firstKey = state.items[0]?.key
+  const [whole, setWhole] = useState<string | undefined>(undefined)
+  const partial = rows.length > FIRST_ROWS && whole !== firstKey
+  useEffect(() => {
+    if (!partial) return
+    let second = 0
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => setWhole(firstKey))
+    })
+    return () => {
+      cancelAnimationFrame(first)
+      cancelAnimationFrame(second)
+    }
+  }, [partial, firstKey])
+  const drawn = partial ? rows.slice(-FIRST_ROWS) : rows
   const followedUpKeySet = useMemo(() => followedUpKeys(state.items, followedUp), [state.items, followedUp])
   const repliesToTeammates = useMemo(() => teammateReplies(state.items), [state.items])
   const summaries = useStepSummaries(state, sessionId, profile)
@@ -1217,7 +1238,7 @@ export function Transcript({
   useLayoutEffect(() => {
     const el = scroller.current
     if (el && pinned.current) el.scrollTop = el.scrollHeight
-  }, [state, requests, expired])
+  }, [state, requests, expired, partial])
 
   // Pins: which reply each shows, the bar's order, and the row ids replies pinned as they arrived took.
   const pinList = pins?.list
@@ -1327,7 +1348,7 @@ export function Transcript({
               <span>{t('Ask anything. Enter sends, Shift Enter adds a line.')}</span>
             </div>
           ) : null}
-          {rows.map(row =>
+          {drawn.map(row =>
             row.type === 'steps' ? (
               <StepRun key={row.id} row={row} live={row.trailing && state.running} expandTools={display.expandTools} summaries={summaries}>
                 {row.items.map(renderItem)}

@@ -29,13 +29,18 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
  * The rooms other people host that this Hermes keeps a copy of, read with
  * Group chats every 30 s while the window shows, for a plugin that keeps them.
  */
+/** Each dashboard's room copies as last read, for a window a switch opened to draw at once. */
+export const keptCopies = new Map<string, RoomCopy[]>()
+
 export function useRoomCopies(connected: boolean, host: string, capabilities: readonly string[]) {
   const served = capabilities.includes(ROOM_COPIES_CAPABILITY)
   const canForget = served && capabilities.includes(ROOM_FORGET_CAPABILITY)
   const canPost = served && capabilities.includes(ROOM_POSTS_CAPABILITY)
   const canAnswer = capabilities.includes(ROOM_APPROVALS_CAPABILITY)
   const canLeave = served && capabilities.includes(ROOM_LEAVE_CAPABILITY)
-  const [copies, setCopies] = useState<RoomCopy[] | null>(null)
+  // Drawn from the last read of this dashboard's copies, but only a read here counts as loaded.
+  const [copies, setCopies] = useState<RoomCopy[] | null>(() => keptCopies.get(host) ?? null)
+  const [readHere, setReadHere] = useState(false)
   const reads = useRef(0)
   const [approvals, setApprovals] = useState<CopyApproval[]>([])
   const approvalReads = useRef(0)
@@ -43,10 +48,14 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
   /** Each answer: on its way, sent, or failed with why; by approval id. A sent one's card goes. */
   const [answers, setAnswers] = useState<Record<string, RoomApprovalAnswer>>({})
 
+  const shownHost = useRef(host)
   useEffect(() => {
+    if (shownHost.current === host) return
+    shownHost.current = host
     reads.current++
     approvalReads.current++
-    setCopies(null)
+    setCopies(keptCopies.get(host) ?? null)
+    setReadHere(false)
     setApprovals([])
     setAnswers({})
   }, [host])
@@ -76,12 +85,14 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
     try {
       const list = await client.list()
       if (read !== reads.current) return
+      keptCopies.set(host, list)
+      setReadHere(true)
       // Unchanged, nothing re-renders: the open room reads them every few seconds.
       setCopies(current => (JSON.stringify(current) === JSON.stringify(list) ? current : list))
     } catch {
       // The list stays as it was; the next read tries again.
     }
-  }, [refreshApprovals])
+  }, [refreshApprovals, host])
 
   useEffect(() => {
     if (!connected || !served) return
@@ -144,7 +155,7 @@ export function useRoomCopies(connected: boolean, host: string, capabilities: re
     leave,
     copies: served && copies ? copies : NO_COPIES,
     /** The list has been read here (or isn't served, so there's none to read). */
-    loaded: !served || copies !== null,
+    loaded: !served || (readHere && copies !== null),
     refresh,
     remove,
     approvals: served && canAnswer ? shownApprovals : NO_APPROVALS,

@@ -51,19 +51,56 @@ const DESKTOP_REF = new RegExp(
   'g'
 )
 
-/**
- * Code: a fenced block (``` or ~~~ at a line's start, open to the end when
- * unclosed) or an inline span, closed by a run of as many backticks as opened
- * it (so ``a ` b`` is one span) within its paragraph.
- */
-const CODE = /(?<=^|\n)[ \t]{0,3}(```|~~~)[\s\S]*?(?:\n[ \t]{0,3}\1|$)|(?<!`)(`+)(?!`)(?:(?!\n[ \t]*\n)[\s\S])*?(?<!`)\2(?!`)/g
+/** An inline code span, closed by a run of as many backticks as opened it (so ``a ` b`` is one span) within its paragraph. */
+const INLINE_CODE = /(?<!`)(`+)(?!`)(?:(?!\r?\n[ \t]*\r?\n)[\s\S])*?(?<!`)\1(?!`)/g
 
-/** Where `text` has code, as [start, end) offsets. */
-function codeRanges(text: string): [number, number][] {
-  return [...text.matchAll(CODE)].map(m => [m.index!, m.index! + m[0].length])
+/** A line that opens a fence: three or more backticks or tildes (the phone's MarkdownFence). */
+function fenceOpening(trimmed: string): { mark: string; length: number } | null {
+  const mark = trimmed[0]
+  if (mark !== '`' && mark !== '~') return null
+  let length = 0
+  while (trimmed[length] === mark) length += 1
+  return length >= 3 ? { mark, length } : null
 }
 
-const inCode = (ranges: [number, number][], start: number, end: number) => ranges.some(([a, b]) => start < b && end > a)
+/**
+ * Where `text` has code, as sorted [start, end) offsets: its fenced blocks, read
+ * as the phone's MarkdownText reads them (only a bare line of the same mark, at
+ * least as long, closes one; a fence in a quote counts; one left open runs to
+ * the end), and its inline spans outside them.
+ */
+function codeRanges(text: string): [number, number][] {
+  if (!text.includes('`') && !text.includes('~~~')) return []
+  const blocks: [number, number][] = []
+  let fence: { mark: string; length: number } | null = null
+  let fenceStart = 0
+  let offset = 0
+  for (const line of text.split('\n')) {
+    const trimmed = line.replace(/^\s*(?:>\s?)*/, '').trim()
+    if (fence) {
+      if (trimmed.length >= fence.length && [...trimmed].every(c => c === fence!.mark)) {
+        blocks.push([fenceStart, offset + line.length])
+        fence = null
+      }
+    } else {
+      const open = fenceOpening(trimmed)
+      if (open) {
+        fence = open
+        fenceStart = offset
+      }
+    }
+    offset += line.length + 1
+  }
+  if (fence) blocks.push([fenceStart, text.length])
+  // Inline spans in the rest: each block is blanked to line breaks, a paragraph's end, so no span pairs across it.
+  let prose = text
+  for (const [a, b] of blocks) prose = prose.slice(0, a) + '\n'.repeat(b - a) + prose.slice(b)
+  const spans = [...prose.matchAll(INLINE_CODE)].map(m => [m.index!, m.index! + m[0].length] as [number, number])
+  return [...blocks, ...spans].sort((x, y) => x[0] - y[0])
+}
+
+/** Whether a link starts in code: one quoted there stays as written, while a code span in its own title leaves it a card. */
+const inCode = (ranges: [number, number][], start: number) => ranges.some(([a, b]) => start >= a && start < b)
 
 /** The reply's words without its work links (and Desktop's references to them), and the links in order, each workstream once; null when it has none. */
 export function splitWorkLinks(original: string): { text: string; links: WorkLink[] } | null {
@@ -72,7 +109,8 @@ export function splitWorkLinks(original: string): { text: string; links: WorkLin
   const originalCode = codeRanges(original)
   const text = original.includes('@session:')
     ? original.replace(DESKTOP_REF, (whole: string, link: string, _id: string, offset: number) =>
-        inCode(originalCode, offset, offset + whole.length) ? whole : link
+        // Kept when the link starts in code or the reference after it is quoted (a code span in the title doesn't count).
+        inCode(originalCode, offset) || originalCode.some(([a, b]) => a < offset + whole.length && b > offset + link.length) ? whole : link
       )
     : original
   const code = codeRanges(text)
@@ -81,7 +119,7 @@ export function splitWorkLinks(original: string): { text: string; links: WorkLin
   let cursor = 0
   for (const match of text.matchAll(WORK_LINK)) {
     const session = sessionInLink(match[2]!)
-    if (!session || inCode(code, match.index!, match.index! + match[0].length)) continue
+    if (!session || inCode(code, match.index!)) continue
     const ref = match[1]!
     if (!links.some(link => link.ref === ref)) links.push({ ref, ...session })
     let start = match.index!

@@ -218,8 +218,10 @@ class ChatMovedOn extends Error {}
 /** The longest a delta waits when no frame comes (a hidden window). */
 const DELTA_FLUSH_MS = 100
 
-export function useChat(storedId: string | null, profile: string | undefined, sessionAuthority: boolean, connected: boolean, botChat = false, folder?: string) {
-  const [transcript, dispatchNow] = useReducer(reducer, emptyTranscript)
+/** `host`: the dashboard this window shows, which keeps its own transcripts. */
+export function useChat(storedId: string | null, profile: string | undefined, sessionAuthority: boolean, connected: boolean, botChat = false, folder?: string, host = '') {
+  // A chat this window opens on, kept from before (a dashboard switch remounts it), draws on the first frame.
+  const [transcript, dispatchNow] = useReducer(reducer, null, () => (storedId && connected ? keptTranscript(storedId, profile, host) : null) ?? emptyTranscript)
   /**
    * A reply's deltas wait for the next frame and go as one (coalesceDeltas),
    * so a fast stream changes the transcript once a frame rather than per
@@ -273,7 +275,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     // (desktop#201). It also drops what this re-run's cleanup just kept: React runs that first.
     if (!connected) forgetTranscripts()
     // A chat just created here: its first turn is already drawn, so no resume, but leaving it keeps it.
-    if (storedId && storedId === created.current) return () => keepTranscript(storedId, profile, transcriptRef.current)
+    if (storedId && storedId === created.current) return () => keepTranscript(storedId, profile, transcriptRef.current, host)
     created.current = null
     const ticket = ++request.current
     liveId.current = null
@@ -288,7 +290,7 @@ export function useChat(storedId: string | null, profile: string | undefined, se
     if (!connected) return
     setLoading(true)
     // A chat left a moment ago draws as it was while its resume runs, which replaces it (desktop#201).
-    const cached = keptTranscript(storedId, profile)
+    const cached = keptTranscript(storedId, profile, host)
     dispatch({ type: 'reset', state: cached ?? emptyTranscript })
     const params: Record<string, unknown> = { session_id: storedId, cols: 96, source: 'desktop' }
     if (profile) params.profile = profile
@@ -337,8 +339,8 @@ export function useChat(storedId: string | null, profile: string | undefined, se
         if (ticket === request.current) setLoading(false)
       })
     // Leaving the chat keeps its transcript for coming back.
-    return () => keepTranscript(storedId, profile, transcriptRef.current)
-  }, [storedId, profile, sessionAuthority, connected, folder])
+    return () => keepTranscript(storedId, profile, transcriptRef.current, host)
+  }, [storedId, profile, sessionAuthority, connected, folder, host])
 
   // Live events for this chat.
   useEffect(
