@@ -46,7 +46,7 @@ describe("Bots' group chats in a combined group (desktop#231)", () => {
         onCreateRoom: async () => ({}),
         copies: [copy],
         otherBots: [{ host: 'https://far', bot: bot('furina') }],
-        otherRooms: [{ host: 'https://far', kind: 'room', room: { roomId: 'r9', name: 'Far room', members: [{ memberId: 'furina', profile: 'furina' }] } }],
+        otherRoomsAfter: [{ host: 'https://far', kind: 'room', room: { roomId: 'r9', name: 'Far room', members: [{ memberId: 'furina', profile: 'furina' }] } }],
         side: {}
       } as never)
     )
