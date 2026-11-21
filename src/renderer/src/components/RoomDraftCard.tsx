@@ -5,6 +5,7 @@ import { canStartNow, draftLine, namesList, personStatus, waitingFor, type RoomD
 import { until } from '../state/roomInvites'
 import { Icon } from './icons'
 import { ask } from '../state/dialogs'
+import { inSelectMenu } from './Select'
 
 /**
  * A draft's card, after the phone's RoomDraftSheet: each person invited and
@@ -40,7 +41,7 @@ export function RoomDraftCard({
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !busy) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !busy) {
         event.preventDefault()
         event.stopPropagation()
         onClose()

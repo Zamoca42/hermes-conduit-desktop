@@ -37,6 +37,12 @@ describe('the app dropdown', () => {
     expect(html).not.toContain('Alpha')
   })
 
+  it("keeps an option's language, so a native name draws in its own script", async () => {
+    const { Select } = await import(path)
+    const html = renderToStaticMarkup(createElement(Select, { value: 'ja', onChange: () => {} }, [createElement('option', { key: 'ja', value: 'ja', lang: 'ja' }, '日本語')]))
+    expect(html).toContain('lang="ja"')
+  })
+
   it('draws two or three fixed choices as segmented buttons when asked', async () => {
     const { Select } = await import(path)
     const html = renderToStaticMarkup(createElement(Select, { value: 'b', onChange: () => {}, segments: true, 'aria-label': 'Pick' }, [option('a', 'Alpha'), option('b', 'Beta')]))

@@ -21,7 +21,7 @@ import {
 } from '../state/roomInvites'
 import { BotAvatar } from './BotsHome'
 import { ask } from '../state/dialogs'
-import { Select } from './Select'
+import { inSelectMenu, Select } from './Select'
 
 /**
  * An invite's join card, after the phone's RoomInviteSheet: the room, who
@@ -57,7 +57,7 @@ export function RoomInviteCard({
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !busy) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !busy) {
         event.preventDefault()
         event.stopPropagation()
         onClose()

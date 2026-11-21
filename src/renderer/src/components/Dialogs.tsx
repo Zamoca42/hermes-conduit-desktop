@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import { useFrontDialog, type Dialog } from '../state/dialogs'
+import { inSelectMenu } from './Select'
 
 /** Draws the dialog in front (state/dialogs.ts) as a Conduit sheet: Enter confirms, Esc or a click outside cancels. */
 export function DialogHost() {
@@ -31,7 +32,7 @@ function DialogSheet({ dialog }: { dialog: Dialog }) {
       field.current.select()
     } else confirmButton.current?.focus()
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return
+      if (event.key !== 'Escape' || inSelectMenu(event)) return
       event.preventDefault()
       event.stopPropagation()
       cancel(dialog)

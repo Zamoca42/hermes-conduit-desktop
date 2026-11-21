@@ -9,7 +9,7 @@ import { Icon } from './icons'
  * children as a <select> does, so a screen swaps the tag and reads the picked value directly.
  */
 
-export type SelectOptionRow = { value: string; label: ReactNode; disabled: boolean }
+export type SelectOptionRow = { value: string; label: ReactNode; disabled: boolean; lang?: string }
 
 type Props = {
   value: string | number
@@ -25,7 +25,7 @@ type Props = {
   segments?: boolean
 }
 
-type OptionProps = { value?: string | number; disabled?: boolean; children?: ReactNode }
+type OptionProps = { value?: string | number; disabled?: boolean; lang?: string; children?: ReactNode }
 
 /** The <option> rows among the children, through fragments, arrays and conditionals. */
 export function selectOptions(children: ReactNode): SelectOptionRow[] {
@@ -39,7 +39,7 @@ export function selectOptions(children: ReactNode): SelectOptionRow[] {
     if (child.type !== 'option') return
     const props = (child as ReactElement<OptionProps>).props
     const label = props.children ?? ''
-    rows.push({ value: String(props.value ?? textOf(label)), label, disabled: !!props.disabled })
+    rows.push({ value: String(props.value ?? textOf(label)), label, disabled: !!props.disabled, lang: props.lang })
   })
   return rows
 }
@@ -86,7 +86,7 @@ function Segments({ value, onChange, children, disabled, title, id, ...aria }: P
           disabled={disabled || row.disabled}
           onClick={() => row.value !== current && onChange(row.value)}
         >
-          {row.label}
+          <span lang={row.lang}>{row.label}</span>
         </button>
       ))}
     </div>
@@ -220,7 +220,9 @@ function Menu({ value, onChange, children, disabled, className, title, id, ...ar
           }
         }}
       >
-        <span className="conduit-select-value">{shown?.label}</span>
+        <span className="conduit-select-value" lang={shown?.lang}>
+          {shown?.label}
+        </span>
         <Icon name="chevronDown" className="conduit-select-chevron" />
       </button>
       {open
@@ -253,7 +255,9 @@ function Menu({ value, onChange, children, disabled, className, title, id, ...ar
                   onMouseEnter={() => !row.disabled && setActive(i)}
                   onClick={() => pick(i)}
                 >
-                  <span className="conduit-select-row">{row.label}</span>
+                  <span className="conduit-select-row" lang={row.lang}>
+                    {row.label}
+                  </span>
                   {row.value === current ? <Icon name="check" className="host-check" /> : <span className="host-check" />}
                 </button>
               ))}
@@ -263,4 +267,13 @@ function Menu({ value, onChange, children, disabled, className, title, id, ...ar
         : null}
     </>
   )
+}
+
+/**
+ * Whether a key was pressed in an open dropdown's menu. A sheet that closes on Escape from a
+ * capture-phase listener hears the key before the menu does, so it leaves the key to the menu.
+ */
+export function inSelectMenu(event: Event): boolean {
+  const target = event.target
+  return target instanceof Element && !!target.closest('.conduit-select-menu')
 }

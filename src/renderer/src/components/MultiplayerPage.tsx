@@ -27,7 +27,7 @@ import type { PersonPicture } from '../state/useRoomLooks'
 import { ROOM_DASHBOARD_PROFILES_CAPABILITY, ROOM_SETUP_CAPABILITY } from '../state/roomSetup'
 import { useMouseBack } from '../state/mouseBack'
 import { ask } from '../state/dialogs'
-import { Select } from './Select'
+import { inSelectMenu, Select } from './Select'
 
 const client = roomLinksClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -467,7 +467,7 @@ function NameField({ name, setName, caption }: { name: string; setName: (name: s
 function Sheet({ title, working, done, onClose, children }: { title: string; working: boolean; done: boolean; onClose: () => void; children: React.ReactNode }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !working) {
+      if (event.key === 'Escape' && !inSelectMenu(event) && !working) {
         event.preventDefault()
         event.stopPropagation()
         onClose()
