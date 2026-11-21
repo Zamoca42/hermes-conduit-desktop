@@ -21,7 +21,7 @@ import { draftLine, type RoomDraft } from "../state/roomDrafts";
 import { lookPictureUrl, memberLook, type RoomLook, type RoomLooks } from "../state/roomLooks";
 import { StarterFaceArt } from "./StarterFaceArt";
 import { t } from "@shared/i18n";
-import type { HostBadge, OtherBot } from "../state/keptHosts";
+import type { HostBadge, OtherBot, OtherRoom } from "../state/keptHosts";
 import { canAddFar, mixedBotKey, mixedTiles, neighbour, type MixedTile } from "../state/botOrder";
 import type { OwnHermesBot } from "../state/roomDrafts";
 import { HostBadgeMark } from "./CombinedDashboards";
@@ -194,6 +194,9 @@ interface Props {
   onMoveRoom?: (moved: string, target: string | null, shown: string[]) => void;
   badgeFor?: (url: string) => HostBadge | null;
   onOpenOther?: (other: OtherBot) => void;
+  /** Combined dashboards: the other hosts' group chats, badged, each room once under the host you talk in it from, opening through a switch. */
+  otherRooms?: OtherRoom[];
+  onOpenOtherRoom?: (other: OtherRoom) => void;
   /** The host on screen: in a combined group its bots carry its badge too, so the group reads as one set. */
   hostUrl?: string;
   /**
@@ -265,6 +268,8 @@ export function BotsHome({
   onNewGroup,
   roomLooks,
   otherBots = [],
+  otherRooms = [],
+  onOpenOtherRoom,
   badgeFor,
   onOpenOther,
   hostUrl,
@@ -718,7 +723,11 @@ export function BotsHome({
       <Icon name={name} />
     </span>
   );
-  const showRooms = !!rooms && (rooms.length > 0 || canDrag || !!onNewGroup || (invites?.length ?? 0) > 0 || (copies?.length ?? 0) > 0 || (drafts?.length ?? 0) > 0);
+  // Other hosts' group chats show though this host's rooms aren't read (or can't be).
+  const showRooms =
+    otherRooms.length > 0 ||
+    (!!rooms &&
+      (rooms.length > 0 || canDrag || !!onNewGroup || (invites?.length ?? 0) > 0 || (copies?.length ?? 0) > 0 || (drafts?.length ?? 0) > 0));
   return (
     <section className={`chatlist bot-side${draft ? " drafting" : ""}`} aria-label={t("Bots")}>
       <div className="chatlist-head bot-side-head">
@@ -804,7 +813,7 @@ export function BotsHome({
                 </button>
               ) : null}
             </div>
-            {rooms!.length === 0 && !draft && canDrag ? <p className="meta hint bot-side-hint">{t("Drag one bot onto another to start a group chat.")}</p> : null}
+            {rooms?.length === 0 && otherRooms.length === 0 && !draft && canDrag ? <p className="meta hint bot-side-hint">{t("Drag one bot onto another to start a group chat.")}</p> : null}
             {(drafts ?? []).map((d) => roomRow(d.id, glyph(d.status === "ended" ? "bell" : "clock"), d.name, draftLine(d), () => onOpenDraft?.(d), { className: `draft-tile ${d.status}` }))}
             {(copies ?? []).map((copy) =>
               roomRow(
@@ -828,7 +837,7 @@ export function BotsHome({
                   { className: `invite-tile ${invite.status}`, waiting: invite.status === "waiting" },
                 ),
               )}
-            {rooms!.map((room) =>
+            {(rooms ?? []).map((room) =>
               roomRow(
                 room.roomId,
                 <RoomFaces room={room} bots={bots ?? []} size={22} looks={room.linked ? roomLooks?.[room.roomId] : undefined} />,
@@ -838,6 +847,21 @@ export function BotsHome({
                 { className: roomTarget === room.roomId ? "move-target" : undefined, current: side.openRoomId === room.roomId, drag: roomDrag(room.roomId) },
               ),
             )}
+            {otherRooms.map((other) => {
+              const room = other.kind === "room" ? other.room : copyRoom(other.copy);
+              const badge = badgeFor?.(other.host) ?? null;
+              return roomRow(
+                `${other.host}\u0000${other.kind === "room" ? other.room.roomId : other.copy.id}`,
+                <>
+                  <RoomFaces room={room} bots={otherBots.filter((o) => o.host === other.host).map((o) => o.bot)} size={22} />
+                  {badge ? <span className="bot-tile-badge">{<HostBadgeMark badge={badge} />}</span> : null}
+                </>,
+                room.name,
+                other.kind === "copy" ? copyLine(other.copy) : room.updatedAt ? timeLabel(room.updatedAt) : null,
+                () => onOpenOtherRoom?.(other),
+                { className: other.kind === "copy" && isOver(other.copy) ? "over" : undefined },
+              );
+            })}
             {draft ? (
               <div className="row bot-side-bot bot-side-room starting" aria-label={t("Group chat being started")}>
                 <span className="bot-side-face">
