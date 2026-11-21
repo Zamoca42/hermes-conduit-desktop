@@ -67,15 +67,18 @@ export function hostBadge(hosts: readonly HostSummary[], url: string, name: (url
   return { letter: (Array.from(label)[0] ?? '?').toUpperCase(), color: badgeColor(index), name: label }
 }
 
-/** The hosts kept beside the open one, as the main process says. */
+/** How long an emptied kept-host list waits before it's believed. */
+const KEPT_EMPTY_WAIT_MS = 400
+
 /** The kept hosts as last heard, and the open one then, so a window opened by a switch starts from them. */
 let lastKept: KeptHost[] = []
 let lastOwn = ''
 
 /**
- * `own`: the open host. A window a switch opened starts from the last list,
- * the host it left in place of the one it opened, until the main process
- * says, so the other dashboard's bots and chats don't drop out meanwhile.
+ * The hosts kept beside the open one, as the main process says. `own`: the
+ * open host. A window a switch opened starts from the last list, the host it
+ * left in place of the one it opened, until the main process says, so the
+ * other dashboard's bots and chats don't drop out meanwhile.
  */
 export function useKeptHosts(own = ''): KeptHost[] {
   const [hosts, setHosts] = useState<KeptHost[]>(() =>
@@ -87,13 +90,25 @@ export function useKeptHosts(own = ''): KeptHost[] {
     if (own) lastOwn = own
   }, [own])
   useEffect(() => {
+    // A switch empties the list for a moment before the host it left joins it: an empty list waits a beat, so
+    // the other dashboard's bots and chats don't blink out.
+    let emptying: ReturnType<typeof setTimeout> | null = null
     const heard = (list: KeptHost[]) => {
-      lastKept = list
-      setHosts(list)
+      if (emptying) clearTimeout(emptying)
+      emptying = null
+      const apply = () => {
+        lastKept = list
+        setHosts(list)
+      }
+      if (list.length) apply()
+      else emptying = setTimeout(apply, KEPT_EMPTY_WAIT_MS)
     }
     const off = window.conduit.onKeptHosts(heard)
     void window.conduit.keptHosts().then(heard)
-    return off
+    return () => {
+      off()
+      if (emptying) clearTimeout(emptying)
+    }
   }, [])
   return hosts
 }
@@ -492,17 +507,24 @@ function botsOf(url: string): OtherBot[] {
 }
 
 export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] {
+  // Drawn while live or reconnecting (the host a switch left is dialed again, which over the internet takes most
+  // of a second); read only while live.
+  const shown = kept
+    .filter(h => h.state === 'live' || h.state === 'connecting')
+    .map(h => h.url)
+    .join('\n')
   const live = kept
     .filter(h => h.state === 'live')
     .map(h => h.url)
     .join('\n')
   // A window a switch opened draws the other dashboard's bots at once, from the last read (or its roster when
   // it was the open one), whether or not the list shows yet; they're read again only while it does (`on`).
-  const [bots, setBots] = useState<OtherBot[]>(() => (live ? live.split('\n').flatMap(botsOf) : []))
+  const [bots, setBots] = useState<OtherBot[]>(() => (shown ? shown.split('\n').flatMap(botsOf) : []))
 
   useEffect(() => {
+    const drawn = shown ? shown.split('\n') : []
     const urls = live ? live.split('\n') : []
-    const show = () => setBots(urls.flatMap(botsOf))
+    const show = () => setBots(drawn.flatMap(botsOf))
     show()
     if (!on || !urls.length) return
     let stopped = false
@@ -523,7 +545,7 @@ export function useKeptBots(kept: readonly KeptHost[], on: boolean): OtherBot[] 
       stopped = true
       clearInterval(timer)
     }
-  }, [live, on])
+  }, [shown, live, on])
 
   return bots
 }
