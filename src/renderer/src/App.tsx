@@ -190,7 +190,7 @@ import { useCommands } from './state/useCommands'
 import { authorityMutation, moveChat, mutateSession, sessionPath } from './state/chatActions'
 import { branchPlan } from './state/branch'
 import { ROOM_CHATS_CAPABILITY, openRoomChat, roomChatsClient, wrapUpPrompt, type RoomChatAgent } from './state/roomChats'
-import { parseProjects, type ProjectChat } from './state/projects'
+import { parseProjects, type Project, type ProjectChat } from './state/projects'
 import { useLiveStatus } from './state/liveStatus'
 import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply } from './state/pinnedReplies'
 import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
@@ -1100,6 +1100,27 @@ function Shell({
       list.refresh()
     },
     [list, selected.id, chat.storedId, newChat, updatePins]
+  )
+  // Filter › Projects: the project tree of the profile the list shows (with one profile, All is that one), read again as turns end.
+  const filterProfile = chatProfile ?? (roster.bots?.length === 1 ? roster.bots[0].name : null)
+  const [filterTree, setFilterTree] = useState<{ key: string; list: Project[] } | null>(null)
+  const filterTreeKey = filterProfile && connected && status.url ? `${status.url}\t${filterProfile}` : null
+  useEffect(() => {
+    if (!filterTreeKey || section !== 'chats') return
+    let live = true
+    const profile = filterProfile && filterProfile !== 'default' ? filterProfile : undefined
+    gateway
+      .rpc('projects.tree', profile ? { preview_limit: 3, profile } : { preview_limit: 3 })
+      .then(response => live && setFilterTree({ key: filterTreeKey, list: parseProjects(response, filterProfile ?? undefined) }))
+      // A Hermes without projects offers none.
+      .catch(() => live && setFilterTree({ key: filterTreeKey, list: [] }))
+    return () => {
+      live = false
+    }
+  }, [filterTreeKey, filterProfile, section, turnsDone])
+  const projectFilter = useMemo(
+    () => (filterProfile && filterTreeKey ? { profile: filterProfile, list: filterTree?.key === filterTreeKey ? filterTree.list : null } : undefined),
+    [filterProfile, filterTreeKey, filterTree]
   )
   // Move to Project: the chat's profile's projects with a folder, as the phone offers them.
   const moveTargets = useCallback(async (row: ChatRow): Promise<MoveTarget[]> => {
@@ -2178,6 +2199,8 @@ function Shell({
                       void chatAction(row, null)
                   }}
                   onProjects={() => setProjectsOpen(true)}
+                  projects={projectFilter}
+                  onNeedsYou={waiting.available || otherWaiting.length ? () => setSection('needs') : undefined}
                   searchScope={markHost}
                   onPinnedReplies={pins.length ? () => setPinSheet({ scope: 'all' }) : undefined}
                   moveTargets={moveTargets}

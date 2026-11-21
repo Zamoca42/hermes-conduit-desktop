@@ -11795,6 +11795,16 @@ button.ghost:disabled {
   background: var(--surface-hover);
 }
 
+.filter-menu .filter-item:disabled {
+  opacity: 0.45;
+  cursor: default;
+  background: none;
+}
+
+.filter-menu .filter-back .filter-check {
+  color: var(--text-2);
+}
+
 .filter-check {
   color: var(--accent);
   font-weight: 700;

@@ -111,5 +111,44 @@ describe('the chat list draws', () => {
     expect(all).toContain('filter-active')
     localStorage.removeItem('conduit.chatFilters')
   })
+  it('leaves out the projects Filter › Projects hides, names them on the chip, and keeps pinned chats and searches', async () => {
+    const path = '../src/renderer/src/components/ChatList.tsx'
+    const { ChatList } = (await import(/* @vite-ignore */ path)) as { ChatList: unknown }
+    const now = Date.now()
+    localStorage.setItem('conduit.hiddenChatProjects', JSON.stringify({ 'https://host\tcoder': ['site'] }))
+    const rows = [
+      { id: 'h', title: 'Loose', activeAt: now, pinned: false, profile: 'coder' },
+      { id: 's1', title: 'Website copy', activeAt: now, pinned: false, profile: 'coder' },
+      { id: 's2', title: 'Website pinned', activeAt: now, pinned: true, profile: 'coder' }
+    ]
+    const list = [
+      { id: 'home', title: 'Home', isHome: true, isAuto: false, count: 1, previews: [{ id: 'h', title: 'Loose' }] },
+      { id: 'site', title: 'Site', isHome: false, isAuto: false, count: 2, previews: [{ id: 's1', title: 'Website copy' }, { id: 's2', title: 'Website pinned' }] }
+    ]
+    const render = (extra: Record<string, unknown>) =>
+      renderToStaticMarkup(
+        createElement(ChatList as never, {
+          rows,
+          error: null,
+          selectedId: null,
+          runningIds: new Set(),
+          onSelect: () => {},
+          onNewChat: () => {},
+          profile: 'coder',
+          searchScope: 'https://host',
+          marks: { stars: [], seen: {}, baseline: now + 1, unread: [] },
+          ...extra
+        } as never)
+      )
+    const shown = render({ projects: { profile: 'coder', list } })
+    expect(shown).toContain('Loose')
+    expect(shown).not.toContain('Website copy')
+    expect(shown).toContain('Website pinned')
+    expect(shown).toContain('1 project hidden')
+    // Until the tree loads nothing is hidden, and without a tree (All with several profiles) nothing is offered.
+    expect(render({ projects: { profile: 'coder', list: null } })).toContain('Website copy')
+    expect(render({})).toContain('Website copy')
+    localStorage.removeItem('conduit.hiddenChatProjects')
+  })
 })
 
