@@ -283,6 +283,17 @@ describe('more than one Hermes', () => {
     h.hostList.rename!('https://one', 'Studio')
     h.connection.hostsChanged()
     expect(h.connection.current()).toMatchObject({ hostLabel: 'Studio' })
+    // Named with its own address, it reads exactly as Settings does, port and all.
+    h.hostList.rename!('https://one', 'one:9119')
+    h.connection.hostsChanged()
+    expect(h.connection.current()).toMatchObject({ hostLabel: 'one:9119' })
+  })
+
+  it('labels an unnamed host on an IP address with its port, as Settings does', async () => {
+    const h = harness({ hosts: true })
+    await h.connection.signIn({ url: 'http://192.168.1.5:9119', method: 'token', token: 'a' })
+    await tick()
+    expect(h.connection.current()).toMatchObject({ hostLabel: '192.168.1.5:9119' })
   })
 
   it('a failed sign-in to another host goes back to the open one', async () => {
