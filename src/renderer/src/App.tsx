@@ -54,7 +54,7 @@ import { chatDraft, composerDrafts } from './state/composerDrafts'
 import { openElsewhereMessage, owner } from './state/chatTakeover'
 import type { Bot } from './state/bots'
 import type { ChatRow } from './state/chats'
-import { forgetAvatars, useBots } from './state/useBots'
+import { forgetAvatars, setAvatarHost, useBots } from './state/useBots'
 import { mentionCandidates, withMentionNote, withoutMentionNote } from './state/botMentions'
 import type { Room } from './state/groups'
 import { useRooms } from './state/useGroups'
@@ -197,7 +197,6 @@ import { loadChatCalls, type CallTranscript, type ChatCall } from './state/voice
 import type { CallResume } from './state/voiceSave'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 import { ask, tell } from './state/dialogs'
-import { forgetTranscripts } from './state/transcriptCache'
 
 /** The host's synced preferences, for the bots' order. */
 const prefsHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
@@ -220,9 +219,6 @@ export function App() {
   // A new host signed in (or the sign-in screen otherwise left): back to the app.
   const url = status?.url
   useEffect(() => setAdding(false), [url])
-  // Another host's transcripts never draw here. An effect, so it runs after the
-  // old host's chat view has kept its own on unmount (desktop#201).
-  useEffect(() => forgetTranscripts(), [url])
   // The launch list's combined row opens the member used last.
   useEffect(() => {
     if (url) writeLastHost(url)
@@ -363,8 +359,8 @@ function Shell({
   onEditHost: (host: HostSummary) => void
   onRepair: () => void
 }) {
-  // Before any picture is read for this host.
-  useState(forgetAvatars)
+  // Before any picture is read for this host: its pictures are kept under it.
+  useState(() => setAvatarHost(status.url ?? ''))
   const connected = status.phase === 'open'
   const [section, setSection] = useState<Section>(() => reopenedSection(status.url ?? ''))
   // A bot opened from Bots home keeps the bots, and its workstreams, in the sidebar (as the iPad's Bots column
@@ -404,7 +400,7 @@ function Shell({
     discardLost,
     resendLost,
     react: reactTo
-  } = useChat(selected.id, selected.profile, status.sessionAuthority === true, connected, selected.botChat === true, selected.id ? undefined : selected.folder)
+  } = useChat(selected.id, selected.profile, status.sessionAuthority === true, connected, selected.botChat === true, selected.id ? undefined : selected.folder, status.url ?? '')
 
   // The chat list's profile: a new chat starts in it.
   const [chatProfile, setChatProfile] = useState<string | null>(null)
@@ -505,7 +501,7 @@ function Shell({
     }
   }, [])
 
-  const roster = useBots(connected)
+  const roster = useBots(connected, status.url ?? '')
   // The phone's tab layout, kept for this dashboard's next launch (not this one: the page is already open).
   useEffect(() => {
     if (!connected || !status.url) return

@@ -11,6 +11,16 @@ const state = (text: string, extra: Partial<TranscriptState> = {}): TranscriptSt
 beforeEach(() => forgetTranscripts())
 
 describe('the transcripts kept for coming back', () => {
+  it('keeps each dashboard’s chats apart, so switching back draws its chat at once', () => {
+    const here = state('here')
+    const there = state('there')
+    keepTranscript('s1', 'zhongli', here, 'https://a.example')
+    keepTranscript('s1', 'zhongli', there, 'https://b.example')
+    expect(keptTranscript('s1', 'zhongli', 'https://a.example')).toBe(here)
+    expect(keptTranscript('s1', 'zhongli', 'https://b.example')).toBe(there)
+    expect(keptTranscript('s1', 'zhongli')).toBeNull()
+  })
+
   it('gives back a chat as it was left, per profile', () => {
     const a = state('a')
     keepTranscript('s1', undefined, a)
