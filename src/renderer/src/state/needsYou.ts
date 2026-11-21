@@ -229,3 +229,16 @@ export function askedQuestionsBlock(rows: readonly WaitingRow[]): string {
     'Hermes records it, and the chat that asked acts on it.'
   )
 }
+
+/**
+ * The ids a chat goes by, for finding its window (`chatWindowOf`): the
+ * stored id the window knows it by, and the ids a waiting row lists with
+ * this session's (stored and live), so a chat popped out from a row, never
+ * opened here, is found before its window has opened its session.
+ */
+export function chatIdsOf(sessionId: string, storedId: string | null | undefined, rows: readonly WaitingRow[]): string[] {
+  const ids = new Set<string>()
+  if (storedId) ids.add(storedId)
+  for (const row of rows) if (row.sessionIds.includes(sessionId)) for (const id of row.sessionIds) if (id && id !== sessionId) ids.add(id)
+  return [...ids]
+}

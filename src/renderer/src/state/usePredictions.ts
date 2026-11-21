@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { language } from '@shared/i18n'
+import { language } from '../../../shared/i18n'
 import { gateway } from '../gateway'
-import { STATUS_PATH, pluginStatus, serves } from './plugin'
+import { STATUS_PATH, askPluginStatus, serves } from './plugin'
+import { dashboardHost } from './dashboardProfile'
 import {
   ASK_AGAIN_RANGE,
   MAX_CHECKS,
@@ -29,24 +30,44 @@ import {
   repliesBody,
   repliesEnabled,
   replyCount,
-  settledReply
+  settledReply,
+  INSTRUCTIONS_CAPABILITY,
+  INSTRUCTIONS_EVENT,
+  instructions,
+  instructionsKey,
+  type PredictKind
 } from './predictive'
 import { languageName } from './stepSummaries'
 import type { TranscriptState } from './transcript'
 
-// Whether this host's plugin answers predictions, asked again every ten minutes.
-let served: { at: number; answer: Promise<boolean> } | null = null
-export function predictionsServed(): Promise<boolean> {
-  if (!served || Date.now() - served.at > 600_000) {
-    served = {
-      at: Date.now(),
-      answer: gateway
-        .http('GET', STATUS_PATH)
-        .then(body => serves(pluginStatus(body), [PREDICT_CAPABILITY]))
-        .catch(() => false)
+// Whether this dashboard's plugin reports a capability: a definite answer (it listed it, or a
+// plugin too old to say) kept ten minutes for that dashboard; one that couldn't tell (a timeout,
+// a restart) counts as no for now and is asked again next time.
+const capabilityAnswers = new Map<string, { host: string; at: number; answer: Promise<boolean> }>()
+function capabilityServed(capability: string): Promise<boolean> {
+  const host = dashboardHost()
+  const kept = capabilityAnswers.get(capability)
+  if (kept && kept.host === host && Date.now() - kept.at <= 600_000) return kept.answer
+  const entry = { host, at: Date.now(), answer: Promise.resolve(false) }
+  entry.answer = askPluginStatus(() => gateway.http('GET', STATUS_PATH)).then(status => {
+    if (status === null) {
+      if (capabilityAnswers.get(capability) === entry) capabilityAnswers.delete(capability)
+      return false
     }
-  }
-  return served.answer
+    return serves(status, [capability])
+  })
+  capabilityAnswers.set(capability, entry)
+  return entry.answer
+}
+
+/** Whether this dashboard's plugin answers predictions. */
+export const predictionsServed = (): Promise<boolean> => capabilityServed(PREDICT_CAPABILITY)
+/** Whether this dashboard's plugin uses the user's instructions; an older one ignores them, so none are sent. */
+export const instructionsServed = (): Promise<boolean> => capabilityServed(INSTRUCTIONS_CAPABILITY)
+
+/** The instructions `kind`'s question carries now: none on a plugin that would ignore them. */
+async function sentInstructions(kind: PredictKind): Promise<string | null> {
+  return (await instructionsServed()) ? instructions(kind) : null
 }
 
 /**
@@ -74,8 +95,22 @@ export function usePredictions(state: TranscriptState, sessionId: string | undef
       setEnabled(repliesEnabled())
       setPausing(pauseEnabled())
     }
+    // Replies made under instructions since edited go; the next reply asks with the new ones.
+    // Settings in this window says so with its event; in another window, storage does.
+    const edited = (e: Event) => {
+      if ((e as CustomEvent).detail === 'replies') setAnswer(null)
+    }
+    const stored = (e: StorageEvent) => {
+      if (e.key === instructionsKey('replies')) setAnswer(null)
+    }
     window.addEventListener(PREDICTIVE_EVENT, changed)
-    return () => window.removeEventListener(PREDICTIVE_EVENT, changed)
+    window.addEventListener(INSTRUCTIONS_EVENT, edited)
+    window.addEventListener('storage', stored)
+    return () => {
+      window.removeEventListener(PREDICTIVE_EVENT, changed)
+      window.removeEventListener(INSTRUCTIONS_EVENT, edited)
+      window.removeEventListener('storage', stored)
+    }
   }, [])
 
   useEffect(() => {
@@ -86,9 +121,11 @@ export function usePredictions(state: TranscriptState, sessionId: string | undef
     void (async () => {
       if (!(await predictionsServed())) return void (done = true)
       try {
-        const body = repliesBody(sessionId, replyCount(), languageName(language()), predictModel())
+        const sent = await sentInstructions('replies')
+        const body = repliesBody(sessionId, replyCount(), languageName(language()), predictModel(), sent)
         const response = await gateway.http('POST', PREDICT_PATH, body, (REPLIES_WAIT_S + 5) * 1000)
-        if (live) setAnswer({ key, replies: guesses(response) })
+        // Answered under instructions edited meanwhile: dropped.
+        if (live && (await sentInstructions('replies')) === sent) setAnswer({ key, replies: guesses(response) })
       } catch {
         // No chips for this reply: Conduit doesn't ask again for it.
       }
@@ -105,8 +142,11 @@ export function usePredictions(state: TranscriptState, sessionId: string | undef
     async (draft: string): Promise<DraftGuesses | null> => {
       if (!sessionId || !askable(draft) || !(await predictionsServed())) return null
       try {
-        const body = draftBody(sessionId, draft, replyCount(), languageName(language()), predictModel())
-        return draftGuesses(await gateway.http('POST', PREDICT_PATH, body, (DRAFT_WAIT_S + 3) * 1000))
+        const sent = await sentInstructions('draft')
+        const body = draftBody(sessionId, draft, replyCount(), languageName(language()), predictModel(), sent)
+        const answer = draftGuesses(await gateway.http('POST', PREDICT_PATH, body, (DRAFT_WAIT_S + 3) * 1000))
+        // Answered under instructions edited meanwhile: dropped.
+        return (await sentInstructions('draft')) === sent ? answer : null
       } catch {
         return null
       }
@@ -203,11 +243,13 @@ export function useFollowUps(state: TranscriptState, sessionId: string | undefin
       const now = live.current
       if (c.anchor !== asked || !now.enabled || !now.onScreen || !now.draftEmpty || !now.sessionId || !(await predictionsServed())) return
       c.checks += 1
+      const sent = await sentInstructions('turn')
       const body = turnBody(
         now.sessionId,
         { lastReplyS: (Date.now() - c.replyAt) / 1000, onScreenS: (Date.now() - c.idleSince) / 1000, check: c.checks, localTime: localTime() },
         languageName(language()),
-        predictModel()
+        predictModel(),
+        sent
       )
       let answer: TurnAnswer
       try {
@@ -221,6 +263,12 @@ export function useFollowUps(state: TranscriptState, sessionId: string | undefin
       const after = live.current
       // Still the same reply on screen, nobody writing, the switch still on.
       if (clock.current !== c || after.anchor !== asked || !after.enabled || !after.onScreen || !after.draftEmpty || !after.sessionId) return
+      // Decided under follow-up instructions edited meanwhile: asked again with the new ones, within the reply's checks.
+      if ((await sentInstructions('turn')) !== sent) {
+        if (c.checks < MAX_CHECKS) c.nextAt = Date.now() + ASK_AGAIN_RANGE[0] * 1000
+        else c.stopped = true
+        return setTick(n => n + 1)
+      }
       if (answer.takeTurn && answer.nudge) {
         c.stopped = true
         if (after.userKey) spent.current.add(after.userKey)
