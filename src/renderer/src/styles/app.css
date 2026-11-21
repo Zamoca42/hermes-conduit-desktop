@@ -1078,6 +1078,7 @@ a:hover {
 }
 
 .segmented button[aria-pressed='true'],
+.segmented button[aria-checked='true'],
 .segmented button.on {
   border-color: transparent;
   background: var(--accent-soft);
@@ -9866,7 +9867,8 @@ button.secondary.danger {
   gap: 4px;
   padding: 8px 2px 0;
 }
-.invite-choices label:not(.toggle) {
+.invite-choices label:not(.toggle),
+.invite-choices .invite-choice {
   display: flex;
   align-items: center;
   justify-content: space-between;

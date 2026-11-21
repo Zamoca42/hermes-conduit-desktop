@@ -263,28 +263,28 @@ function ChoicesEditor({
         </Select>
       </label>
       <p className="meta">{toolsDetail(choices, freeBusy)}</p>
-      <label>
+      <div className="invite-choice">
         <span>{t('What it may share')}</span>
-        <Select segments className="language-select" value={choices.share} onChange={picked => set({ share: picked })}>
+        <Select segments aria-label={t('What it may share')} value={choices.share} onChange={picked => set({ share: picked })}>
           <option value="helps">{t('What helps')}</option>
           <option value="ask">{t('Ask me first')}</option>
           <option value="nothing">{t('Nothing personal')}</option>
         </Select>
-      </label>
+      </div>
       <p className="meta">{shareDetail(choices.share)}</p>
       <label className="toggle">
         <input type="checkbox" checked={choices.searchChats} onChange={e => set({ searchChats: e.target.checked })} />
         <span>{t('Search my past chats')}</span>
       </label>
       <p className="meta">{t("It can search your other chats to answer here, other people's messages in them included.")}</p>
-      <label>
+      <div className="invite-choice">
         <span>{t('How it takes part')}</span>
-        <Select segments className="language-select" value={choices.takesPart} onChange={picked => set({ takesPart: picked })}>
+        <Select segments aria-label={t('How it takes part')} value={choices.takesPart} onChange={picked => set({ takesPart: picked })}>
           <option value="joins">{t('Joins in')}</option>
           <option value="asked">{t('When asked')}</option>
           <option value="listens">{t('Listens only')}</option>
         </Select>
-      </label>
+      </div>
       <p className="meta">{takesPartDetail(choices.takesPart)}</p>
       <label>
         <span>{t('Turns a day')}</span>

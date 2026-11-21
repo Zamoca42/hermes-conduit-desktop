@@ -196,14 +196,14 @@ function AgentChoicesEditor({ roomId, profile, name, freeBusy }: { roomId: strin
         </Select>
       </label>
       <p className="meta">{toolsDetail(choices, freeBusy)}</p>
-      <label>
+      <div className="invite-choice">
         <span>{t('What it may share')}</span>
-        <Select segments className="language-select" value={choices.share} disabled={saving} onChange={picked => void change('share', picked, { share: picked })}>
+        <Select segments aria-label={t('What it may share')} value={choices.share} disabled={saving} onChange={picked => void change('share', picked, { share: picked })}>
           <option value="helps">{t('What helps')}</option>
           <option value="ask">{t('Ask me first')}</option>
           <option value="nothing">{t('Nothing personal')}</option>
         </Select>
-      </label>
+      </div>
       <p className="meta">{shareDetail(choices.share)}</p>
       <label className="toggle">
         <input type="checkbox" checked={choices.searchChats} disabled={saving} onChange={e => void change('search_chats', e.target.checked, { searchChats: e.target.checked })} />

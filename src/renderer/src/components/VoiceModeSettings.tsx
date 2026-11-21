@@ -280,9 +280,9 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
             />
           </label>
           <p className="meta settings-caption">{t('The voice Qwen speaks with. Applies to the next conversation.')}</p>
-          <label className="voice-mode-pick">
+          <div className="voice-mode-pick">
             <span className="meta">{t('Web lookups')}</span>
-            <Select segments
+            <Select segments aria-label={t('Web lookups')}
               value={qwenSearch}
               onChange={picked => {
                 const next = picked as SearchMode
@@ -294,7 +294,7 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
               <option value="hermes">{t('Hermes web search')}</option>
               <option value="off">{t('Off')}</option>
             </Select>
-          </label>
+          </div>
           <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
           <p className="meta settings-caption">{t('Qwen uses Hermes web search. Native search is disabled while function tools are enabled.')}</p>
           <label className="toggle">

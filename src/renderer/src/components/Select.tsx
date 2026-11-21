@@ -51,9 +51,9 @@ function textOf(node: ReactNode): string {
   return ''
 }
 
-/** The row a native <select> would show: the matching one, else the first. */
+/** The row the field shows: the one matching the value, else none, as a <select> with no matching option shows blank. */
 export function shownOption(rows: SelectOptionRow[], value: string): SelectOptionRow | undefined {
-  return rows.find(row => row.value === value) ?? rows[0]
+  return rows.find(row => row.value === value)
 }
 
 /** The next row a key moves to, skipping disabled rows; stays put at either end. */
@@ -83,7 +83,6 @@ function Segments({ value, onChange, children, disabled, title, id, ...aria }: P
           type="button"
           role="radio"
           aria-checked={row.value === current}
-          aria-pressed={row.value === current}
           disabled={disabled || row.disabled}
           onClick={() => row.value !== current && onChange(row.value)}
         >
@@ -109,7 +108,7 @@ function Menu({ value, onChange, children, disabled, className, title, id, ...ar
   function openMenu() {
     if (disabled || rows.length === 0) return
     const at = rows.findIndex(row => row.value === current)
-    setActive(at >= 0 ? at : stepOption(rows, -1, 1))
+    setActive(at >= 0 && !rows[at].disabled ? at : stepOption(rows, -1, 1))
     setOpen(true)
   }
 
