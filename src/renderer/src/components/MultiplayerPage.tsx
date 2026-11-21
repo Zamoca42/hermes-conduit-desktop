@@ -27,6 +27,7 @@ import type { PersonPicture } from '../state/useRoomLooks'
 import { ROOM_DASHBOARD_PROFILES_CAPABILITY, ROOM_SETUP_CAPABILITY } from '../state/roomSetup'
 import { useMouseBack } from '../state/mouseBack'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 const client = roomLinksClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -201,13 +202,13 @@ export function MultiplayerPage({
         <h1>{t('Multiplayer')}</h1>
         <span className="spacer" />
         {bots.length > 1 && capabilities.includes(ROOM_SETUP_CAPABILITY) ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
 

@@ -3,6 +3,7 @@ import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { FREE_ON_CHOICES, QUESTION_CHOICES, freeOnTitle, linkAsksClient, questionsTitle, rulesCaption, type LinkAskRulesEntry } from '../state/linkAsks'
 import { linksMessage } from '../state/roomLinks'
+import { Select } from './Select'
 
 const client = linkAsksClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -73,35 +74,35 @@ export function LinkAsksSection({ host, linkIds, bots }: { host: string; linkIds
               </strong>
               <label className="link-asks-row">
                 <span className="meta">{t('Free on a date')}</span>
-                <select className="language-select" value={link.rules.freeOn} disabled={!!changing} onChange={e => void change(link, 'free_on', e.target.value)}>
+                <Select className="language-select" value={link.rules.freeOn} disabled={!!changing} onChange={picked => void change(link, 'free_on', picked)}>
                   {(FREE_ON_CHOICES.includes(link.rules.freeOn) ? FREE_ON_CHOICES : [...FREE_ON_CHOICES, link.rules.freeOn]).map(choice => (
                     <option key={choice} value={choice}>
                       {freeOnTitle(choice)}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
               <label className="link-asks-row">
                 <span className="meta">{t('Questions')}</span>
-                <select className="language-select" value={link.rules.questions} disabled={!!changing} onChange={e => void change(link, 'questions', e.target.value)}>
+                <Select className="language-select" value={link.rules.questions} disabled={!!changing} onChange={picked => void change(link, 'questions', picked)}>
                   {(QUESTION_CHOICES.includes(link.rules.questions) ? QUESTION_CHOICES : [...QUESTION_CHOICES, link.rules.questions]).map(choice => (
                     <option key={choice} value={choice}>
                       {questionsTitle(choice)}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
               {/* Only one bot: it's the one that answers. */}
               {bots.length > 1 ? (
                 <label className="link-asks-row">
                   <span className="meta">{t('Answered by')}</span>
-                  <select className="language-select" value={link.rules.profile} disabled={!!changing} onChange={e => void change(link, 'profile', e.target.value)}>
+                  <Select className="language-select" value={link.rules.profile} disabled={!!changing} onChange={picked => void change(link, 'profile', picked)}>
                     {choices.map(name => (
                       <option key={name} value={name}>
                         {titleOf(name)}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
               ) : null}
               <p className="meta">{rulesCaption(link.rules, link.name, titleOf(link.rules.profile))}</p>

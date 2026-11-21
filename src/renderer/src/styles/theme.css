@@ -87,9 +87,3 @@
   }
 }
 
-/* Every dropdown's options, in the theme's colors rather than white until highlighted. */
-select option,
-select optgroup {
-  background-color: var(--menu);
-  color: var(--text);
-}

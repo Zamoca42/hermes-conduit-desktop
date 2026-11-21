@@ -21,6 +21,7 @@ import {
 } from '../state/roomInvites'
 import { BotAvatar } from './BotsHome'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 /**
  * An invite's join card, after the phone's RoomInviteSheet: the room, who
@@ -253,22 +254,22 @@ function ChoicesEditor({
     <div className="invite-choices">
       <label>
         <span>{t('What it can do')}</span>
-        <select className="language-select" value={choices.tools} onChange={e => set({ tools: e.target.value })}>
+        <Select className="language-select" value={choices.tools} onChange={picked => set({ tools: picked })}>
           {tools.map(([id, title]) => (
             <option key={id} value={id}>
               {title}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <p className="meta">{toolsDetail(choices, freeBusy)}</p>
       <label>
         <span>{t('What it may share')}</span>
-        <select className="language-select" value={choices.share} onChange={e => set({ share: e.target.value })}>
+        <Select segments className="language-select" value={choices.share} onChange={picked => set({ share: picked })}>
           <option value="helps">{t('What helps')}</option>
           <option value="ask">{t('Ask me first')}</option>
           <option value="nothing">{t('Nothing personal')}</option>
-        </select>
+        </Select>
       </label>
       <p className="meta">{shareDetail(choices.share)}</p>
       <label className="toggle">
@@ -278,22 +279,22 @@ function ChoicesEditor({
       <p className="meta">{t("It can search your other chats to answer here, other people's messages in them included.")}</p>
       <label>
         <span>{t('How it takes part')}</span>
-        <select className="language-select" value={choices.takesPart} onChange={e => set({ takesPart: e.target.value })}>
+        <Select segments className="language-select" value={choices.takesPart} onChange={picked => set({ takesPart: picked })}>
           <option value="joins">{t('Joins in')}</option>
           <option value="asked">{t('When asked')}</option>
           <option value="listens">{t('Listens only')}</option>
-        </select>
+        </Select>
       </label>
       <p className="meta">{takesPartDetail(choices.takesPart)}</p>
       <label>
         <span>{t('Turns a day')}</span>
-        <select className="language-select" value={choices.dailyLimit} onChange={e => set({ dailyLimit: Number(e.target.value) })}>
+        <Select className="language-select" value={choices.dailyLimit} onChange={picked => set({ dailyLimit: Number(picked) })}>
           {dailyLimitSteps(original.dailyLimit).map(n => (
             <option key={n} value={n}>
               {n.toLocaleString()}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <p className="meta">{t("The most turns it takes in this room each day. Once they're used up, it says so and sits out until tomorrow.")}</p>
     </div>

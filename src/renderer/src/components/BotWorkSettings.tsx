@@ -15,6 +15,7 @@ import {
   type Policy,
   type WorkSettings
 } from '../state/workSettings'
+import { Select } from './Select'
 
 interface Props {
   bot: string
@@ -119,36 +120,36 @@ export function BotWorkSettings({ bot, botName, providers }: Props) {
           <>
             <div className="pset-row">
               <span>{t('What It Does Itself')}</span>
-              <select
+              <Select
                 className="language-select"
                 value={settings.policy}
                 disabled={saving}
-                onChange={e => void save({ policy: e.target.value }, { policy: e.target.value as Policy })}
+                onChange={picked => void save({ policy: picked }, { policy: picked as Policy })}
               >
                 {policyChoices(settings).map(choice => (
                   <option key={choice.id} value={choice.id}>
                     {choice.title}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
             <p className="meta">{policyCaption(settings.policy, botName)}</p>
             {settings.policy === 'lookups' && settings.quickSteps !== undefined && steps.length > 1 ? (
               <>
                 <div className="pset-row">
                   <span>{t('Steps in One Turn')}</span>
-                  <select
+                  <Select
                     className="language-select"
                     value={settings.quickSteps}
                     disabled={saving}
-                    onChange={e => void save({ quick_steps: Number(e.target.value) }, { quickSteps: Number(e.target.value) })}
+                    onChange={picked => void save({ quick_steps: Number(picked) }, { quickSteps: Number(picked) })}
                   >
                     {steps.map(n => (
                       <option key={n} value={n}>
                         {n}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </div>
                 <p className="meta">
                   {t('{bot} does up to {steps} steps of a task in its Bot Chat. A task that needs more carries on in the background.', {
@@ -160,18 +161,18 @@ export function BotWorkSettings({ bot, botName, providers }: Props) {
             ) : null}
             <div className="pset-row">
               <span>{t('Running at Once')}</span>
-              <select
+              <Select
                 className="language-select"
                 value={settings.maxRunning}
                 disabled={saving}
-                onChange={e => void save({ max_running: Number(e.target.value) }, { maxRunning: Number(e.target.value) })}
+                onChange={picked => void save({ max_running: Number(picked) }, { maxRunning: Number(picked) })}
               >
                 {Array.from({ length: Math.max(settings.maxRunningLimit, settings.maxRunning) }, (_, i) => i + 1).map(n => (
                   <option key={n} value={n}>
                     {n}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
             <p className="meta">
               {t('When this many are running, {bot} waits for one to finish or sends new work to one that’s already on it.', { bot: botName })}
@@ -185,16 +186,16 @@ export function BotWorkSettings({ bot, botName, providers }: Props) {
           <h2>{t('Coordination')}</h2>
           <div className="pset-row">
             <span>{t('Between Workstreams')}</span>
-            <select
+            <Select segments
               className="language-select"
               value={settings.coordination}
               disabled={saving}
-              onChange={e => void save({ coordination: e.target.value }, { coordination: e.target.value as WorkSettings['coordination'] })}
+              onChange={picked => void save({ coordination: picked }, { coordination: picked as WorkSettings['coordination'] })}
             >
               <option value="ask">{t('Ask Me First')}</option>
               <option value="auto">{t('Automatic')}</option>
               <option value="off">{t('Off')}</option>
-            </select>
+            </Select>
           </div>
           <p className="meta">{coordinationCaption(settings.coordination, botName)}</p>
           <p className="meta">{t('This doesn’t change what workstreams may do: their approvals stay as set under Safety.')}</p>
@@ -228,29 +229,29 @@ export function BotWorkSettings({ bot, botName, providers }: Props) {
           <h2>{t('Safety')}</h2>
           <div className="pset-row">
             <span>{t('After a Restart')}</span>
-            <select
+            <Select segments
               className="language-select"
               value={settings.afterRestart}
               disabled={saving}
-              onChange={e => void save({ after_restart: e.target.value }, { afterRestart: e.target.value as WorkSettings['afterRestart'] })}
+              onChange={picked => void save({ after_restart: picked }, { afterRestart: picked as WorkSettings['afterRestart'] })}
             >
               <option value="continue">{t('Continue Safe Work')}</option>
               <option value="ask">{t('Ask Me First')}</option>
-            </select>
+            </Select>
           </div>
           <p className="meta">{t('Work cut off during a step that can change things always waits for you. This is for the rest.')}</p>
           <div className="pset-row">
             <span>{t('Approvals in Workstreams')}</span>
-            <select
+            <Select segments
               className="language-select"
               value={settings.approvals}
               disabled={saving}
-              onChange={e => void save({ workstream_approvals: e.target.value }, { approvals: e.target.value as WorkSettings['approvals'] })}
+              onChange={picked => void save({ workstream_approvals: picked }, { approvals: picked as WorkSettings['approvals'] })}
             >
               <option value="chats">{t('Same as Chats')}</option>
               <option value="ask">{t('Ask Me First')}</option>
               <option value="off">{t('Don’t Ask')}</option>
-            </select>
+            </Select>
           </div>
           <p className="meta">{approvalsCaption(settings, botName)}</p>
         </section>

@@ -24,6 +24,7 @@ import {
 } from '../state/pulseSettings'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
+import { Select } from './Select'
 
 const NOTE_LIMIT = 1500
 
@@ -342,15 +343,15 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
             <h2>{t('What Pulse reads')}</h2>
             <div className="pset-row">
               <span>{t('Profiles')}</span>
-              <select
+              <Select segments
                 className="language-select"
                 value={state.reportProfiles}
                 disabled={saving}
-                onChange={e => void change({ report_profiles: e.target.value })}
+                onChange={picked => void change({ report_profiles: picked })}
               >
                 <option value="all">{t('Every profile')}</option>
                 <option value="this">{t('This profile only')}</option>
-              </select>
+              </Select>
             </div>
             <label className="toggle">
               <input type="checkbox" checked={state.memory} disabled={saving} onChange={e => void change({ memory: e.target.checked })} />
@@ -434,13 +435,13 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
                     </div>
                     <div className="pset-row">
                       <span>{t('Memory tokens a day')}</span>
-                      <select
+                      <Select
                         className="language-select"
                         value={state.dailyTokens}
                         disabled={saving}
-                        onChange={e =>
+                        onChange={picked =>
                           void change({
-                            memory_daily_tokens: Number(e.target.value)
+                            memory_daily_tokens: Number(picked)
                           })
                         }
                       >
@@ -449,7 +450,7 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
                             {value.toLocaleString(language)}
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
                   </>
                 ) : null}
@@ -457,13 +458,13 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
                   <>
                     <div className="pset-row">
                       <span>{t('Follow-up tokens a day')}</span>
-                      <select
+                      <Select
                         className="language-select"
                         value={state.followupDailyTokensSet ? state.followupDailyTokens : 0}
                         disabled={saving}
-                        onChange={e =>
+                        onChange={picked =>
                           void change({
-                            followup_daily_tokens: Number(e.target.value) || null
+                            followup_daily_tokens: Number(picked) || null
                           })
                         }
                       >
@@ -479,7 +480,7 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
                             {value.toLocaleString(language)}
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
                     <div className="pset-row">
                       <span>{t('Follow-up tokens today')}</span>

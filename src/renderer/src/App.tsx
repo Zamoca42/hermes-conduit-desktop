@@ -202,6 +202,7 @@ import { loadChatCalls, type CallTranscript, type ChatCall } from './state/voice
 import type { CallResume } from './state/voiceSave'
 import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 import { ask, askText, tell } from './state/dialogs'
+import { Select } from './components/Select'
 
 /** The host's synced preferences, for the bots' order. */
 const prefsHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
@@ -2132,19 +2133,18 @@ function Shell({
                     </button>
                     <span className="call-pill-line" aria-hidden="true" />
                     <span className="call-pill-mode">
-                      <select
+                      <Select
                         aria-label={t('Voice mode')}
                         title={t('Voice mode')}
                         value={calling ? callMode : nextMode}
-                        onChange={e => switchCallMode(e.target.value as VoiceMode)}
+                        onChange={picked => switchCallMode(picked as VoiceMode)}
                       >
                         {VOICE_MODES.map(mode => (
                           <option key={mode} value={mode}>
                             {voiceModeTitle(mode)}
                           </option>
                         ))}
-                      </select>
-                      <Icon name="chevronDown" />
+                      </Select>
                     </span>
                   </div>
                   {screenHosts[screenProfile] ? (
@@ -3134,17 +3134,17 @@ function Settings({
           </dd>
           <dt>{t('Language')}</dt>
           <dd>
-            <select
+            <Select
               className="language-select"
               value={window.conduit.language.choice}
-              onChange={e => {
+              onChange={picked => {
                 // The window reloads in the new language; come back to Settings.
                 try {
                   sessionStorage.setItem(REOPEN_SECTION, 'settings')
                 } catch {
                   // Opens on Chats instead.
                 }
-                window.conduit.setLanguage(e.target.value as LanguageChoice)
+                window.conduit.setLanguage(picked as LanguageChoice)
               }}
               aria-label={t('Language')}
             >
@@ -3154,7 +3154,7 @@ function Settings({
                   {LANGUAGE_NAMES[language]}
                 </option>
               ))}
-            </select>
+            </Select>
           </dd>
           <SettingsLink label={t('Keyboard')} detail={t('Keyboard Shortcuts')} onOpen={onShortcuts} />
           <AppLockSetting />

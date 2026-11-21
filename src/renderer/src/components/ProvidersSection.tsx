@@ -29,6 +29,7 @@ import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 const request = (method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown, timeoutMs?: number) => gateway.http(method, path, body, timeoutMs)
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
@@ -399,19 +400,19 @@ function KeyOrderSection({ entry, profile }: { entry: ProviderEntry; profile: st
       {order ? (
         <div className="pset-row">
           <span>{t('Use keys')}</span>
-          <select
+          <Select
             className="language-select"
             value={order}
             disabled={saving}
             aria-label={t('Key order')}
-            onChange={e => void choose(e.target.value as KeyOrder)}
+            onChange={picked => void choose(picked as KeyOrder)}
           >
             {KEY_ORDERS.map(o => (
               <option key={o} value={o}>
                 {keyOrderTitle(o)}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       ) : failed ? (
         <div className="pset-row">
@@ -698,10 +699,10 @@ function KeySection({
           disabled={busy || checking}
         />
         {!onMain ? (
-          <select className="language-select" value={scope} onChange={e => setScope(e.target.value as 'all' | 'profile')} aria-label={t('Use for')}>
+          <Select segments className="language-select" value={scope} onChange={picked => setScope(picked as 'all' | 'profile')} aria-label={t('Use for')}>
             <option value="all">{t('All profiles')}</option>
             <option value="profile">{t('Only this profile')}</option>
-          </select>
+          </Select>
         ) : null}
         <button className="secondary" disabled={busy || checking || !value.trim()} onClick={() => void save()}>
           {checking ? t('Checking…') : state === 'none' ? t('Save key') : t('Replace')}

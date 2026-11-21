@@ -4,6 +4,7 @@ import { gateway } from '../gateway'
 import { CALLS_CAPABILITY, CALLS_PATH } from '../state/callbacks'
 import { STATUS_PATH, pluginStatus, serves } from '../state/plugin'
 import { cleanRules, gapChoices, gapText, parseCallsStatus, testCallPrompt, watchPrompt, withProfile, type Bounds, type CallSettings, type CallsStatus } from '../state/callSettings'
+import { Select } from './Select'
 
 /**
  * Settings > Voice > Calls from Hermes, after the phone's: this profile's call
@@ -203,18 +204,18 @@ export function HermesCallSettings({ profile, onNewChat }: { profile?: string; o
               ) : null}
               <label className="voice-mode-pick">
                 <span className="meta">{t('Time between calls')}</span>
-                <select
+                <Select
                   className="language-select"
                   value={draft.min_gap_s}
                   aria-label={t('Time between calls')}
-                  onChange={e => change({ min_gap_s: Number(e.target.value) })}
+                  onChange={picked => change({ min_gap_s: Number(picked) })}
                 >
                   {gapChoices(status.bounds.min_gap_s, draft.min_gap_s).map(n => (
                     <option key={n} value={n}>
                       {gapText(n)}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
               {count(t('Calls per hour'), draft.per_hour, status.bounds.per_hour, n => change({ per_hour: n }))}
               {count(t('Calls per day'), draft.per_day, status.bounds.per_day, n => change({ per_day: n }))}

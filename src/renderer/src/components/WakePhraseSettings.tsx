@@ -3,6 +3,7 @@ import { language, t } from '@shared/i18n'
 import type { WakeListenerState, WakeModelsState } from '../../../shared/ipc'
 import { isUsableWakePhrase } from '../../../shared/wakePhrase'
 import { WAKE_EVENT, modelLangFor, setWakeProfile, suggestedPhrase, wakeProfiles } from '../state/wakeSettings'
+import { Select } from './Select'
 
 const megabytes = (bytes: number) => Math.max(1, Math.round(bytes / 1_000_000))
 
@@ -88,11 +89,11 @@ export function WakePhraseSettings({ host, profile }: { host: string; profile: s
         <>
           <label className="voice-mode-pick">
             <span className="meta">{t('Language')}</span>
-            <select
+            <Select
               className="language-select"
               value={picked ?? ''}
               disabled={!choices || !!downloading}
-              onChange={e => setLang(e.target.value)}
+              onChange={picked => setLang(picked)}
               aria-label={t('Language')}
             >
               {!choices && installed ? <option value={installed.lang}>{installed.label}</option> : null}
@@ -101,7 +102,7 @@ export function WakePhraseSettings({ host, profile }: { host: string; profile: s
                   {c.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           {downloading ? (
             <div className="wake-download">

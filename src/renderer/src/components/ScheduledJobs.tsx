@@ -39,6 +39,7 @@ import { useModelCatalog } from '../state/modelCatalog'
 import { ModelChooser } from './ModelChooser'
 import { ModelCatalogNote, RefreshModelsButton } from './ModelCatalogNote'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 interface Props {
   bots: Bot[] | null
@@ -487,13 +488,13 @@ function JobEditor({
       {!job && !profile && (bots?.length ?? 0) > 1 ? (
         <label className="field">
           {t('Bot')}
-          <select value={owner} onChange={e => setOwner(e.target.value)}>
+          <Select value={owner} onChange={picked => setOwner(picked)}>
             {bots!.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       ) : null}
       <label className="field">
@@ -559,11 +560,11 @@ function JobEditor({
               value={schedule.intervalValue}
               onChange={e => setSchedule({ intervalValue: Math.max(0, Math.floor(Number(e.target.value) || 0)) })}
             />
-            <select aria-label={t('Unit')} value={schedule.intervalUnit} onChange={e => setSchedule({ intervalUnit: e.target.value as IntervalUnit })}>
+            <Select aria-label={t('Unit')} value={schedule.intervalUnit} onChange={picked => setSchedule({ intervalUnit: picked as IntervalUnit })}>
               <option value="minutes">{t('Minutes')}</option>
               <option value="hours">{t('Hours')}</option>
               <option value="days">{t('Days')}</option>
-            </select>
+            </Select>
           </div>
         ) : schedule.mode === 'once' ? (
           <label className="job-inline">
@@ -580,13 +581,13 @@ function JobEditor({
       </fieldset>
       <label className="field">
         {t('Deliver to')}
-        <select value={draft.deliver} onChange={e => setDraft(d => ({ ...d, deliver: e.target.value }))}>
+        <Select value={draft.deliver} onChange={picked => setDraft(d => ({ ...d, deliver: picked }))}>
           {choices.map(choice => (
             <option key={choice.id} value={choice.id}>
               {deliveryTitle(choice.id, choice.name)}
             </option>
           ))}
-        </select>
+        </Select>
         <span className="meta">
           {target && !target.homeTargetSet ? t('This platform has no home channel yet. Set one in Hermes, or the run is only saved.') : t('Each run is also saved as its own conversation.')}
         </span>

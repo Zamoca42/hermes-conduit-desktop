@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { t } from '@shared/i18n'
 import { SPEECH_OUTPUTS, computerCanSpeak, setSpeechOutput, speechOutput, type SpeechOutput } from '../state/speechOutput'
 import { stopReading } from '../state/readAloud'
+import { Select } from './Select'
 
 const title = (output: SpeechOutput) => (output === 'computer' ? t('On this computer') : output === 'server' ? t('Your speech server') : t('Hermes’ speech providers'))
 
@@ -14,12 +15,12 @@ export function ReadAloudVoiceSetting({ profile }: { profile?: string }) {
     <>
       <label className="voice-mode-pick">
         <span className="meta">{t('Read Aloud voice')}</span>
-        <select
+        <Select
           className="language-select"
           value={output}
           aria-label={t('Read Aloud voice')}
-          onChange={e => {
-            const next = e.target.value as SpeechOutput
+          onChange={picked => {
+            const next = picked as SpeechOutput
             stopReading()
             setSpeechOutput(profile, next)
             setOutput(next)
@@ -30,7 +31,7 @@ export function ReadAloudVoiceSetting({ profile }: { profile?: string }) {
               {title(choice)}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <p className="meta settings-caption">
         {output === 'computer'

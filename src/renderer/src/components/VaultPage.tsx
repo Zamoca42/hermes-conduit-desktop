@@ -20,6 +20,7 @@ import {
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
 import { ask } from '../state/dialogs'
+import { Select } from './Select'
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
 const unsupported = (e: unknown) => /method not found|unknown method|-32601/i.test(message(e)) || (e as { code?: unknown })?.code === -32601
@@ -128,13 +129,13 @@ export function VaultPage({ bots, profile: initialProfile, onBack }: Props) {
         <h1>{t('Passwords & logins')}</h1>
         <span className="spacer" />
         {bots.length > 1 ? (
-          <select className="language-select" value={profile} aria-label={t('Bot')} onChange={e => setProfile(e.target.value)}>
+          <Select className="language-select" value={profile} aria-label={t('Bot')} onChange={picked => setProfile(picked)}>
             {bots.map(bot => (
               <option key={bot.name} value={bot.name}>
                 {bot.title}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
       </div>
       <p className="meta">
@@ -312,18 +313,18 @@ function AddForm({
       <h3>{t('Add to vault')}</h3>
       <div className="pset-row">
         <span>{t('Kind')}</span>
-        <select
+        <Select
           className="language-select"
           value={draft.kind}
           aria-label={t('Kind')}
-          onChange={e => setDraft(d => ({ ...d, kind: e.target.value as VaultDraft['kind'] }))}
+          onChange={picked => setDraft(d => ({ ...d, kind: picked as VaultDraft['kind'] }))}
         >
           {KINDS.map(kind => (
             <option key={kind} value={kind}>
               {kindTitle(kind)}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <span className="meta">{t('Name and site')}</span>
       {field('label', t('Label, like GitHub work account'))}
@@ -331,11 +332,11 @@ function AddForm({
       {draft.kind === 'login' ? (
         <>
           <span className="meta">{t('Signs in with')}</span>
-          <select className="language-select" value={draft.identifierType} aria-label={t('Signs in with')} onChange={set('identifierType')}>
+          <Select segments className="language-select" value={draft.identifierType} aria-label={t('Signs in with')} onChange={picked => setDraft(d => ({ ...d, identifierType: picked as VaultDraft['identifierType'] }))}>
             <option value="email">{t('Email')}</option>
             <option value="phone">{t('Phone')}</option>
             <option value="username">{t('Username')}</option>
-          </select>
+          </Select>
           {field('identifier', draft.identifierType === 'email' ? t('Email') : draft.identifierType === 'phone' ? t('Phone') : t('Username'))}
           {field('password', t('Password'), 'password')}
           {field('otpSecret', t('Authenticator key (optional)'), 'password')}

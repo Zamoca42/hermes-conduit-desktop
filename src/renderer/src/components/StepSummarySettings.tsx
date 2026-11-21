@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { t } from '@shared/i18n'
 import { MAX_STEPS_RANGE, setSummariesEnabled, setSummaryMaxSteps, summariesEnabled, summaryMaxSteps } from '../state/stepSummaries'
+import { Select } from './Select'
 
 const LIMITS = Array.from({ length: (MAX_STEPS_RANGE[1] - MAX_STEPS_RANGE[0]) / 5 + 1 }, (_, i) => MAX_STEPS_RANGE[0] + i * 5)
 
@@ -33,13 +34,13 @@ export function StepSummarySettings() {
       </div>
       <div className="pset-row">
         <span>{t('Skip runs over {count} steps', { count: String(maxSteps) })}</span>
-        <select
+        <Select
           className="language-select"
           value={maxSteps}
           disabled={!enabled}
           aria-label={t('Skip runs over {count} steps', { count: String(maxSteps) })}
-          onChange={e => {
-            const value = Number(e.target.value)
+          onChange={picked => {
+            const value = Number(picked)
             setMaxSteps(value)
             setSummaryMaxSteps(value)
           }}
@@ -49,7 +50,7 @@ export function StepSummarySettings() {
               {limit}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
     </section>
   )
