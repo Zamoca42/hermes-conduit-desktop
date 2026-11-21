@@ -44,6 +44,15 @@ describe('work links', () => {
     expect(splitWorkLinks(open)?.links.length).toBe(1)
   })
 
+  it('reads fences as the phone does', () => {
+    const link = '[Open W3](conduit://session/c)'
+    expect(splitWorkLinks(`~~~\n${link}\n~~~`)?.links ?? []).toEqual([])
+    expect(splitWorkLinks(`\`\`\`\`\n\`\`\`\n${link}\n\`\`\`\n\`\`\`\``)?.links ?? []).toEqual([])
+    expect(splitWorkLinks(`\`\`\`\n\`\`\` not a closer\n${link}\n\`\`\``)?.links ?? []).toEqual([])
+    expect(splitWorkLinks(`> \`\`\`\n> ${link}\n> \`\`\``)?.links ?? []).toEqual([])
+    expect(splitWorkLinks('Done: [W7: fix the `nil` crash](conduit://session/w7).')?.links.map(l => l.ref)).toEqual(['W7'])
+  })
+
   it('reads the id and profile of a chat link', () => {
     expect(sessionInLink(W19)).toEqual({ sessionId: '20261120_165155_a24bea', profile: 'zhongli' })
     expect(sessionInLink('conduit://session/abc')).toEqual({ sessionId: 'abc', profile: undefined })
