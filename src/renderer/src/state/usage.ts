@@ -5,7 +5,7 @@
  * and each signed-in provider's subscription quota from model.options.
  * Hermes keeps all of it; Conduit only reads it, on open and on refresh.
  */
-import { t } from '../../../shared/i18n'
+import { locale, t } from '../../../shared/i18n'
 
 export const PERIODS = [7, 30, 90] as const
 
@@ -254,6 +254,80 @@ export function quotaFromRow(row: Row): ProviderQuota | null {
   if (!own.length && !accounts.length && !rateLimit) return null
   const name = typeof row.name === 'string' ? row.name.trim() : ''
   return { slug, title: name || slug, windows: own, accounts, limit: rateLimit }
+}
+
+/** What a provider's row in a model list says of its quota: 0 through 1 left of its tightest window, or null when limited. */
+export interface QuotaSummary {
+  left: number | null
+  resetsAt?: number
+}
+
+function tightest(list: QuotaWindow[]): QuotaSummary | null {
+  const accountWide = list.filter(w => !w.modelScoped)
+  const counted = accountWide.length ? accountWide : list
+  // The fullest window; of two as full, the one that resets later holds longer.
+  let best: QuotaWindow | null = null
+  for (const w of counted) {
+    if (!best || windowFraction(w) > windowFraction(best) || (windowFraction(w) === windowFraction(best) && (w.resetsAt ?? 0) > (best.resetsAt ?? 0))) best = w
+  }
+  return best ? { left: 1 - windowFraction(best), resetsAt: best.resetsAt } : null
+}
+
+/**
+ * The phone's ProviderQuota.summary: how much is left of the tightest window,
+ * or that the provider is limited. A pool counts the account Hermes can still
+ * use with the most left; a window on one model family counts only when the
+ * provider has no other. Null when nothing usable is reported.
+ */
+export function quotaSummary(quota: ProviderQuota): QuotaSummary | null {
+  if (quota.limit?.scope === 'account') return { left: null, resetsAt: quota.limit.resetsAt }
+  const own = tightest(quota.windows)
+  if (own) return own
+  let best: QuotaSummary | null = null
+  for (const account of quota.accounts) {
+    if (account.state !== 'ready' && account.state !== 'unknown') continue
+    const s = tightest(account.windows)
+    if (!s) continue
+    // Of two as full, the one that resets sooner, as it frees first.
+    if (!best || (s.left ?? 0) > (best.left ?? 0) || ((s.left ?? 0) === (best.left ?? 0) && (s.resetsAt ?? Infinity) < (best.resetsAt ?? Infinity))) best = s
+  }
+  if (best) return best
+  const signedIn = quota.accounts.filter(a => a.state !== 'unavailable')
+  if (signedIn.length && signedIn.every(a => a.state === 'limited')) {
+    const times = signedIn.map(a => a.resetsAt).filter((at): at is number => at !== undefined)
+    return { left: null, resetsAt: times.length ? Math.min(...times) : undefined }
+  }
+  return null
+}
+
+/** The time alone today, with the weekday within the week, else the date. */
+export function quotaResetTime(at: number, now = Date.now()): string {
+  const date = new Date(at)
+  const today = new Date(now)
+  if (date.toDateString() === today.toDateString()) return date.toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' })
+  if (at > now && at - now < 6 * 86_400_000) return date.toLocaleString(locale(), { weekday: 'short', hour: 'numeric', minute: '2-digit' })
+  return date.toLocaleDateString(locale(), { month: 'short', day: 'numeric' })
+}
+
+/** The summary's line, and its tone: orange under a fifth left, red when limited or empty. */
+export function quotaLine(summary: QuotaSummary, now = Date.now()): { text: string; tone: 'plain' | 'low' | 'out' } {
+  const reset = summary.resetsAt !== undefined ? quotaResetTime(summary.resetsAt, now) : null
+  if (summary.left === null || summary.left <= 0) {
+    return { text: reset ? t('Limited until {time}', { time: reset }) : t('Limited'), tone: 'out' }
+  }
+  // A window nearly used up reads 0.4%, not 0%.
+  const percent = `${(summary.left * 100).toFixed(summary.left < 0.1 ? 1 : 0).replace(/\.0$/, '')}%`
+  return {
+    text: reset ? t('{percent} left · resets {time}', { percent, time: reset }) : t('{percent} left', { percent }),
+    tone: summary.left < 0.2 ? 'low' : 'plain'
+  }
+}
+
+/** A model list's provider row's quota line, from the catalog's raw row; null when it reports none. */
+export function providerQuotaLine(row: unknown, now = Date.now()): { text: string; tone: 'plain' | 'low' | 'out' } | null {
+  const quota = row && typeof row === 'object' ? quotaFromRow(row as Row) : null
+  const summary = quota ? quotaSummary(quota) : null
+  return summary ? quotaLine(summary, now) : null
 }
 
 /** model.options' providers that report a quota or a limit, in the catalog's order. */

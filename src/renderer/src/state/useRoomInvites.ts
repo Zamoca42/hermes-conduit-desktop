@@ -12,6 +12,7 @@ import {
   type RoomInvite
 } from './roomInvites'
 import { everyWhileVisible } from './visibility'
+import { keepsFor } from './savedHosts'
 
 const client = roomInvitesClient((method, path, body, timeoutMs) => gateway.http(method, path, body, timeoutMs))
 
@@ -72,7 +73,7 @@ export function useRoomInvites(connected: boolean, host: string) {
     let live = true
     readCapabilities()
       .then(list => {
-        keptCapabilities.set(host, list)
+        if (keepsFor(host)) keptCapabilities.set(host, list)
         if (live) setCapabilities(list)
       })
       .catch(() => undefined)
@@ -86,7 +87,7 @@ export function useRoomInvites(connected: boolean, host: string) {
     try {
       const list = await client.list()
       if (read !== reads.current) return
-      keptInvites.set(host, list)
+      if (keepsFor(host)) keptInvites.set(host, list)
       setInvites(list)
     } catch {
       // The list stays as it was; the next read tries again.
