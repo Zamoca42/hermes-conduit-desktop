@@ -10879,9 +10879,6 @@ button.secondary.danger {
   width: 30px;
   height: 30px;
 }
-.bot-side-face.bot-tile-face {
-  position: relative;
-}
 .bot-side-face .drop-plus {
   width: 18px;
   height: 18px;
@@ -10934,6 +10931,8 @@ button.secondary.danger {
 .bot-side-face {
   flex: none;
   display: flex;
+  /* The corner marks (a combined dashboard's badge, the drop plus) sit on the face, a bot's or a group chat's. */
+  position: relative;
 }
 .bot-side-text {
   flex: 1;
