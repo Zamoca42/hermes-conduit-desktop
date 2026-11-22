@@ -57,4 +57,12 @@ describe("Bots' group chats in a combined group (desktop#231)", () => {
     expect(far).toMatch(/room-faces/)
     expect(far.slice(far.lastIndexOf('room-faces'))).toContain('bot-avatar')
   })
+
+  it('draws the « (Hide Sidebar) only where it can hide', async () => {
+    const path = '../src/renderer/src/components/BotsHome.tsx'
+    const { BotsHome } = (await import(/* @vite-ignore */ path)) as { BotsHome: unknown }
+    const props = { bots: [bot('nahida')], error: null, runningProfiles: new Set(), rooms: [], canStartRooms: true, onOpen: () => {}, onOpenRoom: () => {}, onCreateRoom: async () => ({}), side: { openRoomId: 'r1' } }
+    expect(renderToStaticMarkup(createElement(BotsHome as never, { ...props, onHide: () => {} } as never))).toContain('hide-list')
+    expect(renderToStaticMarkup(createElement(BotsHome as never, props as never))).not.toContain('hide-list')
+  })
 })
