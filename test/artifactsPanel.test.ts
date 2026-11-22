@@ -74,4 +74,28 @@ describe('the Artifacts page across combined dashboards', () => {
     expect(names).toEqual(['new.png', 'old.png'])
     act(() => root.unmount())
   })
+
+  it('lists a file once when the other dashboard is the same Hermes at another address', async () => {
+    http.mockImplementation(async () => ({ ok: true, items: [row('/here/new.png', 5_000), row('/far/old.png', 1_000)], next_before: null }))
+    const path = '../src/renderer/src/components/ArtifactsPanel.tsx'
+    const { ArtifactsPanel } = (await import(/* @vite-ignore */ path)) as { ArtifactsPanel: unknown }
+    const host = document.createElement('div')
+    const root = createRoot(host)
+    act(() =>
+      root.render(
+        createElement(ArtifactsPanel as never, {
+          page: true,
+          sessionIds: [],
+          kept: [{ url: FAR, state: 'live' }],
+          dashboards: [
+            { url: 'https://here.example', name: 'Here', badge: null },
+            { url: FAR, name: 'Far', badge: null }
+          ]
+        } as never)
+      )
+    )
+    await settle()
+    expect([...host.querySelectorAll('.artifact-name')].map(n => n.textContent)).toEqual(['new.png', 'old.png'])
+    act(() => root.unmount())
+  })
 })

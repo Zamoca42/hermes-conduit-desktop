@@ -150,7 +150,8 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
     if (keptRows !== undefined) {
       try {
         const page = parsePage(keptRows, showMissing)
-        opening = [{ key: 'here', profile, read: page.items, cursor: page.nextBefore }]
+        // Without its cursor: Hermes' first page, on its way, takes its place before anything pages on.
+        opening = [{ key: 'here', profile, read: page.items, cursor: null }]
       } catch {
         // A kept answer it can't read waits for Hermes'.
       }
@@ -182,20 +183,29 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
       void (async () => {
         const listed = await window.conduit.keptHttp(url, '/api/profiles')
         const names = (listed.ok ? profileNames(listed.result) : null) ?? ['default']
+        let read = 0
+        let why: string | null = listed.ok ? null : listed.error
         await Promise.all(
           names.map(async name => {
             const other = name === 'default' ? undefined : name
             try {
               const outcome = await window.conduit.keptHttp(url, listPath({ profile: other, filter, query: words, showMissing }))
-              if (!outcome.ok) return
+              if (!outcome.ok) {
+                why = outcome.error
+                return
+              }
               const page = parsePage(outcome.result, showMissing)
+              read++
               const store: Store = { key: `${url}\u0000${other ?? ''}`, dashboard: url, profile: other, read: fromHost(page.items, url, other), cursor: page.nextBefore }
               settle(f => ({ ...f, stores: put(f.stores, store) }))
-            } catch {
+            } catch (e) {
               // A profile that can't be read leaves the rest listed.
+              why = failure(e)
             }
           })
         )
+        // A dashboard shown alone by its chip that couldn't be read says so, not that it has nothing.
+        if (!read && !ownShown && urls.length === 1) settle(f => ({ ...f, error: why ?? t("Artifacts couldn't load") }))
       })()
         .catch(() => undefined)
         .finally(() => settle(f => ({ ...f, pending: f.pending - 1 })))
@@ -286,15 +296,15 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [atEnd, pageFailed, busy, next, feed])
 
-  const toggleShowMissing = () =>
-    setShowMissing(on => {
-      try {
-        localStorage.setItem(SHOW_MISSING_KEY, on ? '0' : '1')
-      } catch {
-        // Kept for this window only.
-      }
-      return !on
-    })
+  const toggleShowMissing = () => {
+    const on = !showMissing
+    try {
+      localStorage.setItem(SHOW_MISSING_KEY, on ? '1' : '0')
+    } catch {
+      // Kept for this window only.
+    }
+    setShowMissing(on)
+  }
 
   const toggleSaved = async (item: ArtifactItem) => {
     setBusy(item.id)
@@ -479,7 +489,11 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
         )
       return grouped(shown, item => item.savedAt ?? item.at)
     }
-    const items = feedItems(feed.stores).filter(item => includes(filter, item.kind))
+    // One Hermes saved at two addresses: its rows here stand for the copy's (one host path is one artifact).
+    const hereIds = new Set(feed.stores.find(s => s.key === 'here')?.read.map(item => item.id))
+    const items = feedItems(feed.stores).filter(
+      item => includes(filter, item.kind) && (!elsewhere(item) || !hereIds.has(item.path ?? item.url ?? ''))
+    )
     const reading = feed.pending > 0 || next !== null
     const hiddenNote = showMissing ? null : (
       <p className="meta">
@@ -539,6 +553,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
     }
     return (
       <>
+        {feed.error ? <div className="ws-note error-text">{feed.error}</div> : null}
         {grouped(items)}
         {endButton}
       </>
