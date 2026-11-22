@@ -1085,7 +1085,7 @@ function Shell({
               : current
           )
         // At the limit, say so; otherwise its dashboard went (a sign-out, a switch) as it opened.
-        if (chatWindowIds.length >= CHAT_WINDOW_LIMIT) void tell(t('Up to {count} chats can have windows of their own. Close one to open another.', { count: CHAT_WINDOW_LIMIT }))
+        if (chatWindowIdsRef.current.length >= CHAT_WINDOW_LIMIT) void tell(t('Up to {count} chats can have windows of their own. Close one to open another.', { count: CHAT_WINDOW_LIMIT }))
         else void tell(t('The chat didn’t open. Try again.'))
         return
       }
