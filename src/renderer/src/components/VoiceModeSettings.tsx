@@ -75,6 +75,7 @@ import { ask } from '../state/dialogs'
 import { Select } from './Select'
 import { LiveCallStyleSettings } from './LiveCallStyleSettings'
 import { HermesSpeechSettings } from './HermesSpeechSettings'
+import { continuousConversation, pushToTalk, setContinuousConversation, setPushToTalk } from '../state/classicVoice'
 
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
@@ -88,6 +89,8 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
   const [memory, setMemory] = useState(sendsMemory)
   const [persona, setPersona] = useState(sendsPersona)
   const [saveCalls, setSaveCalls] = useState(savesCalls)
+  const [holdToTalk, setHoldToTalk] = useState(pushToTalk)
+  const [continuous, setContinuous] = useState(continuousConversation)
   const [geminiMemory, setGeminiMemory] = useState(geminiSendsMemory)
   const [geminiPersona, setGeminiPersona] = useState(geminiSendsPersona)
   const [geminiPick, setGeminiPick] = useState(geminiVoice)
@@ -511,6 +514,37 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
         <>
           <p className="meta settings-caption">
             {t('Classic voice listens until you stop talking, sends what Hermes heard as your message, and speaks the reply with the Read Aloud voice above.')}
+          </p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={holdToTalk}
+              onChange={e => {
+                setHoldToTalk(e.target.checked)
+                setPushToTalk(e.target.checked)
+              }}
+            />
+            {t('Push to talk')}
+          </label>
+          <p className="meta settings-caption">
+            {t('Hold the microphone button while you speak and let go to send, so pauses never end your turn. Slide off before letting go to cancel. Pressing while Hermes speaks stops the reply. Applies to the next call, on this computer.')}
+          </p>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={continuous}
+              disabled={holdToTalk}
+              onChange={e => {
+                setContinuous(e.target.checked)
+                setContinuousConversation(e.target.checked)
+              }}
+            />
+            {t('Continuous Conversation')}
+          </label>
+          <p className="meta settings-caption">
+            {holdToTalk
+              ? t('Not used while push to talk is on: each turn starts when you hold the button.')
+              : t('Conduit listens again after each reply. When off, the call stays open and you press Listen to start your next turn. Applies to the next call, on this computer.')}
           </p>
           <span className="meta">{t('Speech to text')}</span>
           <p className="meta settings-caption">{t('How Hermes turns what you say into text. This is a Hermes setting, so your phone and Hermes’ own apps use it too.')}</p>

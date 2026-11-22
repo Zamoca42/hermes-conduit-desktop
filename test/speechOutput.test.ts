@@ -49,6 +49,8 @@ describe("this computer's voice", () => {
     // A pick in another language is never used for this one.
     expect(chooseVoice(voices, 'fr', 'uri:Daniel')?.name).toBe('Thomas')
     expect(chooseVoice(voices, 'de', '')).toBeNull()
+    // A region spelled with an underscore is still the exact one.
+    expect(chooseVoice([voice('Lee', 'en_AU', true), voice('Daniel', 'en-GB', true)], 'en-AU', '')?.name).toBe('Lee')
   })
 
   it('keeps one pick per language on this computer, and automatic clears it', () => {
