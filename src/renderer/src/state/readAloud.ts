@@ -10,6 +10,7 @@ import { startReadingTrace, type CallTrace } from './callTrace'
 import { speak, spokenText } from './voice'
 import { speechOutput } from './speechOutput'
 import { speakHere } from './speechServerSpeech'
+import { readAloudSpeed } from './classicVoice'
 
 let playing: { key: string; audio: HTMLAudioElement | null; trace: CallTrace; stop?: () => void } | null = null
 const listeners = new Set<() => void>()
@@ -56,7 +57,7 @@ export async function readAloud(key: string, text: string, profile?: string): Pr
   const output = speechOutput(profile)
   if (output !== 'hermes') {
     trace.step(output === 'computer' ? 'Speaking with this computer’s voice' : 'Speaking with your speech server')
-    const spoken = speakHere(words, output, profile, step => trace.step(step))
+    const spoken = speakHere(words, output, profile, step => trace.step(step), readAloudSpeed())
     mine.stop = spoken.stop
     trace.step('Playing')
     try {
@@ -83,6 +84,8 @@ export async function readAloud(key: string, text: string, profile?: string): Pr
     trace.step(`Hermes speech answered after ${seconds(Date.now() - asked)}: ${clipSize(url)}`)
     if (playing !== mine) return
     const audio = new Audio(url)
+    // Faster without a higher voice: the browser keeps the pitch.
+    audio.defaultPlaybackRate = audio.playbackRate = readAloudSpeed()
     mine.audio = audio
     audio.onloadedmetadata = () => Number.isFinite(audio.duration) && trace.step(`Audio is ${audio.duration.toFixed(1)} s long`)
     let started = false

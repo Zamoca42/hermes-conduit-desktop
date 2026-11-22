@@ -13,6 +13,7 @@ import {
   type SpeechOutput
 } from '../state/speechOutput'
 import { stopReading } from '../state/readAloud'
+import { readAloudSpeed } from '../state/classicVoice'
 import { HermesSpeechSettings } from './HermesSpeechSettings'
 import { Select } from './Select'
 
@@ -52,7 +53,7 @@ export function ReadAloudVoiceSetting({ profile }: { profile?: string }) {
             ? t('Replies are read by your own speech server, the one Local Live talks to, set up under Local Live. A reply it can’t read is read with your computer’s voice. Classic voice speaks with it too; the live modes use their own voices.')
             : t('Replies are read with the voice this profile’s speech provider on Hermes gives. Classic voice speaks with it too; the live modes use their own voices.')}
       </p>
-      {output === 'computer' ? <ComputerVoicePick /> : output === 'hermes' ? <HermesSpeechSettings key={profile ?? ''} kind="tts" profile={profile} /> : null}
+      {output === 'computer' && computerCanSpeak() ? <ComputerVoicePick /> : output === 'hermes' ? <HermesSpeechSettings key={profile ?? ''} kind="tts" profile={profile} /> : null}
     </>
   )
 }
@@ -88,7 +89,7 @@ function ComputerVoicePick() {
       return
     }
     stopReading()
-    const spoken = speakOnComputer(t('Hi, this is how I sound when I read your replies.'), shown || undefined)
+    const spoken = speakOnComputer(t('Hi, this is how I sound when I read your replies.'), shown || undefined, readAloudSpeed())
     stop.current = spoken.stop
     setPlaying(true)
     void spoken.done.catch(() => undefined).finally(() => {

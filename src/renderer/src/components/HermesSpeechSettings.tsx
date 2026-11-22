@@ -40,27 +40,32 @@ export function HermesSpeechSettings({ kind, profile }: { kind: SpeechKind; prof
   const [saved, setSaved] = useState(false)
   const live = useRef(true)
   const listId = useId()
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    // Set again on every mount: StrictMode mounts twice with the same ref.
+    live.current = true
+    return () => {
       live.current = false
-    },
-    []
-  )
+    }
+  }, [])
 
-  const read = useCallback(async () => {
+  /** Reads Hermes' answers again; false (with the reason shown) when it didn't answer. */
+  const read = useCallback(async (): Promise<boolean> => {
     try {
       const [loaded, toolset, schema] = await Promise.all([
         readConfig(http, name),
         gateway.http('GET', withProfile(toolsetPath(kind), profile)).catch(() => null),
         gateway.http('GET', withProfile('/api/config/schema', profile)).catch(() => null)
       ])
-      if (!live.current) return
+      if (!live.current) return false
       setConfig(loaded)
       setProviders(speechProviders(kind, toolset, loaded, schema))
-      setValues({})
+      // Drafts Hermes now holds are done; one not saved yet (typed before a key's save) stays.
+      setValues(drafts => Object.fromEntries(Object.entries(drafts).filter(([key, draft]) => draft.trim() !== fieldText(loaded, key).trim())))
       setError(null)
+      return true
     } catch (e) {
       if (live.current) setError(t("Hermes didn't answer: {error}", { error: message(e) }))
+      return false
     }
   }, [kind, name, profile])
   useEffect(() => {
@@ -74,8 +79,8 @@ export function HermesSpeechSettings({ kind, profile }: { kind: SpeechKind; prof
     setSaved(false)
     try {
       await write()
-      await read()
-      if (live.current) setSaved(true)
+      // Saved says so only once Hermes' answer shows what was saved.
+      if ((await read()) && live.current) setSaved(true)
     } catch (e) {
       if (live.current) setError(message(e))
     } finally {

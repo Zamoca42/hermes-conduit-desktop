@@ -3,9 +3,10 @@ import { t } from '@shared/i18n'
 import { useRecorder } from '../state/useRecorder'
 import { stopReading } from '../state/readAloud'
 import { blobToBase64, speak, spokenText, transcribe } from '../state/voice'
-import { callStep, micScale, type CallPhase } from '../state/call'
+import { MAX_TURN_S, callStep, micScale, type CallPhase } from '../state/call'
 import { speechOutput } from '../state/speechOutput'
 import { speakHere } from '../state/speechServerSpeech'
+import { afterReply, continuousConversation, pushToTalk } from '../state/classicVoice'
 import { Icon } from './icons'
 
 interface Props {
@@ -31,7 +32,9 @@ interface Props {
  * A Classic voice call in the open chat, as the phone's Classic mode: it
  * listens until you stop talking, sends what Hermes heard as your message,
  * and speaks the reply with Hermes' voice, then listens again. Every turn is
- * the chat's own, typed or spoken.
+ * the chat's own, typed or spoken. With push to talk on, a turn is the
+ * microphone button held down; with Continuous Conversation off, the call
+ * waits after each reply for you to start the next turn (classicVoice.ts).
  */
 export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onStop, onEnd, modeMenu, pictureControls }: Props) {
   const recorder = useRecorder()
@@ -48,22 +51,40 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
   const ended = useRef(false)
   const waitingFrom = useRef<number | null>(null)
   const voice = useRef({ heard: false, loudAt: 0, quietSince: 0 })
+  // Read as the call starts: a change in Settings applies to the next call.
+  const [holdToTalk] = useState(pushToTalk)
+  const [continuous] = useState(continuousConversation)
+  /** The microphone button is held down (push to talk). */
+  const holding = useRef(false)
 
   const listen = async () => {
     if (ended.current) return
     voice.current = { heard: false, loudAt: 0, quietSince: performance.now() }
     setPhase('listening')
-    if (!(await recorder.start())) setPhase('failed')
+    if (!(await recorder.start())) return setPhase('failed')
+    // Let go before the microphone opened: that's the whole turn.
+    if (holdToTalk && !holding.current && !ended.current) void finishTurn()
+  }
+
+  /** After a reply, or a turn that heard nothing: listen again, or wait for you. */
+  const next = () => {
+    if (ended.current) return
+    const step = afterReply({ muted: mutedNow.current, pushToTalk: holdToTalk, continuous })
+    if (step === 'listen') void listen()
+    else setPhase(step)
   }
 
   // Start listening, and let go of everything on hang-up.
   useEffect(() => {
+    // Set again on every mount: StrictMode mounts twice with the same ref.
+    ended.current = false
     stopReading()
     // Classic can't start while a reply runs: it waits for the reply, then listens.
     if (running) {
       waitingFrom.current = turnsDone
       setPhase('thinking')
-    } else void listen()
+    } else if (holdToTalk) setPhase('ready')
+    else void listen()
     return () => {
       ended.current = true
       recorder.cancel()
@@ -85,19 +106,20 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
     const now = performance.now()
     const step = callStep(voice.current, recorder.level, now, recorder.elapsed)
     voice.current = step.state
-    if (step.done) void finishTurn()
+    // Held down, a pause never ends the turn; letting go does (or the longest turn).
+    if (step.done && (!holdToTalk || recorder.elapsed >= MAX_TURN_S)) void finishTurn()
   }, [recorder.level, recorder.elapsed, phase, recorder.recording])
 
   async function finishTurn() {
     setPhase('hearing')
     const recording = await recorder.stop()
     if (ended.current) return
-    if (!recording) return void listen()
+    if (!recording) return next()
     try {
       const words = await transcribe(await blobToBase64(recording.blob), recording.mime, profile)
       if (ended.current) return
-      // Quiet audio, or Hermes heard nothing: listen again.
-      if (!words) return void listen()
+      // Quiet audio, or Hermes heard nothing: listen again, or wait (push to talk, Continuous Conversation off).
+      if (!words) return next()
       setHeard(words)
       setProblem(null)
       waitingFrom.current = turnsDone
@@ -115,7 +137,7 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
     if (phase !== 'thinking' || waitingFrom.current === null || turnsDone === waitingFrom.current || running) return
     waitingFrom.current = null
     const words = spokenText(lastReply ?? '')
-    if (!words) return void listen()
+    if (!words) return next()
     setPhase('speaking')
     const output = speechOutput(profile)
     if (output !== 'hermes') {
@@ -131,9 +153,7 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
           // Interrupted: the interrupt already moved on.
           if (stopComputer.current !== spoken.stop) return
           stopComputer.current = null
-          if (ended.current) return
-          if (!mutedNow.current) void listen()
-          else setPhase('muted')
+          next()
         })
       return
     }
@@ -144,16 +164,14 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
         audio.current = player
         player.onended = () => {
           audio.current = null
-          if (!ended.current && !mutedNow.current) void listen()
-          else if (!ended.current) setPhase('muted')
+          next()
         }
         return player.play()
       })
       .catch(e => {
         if (ended.current) return
         setProblem(t("Hermes couldn't read this aloud: {error}", { error: e instanceof Error ? e.message : String(e) }))
-        if (!mutedNow.current) void listen()
-        else setPhase('muted')
+        next()
       })
   }, [turnsDone, running, phase])
 
@@ -171,7 +189,9 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
       const stop = stopComputer.current
       stopComputer.current = null
       stop?.()
+      // Interrupting means you want to talk: listen now, unless muted or holding to talk.
       if (mutedNow.current) setPhase('muted')
+      else if (holdToTalk) setPhase('ready')
       else void listen()
     } else if (phase === 'thinking') {
       onStop()
@@ -182,14 +202,42 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
     if (muted) {
       setMuted(false)
       mutedNow.current = false
-      if (phase === 'muted') void listen()
+      if (phase === 'muted') next()
       return
     }
     setMuted(true)
     mutedNow.current = true
-    if (phase === 'listening') {
+    if (phase === 'listening' || phase === 'ready') {
       recorder.cancel()
       setPhase('muted')
+    }
+  }
+
+  // Push to talk: press to talk (a press while Hermes speaks stops it), let go to send, slide off to cancel.
+  const press = () => {
+    if (muted) return
+    if (phase === 'speaking') {
+      audio.current?.pause()
+      audio.current = null
+      const stop = stopComputer.current
+      stopComputer.current = null
+      stop?.()
+    } else if (phase !== 'ready' && phase !== 'failed') return
+    holding.current = true
+    setProblem(null)
+    void listen()
+  }
+  const release = () => {
+    if (!holding.current) return
+    holding.current = false
+    if (phase === 'listening' && recorder.recording) void finishTurn()
+  }
+  const slideOff = () => {
+    if (!holding.current) return
+    holding.current = false
+    if (phase === 'listening') {
+      recorder.cancel()
+      setPhase('ready')
     }
   }
 
@@ -204,7 +252,11 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
             ? t('Speaking')
             : phase === 'muted'
               ? t('Muted')
-              : t('Interrupted')
+              : phase === 'ready'
+                ? holdToTalk
+                  ? t('Hold the microphone to talk')
+                  : t('Ready')
+                : t('Interrupted')
 
   return (
     <div className={`voice-call phase-${phase}`} role="region" aria-label={t('Voice call')}>
@@ -228,14 +280,60 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
           <button className="secondary" onClick={() => void listen()}>
             {t('Try again')}
           </button>
-        ) : phase === 'thinking' && !running && stalled ? (
+        ) : phase === 'ready' && !holdToTalk ? (
           <button className="secondary" onClick={() => void listen()}>
             {t('Listen')}
           </button>
+        ) : phase === 'thinking' && !running && stalled ? (
+          holdToTalk ? (
+            <button className="secondary" onClick={() => setPhase('ready')}>
+              {t('Listen')}
+            </button>
+          ) : (
+          <button className="secondary" onClick={() => void listen()}>
+            {t('Listen')}
+          </button>
+          )
         ) : null}
         {phase === 'speaking' || (phase === 'thinking' && running) ? (
           <button className="secondary" onClick={interrupt}>
             {t('Interrupt')}
+          </button>
+        ) : null}
+        {holdToTalk ? (
+          <button
+            className={`voice-call-round${phase === 'listening' ? ' on' : ''}`}
+            aria-label={t('Hold to talk')}
+            title={t('Hold to talk')}
+            disabled={muted}
+            onPointerDown={e => {
+              // Only the main button talks: a right-click's menu can swallow its release.
+              if (e.button !== 0) return
+              e.currentTarget.setPointerCapture?.(e.pointerId)
+              press()
+            }}
+            onPointerUp={e => {
+              if (e.button !== 0) return
+              // Let go outside the button: that's a slide off, which cancels.
+              const box = e.currentTarget.getBoundingClientRect()
+              const inside = e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom
+              if (inside) release()
+              else slideOff()
+            }}
+            onPointerCancel={slideOff}
+            // Focus moved while a key held it: no keyup will come, so that cancels.
+            onBlur={slideOff}
+            onKeyDown={e => {
+              if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
+                e.preventDefault()
+                press()
+              }
+            }}
+            onKeyUp={e => {
+              if (e.key === ' ' || e.key === 'Enter') release()
+            }}
+          >
+            <Icon name="mic" />
           </button>
         ) : null}
         <button
