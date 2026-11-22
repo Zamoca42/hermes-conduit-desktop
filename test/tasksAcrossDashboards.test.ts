@@ -90,6 +90,78 @@ describe('Scheduled across combined dashboards', () => {
 
 afterEach(() => vi.useRealTimers())
 
+describe('Scheduled after a change', () => {
+  it("a job deleted on another dashboard stays gone when the refresh after it fails", async () => {
+    const conduit = (window as unknown as { conduit: { keptHttp: (url: string, path: string, method?: string) => Promise<Outcome> } }).conduit
+    let up = true
+    conduit.keptHttp = async (url, path, method) => {
+      calls.push({ host: url, method: method ?? 'GET', path })
+      if (method === 'DELETE') {
+        up = false
+        return { ok: true, result: {} }
+      }
+      return up ? answer(url, path) : { ok: false, error: 'down' }
+    }
+    const hook = renderHook(({ s }: { s: CronSource[] }) => useCron(s, true), { s: [{ host: null, profile: null }, { host: FAR, profile: null }] })
+    await settle()
+    const gone = hook.result().jobs!.find(j => j.id === 'far-1')!
+    expect(await hook.result().remove(gone)).toBeNull()
+    await settle()
+    expect(hook.result().jobs?.map(j => j.id)).toEqual(['own-1', 'own-2', 'far-2'])
+    hook.unmount()
+  })
+
+  it("a far job paused stays paused when the refresh after it fails", async () => {
+    const conduit = (window as unknown as { conduit: { keptHttp: (url: string, path: string, method?: string) => Promise<Outcome> } }).conduit
+    let up = true
+    conduit.keptHttp = async (url, path, method) => {
+      if (method === 'POST') {
+        up = false
+        return { ok: true, result: {} }
+      }
+      return up ? answer(url, path) : { ok: false, error: 'down' }
+    }
+    const hook = renderHook(({ s }: { s: CronSource[] }) => useCron(s, true), { s: [{ host: null, profile: null }, { host: FAR, profile: null }] })
+    await settle()
+    expect(await hook.result().act('pause', hook.result().jobs!.find(j => j.id === 'far-1')!)).toBeNull()
+    await settle()
+    expect(hook.result().jobs?.find(j => j.id === 'far-1')?.enabled).toBe(false)
+    hook.unmount()
+  })
+
+  it("tapping the chosen far face again goes back to Chats' profile, not to All", async () => {
+    const path = '../src/renderer/src/components/ScheduledJobs.tsx'
+    const { ScheduledJobs } = (await import(/* @vite-ignore */ path)) as { ScheduledJobs: unknown }
+    const bot = (name: string) => ({ name, title: name, pinned: false, hidden: false, isDefault: false })
+    const tiles = [
+      { key: 'own\tmira', host: 'https://own.example', bot: bot('mira'), own: true },
+      { key: `${FAR}\tnova`, host: FAR, bot: bot('nova'), own: false }
+    ]
+    const picked: (string | null)[] = []
+    const box = document.createElement('div')
+    document.body.append(box)
+    const root = createRoot(box)
+    act(() =>
+      root.render(
+        createElement(ScheduledJobs as never, { bots: [], connected: true, profile: 'mira', onProfile: (p: string | null) => picked.push(p), tiles, onOpenRun: () => {}, segment: null } as never)
+      )
+    )
+    await settle()
+    const face = () => [...box.querySelectorAll<HTMLButtonElement>('button.profile-column-face')].find(b => b.getAttribute('aria-label')?.startsWith('nova'))!
+    act(() => face().click())
+    await settle()
+    expect(face().getAttribute('aria-selected')).toBe('true')
+    const before = calls.length
+    act(() => face().click())
+    await settle()
+    expect(face().getAttribute('aria-selected')).toBe('false')
+    expect(picked).toEqual([])
+    expect(calls.slice(before).some(c => c.host === null && c.path.includes('profile=mira'))).toBe(true)
+    act(() => root.unmount())
+    box.remove()
+  })
+})
+
 describe("Board's boards across combined dashboards", () => {
   it('a dashboard still connecting when Board opens lists its boards once it answers', async () => {
     vi.useFakeTimers()

@@ -94,6 +94,11 @@ export function useCron(sources: readonly CronSource[], connected: boolean) {
   )
   const http = (job: CronJob) => dashboardHttp(job.host ?? null)
   const same = (a: CronJob, b: CronJob) => a.id === b.id && a.profile === b.profile && a.host === b.host
+  /** What a write changed, in the list and in each source's last read, so a refresh that fails can't bring the old rows back. */
+  const patch = (change: (list: CronJob[]) => CronJob[]) => {
+    for (const [at, list] of lastRead.current) lastRead.current.set(at, change(list))
+    setJobs(list => (list ? change(list) : list))
+  }
 
   /** Pause, Resume or Run now; null when it worked, else what to tell the user. */
   const act = useCallback(
@@ -103,7 +108,7 @@ export function useCron(sources: readonly CronSource[], connected: boolean) {
       try {
         await http(job)('POST', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}/${action}`, owner), owner ? { profile: owner } : {})
         if (action !== 'trigger') {
-          setJobs(list => list?.map(row => (same(row, job) ? { ...row, enabled: action === 'resume' } : row)) ?? list)
+          patch(list => list.map(row => (same(row, job) ? { ...row, enabled: action === 'resume' } : row)))
         }
         void load()
         return null
@@ -127,7 +132,7 @@ export function useCron(sources: readonly CronSource[], connected: boolean) {
       setBusy(job.id)
       try {
         await http(job)('DELETE', cronPath(`/api/cron/jobs/${encodeURIComponent(job.id)}`, ownerOf(job)))
-        setJobs(list => list?.filter(row => !same(row, job)) ?? list)
+        patch(list => list.filter(row => !same(row, job)))
         void load()
         return null
       } catch (e) {
