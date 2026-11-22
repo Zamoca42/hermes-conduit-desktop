@@ -107,7 +107,7 @@ describe("bots' screens in windows of their own", () => {
     expect(released).toHaveLength(1)
   })
 
-  it('cancels a hand back still being tried once the window reopens or takes over again', () => {
+  it('cancels a hand back still being tried once the window reopens and takes over again', () => {
     const { set, made, owed } = harness()
     set.show({ profile: 'mira', botName: 'Mira' })
     set.note('mira', 'v1', true)
@@ -118,8 +118,19 @@ describe("bots' screens in windows of their own", () => {
     set.note('mira', 'v1', true)
     made[1]!.close()
     expect(owed[1]!()).toBe(true)
-    set.note('mira', 'v1', true)
-    expect(owed[1]!()).toBe(false)
+  })
+
+  it("keeps a hand back owed when the closing page's last word that it holds comes after it started (#369 review)", () => {
+    const { set, made, owed, released } = harness()
+    const far = screenKey('https://b.example', 'mira')
+    set.show({ profile: 'mira', botName: 'Mira', host: 'https://b.example' })
+    set.note(far, 'v1', true)
+    void set.closeWhere(key => key === far)
+    // The closing page's last note lands after the hand back started.
+    set.note(far, 'v1', true)
+    expect(owed[0]!()).toBe(true)
+    expect(made[0]!.closed).toBe(true)
+    expect(released).toEqual([[far, 'v1']])
   })
 
   it('a hand back cut short by a reopen is sent again when the window closes before its page attaches', () => {

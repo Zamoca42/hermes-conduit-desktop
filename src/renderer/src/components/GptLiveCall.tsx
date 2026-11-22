@@ -42,6 +42,7 @@ import {
   requestWords,
   sessionAnswer,
   teachesPhoneReads,
+  rememberGptLiveDialect,
   withProfile,
   type Channel,
   type Dialect,
@@ -60,6 +61,7 @@ import { openingTurn } from '../state/liveGreeting'
 import { DelegatedAskFirst, liveAsksFirst, switchedNote, type DelegatedStep } from '../state/askFirst'
 import { AskFirstButton } from './AskFirstButton'
 import { NO_PHONE_READS, delegatedPhoneReply, gptLivePhoneRules, loadPhoneReads, markedPhoneRead, readPhoneTyped, type PhoneReads } from '../state/phoneReads'
+import { dashboardHost } from '../state/dashboardProfile'
 
 interface Props {
   profile?: string
@@ -589,6 +591,8 @@ export function GptLiveCall({
         trace.current.step(`Session answered (${answer.dialect} events, briefing ${answer.briefingApplied ? 'applied' : 'sent after start'})`)
         if (ended.current) return
         dialect.current = answer.dialect
+        // What Conduit sends shows the read rules as this host's next call would get them (desktop#363).
+        rememberGptLiveDialect(dashboardHost(), billing, answer.dialect)
         if (!teachesPhoneReads(billing, answer.dialect)) phoneRef.current = { ...phone, tools: [] }
         setNote(voiceNote(voice, answer.voice))
         await peer.setRemoteDescription({ type: 'answer', sdp: answer.sdp })

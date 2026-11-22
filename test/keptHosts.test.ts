@@ -239,6 +239,18 @@ describe('combined dashboards in the main process', () => {
     expect(socket.readyState).toBe(3)
   })
 
+  it('clears the grace timer once the last work settles first', async () => {
+    const cleared: unknown[] = []
+    const h = harness([host('https://a.example'), host('https://b.example')], { beforeStop: () => Promise.resolve() })
+    ;(h.kept as unknown as { deps: { clearTimeout: (handle: unknown) => void } }).deps.clearTimeout = handle => cleared.push(handle)
+    h.kept.sync(open('https://a.example'))
+    await until(() => h.state('https://b.example') === 'live')
+    h.kept.sync({ phase: 'locked' })
+    await tick()
+    expect(h.sockets[0]!.readyState).toBe(3)
+    expect(cleared).toHaveLength(1)
+  })
+
   it('lets everything go on sign-out, a lock, or the group dropping under two', async () => {
     const h = harness([host('https://a.example'), host('https://b.example')])
     h.kept.sync(open('https://a.example'))

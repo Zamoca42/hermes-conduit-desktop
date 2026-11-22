@@ -77,6 +77,17 @@ describe("a live call's transcript", () => {
     act(() => void list.dispatchEvent(new Event('scroll')))
     show([...kept.slice(-4), line(15, 'Six.')])
     expect(list.scrollTop).toBe(100)
+
+    // A reader a little up (inside the near-the-end allowance) when a line leaves stays put (#369 review).
+    const more = [line(20, 'A.'), line(21, 'B.'), line(22, 'C.'), line(23, 'D.'), line(24, 'E.')]
+    show(more)
+    expect(list.scrollTop).toBe(100)
+    scrollTo(list, 70)
+    // The front line got shorter by 10 px: the list shrinks but doesn't clamp, so it isn't at its end.
+    height = 190
+    act(() => void list.dispatchEvent(new Event('scroll')))
+    show([...more, line(25, 'F.')])
+    expect(list.scrollTop).toBe(70)
     act(() => root.unmount())
   })
 })

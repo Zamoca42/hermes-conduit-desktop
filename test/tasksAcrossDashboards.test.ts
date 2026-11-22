@@ -166,6 +166,19 @@ describe('Scheduled after a change', () => {
     hook.unmount()
   })
 
+  it("a new job on a dashboard whose reads have all failed stays listed when the next refresh fails too (#369 review)", async () => {
+    const conduit = (window as unknown as { conduit: { keptHttp: (url: string, path: string, method?: string) => Promise<Outcome> } }).conduit
+    conduit.keptHttp = async (_url, _path, method) =>
+      method === 'POST' ? { ok: true, result: { job: { id: 'far-9', name: 'far-9', enabled: true } } } : { ok: false, error: 'down' }
+    const hook = renderHook(({ s }: { s: CronSource[] }) => useCron(s, true), { s: [{ host: null, profile: null }, { host: FAR, profile: null }] })
+    await settle()
+    expect(hook.result().jobs?.map(j => j.id)).toEqual(['own-1', 'own-2'])
+    await hook.result().create({ name: 'far-9' }, 'nova', FAR)
+    await settle()
+    expect(hook.result().jobs?.map(j => j.id)).toEqual(['own-1', 'own-2', 'far-9'])
+    hook.unmount()
+  })
+
   it('a kept far pick shows again only while its dashboard lists that profile (desktop#348)', async () => {
     const path = '../src/renderer/src/components/ScheduledJobs.tsx'
     const { ScheduledJobs } = (await import(/* @vite-ignore */ path)) as { ScheduledJobs: unknown }

@@ -3,7 +3,7 @@ import { livePreview } from '../src/renderer/src/state/livePreview'
 import { setLiveGreeting } from '../src/renderer/src/state/liveGreeting'
 import { setLiveInstructions } from '../src/renderer/src/state/liveStyle'
 import { setLiveAsksFirst } from '../src/renderer/src/state/askFirst'
-import { setGptLiveBilling } from '../src/renderer/src/state/gptLive'
+import { lastGptLiveDialect, rememberGptLiveDialect, setGptLiveBilling } from '../src/renderer/src/state/gptLive'
 
 describe("Live call style's What Conduit sends", () => {
   beforeEach(() => {
@@ -46,14 +46,33 @@ describe("Live call style's What Conduit sends", () => {
     expect(livePreview('gpt')?.instructions).not.toContain("Conduit's own tools")
   })
 
+  it("leaves the read rules out where the host last answered a ChatGPT-plan call with GA events (desktop#363)", () => {
+    const host = 'https://home.example'
+    expect(livePreview('gpt', { dialect: lastGptLiveDialect(host) })?.instructions).toContain("Conduit's own tools")
+    rememberGptLiveDialect(host, 'subscription', 'ga')
+    expect(lastGptLiveDialect(host)).toBe('ga')
+    expect(livePreview('gpt', { dialect: lastGptLiveDialect(host) })?.instructions).not.toContain("Conduit's own tools")
+    // Another host, and a host that answers with the frameless events again, get them.
+    expect(lastGptLiveDialect('https://other.example')).toBeUndefined()
+    rememberGptLiveDialect(host, 'subscription', 'frameless')
+    expect(livePreview('gpt', { dialect: lastGptLiveDialect(host) })?.instructions).toContain("Conduit's own tools")
+    // An API-key call is always GA and says nothing about the plan's events.
+    rememberGptLiveDialect(host, 'api', 'ga')
+    expect(lastGptLiveDialect(host)).toBe('frameless')
+  })
+
   it('has no greeting turn with the greeting off', () => {
     expect(livePreview('gemini')?.openingTurn).toBeNull()
   })
 
   it("is Local Live's agent instructions only in agent mode with the host's fast model, and its greeting is what the server says", () => {
-    expect(livePreview('local')).toBeNull()
+    // Hermes answering each turn: no instructions, but the greeting is still said (desktop#340).
+    setLiveGreeting('Ahoy')
+    expect(livePreview('local')).toMatchObject({ isLocalLive: true, instructions: null, openingTurn: 'Ahoy' })
+    setLiveGreeting(null)
+    expect(livePreview('local')).toMatchObject({ instructions: null, openingTurn: null })
     localStorage.setItem('conduit.localLiveAgent', 'true')
-    expect(livePreview('local', { fastModel: false })).toBeNull()
+    expect(livePreview('local', { fastModel: false })).toMatchObject({ instructions: null })
     const preview = livePreview('local', { fastModel: true })
     expect(preview?.isLocalLive).toBe(true)
     expect(preview?.mode).toBe('Local Live')

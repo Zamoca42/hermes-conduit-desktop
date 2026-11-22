@@ -45163,5 +45163,35 @@
     "tr": "Bas konuş",
     "zh-Hans": "按住说话",
     "zh-Hant": "按住說話"
+  },
+  "Your speech server says this when the call connects:": {
+    "de": "Dein Sprachserver sagt das, wenn der Anruf verbunden wird:",
+    "es": "Tu servidor de voz dice esto cuando se conecta la llamada:",
+    "fr": "Votre serveur vocal dit ceci à la connexion de l'appel :",
+    "id": "Server suara Anda mengucapkan ini saat panggilan terhubung:",
+    "it": "Il tuo server vocale dice questo quando la chiamata si connette:",
+    "ja": "通話の接続時に音声サーバーがこれを話します：",
+    "ko": "통화가 연결되면 음성 서버가 이렇게 말해요:",
+    "pl": "Twój serwer mowy mówi to po nawiązaniu połączenia:",
+    "pt-BR": "Seu servidor de voz diz isto quando a chamada conecta:",
+    "ru": "Ваш речевой сервер произносит это при подключении звонка:",
+    "tr": "Konuşma sunucunuz arama bağlandığında bunu söyler:",
+    "zh-Hans": "通话接通时，你的语音服务器会说：",
+    "zh-Hant": "通話接通時，你的語音伺服器會說："
+  },
+  "Your fast model doesn't answer first, so Hermes answers each turn itself and Conduit sends no instructions.": {
+    "de": "Dein schnelles Modell antwortet nicht zuerst, also beantwortet Hermes jede Runde selbst und Conduit sendet keine Anweisungen.",
+    "es": "Tu modelo rápido no responde primero, así que Hermes responde cada turno por sí mismo y Conduit no envía instrucciones.",
+    "fr": "Votre modèle rapide ne répond pas en premier : Hermes répond donc lui-même à chaque tour et Conduit n'envoie aucune instruction.",
+    "id": "Model cepat Anda tidak menjawab lebih dulu, jadi Hermes menjawab setiap giliran sendiri dan Conduit tidak mengirim instruksi.",
+    "it": "Il tuo modello veloce non risponde per primo, quindi Hermes risponde da solo a ogni turno e Conduit non invia istruzioni.",
+    "ja": "高速モデルが先に答えないため、Hermes が各ターンに自分で答え、Conduit は指示を送信しません。",
+    "ko": "빠른 모델이 먼저 답변하지 않으므로 Hermes가 매 턴 직접 답변하고 Conduit은 지시 사항을 보내지 않아요.",
+    "pl": "Twój szybki model nie odpowiada pierwszy, więc Hermes sam odpowiada na każdą wypowiedź, a Conduit nie wysyła instrukcji.",
+    "pt-BR": "Seu modelo rápido não responde primeiro, então o Hermes responde cada turno sozinho e o Conduit não envia instruções.",
+    "ru": "Ваша быстрая модель не отвечает первой, поэтому Hermes сам отвечает на каждую реплику, а Conduit не отправляет инструкций.",
+    "tr": "Hızlı modeliniz önce yanıtlamıyor, bu yüzden Hermes her turu kendisi yanıtlar ve Conduit talimat göndermez.",
+    "zh-Hans": "你的快速模型不先回答，所以每一轮都由 Hermes 自己回答，Conduit 不发送指令。",
+    "zh-Hant": "你的快速模型不先回答，所以每個回合都由 Hermes 自己回答，Conduit 不傳送指示。"
   }
 }
