@@ -115,13 +115,18 @@ describe("a kept host's own chat changes", () => {
   it('read its chats once they settle, not on the minute', async () => {
     vi.useFakeTimers()
     let changed: ((url: string) => void) | undefined
-    const chatReads = () => paths.filter(p => p.includes('/api/profiles/sessions')).length
+    let otherReads = 0
+    const chatReads = () => paths.filter(p => p.includes('/api/profiles/sessions')).length - otherReads
     const conduit = (window as unknown as { conduit: Record<string, unknown> }).conduit
     const http = conduit.keptHttp as (url: string, path: string) => Promise<Outcome>
     conduit.keptHttp = async (url: string, path: string): Promise<Outcome> => {
       if (path === '/api/profiles') return { ok: true, result: { profiles: [{ name: 'default' }] } }
       if (path.includes('/api/profiles/sessions')) {
         paths.push(path)
+        if (url !== HOST) {
+          otherReads++
+          return { ok: true, result: { sessions: [] } }
+        }
         return { ok: true, result: { sessions: [{ id: 'made-there', title: 'Made there', message_count: 1, last_active: 2 }] } }
       }
       return http(url, path)
@@ -130,9 +135,11 @@ describe("a kept host's own chat changes", () => {
       changed = listener
       return () => (changed = undefined)
     }
-    const hook = renderHook(({ kept }: { kept: KeptHost[] }) => useKeptChats(kept, true), { kept: live })
+    const other: KeptHost = { url: 'https://other.example', state: 'live' }
+    const hook = renderHook(({ kept }: { kept: KeptHost[] }) => useKeptChats(kept, true), { kept: [...live, other] })
     await settle()
     expect(chatReads()).toBe(1)
+    expect(otherReads).toBe(1)
 
     // A burst from it is one read, after the wait.
     changed?.(HOST)
@@ -143,6 +150,7 @@ describe("a kept host's own chat changes", () => {
     await act(async () => vi.advanceTimersByTime(KEPT_CHATS_CHANGE_WAIT_MS))
     await settle()
     expect(chatReads()).toBe(2)
+    expect(otherReads).toBe(1)
     expect(hook.result().map(r => r.id)).toContain('made-there')
 
     // Let go, nothing waits on it.
