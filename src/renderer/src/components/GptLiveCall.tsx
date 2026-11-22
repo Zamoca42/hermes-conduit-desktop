@@ -58,6 +58,7 @@ import { MicOrb } from './MicOrb'
 import { openingTurn } from '../state/liveGreeting'
 import { DelegatedAskFirst, liveAsksFirst, switchedNote, type DelegatedStep } from '../state/askFirst'
 import { AskFirstButton } from './AskFirstButton'
+import { NO_PHONE_READS, delegatedPhoneReply, gptLivePhoneRules, loadPhoneReads, markedPhoneRead, readPhoneTyped, type PhoneReads } from '../state/phoneReads'
 
 interface Props {
   profile?: string
@@ -149,6 +150,8 @@ export function GptLiveCall({
   const quiet = useRef<number | null>(null)
   const ended = useRef(false)
   const finder = useRef(chatFinder(profile))
+  // What the user's phone lets this call read, loaded as the call starts.
+  const phoneRef = useRef<PhoneReads>(NO_PHONE_READS)
   const [jobList, setJobList] = useState<VoiceJob[]>([])
   const jobs = useRef<VoiceJobs | null>(null)
   // "Call me when it's done": the call's jobs and its request in the chat, as they run.
@@ -361,6 +364,12 @@ export function GptLiveCall({
       })
       return
     }
+    // "Health: {...}": what the user's phone lets this call read, answered here, never a Hermes job.
+    const marked = markedPhoneRead(text, phoneRef.current.tools)
+    if (marked) {
+      void readPhoneTyped(profile, 'gpt-live', marked.tool, marked.args).then(result => !ended.current && append(delegatedPhoneReply(result), 'commentary', id))
+      return
+    }
     if (isReadBack(text)) {
       const read = readBack(live.current.lastReply)
       if (!read) append(NOTHING_TO_READ, 'speakable', id)
@@ -556,13 +565,21 @@ export function GptLiveCall({
             )
         )
         // The persona and memory only when switched on; a host without them starts the call without.
-        const [persona, memory] = await Promise.all([
+        // Where the user is and their phone's state, when their phone lets GPT-Live read it, and the phone's read
+        // tools, which GPT-Live reaches with a marked delegation answered here.
+        const [persona, memory, phone] = await Promise.all([
           sendsPersona() ? gateway.http('GET', withProfile(PERSONALITY_PATH, profile)).then(personaText, () => '') : '',
-          sendsMemory() ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(memoryText, () => '') : ''
+          sendsMemory() ? gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(memoryText, () => '') : '',
+          loadPhoneReads(profile, 'gpt-live')
         ])
         const asked = await askedQuestionsForCall(profile)
         if (ended.current) return
-        const told = briefing(language(), persona, memory, asked)
+        phoneRef.current = phone
+        // The phone's read rules only where a delegation carries its text: GA's carries none (the request is in the
+        // transcript), so a marker could never match there and the model would be taught a read it can't make.
+        const briefed = (rules: boolean) =>
+          briefing(language(), persona, memory, asked, undefined, undefined, phone.context, rules ? gptLivePhoneRules(phone.tools) : '')
+        const told = briefed(billing !== 'api')
         const body: Record<string, unknown> = { sdp: peer.localDescription?.sdp ?? '', billing, briefing: told }
         if (seed.length) body.history = seed
         if (voice) body.voice = voice
@@ -571,11 +588,13 @@ export function GptLiveCall({
         trace.current.step(`Session answered (${answer.dialect} events, briefing ${answer.briefingApplied ? 'applied' : 'sent after start'})`)
         if (ended.current) return
         dialect.current = answer.dialect
+        if (answer.dialect === 'ga') phoneRef.current = { ...phone, tools: [] }
         setNote(voiceNote(voice, answer.voice))
         await peer.setRemoteDescription({ type: 'answer', sdp: answer.sdp })
         // Given with the session where the host takes it; otherwise once it starts.
         if (!answer.briefingApplied) {
-          const sendBriefing = () => append(told, 'instructions', null)
+          const late = answer.dialect === 'ga' ? briefed(false) : told
+          const sendBriefing = () => append(late, 'instructions', null)
           if (dc.readyState === 'open') sendBriefing()
           else dc.addEventListener('open', sendBriefing, { once: true })
         }
