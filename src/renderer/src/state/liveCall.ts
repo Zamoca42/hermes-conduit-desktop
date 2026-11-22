@@ -11,6 +11,7 @@ import { REQUESTS_RULE, REQUEST_TOOL_SPECS } from './liveRequests'
 import { FIND_CHAT_RULE, FIND_CHAT_SPEC, READ_CHAT_SPEC } from './chatFinder'
 import { JOBS_RULE, JOB_TOOL_SPECS } from './voiceJobs'
 import { CALLBACK_SPEC } from './callbacks'
+import { phoneContextBlock, phoneToolsFirst, type PhoneTool } from './phoneReads'
 import { ASK_FIRST_RULE, ASK_FIRST_TOOL_SPECS, askFirstInstructions, liveAsksFirst } from './askFirst'
 
 export const ASK_THREAD = 'ask_thread'
@@ -215,6 +216,10 @@ export function liveInstructions(options: {
   recall?: boolean
   /** The questions the bot asked that wait past their turn (askedQuestionsBlock). */
   asked?: string
+  /** Where the user is and their phone's state, as the phone lets this mode read (phoneReads). */
+  phoneNow?: string
+  /** The phone's read tools this call has (phoneReads): their rule leads the call's blocks. */
+  phoneTools?: PhoneTool[]
   chat?: string
   /** The Live call style; the one saved in Settings when left out. */
   style?: LiveStyle
@@ -235,8 +240,10 @@ When the user says goodbye to you, or asks to end, hang up or close the call, sa
   return (
     rules +
     (options.extra ?? '') +
+    phoneToolsFirst(options.phoneTools ?? []) +
     personaBlock(persona) +
     memoryBlock(options.memory ?? '', options.recall) +
+    phoneContextBlock(options.phoneNow ?? '') +
     speechRule(persona) +
     (options.asked ?? '') +
     (options.chat ?? '') +

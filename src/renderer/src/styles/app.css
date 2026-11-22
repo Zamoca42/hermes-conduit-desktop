@@ -12179,6 +12179,10 @@ button.ghost:disabled {
 .docked-room-page {
   flex-direction: column;
 }
+/* The room fills what's left and scrolls its transcript, so the composer stays at the bottom (a column's item otherwise grows to its whole transcript). */
+.docked-room-page > .chat {
+  min-height: 0;
+}
 .docked-room-page > .notice {
   flex: none;
   margin: 8px 16px 0;
@@ -12262,4 +12266,12 @@ button.ghost:disabled {
   border: 1px solid var(--line);
   border-radius: 10px;
   user-select: text;
+}
+
+/* Settings > App > Updates: the button and What's New on one line. */
+.updates-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
