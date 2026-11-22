@@ -57,6 +57,14 @@ describe("a live call's transcript", () => {
     lines.push(line(7, 'Goodbye.'))
     show([...lines])
     expect(list.scrollTop).toBe(height - 100)
+
+    // The panels keep the last few lines: a long line dropped from the front
+    // shrinks the list and clamps it higher, which mustn't stop following.
+    show(lines.slice(-3))
+    expect(list.scrollTop).toBe(20)
+    act(() => void list.dispatchEvent(new Event('scroll')))
+    show([...lines.slice(-3), line(8, 'See you.')])
+    expect(list.scrollTop).toBe(60)
     act(() => root.unmount())
   })
 })
