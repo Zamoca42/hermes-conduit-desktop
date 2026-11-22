@@ -4,7 +4,9 @@
  * timeout, an hour by default) or whose turn stopped keeps what it asked and
  * offered, so the person still sees it and can answer in a message instead.
  * One answered on another device (`request.cancel` with reason `resolved`)
- * just goes. Kept for this run of the app, and a chat's go once the person
+ * just goes, as does one the person wrote past (`superseded`: they sent a
+ * message instead, which the plugin hands Hermes in its place, hermes-conduit
+ * issue 3105). Kept for this run of the app, and a chat's go once the person
  * sends there: the message is their answer.
  */
 import { useEffect, useState } from 'react'
@@ -46,13 +48,13 @@ export function markExpired(request: PendingRequest, locked: Record<string, stri
   changed()
 }
 
-/** A `request.cancel` from Hermes: kept unless another device answered it. */
+/** A `request.cancel` from Hermes: kept unless another device answered it or the person wrote past it. */
 export function takeCancel(payload: unknown): void {
   const { id, reason } = (payload ?? {}) as { id?: unknown; reason?: unknown }
   if (typeof id !== 'string') return
   const request = seen.get(id)
   if (!request) return
-  if (reason === 'resolved') {
+  if (reason === 'resolved' || reason === 'superseded') {
     seen.delete(id)
     locks.delete(id)
     return

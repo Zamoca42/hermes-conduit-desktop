@@ -28,6 +28,12 @@ describe('questions Hermes stopped waiting for (issue 2850)', () => {
     expect(expiredFor('s1')).toEqual([])
   })
 
+  it('lets one the person wrote past go: their message took its place', () => {
+    noteRequests([ask('a')])
+    takeCancel({ id: 'a', method: 'clarify', reason: 'superseded' })
+    expect(expiredFor('s1')).toEqual([])
+  })
+
   it('ignores approvals and requests it never showed', () => {
     noteRequests([{ ...ask('a'), method: 'approval' }])
     takeCancel({ id: 'a', reason: 'timeout' })

@@ -5,6 +5,7 @@ import {
   WORK,
   actionTitle,
   answerRequest,
+  canDismiss,
   goingAheadText,
   questionButtons,
   questionHeadline,
@@ -306,6 +307,16 @@ export function QuestionCard({
           ))}
         </div>
       )}
+      {canDismiss(question) ? (
+        <button
+          className="link work-question-dismiss"
+          title={t('Takes it off your list without answering')}
+          disabled={busy}
+          onClick={() => void answer({ kind: 'dismiss' })}
+        >
+          {t('Dismiss')}
+        </button>
+      ) : null}
       {problem ? <div className="error-text">{problem}</div> : null}
     </div>
   )
