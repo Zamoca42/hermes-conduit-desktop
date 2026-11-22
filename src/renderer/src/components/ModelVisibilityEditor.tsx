@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
 import type { ModelProviderRow } from '../state/models'
-import { editorMatches, modelKey, providerHidden, setAllModels, shownCount, toggleModel, toggleProvider } from '../state/modelVisibility'
+import { editorMatches, runnableModels, modelKey, providerHidden, setAllModels, shownCount, toggleModel, toggleProvider } from '../state/modelVisibility'
 import { useModelVisibility } from './ModelOptions'
 import { ProviderLogo } from './ProviderLogo'
 import { Icon } from './icons'
@@ -41,7 +41,7 @@ export function ModelVisibilityEditor({ providers, openProvider, onDone }: { pro
       </label>
       <div className="model-note">{t('Hiding a provider preserves its individual model choices. These filters stay on this computer.')}</div>
       <div className="model-list">
-        {providers && !groups.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
+        {providers && searching && !groups.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
         {groups.map(({ provider, models }) => {
           const name = provider.name || provider.slug
           const hidden = providerHidden(visibility, provider.slug)
@@ -59,7 +59,7 @@ export function ModelVisibilityEditor({ providers, openProvider, onDone }: { pro
                     <span className="provider-header-quota">
                       {t('{shown} of {count} shown', {
                         shown: String(shownCount(visibility, provider)),
-                        count: String(provider.models?.length ?? 0)
+                        count: String(runnableModels(provider).length)
                       })}
                     </span>
                   </span>

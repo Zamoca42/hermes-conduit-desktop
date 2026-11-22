@@ -42,6 +42,12 @@ export function visibleProviders(visibility: ModelVisibility, providers: ModelPr
     )
 }
 
+/** A provider's models less the ones Hermes says can't run, which no list shows (models.ts groupModels). */
+export function runnableModels(provider: ModelProviderRow): string[] {
+  const unavailable = new Set(provider.unavailable_models ?? [])
+  return (provider.models ?? []).filter(model => !unavailable.has(model))
+}
+
 export function toggleProvider(visibility: ModelVisibility, provider: string): ModelVisibility {
   const hiddenProviders = providerHidden(visibility, provider) ? visibility.hiddenProviders.filter(p => p !== provider) : [...visibility.hiddenProviders, provider]
   return { ...visibility, hiddenProviders }
@@ -56,13 +62,13 @@ export function toggleModel(visibility: ModelVisibility, provider: string, model
 
 /** Show all or Hide all of a provider's models. Hiding a provider keeps these choices for when it's shown again. */
 export function setAllModels(visibility: ModelVisibility, provider: ModelProviderRow, visible: boolean): ModelVisibility {
-  const keys = new Set((provider.models ?? []).map(model => modelKey(provider.slug, model)))
+  const keys = new Set(runnableModels(provider).map(model => modelKey(provider.slug, model)))
   const rest = visibility.hiddenModels.filter(k => !keys.has(k))
   return { ...visibility, hiddenModels: visible ? rest : [...rest, ...keys] }
 }
 
 /** How many of a provider's models its own switches leave shown. */
-export const shownCount = (visibility: ModelVisibility, provider: ModelProviderRow) => (provider.models ?? []).filter(model => !visibility.hiddenModels.includes(modelKey(provider.slug, model))).length
+export const shownCount = (visibility: ModelVisibility, provider: ModelProviderRow) => runnableModels(provider).filter(model => !visibility.hiddenModels.includes(modelKey(provider.slug, model))).length
 
 /**
  * Edit's own search: a provider whose slug or name holds the text keeps all
@@ -71,7 +77,7 @@ export const shownCount = (visibility: ModelVisibility, provider: ModelProviderR
 export function editorMatches(providers: ModelProviderRow[], query: string): { provider: ModelProviderRow; models: string[] }[] {
   const q = query.trim().toLowerCase()
   return providers.flatMap(provider => {
-    const models = provider.models ?? []
+    const models = runnableModels(provider)
     if (!q || `${provider.slug} ${provider.name}`.toLowerCase().includes(q)) return [{ provider, models }]
     const matching = models.filter(model => model.toLowerCase().includes(q))
     return matching.length ? [{ provider, models: matching }] : []
