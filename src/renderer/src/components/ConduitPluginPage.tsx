@@ -7,11 +7,11 @@ import {
   HOST_FOLLOW_LIMIT_MS,
   REPOSITORY,
   SELF_UPDATE_PATH,
-  STALLED_DETAIL,
   STATUS_PATH,
   outcomeAfterStall,
   selfUpdatePath,
   stallLimitMs,
+  untilQuiet,
   STEP_COUNT,
   canUpdateHere,
   jobState,
@@ -75,38 +75,52 @@ async function runUpdate(onDone: () => void, acceptScan = false, latest: string 
   const runStarted = startedAt
   updateHost = dashboardHost()
   let live = true
-  let heardAt = Date.now()
+  let jobId: string | null = null
   const set = (next: UpdateState) => {
-    heardAt = Date.now()
     if (live) setUpdate(next)
   }
   set({ phase: 'updating', step: 'downloading' })
-  let watchdog: ReturnType<typeof setInterval> | undefined
-  const stalled = new Promise<void>(resolve => {
-    watchdog = setInterval(() => {
-      const limit = stallLimitMs(update)
-      if (limit === null || Date.now() - heardAt > limit) resolve()
-    }, STALL_CHECK_MS)
-  })
   try {
-    await Promise.race([follow(set, acceptScan), stalled])
+    await untilQuiet(
+      heard =>
+        follow(set, heard, acceptScan, () => live, id => {
+          jobId = id
+        }),
+      () => stallLimitMs(update),
+      STALL_CHECK_MS
+    )
     if (live && update.phase === 'updating') {
-      // Quiet past its limit: whatever it waited on can't land on the row any more.
+      // Quiet past its limit: whatever it waited on can't land on the row any more, and its follow stops.
       live = false
       const job = ((await gateway.http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: unknown } | null)?.job
-      const outcome = outcomeAfterStall(job, await readStatus(), latest, runStarted)
-      setUpdate(outcome.phase === 'failed' && outcome.detail === STALLED_DETAIL ? { phase: 'failed', detail: t("The update didn't get going on the host, so Conduit stopped waiting for it. Try again.") } : outcome)
+      setUpdate(
+        outcomeAfterStall(
+          job,
+          await readStatus(),
+          latest,
+          { startedMs: runStarted, jobId },
+          t("The update didn't get going on the host, so Conduit stopped waiting for it. Try again.")
+        )
+      )
     }
   } finally {
     live = false
-    clearInterval(watchdog)
     running = false
     onDone()
   }
 }
 
-/** Starts the host's job and follows it, reporting each step through `set`. */
-async function follow(set: (next: UpdateState) => void, acceptScan: boolean) {
+/**
+ * Starts the host's job and follows it, reporting each step through `set`, each answer from the host
+ * through `heard` and the job it follows through `onJob`. Stops once the run is no longer `live`.
+ */
+async function follow(
+  set: (next: UpdateState) => void,
+  heard: () => void,
+  acceptScan: boolean,
+  live: () => boolean,
+  onJob: (id: string) => void
+) {
   let job: Record<string, unknown> | null = null
   try {
     const started = (await gateway.http('POST', selfUpdatePath(acceptScan))) as { job?: Record<string, unknown> }
@@ -120,20 +134,24 @@ async function follow(set: (next: UpdateState) => void, acceptScan: boolean) {
   }
   const id = job?.id
   if (!job || typeof id !== 'string') return set({ phase: 'failed', detail: null })
+  onJob(id)
+  heard()
   for (;;) {
     const state = jobState(job)
     if (state && state.phase !== 'updating') return set(state)
-    // Each read counts as word from the host, even when the step is the same.
     set(state ?? update)
     if (Date.now() - startedAt > HOST_FOLLOW_LIMIT_MS) return set({ phase: 'runningOnHost' })
     await pause(2000)
-    // Reads fail while the dashboard restarts; the next poll asks again.
+    if (!live()) return
+    // Reads fail while the dashboard restarts; the next poll asks again. Only an answer counts as word
+    // from the host (even when the step is the same), so reads that keep failing let the watchdog end it.
     let latest: { job?: Record<string, unknown> } | null
     try {
       latest = (await gateway.http('GET', SELF_UPDATE_PATH)) as { job?: Record<string, unknown> }
     } catch {
       continue
     }
+    heard()
     if (!latest?.job || latest.job.id !== id) {
       // The restarted dashboard lost the job: its report says where it stands.
       const status = await readStatus()
