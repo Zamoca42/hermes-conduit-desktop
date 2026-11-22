@@ -17,7 +17,7 @@ import { mentionCandidates, withMentionNote, withoutMentionNote } from '../state
 import { clearExpired } from '../state/expiredQuestions'
 import { isResetCommand, looksLikeSlashCommand } from '../state/slash'
 import { cleanTitle } from '../state/text'
-import { notificationsEnabled, requestNotification, turnNotification, type NotificationSpec } from '../state/notifications'
+import { notificationsEnabled, requestNotification, turnNotification, untitledAsNone, type NotificationSpec } from '../state/notifications'
 import { readMuted } from '../state/chatMute'
 import { gateway } from '../gateway'
 
@@ -162,7 +162,7 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
    * this window back.
    */
   // A notification takes the chat's own title, not the window's "Chat" for an untitled one, and else its bot.
-  const chatTitle = botChat ? botTitle : cleanTitle(chat.title || request.title || '') || undefined
+  const chatTitle = botChat ? botTitle : untitledAsNone(cleanTitle(chat.title || request.title || ''))
   const chatRef = useRef({ liveId: chat.liveId, storedId: chat.storedId, profile, title: chatTitle, bot: botTitle })
   chatRef.current = { liveId: chat.liveId, storedId: chat.storedId, profile, title: chatTitle, bot: botTitle }
   const notify = useCallback(
@@ -208,7 +208,7 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
 
   // Docked: the chat moves to a window of its own, and the main window, seeing it there, closes this pane.
   const openInWindow = useCallback(async () => {
-    const opened = await window.conduit.openChatWindow({ id: request.id, profile, title, author: botTitle, host, ...(botChat ? { botChat: true } : {}) })
+    const opened = await window.conduit.openChatWindow({ id: request.id, profile, title: chatTitle, author: botTitle, host, ...(botChat ? { botChat: true } : {}) })
     if (opened) return
     const open = await window.conduit.chatWindows()
     notice(

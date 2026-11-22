@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { plainLine, requestNotification, turnNotification } from '../src/renderer/src/state/notifications'
+import { plainLine, requestNotification, turnNotification, untitledAsNone } from '../src/renderer/src/state/notifications'
 
 describe('notifications', () => {
   it('tells a finished turn with its reply as one plain line', () => {
@@ -14,6 +14,13 @@ describe('notifications', () => {
     expect(turnNotification('l', { text: 'Done.', status: 'complete' }, { storedId: 's', bot: 'Kaleb' })).toMatchObject({ title: 'Kaleb', body: 'Done.' })
     expect(turnNotification('l', { text: 'Done.', status: 'complete' }, { storedId: 's', title: 'Trip', bot: 'Kaleb' })).toMatchObject({ title: 'Trip' })
     expect(turnNotification('l', { status: 'error', error: 'Model overloaded' }, { storedId: 's', bot: 'Kaleb' })).toMatchObject({ title: 'Kaleb' })
+  })
+
+  it('takes the list\'s "Untitled chat" label as no title, so the bot names the reply', () => {
+    expect(untitledAsNone('Untitled chat')).toBeUndefined()
+    expect(untitledAsNone('')).toBeUndefined()
+    expect(untitledAsNone('Trip')).toBe('Trip')
+    expect(turnNotification('l', { text: 'Done.', status: 'complete' }, { storedId: 's', title: untitledAsNone('Untitled chat'), bot: 'Kaleb' })).toMatchObject({ title: 'Kaleb' })
   })
 
   it('says a failure, and stays quiet about a stop', () => {
