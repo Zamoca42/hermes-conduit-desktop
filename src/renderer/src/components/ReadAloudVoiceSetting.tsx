@@ -13,6 +13,7 @@ import {
   type SpeechOutput
 } from '../state/speechOutput'
 import { stopReading } from '../state/readAloud'
+import { readAloudSpeed } from '../state/classicVoice'
 import { HermesSpeechSettings } from './HermesSpeechSettings'
 import { Select } from './Select'
 
@@ -88,7 +89,7 @@ function ComputerVoicePick() {
       return
     }
     stopReading()
-    const spoken = speakOnComputer(t('Hi, this is how I sound when I read your replies.'), shown || undefined)
+    const spoken = speakOnComputer(t('Hi, this is how I sound when I read your replies.'), shown || undefined, readAloudSpeed())
     stop.current = spoken.stop
     setPlaying(true)
     void spoken.done.catch(() => undefined).finally(() => {

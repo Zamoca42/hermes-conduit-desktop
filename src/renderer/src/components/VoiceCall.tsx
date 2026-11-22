@@ -214,7 +214,6 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
   // Push to talk: press to talk (a press while Hermes speaks stops it), let go to send, slide off to cancel.
   const press = () => {
     if (muted) return
-    holding.current = true
     if (phase === 'speaking') {
       audio.current?.pause()
       audio.current = null
@@ -222,6 +221,7 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
       stopComputer.current = null
       stop?.()
     } else if (phase !== 'ready' && phase !== 'failed') return
+    holding.current = true
     setProblem(null)
     void listen()
   }
@@ -283,9 +283,15 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
             {t('Listen')}
           </button>
         ) : phase === 'thinking' && !running && stalled ? (
+          holdToTalk ? (
+            <button className="secondary" onClick={() => setPhase('ready')}>
+              {t('Listen')}
+            </button>
+          ) : (
           <button className="secondary" onClick={() => void listen()}>
             {t('Listen')}
           </button>
+          )
         ) : null}
         {phase === 'speaking' || (phase === 'thinking' && running) ? (
           <button className="secondary" onClick={interrupt}>
@@ -299,10 +305,13 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
             title={t('Hold to talk')}
             disabled={muted}
             onPointerDown={e => {
+              // Only the main button talks: a right-click's menu can swallow its release.
+              if (e.button !== 0) return
               e.currentTarget.setPointerCapture?.(e.pointerId)
               press()
             }}
             onPointerUp={e => {
+              if (e.button !== 0) return
               // Let go outside the button: that's a slide off, which cancels.
               const box = e.currentTarget.getBoundingClientRect()
               const inside = e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom
@@ -310,6 +319,8 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
               else slideOff()
             }}
             onPointerCancel={slideOff}
+            // Focus moved while a key held it: no keyup will come, so that cancels.
+            onBlur={slideOff}
             onKeyDown={e => {
               if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
                 e.preventDefault()
