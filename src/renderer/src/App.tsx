@@ -24,6 +24,7 @@ import { FilesPanel } from './components/FilesPanel'
 import { ColumnDivider } from './components/ColumnDivider'
 import { LastCallTrace } from './components/LastCallTrace'
 import { CrashReportBanner, DeviceReportsSetting } from './components/DeviceReports'
+import { UpdatesSetting } from './components/UpdatesSetting'
 import { GlowContext, useGlowColors } from './components/GlowColors'
 import { useVoiceList, withVoice } from './state/voiceList'
 import { setCatalogHost } from './state/modelCatalog'
@@ -3329,6 +3330,7 @@ function Settings({
           <AppLockSetting />
           <AskDashboardSetting hosts={status.hosts?.length ?? 0} />
           <CombineDashboardsSetting hosts={status.hosts ?? []} />
+          <UpdatesSetting />
         </dl>
       </section>
       <section className="settings-group">
