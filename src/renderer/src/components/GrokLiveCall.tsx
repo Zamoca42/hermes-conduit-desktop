@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { CallLines } from './CallLines'
 import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
 import { CALL_ME_WHEN_DONE, CallBacks, callbackScope, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
@@ -41,6 +42,7 @@ import type { PendingRequest } from '@shared/ipc'
 import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, requestUpdate } from '../state/liveRequests'
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
+import { openingTurn } from '../state/liveGreeting'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote } from '../state/callPicture'
@@ -169,6 +171,8 @@ export function GrokLiveCall({
   const ended = useRef(false)
   const ending = useRef(false)
   const ready = useRef(false)
+  // The greeting goes once per call, at the first ready, never on a reconnect.
+  const opened = useRef(false)
   const mutedRef = useRef(false)
   const lineId = useRef(0)
   // The conversation's state, for when Conduit may speak up.
@@ -416,6 +420,15 @@ export function GrokLiveCall({
     }
   }
 
+  const sendOpening = () => {
+    const opening = openingTurn()
+    if (opened.current || !opening) return
+    opened.current = true
+    trace.current?.step('Opening sent')
+    send(textTurn(opening))
+    respond()
+  }
+
   const handle = (event: ServerEvent) => {
     switch (event.type) {
       case 'ready':
@@ -425,6 +438,7 @@ export function GrokLiveCall({
           trace.current?.step('Session ready (server VAD, 700 ms silence, 300 ms padding)')
           setPhase('listening')
         }
+        sendOpening()
         return
       case 'responseStarted':
         responding.current = true
@@ -703,15 +717,7 @@ export function GrokLiveCall({
             {modeMenu}
           </div>
         </div>
-        {lines.length ? (
-          <ol className="voice-call-lines" aria-live="polite">
-            {lines.map(line => (
-              <li key={line.id} className={line.who === 'user' ? 'voice-call-line said' : 'voice-call-line'}>
-                {line.text}
-              </li>
-            ))}
-          </ol>
-        ) : null}
+        <CallLines lines={lines} />
         <div className="voice-call-buttons">
           {pictureControls}
           {phase === 'failed' ? (

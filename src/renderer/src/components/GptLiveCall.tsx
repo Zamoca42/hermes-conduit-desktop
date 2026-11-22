@@ -1,4 +1,5 @@
 import { micStep, startCallTrace, type CallTrace } from '../state/callTrace'
+import { CallLines } from './CallLines'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { CallBacks, callMeMarker, chatWork, jobWork, type CallWork } from '../state/callbacks'
 import { language, t } from '@shared/i18n'
@@ -54,6 +55,7 @@ import { CallCards } from './CallCards'
 import { Icon } from './icons'
 import { pictureNoteText, type PictureNote } from '../state/callPicture'
 import { MicOrb } from './MicOrb'
+import { openingTurn } from '../state/liveGreeting'
 
 interface Props {
   profile?: string
@@ -95,6 +97,8 @@ interface Line {
 /** Saying goodbye: the call closes once the model has finished, or after this at most. */
 const END_GRACE_MS = 1500
 const END_TIMEOUT_MS = 8000
+/** A greeting that hasn't started this long after it was asked for is asked for once more (the phone's openingFallbackDelay). */
+const OPENING_FALLBACK_MS = 4000
 /** A request Hermes never started on (the chat refused it) is let go after this. */
 const SEND_STALL_MS = 20_000
 /** Words that end a GA call, whose delegations carry no "End call:" marker. */
@@ -188,6 +192,10 @@ export function GptLiveCall({
   const callId = useRef(resume?.callId ?? newCallId())
   const resumed = useRef(resume)
   const saved = useRef(false)
+  // The greeting, once per call (never on a reconnect), and whether either side has spoken since.
+  const opened = useRef(false)
+  const heard = useRef(false)
+  const openingTimer = useRef(0)
   const keep = (role: CallTurn['role'], text: string) => text.trim() && record.current.push({ role, text: text.trim(), at: Date.now() / 1000 })
   const save = () => {
     if (saved.current) return
@@ -372,20 +380,37 @@ export function GptLiveCall({
     pump()
   }
 
+  // The greeting as Conduit's own turn: gpt-live-1-codex doesn't speak first from its instructions, so it's asked
+  // for once the conversation starts, and once more if neither side has spoken 4 seconds later, as on the phone.
+  const sendOpening = () => {
+    const opening = openingTurn()
+    if (opened.current || !opening) return
+    opened.current = append(opening, 'speakable', null)
+    trace.current?.step(opened.current ? 'Opening asked for as a turn' : 'Opening not sent')
+    if (!opened.current) return
+    openingTimer.current = window.setTimeout(() => {
+      if (ended.current || ending.current || heard.current) return
+      trace.current?.step(append(opening, 'speakable', null) ? "Opening asked for again: the model hadn't spoken" : 'Opening not sent again')
+    }, OPENING_FALLBACK_MS)
+  }
+
   const handle = (event: ServerEvent) => {
     switch (event.type) {
       case 'started':
         trace.current?.step('Conversation started')
+        sendOpening()
         setPhase(current => {
           if (current === 'starting') startLimit()
           return current === 'starting' ? 'listening' : current
         })
         return
       case 'input':
+        heard.current = true
         words.current.open += event.text
         addLine('user', event.text)
         return
       case 'output':
+        heard.current = true
         if (!ending.current) setPhase('speaking')
         addLine('assistant', event.text)
         return
@@ -539,6 +564,7 @@ export function GptLiveCall({
     return () => {
       window.clearTimeout(startTimer)
       window.clearTimeout(limitTimer.current)
+      window.clearTimeout(openingTimer.current)
       ended.current = true
       teardown()
     }
@@ -627,15 +653,7 @@ export function GptLiveCall({
             {modeMenu}
           </div>
         </div>
-        {lines.length ? (
-          <ol className="voice-call-lines" aria-live="polite">
-            {lines.map(line => (
-              <li key={line.id} className={line.who === 'user' ? 'voice-call-line said' : 'voice-call-line'}>
-                {line.text}
-              </li>
-            ))}
-          </ol>
-        ) : null}
+        <CallLines lines={lines} />
         <div className="voice-call-buttons">
           {pictureControls}
           {phase === 'failed' ? (
