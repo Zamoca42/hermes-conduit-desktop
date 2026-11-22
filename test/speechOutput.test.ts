@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { setSpeechOutput, speechOutput } from '../src/renderer/src/state/speechOutput'
+import { chooseVoice, computerVoicePick, setComputerVoicePick, setSpeechOutput, speechOutput, voicesFor } from '../src/renderer/src/state/speechOutput'
 
 function memory() {
   const map = new Map<string, string>()
@@ -28,5 +28,38 @@ describe('the Read Aloud voice', () => {
     expect(speechOutput('atlas', storage)).toBe('server')
     storage.setItem('conduit.speechOutput.v1', JSON.stringify({ atlas: 'robot' }))
     expect(speechOutput('atlas', storage)).toBe('hermes')
+  })
+})
+
+const voice = (name: string, lang: string, isDefault = false) => ({ voiceURI: `uri:${name}`, name, lang, default: isDefault })
+
+describe("this computer's voice", () => {
+  const voices = [voice('Thomas', 'fr-FR'), voice('Daniel', 'en-GB'), voice('Samantha', 'en-US', true), voice('Alex', 'en-US'), voice('Karen', 'en_AU')]
+
+  it("lists the app language's voices, the exact region first, each by name", () => {
+    expect(voicesFor(voices, 'en-US').map(v => v.name)).toEqual(['Alex', 'Samantha', 'Daniel', 'Karen'])
+    expect(voicesFor(voices, 'de')).toEqual([])
+  })
+
+  it("speaks with the pick while it's installed, else the system's default for the language", () => {
+    expect(chooseVoice(voices, 'en-US', 'uri:Daniel')?.name).toBe('Daniel')
+    expect(chooseVoice(voices, 'en-US', 'uri:Gone')?.name).toBe('Samantha')
+    expect(chooseVoice(voices, 'en-US', '')?.name).toBe('Samantha')
+    expect(chooseVoice(voices, 'fr', '')?.name).toBe('Thomas')
+    // A pick in another language is never used for this one.
+    expect(chooseVoice(voices, 'fr', 'uri:Daniel')?.name).toBe('Thomas')
+    expect(chooseVoice(voices, 'de', '')).toBeNull()
+  })
+
+  it('keeps one pick per language on this computer, and automatic clears it', () => {
+    const storage = memory()
+    expect(computerVoicePick('en-US', storage)).toBe('')
+    setComputerVoicePick('en-US', 'uri:Daniel', storage)
+    setComputerVoicePick('fr', 'uri:Thomas', storage)
+    expect(computerVoicePick('en-GB', storage)).toBe('uri:Daniel')
+    expect(computerVoicePick('fr-CA', storage)).toBe('uri:Thomas')
+    setComputerVoicePick('en', '', storage)
+    expect(computerVoicePick('en', storage)).toBe('')
+    expect(computerVoicePick('fr', storage)).toBe('uri:Thomas')
   })
 })

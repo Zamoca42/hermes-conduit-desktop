@@ -40,30 +40,75 @@ export function setSpeechOutput(profile: string | undefined, output: SpeechOutpu
 /** Whether this computer can speak at all (the system's voices, through Chromium). */
 export const computerCanSpeak = (): boolean => typeof window !== 'undefined' && 'speechSynthesis' in window
 
-/** A voice for the app's language, else the system's default. */
-function voiceFor(lang: string): SpeechSynthesisVoice | null {
-  const voices = window.speechSynthesis.getVoices()
-  const base = lang.toLowerCase().split('-')[0]!
+const VOICE_KEY = 'conduit.computerVoice.v1'
+const baseOf = (lang: string) => lang.toLowerCase().split(/[-_]/)[0]!
+
+function readPicks(storage: Storage): Record<string, string> {
+  try {
+    const parsed = JSON.parse(storage.getItem(VOICE_KEY) ?? 'null')
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+/**
+ * The voice picked for a language on this computer, by its voiceURI; '' is
+ * automatic. Per language and per computer, not per profile, as the
+ * phone's iPhone voice pick: voices are installed per computer.
+ */
+export function computerVoicePick(lang: string, storage: Storage = localStorage): string {
+  const pick = readPicks(storage)[baseOf(lang)]
+  return typeof pick === 'string' ? pick : ''
+}
+
+export function setComputerVoicePick(lang: string, voiceURI: string, storage: Storage = localStorage): void {
+  const picks = readPicks(storage)
+  if (voiceURI) picks[baseOf(lang)] = voiceURI
+  else delete picks[baseOf(lang)]
+  try {
+    storage.setItem(VOICE_KEY, JSON.stringify(picks))
+  } catch {
+    // Private storage: automatic stands.
+  }
+}
+
+type VoiceLike = Pick<SpeechSynthesisVoice, 'voiceURI' | 'name' | 'lang' | 'default'>
+
+/** The system's voices for a language: the exact language first, then its other regions, each by name. */
+export function voicesFor<V extends VoiceLike>(voices: V[], lang: string): V[] {
+  const exact = lang.toLowerCase()
+  const base = baseOf(lang)
+  const rank = (v: V) => (v.lang.toLowerCase().replace('_', '-') === exact ? 0 : 1)
+  return voices.filter(v => baseOf(v.lang) === base).sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name))
+}
+
+/** The voice to speak `lang` with: the one picked, while it's installed; else the system's default for it, else the first. */
+export function chooseVoice<V extends VoiceLike>(voices: V[], lang: string, pick: string): V | null {
+  const listed = voicesFor(voices, lang)
+  const exact = lang.toLowerCase()
   return (
-    voices.find(v => v.lang.toLowerCase() === lang.toLowerCase() && v.default) ??
-    voices.find(v => v.lang.toLowerCase() === lang.toLowerCase()) ??
-    voices.find(v => v.lang.toLowerCase().split(/[-_]/)[0] === base) ??
+    (pick ? listed.find(v => v.voiceURI === pick) : undefined) ??
+    listed.find(v => v.lang.toLowerCase() === exact && v.default) ??
+    listed.find(v => v.default) ??
+    listed[0] ??
     null
   )
 }
 
 /**
- * Speaks `text` with this computer's voices. `done` settles when it ends,
+ * Speaks `text` with this computer's voice for the app's language (the one
+ * picked in Settings, or `voiceURI` for a preview). `done` settles when it ends,
  * rejecting if the system couldn't speak; `stop` ends it at once (and `done`
  * settles as ended).
  */
-export function speakOnComputer(text: string): { done: Promise<void>; stop: () => void } {
+export function speakOnComputer(text: string, voiceURI?: string): { done: Promise<void>; stop: () => void } {
   const synth = window.speechSynthesis
   synth.cancel()
   const utterance = new SpeechSynthesisUtterance(text)
   const lang = language()
   utterance.lang = lang
-  const voice = voiceFor(lang)
+  const voice = chooseVoice(synth.getVoices(), lang, voiceURI ?? computerVoicePick(lang))
   if (voice) utterance.voice = voice
   let stopped = false
   const done = new Promise<void>((resolve, reject) => {
