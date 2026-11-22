@@ -202,6 +202,7 @@ import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply }
 import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { isDone, useChatDone } from './state/chatDone'
+import { muteOf, readMuted, useChatMute } from './state/chatMute'
 import { GO_TO, SCALES, applyScale, glyphs, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { CallTranscriptSheet } from './components/CallTranscriptSheet'
@@ -1142,6 +1143,27 @@ function Shell({
   const doneHttp = useCallback((method: 'GET' | 'POST', path: string, body?: unknown) => gateway.http(method, path, body), [])
   const chatDone = useChatDone(doneHttp, connected, doneProfiles, `${list.rows?.length ?? 0}\t${list.rows?.[0]?.activeAt ?? 0}`, markHost)
   const isRowDone = useCallback((row: ChatRow) => isDone(chatDone.marks, row), [chatDone.marks])
+  // Muted chats, kept by the plugin, which skips their pushes on every device (state/chatMute).
+  const muteHttp = useCallback((method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body), [])
+  const muteFailed = useCallback((reason: string) => void tell(t('Couldn’t change this chat’s notifications: {reason}', { reason })), [])
+  const chatMute = useChatMute(muteHttp, connected, doneProfiles, `${list.rows?.length ?? 0}\t${list.rows?.[0]?.activeAt ?? 0}`, markHost, muteFailed)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- tick: a timed mute that ended reads again
+  const rowMute = useCallback((row: ChatRow) => muteOf(chatMute.mutes, row), [chatMute.mutes, chatMute.tick])
+  // A muted chat's finished turn doesn't notify here either, as the plugin
+  // doesn't push it; approvals and questions still do, as on the phone.
+  // The chat an event names, as a mute knows it: its stored id and profile from
+  // an open chat, else from Needs you's row (a chat this window never opened),
+  // else the id the event carries.
+  const muteRowRef = useRef<(sessionId: string) => ChatRow>(id => ({ id, title: '', pinned: false }))
+  muteRowRef.current = (sessionId: string) => {
+    const ref = chats.current.get(sessionId)
+    const waitingRows = waitingRowsRef.current
+    const waitingRow = ref ? undefined : waitingRows.find(row => row.sessionIds.includes(sessionId))
+    const id = ref?.storedId ?? (waitingRow ? chatIdsOf(sessionId, null, waitingRows)[0] : undefined) ?? sessionId
+    return (list.rows ?? []).find(r => r.id === id) ?? { id, title: '', pinned: false, profile: ref?.profile ?? waitingRow?.profile }
+  }
+  const mutedRef = useRef<(sessionId: string) => boolean>(() => false)
+  mutedRef.current = (sessionId: string) => !!muteOf(chatMute.mutes, muteRowRef.current(sessionId))
   const [marks, setMarks] = useState<ChatMarks>(() => loadMarks(markHost))
   useEffect(() => setMarks(loadMarks(markHost)), [markHost])
   const updateMarks = useCallback(
@@ -1623,7 +1645,12 @@ function Shell({
         }
         if (event.type !== 'message.complete' || isWatching(sid, watching.current.liveId, watching.current.onChats)) return
         const spec = turnNotification(sid, event.payload, chats.current.get(sid))
-        if (spec) void notify(spec, sid)
+        if (!spec || mutedRef.current(sid)) return
+        // A mute set on another device since the last read: asked at once.
+        // A chat this window never opened is asked under what Needs you knows of it.
+        void readMuted(muteHttp, muteRowRef.current(sid)).then(muted => {
+          if (!muted) void notify(spec, sid)
+        })
       }),
     [notify]
   )
@@ -2216,6 +2243,8 @@ function Shell({
                   onToggleRead={toggleRead}
                   isDone={chatDone.available ? isRowDone : undefined}
                   onDone={chatDone.available ? chatDone.toggle : undefined}
+                  muteOf={chatMute.available ? rowMute : undefined}
+                  onMute={chatMute.available ? chatMute.setMute : undefined}
                   onDelete={async row => {
                     if (await ask(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`, { confirm: t('Delete'), destructive: true }))
                       void chatAction(row, null)

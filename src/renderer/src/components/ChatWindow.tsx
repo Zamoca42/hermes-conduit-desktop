@@ -18,6 +18,9 @@ import { clearExpired } from '../state/expiredQuestions'
 import { isResetCommand, looksLikeSlashCommand } from '../state/slash'
 import { cleanTitle } from '../state/text'
 import { notificationsEnabled, requestNotification, turnNotification, type NotificationSpec } from '../state/notifications'
+import { readMuted } from '../state/chatMute'
+import { gateway } from '../gateway'
+
 import type { StagedAttachment } from '../state/attachments'
 import { chatWindowTitle } from '@shared/chatWindows'
 import { Composer } from './Composer'
@@ -33,6 +36,8 @@ import { ChatQueueDock } from './ChatQueueDock'
 import { ConnectionActionsContext } from './ConnectionCardView'
 import { useReplyFace } from './BotsHome'
 import { AskedQuestionBar } from './WorkPanel'
+
+const muteHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
 
 /**
  * A chat in a window of its own (Eric, 2026-11-21): the whole chat, live,
@@ -165,7 +170,13 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
         const { liveId, ...ref } = chatRef.current
         if (event.type !== 'message.complete' || !event.session_id || event.session_id !== liveId) return
         const spec = turnNotification(event.session_id, event.payload, ref)
-        if (spec) notify(spec)
+        // A muted chat's finished turn stays quiet, as the plugin's push does (state/chatMute).
+        if (!spec) return
+        if (!ref.storedId) notify(spec)
+        else
+          void readMuted(muteHttp, { id: ref.storedId, title: ref.title ?? '', pinned: false, profile: ref.profile ?? undefined }).then(
+            muted => muted || notify(spec)
+          )
       }),
     [notify]
   )
