@@ -497,11 +497,10 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
         )
       return grouped(shown, item => item.savedAt ?? item.at)
     }
-    // One Hermes saved at two addresses: its rows here stand for the copy's (one host path is one artifact).
-    const hereIds = new Set(feed.stores.find(s => s.key === 'here')?.read.map(item => item.id))
-    const items = feedItems(feed.stores).filter(
-      item => includes(filter, item.kind) && (!elsewhere(item) || !hereIds.has(item.path ?? item.url ?? ''))
-    )
+    // One Hermes saved at two addresses: its files here stand for the copy's (one host path is one artifact).
+    // A link is each host's own: two Hermes can share an address.
+    const herePaths = new Set(feed.stores.find(s => s.key === 'here')?.read.flatMap(item => (item.path ? [item.path] : [])))
+    const items = feedItems(feed.stores).filter(item => includes(filter, item.kind) && (!elsewhere(item) || !item.path || !herePaths.has(item.path)))
     const reading = feed.pending > 0 || next !== null
     const hiddenNote = showMissing ? null : (
       <p className="meta">
