@@ -16,11 +16,14 @@ describe('notifications', () => {
     expect(turnNotification('l', { status: 'error', error: 'Model overloaded' }, { storedId: 's', bot: 'Kaleb' })).toMatchObject({ title: 'Kaleb' })
   })
 
-  it('takes the list\'s "Untitled chat" label as no title, so the bot names the reply', () => {
+  it('takes the list\'s "Untitled chat" and a window\'s "Chat" as no title, so the bot names the reply', () => {
     expect(untitledAsNone('Untitled chat')).toBeUndefined()
     expect(untitledAsNone('')).toBeUndefined()
+    expect(untitledAsNone('Chat')).toBeUndefined()
     expect(untitledAsNone('Trip')).toBe('Trip')
-    expect(turnNotification('l', { text: 'Done.', status: 'complete' }, { storedId: 's', title: untitledAsNone('Untitled chat'), bot: 'Kaleb' })).toMatchObject({ title: 'Kaleb' })
+    expect(turnNotification('l', { text: 'Done.', status: 'complete' }, { storedId: 's', title: 'Untitled chat', bot: 'Kaleb' })).toMatchObject({ title: 'Kaleb' })
+    expect(turnNotification('l', { text: 'Done.', status: 'complete' }, { storedId: 's', title: 'Chat', bot: 'Kaleb' })).toMatchObject({ title: 'Kaleb' })
+    expect(requestNotification({ id: 'r', method: 'approval', sessionId: 'l', params: { description: 'x' }, receivedAt: 0 }, { storedId: 's', title: 'Untitled chat' }).title).toBe('Needs your OK')
   })
 
   it('says a failure, and stays quiet about a stop', () => {
