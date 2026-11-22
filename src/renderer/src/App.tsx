@@ -1151,13 +1151,19 @@ function Shell({
   const rowMute = useCallback((row: ChatRow) => muteOf(chatMute.mutes, row), [chatMute.mutes, chatMute.tick])
   // A muted chat's finished turn doesn't notify here either, as the plugin
   // doesn't push it; approvals and questions still do, as on the phone.
-  const mutedRef = useRef<(sessionId: string) => boolean>(() => false)
-  mutedRef.current = (sessionId: string) => {
+  // The chat an event names, as a mute knows it: its stored id and profile from
+  // an open chat, else from Needs you's row (a chat this window never opened),
+  // else the id the event carries.
+  const muteRowRef = useRef<(sessionId: string) => ChatRow>(id => ({ id, title: '', pinned: false }))
+  muteRowRef.current = (sessionId: string) => {
     const ref = chats.current.get(sessionId)
-    const id = ref?.storedId ?? sessionId
-    const row = (list.rows ?? []).find(r => r.id === id) ?? { id, title: '', pinned: false, profile: ref?.profile }
-    return !!muteOf(chatMute.mutes, row)
+    const waitingRows = waitingRowsRef.current
+    const waitingRow = ref ? undefined : waitingRows.find(row => row.sessionIds.includes(sessionId))
+    const id = ref?.storedId ?? (waitingRow ? chatIdsOf(sessionId, null, waitingRows)[0] : undefined) ?? sessionId
+    return (list.rows ?? []).find(r => r.id === id) ?? { id, title: '', pinned: false, profile: ref?.profile ?? waitingRow?.profile }
   }
+  const mutedRef = useRef<(sessionId: string) => boolean>(() => false)
+  mutedRef.current = (sessionId: string) => !!muteOf(chatMute.mutes, muteRowRef.current(sessionId))
   const [marks, setMarks] = useState<ChatMarks>(() => loadMarks(markHost))
   useEffect(() => setMarks(loadMarks(markHost)), [markHost])
   const updateMarks = useCallback(
@@ -1641,12 +1647,8 @@ function Shell({
         const spec = turnNotification(sid, event.payload, chats.current.get(sid))
         if (!spec || mutedRef.current(sid)) return
         // A mute set on another device since the last read: asked at once.
-        // A chat this window never opened is asked by what Needs you knows of
-        // it (its stored id and profile), else by the id the event names.
-        const ref = chats.current.get(sid)
-        const waitingRow = ref ? undefined : waitingRowsRef.current.find(row => row.sessionIds.includes(sid))
-        const id = ref?.storedId ?? chatIdsOf(sid, null, waitingRowsRef.current)[0] ?? sid
-        void readMuted(muteHttp, { id, title: '', pinned: false, profile: ref?.profile ?? waitingRow?.profile }).then(muted => {
+        // A chat this window never opened is asked under what Needs you knows of it.
+        void readMuted(muteHttp, muteRowRef.current(sid)).then(muted => {
           if (!muted) void notify(spec, sid)
         })
       }),
