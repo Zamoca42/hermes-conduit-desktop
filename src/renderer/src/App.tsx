@@ -214,7 +214,7 @@ import { Select } from './components/Select'
 import { KeptPane } from './components/KeptPane'
 import { DockedChatPane, tellDockedShown, type DockedChat, type DockedFrame } from './components/DockedChat'
 import { DockedPulseFrame } from './components/DockedPulse'
-import { botSideScroll } from './state/keptScroll'
+import { botSideScroll, useShownAgain } from './state/keptScroll'
 
 /** A call's transcript while no call reads it. */
 const NO_ITEMS: TranscriptItem[] = []
@@ -979,6 +979,8 @@ function Shell({
     setListHidden(hidden)
     writeListHidden(hidden)
   }, [])
+  // Hidden, the Bots sidebar lost its scroll (display: none); shown again, it goes back to its spot.
+  useShownAgain(listHidden, () => botSideScroll.opened())
   // Combined dashboards: the other hosts kept connected beside this one...
   const keptHosts = useKeptHosts(status.url ?? '')
   // ...their bots, on Bots Home and in the chat list's profile column (Eric, 2026-11-21: Chats held only this dashboard's).
@@ -2820,12 +2822,15 @@ function Shell({
           </KeptPane>
         ) : null}
         {/* A group chat, New Bot and Edit Bot keep the bots beside them, as an open Bot Chat does, hidden and shown with it (its « and the rail's »). */}
-        {(section === 'room' || section === 'bots') && !listHidden ? (
-          <BotsHome
-            {...botsHomeProps}
-            side={{ openRoomId: section === 'room' ? (shownCopy?.roomId ?? openRoom?.roomId ?? dockedRoom?.roomId) : undefined, openHost: section === 'room' && !shownCopy && !openRoom ? dockedRoom?.host : undefined, openProfile: editingBot?.name }}
-            onHide={() => hideList(true)}
-          />
+        {/* Hidden, it stays mounted, so a group chat being started in it keeps its picked bots and name. */}
+        {section === 'room' || section === 'bots' ? (
+          <div className="list-keeper" hidden={listHidden}>
+            <BotsHome
+              {...botsHomeProps}
+              side={{ openRoomId: section === 'room' ? (shownCopy?.roomId ?? openRoom?.roomId ?? dockedRoom?.roomId) : undefined, openHost: section === 'room' && !shownCopy && !openRoom ? dockedRoom?.host : undefined, openProfile: editingBot?.name }}
+              onHide={() => hideList(true)}
+            />
+          </div>
         ) : null}
         {section === 'chats' ? null : section === 'bots' && newBot ? (
           <NewBot
