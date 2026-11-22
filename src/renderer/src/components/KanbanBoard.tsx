@@ -7,15 +7,25 @@ import { timeLabel } from '../state/chats'
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
 import { ask } from '../state/dialogs'
-import { Select } from './Select'
+import { Select, SelectGroup } from './Select'
+import type { MixedTile } from '../state/botOrder'
+import type { HostBadge } from '../state/keptHosts'
+import { HostBadgeMark } from './CombinedDashboards'
 import { useBoardScroll } from '../state/useBoardScroll'
 
 interface Props {
   connected: boolean
   bots: Bot[] | null
+  /** Every combined dashboard's profiles: their dashboards' boards join the picker, and a far board's assignees are its own. */
+  tiles?: readonly MixedTile[]
+  /** A dashboard's badge, by its URL (this one's included). */
+  hostBadge?: (host: string | null) => HostBadge | null
   /** The Board | Scheduled switch, for the header. */
   segment: ReactNode
 }
+
+/** The picker's value for a board: its dashboard (none for this one), then its slug. */
+const boardValue = (host: string | null, slug: string) => `${host ?? ''}\n${slug}`
 
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error))
 
@@ -30,8 +40,17 @@ const message = (error: unknown) => (error instanceof Error ? error.message : St
  * into view (the phone's jump bar), the wheel and a grab on empty board space
  * move it sideways, and a card dragged to the edge rolls the board on.
  */
-export function KanbanBoard({ connected, bots, segment }: Props) {
-  const kanban = useKanban(connected, true)
+export function KanbanBoard({ connected, bots: ownBots, tiles = [], hostBadge, segment }: Props) {
+  const farHosts = useMemo(() => [...new Set(tiles.filter(tile => !tile.own).map(tile => tile.host))], [tiles])
+  const kanban = useKanban(connected, true, farHosts)
+  const shownList = kanban.lists.find(list => list.host === kanban.host)
+  const shownBoard = shownList?.boards.find(row => (kanban.slug ? row.slug === kanban.slug : row.current))
+  const shownBadge = kanban.lists.length > 1 ? (hostBadge?.(kanban.host) ?? null) : null
+  // A far board's people are its own dashboard's profiles.
+  const bots = useMemo(
+    () => (kanban.host ? tiles.filter(tile => !tile.own && tile.host === kanban.host).map(tile => tile.bot) : ownBots),
+    [kanban.host, tiles, ownBots]
+  )
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState<string | null>(null)
   const [composing, setComposing] = useState(false)
@@ -91,15 +110,17 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
     }
   }, [menu])
 
-  // A menu opened on one board never acts on another.
-  useEffect(() => setMenu(null), [kanban.slug, kanban.unavailable])
+  // A menu, an open task or a new task begun on one board never acts on another (another dashboard's included).
+  useEffect(() => setMenu(null), [kanban.slug, kanban.host, kanban.unavailable])
   // A task belongs to its board: picking another closes its panel, so nothing in it (an attachment's Save) acts on the wrong board.
-  const shownSlug = useRef(kanban.slug)
+  const openedOn = useRef(`${kanban.host ?? ''}\n${kanban.slug ?? ''}`)
   useEffect(() => {
-    if (shownSlug.current === kanban.slug) return
-    shownSlug.current = kanban.slug
+    const key = `${kanban.host ?? ''}\n${kanban.slug ?? ''}`
+    if (openedOn.current === key) return
+    openedOn.current = key
     setOpenId(null)
-  }, [kanban.slug])
+    setComposing(false)
+  }, [kanban.slug, kanban.host])
   // With no board picked, the board is whatever Hermes calls current, which another client can change:
   // a menu whose task left the board read closes rather than act on the new one.
   useEffect(() => {
@@ -143,13 +164,50 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
     <main className="board">
       <div className="board-head">
         {segment}
-        {kanban.boards && kanban.boards.length > 1 ? (
-          <Select className="board-picker" aria-label={t('Board')} value={kanban.slug ?? kanban.boards.find(b => b.current)?.slug ?? ''} onChange={picked => kanban.pickBoard(picked || null)}>
-            {kanban.boards.map(row => (
-              <option key={row.slug} value={row.slug}>
-                {row.name} ({row.total})
-              </option>
-            ))}
+        {kanban.lists.reduce((n, list) => n + list.boards.length, 0) > 1 ? (
+          <Select
+            className="board-picker"
+            aria-label={t('Board')}
+            value={boardValue(kanban.host, kanban.slug ?? shownBoard?.slug ?? '')}
+            // With more than one dashboard's boards, the field names the board's dashboard by its badge.
+            shownLabel={shownBadge ? (
+              <span className="board-picker-name">
+                <HostBadgeMark badge={shownBadge} />
+                {shownBoard ? `${shownBoard.name} (${shownBoard.total})` : null}
+              </span>
+            ) : undefined}
+            onChange={picked => {
+              const at = picked.indexOf('\n')
+              kanban.pickBoard(picked.slice(at + 1) || null, picked.slice(0, at) || null)
+            }}
+          >
+            {kanban.lists.length > 1
+              ? kanban.lists.map(list => {
+                  const badge = hostBadge?.(list.host) ?? null
+                  return (
+                    <SelectGroup
+                      key={list.host ?? ''}
+                      id={list.host ?? ''}
+                      label={
+                        <>
+                          {badge ? <HostBadgeMark badge={badge} /> : null}
+                          {badge?.name ?? ''}
+                        </>
+                      }
+                    >
+                      {list.boards.map(row => (
+                        <option key={row.slug} value={boardValue(list.host, row.slug)}>
+                          {row.name} ({row.total})
+                        </option>
+                      ))}
+                    </SelectGroup>
+                  )
+                })
+              : kanban.lists[0].boards.map(row => (
+                  <option key={row.slug} value={boardValue(null, row.slug)}>
+                    {row.name} ({row.total})
+                  </option>
+                ))}
           </Select>
         ) : null}
         <label className="chatlist-search board-search">
