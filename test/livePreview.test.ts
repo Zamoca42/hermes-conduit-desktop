@@ -3,6 +3,7 @@ import { livePreview } from '../src/renderer/src/state/livePreview'
 import { setLiveGreeting } from '../src/renderer/src/state/liveGreeting'
 import { setLiveInstructions } from '../src/renderer/src/state/liveStyle'
 import { setLiveAsksFirst } from '../src/renderer/src/state/askFirst'
+import { setGptLiveBilling } from '../src/renderer/src/state/gptLive'
 
 describe("Live call style's What Conduit sends", () => {
   beforeEach(() => {
@@ -36,6 +37,13 @@ describe("Live call style's What Conduit sends", () => {
     for (const mode of ['gpt', 'gemini', 'qwen', 'grok'] as const) {
       expect(livePreview(mode)?.instructions).toContain("Conduit's own tools")
     }
+    localStorage.setItem('conduit.localLiveAgent', 'true')
+    expect(livePreview('local', { fastModel: true })?.instructions).toContain("Conduit's own tools")
+  })
+
+  it("leaves the read rules out of an API-key GPT-Live call's preview, as the call does", () => {
+    setGptLiveBilling('api')
+    expect(livePreview('gpt')?.instructions).not.toContain("Conduit's own tools")
   })
 
   it('has no greeting turn with the greeting off', () => {

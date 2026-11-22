@@ -580,8 +580,8 @@ export function GptLiveCall({
         // transcript), so a marker could never match there and the model would be taught a read it can't make.
         const briefed = (rules: boolean) =>
           briefing(language(), persona, memory, asked, undefined, undefined, phone.context, rules ? gptLivePhoneRules(phone.tools) : '')
-        const told = briefed(teachesPhoneReads(billing))
-        const body: Record<string, unknown> = { sdp: peer.localDescription?.sdp ?? '', billing, briefing: told }
+        const briefedText = briefed(teachesPhoneReads(billing))
+        const body: Record<string, unknown> = { sdp: peer.localDescription?.sdp ?? '', billing, briefing: briefedText }
         if (seed.length) body.history = seed
         if (voice) body.voice = voice
         trace.current.step(`Session requested (${String(billing)}, ${peer.iceGatheringState} ICE, ${seed.length} history items)`)
@@ -594,7 +594,7 @@ export function GptLiveCall({
         await peer.setRemoteDescription({ type: 'answer', sdp: answer.sdp })
         // Given with the session where the host takes it; otherwise once it starts.
         if (!answer.briefingApplied) {
-          const late = teachesPhoneReads(billing, answer.dialect) ? told : briefed(false)
+          const late = teachesPhoneReads(billing, answer.dialect) ? briefedText : briefed(false)
           const sendBriefing = () => append(late, 'instructions', null)
           if (dc.readyState === 'open') sendBriefing()
           else dc.addEventListener('open', sendBriefing, { once: true })

@@ -9,7 +9,7 @@
  * model) comes in as `host`, read as a call reads it.
  */
 import { language, t } from '../../../shared/i18n'
-import { briefing, sendsMemory, sendsPersona, voiceModeTitle, type VoiceMode } from './gptLive'
+import { briefing, gptLiveBilling, sendsMemory, sendsPersona, teachesPhoneReads, voiceModeTitle, type VoiceMode } from './gptLive'
 import { geminiSendsMemory, geminiSendsPersona, instructions as geminiInstructions, resolvedSearch, searchMode } from './geminiLive'
 import { qwenSendsMemory, qwenSendsPersona } from './qwenLive'
 import { grokSendsMemory, grokSendsPersona, instructions as grokInstructions } from './grokLive'
@@ -54,7 +54,7 @@ export function livePreview(mode: VoiceMode, host: PreviewHost = {}, now = new D
   switch (mode) {
     case 'gpt':
       return preview(
-        briefing(lang, sendsPersona() ? persona : '', sendsMemory() ? memory : '', '', undefined, undefined, phoneNow, gptLivePhoneFirst(PREVIEW_PHONE_TOOLS))
+        briefing(lang, sendsPersona() ? persona : '', sendsMemory() ? memory : '', '', undefined, undefined, phoneNow, teachesPhoneReads(gptLiveBilling()) ? gptLivePhoneFirst(PREVIEW_PHONE_TOOLS) : '')
       )
     case 'gemini':
     case 'qwen': {

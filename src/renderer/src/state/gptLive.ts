@@ -100,7 +100,7 @@ export function sessionAnswer(response: unknown, billing: Billing): SessionAnswe
  * an API-key call never is, and a subscription call only while its host
  * hasn't answered with GA events.
  */
-export function teachesPhoneReads(billing: 'subscription' | 'api' | string, dialect?: 'ga' | 'frameless'): boolean {
+export function teachesPhoneReads(billing: Billing, dialect?: 'ga' | 'frameless'): boolean {
   return billing !== 'api' && dialect !== 'ga'
 }
 
