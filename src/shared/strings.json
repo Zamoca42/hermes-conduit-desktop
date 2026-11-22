@@ -44263,5 +44263,35 @@
     "tr": "(Bu profilin SOUL.md dosyası; arama başladığında okunur.)",
     "zh-Hans": "（此配置的 SOUL.md，在通话开始时读取。）",
     "zh-Hant": "（此設定檔的 SOUL.md，會在通話開始時讀取。）"
+  },
+  "Activity": {
+    "de": "Aktivität",
+    "es": "Actividad",
+    "fr": "Activité",
+    "id": "Aktivitas",
+    "it": "Cronologia",
+    "ja": "アクティビティ",
+    "ko": "활동",
+    "pl": "Aktywność",
+    "pt-BR": "Atividade",
+    "ru": "Активность",
+    "tr": "Etkinlik",
+    "zh-Hans": "活动",
+    "zh-Hant": "活動"
+  },
+  "Attachments": {
+    "de": "Anhänge",
+    "es": "Adjuntos",
+    "fr": "Pièces jointes",
+    "id": "Lampiran",
+    "it": "Allegati",
+    "ja": "添付ファイル",
+    "ko": "첨부 파일",
+    "pl": "Załączniki",
+    "pt-BR": "Anexos",
+    "ru": "Вложения",
+    "tr": "Ekler",
+    "zh-Hans": "附件",
+    "zh-Hant": "附件"
   }
 }

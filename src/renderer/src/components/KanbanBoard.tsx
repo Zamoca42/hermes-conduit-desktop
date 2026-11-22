@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { t } from '@shared/i18n'
 import type { Bot } from '../state/bots'
-import { CREATABLE, MOVABLE, PRIORITIES, ageText, columnTitle, matchesTask, priorityTitle, type KanbanTask, type KanbanTaskDetail } from '../state/kanban'
+import { CREATABLE, MOVABLE, PRIORITIES, ageText, columnTitle, eventPayloadText, kanbanWord, matchesTask, priorityTitle, sizeText, type KanbanAttachment, type KanbanRun, type KanbanTask, type KanbanTaskDetail } from '../state/kanban'
 import { useKanban } from '../state/useKanban'
 import { timeLabel } from '../state/chats'
 import { Markdown } from './Markdown'
@@ -93,6 +93,13 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
 
   // A menu opened on one board never acts on another.
   useEffect(() => setMenu(null), [kanban.slug, kanban.unavailable])
+  // A task belongs to its board: picking another closes its panel, so nothing in it (an attachment's Save) acts on the wrong board.
+  const shownSlug = useRef(kanban.slug)
+  useEffect(() => {
+    if (shownSlug.current === kanban.slug) return
+    shownSlug.current = kanban.slug
+    setOpenId(null)
+  }, [kanban.slug])
   // With no board picked, the board is whatever Hermes calls current, which another client can change:
   // a menu whose task left the board read closes rather than act on the new one.
   useEffect(() => {
@@ -342,7 +349,8 @@ export function KanbanBoard({ connected, bots, segment }: Props) {
           assignees={assignees}
           botTitle={botTitle}
           load={kanban.detail}
-          touched={kanban.touched.ids.has(openId!) ? kanban.touched.revision : 0}
+          board={kanban.slug}
+          touched={kanban.touched}
           onClose={() => setOpenId(null)}
           onPatch={async fields => {
             if (!openTask) return
@@ -368,6 +376,7 @@ function TaskPanel({
   assignees,
   botTitle,
   load,
+  board,
   touched,
   onClose,
   onPatch,
@@ -379,8 +388,10 @@ function TaskPanel({
   assignees: string[]
   botTitle: (name?: string) => string
   load: (id: string) => Promise<KanbanTaskDetail | null>
-  /** Bumped when a live batch touched this task. */
-  touched: number
+  /** The board the task is on, for its attachments' download link. */
+  board: string | null
+  /** The live stream's last batch: the task reads again when it touched this task or one of its children (a child's result). */
+  touched: { revision: number; ids: ReadonlySet<string> }
   onClose: () => void
   onPatch: (fields: Record<string, unknown>) => Promise<void>
   onComment: (body: string) => Promise<void>
@@ -392,7 +403,43 @@ function TaskPanel({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [editing, setEditing] = useState<{ title: string; body: string } | null>(null)
+  const [saving, setSaving] = useState<string | null>(null)
+  const [attachmentError, setAttachmentError] = useState<string | null>(null)
   const shown = task ?? detail?.task ?? null
+  // The last live batch that touched this task or a child; an unrelated batch keeps it, so it reads nothing again.
+  const lastTouched = useRef(0)
+  // Tasks a batch touched before the first read came back, when the children weren't known yet.
+  const touchedBeforeRead = useRef(new Set<string>())
+  const touchedSeen = useRef(0)
+  const missedReads = useRef(0)
+  if (touched.revision !== touchedSeen.current) {
+    touchedSeen.current = touched.revision
+    if (!detail) touched.ids.forEach(touchedId => touchedBeforeRead.current.add(touchedId))
+  }
+  if (detail && touchedBeforeRead.current.size) {
+    const missed = detail.children.some(child => touchedBeforeRead.current.has(child.id))
+    touchedBeforeRead.current.clear()
+    // A child changed while the first read was out: read once more.
+    if (missed) missedReads.current += 1
+  }
+  if (touched.revision !== lastTouched.current && (touched.ids.has(id) || Boolean(detail?.children.some(child => touched.ids.has(child.id))))) {
+    lastTouched.current = touched.revision
+  }
+  const touchedHere = `${lastTouched.current}:${missedReads.current}`
+
+  async function saveAttachment(attachment: KanbanAttachment) {
+    if (saving) return
+    setSaving(attachment.id)
+    setAttachmentError(null)
+    try {
+      const outcome = await window.conduit.saveKanbanAttachment(attachment.id, board, attachment.filename)
+      if (outcome !== 'saved' && outcome !== 'cancelled') setAttachmentError(outcome)
+    } catch (e) {
+      setAttachmentError(message(e))
+    } finally {
+      setSaving(null)
+    }
+  }
 
   const refresh = () =>
     load(id)
@@ -406,7 +453,7 @@ function TaskPanel({
   useEffect(() => {
     void refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, task?.status, task?.assignee, task?.commentCount, task?.latestSummary, touched])
+  }, [id, task?.status, task?.assignee, task?.commentCount, task?.latestSummary, touchedHere])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -564,10 +611,18 @@ function TaskPanel({
           <section className="job-section">
             <h3>{t('Blocks')}</h3>
             {detail.children.map(child => (
-              <span key={child.id} className="task-link">
-                <span className={`lane-dot ${child.status}`} />
-                {child.title}
-              </span>
+              <Fragment key={child.id}>
+                <span className="task-link">
+                  <span className={`lane-dot ${child.status}`} />
+                  {child.title}
+                </span>
+                {/* What the child handed back (child_results), whole, as the phone's Blocks row previews it. */}
+                {child.summary ? (
+                  <div className="task-body child-result">
+                    <Markdown text={child.summary} />
+                  </div>
+                ) : null}
+              </Fragment>
             ))}
           </section>
         ) : null}
@@ -653,6 +708,53 @@ function TaskPanel({
             </div>
           </form>
         </section>
+        {detail?.attachments.length ? (
+          <section className="job-section">
+            <h3>{t('Attachments')}</h3>
+            {detail.attachments.map(attachment => (
+              <div key={attachment.id} className="task-attachment">
+                <span className="task-attachment-name">{attachment.filename}</span>
+                <span className="meta">
+                  {[attachment.size !== undefined ? sizeText(attachment.size) : null, attachment.uploadedBy, attachment.createdAt ? timeLabel(attachment.createdAt) : null]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </span>
+                <button type="button" className="secondary" disabled={saving !== null} onClick={() => void saveAttachment(attachment)}>
+                  {saving === attachment.id ? t('Saving…') : t('Save')}
+                </button>
+              </div>
+            ))}
+            {attachmentError ? <div className="error-text">{attachmentError}</div> : null}
+          </section>
+        ) : null}
+        {detail?.runs.length ? (
+          <section className="job-section">
+            <h3>{t('Runs')}</h3>
+            {detail.runs.map(entry => (
+              <TaskRun key={entry.id} run={entry} />
+            ))}
+          </section>
+        ) : null}
+        {detail?.events.length ? (
+          <details className="job-section task-activity">
+            <summary>
+              <h3>{t('Activity')}</h3>
+              <span className="meta">{detail.events.length}</span>
+            </summary>
+            {detail.events.map(event => {
+              const payload = eventPayloadText(event.payload)
+              return (
+                <div key={event.id} className="task-event">
+                  <span className="meta">
+                    <strong>{kanbanWord(event.kind)}</strong>
+                    {event.createdAt ? ` · ${timeLabel(event.createdAt)}` : ''}
+                  </span>
+                  {payload ? <pre className="task-payload">{payload}</pre> : null}
+                </div>
+              )
+            })}
+          </details>
+        ) : null}
         <div className="job-actions task-footer">
           <button className="secondary" disabled={busy} onClick={() => setEditing({ title: shown.title, body: shown.body ?? '' })}>
             {t('Edit')}
@@ -675,6 +777,32 @@ function TaskPanel({
         </div>
       </div>
     </aside>
+  )
+}
+
+/** A worker run, whole: its outcome, who ran it and for how long, its error, its summary, then its metadata. */
+function TaskRun({ run }: { run: KanbanRun }) {
+  const failed = Boolean(run.error) || /fail|crash|error|timed_out|killed/i.test(run.outcome ?? run.status)
+  const meta = [run.profile, run.stepKey, run.startedAt && run.endedAt ? ageText(run.startedAt, run.endedAt) : null, run.endedAt ?? run.startedAt ? timeLabel(run.endedAt ?? run.startedAt) : null]
+    .filter(Boolean)
+    .join(' · ')
+  return (
+    <div className="task-run">
+      <span className={failed ? 'task-run-title error-text' : 'task-run-title'}>{kanbanWord(run.outcome ?? run.status) || '—'}</span>
+      {meta ? <span className="meta">{meta}</span> : null}
+      {run.error ? <pre className="task-payload error-text">{run.error}</pre> : null}
+      {run.summary ? (
+        <div className="task-body">
+          <Markdown text={run.summary} />
+        </div>
+      ) : null}
+      {run.metadata !== undefined ? (
+        <details>
+          <summary className="meta">{t('Details')}</summary>
+          <pre className="task-payload">{JSON.stringify(run.metadata, null, 2)}</pre>
+        </details>
+      ) : null}
+    </div>
   )
 }
 
