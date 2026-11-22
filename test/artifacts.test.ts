@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cleanNote, days, includes, listPath, matches, merged, parseItem, parsePage, parsePins, pinBody, unpinPath } from '../src/renderer/src/state/artifacts'
+import { cleanNote, days, feedItems, includes, listPath, matches, merged, nextStore, parseItem, parsePage, parsePins, pinBody, unpinPath } from '../src/renderer/src/state/artifacts'
 
 const row = (over: Record<string, unknown> = {}) => ({
   kind: 'image',
@@ -65,5 +65,41 @@ describe('artifacts', () => {
     expect(includes('images', 'video')).toBe(true)
     expect(includes('files', 'audio')).toBe(true)
     expect(includes('pages', 'file')).toBe(false)
+  })
+
+  describe('feed', () => {
+    const at = (path: string, seconds: number) => parseItem(row({ path, timestamp: seconds }))!
+    const names = (items: { id: string }[]) => items.map(i => i.id)
+
+    it('merges stores newest first, each artifact once', () => {
+      const stores = [
+        { read: [at('/a', 100), at('/b', 50)], cursor: null },
+        { read: [at('/c', 90), at('/a', 40)], cursor: null }
+      ]
+      expect(names(feedItems(stores))).toEqual(['/a', '/c', '/b'])
+      expect(nextStore(stores)).toBeNull()
+    })
+
+    it('holds back rows a store still paging could beat, and pages the one reaching least far back', () => {
+      const stores = [
+        { read: [at('/w1', 100), at('/w2', 80)], cursor: 7 },
+        { read: [at('/b1', 90), at('/b2', 50)], cursor: null }
+      ]
+      // /b2 waits: the first store's next page may hold rows newer than it.
+      expect(names(feedItems(stores))).toEqual(['/w1', '/b1', '/w2'])
+      expect(nextStore(stores)).toBe(0)
+    })
+
+    it("pages a store whose page held none of the chip's before showing another's older rows", () => {
+      // This host's newest page of a long history had no images; another host's old ones wait for it.
+      const stores = [
+        { read: [], cursor: 30 },
+        { read: [at('/old', 10)], cursor: null }
+      ]
+      expect(feedItems(stores)).toEqual([])
+      expect(nextStore(stores)).toBe(0)
+      stores[0] = { read: [at('/new', 500)], cursor: null }
+      expect(names(feedItems(stores))).toEqual(['/new', '/old'])
+    })
   })
 })
