@@ -19,7 +19,7 @@ import { ModelPicker } from './components/ModelPicker'
 import { ContextPanel } from './components/ContextPanel'
 import { RoomView } from './components/RoomView'
 import { Tasks } from './components/Tasks'
-import { PulsePage } from './components/PulsePage'
+import { PulseHostChips, PulsePage } from './components/PulsePage'
 import { FilesPanel } from './components/FilesPanel'
 import { ColumnDivider } from './components/ColumnDivider'
 import { LastCallTrace } from './components/LastCallTrace'
@@ -138,7 +138,6 @@ import {
   showProfileAfterSwitch,
   type HostBadge,
   openRoomAfterSwitch,
-  openPageAfterSwitch,
   newBotAfterSwitch,
   takeNewBotAfterSwitch,
   type NewBotCarry,
@@ -148,7 +147,6 @@ import {
   takeProfileAfterSwitch,
   keptWorkKey,
   takeRoomAfterSwitch,
-  takePageAfterSwitch,
   useKeptBots,
   useKeptWork,
   useKeptRooms,
@@ -210,7 +208,8 @@ import { LANGUAGES, LANGUAGE_NAMES, t } from '@shared/i18n'
 import { ask, askText, tell } from './state/dialogs'
 import { Select } from './components/Select'
 import { KeptPane } from './components/KeptPane'
-import { DockedChatPane, type DockedChat } from './components/DockedChat'
+import { DockedChatPane, tellDockedShown, type DockedChat, type DockedFrame } from './components/DockedChat'
+import { DockedPulseFrame } from './components/DockedPulse'
 import { botSideScroll } from './state/keptScroll'
 
 /** A call's transcript while no call reads it. */
@@ -335,11 +334,9 @@ function reopenSettings(): void {
 }
 
 /**
- * Settings after a language change reloads the window; Pulse when its chip switched here (from the first
- * render, or Bots' open-a-bot would take the window first); else the first tab the phone's layout shows.
+ * Settings after a language change reloads the window; else the first tab the phone's layout shows.
  */
 function reopenedSection(host: string): Section {
-  if (takePageAfterSwitch(host) === 'pulse') return 'pulse'
   try {
     const saved = sessionStorage.getItem(REOPEN_SECTION)
     sessionStorage.removeItem(REOPEN_SECTION)
@@ -396,10 +393,19 @@ function Shell({
    * over: anything that opens a chat here (a row, a bot, New Chat, a call)
    * sets `selected` again, which closes it.
    */
-  const [docked, setDocked] = useState<{ chat: DockedChat; over: typeof selected } | null>(null)
+  const [docked, setDocked] = useState<{ chat: DockedChat; over: typeof selected; fromWindow?: boolean } | null>(null)
   const dockedChat = docked && docked.over === selected ? docked.chat : null
   const dockedRef = useRef(dockedChat)
   dockedRef.current = dockedChat
+  // The docked chat's frame, told from here when Chats shows or goes: the pane sits in Chats' KeptPane, which
+  // doesn't render it again while another section shows, so it couldn't tell the frame itself.
+  const dockedFrame = useRef<DockedFrame | null>(null)
+  const dockedShown = useRef(true)
+  dockedShown.current = section === 'chats'
+  const dockedHost = dockedChat?.host
+  useEffect(() => {
+    if (dockedHost) tellDockedShown(dockedFrame.current, section === 'chats')
+  }, [section, dockedHost])
   const [projectsOpen, setProjectsOpen] = useState(false)
   const list = useChatList(connected, status.url ?? '')
   const {
@@ -511,9 +517,18 @@ function Shell({
   useEffect(() => {
     const offMenu = window.conduit.onMenu(action => runShortcut.current(action))
     const offOpen = window.conduit.onOpenChat(ref => {
-      // Another combined dashboard's chat, back from its window: a switch to it opens it.
+      // Another combined dashboard's chat (back from its window, a docked chat's notification, a docked Pulse card) docks here.
       if (ref.host && ref.host !== statusUrlRef.current) {
-        openDockedRef.current({ host: ref.host, id: ref.storedId, profile: ref.profile, title: ref.title, ...(ref.botChat ? { botChat: true } : {}) })
+        const fresh = ref.fresh === true || !ref.storedId
+        openDockedRef.current({
+          host: ref.host,
+          id: fresh ? `new-${Date.now()}` : ref.storedId,
+          profile: ref.profile,
+          title: ref.title,
+          ...(ref.botChat ? { botChat: true } : {}),
+          ...(ref.draft ? { draft: ref.draft } : {}),
+          ...(fresh ? { fresh: true } : {})
+        }, true)
         return
       }
       setSelected({ id: ref.storedId, profile: ref.profile, title: ref.title, ...(ref.botChat ? { botChat: true } : {}) })
@@ -991,11 +1006,11 @@ function Shell({
     if (calling) setDocked(null)
   }, [calling])
   // A docked chat closes when its dashboard is no longer kept beside this one (out of the group, signed out of) and
-  // when it moves to a window of its own (its pane's Open in New Window): only a window that opens after it docked,
-  // since Open in Main Window docks the chat before its own window has closed.
+  // when it moves to a window of its own (its pane's Open in New Window). Open in Main Window docks the chat before
+  // its own window has closed, so only that window is let be until it goes.
   const windowsAtDock = useRef<string[]>([])
   useEffect(() => {
-    windowsAtDock.current = chatWindowIdsRef.current
+    windowsAtDock.current = docked?.fromWindow ? [docked.chat.id] : []
   }, [docked])
   useEffect(() => {
     if (!docked) return
@@ -1588,10 +1603,19 @@ function Shell({
   // ...and a Pulse chip each, with how many cards are new there.
   const keptPulse = useKeptPulse(keptHosts, section === 'pulse')
   const pulseUnseen = pulse.feed?.unseen ?? 0
-  const pulseHostChips = useMemo(
-    () => pulseChips(savedHosts ?? [], status.url ?? '', pulseUnseen, keptPulse, hostName),
-    [savedHosts, status.url, pulseUnseen, keptPulse]
-  )
+  /**
+   * Another combined dashboard whose Pulse feed the page shows, in a docked frame on its kept connection, with
+   * no switch (Pulse keeps a feed per dashboard); null for this one's. Only while that dashboard is kept.
+   */
+  const [pulseHost, setPulseHost] = useState<string | null>(null)
+  const shownPulseHost = pulseHost && keptHosts.some(h => h.url === pulseHost) ? pulseHost : null
+  const pickPulseHost = useCallback((url: string) => setPulseHost(url === statusUrlRef.current ? null : url), [])
+  const pulseHostChips = useMemo(() => {
+    const shown = shownPulseHost ?? status.url ?? ''
+    // The shown feed keeps its chip through a failed read, so the row back to this dashboard's feed stays.
+    const counts = shownPulseHost && !keptPulse.has(shownPulseHost) ? new Map([...keptPulse, [shownPulseHost, 0]]) : keptPulse
+    return pulseChips(savedHosts ?? [], status.url ?? '', pulseUnseen, counts, hostName).map(chip => ({ ...chip, current: chip.url === shown }))
+  }, [savedHosts, status.url, pulseUnseen, keptPulse, shownPulseHost])
   const needsCount = requests.length + waitingRows.length + otherWaiting.length
   const openRequests = useMemo(() => requests.filter(r => r.sessionId && r.sessionId === chat.liveId), [requests, chat.liveId])
   const expiredQuestions = useExpiredQuestions(chat.liveId)
@@ -1710,7 +1734,12 @@ function Shell({
    * its lists and a call in progress stay as they are.
    */
   const openDocked = useCallback(
-    (chat: DockedChat) => {
+    (chat: DockedChat, fromWindow = false) => {
+      // A chat that has a window of its own brings it to the front, as its row does (Open in Main Window excepted).
+      if (!fromWindow && chatWindowIdsRef.current.includes(chat.id)) {
+        void window.conduit.openChatWindow(chat)
+        return
+      }
       // During a call the chat on screen keeps the call's controls, so another dashboard's chat opens in a window of its own.
       if (calling) {
         void window.conduit.openChatWindow(chat).then(opened => {
@@ -1720,7 +1749,7 @@ function Shell({
         })
         return
       }
-      setDocked({ chat, over: selected })
+      setDocked({ chat, over: selected, ...(fromWindow ? { fromWindow: true } : {}) })
       setBotsSide(chat.botChat === true)
       setSection('chats')
     },
@@ -2327,7 +2356,7 @@ function Shell({
                 onCollapse={() => hideList(true)}
               />
             )}
-            {dockedChat ? <DockedChatPane key={dockedChat.host} chat={dockedChat} /> : null}
+            {dockedChat ? <DockedChatPane key={dockedChat.host} chat={dockedChat} frame={dockedFrame} shown={dockedShown} /> : null}
             {/* Kept while another dashboard's chat is docked over it, so coming back to it doesn't open it again. */}
             <main className="chat" ref={chatPane} style={dockedChat ? { display: 'none' } : undefined}>
               <div className="chat-head soft">
@@ -2784,6 +2813,13 @@ function Shell({
               />
             </div>
           </main>
+        ) : section === 'pulse' && shownPulseHost ? (
+          <main className="needs pulse-page docked-pulse">
+            <div className="needs-inner docked-pulse-chips">
+              <PulseHostChips chips={pulseHostChips} onPick={pickPulseHost} />
+            </div>
+            <DockedPulseFrame key={shownPulseHost} host={shownPulseHost} />
+          </main>
         ) : section === 'pulse' ? (
           <PulsePage
             pulse={pulse}
@@ -2794,11 +2830,7 @@ function Shell({
             }}
             onOpenBoard={() => setSection('tasks')}
             chips={pulseHostChips}
-            onPickHost={async url => {
-              if (!(await switchEndingCall(hostName(url)))) return
-              openPageAfterSwitch(url, 'pulse')
-              void window.conduit.switchHost(url)
-            }}
+            onPickHost={pickPulseHost}
           />
         ) : section === 'room' && shownCopy && shownCopyRoom ? (
           <RoomView
