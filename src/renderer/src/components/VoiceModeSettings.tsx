@@ -74,6 +74,7 @@ import {
 import { ask } from '../state/dialogs'
 import { Select } from './Select'
 import { LiveCallStyleSettings } from './LiveCallStyleSettings'
+import { HermesSpeechSettings } from './HermesSpeechSettings'
 
 /** Settings > Voice's mode, after the phone's Voice mode: Classic, or GPT-Live with how it's paid for. */
 export function VoiceModeSettings({ profile }: { profile?: string }) {
@@ -504,6 +505,16 @@ export function VoiceModeSettings({ profile }: { profile?: string }) {
               "GPT-Live talks with the personality in this profile's SOUL.md. SOUL.md is sent to OpenAI with the conversation. Applies to the next conversation."
             )}
           </p>
+        </>
+      ) : null}
+      {mode === 'classic' ? (
+        <>
+          <p className="meta settings-caption">
+            {t('Classic voice listens until you stop talking, sends what Hermes heard as your message, and speaks the reply with the Read Aloud voice above.')}
+          </p>
+          <span className="meta">{t('Speech to text')}</span>
+          <p className="meta settings-caption">{t('How Hermes turns what you say into text. This is a Hermes setting, so your phone and Hermes’ own apps use it too.')}</p>
+          <HermesSpeechSettings key={profile ?? ''} kind="stt" profile={profile} />
         </>
       ) : null}
       {mode === 'local' ? <LocalLiveSettings profile={profile} /> : null}

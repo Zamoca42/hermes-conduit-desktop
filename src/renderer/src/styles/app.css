@@ -8222,6 +8222,15 @@ button.cap-row-text {
   display: flex;
   gap: 8px;
 }
+/* A key Hermes' speech provider is missing: the field and its Save on one row. */
+.hermes-speech-key {
+  display: flex;
+  gap: 8px;
+}
+.hermes-speech-key input {
+  flex: 1;
+  min-width: 0;
+}
 
 /* Artifacts beside a chat, after the phone's In This Chat sheet. */
 .chat-head-button.active {
