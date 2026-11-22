@@ -1,8 +1,21 @@
+import { useEffect, type MutableRefObject } from 'react'
 import { dockedChatUrl } from '@shared/chatWindows'
-import type { ChatWindowRequest } from '@shared/ipc'
+import { IPC, type ChatWindowRequest } from '@shared/ipc'
 
 /** Another combined dashboard's chat, opened in the main window's chat pane. */
 export type DockedChat = ChatWindowRequest & { host: string }
+
+/** What the main window uses of Electron's <webview>: telling its page something. */
+export type DockedFrame = HTMLElement & { send(channel: string, ...args: unknown[]): void }
+
+/** Tells the docked chat's page whether Chats is on screen, so it notifies while it isn't. */
+export function tellDockedShown(frame: DockedFrame | null, shown: boolean): void {
+  try {
+    frame?.send(IPC.dockedShown, shown)
+  } catch {
+    // Not attached yet: dom-ready tells it.
+  }
+}
 
 /**
  * Another combined dashboard's chat opened in place (the phone's no-switch
@@ -13,11 +26,20 @@ export type DockedChat = ChatWindowRequest & { host: string }
  * (the main process routes its calls, events and requests there), so it is
  * the whole chat a chat window is. Another chat of the same dashboard points
  * the frame at it with no reload; the parent keys the pane by dashboard.
+ * The parent holds `frame` and tells it as Chats shows or goes (this pane
+ * isn't rendered again while Chats is away); `shown` is read as the page loads.
  */
-export function DockedChatPane({ chat }: { chat: DockedChat }) {
+export function DockedChatPane({ chat, frame, shown }: { chat: DockedChat; frame: MutableRefObject<DockedFrame | null>; shown: MutableRefObject<boolean> }) {
+  useEffect(() => {
+    const el = frame.current
+    if (!el) return
+    const tell = () => tellDockedShown(el, shown.current)
+    el.addEventListener('dom-ready', tell)
+    return () => el.removeEventListener('dom-ready', tell)
+  }, [frame, shown])
   return (
     <main className="docked-chat" aria-label={chat.title}>
-      <webview className="docked-chat-frame" src={dockedChatUrl(window.location.href, chat)} />
+      <webview ref={frame as React.Ref<HTMLElement>} className="docked-chat-frame" src={dockedChatUrl(window.location.href, chat)} />
     </main>
   )
 }

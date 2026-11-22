@@ -338,6 +338,8 @@ export interface ConduitApi {
   /** The chats that have a window of their own, now and whenever that changes. */
   chatWindows(): Promise<string[]>
   onChatWindows(listener: (ids: string[]) => void): () => void
+  /** A docked chat's page hears whether its pane is on screen (the main window's Chats), from the main window's frame. */
+  onDockedShown(listener: (shown: boolean) => void): () => void
   /** Opens a bot's screen in a window of its own, or focuses the one it has. */
   openScreenWindow(screen: { profile: string; botName: string }): void
   /** The bots whose screen has a window open, now and whenever that changes. */
@@ -398,6 +400,10 @@ export interface OpenChatRequest {
   botChat?: boolean
   /** Another combined dashboard's chat, coming back from a window of its own (or a docked chat's notification): it docks in the chat pane, with no switch. */
   host?: string
+  /** Words the message box starts with (a docked Pulse card's Do it). */
+  draft?: string
+  /** A new chat in its profile, for a docked Pulse card from no chat; `storedId` is left empty. */
+  fresh?: boolean
 }
 
 /** A bot's screen for a window of its own; the viewer id it had before, if it did. */
@@ -420,6 +426,10 @@ export interface ChatWindowRequest {
   host?: string
   /** Shown in the main window's chat pane rather than a window of its own: another combined dashboard's chat, opened in place. */
   docked?: boolean
+  /** Words the message box starts with (a Pulse card's Do it). */
+  draft?: string
+  /** A new chat in its profile (a Pulse card from no chat): `id` only names the pane. */
+  fresh?: boolean
 }
 
 export const IPC = {
@@ -437,6 +447,7 @@ export const IPC = {
   chatWindows: 'conduit:chat-windows',
   chatWindowOf: 'conduit:chat-window-of',
   pageWatched: 'conduit:page-watched',
+  dockedShown: 'conduit:docked-shown',
   chatWindowsChanged: 'conduit:chat-windows-changed',
   openScreenWindow: 'conduit:open-screen-window',
   screenWindows: 'conduit:screen-windows',
