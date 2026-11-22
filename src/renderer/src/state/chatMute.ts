@@ -76,6 +76,18 @@ export function settingMute(mutes: ChatMutes, row: ChatRow, seconds: number | nu
 type Http = (method: 'GET' | 'PUT', path: string, body?: unknown) => Promise<unknown>
 
 /**
+ * Whether a chat is muted, read from the plugin at once: for a window that
+ * keeps no list of mutes (a chat in a window of its own). Can't tell is not muted.
+ */
+export async function readMuted(http: Http, row: ChatRow): Promise<boolean> {
+  try {
+    return !!muteOf({ [profileKey(row.profile)]: parseMutes(await http('GET', mutePath(row.profile))) ?? [] }, row)
+  } catch {
+    return false
+  }
+}
+
+/**
  * The listed profiles' mutes, read again as the list changes (`version`), each
  * profile at most every MUTE_READ_INTERVAL_MS. `available` says the plugin keeps
  * them: the menu waits for it. `onError` hears a mute that didn't take.
@@ -118,7 +130,18 @@ export function useChatMute(http: Http, connected: boolean, profiles: string[], 
       const last = readAt.current.get(profileKey(profile))
       if (last === undefined || now - last >= MUTE_READ_INTERVAL_MS) void read(profile)
     }
-  }, [connected, key, version, read])
+    // host: another host's mutes are read at once, not at the list's next change.
+  }, [connected, key, version, read, host])
+
+  // A timed mute ending redraws its row and menu then, not at the next change.
+  const [tick, setTick] = useState(0)
+  useEffect(() => {
+    const now = Date.now()
+    const ends = Object.values(mutes ?? {}).flat().flatMap(mute => (mute.until !== null && mute.until > now ? [mute.until] : []))
+    if (!ends.length) return
+    const timer = setTimeout(() => setTick(n => n + 1), Math.min(...ends) - now + 50)
+    return () => clearTimeout(timer)
+  }, [mutes])
 
   /** Mutes the chat for `seconds` (null: until unmuted), or unmutes it (0). */
   const setMute = useCallback(
@@ -140,7 +163,8 @@ export function useChatMute(http: Http, connected: boolean, profiles: string[], 
     [http, read, onError]
   )
 
-  return { mutes, available: mutes !== null, setMute }
+  // `tick` changes when a timed mute ends, so what reads the mutes reads them again.
+  return { mutes, available: mutes !== null, setMute, tick }
 }
 
 /** When a timed mute ends, for its menu: the time today, else the day and time. */

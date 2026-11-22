@@ -1147,7 +1147,17 @@ function Shell({
   const muteHttp = useCallback((method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body), [])
   const muteFailed = useCallback((reason: string) => void tell(t('Couldn’t change this chat’s notifications: {reason}', { reason })), [])
   const chatMute = useChatMute(muteHttp, connected, doneProfiles, `${list.rows?.length ?? 0}\t${list.rows?.[0]?.activeAt ?? 0}`, markHost, muteFailed)
-  const rowMute = useCallback((row: ChatRow) => muteOf(chatMute.mutes, row), [chatMute.mutes])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- tick: a timed mute that ended reads again
+  const rowMute = useCallback((row: ChatRow) => muteOf(chatMute.mutes, row), [chatMute.mutes, chatMute.tick])
+  // A muted chat's finished turn doesn't notify here either, as the plugin
+  // doesn't push it; approvals and questions still do, as on the phone.
+  const mutedRef = useRef<(sessionId: string) => boolean>(() => false)
+  mutedRef.current = (sessionId: string) => {
+    const ref = chats.current.get(sessionId)
+    const id = ref?.storedId ?? sessionId
+    const row = (list.rows ?? []).find(r => r.id === id) ?? { id, title: '', pinned: false, profile: ref?.profile }
+    return !!muteOf(chatMute.mutes, row)
+  }
   const [marks, setMarks] = useState<ChatMarks>(() => loadMarks(markHost))
   useEffect(() => setMarks(loadMarks(markHost)), [markHost])
   const updateMarks = useCallback(
@@ -1629,7 +1639,7 @@ function Shell({
         }
         if (event.type !== 'message.complete' || isWatching(sid, watching.current.liveId, watching.current.onChats)) return
         const spec = turnNotification(sid, event.payload, chats.current.get(sid))
-        if (spec) void notify(spec, sid)
+        if (spec && !mutedRef.current(sid)) void notify(spec, sid)
       }),
     [notify]
   )
