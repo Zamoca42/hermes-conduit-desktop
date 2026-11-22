@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-const css = readFileSync(join(__dirname, '../src/renderer/src/styles/app.css'), 'utf8')
+// Comments stripped, so a commented-out rule doesn't count.
+const css = readFileSync(join(__dirname, '../src/renderer/src/styles/app.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
 
 /** Every declaration block for `selector`, joined. */
 function rules(selector: string): string {
