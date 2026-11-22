@@ -75,6 +75,8 @@ import { newCallId, saveCall, type CallResume, type CallTurn } from '../state/vo
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { spokenGreeting } from '../state/liveGreeting'
+import { AskFirst, SEND_REQUEST, SET_ASK_FIRST, liveAsksFirst, switchedNote } from '../state/askFirst'
+import { AskFirstButton } from './AskFirstButton'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote } from '../state/callPicture'
@@ -175,6 +177,12 @@ export function LocalLiveCall({
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
+  // Local Live's agent instructions' parts, built again for each connection.
+  const agentWith = useRef<Parameters<typeof liveInstructions>[0] | null>(null)
+  // Agent mode's asking first: the call's held request and its switch, starting as Settings say.
+  const askFirst = useRef(new AskFirst(liveAsksFirst()))
+  const [asking, setAsking] = useState(askFirst.current.on)
+  const [agentMode, setAgentMode] = useState(false)
   // The microphone, for the orb's level.
   const [micStream, setMicStream] = useState<MediaStream | null>(null)
   const [lines, setLines] = useState<Line[]>([])
@@ -398,6 +406,14 @@ export function LocalLiveCall({
     send(toolResult(id, result, speak))
   }
 
+  // A request for the chat: it goes once the chat is free.
+  const toChat = (request: string) => {
+    const waits = !!active.current || live.current.running
+    queue.current.push(request)
+    pump()
+    return waits ? QUEUED : SENT
+  }
+
   const toolCall = (event: Extract<AgentFrame, { type: 'toolCall' }>) => {
     if (answered.current.has(event.id)) return
     answered.current.add(event.id)
@@ -408,19 +424,34 @@ export function LocalLiveCall({
       case ASK_THREAD: {
         const request = (event.args.request ?? '').trim()
         if (!request) return answer(event.id, event.name, NO_REQUEST)
-        const waits = !!active.current || live.current.running
-        queue.current.push(request)
-        pump()
-        return answer(event.id, event.name, waits ? QUEUED : SENT)
+        const held = askFirst.current.hold(ASK_THREAD, request)
+        if (held) return answer(event.id, event.name, held)
+        return answer(event.id, event.name, toChat(request))
+      }
+      case SEND_REQUEST:
+        void askFirst.current.release().then(release => {
+          if (ended.current) return
+          if (!release.send) return answer(event.id, event.name, release.result, true)
+          if (release.tool === ASK_THREAD) return answer(event.id, event.name, toChat(release.request), true)
+          void jobs.current?.start(release.request).then(result => !ended.current && answer(event.id, event.name, result, true))
+        })
+        return
+      case SET_ASK_FIRST: {
+        const result = askFirst.current.setMode(event.args.mode)
+        setAsking(askFirst.current.on)
+        return answer(event.id, event.name, result)
       }
       case CALL_ME_WHEN_DONE:
         void (callbacks.current?.request(callbackScope(event.args)) ?? Promise.resolve({ status: 'unavailable', message: 'Not in a call.' })).then(
           result => !ended.current && answer(event.id, event.name, result, true)
         )
         return
-      case START_JOB:
+      case START_JOB: {
+        const held = askFirst.current.hold(START_JOB, (event.args.instructions ?? '').trim())
+        if (held) return answer(event.id, event.name, held)
         void jobs.current?.start(event.args.instructions ?? '').then(result => !ended.current && answer(event.id, event.name, result, true))
         return
+      }
       case LIST_JOBS: {
         const result = jobs.current?.list() ?? { summary: 'No background jobs are running.' }
         return answer(event.id, event.name, result, true)
@@ -693,6 +724,7 @@ export function LocalLiveCall({
         return
       case 'input':
         userSpokeAt.current = Date.now()
+        askFirst.current.heard(event.text, true)
         userLine(event.itemId, event.text, event.final)
         if (event.final) keep('user', event.text)
         return
@@ -700,6 +732,7 @@ export function LocalLiveCall({
         if (!checking.current && !ended.current) play(event.pcm)
         return
       case 'output':
+        askFirst.current.modelSpoke()
         if (!checking.current) assistantLine(event.text)
         return
       case 'outputDone':
@@ -737,7 +770,8 @@ export function LocalLiveCall({
       if (event.id !== socket.current) return
       if (event.type === 'open') {
         trace.current?.step('Socket open, setup sent')
-        if (agent.current) send(agentConfigure(agent.current, FUNCTION_TOOLS))
+        // Told asking first as the call's switch is now, a reconnect included.
+        if (agent.current) send(agentConfigure(agentWith.current ? liveInstructions({ ...agentWith.current, asksFirst: askFirst.current.on }) : agent.current, FUNCTION_TOOLS))
         send(sessionUpdate())
       } else if (event.type === 'message') onFrame(event.data)
       else if (event.type === 'close') {
@@ -815,7 +849,8 @@ export function LocalLiveCall({
             )
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
             const asked = await askedQuestionsForCall(profile)
-            agent.current = liveInstructions({
+            setAgentMode(true)
+            agentWith.current = {
               lookups: AGENT_LOOKUPS,
               announces: false,
               extra: AGENT_INSTRUCTIONS + clockInstructions(new Date(), timeZone),
@@ -823,7 +858,8 @@ export function LocalLiveCall({
               persona,
               asked,
               chat: chatContext(resumed.current?.turns ?? turns, !!resumed.current)
-            })
+            }
+            agent.current = liveInstructions(agentWith.current)
           }
           if (ended.current) return
         }
@@ -986,6 +1022,17 @@ export function LocalLiveCall({
         <CallLines lines={lines} />
         <div className="voice-call-buttons">
           {pictureControls}
+          {agentMode ? (
+            <AskFirstButton
+              on={asking}
+              onToggle={() => {
+                const on = !askFirst.current.on
+                const dropped = askFirst.current.set(on)
+                setAsking(on)
+                updates.current.push(switchedNote(on, dropped))
+              }}
+            />
+          ) : null}
           {phase === 'failed' ? (
             <button className="secondary" onClick={onClassic}>
               {t('Classic voice')}

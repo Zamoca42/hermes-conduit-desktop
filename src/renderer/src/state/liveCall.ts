@@ -5,11 +5,13 @@
  * live-call ones; the answers the tools give; and PCM audio. Written for the
  * model, not UI copy.
  */
-import { ACKNOWLEDGEMENT, ANSWER_LENGTH, languageRule } from './gptLive'
+import { ACKNOWLEDGEMENT, languageRule } from './gptLive'
+import { answerLengthRule, liveStyle, styleInstructions, type LiveStyle } from './liveStyle'
 import { REQUESTS_RULE, REQUEST_TOOL_SPECS } from './liveRequests'
 import { FIND_CHAT_RULE, FIND_CHAT_SPEC, READ_CHAT_SPEC } from './chatFinder'
 import { JOBS_RULE, JOB_TOOL_SPECS } from './voiceJobs'
 import { CALLBACK_SPEC } from './callbacks'
+import { ASK_FIRST_RULE, ASK_FIRST_TOOL_SPECS, askFirstInstructions, liveAsksFirst } from './askFirst'
 
 export const ASK_THREAD = 'ask_thread'
 export const READ_LAST_REPLY = 'read_last_reply'
@@ -63,7 +65,9 @@ export const TOOL_SPECS: { name: string; description: string; parameters: Record
   FIND_CHAT_SPEC,
   READ_CHAT_SPEC,
   // Answering the chat's approvals and questions by voice.
-  ...REQUEST_TOOL_SPECS
+  ...REQUEST_TOOL_SPECS,
+  // Asking first: the held request, and the switch.
+  ...ASK_FIRST_TOOL_SPECS
 ]
 
 // MARK: Cards on screen
@@ -212,16 +216,21 @@ export function liveInstructions(options: {
   /** The questions the bot asked that wait past their turn (askedQuestionsBlock). */
   asked?: string
   chat?: string
+  /** The Live call style; the one saved in Settings when left out. */
+  style?: LiveStyle
+  /** Whether the call starts asking first; Settings' choice when left out. */
+  asksFirst?: boolean
 }): string {
   const persona = options.persona ?? ''
+  const style = options.style ?? liveStyle()
   const rules = `You are the voice of the user's Hermes agent, speaking with them through the Conduit app on their computer, in a call attached to the chat open on their screen. This is speech, not text: talk naturally, in full spoken sentences.
-${ANSWER_LENGTH}
+${answerLengthRule(style.answerLength)}
 Never speak while the user is speaking. If they interrupt you, stop and listen. If you have nothing useful to add, stay silent rather than filling the pause.
 Answer quick questions yourself. ${options.lookups}
 Call ask_thread for work that needs the user's Hermes agent: their files, code, systems, accounts, questions about this chat, follow-ups, or longer multi-step research. Pass the complete request. It goes to Hermes as the chat's next message, so Hermes has the chat's earlier turns; while Hermes is still answering one, the next waits and goes once it's done. ${options.announces ? 'Every time you call ask_thread, first acknowledge it out loud.' : 'Call ask_thread without announcing it first, and only once it returns, acknowledge it out loud.'} ${ACKNOWLEDGEMENT} Then carry on with the conversation; Hermes' reply arrives later on this call. When it arrives, tell the user what Hermes found or did, with the details that matter.
 When the user asks to hear a reply again, word for word or in full (Hermes' last reply), don't answer from memory: call read_last_reply and read what it returns word for word, all of it, once.
 ${JOBS_RULE}
-${REQUESTS_RULE}${SHOW_ON_SCREEN_RULE}${FIND_CHAT_RULE}
+${REQUESTS_RULE}${SHOW_ON_SCREEN_RULE}${FIND_CHAT_RULE}${ASK_FIRST_RULE}
 When the user says goodbye to you, or asks to end, hang up or close the call, say a short goodbye, then call end_conversation.`
   return (
     rules +
@@ -231,6 +240,8 @@ When the user says goodbye to you, or asks to end, hang up or close the call, sa
     speechRule(persona) +
     (options.asked ?? '') +
     (options.chat ?? '') +
+    askFirstInstructions(options.asksFirst ?? liveAsksFirst()) +
+    styleInstructions(style) +
     languageRule(options.language)
   )
 }

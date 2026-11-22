@@ -69,6 +69,8 @@ import { ANSWER_APPROVAL, ANSWER_QUESTION, answerApproval, answerQuestion, reque
 import { Icon } from './icons'
 import { MicOrb } from './MicOrb'
 import { openingTurn } from '../state/liveGreeting'
+import { AskFirst, SEND_REQUEST, SET_ASK_FIRST, liveAsksFirst, switchedNote } from '../state/askFirst'
+import { AskFirstButton } from './AskFirstButton'
 import { CallCards } from './CallCards'
 import { FIND_CHAT, READ_CHAT, chatFinder } from '../state/chatFinder'
 import { pictureNoteText, type PictureNote, imageFrame } from '../state/callPicture'
@@ -170,6 +172,9 @@ export function GeminiLiveCall({
   const [phase, setPhase] = useState<Phase>('starting')
   const [problem, setProblem] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
+  // Asking first: the call's held request and its switch, starting as Settings say.
+  const askFirst = useRef(new AskFirst(liveAsksFirst()))
+  const [asking, setAsking] = useState(askFirst.current.on)
   // The microphone, for the orb's level.
   const [micStream, setMicStream] = useState<MediaStream | null>(null)
   const [lines, setLines] = useState<Line[]>([])
@@ -242,6 +247,8 @@ export function GeminiLiveCall({
   const queue = useRef<{ request: string; call: string }[]>([])
   const active = useRef<{ from: number; at: number; started: boolean; call: string } | null>(null)
   const openCalls = useRef(new Set<string>())
+  // A held request's send_request is answered under its own name.
+  const callNames = useRef(new Map<string, string>())
   // The latest props, for the socket's handlers.
   const live = useRef({ running, turnsDone, lastReply, onSay, chatId, requests })
   live.current = { running, turnsDone, lastReply, onSay, chatId, requests }
@@ -373,8 +380,15 @@ export function GeminiLiveCall({
 
   // A request's outcome: on its call while it's open, otherwise as a message once the conversation is quiet.
   const deliver = (call: string, text: string) => {
-    if (openCalls.current.delete(call)) send(toolResponse(call, ASK_THREAD, { status: 'done', result: text }, 'WHEN_IDLE'))
+    if (openCalls.current.delete(call)) send(toolResponse(call, callNames.current.get(call) ?? ASK_THREAD, { status: 'done', result: text }, 'WHEN_IDLE'))
     else updates.current.push(text)
+  }
+
+  // A request for the chat, its call left open: answered with Hermes' reply.
+  const toChat = (call: string, request: string) => {
+    openCalls.current.add(call)
+    queue.current.push({ request, call })
+    pump()
   }
 
   const toolCall = (event: Extract<ServerEvent, { type: 'toolCall' }>) => {
@@ -390,20 +404,37 @@ export function GeminiLiveCall({
       case ASK_THREAD: {
         const request = (event.args.request ?? '').trim()
         if (!request) return answer(NO_REQUEST)
-        // Left open: answered with Hermes' reply.
-        openCalls.current.add(event.id)
-        queue.current.push({ request, call: event.id })
-        pump()
+        const held = askFirst.current.hold(ASK_THREAD, request)
+        if (held) return answer(held)
+        return toChat(event.id, request)
+      }
+      case SEND_REQUEST:
+        void askFirst.current.release().then(release => {
+          if (ended.current) return
+          if (!release.send) return answer(release.result)
+          if (release.tool === ASK_THREAD) {
+            callNames.current.set(event.id, SEND_REQUEST)
+            return toChat(event.id, release.request)
+          }
+          void jobs.current?.start(release.request).then(result => !ended.current && answer(result))
+        })
         return
+      case SET_ASK_FIRST: {
+        const result = askFirst.current.setMode(event.args.mode)
+        setAsking(askFirst.current.on)
+        return answer(result)
       }
       case CALL_ME_WHEN_DONE:
         void (callbacks.current?.request(callbackScope(event.args)) ?? Promise.resolve({ status: 'unavailable', message: 'Not in a call.' })).then(
           result => !ended.current && answer(result)
         )
         return
-      case START_JOB:
+      case START_JOB: {
+        const held = askFirst.current.hold(START_JOB, (event.args.instructions ?? '').trim())
+        if (held) return answer(held)
         void jobs.current?.start(event.args.instructions ?? '').then(result => !ended.current && answer(result))
         return
+      }
       case LIST_JOBS: {
         const result = jobs.current?.list() ?? { summary: 'No background jobs are running.' }
         return answer(result)
@@ -488,11 +519,13 @@ export function GeminiLiveCall({
         return
       case 'input':
         userSpokeAt.current = Date.now()
+        askFirst.current.heard(event.text)
         heard.current += event.text
         addLine('user', event.text)
         return
       case 'output':
         modelTurn.current = true
+        askFirst.current.modelSpoke()
         if (heard.current.trim()) {
           keep('user', heard.current)
           heard.current = ''
@@ -558,6 +591,8 @@ export function GeminiLiveCall({
       }, START_TIMEOUT_MS)
     }
     let toldWith: Parameters<typeof instructions>[0] = {}
+    // Each connection is told asking first as the call's switch is now, a reconnect included.
+    const toldNow = () => (Object.keys(toldWith).length === 0 ? told : instructions({ ...toldWith, search, asksFirst: askFirst.current.on }))
     let startedOpen = false
     // A single-use credential per connection, minted by the host and kept in the main process.
     // `asHandoff`: Gemini's next connection after a GoAway, set up while the current one keeps serving.
@@ -652,7 +687,7 @@ export function GeminiLiveCall({
     }
     const stopListening = window.conduit.onLive(event => {
       if (handoff.current.id && event.id === handoff.current.id) {
-        if (event.type === 'open') window.conduit.liveSend(event.id, JSON.stringify(setupMessage(model, told, voice, recall, search, { handle: resumeHandle.current })))
+        if (event.type === 'open') window.conduit.liveSend(event.id, JSON.stringify(setupMessage(model, toldNow(), voice, recall, search, { handle: resumeHandle.current })))
         else if (event.type === 'message') {
           for (const decoded of decode(event.data)) {
             if (decoded.type === 'resumption' && decoded.resumable && decoded.handle) resumeHandle.current = decoded.handle
@@ -680,7 +715,7 @@ export function GeminiLiveCall({
       if (event.id !== socket.current) return
       if (event.type === 'open') {
         trace.current?.step('Socket open, setup sent')
-        send(setupMessage(model, told, voice, recall, search, qwen ? undefined : { handle: resumeHandle.current }))
+        send(setupMessage(model, toldNow(), voice, recall, search, qwen ? undefined : { handle: resumeHandle.current }))
       } else if (event.type === 'message') {
         let frame: string | null = event.data
         // Qwen's turn steps, from its own frames before they're made Gemini's.
@@ -901,6 +936,15 @@ export function GeminiLiveCall({
         <CallLines lines={lines} />
         <div className="voice-call-buttons">
           {pictureControls}
+          <AskFirstButton
+            on={asking}
+            onToggle={() => {
+              const on = !askFirst.current.on
+              const dropped = askFirst.current.set(on)
+              setAsking(on)
+              updates.current.push(switchedNote(on, dropped))
+            }}
+          />
           {phase === 'failed' ? (
             <button className="secondary" onClick={onClassic}>
               {t('Classic voice')}
