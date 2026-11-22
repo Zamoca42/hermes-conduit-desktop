@@ -314,7 +314,7 @@ export function QuestionCard({
           disabled={busy}
           onClick={() => void answer({ kind: 'dismiss' })}
         >
-          {t('Dismiss')}
+          {t('Dismiss question')}
         </button>
       ) : null}
       {problem ? <div className="error-text">{problem}</div> : null}
