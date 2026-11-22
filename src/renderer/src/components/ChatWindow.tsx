@@ -170,7 +170,8 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
    */
   const paneShown = useRef(true)
   useEffect(() => (docked ? window.conduit.onDockedShown(shown => (paneShown.current = shown)) : undefined), [docked])
-  // A notification takes the chat's own title, not the window's "Chat" for an untitled one, and else its bot.
+  // The chat's title as stored (kept for reopening); the notification builders read "Chat" and
+  // "Untitled chat" as no title, so the bot's name stands in.
   const chatTitle = botChat ? botTitle : cleanTitle(chat.title || request.title || '') || undefined
   const chatRef = useRef({ liveId: chat.liveId, storedId: chat.storedId, profile, title: chatTitle, bot: botTitle })
   chatRef.current = { liveId: chat.liveId, storedId: chat.storedId, profile, title: chatTitle, bot: botTitle }
