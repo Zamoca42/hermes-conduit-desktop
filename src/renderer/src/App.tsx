@@ -1641,9 +1641,9 @@ function Shell({
         const spec = turnNotification(sid, event.payload, chats.current.get(sid))
         if (!spec || mutedRef.current(sid)) return
         // A mute set on another device since the last read: asked at once.
+        // A chat this window never opened is asked by the id the event names.
         const ref = chats.current.get(sid)
-        if (!ref?.storedId) return void notify(spec, sid)
-        void readMuted(muteHttp, { id: ref.storedId, title: '', pinned: false, profile: ref.profile }).then(muted => {
+        void readMuted(muteHttp, { id: ref?.storedId ?? sid, title: '', pinned: false, profile: ref?.profile }).then(muted => {
           if (!muted) void notify(spec, sid)
         })
       }),

@@ -1257,12 +1257,12 @@ const ChatRowItem = memo(function ChatRowItem({
               {row.pinned ? <Icon name="pin" className="row-pin" /> : null}
               {starred ? <Icon name="star" className="row-pin row-star" /> : null}
               {done ? <Icon name="check" className="row-pin row-done" aria-label={t('Done')} /> : null}
-              {row.title}
               {muted ? (
                 <span role="img" aria-label={t('Notifications muted')}>
-                  <Icon name="bellSlash" className="row-pin row-muted" />
+                  <Icon name="bellSlash" className="row-pin" />
                 </span>
               ) : null}
+              {row.title}
             </span>
             {row.sourceKind && row.sourceKind !== 'chat' ? <span className="row-source">{sourceName(row.sourceKind)}</span> : null}
             <span className="meta row-time">{timeLabel(row.activeAt, today)}</span>
