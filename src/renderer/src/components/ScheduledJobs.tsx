@@ -85,8 +85,12 @@ export function ScheduledJobs({ bots, connected, profile, onProfile, tiles = [],
   /** Another dashboard's profile the list shows, picked by its face. */
   const [far, setFar] = useState<{ host: string; name: string } | null>(null)
   const farHosts = useMemo(() => [...new Set(tiles.filter(tile => !tile.own).map(tile => tile.host))], [tiles])
-  // A far face whose dashboard is no longer combined goes back to All.
+  // A far face whose dashboard is no longer combined goes back to the list Chats' profile picks,
+  // and stays gone if that dashboard joins again.
   const shownFar = far && farHosts.includes(far.host) ? far : null
+  useEffect(() => {
+    if (far && !farHosts.includes(far.host)) setFar(null)
+  }, [far, farHosts])
   // All lists every combined dashboard's jobs, as Chats' All lists their chats.
   const sources = useMemo<CronSource[]>(
     () =>
