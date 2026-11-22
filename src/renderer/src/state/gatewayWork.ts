@@ -178,14 +178,15 @@ export function restartNowSteps(host: RestartNowHost, pauseMs = 2_000): RestartN
         await host.http('POST', FORCE_RESTART_PATH, 40_000)
       } catch (e) {
         // The restart can take the dashboard down with the gateway before it answers, so a request
-        // that went out and got no answer (no HTTP status) is how a forced restart looks. Anything
-        // the dashboard answered is a failure.
+        // that went out and got no answer is how a forced restart looks: a dropped connection, or a
+        // timeout (whose abort carries a DOMException code, not an HTTP status). Only an HTTP status
+        // the dashboard answered with is a failure.
         const status = code(e)
         if (status === 501)
           return t(
             'Conduit can only force a restart for a gateway that systemd runs. Run hermes gateway stop, then hermes gateway start, on the host.'
           )
-        if (typeof status === 'number') return message(e)
+        if (typeof status === 'number' && status >= 400 && status < 600) return message(e)
       }
       return null
     },
@@ -230,17 +231,22 @@ export async function runRestartNow(
   host: string,
   connection: RestartNowHost | null,
   hostNow: () => string,
-  hermesUpdating: boolean,
+  hermesUpdating: () => boolean,
   steps: (connection: RestartNowHost) => RestartNowSteps = restartNowSteps
 ) {
   if (state.running.has(host)) return
   if (!connection) return set({ failure: { host, message: t('Connect to this dashboard first.'), at: Date.now() } })
   // Update Hermes restarts it at the end; a restart now would land mid-install and pass for the update's own.
-  if (hermesUpdating) return set({ failure: { host, message: t('Wait for the Hermes update to finish.'), at: Date.now() } })
+  if (hermesUpdating()) return set({ failure: { host, message: t('Wait for the Hermes update to finish.'), at: Date.now() } })
   set({ running: new Set([...state.running, host]), failure: state.failure?.host === host ? null : state.failure })
   let failure: string | null = null
   try {
-    failure = await restartNow(steps(connection))
+    const planned = steps(connection)
+    // An Update Hermes started meanwhile restarts it itself: no force on top of its install.
+    failure = await restartNow({
+      ...planned,
+      force: () => (hermesUpdating() ? Promise.resolve(t('Wait for the Hermes update to finish.')) : planned.force())
+    })
   } finally {
     const running = new Set(state.running)
     running.delete(host)

@@ -97,17 +97,19 @@ describe('Restart Now', () => {
     })
     const steps = (code: number) => ({ ...restartNowSteps(refusing(code)), pause: async () => undefined })
     expect(await restartNow(steps(403))).toBe('Forbidden')
+    // A timeout's abort carries a DOMException code (23), not an answer: counted as sent.
+    expect(await restartNow(steps(23))).toBeNull()
     expect(await restartNow(steps(501))).toMatch(/systemd/)
   })
 
   it('waits for a running Hermes update, and keeps a failure on its own dashboard', async () => {
     const connection: RestartNowHost = { http: async () => ({}), rpc: async () => undefined }
-    await runRestartNow('a', connection, () => 'a', true)
+    await runRestartNow('a', connection, () => 'a', () => true)
     expect(failureFor('a')).toBe('Wait for the Hermes update to finish.')
     expect(failureFor('b')).toBeNull()
 
     const { steps } = scripted([work(0)], { endWait: async () => 'Refused' })
-    const run = runRestartNow('a', connection, () => 'a', false, () => steps)
+    const run = runRestartNow('a', connection, () => 'a', () => false, () => steps)
     expect(restartingNow('a')).toBe(true)
     expect(failureFor('a')).toBeNull()
     await run
@@ -116,7 +118,21 @@ describe('Restart Now', () => {
 
     // Switched away meanwhile: the failure stays with the run.
     resetRestartNow()
-    await runRestartNow('a', connection, () => 'b', false, () => steps)
+    await runRestartNow('a', connection, () => 'b', () => false, () => steps)
     expect(failureFor('a')).toBeNull()
+  })
+
+  it('an Update Hermes started mid-run holds the force', async () => {
+    const connection: RestartNowHost = { http: async () => ({}), rpc: async () => undefined }
+    let updating = false
+    const { steps, calls } = scripted([work(1)], {
+      endWait: async () => {
+        updating = true
+        return null
+      }
+    })
+    await runRestartNow('a', connection, () => 'a', () => updating, () => steps)
+    expect(calls).not.toContain('force')
+    expect(failureFor('a')).toBe('Wait for the Hermes update to finish.')
   })
 })
