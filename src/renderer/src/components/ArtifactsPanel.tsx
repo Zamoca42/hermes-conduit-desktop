@@ -126,6 +126,11 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
 
   const filter: ArtifactFilter = tab === 'saved' ? 'all' : tab
   const here = dashboards?.[0]?.url
+  // A chip whose dashboard left the group (its chip gone with it) no longer narrows the list.
+  const chipped = onlyHost && dashboards?.some(d => d.url === onlyHost) ? onlyHost : null
+  useEffect(() => {
+    if (onlyHost && !chipped) setOnlyHost(null)
+  }, [onlyHost, chipped])
   // The other combined hosts, on the page only; a chip per host shows its alone, a second tap every one again.
   const live =
     page && dashboards && dashboards.length > 1
@@ -157,6 +162,8 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
       }
     }
     setPageFailed(false)
+    // A page still out for the last request no longer holds this one's Show More.
+    setBusy(current => (current === 'more' ? null : current))
     setFeed(current => ({
       // Beside the chat, a reply's end reads the list again under the rows it's refreshing.
       stores:
@@ -275,7 +282,8 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
       setPageFailed(true)
       setNote(failure(e))
     } finally {
-      setBusy(null)
+      // A page for an older request leaves the new one's Show More alone.
+      if (id === load.current) setBusy(null)
     }
   }
 
