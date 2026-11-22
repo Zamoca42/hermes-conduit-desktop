@@ -5,6 +5,7 @@ import {
   WORK,
   actionTitle,
   answerRequest,
+  canDismiss,
   goingAheadText,
   questionButtons,
   questionHeadline,
@@ -30,6 +31,7 @@ import {
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
 import { timeLabel } from '../state/chats'
+import { dropExpiredAsking } from '../state/expiredQuestions'
 import type { WaitingRow } from '../state/needsYou'
 
 interface Props {
@@ -268,6 +270,7 @@ export function QuestionCard({
     setProblem(null)
     try {
       await gateway.http('POST', workPath(`${WORK}/${encodeURIComponent(question.id)}/${action}`, profile), body)
+      if (given.kind === 'dismiss') dropExpiredAsking(question.text)
       onChanged()
     } catch (e) {
       setProblem(workRefusal(e))
@@ -306,6 +309,16 @@ export function QuestionCard({
           ))}
         </div>
       )}
+      {canDismiss(question) ? (
+        <button
+          className="link work-question-dismiss"
+          title={t('Takes it off your list without answering')}
+          disabled={busy}
+          onClick={() => void answer({ kind: 'dismiss' })}
+        >
+          {t('Dismiss question')}
+        </button>
+      ) : null}
       {problem ? <div className="error-text">{problem}</div> : null}
     </div>
   )

@@ -4,7 +4,9 @@
  * timeout, an hour by default) or whose turn stopped keeps what it asked and
  * offered, so the person still sees it and can answer in a message instead.
  * One answered on another device (`request.cancel` with reason `resolved`)
- * just goes. Kept for this run of the app, and a chat's go once the person
+ * just goes, as does one the person wrote past (`superseded`: they sent a
+ * message instead, which the plugin hands Hermes in its place, hermes-conduit
+ * issue 3105). Kept for this run of the app, and a chat's go once the person
  * sends there: the message is their answer.
  */
 import { useEffect, useState } from 'react'
@@ -46,13 +48,13 @@ export function markExpired(request: PendingRequest, locked: Record<string, stri
   changed()
 }
 
-/** A `request.cancel` from Hermes: kept unless another device answered it. */
+/** A `request.cancel` from Hermes: kept unless another device answered it or the person wrote past it. */
 export function takeCancel(payload: unknown): void {
   const { id, reason } = (payload ?? {}) as { id?: unknown; reason?: unknown }
   if (typeof id !== 'string') return
   const request = seen.get(id)
   if (!request) return
-  if (reason === 'resolved') {
+  if (reason === 'resolved' || reason === 'superseded') {
     seen.delete(id)
     locks.delete(id)
     return
@@ -64,6 +66,28 @@ export function takeCancel(payload: unknown): void {
 export function clearExpired(sessionId: string | null | undefined): void {
   if (!sessionId || !expired.some(e => e.request.sessionId === sessionId)) return
   expired = expired.filter(e => e.request.sessionId !== sessionId)
+  changed()
+}
+
+/** What a kept card asked: each of a batch's questions, or its one. */
+function asked(request: PendingRequest): string[] {
+  const params = request.params ?? {}
+  const list = Array.isArray(params.questions) ? params.questions : []
+  const texts = list
+    .map(q => (q && typeof q === 'object' && typeof (q as Record<string, unknown>).question === 'string' ? ((q as Record<string, unknown>).question as string) : ''))
+    .concat(typeof params.question === 'string' ? [params.question] : [])
+  return texts.map(text => text.trim()).filter(Boolean)
+}
+
+/**
+ * The person dismissed a kept question in the Work panel or the asked-question bar (hermes-conduit issue 3105):
+ * its card in the chat goes too, so it doesn't still offer to answer a question the bot was told was dismissed.
+ * The Work panel's question carries its wording, not the request's id, so the wording matches it.
+ */
+export function dropExpiredAsking(text: string): void {
+  const wanted = text.trim()
+  if (!wanted || !expired.some(e => asked(e.request).includes(wanted))) return
+  expired = expired.filter(e => !asked(e.request).includes(wanted))
   changed()
 }
 

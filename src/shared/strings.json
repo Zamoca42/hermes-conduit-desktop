@@ -9014,6 +9014,21 @@
     "zh-Hans": "关闭",
     "zh-Hant": "關閉"
   },
+  "Dismiss question": {
+    "de": "Frage verwerfen",
+    "es": "Descartar pregunta",
+    "fr": "Écarter la question",
+    "id": "Abaikan pertanyaan",
+    "it": "Ignora domanda",
+    "ja": "質問を取り下げる",
+    "ko": "질문 넘기기",
+    "pl": "Odrzuć pytanie",
+    "pt-BR": "Descartar pergunta",
+    "ru": "Отклонить вопрос",
+    "tr": "Soruyu kapat",
+    "zh-Hans": "忽略问题",
+    "zh-Hant": "忽略問題"
+  },
   "Display Name": {
     "de": "Anzeigename",
     "es": "Nombre visible",
@@ -21148,6 +21163,21 @@
     "tr": "Destek",
     "zh-Hans": "支持",
     "zh-Hant": "支援"
+  },
+  "Takes it off your list without answering": {
+    "de": "Nimmt sie ohne Antwort von deiner Liste",
+    "es": "La quita de tu lista sin responder",
+    "fr": "La retire de votre liste sans répondre",
+    "id": "Menghapusnya dari daftar Anda tanpa menjawab",
+    "it": "La toglie dalla tua lista senza rispondere",
+    "ja": "回答せずにリストから外します",
+    "ko": "답하지 않고 목록에서 뺍니다",
+    "pl": "Usuwa je z listy bez odpowiedzi",
+    "pt-BR": "Tira da sua lista sem responder",
+    "ru": "Убирает вопрос из списка без ответа",
+    "tr": "Yanıtlamadan listenizden kaldırır",
+    "zh-Hans": "不回答，从列表中移除",
+    "zh-Hant": "不回答，從清單中移除"
   },
   "The update may have stopped. If Hermes stays away, start it on the host.": {
     "de": "Das Update wurde womöglich abgebrochen. Bleibt Hermes weg, starte es auf dem Host.",

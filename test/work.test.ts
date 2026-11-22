@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { noteDashboardProfiles, setDashboardProfilesHost } from '../src/renderer/src/state/dashboardProfile'
-import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, workPath, needsYou, sameWork, workTone, manageTitle, handOverCaption, parseQuestions, questionButtons, questionHeadline, answerRequest, goingAheadText, answersInWords } from '../src/renderer/src/state/work'
+import { doing, parseItem, parseWork, sections, sideWorkstreams, statusText, workPath, needsYou, sameWork, workTone, manageTitle, handOverCaption, parseQuestions, questionButtons, questionHeadline, answerRequest, goingAheadText, answersInWords, canDismiss } from '../src/renderer/src/state/work'
 
 const answer = {
   policy: 'on',
@@ -170,5 +170,14 @@ describe('questions that wait past their turn', () => {
     expect(answersInWords(question)).toBe(true)
     expect(questionButtons(question)).toEqual([])
     expect(goingAheadText(question)).toBe('Going ahead unless you say no')
+  })
+
+  it('offers Dismiss when the plugin lists it, which answers nothing', () => {
+    // hermes-conduit issue 3105: clearing a kept question by answering it fed the bot a made-up answer.
+    expect(canDismiss(parseQuestions([card({})])[0])).toBe(false)
+    const question = parseQuestions([card({ actions: ['answer', 'dismiss'], source: 'clarify' })])[0]
+    expect(canDismiss(question)).toBe(true)
+    expect(questionButtons(question)).toEqual([])
+    expect(answerRequest({ kind: 'dismiss' })).toEqual({ action: 'dismiss', body: {} })
   })
 })

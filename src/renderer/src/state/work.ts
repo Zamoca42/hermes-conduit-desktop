@@ -83,7 +83,7 @@ export interface WorkQuestion {
   text: string
   at: number
   /** Approve and Decline, or one button per choice; none when it's answered in its chat in words. */
-  actions: ('approve' | 'decline' | 'answer')[]
+  actions: ('approve' | 'decline' | 'answer' | 'dismiss')[]
   choices: string[]
   recommended: string
   /** Auto coordination: the bot goes ahead on its recommendation unless the user picks another. */
@@ -93,7 +93,8 @@ export interface WorkQuestion {
 }
 
 /** How the user answers a question: the route's action and its body. */
-export type QuestionAnswer = { kind: 'approve' } | { kind: 'decline' } | { kind: 'choice'; choice: string }
+/** Dismiss takes a question off the list with no answer (plugin 0.195.0+, hermes-conduit issue 3105). */
+export type QuestionAnswer = { kind: 'approve' } | { kind: 'decline' } | { kind: 'dismiss' } | { kind: 'choice'; choice: string }
 
 type Row = Record<string, unknown>
 const str = (v: unknown) => (typeof v === 'string' ? v : '')
@@ -152,7 +153,7 @@ export function parseItem(row: Row): WorkItem | null {
   }
 }
 
-const QUESTION_ACTIONS = ['approve', 'decline', 'answer'] as const
+const QUESTION_ACTIONS = ['approve', 'decline', 'answer', 'dismiss'] as const
 const strings = (v: unknown) => (Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string' && s.trim() !== '') : [])
 
 /** A question card's row, or null when it isn't an open question. */
@@ -204,6 +205,11 @@ export function questionButtons(question: WorkQuestion): { answer: QuestionAnswe
       { answer: { kind: 'decline' }, label: t('Decline'), recommended: false }
     ]
   return []
+}
+
+/** Whether an open question offers Dismiss: the plugin lists it among the question's actions (0.195.0+). */
+export function canDismiss(question: WorkQuestion): boolean {
+  return question.actions.includes('dismiss')
 }
 
 /** The route's action and body for an answer. */

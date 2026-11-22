@@ -6257,6 +6257,12 @@ code.file-link:hover {
   justify-content: flex-start;
 }
 
+/* Dismiss: quieter than an answer, under them. */
+.work-question-dismiss {
+  align-self: flex-start;
+  color: var(--muted, inherit);
+}
+
 .work-card-top {
   display: flex;
   align-items: flex-start;
