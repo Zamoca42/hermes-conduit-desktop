@@ -777,7 +777,15 @@ function TaskPanel({
                     .filter(Boolean)
                     .join(' · ')}
                 </span>
-                <button type="button" className="secondary" disabled={saving !== null} onClick={() => void saveAttachment(attachment)}>
+                {/* Like the panel's other actions, Save needs the task on the board read: with no board picked, another
+                    client can change Hermes' current board, and the old board's attachment would be asked of the new one. */}
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={saving !== null || !task}
+                  title={task ? undefined : t('This task is no longer on the board shown.')}
+                  onClick={() => void saveAttachment(attachment)}
+                >
                   {saving === attachment.id ? t('Saving…') : t('Save')}
                 </button>
               </div>
