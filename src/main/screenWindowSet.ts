@@ -81,6 +81,8 @@ export class ScreenWindowSet<W extends ScreenWindowHandle = ScreenWindowHandle> 
   /** The page's viewer id for its bot (its screen key), and whether it holds the screen now. */
   note(key: string, viewerId: string, holds: boolean): void {
     this.viewers.set(key, viewerId)
+    // A closing window's last word, after its hand back started: the window is gone, so the hand back stands.
+    if (holds && !this.open.has(key)) return
     if (holds) {
       this.cancelHandBack(key)
       this.pending.delete(key)

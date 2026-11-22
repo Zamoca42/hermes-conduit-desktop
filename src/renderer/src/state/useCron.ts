@@ -159,8 +159,9 @@ export function useCron(sources: readonly CronSource[], connected: boolean) {
         const source = shown.find(s => s.host === host && (s.profile === null || s.profile === (job.profile ?? 'default')))
         if (source) {
           const at = sourcesKey([source])
-          const kept = lastRead.current.get(at)
-          if (kept && !kept.some(row => same(row, job))) lastRead.current.set(at, [...kept, job])
+          // A source whose reads have all failed so far starts its kept read with the new job.
+          const kept = lastRead.current.get(at) ?? []
+          if (!kept.some(row => same(row, job))) lastRead.current.set(at, [...kept, job])
           setJobs(list => (list && !list.some(row => same(row, job)) ? [...list, job] : list))
         }
       }

@@ -196,13 +196,14 @@ export class KeptHosts {
     }
     // It says nothing more (it's no longer kept), and closes once that work is done.
     let closed = false
+    let grace: unknown = null
     const close = () => {
       if (closed) return
       closed = true
+      if (grace !== null) (this.deps.clearTimeout ?? (h => clearTimeout(h as ReturnType<typeof setTimeout>)))(grace)
       kept.connection.close()
     }
-    const setTimer = this.deps.setTimeout ?? ((fn: () => void, ms: number) => setTimeout(fn, ms))
-    setTimer(close, STOP_GRACE_MS)
+    grace = (this.deps.setTimeout ?? ((fn: () => void, ms: number) => setTimeout(fn, ms)))(close, STOP_GRACE_MS)
     void Promise.resolve(last).then(close, close)
     return true
   }

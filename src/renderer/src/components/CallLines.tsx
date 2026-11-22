@@ -42,8 +42,11 @@ export function CallLines({ lines }: { lines: readonly CallLine[] }) {
       onScroll={event => {
         const el = event.currentTarget
         const shrunk = el.scrollHeight < lastHeight.current
-        if (shrunk && atEnd(el)) following.current = true
-        else if (el.scrollTop < lastTop.current) following.current = false
+        // A layout change, not the reader: it follows again only when clamped to the very end, so a reader
+        // a few pixels up stays where they are (atEnd allows NEAR_END).
+        if (shrunk) {
+          if (el.scrollTop >= el.scrollHeight - el.clientHeight - 1) following.current = true
+        } else if (el.scrollTop < lastTop.current) following.current = false
         else if (atEnd(el)) following.current = true
         lastTop.current = el.scrollTop
         lastHeight.current = el.scrollHeight
