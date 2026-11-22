@@ -149,6 +149,7 @@ import {
   useKeptBots,
   useKeptWork,
   useKeptRooms,
+  dropKeptCopy,
   combinedRooms,
   type OtherRoom,
   useKeptChats,
@@ -1489,6 +1490,8 @@ function Shell({
   const [otherProfile, setOtherProfile] = useState<{ host: string; name: string } | null>(null)
   /** Another combined dashboard's group chat, open in place in the room pane (a frame on its kept connection). */
   const [dockedRoom, setDockedRoom] = useState<(DockedRoomRequest & { roomId: string }) | null>(null)
+  const dockedRoomRef = useRef(dockedRoom)
+  dockedRoomRef.current = dockedRoom
   /** The open room when someone else hosts it: read from this Hermes' copy, by its Link and room. */
   const [openCopy, setOpenCopy] = useState<string | null>(null)
   const shownCopy = openCopy ? roomCopies.copies.find(c => c.id === openCopy) : undefined
@@ -1819,6 +1822,12 @@ function Shell({
   }, [])
   const openOtherBot = useCallback((other: OtherBot) => {
     // Its Bot Chat opens in place; a bot with none yet starts one there, made on its own dashboard by the first send.
+    // A second click while that fresh one is shown keeps it, and what's typed in it.
+    const shown = dockedRef.current
+    if (!other.bot.botChatId && shown?.fresh && shown.botChat && shown.host === other.host && shown.profile === other.bot.name) {
+      setSection('chats')
+      return
+    }
     openDocked(
       other.bot.botChatId
         ? { host: other.host, id: other.bot.botChatId, profile: other.bot.name, title: other.bot.title, author: other.bot.title, botChat: true }
@@ -1842,6 +1851,8 @@ function Shell({
       const newest = otherChats.filter(r => r.host === tile.host && same(r.profile)).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))[0]
       if (tile.bot.botChatId && (tile.bot.lastActive ?? 0) >= (newest?.activeAt ?? 0)) return openOtherBot({ host: tile.host, bot: tile.bot })
       if (newest) openDocked({ host: newest.host, id: newest.id, profile: newest.profile, title: newest.title })
+      // A bot with no chats there yet starts its Bot Chat in place, as its sidebar face does.
+      else openOtherBot({ host: tile.host, bot: tile.bot })
     },
     [otherChats, openOtherBot, openDocked]
   )
@@ -1849,6 +1860,11 @@ function Shell({
   useEffect(() => {
     if (chatProfile) setOtherProfile(null)
   }, [chatProfile])
+  // So does a chat of this dashboard's opening (New Chat, a Needs you row, a send making one), which the far
+  // filter would hide from the list.
+  useEffect(() => {
+    setOtherProfile(null)
+  }, [selected])
   // A far face stops showing when its dashboard is no longer kept.
   useEffect(() => {
     if (otherProfile && !keptHosts.some(h => h.url === otherProfile.host)) setOtherProfile(null)
@@ -1905,7 +1921,10 @@ function Shell({
     if (openRoom || openCopy) setDockedRoom(null)
   }, [openRoom, openCopy])
   // Its copy deleted from the docked room: Group chats comes back, as when a copy here is deleted.
+  // Its copy was deleted there: it leaves Group chats now, and the pane goes back to Bots.
   const closeDockedRoom = useCallback(() => {
+    const shown = dockedRoomRef.current
+    if (shown?.kind === 'copy') dropKeptCopy(shown.host, shown.id)
     setDockedRoom(null)
     setSection(current => (current === 'room' ? 'bots' : current))
   }, [])
