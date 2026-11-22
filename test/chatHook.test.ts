@@ -436,6 +436,43 @@ describe('a send while the chat is still opening (desktop#298)', () => {
     expect(submitted).toEqual([])
   })
 
+  it('opens a chat whose open failed once more, and sends into it, not a new chat', async () => {
+    const conduit = (window as unknown as { conduit: { rpcOutcome: (m: string, p: Record<string, unknown>) => Promise<unknown> } }).conduit
+    const rpc = conduit.rpcOutcome
+    let failing = true
+    conduit.rpcOutcome = (method, params) =>
+      method === 'session.resume' && failing ? Promise.resolve({ ok: false, error: 'busy', code: 500 }) : rpc(method, params)
+    resumes.a = { messages: history('one') }
+    const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
+    await settle()
+    expect(hook.result().error).toBeTruthy()
+    failing = false
+    let created: unknown
+    await act(async () => {
+      created = await hook.result().send('hello')
+    })
+    expect(created).toBeNull()
+    expect(calls).not.toContain('session.create')
+    expect(submitted).toEqual(['live-a'])
+    expect(hook.result().error).toBeNull()
+    expect(words(hook.result().transcript)).toEqual(['one', 're: one', 'hello'])
+  })
+
+  it('gives a command back when the user moves to another chat while it waits', async () => {
+    holdResumes = true
+    const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
+    let outcome: unknown
+    const running = act(async () => {
+      outcome = await hook.result().command('/compress', [])
+    })
+    await settle()
+    hook.rerender({ storedId: 'b', connected: true, url: 'h1' })
+    await act(async () => pendingResumes.forEach(resume => resume()))
+    await running
+    expect(outcome).toEqual({ kind: 'unsent' })
+    expect(calls).not.toContain('session.create')
+  })
+
   it("doesn't leave a draft showing Loading after an abandoned open", async () => {
     holdResumes = true
     const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })

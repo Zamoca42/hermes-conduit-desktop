@@ -66,3 +66,16 @@ describe('capability asks: review leftovers (desktop#274)', () => {
     expect(http).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('capability answers after a plugin update (desktop#274)', () => {
+  afterEach(() => http.mockReset())
+
+  it('are asked again', async () => {
+    const { predictionsServed, forgetCapabilityAnswers } = await load()
+    http.mockResolvedValueOnce({ version: '0.180.0', capabilities: [] })
+    expect(await predictionsServed()).toBe(false)
+    forgetCapabilityAnswers()
+    http.mockResolvedValueOnce({ version: '0.190.0', capabilities: ['predict'] })
+    expect(await predictionsServed()).toBe(true)
+  })
+})

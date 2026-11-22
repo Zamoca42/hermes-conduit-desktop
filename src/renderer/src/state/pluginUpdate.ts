@@ -20,6 +20,7 @@ import {
   type UpdateState
 } from './plugin'
 import { dashboardHost } from './dashboardProfile'
+import { forgetCapabilityAnswers } from './usePredictions'
 
 /** How the run reaches the host: the gateway's own `http` in the app. */
 export type UpdateHttp = (method: 'GET' | 'POST', path: string) => Promise<unknown>
@@ -102,6 +103,8 @@ export async function runUpdate(onDone: () => void, acceptScan = false, latest: 
   } finally {
     live = false
     running = false
+    // The plugin may now be another version, with other capabilities.
+    forgetCapabilityAnswers()
     onDone()
   }
 }

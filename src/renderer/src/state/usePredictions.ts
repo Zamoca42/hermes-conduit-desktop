@@ -62,6 +62,11 @@ function capabilityServed(capability: string): Promise<boolean> {
   return entry.answer
 }
 
+/** Drops what's kept: after a plugin update, the new plugin may say otherwise (desktop#274). */
+export function forgetCapabilityAnswers(): void {
+  capabilityAnswers.clear()
+}
+
 /** Whether this dashboard's plugin answers predictions. */
 export const predictionsServed = (): Promise<boolean> => capabilityServed(PREDICT_CAPABILITY)
 /** Whether this dashboard's plugin uses the user's instructions; an older one ignores them, so none are sent. */
