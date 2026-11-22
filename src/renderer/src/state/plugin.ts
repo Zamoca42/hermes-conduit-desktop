@@ -214,6 +214,67 @@ export function jobState(job: unknown): UpdateState | null {
   }
 }
 
+/**
+ * How long an update may go without word from the host before the page stops waiting on it, as the
+ * phone's watchdog does (NotifierPluginUpdater.stallLimit). A followed job is read every two seconds and
+ * every request has its own timeout, so six minutes with no answer while downloading is stuck for good.
+ * Only an answer counts: a read that fails isn't word from the host.
+ */
+export function stallLimitMs(state: UpdateState): number | null {
+  if (state.phase !== 'updating') return null
+  return state.step === 'downloading' ? 360_000 : 1_800_000
+}
+
+/**
+ * Runs `work`, which calls `heard()` each time the host answers, and ends once it does or once the host
+ * has been quiet past `limit()` (null: the run is no longer on a step). Says which came first.
+ */
+export async function untilQuiet(
+  work: (heard: () => void) => Promise<void>,
+  limit: () => number | null,
+  checkMs: number
+): Promise<'done' | 'stalled'> {
+  let heardAt = Date.now()
+  let watchdog: ReturnType<typeof setInterval> | undefined
+  const stalled = new Promise<'stalled'>(resolve => {
+    watchdog = setInterval(() => {
+      const ms = limit()
+      if (ms === null || Date.now() - heardAt > ms) resolve('stalled')
+    }, checkMs)
+  })
+  try {
+    return await Promise.race([work(() => (heardAt = Date.now())).then(() => 'done' as const), stalled])
+  } finally {
+    clearInterval(watchdog)
+  }
+}
+
+/**
+ * How an update that went quiet ended: a job still running is left to the host, one this run started
+ * (the job it followed, `run.jobId`, or one that began after `run.startedMs`) says how it ended, a plugin
+ * that runs the offered version is updated, and anything else never got going (`stalledDetail`).
+ */
+export function outcomeAfterStall(
+  job: unknown,
+  status: PluginStatus,
+  latest: string | null,
+  run: { startedMs: number; jobId: string | null },
+  stalledDetail: string
+): UpdateState {
+  const state = jobState(job)
+  if (state?.phase === 'updating') return { phase: 'runningOnHost' }
+  const fields = job && typeof job === 'object' ? (job as Record<string, unknown>) : {}
+  const started = fields.started_at
+  // An earlier update's job (yesterday's "done") says nothing about this one.
+  const ours = (run.jobId !== null && fields.id === run.jobId) || (typeof started === 'number' && started * 1000 >= run.startedMs - 5000)
+  if (state && ours) return state
+  // Versions alone: a host that manages its plugin never offers an update, but still runs one.
+  const running = runningVersion(status)
+  if (status.state === 'reported' && !status.restartNeeded && latest && running && !isOlder(running, latest))
+    return { phase: 'updated', version: running }
+  return { phase: 'failed', detail: stalledDetail }
+}
+
 /** The features Conduit uses from the plugin, by capability id, as Settings lists them on the phone. */
 export const FEATURES: { id: string; capabilities: string[] }[] = [
   { id: 'chatTakeover', capabilities: ['session-takeover', 'desktop-views'] },

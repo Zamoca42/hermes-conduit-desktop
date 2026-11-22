@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { isOlder, jobState, parseChangelog, selfUpdatePath, pluginStatus, releaseNotes, runningVersion, serves, updateAvailable } from '../src/renderer/src/state/plugin'
+import { describe, expect, it, vi } from 'vitest'
+import { isOlder, jobState, outcomeAfterStall, parseChangelog, selfUpdatePath, pluginStatus, releaseNotes, runningVersion, serves, stallLimitMs, untilQuiet, updateAvailable } from '../src/renderer/src/state/plugin'
 import { versionFromManifest } from '../src/main/pluginRelease'
 
 const CHANGELOG = `# Conduit plugin changelog
@@ -120,5 +120,73 @@ describe('host update job', () => {
     expect(jobState({ step: 'failed', detail: '' })).toEqual({ phase: 'failed', detail: null })
     expect(jobState({ step: 'something_new' })).toEqual({ phase: 'updating', step: 'downloading' })
     expect(jobState(null)).toBeNull()
+  })
+})
+
+describe('an update that goes quiet', () => {
+  it('stops waiting on a download after six quiet minutes, longer on the restarts', () => {
+    expect(stallLimitMs({ phase: 'updating', step: 'downloading' })).toBe(360_000)
+    expect(stallLimitMs({ phase: 'updating', step: 'restartingDashboard' })).toBe(1_800_000)
+    expect(stallLimitMs({ phase: 'failed', detail: null })).toBeNull()
+  })
+
+  it('says where the host stands', () => {
+    const run = { startedMs: 1_000_000_000, jobId: null }
+    const STALLED = 'stalled'
+    const old = pluginStatus({ version: '0.10.0', loaded_version: '0.10.0', restart_needed: false, capabilities: [] })
+    const current = pluginStatus({ version: '0.192.0', loaded_version: '0.192.0', restart_needed: false, capabilities: [] })
+    // Nothing on the host and the old plugin still runs: it never got going.
+    expect(outcomeAfterStall(null, old, '0.192.0', run, STALLED)).toEqual({ phase: 'failed', detail: STALLED })
+    // An earlier update's finished job isn't this one's.
+    expect(outcomeAfterStall({ id: 'old', step: 'done', loaded_version: '0.10.0', started_at: 900_000 }, old, '0.192.0', run, STALLED)).toEqual({
+      phase: 'failed',
+      detail: STALLED
+    })
+    // Still running on the host: left to it.
+    expect(outcomeAfterStall({ id: 'j', step: 'downloading', started_at: 1_000_010 }, old, '0.192.0', run, STALLED)).toEqual({ phase: 'runningOnHost' })
+    // One this run started that ended says how.
+    expect(outcomeAfterStall({ id: 'j', step: 'failed', detail: 'no route', started_at: 1_000_010 }, old, '0.192.0', run, STALLED)).toEqual({
+      phase: 'failed',
+      detail: 'no route'
+    })
+    // The job this run followed is its own, whatever the host's clock says.
+    expect(
+      outcomeAfterStall({ id: 'j', step: 'failed', detail: 'no route', started_at: 990_000 }, old, '0.192.0', { ...run, jobId: 'j' }, STALLED)
+    ).toEqual({ phase: 'failed', detail: 'no route' })
+    // The offered version runs: updated, on a host that manages its plugin too.
+    expect(outcomeAfterStall(null, current, '0.192.0', run, STALLED)).toEqual({ phase: 'updated', version: '0.192.0' })
+    const managed = pluginStatus({ version: '0.10.0', loaded_version: '0.10.0', restart_needed: false, capabilities: [], managed_by: 'nix' })
+    expect(outcomeAfterStall(null, managed, '0.192.0', run, STALLED)).toEqual({ phase: 'failed', detail: STALLED })
+  })
+
+  it('ends a run the host stops answering, and only that', async () => {
+    vi.useFakeTimers()
+    try {
+      // Every read fails: nothing is heard, so the watchdog ends it past the limit.
+      const quiet = untilQuiet(() => new Promise<void>(() => {}), () => 60_000, 15_000)
+      await vi.advanceTimersByTimeAsync(75_000)
+      await expect(quiet).resolves.toBe('stalled')
+
+      // A host that answers every two seconds, even on the same step, keeps it going until it ends.
+      let answers = 0
+      const busy = untilQuiet(
+        heard =>
+          new Promise<void>(resolve => {
+            const poll = setInterval(() => {
+              heard()
+              if (++answers === 100) {
+                clearInterval(poll)
+                resolve()
+              }
+            }, 2_000)
+          }),
+        () => 60_000,
+        15_000
+      )
+      await vi.advanceTimersByTimeAsync(200_000)
+      await expect(busy).resolves.toBe('done')
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
