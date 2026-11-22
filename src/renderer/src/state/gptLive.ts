@@ -100,7 +100,7 @@ export function sessionAnswer(response: unknown, billing: Billing): SessionAnswe
  * an API-key call never is, and a subscription call only while its host
  * hasn't answered with GA events.
  */
-export function teachesPhoneReads(billing: Billing, dialect?: 'ga' | 'frameless'): boolean {
+export function teachesPhoneReads(billing: Billing, dialect?: Dialect): boolean {
   return billing !== 'api' && dialect !== 'ga'
 }
 
@@ -693,6 +693,39 @@ export function gptLiveBilling(): Billing {
   } catch {
     return 'subscription'
   }
+}
+
+const DIALECT_KEY = 'conduit.gptLiveDialect'
+
+const readDialects = (): Record<string, Dialect> => {
+  try {
+    const raw = JSON.parse(localStorage.getItem(DIALECT_KEY) ?? '{}') as unknown
+    return raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, Dialect>) : {}
+  } catch {
+    return {}
+  }
+}
+
+/**
+ * The events a dashboard last answered a ChatGPT-plan call with, kept on this computer: only a call knows
+ * them, and What Conduit sends shows the phone's read rules only where the next call would get them
+ * (desktop#363). An API-key call says nothing, since it always gets GA events.
+ */
+export function rememberGptLiveDialect(host: string, billing: Billing, dialect: Dialect): void {
+  if (!host || billing === 'api') return
+  const dialects = readDialects()
+  if (dialects[host] === dialect) return
+  try {
+    localStorage.setItem(DIALECT_KEY, JSON.stringify({ ...dialects, [host]: dialect }))
+  } catch {
+    // The preview shows the rules until a call can be remembered.
+  }
+}
+
+/** The events `host` last answered a ChatGPT-plan call with; undefined before one. */
+export function lastGptLiveDialect(host: string): Dialect | undefined {
+  const dialect = readDialects()[host]
+  return dialect === 'ga' || dialect === 'frameless' ? dialect : undefined
 }
 
 export function setGptLiveBilling(billing: Billing): void {
