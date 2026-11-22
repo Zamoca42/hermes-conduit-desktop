@@ -202,6 +202,7 @@ import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply }
 import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { isDone, useChatDone } from './state/chatDone'
+import { muteOf, useChatMute } from './state/chatMute'
 import { GO_TO, SCALES, applyScale, glyphs, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { CallTranscriptSheet } from './components/CallTranscriptSheet'
@@ -1142,6 +1143,11 @@ function Shell({
   const doneHttp = useCallback((method: 'GET' | 'POST', path: string, body?: unknown) => gateway.http(method, path, body), [])
   const chatDone = useChatDone(doneHttp, connected, doneProfiles, `${list.rows?.length ?? 0}\t${list.rows?.[0]?.activeAt ?? 0}`, markHost)
   const isRowDone = useCallback((row: ChatRow) => isDone(chatDone.marks, row), [chatDone.marks])
+  // Muted chats, kept by the plugin, which skips their pushes on every device (state/chatMute).
+  const muteHttp = useCallback((method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body), [])
+  const muteFailed = useCallback((reason: string) => void tell(t('Couldn’t change this chat’s notifications: {reason}', { reason })), [])
+  const chatMute = useChatMute(muteHttp, connected, doneProfiles, `${list.rows?.length ?? 0}\t${list.rows?.[0]?.activeAt ?? 0}`, markHost, muteFailed)
+  const rowMute = useCallback((row: ChatRow) => muteOf(chatMute.mutes, row), [chatMute.mutes])
   const [marks, setMarks] = useState<ChatMarks>(() => loadMarks(markHost))
   useEffect(() => setMarks(loadMarks(markHost)), [markHost])
   const updateMarks = useCallback(
@@ -2216,6 +2222,8 @@ function Shell({
                   onToggleRead={toggleRead}
                   isDone={chatDone.available ? isRowDone : undefined}
                   onDone={chatDone.available ? chatDone.toggle : undefined}
+                  muteOf={chatMute.available ? rowMute : undefined}
+                  onMute={chatMute.available ? chatMute.setMute : undefined}
                   onDelete={async row => {
                     if (await ask(`${t('Delete conversation?')}\n\n${t('This permanently deletes the conversation and cannot be undone.')}`, { confirm: t('Delete'), destructive: true }))
                       void chatAction(row, null)

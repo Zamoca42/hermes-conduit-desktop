@@ -3616,6 +3616,12 @@ html[data-window='quick'] body {
   color: var(--success, #34c77b);
 }
 
+/* A muted chat: the crossed-out bell after its title, as on the phone's row. */
+.row-muted {
+  margin-right: 0;
+  margin-left: 5px;
+}
+
 /* Done chats: the row dimmed, its live status left at full strength. */
 .row.done .row-title,
 .row.done .row-time,

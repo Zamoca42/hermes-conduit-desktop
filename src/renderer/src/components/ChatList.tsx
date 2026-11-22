@@ -17,6 +17,7 @@ import type { HostBadge, OtherChatRow } from '../state/keptHosts'
 import { HostBadgeMark } from './CombinedDashboards'
 import { EMPTY_NESTING, ancestorsOf, descendants, nestRows, nestSummary } from '../state/chatNesting'
 import { ChatFilterMenu, type FilterChoice } from './ChatFilterMenu'
+import { MUTE_CHOICES, muteEnd } from '../state/chatMute'
 import { filterProjects, hiddenNow, hiddenProjectsSlot, hidesChat, projectIndex, projectOf, readHiddenProjects, writeHiddenProjects, NO_PROJECT } from '../state/hiddenProjects'
 import type { Project } from '../state/projects'
 import { ProfileColumn } from './ProfileColumn'
@@ -120,6 +121,10 @@ interface Props {
   onToggleRead?: (row: ChatRow) => void
   /** Done chats, kept by the plugin: left out on a plugin that doesn't keep them. */
   isDone?: (row: ChatRow) => boolean
+  /** A muted chat's mute (state/chatMute), null when it isn't; with onMute, the menu offers Mute Notifications. */
+  muteOf?: (row: ChatRow) => { until: number | null } | null
+  /** Mutes the chat for `seconds` (null: until unmuted), or unmutes it (0). */
+  onMute?: (row: ChatRow, seconds: number | null) => void
   onDone?: (row: ChatRow) => void
   /** Opens Projects, the phone's Chats › Projects. */
   onProjects?: () => void
@@ -205,6 +210,8 @@ export function ChatList({
   onStar,
   onToggleRead,
   isDone,
+  muteOf,
+  onMute,
   onDone,
   onProjects,
   projects: projectTree,
@@ -230,6 +237,9 @@ export function ChatList({
   const [moving, setMoving] = useState<MoveTarget[] | null | false>(false)
   const canMove = !!onMove && !!moveTargets
   useEffect(() => setMoving(false), [menu])
+  // Mute Notifications' durations, shown in place of the menu.
+  const [muting, setMuting] = useState(false)
+  useEffect(() => setMuting(false), [menu])
   async function startMove(row: ChatRow) {
     setMoving(null)
     const targets = await moveTargets!(row).catch(() => [])
@@ -770,6 +780,7 @@ export function ChatList({
                   unread={(!!marks && isUnread(marks, row) && !selected) || nestUnread}
                   starred={!!marks && isStarred(marks, row)}
                   done={!!isDone?.(row)}
+                  muted={!!muteOf?.(row)}
                   botName={botName(row)}
                   draggable={canReorder && row.pinned && !renaming}
                   dragging={dragging === row.id}
@@ -843,6 +854,23 @@ export function ChatList({
             <button role="menuitem" onClick={() => onOpenInWindow?.(menu.row)}>
               {windowIds?.includes(menu.row.id) ? t('Show Window') : t('Open in New Window')}
             </button>
+          ) : muting && onMute ? (
+            <>
+              <button
+                role="menuitem"
+                onClick={e => {
+                  e.stopPropagation()
+                  setMuting(false)
+                }}
+              >
+                ‹ {t('Mute Notifications')}
+              </button>
+              {MUTE_CHOICES.map(choice => (
+                <button key={choice.key} role="menuitem" onClick={() => onMute(menu.row, choice.seconds)}>
+                  {choice.label()}
+                </button>
+              ))}
+            </>
           ) : moving !== false ? (
             <>
               <button
@@ -914,6 +942,29 @@ export function ChatList({
                 <button role="menuitem" onClick={() => onDone(menu.row)}>
                   {isDone(menu.row) ? t('Mark as Not Done') : t('Mark as Done')}
                 </button>
+              ) : null}
+              {onMute && muteOf ? (
+                (() => {
+                  const mute = muteOf(menu.row)
+                  return mute ? (
+                    <button role="menuitem" onClick={() => onMute(menu.row, 0)}>
+                      {mute.until === null
+                        ? t('Unmute Notifications')
+                        : t('Unmute (Muted Until {time})', { time: muteEnd(mute.until) })}
+                    </button>
+                  ) : (
+                    <button
+                      role="menuitem"
+                      aria-haspopup="menu"
+                      onClick={e => {
+                        e.stopPropagation()
+                        setMuting(true)
+                      }}
+                    >
+                      {t('Mute Notifications')} ›
+                    </button>
+                  )
+                })()
               ) : null}
               {onToggleRead && marks && menu.row.id !== selectedId ? (
                 <button role="menuitem" onClick={() => onToggleRead(menu.row)}>
@@ -1136,6 +1187,7 @@ const ChatRowItem = memo(function ChatRowItem({
   unread,
   starred,
   done,
+  muted,
   botName,
   draggable,
   dragging,
@@ -1156,6 +1208,7 @@ const ChatRowItem = memo(function ChatRowItem({
   unread: boolean
   starred: boolean
   done: boolean
+  muted: boolean
   botName: string | null
   draggable: boolean
   dragging: boolean
@@ -1205,6 +1258,7 @@ const ChatRowItem = memo(function ChatRowItem({
               {starred ? <Icon name="star" className="row-pin row-star" /> : null}
               {done ? <Icon name="check" className="row-pin row-done" aria-label={t('Done')} /> : null}
               {row.title}
+              {muted ? <Icon name="bellSlash" className="row-pin row-muted" aria-label={t('Notifications muted')} /> : null}
             </span>
             {row.sourceKind && row.sourceKind !== 'chat' ? <span className="row-source">{sourceName(row.sourceKind)}</span> : null}
             <span className="meta row-time">{timeLabel(row.activeAt, today)}</span>

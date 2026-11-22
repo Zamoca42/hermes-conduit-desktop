@@ -1,0 +1,153 @@
+/**
+ * Muted chats, after the phone's ChatMutes (hermes-conduit: Notifications). The
+ * user mutes one chat for 15 minutes, an hour, a day or until they unmute it;
+ * the plugin keeps the mute per profile (`/notifications/muted-chats`, plugin
+ * 0.193.0+) and skips that chat's pushes itself, so it holds on every device.
+ * A mute is kept under the chat's lineage root, which a compaction keeps, and
+ * its own id, as Done marks are.
+ */
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { t } from '../../../shared/i18n'
+import type { ChatRow } from './chats'
+
+export const MUTE_PATH = '/api/plugins/conduit_push/notifications/muted-chats'
+/** The plugin takes at most this many of a chat's ids. */
+const MAX_IDS = 16
+/** A profile's mutes are read at most this often while the list changes. */
+export const MUTE_READ_INTERVAL_MS = 30_000
+
+/** The menu's durations, in seconds; null is until unmuted. */
+export const MUTE_CHOICES: { key: string; label: () => string; seconds: number | null }[] = [
+  { key: '15m', label: () => t('For 15 Minutes'), seconds: 15 * 60 },
+  { key: '1h', label: () => t('For 1 Hour'), seconds: 60 * 60 },
+  { key: '1d', label: () => t('For 1 Day'), seconds: 24 * 60 * 60 },
+  { key: 'forever', label: () => t('Until I Unmute'), seconds: null }
+]
+
+export interface ChatMute {
+  ids: string[]
+  /** When it ends, in ms on this computer's clock; null for until unmuted. */
+  until: number | null
+}
+
+/** Each profile's mutes, by its lowercase name; null until one has been read (an older plugin never answers). */
+export type ChatMutes = Record<string, ChatMute[]> | null
+
+const profileKey = (profile?: string | null) => (profile || 'default').toLowerCase()
+
+export const mutePath = (profile?: string | null) =>
+  profile && profile !== 'default' ? `${MUTE_PATH}?profile=${encodeURIComponent(profile)}` : MUTE_PATH
+
+/** The ids a mute is kept under: the lineage root first, then the row's own. */
+export const muteIds = (row: ChatRow): string[] =>
+  [...new Set([row.lineageRoot, row.id].filter((id): id is string => !!id))].slice(0, MAX_IDS)
+
+/**
+ * The route's answer; null when it isn't one. `remaining_s` is read against
+ * this computer's clock, so a host whose clock is off still ends the mute on time.
+ */
+export function parseMutes(body: unknown, now = Date.now()): ChatMute[] | null {
+  const rows = body && typeof body === 'object' ? (body as Record<string, unknown>).chats : undefined
+  if (!Array.isArray(rows)) return null
+  return rows.flatMap((row): ChatMute[] => {
+    const o = row && typeof row === 'object' ? (row as Record<string, unknown>) : {}
+    const ids = Array.isArray(o.session_ids) ? o.session_ids.filter((id): id is string => typeof id === 'string' && !!id) : []
+    if (!ids.length) return []
+    if (o.remaining_s === null || o.remaining_s === undefined) return o.until === null || o.until === undefined ? [{ ids, until: null }] : []
+    return typeof o.remaining_s === 'number' && o.remaining_s > 0 ? [{ ids, until: now + o.remaining_s * 1000 }] : []
+  })
+}
+
+/** The row's mute while it lasts, else null. */
+export function muteOf(mutes: ChatMutes, row: ChatRow, now = Date.now()): ChatMute | null {
+  const ids = new Set(muteIds(row))
+  return mutes?.[profileKey(row.profile)]?.find(mute => mute.ids.some(id => ids.has(id)) && (mute.until === null || mute.until > now)) ?? null
+}
+
+/** The chat muted (`seconds`, null for until unmuted) or unmuted (0) before the plugin answers. */
+export function settingMute(mutes: ChatMutes, row: ChatRow, seconds: number | null, now = Date.now()): ChatMutes {
+  const key = profileKey(row.profile)
+  const ids = new Set(muteIds(row))
+  const kept = (mutes?.[key] ?? []).filter(mute => !mute.ids.some(id => ids.has(id)))
+  const next = seconds === 0 ? kept : [{ ids: muteIds(row), until: seconds === null ? null : now + seconds * 1000 }, ...kept]
+  return { ...(mutes ?? {}), [key]: next }
+}
+
+type Http = (method: 'GET' | 'PUT', path: string, body?: unknown) => Promise<unknown>
+
+/**
+ * The listed profiles' mutes, read again as the list changes (`version`), each
+ * profile at most every MUTE_READ_INTERVAL_MS. `available` says the plugin keeps
+ * them: the menu waits for it. `onError` hears a mute that didn't take.
+ */
+export function useChatMute(http: Http, connected: boolean, profiles: string[], version: string, host: string, onError?: (reason: string) => void) {
+  const [mutes, setMutes] = useState<ChatMutes>(null)
+  const readAt = useRef(new Map<string, number>())
+  // A read that started before a write answers with the old mutes: it's dropped.
+  const wroteAt = useRef(new Map<string, number>())
+  const hostRef = useRef(host)
+  useEffect(() => {
+    hostRef.current = host
+    readAt.current.clear()
+    wroteAt.current.clear()
+    setMutes(null)
+  }, [host])
+
+  const read = useCallback(
+    async (profile: string) => {
+      const askedHost = hostRef.current
+      const key = profileKey(profile)
+      const started = Date.now()
+      readAt.current.set(key, started)
+      try {
+        const found = parseMutes(await http('GET', mutePath(profile)))
+        if (!found || hostRef.current !== askedHost || (wroteAt.current.get(key) ?? 0) >= started) return
+        setMutes(current => ({ ...(current ?? {}), [key]: found }))
+      } catch {
+        // An older plugin, or the host away: the mutes stay as they were.
+      }
+    },
+    [http]
+  )
+
+  const key = profiles.join('\t')
+  useEffect(() => {
+    if (!connected) return
+    const now = Date.now()
+    for (const profile of key.split('\t')) {
+      const last = readAt.current.get(profileKey(profile))
+      if (last === undefined || now - last >= MUTE_READ_INTERVAL_MS) void read(profile)
+    }
+  }, [connected, key, version, read])
+
+  /** Mutes the chat for `seconds` (null: until unmuted), or unmutes it (0). */
+  const setMute = useCallback(
+    (row: ChatRow, seconds: number | null) => {
+      const askedHost = hostRef.current
+      const profileName = row.profile ?? 'default'
+      wroteAt.current.set(profileKey(profileName), Date.now())
+      setMutes(current => settingMute(current, row, seconds))
+      http('PUT', mutePath(row.profile), { session_ids: muteIds(row), mute_s: seconds })
+        .then(body => {
+          const found = parseMutes(body)
+          if (found && hostRef.current === askedHost) setMutes(current => ({ ...(current ?? {}), [profileKey(profileName)]: found }))
+        })
+        .catch(e => {
+          onError?.(e instanceof Error ? e.message : String(e))
+          void read(profileName)
+        })
+    },
+    [http, read, onError]
+  )
+
+  return { mutes, available: mutes !== null, setMute }
+}
+
+/** When a timed mute ends, for its menu: the time today, else the day and time. */
+export function muteEnd(until: number, now = Date.now()): string {
+  const end = new Date(until)
+  const sameDay = end.toDateString() === new Date(now).toDateString()
+  return sameDay
+    ? end.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+    : end.toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' })
+}
