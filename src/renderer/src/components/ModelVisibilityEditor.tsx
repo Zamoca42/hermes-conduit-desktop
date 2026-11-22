@@ -41,7 +41,7 @@ export function ModelVisibilityEditor({ providers, openProvider, onDone }: { pro
       </label>
       <div className="model-note">{t('Hiding a provider preserves its individual model choices. These filters stay on this computer.')}</div>
       <div className="model-list">
-        {providers && !groups.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
+        {providers && searching && !groups.length ? <div className="model-note">{t('Nothing matches “{query}”.', { query: query.trim() })}</div> : null}
         {groups.map(({ provider, models }) => {
           const name = provider.name || provider.slug
           const hidden = providerHidden(visibility, provider.slug)
