@@ -43513,5 +43513,35 @@
     "tr": "Güncelleme ana makinede başlamadı, bu yüzden Conduit beklemeyi bıraktı. Tekrar dene.",
     "zh-Hans": "更新没有在主机上开始，所以 Conduit 不再等待。请重试。",
     "zh-Hant": "更新沒有在主機上開始，所以 Conduit 不再等待。請重試。"
+  },
+  "Show Missing Files": {
+    "de": "Fehlende Dateien zeigen",
+    "es": "Mostrar archivos que faltan",
+    "fr": "Afficher les fichiers manquants",
+    "id": "Tampilkan file yang hilang",
+    "it": "Mostra file mancanti",
+    "ja": "見つからないファイルを表示",
+    "ko": "없는 파일 표시",
+    "pl": "Pokaż brakujące pliki",
+    "pt-BR": "Mostrar arquivos ausentes",
+    "ru": "Показывать отсутствующие файлы",
+    "tr": "Eksik dosyaları göster",
+    "zh-Hans": "显示缺失的文件",
+    "zh-Hant": "顯示遺失的檔案"
+  },
+  "Files no longer on your Hermes host are hidden.": {
+    "de": "Dateien, die nicht mehr auf deinem Hermes-Host sind, werden ausgeblendet.",
+    "es": "Los archivos que ya no están en tu host de Hermes están ocultos.",
+    "fr": "Les fichiers qui ne sont plus sur ton hôte Hermes sont masqués.",
+    "id": "File yang tidak lagi ada di host Hermes kamu disembunyikan.",
+    "it": "I file non più presenti sul tuo host Hermes sono nascosti.",
+    "ja": "Hermesホストにもうないファイルは非表示です。",
+    "ko": "Hermes 호스트에 더 이상 없는 파일은 숨겨집니다.",
+    "pl": "Pliki, których nie ma już na hoście Hermes, są ukryte.",
+    "pt-BR": "Arquivos que não estão mais no seu host do Hermes ficam ocultos.",
+    "ru": "Файлы, которых больше нет на хосте Hermes, скрыты.",
+    "tr": "Artık Hermes ana makinende olmayan dosyalar gizlenir.",
+    "zh-Hans": "已不在 Hermes 主机上的文件已隐藏。",
+    "zh-Hant": "已不在 Hermes 主機上的檔案已隱藏。"
   }
 }

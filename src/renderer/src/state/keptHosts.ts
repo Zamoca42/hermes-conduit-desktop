@@ -13,7 +13,7 @@ import { WAITING_POLL_MS, waitingFromResponse, waitingPath, type WaitingRow } fr
 import { CHAT_LIST_PAGE, CHAT_LIST_PATH, rowsFromResponse, type ChatRow } from './chats'
 import { keptRosters, rosterFromProfiles, type Bot } from './bots'
 import { PULSE, parseFeed } from './pulse'
-import { listPath, parsePage, type ArtifactFilter, type ArtifactItem } from './artifacts'
+import type { ArtifactItem } from './artifacts'
 import { listAllRooms, type Room } from './groups'
 import { arrange, hostOrder, loadOrder, ROOMS_SYNC_KEY, saveOrder } from './botOrder'
 import { PREFS_PATH } from './pinnedOrder'
@@ -818,52 +818,8 @@ export function takePageAfterSwitch(host: string): string | null {
 /** An artifact from another combined host: its rows open and copy there; Save and Show in Chat stay with that host. */
 export type KeptArtifact = ArtifactItem & { dashboard: string; dashboardProfile?: string }
 
-/** A kept artifact's key, unique across hosts and profiles. */
-export const keptArtifactKey = (host: string, profile: string | undefined, id: string) => `${host}\u0000${profile ?? ''}\u0000${id}`
-
-/**
- * The Artifacts page's other combined hosts: each profile of each live kept
- * host, its first page for the kind and search shown, read through its kept
- * connection after this host's own. A host that fails keeps nothing.
- */
-export function useKeptArtifacts(kept: readonly KeptHost[], on: boolean, filter: ArtifactFilter, words: string, reload: number): KeptArtifact[] {
-  const [rows, setRows] = useState<KeptArtifact[]>([])
-  const live = on
-    ? kept
-        .filter(h => h.state === 'live')
-        .map(h => h.url)
-        .join('\n')
-    : ''
-  useEffect(() => {
-    const urls = live ? live.split('\n') : []
-    if (!urls.length) {
-      setRows([])
-      return
-    }
-    let stopped = false
-    void Promise.all(
-      urls.map(async url => {
-        const listed = await window.conduit.keptHttp(url, '/api/profiles')
-        const names = (listed.ok ? profileNames(listed.result) : null) ?? ['default']
-        const pages = await Promise.all(
-          names.map(async name => {
-            const profile = name === 'default' ? undefined : name
-            const outcome = await window.conduit.keptHttp(url, listPath({ profile, filter, query: words }))
-            if (!outcome.ok) return []
-            return parsePage(outcome.result).items.map(item => ({ ...item, id: keptArtifactKey(url, profile, item.id), dashboard: url, dashboardProfile: profile }))
-          })
-        )
-        return pages.flat()
-      })
-    ).then(all => {
-      if (!stopped) setRows(all.flat().sort((a, b) => b.at - a.at))
-    })
-    return () => {
-      stopped = true
-    }
-  }, [live, filter, words, reload])
-  return rows
-}
+/** A kept artifact's key, unique across hosts: one path on a host is one artifact, whichever of its profiles lists it. */
+export const keptArtifactKey = (host: string, id: string) => `${host}\u0000${id}`
 
 /** New Bot made on another combined host: the sheet's words and look, carried over the switch. */
 export interface NewBotCarry {

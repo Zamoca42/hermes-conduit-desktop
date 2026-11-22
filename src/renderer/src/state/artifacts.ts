@@ -246,3 +246,70 @@ export function days(items: ArtifactItem[], at: (item: ArtifactItem) => number =
 
 /** The path a file opens from: its own, else the copy a saved one kept once it was gone. */
 export const openablePath = (item: ArtifactItem) => (item.exists ? item.path : (item.keptPath ?? undefined))
+
+/**
+ * One store a list reads, after the phone's ArtifactFeed: this host's
+ * profile, or a profile of another combined host. Its rows read so far,
+ * newest first, and where its next page starts (null once read to its start).
+ */
+export interface FeedStore {
+  read: ArtifactItem[]
+  cursor: number | null
+}
+
+const oldest = (items: readonly ArtifactItem[]) => items.reduce((least, item) => Math.min(least, item.at), Infinity)
+
+/**
+ * Rows older than this wait: a store still paging may hold newer ones. A
+ * store still paging with nothing read yet (a page of a long history held
+ * none of the chip's) holds every row back until it pages on.
+ */
+function horizon(stores: readonly FeedStore[]): number | null {
+  let line: number | null = null
+  for (const store of stores) {
+    if (store.cursor === null) continue
+    if (!store.read.length) return Infinity
+    line = Math.max(line ?? -Infinity, oldest(store.read))
+  }
+  return line
+}
+
+/** The rows to show, newest first, each artifact once (its newest mention). */
+export function feedItems(stores: readonly FeedStore[]): ArtifactItem[] {
+  const line = horizon(stores)
+  const heads = stores.map(() => 0)
+  const seen = new Set<string>()
+  const shown: ArtifactItem[] = []
+  for (;;) {
+    // The newest next row of any store; a tie goes to the earlier one.
+    let pick = -1
+    stores.forEach((store, index) => {
+      const head = store.read[heads[index]!]
+      if (head && (pick < 0 || head.at > stores[pick]!.read[heads[pick]!]!.at)) pick = index
+    })
+    if (pick < 0) break
+    const item = stores[pick]!.read[heads[pick]!++]!
+    if (line !== null && item.at < line) continue
+    if (!seen.has(item.id)) {
+      seen.add(item.id)
+      shown.push(item)
+    }
+  }
+  return shown
+}
+
+/** The store to page next: the one still paging whose rows reach the least far back, one with none read first. Null once every store is read. */
+export function nextStore(stores: readonly FeedStore[]): number | null {
+  let best: number | null = null
+  let bestOldest = -Infinity
+  for (const [index, store] of stores.entries()) {
+    if (store.cursor === null) continue
+    if (!store.read.length) return index
+    const reach = oldest(store.read)
+    if (best === null || reach > bestOldest) {
+      best = index
+      bestOldest = reach
+    }
+  }
+  return best
+}

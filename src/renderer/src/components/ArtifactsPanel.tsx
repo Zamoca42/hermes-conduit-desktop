@@ -8,9 +8,10 @@ import {
   filterTitle,
   includes,
   kindTitle,
+  feedItems,
   listPath,
   matches,
-  merged,
+  nextStore,
   openablePath,
   parsePage,
   parsePins,
@@ -18,14 +19,15 @@ import {
   pinsPath,
   unpinPath,
   type ArtifactFilter,
-  type ArtifactItem
+  type ArtifactItem,
+  type FeedStore
 } from '../state/artifacts'
 import { dayLabel } from '../state/groups'
 import { dataUrlPath, parsePreview, readTextPath, sizeText } from '../state/workspace'
 import { PageFrame, pageAddress } from './PagePreview'
 import { GatewayPicture, PictureProfile } from './Picture'
 import { Icon, type IconName } from './icons'
-import { useKeptArtifacts, type HostBadge, type KeptArtifact } from '../state/keptHosts'
+import { keptArtifactKey, profileNames, type HostBadge, type KeptArtifact } from '../state/keptHosts'
 import type { KeptHost } from '@shared/ipc'
 import { HostBadgeMark } from './CombinedDashboards'
 
@@ -54,7 +56,10 @@ interface Props {
 }
 
 type Tab = ArtifactFilter | 'saved'
-type Listing = { items: ArtifactItem[]; nextBefore: number | null } | 'loading' | { error: string }
+/** A store the list reads: this host's profile ('here'), or a profile of another combined host. */
+type Store = FeedStore & { key: string; dashboard?: string; profile?: string }
+/** The stores read so far, how many hosts' first pages are still out, and why this host's couldn't be read. */
+type Feed = { stores: Store[]; pending: number; error: string | null }
 type Viewer = { item: ArtifactItem; image?: string; page?: string; text?: string; error?: string }
 
 const ICONS: Record<ArtifactItem['kind'], IconName> = {
@@ -74,6 +79,25 @@ const failure = (e: unknown) =>
       ? e.message
       : String(e)
 
+const SHOW_MISSING_KEY = 'conduit.artifacts.showMissing'
+
+/** Whether the lists show files no longer on the host: off by default, as on the phone, kept on this computer. */
+function readShowMissing(): boolean {
+  try {
+    return localStorage.getItem(SHOW_MISSING_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+/** Another host's rows, named by it: one path there is one artifact, whichever of its profiles lists it. */
+const fromHost = (items: ArtifactItem[], dashboard: string, profile?: string): KeptArtifact[] =>
+  items.map(item => ({ ...item, id: keptArtifactKey(dashboard, item.id), dashboard, dashboardProfile: profile }))
+
+/** `stores` with `store` in its key's place, else after them. */
+const put = (stores: Store[], store: Store) =>
+  stores.some(s => s.key === store.key) ? stores.map(s => (s.key === store.key ? store : s)) : [...stores, store]
+
 const inside = (path: string, folder?: string | null) =>
   !!folder && (path === folder || path.startsWith(folder.replace(/[\\/]+$/, '') + '/') || path.startsWith(folder.replace(/[\\/]+$/, '') + '\\'))
 
@@ -82,7 +106,10 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
   const [tab, setTab] = useState<Tab>('all')
   const [query, setQuery] = useState('')
   const [words, setWords] = useState('')
-  const [listing, setListing] = useState<Listing>('loading')
+  const [feed, setFeed] = useState<Feed>({ stores: [], pending: 1, error: null })
+  const [showMissing, setShowMissing] = useState(readShowMissing)
+  const [pageFailed, setPageFailed] = useState(false)
+  const [onlyHost, setOnlyHost] = useState<string | null>(null)
   const [saved, setSaved] = useState<ArtifactItem[] | null | { error: string }>(null)
   const [viewer, setViewer] = useState<Viewer | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
@@ -98,26 +125,82 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
   }, [query])
 
   const filter: ArtifactFilter = tab === 'saved' ? 'all' : tab
+  const here = dashboards?.[0]?.url
+  // The other combined hosts, on the page only; a chip per host shows its alone, a second tap every one again.
+  const live =
+    page && dashboards && dashboards.length > 1
+      ? (kept ?? [])
+          .filter(h => h.state === 'live')
+          .map(h => h.url)
+          .join('\n')
+      : ''
+
+  // Every store's first page, then each pages on from its own cursor, merged newest first (the phone's ArtifactFeed).
   useEffect(() => {
     if (tab === 'saved') return
     const id = ++load.current
-    const path = listPath({ profile, sessionIds, filter, query: words })
+    const settle = (change: (feed: Feed) => Feed) => id === load.current && setFeed(change)
+    const ownShown = !onlyHost || onlyHost === here
+    const urls = (live ? live.split('\n') : []).filter(url => !onlyHost || onlyHost === url)
+    const path = listPath({ profile, sessionIds, filter, query: words, showMissing })
     // A list without a search opens on what it showed last time, then reads Hermes again (keptAnswers.ts).
     const keep = words ? null : answerKeeper(path)
-    const kept = words ? undefined : keptAnswer(path)
-    setListing(current =>
-      current !== 'loading' && !('error' in current) && refreshKey !== undefined ? current : kept !== undefined ? parsePage(kept) : 'loading'
-    )
-    gateway
-      .http('GET', path, undefined, 30_000)
-      .then(r => {
-        if (id !== load.current) return
-        keep?.(r)
-        setListing(parsePage(r))
-      })
-      .catch((e: unknown) => id === load.current && setListing({ error: failure(e) }))
+    const keptRows = words || !ownShown ? undefined : keptAnswer(path)
+    let opening: Store[] = []
+    if (keptRows !== undefined) {
+      try {
+        const page = parsePage(keptRows, showMissing)
+        opening = [{ key: 'here', profile, read: page.items, cursor: page.nextBefore }]
+      } catch {
+        // A kept answer it can't read waits for Hermes'.
+      }
+    }
+    setPageFailed(false)
+    setFeed(current => ({
+      // Beside the chat, a reply's end reads the list again under the rows it's refreshing.
+      stores:
+        refreshKey !== undefined && current.stores.length && !current.error
+          ? // Kept until each answers, without paging on: their cursors were for the last request.
+            current.stores.map(s => ({ ...s, cursor: null }))
+          : opening,
+      pending: (ownShown ? 1 : 0) + urls.length,
+      error: null
+    }))
+    if (ownShown)
+      gateway
+        .http('GET', path, undefined, 30_000)
+        .then(r => {
+          const page = parsePage(r, showMissing)
+          keep?.(r)
+          settle(f => ({ ...f, pending: f.pending - 1, stores: put(f.stores, { key: 'here', profile, read: page.items, cursor: page.nextBefore }) }))
+        })
+        .catch((e: unknown) =>
+          // Rows it opened on stay, without paging on.
+          settle(f => ({ ...f, pending: f.pending - 1, error: failure(e), stores: f.stores.map(s => (s.key === 'here' ? { ...s, cursor: null } : s)) }))
+        )
+    for (const url of urls)
+      void (async () => {
+        const listed = await window.conduit.keptHttp(url, '/api/profiles')
+        const names = (listed.ok ? profileNames(listed.result) : null) ?? ['default']
+        await Promise.all(
+          names.map(async name => {
+            const other = name === 'default' ? undefined : name
+            try {
+              const outcome = await window.conduit.keptHttp(url, listPath({ profile: other, filter, query: words, showMissing }))
+              if (!outcome.ok) return
+              const page = parsePage(outcome.result, showMissing)
+              const store: Store = { key: `${url}\u0000${other ?? ''}`, dashboard: url, profile: other, read: fromHost(page.items, url, other), cursor: page.nextBefore }
+              settle(f => ({ ...f, stores: put(f.stores, store) }))
+            } catch {
+              // A profile that can't be read leaves the rest listed.
+            }
+          })
+        )
+      })()
+        .catch(() => undefined)
+        .finally(() => settle(f => ({ ...f, pending: f.pending - 1 })))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, ids, filter, words, refreshKey, tab, reload])
+  }, [profile, ids, filter, words, refreshKey, tab, reload, showMissing, onlyHost, live, here])
 
   const readSaved = useCallback(() => {
     const path = pinsPath(profile)
@@ -134,10 +217,6 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
   }, [profile])
   useEffect(() => readSaved(), [readSaved])
 
-  // The other combined hosts' artifacts, on the page only; a chip per host shows its alone, a second tap every one again.
-  const others = useKeptArtifacts(kept ?? [], !!page && !!dashboards && dashboards.length > 1 && tab !== 'saved', filter, words, reload)
-  const [onlyHost, setOnlyHost] = useState<string | null>(null)
-  const here = dashboards?.[0]?.url
   const elsewhere = (item: ArtifactItem): KeptArtifact | null => ('dashboard' in item && typeof item.dashboard === 'string' ? (item as KeptArtifact) : null)
   const dashboardOf = (item: ArtifactItem) => dashboards?.find(d => d.url === elsewhere(item)?.dashboard)
 
@@ -156,19 +235,66 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
   const ownSaved = savedItems.filter(item => !chats.size || chats.has(item.sessionId))
   const savedIds = new Set(savedItems.map(item => item.id))
 
+  const next = nextStore(feed.stores)
+  /** The next page of the store whose rows reach the least far back. */
   const more = async () => {
-    if (listing === 'loading' || 'error' in listing || listing.nextBefore === null) return
-    const before = listing.nextBefore
+    const store = next === null ? undefined : feed.stores[next]
+    if (!store || store.cursor === null || busy === 'more') return
+    const id = load.current
+    const before = store.cursor
     setBusy('more')
     try {
-      const next = parsePage(await gateway.http('GET', listPath({ profile, sessionIds, filter, query: words, before }), undefined, 30_000))
-      setListing(current => (current === 'loading' || 'error' in current ? current : { items: merged(current.items, next.items), nextBefore: next.nextBefore }))
+      const path = listPath({ profile: store.profile, sessionIds: store.dashboard ? [] : sessionIds, filter, query: words, showMissing, before })
+      let read: ArtifactItem[]
+      let cursor: number | null
+      if (store.dashboard) {
+        const outcome = await window.conduit.keptHttp(store.dashboard, path)
+        if (!outcome.ok) throw new Error(outcome.error)
+        const page = parsePage(outcome.result, showMissing)
+        read = fromHost(page.items, store.dashboard, store.profile)
+        cursor = page.nextBefore
+      } else {
+        const page = parsePage(await gateway.http('GET', path, undefined, 30_000), showMissing)
+        read = page.items
+        cursor = page.nextBefore
+      }
+      if (id !== load.current) return
+      setFeed(f => ({ ...f, stores: f.stores.map(s => (s.key === store.key && s.cursor === before ? { ...s, read: [...s.read, ...read], cursor } : s)) }))
     } catch (e) {
+      if (id !== load.current) return
+      setPageFailed(true)
       setNote(failure(e))
     } finally {
       setBusy(null)
     }
   }
+
+  // Reaching the list's end reads the next page, page after page while the end stays in view.
+  const [end, setEnd] = useState<HTMLElement | null>(null)
+  const [atEnd, setAtEnd] = useState(false)
+  useEffect(() => {
+    if (!end || typeof IntersectionObserver === 'undefined') return
+    const watch = new IntersectionObserver(entries => setAtEnd(entries.some(entry => entry.isIntersecting)))
+    watch.observe(end)
+    return () => {
+      watch.disconnect()
+      setAtEnd(false)
+    }
+  }, [end])
+  useEffect(() => {
+    if (atEnd && !pageFailed && busy === null && next !== null) void more()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [atEnd, pageFailed, busy, next, feed])
+
+  const toggleShowMissing = () =>
+    setShowMissing(on => {
+      try {
+        localStorage.setItem(SHOW_MISSING_KEY, on ? '0' : '1')
+      } catch {
+        // Kept for this window only.
+      }
+      return !on
+    })
 
   const toggleSaved = async (item: ArtifactItem) => {
     setBusy(item.id)
@@ -353,20 +479,52 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
         )
       return grouped(shown, item => item.savedAt ?? item.at)
     }
-    if (listing === 'loading') return <div className="ws-note">{t('Loading…')}</div>
-    if ('error' in listing)
-      return (
-        <div className="artifact-empty">
-          <strong>{t("Artifacts couldn't load")}</strong>
-          <p className="meta">{listing.error}</p>
-        </div>
-      )
-    const own = onlyHost && onlyHost !== here ? [] : listing.items
-    const theirs = others.filter(item => !onlyHost || item.dashboard === onlyHost)
-    const items = (theirs.length ? [...own, ...theirs].sort((a, b) => b.at - a.at) : own).filter(item => includes(filter, item.kind))
-    if (!items.length)
+    const items = feedItems(feed.stores).filter(item => includes(filter, item.kind))
+    const reading = feed.pending > 0 || next !== null
+    const hiddenNote = showMissing ? null : (
+      <p className="meta">
+        {t('Files no longer on your Hermes host are hidden.')}{' '}
+        <button className="link-button" onClick={toggleShowMissing}>
+          {t('Show Missing Files')}
+        </button>
+      </p>
+    )
+    const endButton =
+      next !== null ? (
+        <button
+          ref={setEnd}
+          className="secondary artifact-more"
+          disabled={busy === 'more'}
+          onClick={() => {
+            setPageFailed(false)
+            void more()
+          }}
+        >
+          {busy === 'more' ? t('Loading…') : pageFailed ? t('Try Again') : t('Show More')}
+        </button>
+      ) : null
+    if (!items.length) {
+      if (feed.error && !reading)
+        return (
+          <div className="artifact-empty">
+            <strong>{t("Artifacts couldn't load")}</strong>
+            <p className="meta">{feed.error}</p>
+          </div>
+        )
+      // A history of deleted files, or of chats without the chip's kind, can take a few pages to get past.
+      if (reading)
+        return (
+          <>
+            <div className="ws-note">{t('Loading…')}</div>
+            {feed.stores.length ? hiddenNote : null}
+            {endButton}
+          </>
+        )
       return words ? (
-        <div className="ws-note">{t('Nothing here matches.')}</div>
+        <div className="artifact-empty">
+          <p className="meta">{t('Nothing here matches.')}</p>
+          {hiddenNote}
+        </div>
       ) : (
         <div className="artifact-empty">
           <strong>{t('No Artifacts Yet')}</strong>
@@ -375,16 +533,14 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
               ? t('Files, pages and links from this chat show up here once Hermes has saved it.')
               : t('Files Hermes sends or writes, pages it draws, files you attach and links show up here.')}
           </p>
+          {hiddenNote}
         </div>
       )
+    }
     return (
       <>
         {grouped(items)}
-        {listing.nextBefore !== null ? (
-          <button className="secondary artifact-more" disabled={busy === 'more'} onClick={() => void more()}>
-            {busy === 'more' ? t('Loading…') : t('Show More')}
-          </button>
-        ) : null}
+        {endButton}
       </>
     )
   }
@@ -434,7 +590,7 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
             aria-label={t('Refresh')}
             title={t('Refresh')}
             onClick={() => {
-              setListing('loading')
+              setFeed({ stores: [], pending: 1, error: null })
               setReload(n => n + 1)
               readSaved()
             }}
@@ -486,6 +642,11 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
                     </button>
                   ))
                 : null}
+              {tab !== 'saved' ? (
+                <button className={showMissing ? 'on' : ''} aria-pressed={showMissing} onClick={toggleShowMissing}>
+                  {t('Show Missing Files')}
+                </button>
+              ) : null}
             </div>
             <div className="ws-tree artifact-list">{list()}</div>
           </>
