@@ -509,8 +509,8 @@ export function ArtifactsPanel({ profile, sessionIds, refreshKey, folder, onShow
       return grouped(shown, item => item.savedAt ?? item.at)
     }
     // One Hermes saved at two or more addresses lists each file once, this host's row first (desktop#308).
-    const here = feed.stores.find(s => s.key === 'here')?.read ?? []
-    const items = withoutCopies(feedItems(feed.stores), here, item => !!elsewhere(item)).filter(item => includes(filter, item.kind))
+    const hereRows = feed.stores.find(s => s.key === 'here')?.read ?? []
+    const items = withoutCopies(feedItems(feed.stores), hereRows, item => !!elsewhere(item)).filter(item => includes(filter, item.kind))
     const reading = feed.pending > 0 || next !== null
     const hiddenNote = showMissing ? null : (
       <p className="meta">

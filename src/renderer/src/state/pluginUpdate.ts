@@ -176,8 +176,10 @@ export async function guardUpdateRow(host: string = dashboardHost(), http: Updat
   if (updateHost !== host) return setUpdate({ phase: 'idle' })
   if (held.phase !== 'scanHeld') return
   try {
-    const id = ((await http('GET', SELF_UPDATE_PATH)) as { job?: { id?: unknown } } | null)?.job?.id
-    if (update === held && (!held.id || id !== held.id)) setUpdate({ phase: 'idle' })
+    const job = ((await http('GET', SELF_UPDATE_PATH)) as { job?: { id?: unknown } } | null)?.job
+    // A held job without an id is still this hold while the host says its job is held.
+    const stillHeld = held.id ? job?.id === held.id : jobState(job)?.phase === 'scanHeld'
+    if (update === held && !stillHeld) setUpdate({ phase: 'idle' })
   } catch {
     // Left as it was.
   }

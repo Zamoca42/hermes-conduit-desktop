@@ -708,7 +708,9 @@ export function attachBoards(state: TranscriptState, answers: Map<string, string
 export function withKeptDetails(state: TranscriptState, kept: TranscriptState | null | undefined): TranscriptState {
   if (!kept) return state
   const details = new Map<string, ToolItem>()
-  for (const item of kept.items) if (item.kind === 'tool' && (item.board || item.result !== undefined || item.args !== undefined)) details.set(item.toolId, item)
+  // Only a kept row with its arguments stands in: one without them (a live board's answer carries none)
+  // leaves the row to the REST page, the only place they come from.
+  for (const item of kept.items) if (item.kind === 'tool' && item.args !== undefined && (item.board || item.result !== undefined)) details.set(item.toolId, item)
   if (!details.size) return state
   let changed = false
   const items = state.items.map(item => {
