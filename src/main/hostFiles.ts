@@ -32,7 +32,7 @@ export function kanbanAttachmentPath(id: string, board: string | null): string {
  * page. An attachment named .html or .htm is the file.
  */
 export function isDashboardPage(contentType: string | null, filename: string): boolean {
-  return /text\/html/i.test(contentType ?? '') && !/\.html?$/i.test(filename)
+  return /text\/html/i.test(contentType ?? '') && !/\.html?$/i.test(filename.trim())
 }
 
 /** `/api/fs/download` or `/api/fs/read-data-url` for `path`, in a profile's scope when it isn't the default. */

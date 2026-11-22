@@ -17,7 +17,8 @@ const detail = {
 
 describe("a Kanban task's attachments", () => {
   it("can't be saved once the task is no longer on the board shown", async () => {
-    Object.assign(window, { conduit: { saveKanbanAttachment: async () => 'saved' } })
+    const saves: string[] = []
+    Object.assign(window, { conduit: { saveKanbanAttachment: async (id: string) => (saves.push(id), 'saved') } })
     // A path the node typecheck doesn't follow: the component is the renderer's, checked by tsconfig.web.json.
     const path = '../src/renderer/src/components/KanbanBoard.tsx'
     const { TaskPanel } = (await import(/* @vite-ignore */ path)) as { TaskPanel: (p: Record<string, unknown>) => null }
@@ -48,6 +49,9 @@ describe("a Kanban task's attachments", () => {
     await settle()
     expect(save().disabled).toBe(true)
     expect(save().title).toBe('This task is no longer on the board shown.')
+    act(() => save().click())
+    await settle()
+    expect(saves).toEqual([])
     act(() => root.unmount())
   })
 })

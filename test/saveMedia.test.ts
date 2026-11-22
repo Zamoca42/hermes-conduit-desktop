@@ -14,6 +14,11 @@ describe('saving pictures, files and audio to this computer', () => {
     expect(isDashboardPage('text/html', 'report.html')).toBe(false)
     expect(isDashboardPage('text/html', 'REPORT.HTM')).toBe(false)
     expect(isDashboardPage('text/html', 'page.html5')).toBe(true)
+    expect(isDashboardPage('text/html', 'report.html ')).toBe(false)
+    // The check reads the attachment's own name: the save dialog's name is cut to 200 characters and loses the suffix.
+    const long = `${'a'.repeat(200)}.html`
+    expect(isDashboardPage('text/html', long)).toBe(false)
+    expect(isDashboardPage('text/html', hostFileName(long))).toBe(true)
     expect(isDashboardPage('text/markdown', 'ROOT-HANDOFF.md')).toBe(false)
     expect(isDashboardPage(null, 'x.bin')).toBe(false)
   })
