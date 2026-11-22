@@ -3,16 +3,15 @@
  * user mutes one chat for 15 minutes, an hour, a day or until they unmute it;
  * the plugin keeps the mute per profile (`/notifications/muted-chats`, plugin
  * 0.193.0+) and skips that chat's pushes itself, so it holds on every device.
- * A mute is kept under the chat's lineage root, which a compaction keeps, and
- * its own id, as Done marks are.
+ * A mute is sent under the row's own id, never its lineage root (a branch or
+ * reset names its parent as root); the plugin's answer names every session a
+ * compaction carried the chat through, so a compacted chat still finds it.
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '../../../shared/i18n'
 import type { ChatRow } from './chats'
 
 export const MUTE_PATH = '/api/plugins/conduit_push/notifications/muted-chats'
-/** The plugin takes at most this many of a chat's ids. */
-const MAX_IDS = 16
 /** A profile's mutes are read at most this often while the list changes. */
 export const MUTE_READ_INTERVAL_MS = 30_000
 
@@ -43,7 +42,7 @@ export const mutePath = (profile?: string | null) =>
  * branch or reset names its parent as root and muting it must leave the parent.
  * The plugin adds the sessions a compaction carried the chat through.
  */
-export const muteIds = (row: ChatRow): string[] => (row.id ? [row.id] : []).slice(0, MAX_IDS)
+export const muteIds = (row: ChatRow): string[] => (row.id ? [row.id] : [])
 
 /**
  * The route's answer; null when it isn't one. `remaining_s` is read against

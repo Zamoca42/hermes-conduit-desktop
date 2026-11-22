@@ -3616,7 +3616,6 @@ html[data-window='quick'] body {
   color: var(--success, #34c77b);
 }
 
-
 /* Done chats: the row dimmed, its live status left at full strength. */
 .row.done .row-title,
 .row.done .row-time,
