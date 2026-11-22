@@ -6,8 +6,9 @@
  * this launch only.
  */
 import { app, safeStorage } from 'electron'
-import { readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { readFileSync, renameSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
+import { writeFileAtomic } from './atomicWrite'
 import type { ConnectionStore, SavedConnection } from './connection'
 import { createHostList } from './hosts'
 
@@ -73,17 +74,32 @@ export function createFileStore(): ConnectionStore {
   }
 
   const read = (): { hosts: SavedConnection[]; active: string | null } => {
+    let text: string
     try {
-      const raw = JSON.parse(readFileSync(path, 'utf8')) as StoredFile | StoredFileV1
-      if (raw.version === 1) {
-        const one = decode(raw)
-        return one ? { hosts: [one], active: one.url } : { hosts: [], active: null }
-      }
-      if (raw.version === 2 && Array.isArray(raw.hosts)) {
-        return { hosts: raw.hosts.map(decode).filter((h): h is SavedConnection => h !== null), active: raw.active }
-      }
+      text = readFileSync(path, 'utf8')
     } catch {
       // Nothing saved yet.
+      return { hosts: [], active: null }
+    }
+    let raw: StoredFile | StoredFileV1 | null
+    try {
+      raw = JSON.parse(text) as StoredFile | StoredFileV1 | null
+    } catch {
+      // A torn file is kept aside rather than written over by the next save, so whatever is left of it
+      // can still be looked at (desktop#297).
+      try {
+        renameSync(path, `${path}.corrupt`)
+      } catch {
+        // Gone meanwhile.
+      }
+      return { hosts: [], active: null }
+    }
+    if (raw?.version === 1) {
+      const one = decode(raw)
+      return one ? { hosts: [one], active: one.url } : { hosts: [], active: null }
+    }
+    if (raw?.version === 2 && Array.isArray(raw.hosts)) {
+      return { hosts: raw.hosts.map(decode).filter((h): h is SavedConnection => h !== null), active: raw.active }
     }
     return { hosts: [], active: null }
   }
@@ -94,7 +110,7 @@ export function createFileStore(): ConnectionStore {
       return
     }
     const file: StoredFile = { version: 2, active, hosts: hosts.map(encode).filter((h): h is StoredHost => h !== null) }
-    writeFileSync(path, JSON.stringify(file, null, 2), { mode: 0o600 })
+    writeFileAtomic(path, JSON.stringify(file, null, 2), 0o600)
   }
 
   // Read on first use, not here: this runs before the app is ready, and until

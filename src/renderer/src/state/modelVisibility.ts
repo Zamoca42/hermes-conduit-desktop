@@ -4,7 +4,9 @@
  * page. They stay on this computer, per host, and never change Hermes'
  * configuration.
  */
-import type { ModelProviderRow } from './models'
+import { runnableModels, type ModelProviderRow } from './models'
+
+export { runnableModels }
 
 export interface ModelVisibility {
   /** Provider slugs. */
@@ -42,12 +44,6 @@ export function visibleProviders(visibility: ModelVisibility, providers: ModelPr
     )
 }
 
-/** A provider's models less the ones Hermes says can't run, which no list shows (models.ts groupModels). */
-export function runnableModels(provider: ModelProviderRow): string[] {
-  const unavailable = new Set(provider.unavailable_models ?? [])
-  return (provider.models ?? []).filter(model => !unavailable.has(model))
-}
-
 export function toggleProvider(visibility: ModelVisibility, provider: string): ModelVisibility {
   const hiddenProviders = providerHidden(visibility, provider) ? visibility.hiddenProviders.filter(p => p !== provider) : [...visibility.hiddenProviders, provider]
   return { ...visibility, hiddenProviders }
@@ -72,12 +68,14 @@ export const shownCount = (visibility: ModelVisibility, provider: ModelProviderR
 
 /**
  * Edit's own search: a provider whose slug or name holds the text keeps all
- * its models, another keeps the models whose id holds it.
+ * its models, another keeps the models whose id holds it. A provider with no
+ * model that can run isn't listed, as no other list shows it.
  */
 export function editorMatches(providers: ModelProviderRow[], query: string): { provider: ModelProviderRow; models: string[] }[] {
   const q = query.trim().toLowerCase()
   return providers.flatMap(provider => {
     const models = runnableModels(provider)
+    if (!models.length) return []
     if (!q || `${provider.slug} ${provider.name}`.toLowerCase().includes(q)) return [{ provider, models }]
     const matching = models.filter(model => model.toLowerCase().includes(q))
     return matching.length ? [{ provider, models: matching }] : []

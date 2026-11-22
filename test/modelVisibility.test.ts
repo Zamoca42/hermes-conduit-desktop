@@ -94,4 +94,16 @@ describe('Edit and models Hermes says cannot run', () => {
     expect(shownCount(NOTHING_HIDDEN, row)).toBe(1)
     expect(editorMatches([row], '')[0]!.models).toEqual(['a'])
   })
+
+  it('leaves out a provider none of whose models can run, and says Nothing matches only while searching', async () => {
+    const dead: ModelProviderRow = { slug: 'gone', name: 'Gone', models: ['x'], unavailable_models: ['x'] }
+    expect(editorMatches([dead], '')).toEqual([])
+    const path = '../src/renderer/src/components/ModelVisibilityEditor.tsx'
+    const { createElement } = await import('react')
+    const { renderToStaticMarkup } = await import('react-dom/server')
+    const { ModelVisibilityEditor } = (await import(/* @vite-ignore */ path)) as { ModelVisibilityEditor: unknown }
+    const html = renderToStaticMarkup(createElement(ModelVisibilityEditor as never, { providers: [dead], onDone: () => {} } as never))
+    expect(html).not.toContain('Gone')
+    expect(html).not.toContain('Nothing matches')
+  })
 })

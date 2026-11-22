@@ -313,3 +313,23 @@ export function nextStore(stores: readonly FeedStore[]): number | null {
   }
   return best
 }
+
+/**
+ * Another dashboard's rows less the files listed already: one Hermes saved at
+ * several addresses lists each file once, this host's copy when it has one,
+ * else the first other dashboard's (desktop#308). A file is the same when its
+ * chat and its path are: a chat's id is its own Hermes', so two Hermes that
+ * happen to share a path both list theirs. Links are each host's own, as are
+ * rows without a path. `items` come newest first.
+ */
+export function withoutCopies<T extends ArtifactItem>(items: readonly T[], elsewhere: (item: T) => boolean, here: readonly ArtifactItem[]): T[] {
+  const fileKey = (item: ArtifactItem) => (item.path ? `${item.sessionId}\u0000${item.path}` : null)
+  const seen = new Set(here.flatMap(item => (fileKey(item) ? [fileKey(item)!] : [])))
+  return items.filter(item => {
+    const key = fileKey(item)
+    if (!elsewhere(item) || key === null) return true
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}

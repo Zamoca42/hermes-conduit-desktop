@@ -13,6 +13,16 @@ export interface ModelProviderRow {
   unavailable_models?: string[] | null
 }
 
+/** A provider's models less the ones Hermes says can't run, which no list shows. */
+export function runnableModels(provider: ModelProviderRow): string[] {
+  const unavailable = new Set(provider.unavailable_models ?? [])
+  return (provider.models ?? []).filter(model => !unavailable.has(model))
+}
+
+/** Whether Hermes lists `model` under `provider` as one that can run. */
+export const runnable = (provider: ModelProviderRow | undefined, model: string): boolean =>
+  !!provider?.models?.includes(model) && !provider.unavailable_models?.includes(model)
+
 /** Lowest first; Hermes turns reasoning off with "none". */
 export const REASONING_LEVELS = ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'] as const
 
@@ -66,8 +76,7 @@ export function groupModels(providers: ModelProviderRow[], query: string): { slu
   const words = query.toLowerCase().split(/\s+/).filter(Boolean)
   const groups: { slug: string; name: string; models: string[] }[] = []
   for (const provider of providers) {
-    const unavailable = new Set(provider.unavailable_models ?? [])
-    const models = (provider.models ?? []).filter(m => !unavailable.has(m))
+    const models = runnableModels(provider)
     const label = `${provider.name} ${provider.slug}`.toLowerCase()
     const matches = words.length ? models.filter(m => words.every(w => label.includes(w) || m.toLowerCase().includes(w))) : models
     if (matches.length) groups.push({ slug: provider.slug, name: provider.name || provider.slug, models: matches })

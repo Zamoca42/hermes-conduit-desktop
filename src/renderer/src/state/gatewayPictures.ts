@@ -7,11 +7,22 @@
  * connection, a busy or rate-limited gateway, a sign-in to redo) may load the
  * next time it's shown. Pictures are kept per dashboard, and a dashboard
  * switch drops them, as the phone's TranscriptImageCache does (desktop#222).
+ * The pictures kept are bounded (`KEPT_PICTURES_MAX` of them, `KEPT_PICTURES_MAX_CHARS`
+ * of data URL in all), the least recently shown going first; a picture that
+ * went is read again when it's next shown. Refusals are kept apart, so a
+ * picture going never asks again for one Hermes refused (desktop#294).
  */
 import { gateway } from '../gateway'
 import { forgetRoomPictures } from './roomPictures'
 const MAX_DATA_URL = Math.ceil((16 * 1024 * 1024) / 3) * 4 + 64
-const kept = new Map<string, string | null>()
+/** At most this many pictures are kept, and at most this much data URL in all (about 96 MB of pictures). */
+export const KEPT_PICTURES_MAX = 64
+export const KEPT_PICTURES_MAX_CHARS = 128 * 1024 * 1024
+/** Kept pictures, least recently shown first. */
+const kept = new Map<string, string>()
+let keptChars = 0
+/** Pictures Hermes refused, which aren't asked for again. */
+const refusals = new Set<string>()
 const reading = new Map<string, Promise<string | null>>()
 let keptHost = ''
 
@@ -20,6 +31,8 @@ export function setPictureHost(host: string): void {
   if (host === keptHost) return
   keptHost = host
   kept.clear()
+  keptChars = 0
+  refusals.clear()
   reading.clear()
   forgetRoomPictures()
 }
@@ -52,13 +65,40 @@ export function refused(error: unknown): boolean {
   return /\b(400|403|404|410|413|415)\b/.test(String((error as Error)?.message ?? error))
 }
 
+/** Keeps `url` as the most recently shown, letting the least recently shown go past the bounds. */
+function keep(key: string, url: string): void {
+  const before = kept.get(key)
+  if (before !== undefined) {
+    kept.delete(key)
+    keptChars -= before.length
+  }
+  kept.set(key, url)
+  keptChars += url.length
+  for (const [oldest, picture] of kept) {
+    if (kept.size <= KEPT_PICTURES_MAX && keptChars <= KEPT_PICTURES_MAX_CHARS) break
+    if (oldest === key) break
+    kept.delete(oldest)
+    keptChars -= picture.length
+  }
+}
+
+/** The kept picture (null: Hermes refused it; undefined: not read yet, or let go). Showing one keeps it longest. */
 export function keptPicture(path: string, profile?: string): string | null | undefined {
-  return kept.get(pictureKey(path, profile))
+  const key = pictureKey(path, profile)
+  if (refusals.has(key)) return null
+  const url = kept.get(key)
+  if (url !== undefined) keep(key, url)
+  return url
 }
 
 export function readGatewayPicture(path: string, profile?: string): Promise<string | null> {
   const key = pictureKey(path, profile)
-  if (kept.has(key)) return Promise.resolve(kept.get(key) ?? null)
+  if (refusals.has(key)) return Promise.resolve(null)
+  const known = kept.get(key)
+  if (known !== undefined) {
+    keep(key, known)
+    return Promise.resolve(known)
+  }
   let read = reading.get(key)
   if (!read) {
     read = gateway
@@ -67,11 +107,14 @@ export function readGatewayPicture(path: string, profile?: string): Promise<stri
         result => {
           const url = pictureDataUrl(result)
           // An answer that lands after a dashboard switch belongs to the old one.
-          if (reading.get(key) === read) kept.set(key, url)
+          if (reading.get(key) === read) {
+            if (url) keep(key, url)
+            else refusals.add(key)
+          }
           return url
         },
         error => {
-          if (reading.get(key) === read && refused(error)) kept.set(key, null)
+          if (reading.get(key) === read && refused(error)) refusals.add(key)
           return null
         }
       )

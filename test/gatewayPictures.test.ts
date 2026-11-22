@@ -80,3 +80,49 @@ describe('a failure to ask is asked again (desktop#223)', () => {
     expect(asked).toHaveLength(1)
   })
 })
+
+describe('how many pictures are kept (desktop#294)', () => {
+  it('lets the least recently shown go past the bound, and reads it again when shown', async () => {
+    const pictures = await load()
+    pictures.setPictureHost('https://a')
+    for (let i = 0; i <= pictures.KEPT_PICTURES_MAX; i++) {
+      answers.push(picture(`P${i}`))
+      await pictures.readGatewayPicture(`/tmp/${i}.png`)
+      // The first stays the most recently shown.
+      pictures.keptPicture('/tmp/0.png')
+    }
+    expect(pictures.keptPicture('/tmp/0.png')).toBe('data:image/png;base64,P0')
+    expect(pictures.keptPicture('/tmp/1.png')).toBeUndefined()
+    expect(pictures.keptPicture(`/tmp/${pictures.KEPT_PICTURES_MAX}.png`)).toBe(`data:image/png;base64,P${pictures.KEPT_PICTURES_MAX}`)
+    answers.push(picture('again'))
+    expect(await pictures.readGatewayPicture('/tmp/1.png')).toBe('data:image/png;base64,again')
+  })
+
+  it('keeps a refusal however many pictures come after it', async () => {
+    const pictures = await load()
+    pictures.setPictureHost('https://a')
+    answers.push(status(404))
+    await pictures.readGatewayPicture('/tmp/gone.png')
+    for (let i = 0; i <= pictures.KEPT_PICTURES_MAX; i++) {
+      answers.push(picture(`P${i}`))
+      await pictures.readGatewayPicture(`/tmp/${i}.png`)
+    }
+    const before = asked.length
+    expect(await pictures.readGatewayPicture('/tmp/gone.png')).toBeNull()
+    expect(pictures.keptPicture('/tmp/gone.png')).toBeNull()
+    expect(asked).toHaveLength(before)
+  })
+
+  it('bounds the data URL kept in all, not only the count', async () => {
+    const pictures = await load()
+    pictures.setPictureHost('https://a')
+    // Seven pictures near the 16 MB file limit are over the bound together.
+    const big = 'A'.repeat(20 * 1024 * 1024)
+    for (let i = 0; i < 7; i++) {
+      answers.push(picture(big))
+      await pictures.readGatewayPicture(`/tmp/${i}.png`)
+    }
+    expect(pictures.keptPicture('/tmp/0.png')).toBeUndefined()
+    expect(pictures.keptPicture('/tmp/6.png')).toBeDefined()
+  })
+})

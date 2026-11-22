@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -82,5 +82,26 @@ describe('the saved hosts file', () => {
     again.rename!('http://192.168.1.5:9119', 'Lab')
     again.replace!('http://192.168.1.5:9119', { url: 'http://192.168.1.9:9119', method: 'open' })
     expect(again.list!()[0]).toMatchObject({ url: 'http://192.168.1.9:9119', name: 'Lab' })
+  })
+  it('saves through a temp file renamed into place, so a crash mid-save leaves the old list', () => {
+    state.ready = true
+    const store = createFileStore()
+    store.save({ url: 'http://a:9119', method: 'open' })
+    store.save({ url: 'http://b:9119', method: 'open' })
+    // Nothing is left beside the file, and it holds the whole list.
+    expect(readdirSync(state.dir)).toEqual(['connection.json'])
+    expect(JSON.parse(readFileSync(join(state.dir, 'connection.json'), 'utf8')).hosts).toHaveLength(2)
+  })
+
+  it('keeps a torn file aside instead of writing over it with the next save', () => {
+    state.ready = true
+    const file = join(state.dir, 'connection.json')
+    writeFileSync(file, '{"version": 2, "active": "http://a:9119", "hosts": [{"url": "http://a')
+    const store = createFileStore()
+    expect(store.list!()).toEqual([])
+    expect(readFileSync(`${file}.corrupt`, 'utf8')).toContain('"hosts"')
+    store.save({ url: 'http://c:9119', method: 'open' })
+    expect(readFileSync(`${file}.corrupt`, 'utf8')).toContain('http://a')
+    expect(existsSync(file)).toBe(true)
   })
 })

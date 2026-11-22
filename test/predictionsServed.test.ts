@@ -34,4 +34,37 @@ describe('capability asks for predictions (hermes-conduit#2970)', () => {
     expect(await instructionsServed()).toBe(false)
     expect(http).toHaveBeenCalledTimes(2)
   })
+
+  it('waits 8 s for the answer, and asks again after a 404, which can be a plugin being reloaded', async () => {
+    const { predictionsServed } = await load()
+    http.mockRejectedValueOnce(Object.assign(new Error('HTTP 404'), { code: 404 }))
+    expect(await predictionsServed()).toBe(false)
+    expect(http).toHaveBeenLastCalledWith('GET', expect.any(String), undefined, 8_000)
+    http.mockResolvedValueOnce({ version: '0.190.0', capabilities: ['predict'] })
+    expect(await predictionsServed()).toBe(true)
+    expect(http).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps an answer ten minutes from when it came, and forgets it after a plugin update', async () => {
+    vi.useFakeTimers()
+    try {
+      const { predictionsServed, forgetCapabilityAnswers, CAPABILITY_KEPT_MS } = await load()
+      let answer: (value: unknown) => void = () => {}
+      http.mockReturnValueOnce(new Promise(resolve => (answer = resolve)))
+      const first = predictionsServed()
+      // A slow answer: it lands five minutes after the ask.
+      vi.advanceTimersByTime(300_000)
+      answer({ version: '0.190.0', capabilities: ['predict'] })
+      expect(await first).toBe(true)
+      vi.advanceTimersByTime(CAPABILITY_KEPT_MS - 60_000)
+      expect(await predictionsServed()).toBe(true)
+      expect(http).toHaveBeenCalledTimes(1)
+      forgetCapabilityAnswers()
+      http.mockResolvedValueOnce({ version: '0.190.0', capabilities: [] })
+      expect(await predictionsServed()).toBe(false)
+      expect(http).toHaveBeenCalledTimes(2)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })

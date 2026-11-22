@@ -41,23 +41,33 @@ import { languageName } from './stepSummaries'
 import { useTranscriptValue, type TranscriptStore } from './transcriptStore'
 
 // Whether this dashboard's plugin reports a capability: a definite answer (it listed it, or a
-// plugin too old to say) kept ten minutes for that dashboard; one that couldn't tell (a timeout,
-// a restart) counts as no for now and is asked again next time.
+// plugin too old to say) kept ten minutes from when it came, for that dashboard. One that couldn't
+// tell (a timeout, a restart) counts as no for now and is asked again next time, and so is a 404,
+// which can also be a plugin being installed or reloaded (as rings.ts reads it). The ask waits 8 s,
+// like the other capability asks.
+export const CAPABILITY_KEPT_MS = 600_000
+const CAPABILITY_ASK_MS = 8_000
 const capabilityAnswers = new Map<string, { host: string; at: number; answer: Promise<boolean> }>()
 function capabilityServed(capability: string): Promise<boolean> {
   const host = dashboardHost()
   const kept = capabilityAnswers.get(capability)
-  if (kept && kept.host === host && Date.now() - kept.at <= 600_000) return kept.answer
+  if (kept && kept.host === host && Date.now() - kept.at <= CAPABILITY_KEPT_MS) return kept.answer
   const entry = { host, at: Date.now(), answer: Promise.resolve(false) }
-  entry.answer = askPluginStatus(() => gateway.http('GET', STATUS_PATH)).then(status => {
-    if (status === null) {
+  entry.answer = askPluginStatus(() => gateway.http('GET', STATUS_PATH, undefined, CAPABILITY_ASK_MS)).then(status => {
+    if (status === null || status.state === 'missing') {
       if (capabilityAnswers.get(capability) === entry) capabilityAnswers.delete(capability)
       return false
     }
+    entry.at = Date.now()
     return serves(status, [capability])
   })
   capabilityAnswers.set(capability, entry)
   return entry.answer
+}
+
+/** Forgets what the plugin said it can do, so the next ask reads it afresh (after a plugin update). */
+export function forgetCapabilityAnswers(): void {
+  capabilityAnswers.clear()
 }
 
 /** Whether this dashboard's plugin answers predictions. */

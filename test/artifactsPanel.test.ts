@@ -137,4 +137,75 @@ describe('the Artifacts page across combined dashboards', () => {
     expect(host.textContent).toContain('Far is offline')
     act(() => root.unmount())
   })
+
+  const render = async (props: Record<string, unknown>) => {
+    const path = '../src/renderer/src/components/ArtifactsPanel.tsx'
+    const { ArtifactsPanel } = (await import(/* @vite-ignore */ path)) as { ArtifactsPanel: unknown }
+    const host = document.createElement('div')
+    const root = createRoot(host)
+    const draw = (next: Record<string, unknown>) => act(() => root.render(createElement(ArtifactsPanel as never, { page: true, sessionIds: [], ...next } as never)))
+    draw(props)
+    await settle()
+    const names = () => [...host.querySelectorAll('.artifact-name')].map(n => n.textContent)
+    const button = (text: string) => [...host.querySelectorAll('button')].find(b => b.textContent === text)
+    return { host, root, draw, names, button }
+  }
+  const both = [
+    { url: 'https://here.example', name: 'Here', badge: null },
+    { url: FAR, name: 'Far', badge: null }
+  ]
+
+  it("goes back to every dashboard when the chip's dashboard leaves the group", async () => {
+    http.mockImplementation(async () => ({ ok: true, items: [row('/here/new.png', 5_000)], next_before: null }))
+    const { draw, names, button, root } = await render({ kept: [{ url: FAR, state: 'live' }], dashboards: both })
+    act(() => button('Far')!.click())
+    await settle()
+    expect(names()).toEqual(['old.png'])
+    // Far leaves the combined group: its chip goes, and the list is this host's again.
+    draw({ kept: [], dashboards: [both[0]] })
+    await settle()
+    expect(names()).toEqual(['new.png'])
+    act(() => root.unmount())
+  })
+
+  it('frees Show More when the filter changes while a page is still out', async () => {
+    let answerPage: (value: unknown) => void = () => {}
+    http.mockImplementation(async (_method: string, path: string) =>
+      path.includes('before=30')
+        ? new Promise(resolve => (answerPage = resolve))
+        : { ok: true, items: [row('/here/new.png', 5_000)], next_before: 30 }
+    )
+    const { button, root } = await render({})
+    act(() => button('Show More')!.click())
+    await settle()
+    expect(button('Loading…')?.disabled).toBe(true)
+    act(() => button('Images')!.click())
+    await settle()
+    expect(button('Show More')?.disabled).toBe(false)
+    // The old request's page landing late leaves the new list's Show More alone.
+    answerPage({ ok: true, items: [row('/here/older.png', 10)], next_before: null })
+    await settle()
+    expect(button('Show More')?.disabled).toBe(false)
+    act(() => root.unmount())
+  })
+
+  it('lists a file once from two other addresses of one Hermes, and both of two Hermes that share a path', async () => {
+    const SECOND = 'https://second.example'
+    http.mockImplementation(async () => ({ ok: true, items: [], next_before: null }))
+    ;(window as unknown as { conduit: unknown }).conduit = {
+      keptHttp: async (url: string, path: string) => {
+        if (path === '/api/profiles') return { ok: true, result: { profiles: [{ name: 'default' }] } }
+        // Far and Second are one Hermes (the same chat); Third is another with a file at the same path.
+        const session = url === 'https://third.example' ? 's9' : 's1'
+        return { ok: true, result: { ok: true, items: [{ ...row('/shared/chart.png', 1_000), session_id: session }], next_before: null } }
+      }
+    }
+    const THIRD = 'https://third.example'
+    const { names, root } = await render({
+      kept: [FAR, SECOND, THIRD].map(url => ({ url, state: 'live' })),
+      dashboards: [...both, { url: SECOND, name: 'Second', badge: null }, { url: THIRD, name: 'Third', badge: null }]
+    })
+    expect(names()).toEqual(['chart.png', 'chart.png'])
+    act(() => root.unmount())
+  })
 })

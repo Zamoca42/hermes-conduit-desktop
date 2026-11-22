@@ -4,19 +4,15 @@ import type { PluginRelease } from '@shared/ipc'
 import { gateway } from '../gateway'
 import {
   FEATURES,
-  HOST_FOLLOW_LIMIT_MS,
   REPOSITORY,
   SELF_UPDATE_PATH,
   STATUS_PATH,
   outcomeAfterStall,
-  selfUpdatePath,
   stallLimitMs,
   untilQuiet,
   STEP_COUNT,
   canUpdateHere,
-  jobState,
   parseChangelog,
-  pluginStatus,
   releaseNotes,
   restartPending,
   runningVersion,
@@ -31,9 +27,9 @@ import {
 import { Icon } from './icons'
 import { useMouseBack } from '../state/mouseBack'
 import { dashboardHost } from '../state/dashboardProfile'
+import { forgetCapabilityAnswers } from '../state/usePredictions'
+import { followHostUpdate, readPluginStatus, useStaleUpdateRow, type PluginHttp } from '../state/pluginUpdateRun'
 
-const message = (e: unknown) => (e instanceof Error ? e.message : String(e))
-const httpCode = (e: unknown) => (e as { code?: unknown })?.code
 
 /** The update outlives the page: leaving Settings and coming back shows where it stands. */
 let update: UpdateState = { phase: 'idle' }
@@ -51,15 +47,8 @@ const subscribe = (listener: () => void) => {
   return () => listeners.delete(listener)
 }
 
-async function readStatus(): Promise<PluginStatus> {
-  try {
-    return pluginStatus(await gateway.http('GET', STATUS_PATH))
-  } catch (e) {
-    return httpCode(e) === 404 ? { state: 'missing' } : { state: 'unknown' }
-  }
-}
-
-const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const http: PluginHttp = (method, path) => gateway.http(method, path)
+const readStatus = () => readPluginStatus(http, STATUS_PATH)
 /** How often the update's watchdog looks at it. */
 const STALL_CHECK_MS = 15_000
 
@@ -83,7 +72,7 @@ async function runUpdate(onDone: () => void, acceptScan = false, latest: string 
   try {
     await untilQuiet(
       heard =>
-        follow(set, heard, acceptScan, () => live, id => {
+        followHostUpdate({ http, readStatus, current: () => update, startedAt: runStarted }, set, heard, acceptScan, () => live, id => {
           jobId = id
         }),
       () => stallLimitMs(update),
@@ -92,7 +81,7 @@ async function runUpdate(onDone: () => void, acceptScan = false, latest: string 
     if (live && update.phase === 'updating') {
       // Quiet past its limit: whatever it waited on can't land on the row any more, and its follow stops.
       live = false
-      const job = ((await gateway.http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: unknown } | null)?.job
+      const job = ((await http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: unknown } | null)?.job
       setUpdate(
         outcomeAfterStall(
           job,
@@ -106,62 +95,9 @@ async function runUpdate(onDone: () => void, acceptScan = false, latest: string 
   } finally {
     live = false
     running = false
+    // The plugin may do more now: what it said it can do is asked afresh.
+    forgetCapabilityAnswers()
     onDone()
-  }
-}
-
-/**
- * Starts the host's job and follows it, reporting each step through `set`, each answer from the host
- * through `heard` and the job it follows through `onJob`. Stops once the run is no longer `live`.
- */
-async function follow(
-  set: (next: UpdateState) => void,
-  heard: () => void,
-  acceptScan: boolean,
-  live: () => boolean,
-  onJob: (id: string) => void
-) {
-  let job: Record<string, unknown> | null = null
-  try {
-    const started = (await gateway.http('POST', selfUpdatePath(acceptScan))) as { job?: Record<string, unknown> }
-    job = started?.job ?? null
-  } catch (e) {
-    // No answer may still have started it: follow one that runs.
-    const code = httpCode(e)
-    if (code !== undefined && code !== 0) return set({ phase: 'failed', detail: message(e) })
-    const probe = (await gateway.http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: Record<string, unknown> } | null
-    job = probe?.job ?? null
-  }
-  const id = job?.id
-  if (!job || typeof id !== 'string') return set({ phase: 'failed', detail: null })
-  onJob(id)
-  heard()
-  for (;;) {
-    const state = jobState(job)
-    if (state && state.phase !== 'updating') return set(state)
-    set(state ?? update)
-    if (Date.now() - startedAt > HOST_FOLLOW_LIMIT_MS) return set({ phase: 'runningOnHost' })
-    await pause(2000)
-    if (!live()) return
-    // Reads fail while the dashboard restarts; the next poll asks again. Only an answer counts as word
-    // from the host (even when the step is the same), so reads that keep failing let the watchdog end it.
-    let latest: { job?: Record<string, unknown> } | null
-    try {
-      latest = (await gateway.http('GET', SELF_UPDATE_PATH)) as { job?: Record<string, unknown> }
-    } catch {
-      continue
-    }
-    heard()
-    if (!latest?.job || latest.job.id !== id) {
-      // The restarted dashboard lost the job: its report says where it stands.
-      const status = await readStatus()
-      return set(
-        status.state === 'reported' && !status.restartNeeded
-          ? { phase: 'updated', version: status.loadedVersion ?? status.version }
-          : { phase: 'needsDashboardRestart', detail: null }
-      )
-    }
-    job = latest.job
   }
 }
 
@@ -248,22 +184,10 @@ export function ConduitPluginPage({ onBack }: { onBack: () => void }) {
     setStatus(await readStatus())
     setChecking(false)
   }, [])
-  useEffect(() => {
-    // A held scan's Update Anyway belongs to the host that held it: after a switch to another
-    // dashboard (or a job that has since moved on) the row would force an update there unseen.
-    // Only the host's answer clears it; a read that fails leaves it as it was.
-    const held = update
-    if (held.phase !== 'scanHeld') return
-    // Another dashboard's held scan clears at once, whether or not this one answers.
-    if (updateHost !== dashboardHost()) return setUpdate({ phase: 'idle' })
-    void gateway
-      .http('GET', SELF_UPDATE_PATH)
-      .then(r => {
-        const id = (r as { job?: { id?: unknown } })?.job?.id
-        if (update === held && (!held.id || id !== held.id)) setUpdate({ phase: 'idle' })
-      })
-      .catch(() => undefined)
-  }, [])
+  // A row left from another dashboard, or a held scan whose job has moved on, goes when the page opens.
+  useStaleUpdateRow(update, updateHost, dashboardHost(), http, row => {
+    if (update === row) setUpdate({ phase: 'idle' })
+  })
   useEffect(() => {
     void refresh()
     window.conduit
