@@ -52,7 +52,7 @@ export function ReadAloudVoiceSetting({ profile }: { profile?: string }) {
             ? t('Replies are read by your own speech server, the one Local Live talks to, set up under Local Live. A reply it can’t read is read with your computer’s voice. Classic voice speaks with it too; the live modes use their own voices.')
             : t('Replies are read with the voice this profile’s speech provider on Hermes gives. Classic voice speaks with it too; the live modes use their own voices.')}
       </p>
-      {output === 'computer' ? <ComputerVoicePick /> : output === 'hermes' ? <HermesSpeechSettings key={profile ?? ''} kind="tts" profile={profile} /> : null}
+      {output === 'computer' && computerCanSpeak() ? <ComputerVoicePick /> : output === 'hermes' ? <HermesSpeechSettings key={profile ?? ''} kind="tts" profile={profile} /> : null}
     </>
   )
 }

@@ -89,7 +89,7 @@ export function chooseVoice<V extends VoiceLike>(voices: V[], lang: string, pick
   const exact = lang.toLowerCase()
   return (
     (pick ? listed.find(v => v.voiceURI === pick) : undefined) ??
-    listed.find(v => v.lang.toLowerCase() === exact && v.default) ??
+    listed.find(v => v.lang.toLowerCase().replace('_', '-') === exact && v.default) ??
     listed.find(v => v.default) ??
     listed[0] ??
     null
