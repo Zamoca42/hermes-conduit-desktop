@@ -24,7 +24,8 @@ describe('Muted chats', () => {
     ])
     expect(parseMutes({ error: 'nope' })).toBeNull()
     const all = { default: mutes! }
-    expect(muteOf(all, row('newer', { lineageRoot: 'root' }), 2000)).toEqual({ ids: ['root', 'tip'], until: 61_000 })
+    expect(muteOf(all, row('tip', { lineageRoot: 'elsewhere' }), 2000)).toEqual({ ids: ['root', 'tip'], until: 61_000 })
+    expect(muteOf(all, row('branch', { lineageRoot: 'root' }), 2000)).toBeNull()
     expect(muteOf(all, row('tip'), 62_000)).toBeNull()
     expect(muteOf(all, row('forever'), 1e15)?.until).toBeNull()
     expect(muteOf(all, row('tip', { profile: 'work' }), 2000)).toBeNull()
@@ -32,14 +33,16 @@ describe('Muted chats', () => {
   })
 
   it('mutes and unmutes before the plugin answers, one mute per chat', () => {
-    const compacted = row('chat-2', { lineageRoot: 'chat-1', profile: 'Work' })
-    expect(muteIds(compacted)).toEqual(['chat-1', 'chat-2'])
-    let mutes = settingMute(null, compacted, 900, 5)
-    expect(mutes).toEqual({ work: [{ ids: ['chat-1', 'chat-2'], until: 900_005 }] })
+    const branch = row('chat-2', { lineageRoot: 'chat-1', profile: 'Work' })
+    expect(muteIds(branch)).toEqual(['chat-2'])
+    let mutes = settingMute(null, branch, 900, 5)
+    expect(mutes).toEqual({ work: [{ ids: ['chat-2'], until: 900_005 }] })
+    expect(muteOf(mutes, row('chat-1', { profile: 'work' }), 6)).toBeNull()
     mutes = settingMute(mutes, row('chat-1', { profile: 'work' }), null, 6)
-    expect(mutes!.work).toEqual([{ ids: ['chat-1'], until: null }])
-    mutes = settingMute(mutes, compacted, 0)
-    expect(muteOf(mutes, compacted)).toBeNull()
+    expect(mutes!.work).toEqual([{ ids: ['chat-1'], until: null }, { ids: ['chat-2'], until: 900_005 }])
+    mutes = settingMute(mutes, branch, 0)
+    expect(muteOf(mutes, branch)).toBeNull()
+    expect(muteOf(mutes, row('chat-1', { profile: 'work' }))).not.toBeNull()
   })
 
   it('asks a named profile’s plugin by name and the default without one', () => {

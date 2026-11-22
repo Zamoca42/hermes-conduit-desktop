@@ -38,9 +38,12 @@ const profileKey = (profile?: string | null) => (profile || 'default').toLowerCa
 export const mutePath = (profile?: string | null) =>
   profile && profile !== 'default' ? `${MUTE_PATH}?profile=${encodeURIComponent(profile)}` : MUTE_PATH
 
-/** The ids a mute is kept under: the lineage root first, then the row's own. */
-export const muteIds = (row: ChatRow): string[] =>
-  [...new Set([row.lineageRoot, row.id].filter((id): id is string => !!id))].slice(0, MAX_IDS)
+/**
+ * The ids a mute is sent under: the row's own, never its lineage root, since a
+ * branch or reset names its parent as root and muting it must leave the parent.
+ * The plugin adds the sessions a compaction carried the chat through.
+ */
+export const muteIds = (row: ChatRow): string[] => (row.id ? [row.id] : []).slice(0, MAX_IDS)
 
 /**
  * The route's answer; null when it isn't one. `remaining_s` is read against
