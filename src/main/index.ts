@@ -241,8 +241,8 @@ const keptHosts = new KeptHosts({
   onHermesName: (url, name) => noteHermesName(url, name),
   onStatus: (url, status) => sendToFarWindows(url, IPC.statusChanged, status),
   onEvent: (url, event) => {
-    // Its chats on the Chats list are read again now, not on the minute's poll, as on the phone.
-    if (event.type === 'sessions.changed') send(IPC.keptChatsChanged, url)
+    // Its chats on the main window's Chats list are read again now, not on the minute's poll, as on the phone.
+    if (event.type === 'sessions.changed' && mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(IPC.keptChatsChanged, url)
     sendToFarWindows(url, IPC.event, event, event.session_id)
   },
   onRequests: (url, requests) => sendToFarWindows(url, IPC.requestsChanged, requests)

@@ -315,7 +315,7 @@ export function useKeptChats(kept: readonly KeptHost[], on: boolean): OtherChatR
     }
     document.addEventListener('visibilitychange', onVisible)
     const changed = new Map<string, ReturnType<typeof setTimeout>>()
-    const offChanged = window.conduit.onKeptChatsChanged?.(url => {
+    const offChanged = window.conduit.onKeptChatsChanged(url => {
       if (!urls.includes(url) || changed.has(url)) return
       changed.set(
         url,
@@ -329,7 +329,7 @@ export function useKeptChats(kept: readonly KeptHost[], on: boolean): OtherChatR
       stopped = true
       clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisible)
-      offChanged?.()
+      offChanged()
       for (const wait of changed.values()) clearTimeout(wait)
     }
   }, [live])
