@@ -76,6 +76,8 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
 
   // Start listening, and let go of everything on hang-up.
   useEffect(() => {
+    // Set again on every mount: StrictMode mounts twice with the same ref.
+    ended.current = false
     stopReading()
     // Classic can't start while a reply runs: it waits for the reply, then listens.
     if (running) {
@@ -112,12 +114,12 @@ export function VoiceCall({ profile, onSay, running, turnsDone, lastReply, onSto
     setPhase('hearing')
     const recording = await recorder.stop()
     if (ended.current) return
-    if (!recording) return holdToTalk ? next() : void listen()
+    if (!recording) return next()
     try {
       const words = await transcribe(await blobToBase64(recording.blob), recording.mime, profile)
       if (ended.current) return
-      // Quiet audio, or Hermes heard nothing: listen again (or wait, with push to talk).
-      if (!words) return holdToTalk ? next() : void listen()
+      // Quiet audio, or Hermes heard nothing: listen again, or wait (push to talk, Continuous Conversation off).
+      if (!words) return next()
       setHeard(words)
       setProblem(null)
       waitingFrom.current = turnsDone
