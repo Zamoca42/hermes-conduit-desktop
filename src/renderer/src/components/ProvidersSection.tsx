@@ -1,5 +1,6 @@
 import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useBackScroll } from '../state/keptScroll'
 import { t } from '@shared/i18n'
 import { ModelChooser } from './ModelChooser'
 import { gateway } from '../gateway'
@@ -73,6 +74,8 @@ export function ProvidersSection({ profile, profileName, profiles, defaultProvid
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
+  // Back from a provider's page lands where Models was.
+  useBackScroll(adding ? 'adding' : (open ?? 'list'))
   const generation = useRef(0)
 
   const reload = useCallback(async () => {

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useBackScroll } from '../state/keptScroll'
 import { t } from '@shared/i18n'
 import { gateway, GatewayError } from '../gateway'
 import { scoped } from '../state/capabilities'
@@ -211,6 +212,8 @@ export function SkillHub({ profile, onBack, onChanged }: { profile: string; onBa
   const [searching, setSearching] = useState(false)
   const [searchError, setSearchError] = useState<string | null>(null)
   const [open, setOpen] = useState<HubSkill | null>(null)
+  // Back from a skill's page lands where the list was.
+  useBackScroll(open ? `skill:${open.identifier}` : 'list')
   const [official, setOfficial] = useState<OfficialSkill[] | null>(null)
   const [category, setCategory] = useState('')
   const searchId = useRef(0)

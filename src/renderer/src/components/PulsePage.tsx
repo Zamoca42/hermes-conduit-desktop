@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { ScrollPane, useBackScroll } from '../state/keptScroll'
 import { locale, t } from '@shared/i18n'
 import {
   DOWN_REASONS,
@@ -70,6 +71,9 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard, chips = [], onPickHo
   const [menu, setMenu] = useState<Menu | null>(null)
   const seenSent = useRef(false)
   const [view, setView] = useState<'feed' | 'settings' | 'learned' | 'leftOut'>('feed')
+  // Back from Pulse's pages lands where the briefs were.
+  const pane = useRef<HTMLElement>(null)
+  useBackScroll(view, pane)
 
   useEffect(() => {
     if (!feed || fresh) return
@@ -425,142 +429,144 @@ export function PulsePage({ pulse, onOpenChat, onOpenBoard, chips = [], onPickHo
   }
 
   return (
-    <main className="needs pulse-page">
-      {view !== 'feed' ? (
-        <div className="needs-inner">
-          {view === 'settings' ? (
-            <PulseSettings onBack={() => setView('feed')} onChanged={() => void pulse.reload()} />
-          ) : view === 'learned' ? (
-            <PulseLearnedView onBack={() => setView('feed')} onChanged={() => void pulse.reload()} />
-          ) : (
-            <PulseLeftOutView onBack={() => setView('feed')} onBroughtUp={() => void pulse.reload()} />
-          )}
-        </div>
-      ) : (
-        <div className="needs-inner">
-          <PulseHostChips chips={chips} onPick={onPickHost} />
-          <div className="pulse-head">
-            <h1>{t('Pulse')}</h1>
-            <span className="spacer" />
-            {availability === 'on' ? (
-              <>
-                <button className="link-button pulse-head-link" onClick={() => setView('leftOut')}>
-                  {t('What Pulse left out')}
+    <ScrollPane.Provider value={pane}>
+      <main className="needs pulse-page" ref={pane}>
+        {view !== 'feed' ? (
+          <div className="needs-inner">
+            {view === 'settings' ? (
+              <PulseSettings onBack={() => setView('feed')} onChanged={() => void pulse.reload()} />
+            ) : view === 'learned' ? (
+              <PulseLearnedView onBack={() => setView('feed')} onChanged={() => void pulse.reload()} />
+            ) : (
+              <PulseLeftOutView onBack={() => setView('feed')} onBroughtUp={() => void pulse.reload()} />
+            )}
+          </div>
+        ) : (
+          <div className="needs-inner">
+            <PulseHostChips chips={chips} onPick={onPickHost} />
+            <div className="pulse-head">
+              <h1>{t('Pulse')}</h1>
+              <span className="spacer" />
+              {availability === 'on' ? (
+                <>
+                  <button className="link-button pulse-head-link" onClick={() => setView('leftOut')}>
+                    {t('What Pulse left out')}
+                  </button>
+                  <button className="link-button pulse-head-link" onClick={() => setView('learned')}>
+                    {t('What Pulse learned')}
+                  </button>
+                </>
+              ) : null}
+              {availability === 'on' && feed && !feed.quietNow ? (
+                <button className="secondary" onClick={() => void pulse.quiet(true).catch(e => setNote(refusalText(e)))}>
+                  {t('Quiet for today')}
                 </button>
-                <button className="link-button pulse-head-link" onClick={() => setView('learned')}>
-                  {t('What Pulse learned')}
+              ) : null}
+              {availability !== 'missing' ? (
+                <button
+                  className="staged-remove pulse-settings-button"
+                  aria-label={t('Pulse settings')}
+                  title={t('Pulse settings')}
+                  onClick={() => setView('settings')}
+                >
+                  <Icon name="settings" />
+                </button>
+              ) : null}
+            </div>
+            {feed?.quietNow ? (
+              <div className="pulse-quiet">
+                <div>
+                  <strong>{t('Pulse is quiet')}</strong>
+                  {feed.quietEndsAt ? <span className="meta">{backText(feed.quietEndsAt, Date.now(), language)}</span> : null}
+                </div>
+                {feed.quietNow === 'until' ? (
+                  <button className="secondary" onClick={() => void pulse.quiet(false).catch(e => setNote(refusalText(e)))}>
+                    {t('End quiet time')}
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+            {note ? (
+              <div className="model-note" role="status">
+                {note}
+                <button className="staged-remove" aria-label={t('Close')} onClick={() => setNote(null)}>
+                  <Icon name="close" />
+                </button>
+              </div>
+            ) : null}
+            {body}
+          </div>
+        )}
+        {menu ? (
+          <div
+            className="host-menu row-menu"
+            role="menu"
+            style={{
+              left: Math.min(menu.x, window.innerWidth - 240),
+              top: Math.min(menu.y, window.innerHeight - 260)
+            }}
+            onMouseDown={e => e.stopPropagation()}
+          >
+            <div className="menu-title">{menu.kind === 'down' ? t('What was wrong with it?') : t('Not now, until when?')}</div>
+            {menu.kind === 'down' ? (
+              <>
+                {DOWN_REASONS.map(reason => (
+                  <button
+                    key={reason}
+                    role="menuitem"
+                    onClick={() => {
+                      const card = menu.card
+                      setMenu(null)
+                      void act(card, () => pulse.rate(card.id, 'down', reason))
+                    }}
+                  >
+                    {reasonTitle(reason)}
+                  </button>
+                ))}
+                <button
+                  role="menuitem"
+                  onClick={() => {
+                    const card = menu.card
+                    setMenu(null)
+                    void act(card, () => pulse.rate(card.id, 'down'))
+                  }}
+                >
+                  {t('Just thumbs down')}
                 </button>
               </>
-            ) : null}
-            {availability === 'on' && feed && !feed.quietNow ? (
-              <button className="secondary" onClick={() => void pulse.quiet(true).catch(e => setNote(refusalText(e)))}>
-                {t('Quiet for today')}
-              </button>
-            ) : null}
-            {availability !== 'missing' ? (
-              <button
-                className="staged-remove pulse-settings-button"
-                aria-label={t('Pulse settings')}
-                title={t('Pulse settings')}
-                onClick={() => setView('settings')}
-              >
-                <Icon name="settings" />
-              </button>
-            ) : null}
+            ) : (
+              <>
+                {RESTS.map(rest => (
+                  <button
+                    key={rest}
+                    role="menuitem"
+                    onClick={() => {
+                      const card = menu.card
+                      setMenu(null)
+                      void act(card, () => pulse.dismiss(card.id, true, rest))
+                    }}
+                  >
+                    {restTitle(rest)}
+                  </button>
+                ))}
+                {canPutAwayForGood(menu.card) ? (
+                  <button
+                    role="menuitem"
+                    onClick={() => {
+                      const card = menu.card
+                      setMenu(null)
+                      void act(card, () => pulse.dismiss(card.id, true))
+                    }}
+                  >
+                    {t("Don't bring it back")}
+                  </button>
+                ) : null}
+              </>
+            )}
           </div>
-          {feed?.quietNow ? (
-            <div className="pulse-quiet">
-              <div>
-                <strong>{t('Pulse is quiet')}</strong>
-                {feed.quietEndsAt ? <span className="meta">{backText(feed.quietEndsAt, Date.now(), language)}</span> : null}
-              </div>
-              {feed.quietNow === 'until' ? (
-                <button className="secondary" onClick={() => void pulse.quiet(false).catch(e => setNote(refusalText(e)))}>
-                  {t('End quiet time')}
-                </button>
-              ) : null}
-            </div>
-          ) : null}
-          {note ? (
-            <div className="model-note" role="status">
-              {note}
-              <button className="staged-remove" aria-label={t('Close')} onClick={() => setNote(null)}>
-                <Icon name="close" />
-              </button>
-            </div>
-          ) : null}
-          {body}
-        </div>
-      )}
-      {menu ? (
-        <div
-          className="host-menu row-menu"
-          role="menu"
-          style={{
-            left: Math.min(menu.x, window.innerWidth - 240),
-            top: Math.min(menu.y, window.innerHeight - 260)
-          }}
-          onMouseDown={e => e.stopPropagation()}
-        >
-          <div className="menu-title">{menu.kind === 'down' ? t('What was wrong with it?') : t('Not now, until when?')}</div>
-          {menu.kind === 'down' ? (
-            <>
-              {DOWN_REASONS.map(reason => (
-                <button
-                  key={reason}
-                  role="menuitem"
-                  onClick={() => {
-                    const card = menu.card
-                    setMenu(null)
-                    void act(card, () => pulse.rate(card.id, 'down', reason))
-                  }}
-                >
-                  {reasonTitle(reason)}
-                </button>
-              ))}
-              <button
-                role="menuitem"
-                onClick={() => {
-                  const card = menu.card
-                  setMenu(null)
-                  void act(card, () => pulse.rate(card.id, 'down'))
-                }}
-              >
-                {t('Just thumbs down')}
-              </button>
-            </>
-          ) : (
-            <>
-              {RESTS.map(rest => (
-                <button
-                  key={rest}
-                  role="menuitem"
-                  onClick={() => {
-                    const card = menu.card
-                    setMenu(null)
-                    void act(card, () => pulse.dismiss(card.id, true, rest))
-                  }}
-                >
-                  {restTitle(rest)}
-                </button>
-              ))}
-              {canPutAwayForGood(menu.card) ? (
-                <button
-                  role="menuitem"
-                  onClick={() => {
-                    const card = menu.card
-                    setMenu(null)
-                    void act(card, () => pulse.dismiss(card.id, true))
-                  }}
-                >
-                  {t("Don't bring it back")}
-                </button>
-              ) : null}
-            </>
-          )}
-        </div>
-      ) : null}
-    </main>
+        ) : null}
+      </main>
+    </ScrollPane.Provider>
   )
 }
 

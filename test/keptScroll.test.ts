@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { KeptScroll } from '../src/renderer/src/state/keptScroll'
+import { KeptScroll, ScrollStack } from '../src/renderer/src/state/keptScroll'
 
 /** A list as tall as its rows: scrollTop stops at its end, as a browser's does. */
 function list(height: number, view = 100) {
@@ -90,5 +90,85 @@ describe('KeptScroll', () => {
     kept.opened()
     kept.drew(side)
     expect(side.scrollTop).toBe(0)
+  })
+})
+
+describe('ScrollStack', () => {
+  it('opens a page at its top and goes back to where Settings was', () => {
+    const pages = new ScrollStack()
+    const pane = list(2000)
+    pages.drew('main', pane)
+    pane.scrollTop = 900
+    pages.scrolled(pane)
+
+    // Settings > Voice: a short page in the same pane.
+    pane.height = 600
+    pages.drew('voice', pane)
+    expect(pane.scrollTop).toBe(0)
+    pages.scrolled(pane)
+
+    // Back: Settings home is drawn again, at the row Voice was opened from.
+    pane.height = 2000
+    pages.drew('main', pane)
+    expect(pane.scrollTop).toBe(900)
+  })
+
+  it('keeps each level of pages its own spot', () => {
+    const pages = new ScrollStack()
+    const pane = list(3000)
+    pages.drew('list', pane)
+    pane.scrollTop = 1200
+    pages.scrolled(pane)
+    pages.drew('apps', pane)
+    pane.scrollTop = 400
+    pages.scrolled(pane)
+    pages.drew('app:linear', pane)
+    expect(pane.scrollTop).toBe(0)
+
+    pages.drew('apps', pane)
+    expect(pane.scrollTop).toBe(400)
+    pages.drew('list', pane)
+    expect(pane.scrollTop).toBe(1200)
+
+    // A page opened again after Back starts at its top, not where it was left.
+    pages.drew('apps', pane)
+    expect(pane.scrollTop).toBe(0)
+  })
+
+  it('leaves the pane where it is for its first page and while a page redraws', () => {
+    const pages = new ScrollStack()
+    const pane = list(1000)
+    pane.scrollTop = 300
+    pages.drew('main', pane)
+    expect(pane.scrollTop).toBe(300)
+    pane.scrollTop = 500
+    pages.scrolled(pane)
+    pages.drew('main', pane)
+    expect(pane.scrollTop).toBe(500)
+  })
+
+  it('waits for a page drawn short, unless you scroll first', () => {
+    const pages = new ScrollStack()
+    const pane = list(2000)
+    pages.drew('main', pane)
+    pane.scrollTop = 1500
+    pages.scrolled(pane)
+    pages.drew('usage', pane)
+
+    pane.height = 800 // home's cards still loading
+    pages.drew('main', pane)
+    pages.scrolled(pane)
+    expect(pane.scrollTop).toBe(700)
+    pane.height = 2000
+    pages.drew('main', pane)
+    expect(pane.scrollTop).toBe(1500)
+
+    pages.drew('usage', pane)
+    pane.height = 800
+    pages.drew('main', pane)
+    pages.touched()
+    pane.height = 2000
+    pages.drew('main', pane)
+    expect(pane.scrollTop).toBe(700)
   })
 })

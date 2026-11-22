@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, type RefObject } from 'react'
 
 /** What a kept scroll position reads and sets on its list. */
 export interface Scroller {
@@ -60,4 +60,78 @@ export function useShownAgain(away: boolean, onShown?: () => void): void {
   const wasAway = useRef(away)
   if (wasAway.current && !away) onShown?.()
   wasAway.current = away
+}
+
+/**
+ * A pane's pages, the way you went down them, each with its scroll spot:
+ * back on a page puts the pane where it was, and a page opened from it
+ * starts at its top (Settings > Voice opens at Voice's top, and Back lands
+ * on the row you opened it from, as on the phone).
+ */
+export class ScrollStack {
+  private pages: { view: string; kept: KeptScroll }[] = []
+
+  /** After each draw, with the page on show: it opens, comes back or stays. */
+  drew(view: string, el: Scroller): void {
+    const at = this.pages.findIndex(page => page.view === view)
+    if (at === -1) {
+      // Opened from the page on show; the pane's first page stays where the pane is.
+      const opened = this.pages.length > 0
+      this.pages.push({ view, kept: new KeptScroll() })
+      if (opened) el.scrollTop = 0
+      return
+    }
+    const page = this.pages[at]
+    if (at < this.pages.length - 1) {
+      // Back: the pages opened from it are done with.
+      this.pages.length = at + 1
+      page.kept.opened()
+    }
+    page.kept.drew(el)
+  }
+
+  /** The pane scrolled: kept for the page on show. */
+  scrolled(el: Scroller): void {
+    this.pages.at(-1)?.kept.scrolled(el)
+  }
+
+  /** You scrolled, clicked or typed in the pane: your spot wins over a restore. */
+  touched(): void {
+    this.pages.at(-1)?.kept.touched()
+  }
+}
+
+/** The scrolling pane a page draws in (Settings', Pulse's), for pages inside it that open pages of their own. */
+export const ScrollPane = createContext<RefObject<HTMLElement | null> | null>(null)
+
+/**
+ * Keeps `pane`'s scroll spot for each page `view` names (the pane from
+ * ScrollPane if not given): Back returns to where the page was. Call it
+ * where the pages switch, every render.
+ */
+export function useBackScroll(view: string, pane?: RefObject<HTMLElement | null>): void {
+  const shared = useContext(ScrollPane)
+  const ref = pane ?? shared
+  const stack = useRef<ScrollStack | null>(null)
+  stack.current ??= new ScrollStack()
+  useLayoutEffect(() => {
+    if (ref?.current) stack.current?.drew(view, ref.current)
+  })
+  useEffect(() => {
+    const el = ref?.current
+    const pages = stack.current
+    if (!el || !pages) return
+    const scrolled = () => pages.scrolled(el)
+    const touched = () => pages.touched()
+    el.addEventListener('scroll', scrolled, { passive: true })
+    el.addEventListener('wheel', touched, { passive: true })
+    el.addEventListener('pointerdown', touched)
+    el.addEventListener('keydown', touched)
+    return () => {
+      el.removeEventListener('scroll', scrolled)
+      el.removeEventListener('wheel', touched)
+      el.removeEventListener('pointerdown', touched)
+      el.removeEventListener('keydown', touched)
+    }
+  }, [ref])
 }

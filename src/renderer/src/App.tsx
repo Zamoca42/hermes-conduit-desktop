@@ -1,7 +1,7 @@
 import { ROOM_RULES_CAPABILITY } from './state/roomChoices'
 import { ROOM_LEAVE_CAPABILITY } from './state/roomCopies'
 import { ROOM_FILES_CAPABILITY, ROOM_FILES_LINKED_CAPABILITY, ROOM_FILE_PICTURES_CAPABILITY } from './state/roomFiles'
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps, type RefObject } from 'react'
 import { gateway } from './gateway'
 import { draftAgents, type OwnHermesBot } from './state/roomDrafts'
 import { arrange, farBotFor, mixedTiles, orderedBots, useBotOrder, useMixedBotOrder, useSyncedOrder, type MixedTile } from './state/botOrder'
@@ -214,7 +214,7 @@ import { Select } from './components/Select'
 import { KeptPane } from './components/KeptPane'
 import { DockedChatPane, tellDockedShown, type DockedChat, type DockedFrame } from './components/DockedChat'
 import { DockedPulseFrame } from './components/DockedPulse'
-import { botSideScroll } from './state/keptScroll'
+import { botSideScroll, ScrollPane, useBackScroll } from './state/keptScroll'
 
 /** A call's transcript while no call reads it. */
 const NO_ITEMS: TranscriptItem[] = []
@@ -3082,6 +3082,17 @@ function SettingsSubpage({ title, onBack, children }: { title: string; onBack: (
   )
 }
 
+/** Settings' scrolling pane, the same element for every page, so Back can put it where it was. */
+function SettingsPane({ pane, children }: { pane: RefObject<HTMLElement | null>; children: ReactNode }) {
+  return (
+    <ScrollPane.Provider value={pane}>
+      <main className="settings" ref={pane}>
+        {children}
+      </main>
+    </ScrollPane.Provider>
+  )
+}
+
 /** A Settings row that opens a page: the whole row is the button, its label on the left, what's inside on the right. */
 function SettingsLink({ label, detail, disabled, onOpen }: { label: string; detail: string; disabled?: boolean; onOpen: () => void }) {
   return (
@@ -3151,6 +3162,9 @@ function Settings({
   const [page, setPage] = useState<
     'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance' | 'multiplayer' | 'voice' | 'calls'
   >('main')
+  // Back from a page lands where Settings was, on the row it was opened from.
+  const pane = useRef<HTMLElement>(null)
+  useBackScroll(page, pane)
   // Multiplayer shows while the host's plugin keeps Links.
   const [pluginCapabilities, setPluginCapabilities] = useState<string[]>([])
   const linksServed = pluginCapabilities.includes(ROOM_LINKS_CAPABILITY)
@@ -3194,7 +3208,7 @@ function Settings({
   }, [linkRequest, onLinkRequestTaken])
   if (page === 'voice')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <SettingsSubpage title={t('Voice')} onBack={() => setPage('main')}>
           <dl className="settings-card">
             <dt>{t('Read Aloud')}</dt>
@@ -3226,27 +3240,27 @@ function Settings({
             ) : null}
           </dl>
         </SettingsSubpage>
-      </main>
+      </SettingsPane>
     )
   if (page === 'calls')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <SettingsSubpage title={t('Calls from Hermes')} onBack={() => setPage('main')}>
           <div className="settings-card settings-card-single">
             <HermesCallSettings profile={profile} onNewChat={onNewChatWith} />
           </div>
         </SettingsSubpage>
-      </main>
+      </SettingsPane>
     )
   if (page === 'usage')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <UsagePage bots={bots} profile={profile} onBack={() => setPage('main')} />
-      </main>
+      </SettingsPane>
     )
   if (page === 'models')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <ModelsPage
           key={modelsProfile ? `link:${modelsProfile.n}` : 'models'}
           bots={bots}
@@ -3256,17 +3270,17 @@ function Settings({
             setPage('main')
           }}
         />
-      </main>
+      </SettingsPane>
     )
   if (page === 'appearance')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <AppearancePage host={status.url ?? ''} onBack={() => setPage('main')} />
-      </main>
+      </SettingsPane>
     )
   if (page === 'multiplayer' && status.url)
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <MultiplayerPage
           host={status.url}
           capabilities={pluginCapabilities}
@@ -3276,23 +3290,23 @@ function Settings({
           personPicture={personPicture}
           onBack={() => setPage('main')}
         />
-      </main>
+      </SettingsPane>
     )
   if (page === 'vault')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <VaultPage bots={bots} profile={profile} onBack={() => setPage('main')} />
-      </main>
+      </SettingsPane>
     )
   if (page === 'plugin')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <ConduitPluginPage onBack={() => setPage('main')} />
-      </main>
+      </SettingsPane>
     )
   if (page === 'chat')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <ConfigPage
           title={t('Chat')}
           subtitle={t('Response behavior, visibility, and timezone')}
@@ -3305,11 +3319,11 @@ function Settings({
           <StepSummarySettings />
           <PredictiveSettings />
         </ConfigPage>
-      </main>
+      </SettingsPane>
     )
   if (page === 'workspace' || page === 'advanced')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <ConfigPage
           key={page}
           title={page === 'workspace' ? t('Workspace & safety') : t('Advanced')}
@@ -3323,17 +3337,17 @@ function Settings({
           profile={profile}
           onBack={() => setPage('main')}
         />
-      </main>
+      </SettingsPane>
     )
   if (page === 'memory')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <MemoryPage bots={bots} profile={profile} onBack={() => setPage('main')} />
-      </main>
+      </SettingsPane>
     )
   if (page === 'capabilities')
     return (
-      <main className="settings">
+      <SettingsPane pane={pane}>
         <CapabilitiesPage
           bots={bots}
           profile={profile}
@@ -3344,12 +3358,12 @@ function Settings({
             setPage('main')
           }}
         />
-      </main>
+      </SettingsPane>
     )
   const methods = { password: t('User name and password'), token: t('Session token'), open: t('No sign-in') }
   const settingsBadge = (url: string) => hostBadge(status.hosts ?? [], url, hostName)
   return (
-    <main className="settings">
+    <SettingsPane pane={pane}>
       <h1>{t('Settings')}</h1>
       <SettingsProfileCard tiles={profileTiles} profile={profile} badgeFor={tileBadge} onPick={onPickProfile} onEditProfile={onEditProfile} />
       <section className="settings-group">
@@ -3551,6 +3565,6 @@ function Settings({
           </dd>
         </dl>
       </section>
-    </main>
+    </SettingsPane>
   )
 }

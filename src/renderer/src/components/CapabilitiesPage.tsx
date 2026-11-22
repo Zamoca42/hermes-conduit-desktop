@@ -1,5 +1,6 @@
 import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useBackScroll } from '../state/keptScroll'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import {
@@ -101,6 +102,10 @@ export function CapabilitiesPage({ bots, profile: initialProfile, host, apps, on
   const [appsPage, setAppsPage] = useState<{ slug: string | null; fromDirectory: boolean; suggested?: string[] } | null>(null)
   /** The apps card's ask, waiting for its bot's profile to be the one shown. */
   const appsAsk = useRef<AppsRequest | null>(null)
+  // Back from a page drawn over the tab lands where the tab was.
+  useBackScroll(
+    appsPage?.slug ? `app:${appsPage.slug}` : appsPage ? 'apps' : hubOpen ? 'hub' : open ? `skill:${open.skill.name}` : 'list'
+  )
   const generation = useRef(0)
   const writes = useRef<Promise<unknown>>(Promise.resolve())
 
