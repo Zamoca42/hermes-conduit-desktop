@@ -147,6 +147,8 @@ export function useChatCall(options: ChatCallOptions): ChatCallState {
       }
       setCallPicture({ id, kind, attachment, frame })
       setPictureNote({ id, kind, change: 'shown', frame })
+    } catch {
+      tell(t('Conduit couldn’t load that picture. Try again.'))
     } finally {
       setPictureBusy(false)
     }

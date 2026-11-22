@@ -44309,6 +44309,36 @@
     "zh-Hans": "此任务已不在当前显示的看板上。",
     "zh-Hant": "此任務已不在目前顯示的看板上。"
   },
+  "End the call to open this chat": {
+    "de": "Beende den Anruf, um diesen Chat zu öffnen",
+    "es": "Termina la llamada para abrir este chat",
+    "fr": "Terminez l’appel pour ouvrir cette conversation",
+    "id": "Akhiri panggilan untuk membuka obrolan ini",
+    "it": "Termina la chiamata per aprire questa chat",
+    "ja": "このチャットを開くには通話を終了してください",
+    "ko": "이 채팅을 열려면 통화를 끝내세요",
+    "pl": "Zakończ połączenie, aby otworzyć ten czat",
+    "pt-BR": "Encerre a chamada para abrir esta conversa",
+    "ru": "Завершите звонок, чтобы открыть этот чат",
+    "tr": "Bu sohbeti açmak için aramayı bitirin",
+    "zh-Hans": "结束通话后才能打开此聊天",
+    "zh-Hant": "結束通話後才能打開此聊天"
+  },
+  "Conduit couldn’t load that picture. Try again.": {
+    "de": "Conduit konnte das Bild nicht laden. Versuche es erneut.",
+    "es": "Conduit no pudo cargar esa imagen. Inténtalo de nuevo.",
+    "fr": "Conduit n’a pas pu charger cette image. Réessayez.",
+    "id": "Conduit tidak dapat memuat gambar itu. Coba lagi.",
+    "it": "Conduit non è riuscito a caricare l’immagine. Riprova.",
+    "ja": "Conduit はその画像を読み込めませんでした。もう一度お試しください。",
+    "ko": "Conduit에서 그 사진을 불러오지 못했습니다. 다시 시도하세요.",
+    "pl": "Conduit nie mógł wczytać tego obrazu. Spróbuj ponownie.",
+    "pt-BR": "O Conduit não conseguiu carregar essa imagem. Tente novamente.",
+    "ru": "Conduit не удалось загрузить это изображение. Попробуйте ещё раз.",
+    "tr": "Conduit bu resmi yükleyemedi. Tekrar deneyin.",
+    "zh-Hans": "Conduit 无法加载该图片。请重试。",
+    "zh-Hant": "Conduit 無法載入該圖片。請再試一次。"
+  },
   "(Where you are and your phone's battery and Focus, when your iPhone lets this voice mode read them, read when the call starts.)": {
     "de": "(Wo du bist und Akku und Fokus deines Telefons, wenn dein iPhone diesem Sprachmodus das Lesen erlaubt, gelesen zu Beginn des Anrufs.)",
     "es": "(Dónde estás y la batería y el modo de concentración de tu teléfono, si tu iPhone deja que este modo de voz los lea, leído al empezar la llamada).",

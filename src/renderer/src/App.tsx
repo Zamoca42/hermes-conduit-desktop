@@ -721,7 +721,7 @@ function Shell({
     if (readTurn.current === turnsDone) return
     readTurn.current = turnsDone
     const reply = lastReplyOf(transcriptStore.get().items)
-    if (!calling && readsRepliesAloud() && reply && document.hasFocus()) void readAloud(`turn-${turnsDone}`, reply, selected.profile).catch(() => undefined)
+    if (!calling && !dockedCalling && readsRepliesAloud() && reply && document.hasFocus()) void readAloud(`turn-${turnsDone}`, reply, selected.profile).catch(() => undefined)
   }, [turnsDone])
   const wasRunning = useRef(false)
   useEffect(() => {
@@ -942,7 +942,9 @@ function Shell({
       const bot = far ? undefined : roster.bots?.find(b => sameProfileAs(b.name, target.profile))
       const onScreen = !far && (target.id === selected.id || target.id === chat.storedId)
       // A call in the chat on screen would end with it: the header says so, and a row's menu does the same.
-      if (onScreen && calling) {
+      // So would one in the docked chat, which a new window of its own would close (one it has already only comes forward).
+      const dockedHere = dockedCalling && !!docked && docked.chat.id === target.id && (docked.chat.host === (target.host ?? status.url)) && !chatWindowIds.includes(target.id)
+      if ((onScreen && calling) || dockedHere) {
         void tell(t('End the call to move this chat to a window of its own'))
         return
       }
@@ -981,7 +983,7 @@ function Shell({
       }
       setBeside(current => (current?.id === target.id ? null : current))
     },
-    [roster.bots, orderedRoster, openBot, selected.id, selected.profile, chat.storedId, status.url, calling, chatWindowIds]
+    [roster.bots, orderedRoster, openBot, selected.id, selected.profile, chat.storedId, status.url, calling, dockedCalling, docked, chatWindowIds]
   )
   /** A row whose chat has a window of its own brings that window to the front; any other opens here. */
   const selectRow = useCallback(
@@ -1672,6 +1674,11 @@ function Shell({
       // so does any other during a call in the docked chat.
       const callingHere = calling || (dockedCalling && !(docked && docked.chat.host === chat.host && docked.chat.id === chat.id))
       if (callingHere) {
+        // A window can't start a new chat or take words for its message box, so those wait for the call to end.
+        if (chat.fresh || chat.draft) {
+          void tell(t('End the call to open this chat'))
+          return
+        }
         void window.conduit.openChatWindow(chat).then(opened => {
           if (opened) return
           if (chatWindowIdsRef.current.length >= CHAT_WINDOW_LIMIT) void tell(t('Up to {count} chats can have windows of their own. Close one to open another.', { count: CHAT_WINDOW_LIMIT }))
