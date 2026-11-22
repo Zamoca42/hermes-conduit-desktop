@@ -1058,11 +1058,12 @@ function Shell({
       }
       // Away first, so the main window isn't still showing it when its window opens (which would close it).
       // A Bot Chat's place is the bots sidebar, so this window stays on Bots with another bot's Bot Chat (one
-      // with no window of its own); a new chat here would be Chats, and a new Bot Chat a second one.
+      // with no window of its own, or a first one for a bot that has none); a new chat here would be Chats, and a
+      // new Bot Chat for the same bot a second one.
       const nextBot =
         onScreen && (target.botChat || bot?.botChatId === target.id)
           ? (orderedRoster ?? roster.bots ?? [])
-              .filter(b => b.botChatId && b.botChatId !== target.id && !chatWindowIds.includes(b.botChatId))
+              .filter(b => !sameProfileAs(b.name, target.profile) && (!b.botChatId || (b.botChatId !== target.id && !chatWindowIds.includes(b.botChatId))))
               .sort((a, b) => (b.lastActive ?? 0) - (a.lastActive ?? 0))[0]
           : undefined
       if (nextBot) openBot(nextBot)
@@ -1078,7 +1079,10 @@ function Shell({
       if (!opened) {
         if (onScreen)
           setSelected(current =>
-            current.id === null || (nextBot && current.id === nextBot.botChatId) ? { id: target.id, profile: target.profile, title: target.title, botChat: target.botChat } : current
+            // Back only if nothing else was opened meanwhile.
+            (nextBot ? current.id === (nextBot.botChatId ?? null) && sameProfileAs(current.profile, nextBot.name) : current.id === null && current.profile === selected.profile)
+              ? { id: target.id, profile: target.profile, title: target.title, botChat: target.botChat }
+              : current
           )
         // At the limit, say so; otherwise its dashboard went (a sign-out, a switch) as it opened.
         if (chatWindowIds.length >= CHAT_WINDOW_LIMIT) void tell(t('Up to {count} chats can have windows of their own. Close one to open another.', { count: CHAT_WINDOW_LIMIT }))
@@ -2174,11 +2178,11 @@ function Shell({
     const bots = orderedRoster ?? roster.bots
     if (!bots?.length) return
     // A bot whose Bot Chat has a window of its own stays there: opening it here would close that window.
-    const here = bots.filter(b => !b.botChatId || !chatWindowIdsRef.current.includes(b.botChatId))
+    const here = bots.filter(b => !b.botChatId || !chatWindowIds.includes(b.botChatId))
     if (!here.length) return
     const same = (name: string | null) => here.find(b => b.name.toLowerCase() === name?.toLowerCase())
     openBot(same(lastBot.current) ?? [...here].sort((a, b) => (b.lastActive ?? 0) - (a.lastActive ?? 0))[0])
-  }, [section, newBot, editingBot, orderedRoster, roster.bots, openBot])
+  }, [section, newBot, editingBot, orderedRoster, roster.bots, openBot, chatWindowIds])
   const botsHomeProps: Omit<ComponentProps<typeof BotsHome>, 'side'> = {
     bots: orderedRoster,
     error: roster.error,
