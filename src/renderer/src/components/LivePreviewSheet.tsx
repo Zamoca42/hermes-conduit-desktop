@@ -1,11 +1,43 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { t } from '@shared/i18n'
-import type { LivePreview } from '../state/livePreview'
+import { gateway } from '../gateway'
+import { livePreview, type LivePreview, type PreviewHost } from '../state/livePreview'
+import { MEMORY_PATH, withProfile, type VoiceMode } from '../state/gptLive'
+import { canRecall } from '../state/liveCall'
+import { webSearchAvailable } from '../state/qwenLive'
+import { STATUS_PATH as LOCAL_STATUS_PATH, frontModel } from '../state/localLive'
+import { dashboardProfilePath } from '../state/dashboardProfile'
 import { inSelectMenu } from './Select'
 
+/** What the next call would read from the host as it starts, for `mode`'s preview. */
+async function previewHost(mode: VoiceMode, profile?: string): Promise<PreviewHost> {
+  if (mode === 'local') {
+    const status = await gateway.http('GET', dashboardProfilePath(LOCAL_STATUS_PATH, profile), undefined, 30_000).catch(() => null)
+    return { fastModel: !!frontModel(status)?.available }
+  }
+  if (mode !== 'gemini' && mode !== 'qwen' && mode !== 'grok') return {}
+  const [recall, hostSearch] = await Promise.all([
+    gateway.http('GET', withProfile(MEMORY_PATH, profile)).then(canRecall, () => false),
+    mode === 'grok' ? Promise.resolve(false) : webSearchAvailable(profile).catch(() => false)
+  ])
+  return { recall, hostSearch }
+}
+
 /** Live call style's "What Conduit sends", after the phone's LiveVoiceInstructionsPreviewSheet. */
-export function LivePreviewSheet({ preview, onClose }: { preview: LivePreview | null; onClose: () => void }) {
+export function LivePreviewSheet({ mode, profile, onClose }: { mode: VoiceMode; profile?: string; onClose: () => void }) {
   const done = useRef<HTMLButtonElement>(null)
+  // undefined while the host is read; null when this mode sends no instructions.
+  const [preview, setPreview] = useState<LivePreview | null | undefined>(undefined)
+
+  useEffect(() => {
+    let live = true
+    void previewHost(mode, profile).then(host => {
+      if (live) setPreview(livePreview(mode, host))
+    })
+    return () => {
+      live = false
+    }
+  }, [mode, profile])
 
   useEffect(() => {
     done.current?.focus()
@@ -30,7 +62,9 @@ export function LivePreviewSheet({ preview, onClose }: { preview: LivePreview | 
             {t('Done')}
           </button>
         </header>
-        {preview ? (
+        {preview === undefined ? (
+          <div className="notice">{t('Loading…')}</div>
+        ) : preview ? (
           <>
             <p className="meta">
               {preview.isLocalLive

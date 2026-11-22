@@ -15,7 +15,6 @@ import {
 } from '../state/liveStyle'
 import { Select } from './Select'
 import { liveAsksFirst, setLiveAsksFirst } from '../state/askFirst'
-import { livePreview } from '../state/livePreview'
 import type { VoiceMode } from '../state/gptLive'
 import { LivePreviewSheet } from './LivePreviewSheet'
 
@@ -28,7 +27,7 @@ const lengthLabel = (length: AnswerLength) => (length === 'concise' ? t('Concise
  * mode. Kept on this computer, so it works with no iPhone. "What Conduit sends"
  * shows the next call's instructions in `mode`.
  */
-export function LiveCallStyleSettings({ mode }: { mode: VoiceMode }) {
+export function LiveCallStyleSettings({ mode, profile }: { mode: VoiceMode; profile?: string }) {
   const [greeting, setGreeting] = useState<string | null>(liveGreeting)
   const [style, setStyle] = useState(liveStyle)
   const [instructions, setInstructions] = useState(() => style.extraInstructions ?? '')
@@ -168,7 +167,7 @@ export function LiveCallStyleSettings({ mode }: { mode: VoiceMode }) {
       <button className="secondary live-preview-open" onClick={() => setPreviewing(true)}>
         {t('What Conduit sends')}
       </button>
-      {previewing ? <LivePreviewSheet preview={livePreview(mode)} onClose={() => setPreviewing(false)} /> : null}
+      {previewing ? <LivePreviewSheet mode={mode} profile={profile} onClose={() => setPreviewing(false)} /> : null}
     </>
   )
 }

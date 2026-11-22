@@ -36,11 +36,24 @@ describe("Live call style's What Conduit sends", () => {
     expect(livePreview('gemini')?.openingTurn).toBeNull()
   })
 
-  it("is Local Live's agent instructions only in agent mode", () => {
+  it("is Local Live's agent instructions only in agent mode with the host's fast model, and its greeting is what the server says", () => {
     expect(livePreview('local')).toBeNull()
     localStorage.setItem('conduit.localLiveAgent', 'true')
-    const preview = livePreview('local')
+    expect(livePreview('local', { fastModel: false })).toBeNull()
+    const preview = livePreview('local', { fastModel: true })
     expect(preview?.isLocalLive).toBe(true)
     expect(preview?.mode).toBe('Local Live')
+    expect(preview?.openingTurn).toBeNull()
+    setLiveGreeting('')
+    expect(livePreview('local', { fastModel: true })?.openingTurn).toBe("Hi, I'm listening.")
+  })
+
+  it("follows the host: its web search, and memory recall when memory is sent", () => {
+    localStorage.setItem('conduit.geminiLiveMemory', 'true')
+    const without = livePreview('gemini')?.instructions ?? ''
+    const withHost = livePreview('gemini', { recall: true, hostSearch: true })?.instructions ?? ''
+    expect(without).not.toContain('recall_memory')
+    expect(withHost).toContain('recall_memory')
+    expect(withHost).not.toBe(without)
   })
 })
