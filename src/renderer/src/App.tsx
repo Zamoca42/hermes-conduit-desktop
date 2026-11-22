@@ -202,7 +202,7 @@ import { loadPins, newPin, pinsOfChat, savePins, withoutChat, type PinnedReply }
 import { PinnedRepliesSheet, type PinControls } from './components/PinnedReplies'
 import { loadMarks, markRead, markUnread, saveMarks, toggleStar, isUnread, type ChatMarks } from './state/chatMarks'
 import { isDone, useChatDone } from './state/chatDone'
-import { muteOf, useChatMute } from './state/chatMute'
+import { muteOf, readMuted, useChatMute } from './state/chatMute'
 import { GO_TO, SCALES, applyScale, glyphs, nextScale, readScale, shortcutFor } from './state/shortcuts'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { CallTranscriptSheet } from './components/CallTranscriptSheet'
@@ -1639,7 +1639,13 @@ function Shell({
         }
         if (event.type !== 'message.complete' || isWatching(sid, watching.current.liveId, watching.current.onChats)) return
         const spec = turnNotification(sid, event.payload, chats.current.get(sid))
-        if (spec && !mutedRef.current(sid)) void notify(spec, sid)
+        if (!spec || mutedRef.current(sid)) return
+        // A mute set on another device since the last read: asked at once.
+        const ref = chats.current.get(sid)
+        if (!ref?.storedId) return void notify(spec, sid)
+        void readMuted(muteHttp, { id: ref.storedId, title: '', pinned: false, profile: ref.profile }).then(muted => {
+          if (!muted) void notify(spec, sid)
+        })
       }),
     [notify]
   )

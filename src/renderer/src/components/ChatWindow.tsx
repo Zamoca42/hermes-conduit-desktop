@@ -21,7 +21,6 @@ import { notificationsEnabled, requestNotification, turnNotification, type Notif
 import { readMuted } from '../state/chatMute'
 import { gateway } from '../gateway'
 
-const muteHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
 import type { StagedAttachment } from '../state/attachments'
 import { chatWindowTitle } from '@shared/chatWindows'
 import { Composer } from './Composer'
@@ -37,6 +36,8 @@ import { ChatQueueDock } from './ChatQueueDock'
 import { ConnectionActionsContext } from './ConnectionCardView'
 import { useReplyFace } from './BotsHome'
 import { AskedQuestionBar } from './WorkPanel'
+
+const muteHttp = (method: 'GET' | 'PUT', path: string, body?: unknown) => gateway.http(method, path, body)
 
 /**
  * A chat in a window of its own (Eric, 2026-11-21): the whole chat, live,

@@ -141,7 +141,8 @@ export function useChatMute(http: Http, connected: boolean, profiles: string[], 
     if (!ends.length) return
     const timer = setTimeout(() => setTick(n => n + 1), Math.min(...ends) - now + 50)
     return () => clearTimeout(timer)
-  }, [mutes])
+    // tick: each end that passes arms the timer for the next one.
+  }, [mutes, tick])
 
   /** Mutes the chat for `seconds` (null: until unmuted), or unmutes it (0). */
   const setMute = useCallback(
