@@ -42,13 +42,17 @@ export function GatewayWait({ capabilities }: { capabilities?: string[] | null }
   // Restart Gateway's row has no plugin status of its own: it asks once.
   const [asked, setAsked] = useState<string[] | null>(null)
   useEffect(() => {
-    if (capabilities !== undefined) return
+    if (capabilities !== undefined || asked) return
+    // Asked again until it answers: one failed read mid-drain mustn't hide Restart Now for good.
     let live = true
-    void readStatus().then(status => live && setAsked(status.state === 'reported' ? status.capabilities : null))
+    const ask = () => void readStatus().then(status => live && status.state === 'reported' && setAsked(status.capabilities))
+    ask()
+    const again = setInterval(ask, POLL_MS)
     return () => {
       live = false
+      clearInterval(again)
     }
-  }, [capabilities, host])
+  }, [capabilities, host, asked])
   const capable = !!(capabilities === undefined ? asked : capabilities)?.includes(GATEWAY_WORK)
   const [work, setWork] = useState<GatewayWork | null>(null)
   const [, tick] = useState(0)
@@ -57,8 +61,12 @@ export function GatewayWait({ capabilities }: { capabilities?: string[] | null }
   useEffect(() => {
     if (!capable) return
     let live = true
+    // One read at a time: a slow answer landing after a newer one would move the running times back.
+    let reading = false
     const read = async () => {
-      const latest = await readGatewayWork(connectionTo(host).http)
+      if (reading) return
+      reading = true
+      const latest = await readGatewayWork(connectionTo(host).http).finally(() => (reading = false))
       if (live && latest) setWork(latest)
     }
     void read()
@@ -95,7 +103,7 @@ export function GatewayWait({ capabilities }: { capabilities?: string[] | null }
         className="link gateway-restart-now"
         disabled={running}
         title={hint}
-        onClick={() => void runRestartNow(host, connectionTo(host), dashboardHost, hermesUpdateRunning(host))}
+        onClick={() => void runRestartNow(host, connectionTo(host), dashboardHost, () => hermesUpdateRunning(host))}
       >
         {running ? t('Stopping running tasks…') : t('Restart Now')}
       </button>
