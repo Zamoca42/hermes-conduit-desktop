@@ -145,6 +145,15 @@ describe("bots' screens in windows of their own", () => {
     expect(owed[0]!()).toBe(false)
   })
 
+  it('closing every window hands back a hold itself, under its screen key', () => {
+    const { set, released } = harness()
+    const key = screenKey('http://far:9119', 'mira')
+    set.show({ profile: 'mira', botName: 'Mira', host: 'http://far:9119' })
+    set.note(key, 'v1', true)
+    set.close()
+    expect(released).toEqual([[key, 'v1']])
+  })
+
   it('another dashboard closes every window and forgets its viewers', () => {
     const { set, made, released } = harness()
     set.show({ profile: 'mira', botName: 'Mira' })

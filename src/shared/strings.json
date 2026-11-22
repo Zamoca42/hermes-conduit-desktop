@@ -44323,5 +44323,20 @@
     "tr": "Bu sohbeti açmak için aramayı bitirin",
     "zh-Hans": "结束通话后才能打开此聊天",
     "zh-Hant": "結束通話後才能打開此聊天"
+  },
+  "Conduit couldn’t load that picture. Try again.": {
+    "de": "Conduit konnte das Bild nicht laden. Versuche es erneut.",
+    "es": "Conduit no pudo cargar esa imagen. Inténtalo de nuevo.",
+    "fr": "Conduit n’a pas pu charger cette image. Réessayez.",
+    "id": "Conduit tidak dapat memuat gambar itu. Coba lagi.",
+    "it": "Conduit non è riuscito a caricare l’immagine. Riprova.",
+    "ja": "Conduit はその画像を読み込めませんでした。もう一度お試しください。",
+    "ko": "Conduit에서 그 사진을 불러오지 못했습니다. 다시 시도하세요.",
+    "pl": "Conduit nie mógł wczytać tego obrazu. Spróbuj ponownie.",
+    "pt-BR": "O Conduit não conseguiu carregar essa imagem. Tente novamente.",
+    "ru": "Conduit не удалось загрузить это изображение. Попробуйте ещё раз.",
+    "tr": "Conduit bu resmi yükleyemedi. Tekrar deneyin.",
+    "zh-Hans": "Conduit 无法加载该图片。请重试。",
+    "zh-Hant": "Conduit 無法載入該圖片。請再試一次。"
   }
 }

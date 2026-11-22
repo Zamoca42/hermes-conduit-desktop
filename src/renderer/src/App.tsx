@@ -941,8 +941,8 @@ function Shell({
       const bot = far ? undefined : roster.bots?.find(b => sameProfileAs(b.name, target.profile))
       const onScreen = !far && (target.id === selected.id || target.id === chat.storedId)
       // A call in the chat on screen would end with it: the header says so, and a row's menu does the same.
-      // So would one in the docked chat, which a window of its own would close.
-      const dockedHere = dockedCalling && !!docked && docked.chat.id === target.id && (docked.chat.host === (target.host ?? status.url))
+      // So would one in the docked chat, which a new window of its own would close (one it has already only comes forward).
+      const dockedHere = dockedCalling && !!docked && docked.chat.id === target.id && (docked.chat.host === (target.host ?? status.url)) && !chatWindowIds.includes(target.id)
       if ((onScreen && calling) || dockedHere) {
         void tell(t('End the call to move this chat to a window of its own'))
         return
