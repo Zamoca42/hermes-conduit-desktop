@@ -457,3 +457,26 @@ describe('a chat picked while offline (desktop#283)', () => {
     expect(hook.result().transcript.items).toEqual([])
   })
 })
+
+describe('tool answers on opening a chat again (desktop#293)', () => {
+  it("fills them from the kept copy instead of reading the chat's REST page again", async () => {
+    const paths: string[] = []
+    const conduit = (window as unknown as { conduit: { httpOutcome: unknown } }).conduit
+    conduit.httpOutcome = async (_method: string, path: string) => {
+      paths.push(path)
+      return { ok: true, result: { messages: [{ role: 'tool', tool_call_id: 'c1', content: 'a.txt' }] } }
+    }
+    resumes.a = { messages: [{ role: 'user', content: 'list' }, { role: 'tool', tool_call_id: 'c1', name: 'terminal', content: '' }] }
+    const hook = mount(chatInApp, { storedId: 'a', connected: true, url: 'h1' })
+    await settle()
+    const tool = () => hook.result().transcript.items.find(i => i.kind === 'tool') as { result?: string } | undefined
+    expect(tool()?.result).toBe('a.txt')
+    expect(paths.filter(p => p.includes('/api/sessions/a/messages'))).toHaveLength(1)
+    hook.rerender({ storedId: 'b', connected: true, url: 'h1' })
+    await settle()
+    hook.rerender({ storedId: 'a', connected: true, url: 'h1' })
+    await settle()
+    expect(tool()?.result).toBe('a.txt')
+    expect(paths.filter(p => p.includes('/api/sessions/a/messages'))).toHaveLength(1)
+  })
+})

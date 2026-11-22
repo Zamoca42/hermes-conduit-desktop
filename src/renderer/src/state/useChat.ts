@@ -29,6 +29,7 @@ import {
   releaseHeld,
   reholdEdited,
   attachBoards,
+  withKeptDetails,
   emptyTranscript,
   failPendingUser,
   withdrawPendingUser,
@@ -371,7 +372,8 @@ export function useChat(storedId: string | null, profile: string | undefined, se
           title: result.info?.title,
           ...chatSettings(result.info)
         })
-        let state = resumedTranscript(result, rows)
+        // The tool answers the kept copy had come along, so only new ones are read (desktop#293).
+        let state = withKeptDetails(resumedTranscript(result, rows), cached)
         if (result.running && result.inflight?.assistant) {
           state = applyEvent(state, { type: 'message.delta', payload: { text: result.inflight.assistant } })
         }
