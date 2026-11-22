@@ -73,20 +73,27 @@ export async function runUpdate(onDone: () => void, acceptScan = false, latest: 
   updateHost = dashboardHost()
   let live = true
   let jobId: string | null = null
+  // The gateway follows the dashboard on screen: after a switch its answers are another host's, so the run stops there.
+  const onHost = () => dashboardHost() === updateHost
+  const following = () => live && onHost()
   const set = (next: UpdateState) => {
-    if (live) setUpdate(next)
+    if (following()) setUpdate(next)
   }
   set({ phase: 'updating', step: 'downloading' })
   try {
     await untilQuiet(
       heard =>
-        follow(http, set, heard, acceptScan, () => live, id => {
+        follow(http, set, heard, acceptScan, following, id => {
           jobId = id
         }),
       () => stallLimitMs(update),
       STALL_CHECK_MS
     )
-    if (live && update.phase === 'updating') {
+    if (live && !onHost()) {
+      // Left on its host, which finishes it; the row is that dashboard's, and goes on another one's page.
+      live = false
+      setUpdate({ phase: 'runningOnHost' })
+    } else if (live && update.phase === 'updating') {
       // Quiet past its limit: whatever it waited on can't land on the row any more, and its follow stops.
       live = false
       const job = ((await http('GET', SELF_UPDATE_PATH).catch(() => null)) as { job?: unknown } | null)?.job
@@ -167,12 +174,12 @@ async function follow(
 
 /**
  * Run when the page opens: a row left from another dashboard goes, whatever it says, except a run
- * still going (desktop#289). A held scan's Update Anyway on this dashboard goes once the host says
+ * still going (desktop#289), which stops by itself once the dashboard changes. A held scan's Update Anyway on this dashboard goes once the host says
  * its job moved on; a read that fails leaves it as it was.
  */
 export async function guardUpdateRow(host: string = dashboardHost(), http: UpdateHttp = hostHttp): Promise<void> {
   const held = update
-  if (held.phase === 'idle' || held.phase === 'updating') return
+  if (held.phase === 'idle' || (held.phase === 'updating' && running)) return
   if (updateHost !== host) return setUpdate({ phase: 'idle' })
   if (held.phase !== 'scanHeld') return
   try {

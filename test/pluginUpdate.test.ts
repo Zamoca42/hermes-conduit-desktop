@@ -84,3 +84,27 @@ describe('the update row on opening the page (desktop#289)', () => {
     expect(currentUpdate().phase).toBe('scanHeld')
   })
 })
+
+describe('a dashboard switch while the update runs (desktop#315 review)', () => {
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => {
+    vi.useRealTimers()
+    setUpdate({ phase: 'idle' })
+  })
+
+  it("stops following, leaves the row to its host, and another dashboard's page clears it", async () => {
+    setDashboardProfilesHost('https://a.example')
+    const http = vi.fn<UpdateHttp>(async () => ({ job }))
+    let done = false
+    void runUpdate(() => (done = true), false, null, http)
+    await vi.advanceTimersByTimeAsync(5_000)
+    setDashboardProfilesHost('https://b.example')
+    const asked = http.mock.calls.length
+    await vi.advanceTimersByTimeAsync(10_000)
+    expect(done).toBe(true)
+    expect(http.mock.calls.length - asked).toBeLessThanOrEqual(1)
+    expect(currentUpdate().phase).toBe('runningOnHost')
+    await guardUpdateRow('https://b.example', http)
+    expect(currentUpdate().phase).toBe('idle')
+  })
+})
