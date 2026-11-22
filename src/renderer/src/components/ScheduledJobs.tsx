@@ -85,12 +85,9 @@ export function ScheduledJobs({ bots, connected, profile, onProfile, tiles = [],
   /** Another dashboard's profile the list shows, picked by its face. */
   const [far, setFar] = useState<{ host: string; name: string } | null>(null)
   const farHosts = useMemo(() => [...new Set(tiles.filter(tile => !tile.own).map(tile => tile.host))], [tiles])
-  // A far face whose dashboard is no longer combined goes back to the list Chats' profile picks,
-  // and stays gone if that dashboard joins again.
+  // A far face whose dashboard is gone from the column (left the group, or down while it reconnects)
+  // shows the list Chats' profile picks; the pick is kept, so a reconnect brings it back.
   const shownFar = far && farHosts.includes(far.host) ? far : null
-  useEffect(() => {
-    if (far && !farHosts.includes(far.host)) setFar(null)
-  }, [far, farHosts])
   // All lists every combined dashboard's jobs, as Chats' All lists their chats.
   const sources = useMemo<CronSource[]>(
     () =>
@@ -260,7 +257,7 @@ export function ScheduledJobs({ bots, connected, profile, onProfile, tiles = [],
         <div className="chatlist-scroll">
           {cron.jobs === null && !cron.error ? <div className="empty">{t('Loading…')}</div> : null}
           {cron.error ? <div className="empty">{cron.error}</div> : null}
-          {cron.jobs && !jobs.length ? <div className="empty">{t('No scheduled jobs yet. Make one with the + button, or ask Hermes to run something on a schedule.')}</div> : null}
+          {cron.jobs && !jobs.length && !cron.error ? <div className="empty">{t('No scheduled jobs yet. Make one with the + button, or ask Hermes to run something on a schedule.')}</div> : null}
           {pinned.length ? (
             <div role="group" aria-label={t('Pinned')}>
               <div className="sect">{t('Pinned')}</div>

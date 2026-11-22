@@ -111,6 +111,24 @@ describe('Scheduled after a change', () => {
     hook.unmount()
   })
 
+  it("a far job paused stays paused when the refresh after it fails", async () => {
+    const conduit = (window as unknown as { conduit: { keptHttp: (url: string, path: string, method?: string) => Promise<Outcome> } }).conduit
+    let up = true
+    conduit.keptHttp = async (url, path, method) => {
+      if (method === 'POST') {
+        up = false
+        return { ok: true, result: {} }
+      }
+      return up ? answer(url, path) : { ok: false, error: 'down' }
+    }
+    const hook = renderHook(({ s }: { s: CronSource[] }) => useCron(s, true), { s: [{ host: null, profile: null }, { host: FAR, profile: null }] })
+    await settle()
+    expect(await hook.result().act('pause', hook.result().jobs!.find(j => j.id === 'far-1')!)).toBeNull()
+    await settle()
+    expect(hook.result().jobs?.find(j => j.id === 'far-1')?.enabled).toBe(false)
+    hook.unmount()
+  })
+
   it("tapping the chosen far face again goes back to Chats' profile, not to All", async () => {
     const path = '../src/renderer/src/components/ScheduledJobs.tsx'
     const { ScheduledJobs } = (await import(/* @vite-ignore */ path)) as { ScheduledJobs: unknown }
