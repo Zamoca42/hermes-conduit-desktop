@@ -101,6 +101,9 @@ export class ScrollStack {
   }
 }
 
+/** The keys that scroll a pane. */
+const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '])
+
 /** The scrolling pane a page draws in (Settings', Pulse's), for pages inside it that open pages of their own. */
 export const ScrollPane = createContext<RefObject<HTMLElement | null> | null>(null)
 
@@ -123,15 +126,19 @@ export function useBackScroll(view: string, pane?: RefObject<HTMLElement | null>
     if (!el || !pages) return
     const scrolled = () => pages.scrolled(el)
     const touched = () => pages.touched()
+    // Only keys that scroll: Tab walking the rows leaves a restore going.
+    const keyed = (e: KeyboardEvent) => {
+      if (SCROLL_KEYS.has(e.key)) pages.touched()
+    }
     el.addEventListener('scroll', scrolled, { passive: true })
     el.addEventListener('wheel', touched, { passive: true })
     el.addEventListener('pointerdown', touched)
-    el.addEventListener('keydown', touched)
+    el.addEventListener('keydown', keyed)
     return () => {
       el.removeEventListener('scroll', scrolled)
       el.removeEventListener('wheel', touched)
       el.removeEventListener('pointerdown', touched)
-      el.removeEventListener('keydown', touched)
+      el.removeEventListener('keydown', keyed)
     }
   }, [ref])
 }
