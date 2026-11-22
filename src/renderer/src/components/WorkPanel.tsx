@@ -31,6 +31,7 @@ import {
 import { Markdown } from './Markdown'
 import { Icon } from './icons'
 import { timeLabel } from '../state/chats'
+import { dropExpiredAsking } from '../state/expiredQuestions'
 import type { WaitingRow } from '../state/needsYou'
 
 interface Props {
@@ -269,6 +270,7 @@ export function QuestionCard({
     setProblem(null)
     try {
       await gateway.http('POST', workPath(`${WORK}/${encodeURIComponent(question.id)}/${action}`, profile), body)
+      if (given.kind === 'dismiss') dropExpiredAsking(question.text)
       onChanged()
     } catch (e) {
       setProblem(workRefusal(e))

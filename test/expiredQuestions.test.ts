@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { PendingRequest } from '../src/shared/ipc'
-import { answering, clearExpired, expiredFor, markExpired, noteLocked, noteRequests, resetExpiredQuestions, takeCancel } from '../src/renderer/src/state/expiredQuestions'
+import { answering, clearExpired, dropExpiredAsking, expiredFor, markExpired, noteLocked, noteRequests, resetExpiredQuestions, takeCancel } from '../src/renderer/src/state/expiredQuestions'
 import { insertQuote } from '../src/renderer/src/state/quote'
 
 const ask = (id: string, sessionId = 's1'): PendingRequest => ({
@@ -32,6 +32,14 @@ describe('questions Hermes stopped waiting for (issue 2850)', () => {
     noteRequests([ask('a')])
     takeCancel({ id: 'a', method: 'clarify', reason: 'superseded' })
     expect(expiredFor('s1')).toEqual([])
+  })
+
+  it('lets one go once the person dismisses it in the Work panel', () => {
+    markExpired(ask('a'))
+    markExpired({ ...ask('b', 's2'), params: { questions: [{ id: 'q1', question: 'Keep going?' }] } })
+    dropExpiredAsking('  Run the fix? ')
+    expect(expiredFor('s1')).toEqual([])
+    expect(expiredFor('s2')).toHaveLength(1)
   })
 
   it('ignores approvals and requests it never showed', () => {

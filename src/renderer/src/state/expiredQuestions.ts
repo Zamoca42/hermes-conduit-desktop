@@ -69,6 +69,28 @@ export function clearExpired(sessionId: string | null | undefined): void {
   changed()
 }
 
+/** What a kept card asked: each of a batch's questions, or its one. */
+function asked(request: PendingRequest): string[] {
+  const params = request.params ?? {}
+  const list = Array.isArray(params.questions) ? params.questions : []
+  const texts = list
+    .map(q => (q && typeof q === 'object' && typeof (q as Record<string, unknown>).question === 'string' ? ((q as Record<string, unknown>).question as string) : ''))
+    .concat(typeof params.question === 'string' ? [params.question] : [])
+  return texts.map(text => text.trim()).filter(Boolean)
+}
+
+/**
+ * The person dismissed a kept question in the Work panel or the asked-question bar (hermes-conduit issue 3105):
+ * its card in the chat goes too, so it doesn't still offer to answer a question the bot was told was dismissed.
+ * The Work panel's question carries its wording, not the request's id, so the wording matches it.
+ */
+export function dropExpiredAsking(text: string): void {
+  const wanted = text.trim()
+  if (!wanted || !expired.some(e => asked(e.request).includes(wanted))) return
+  expired = expired.filter(e => !asked(e.request).includes(wanted))
+  changed()
+}
+
 /** The kept questions of one live chat. */
 export function expiredFor(sessionId: string | null | undefined): ExpiredQuestion[] {
   return sessionId ? expired.filter(e => e.request.sessionId === sessionId) : []
