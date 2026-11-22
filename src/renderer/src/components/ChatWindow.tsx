@@ -248,6 +248,7 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
       }
       if (looksLikeSlashCommand(text) && !attachments.length) {
         const outcome = await command(text, commands, { botChat })
+        if (outcome.kind === 'unsent') return false
         // A new chat starts in the main window; this one keeps its chat.
         if (outcome.kind === 'new') {
           notice(docked ? t('Start a new chat from the chat list. This chat stays open.') : t('Start a new chat in the main window. This window keeps its chat.'), 'info')
