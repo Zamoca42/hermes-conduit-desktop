@@ -93,8 +93,8 @@ export class ScreenWindowSet<W extends ScreenWindowHandle = ScreenWindowHandle> 
     }
     const windows = [...this.open]
     this.open.clear()
-    for (const [profile, window] of windows) {
-      this.handBack(profile)
+    for (const [key, window] of windows) {
+      this.handBack(key)
       window.close()
     }
     if (windows.length) this.changed(this.profiles())

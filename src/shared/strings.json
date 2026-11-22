@@ -44308,5 +44308,20 @@
     "tr": "Bu görev artık gösterilen panoda değil.",
     "zh-Hans": "此任务已不在当前显示的看板上。",
     "zh-Hant": "此任務已不在目前顯示的看板上。"
+  },
+  "End the call to open this chat": {
+    "de": "Beende den Anruf, um diesen Chat zu öffnen",
+    "es": "Termina la llamada para abrir este chat",
+    "fr": "Terminez l’appel pour ouvrir cette conversation",
+    "id": "Akhiri panggilan untuk membuka obrolan ini",
+    "it": "Termina la chiamata per aprire questa chat",
+    "ja": "このチャットを開くには通話を終了してください",
+    "ko": "이 채팅을 열려면 통화를 끝내세요",
+    "pl": "Zakończ połączenie, aby otworzyć ten czat",
+    "pt-BR": "Encerre a chamada para abrir esta conversa",
+    "ru": "Завершите звонок, чтобы открыть этот чат",
+    "tr": "Bu sohbeti açmak için aramayı bitirin",
+    "zh-Hans": "结束通话后才能打开此聊天",
+    "zh-Hant": "結束通話後才能打開此聊天"
   }
 }
