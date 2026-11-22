@@ -252,7 +252,7 @@ export function mergeKeptChats(host: string, pages: readonly unknown[]): OtherCh
  * `sessions.changed` settles. A failed read keeps what the host showed; a host
  * let go shows nothing more.
  */
-/** The kept hosts whose chats have been read at least once since they were last let go: none listed there then means none. */
+/** The kept hosts whose chats the mounted useKeptChats has read at least once: none listed there then means none. */
 export const keptChatsRead = new Set<string>()
 
 export function useKeptChats(kept: readonly KeptHost[], on: boolean): OtherChatRow[] {
