@@ -149,6 +149,7 @@ import {
   useKeptBots,
   useKeptWork,
   useKeptRooms,
+  keptChatsRead,
   dropKeptCopy,
   combinedRooms,
   type OtherRoom,
@@ -1824,7 +1825,7 @@ function Shell({
     // Its Bot Chat opens in place; a bot with none yet starts one there, made on its own dashboard by the first send.
     // A second click while that fresh one is shown keeps it, and what's typed in it.
     const shown = dockedRef.current
-    if (!other.bot.botChatId && shown?.fresh && shown.botChat && shown.host === other.host && shown.profile === other.bot.name) {
+    if (!other.bot.botChatId && shown?.fresh && shown.botChat && shown.host === other.host && (shown.profile ?? 'default').toLowerCase() === other.bot.name.toLowerCase()) {
       setSection('chats')
       return
     }
@@ -1851,8 +1852,9 @@ function Shell({
       const newest = otherChats.filter(r => r.host === tile.host && same(r.profile)).sort((a, b) => (b.activeAt ?? 0) - (a.activeAt ?? 0))[0]
       if (tile.bot.botChatId && (tile.bot.lastActive ?? 0) >= (newest?.activeAt ?? 0)) return openOtherBot({ host: tile.host, bot: tile.bot })
       if (newest) openDocked({ host: newest.host, id: newest.id, profile: newest.profile, title: newest.title })
-      // A bot with no chats there yet starts its Bot Chat in place, as its sidebar face does.
-      else openOtherBot({ host: tile.host, bot: tile.bot })
+      // A bot with no chats there yet starts its Bot Chat in place, as its sidebar face does; not before that
+      // dashboard's chats are first read, when it may have some.
+      else if (keptChatsRead.has(tile.host)) openOtherBot({ host: tile.host, bot: tile.bot })
     },
     [otherChats, openOtherBot, openDocked]
   )
