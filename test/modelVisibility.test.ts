@@ -87,3 +87,11 @@ describe('Edit draws', () => {
     expect(html).not.toContain('h, Visible')
   })
 })
+
+describe('Edit and models Hermes says cannot run', () => {
+  it('leaves them out, as every list does', () => {
+    const row: ModelProviderRow = { slug: 'p', name: 'P', models: ['a', 'b'], unavailable_models: ['b'] }
+    expect(shownCount(NOTHING_HIDDEN, row)).toBe(1)
+    expect(editorMatches([row], '')[0]!.models).toEqual(['a'])
+  })
+})
