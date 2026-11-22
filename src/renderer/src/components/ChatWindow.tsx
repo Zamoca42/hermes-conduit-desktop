@@ -169,7 +169,13 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
    * this window back.
    */
   const paneShown = useRef(true)
-  useEffect(() => (docked ? window.conduit.onDockedShown(shown => (paneShown.current = shown)) : undefined), [docked])
+  useEffect(() => {
+    if (!docked) return
+    const off = window.conduit.onDockedShown(shown => (paneShown.current = shown))
+    // A tell sent before this listened is asked for again.
+    window.conduit.dockedToPane('ask')
+    return off
+  }, [docked])
   // The chat's title as stored (kept for reopening); the notification builders read "Chat" and
   // "Untitled chat" as no title, so the bot's name stands in.
   const chatTitle = botChat ? botTitle : cleanTitle(chat.title || request.title || '') || undefined
@@ -225,6 +231,8 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
   const openInWindow = useCallback(async () => {
     if (!windowId) return
     const opened = await window.conduit.openChatWindow({ id: windowId, profile, title, author: botTitle, host, ...(botChat ? { botChat: true } : {}) })
+    // The window may go by an id the pane wasn't opened with (a new chat's stored id), so the pane is told.
+    if (opened && docked) window.conduit.dockedToPane('moved')
     if (opened) return
     const open = await window.conduit.chatWindows()
     notice(
@@ -233,7 +241,7 @@ function WindowChat({ request, status }: { request: ChatWindowRequest; status: C
         : t('The chat didn’t open. Try again.'),
       'error'
     )
-  }, [windowId, profile, title, botTitle, host, botChat, notice])
+  }, [windowId, profile, title, botTitle, host, botChat, notice, docked])
   const openInMain = useCallback(() => {
     window.conduit.openChat({ storedId: chat.storedId ?? request.id, profile, title, ...(botChat ? { botChat: true } : {}), ...(host ? { host } : {}) })
     window.close()
