@@ -3,7 +3,7 @@
  * thresholds can be tested.
  */
 
-export type CallPhase = 'starting' | 'listening' | 'hearing' | 'thinking' | 'speaking' | 'muted' | 'failed'
+export type CallPhase = 'starting' | 'listening' | 'hearing' | 'thinking' | 'speaking' | 'muted' | 'ready' | 'failed'
 
 /** The meter's level that counts as speech, and as quiet. */
 export const SPEECH_LEVEL = 0.08

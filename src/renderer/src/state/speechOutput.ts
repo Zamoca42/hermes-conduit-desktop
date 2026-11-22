@@ -98,16 +98,17 @@ export function chooseVoice<V extends VoiceLike>(voices: V[], lang: string, pick
 
 /**
  * Speaks `text` with this computer's voice for the app's language (the one
- * picked in Settings, or `voiceURI` for a preview). `done` settles when it ends,
+ * picked in Settings, or `voiceURI` for a preview), at `rate` (Read Aloud's speed). `done` settles when it ends,
  * rejecting if the system couldn't speak; `stop` ends it at once (and `done`
  * settles as ended).
  */
-export function speakOnComputer(text: string, voiceURI?: string): { done: Promise<void>; stop: () => void } {
+export function speakOnComputer(text: string, voiceURI?: string, rate = 1): { done: Promise<void>; stop: () => void } {
   const synth = window.speechSynthesis
   synth.cancel()
   const utterance = new SpeechSynthesisUtterance(text)
   const lang = language()
   utterance.lang = lang
+  utterance.rate = rate
   const voice = chooseVoice(synth.getVoices(), lang, voiceURI ?? computerVoicePick(lang))
   if (voice) utterance.voice = voice
   let stopped = false

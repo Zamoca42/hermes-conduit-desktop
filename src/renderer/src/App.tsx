@@ -180,6 +180,7 @@ import { IncomingCall } from './components/IncomingCall'
 import { declineOnHost, useRings, type Ring } from './state/rings'
 import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
+import { READ_ALOUD_SPEEDS, readAloudSpeed, setReadAloudSpeed, speedLabel } from './state/classicVoice'
 import { useCommands } from './state/useCommands'
 import { authorityMutation, moveChat, mutateSession } from './state/chatActions'
 import { branchPlan } from './state/branch'
@@ -2957,6 +2958,7 @@ function Settings({
   const keptState = (url: string) => kept.find(h => h.url === url)?.state ?? null
   const [notifications, setNotifications] = useState(notificationsEnabled)
   const [readAloudOn, setReadAloudOn] = useState(readsRepliesAloud)
+  const [speed, setSpeed] = useState(readAloudSpeed)
   const [page, setPage] = useState<
     'main' | 'usage' | 'models' | 'capabilities' | 'memory' | 'workspace' | 'advanced' | 'chat' | 'plugin' | 'vault' | 'appearance' | 'multiplayer' | 'voice' | 'calls'
   >('main')
@@ -3024,6 +3026,24 @@ function Settings({
               </label>
               <p className="meta settings-caption">
                 {t('Each reply in the open chat is read aloud as it finishes, in the voice below. Calls speak their own replies.')}
+              </p>
+              <span className="meta">{t('Speed')}</span>
+              <div className="segmented" role="group" aria-label={t('Speed')}>
+                {READ_ALOUD_SPEEDS.map(s => (
+                  <button
+                    key={s}
+                    aria-pressed={speed === s}
+                    onClick={() => {
+                      setSpeed(s)
+                      setReadAloudSpeed(s)
+                    }}
+                  >
+                    {speedLabel(s)}
+                  </button>
+                ))}
+              </div>
+              <p className="meta settings-caption">
+                {t('How fast a reply is read aloud, without changing the voice’s pitch. Applies from the next reply read, on this computer. Your speech server and voice calls always play at normal speed.')}
               </p>
               <ReadAloudVoiceSetting profile={profile} />
               <VoiceModeSettings profile={profile} />

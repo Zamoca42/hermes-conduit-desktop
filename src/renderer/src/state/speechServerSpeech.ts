@@ -342,15 +342,17 @@ export function speakHere(
   text: string,
   output: 'computer' | 'server',
   profile?: string,
-  note: (step: string) => void = () => undefined
+  note: (step: string) => void = () => undefined,
+  /** Read Aloud's speed, for this computer's voice; the speech server's stream plays at normal speed. */
+  rate = 1
 ): { done: Promise<void>; stop: () => void } {
-  if (output === 'computer') return speakOnComputer(text)
+  if (output === 'computer') return speakOnComputer(text, undefined, rate)
   let stopped = false
   let current = speakWithSpeechServer(text, profile)
   const done = current.done.catch((e: unknown) => {
     if (stopped || !computerCanSpeak()) throw e
     note(`Speech server failed (${e instanceof Error ? e.message : 'error'}); speaking with this computer’s voice`)
-    current = speakOnComputer(text)
+    current = speakOnComputer(text, undefined, rate)
     return current.done
   })
   return {
