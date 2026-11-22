@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { KeptScroll } from '../state/keptScroll'
 import { t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { timeLabel } from '../state/chats'
@@ -34,6 +35,22 @@ export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewCh
   const [creating, setCreating] = useState(false)
   const [reload, setReload] = useState(0)
   const withProfile = useCallback((params: Record<string, unknown>) => (profile ? { ...params, profile } : params), [profile])
+  // Back from a project lands where the list was: the list draws afresh, so it restores its kept spot.
+  const listScroll = useRef<KeptScroll | null>(null)
+  listScroll.current ??= new KeptScroll()
+  const listScroller = useRef<HTMLDivElement>(null)
+  const wasOpen = useRef(false)
+  useLayoutEffect(() => {
+    const kept = listScroll.current
+    if (!kept) return
+    if (open) {
+      wasOpen.current = true
+      return
+    }
+    if (wasOpen.current) kept.opened()
+    wasOpen.current = false
+    if (listScroller.current) kept.drew(listScroller.current)
+  })
 
   useEffect(() => {
     if (!connected) return
@@ -100,7 +117,14 @@ export function ProjectsPane({ profile, connected, selectedId, onSelect, onNewCh
           }}
         />
       ) : null}
-      <div className="chatlist-scroll">
+      <div
+        ref={listScroller}
+        className="chatlist-scroll"
+        onScroll={e => listScroll.current?.scrolled(e.currentTarget)}
+        onWheel={() => listScroll.current?.touched()}
+        onPointerDown={() => listScroll.current?.touched()}
+        onKeyDown={() => listScroll.current?.touched()}
+      >
         {projects === null && !error ? <div className="empty">{t('Loading projects…')}</div> : null}
         {error ? <div className="empty">{`${t('Couldn’t Load Projects')} ${error}`}</div> : null}
         {projects && !projects.some(p => !p.isHome) && !creating ? <div className="empty">{t('Projects you make here or in Hermes Desktop show here.')}</div> : null}

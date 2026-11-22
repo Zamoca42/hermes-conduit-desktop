@@ -1,5 +1,6 @@
 import { answerKeeper, keptAnswer } from '../state/keptAnswers'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useBackScroll } from '../state/keptScroll'
 import { locale, t } from '@shared/i18n'
 import { gateway } from '../gateway'
 import { PULSE } from '../state/pulse'
@@ -46,6 +47,8 @@ export function PulseSettings({ onBack, onChanged }: { onBack: () => void; onCha
   const [notice, setNotice] = useState<string | null>(null)
   const [noteDraft, setNoteDraft] = useState<string | null>(null)
   const [showMemory, setShowMemory] = useState(false)
+  // Back from What Pulse remembers lands where Pulse settings was.
+  useBackScroll(showMemory ? 'memory' : 'settings')
   const [showBehind, setShowBehind] = useState(false)
   const language = locale()
 
