@@ -98,4 +98,43 @@ describe('the Artifacts page across combined dashboards', () => {
     expect([...host.querySelectorAll('.artifact-name')].map(n => n.textContent)).toEqual(['new.png', 'old.png'])
     act(() => root.unmount())
   })
+
+  it("keeps another dashboard's link that this host has too, and says so when a dashboard shown alone can't be read", async () => {
+    const link = { kind: 'link', source: 'link', session_id: 's1', session_title: 'Chat', message_id: 9, timestamp: 9_000, url: 'https://example.com/a' }
+    http.mockImplementation(async () => ({ ok: true, items: [link], next_before: null }))
+    let farDown = false
+    ;(window as unknown as { conduit: unknown }).conduit = {
+      keptHttp: async (_url: string, path: string) =>
+        path === '/api/profiles'
+          ? { ok: true, result: { profiles: [{ name: 'default' }] } }
+          : farDown
+            ? { ok: false, error: 'Far is offline' }
+            : { ok: true, result: { ok: true, items: [{ ...link, timestamp: 8_000 }], next_before: null } }
+    }
+    const path = '../src/renderer/src/components/ArtifactsPanel.tsx'
+    const { ArtifactsPanel } = (await import(/* @vite-ignore */ path)) as { ArtifactsPanel: unknown }
+    const host = document.createElement('div')
+    const root = createRoot(host)
+    act(() =>
+      root.render(
+        createElement(ArtifactsPanel as never, {
+          page: true,
+          sessionIds: [],
+          kept: [{ url: FAR, state: 'live' }],
+          dashboards: [
+            { url: 'https://here.example', name: 'Here', badge: null },
+            { url: FAR, name: 'Far', badge: null }
+          ]
+        } as never)
+      )
+    )
+    await settle()
+    expect(host.querySelectorAll('.artifact-name')).toHaveLength(2)
+    farDown = true
+    const chip = [...host.querySelectorAll('button')].find(b => b.textContent === 'Far')!
+    act(() => chip.click())
+    await settle()
+    expect(host.textContent).toContain('Far is offline')
+    act(() => root.unmount())
+  })
 })

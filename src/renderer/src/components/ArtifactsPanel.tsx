@@ -58,7 +58,7 @@ interface Props {
 type Tab = ArtifactFilter | 'saved'
 /** A store the list reads: this host's profile ('here'), or a profile of another combined host. */
 type Store = FeedStore & { key: string; dashboard?: string; profile?: string }
-/** The stores read so far, how many hosts' first pages are still out, and why this host's couldn't be read. */
+/** The stores read so far, how many hosts' first pages are still out, and the read failure the list shows (this host's, or a dashboard its chip shows alone). */
 type Feed = { stores: Store[]; pending: number; error: string | null }
 type Viewer = { item: ArtifactItem; image?: string; page?: string; text?: string; error?: string }
 
