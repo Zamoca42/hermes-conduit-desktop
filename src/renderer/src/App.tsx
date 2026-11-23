@@ -2698,8 +2698,10 @@ function Shell({
           </main>
         ) : section === 'pulse' && shownPulseHost ? (
           <main className="needs pulse-page docked-pulse">
-            <div className="needs-inner docked-pulse-chips">
-              <PulseHostChips chips={pulseHostChips} onPick={pickPulseHost} />
+            <div className="docked-pulse-chips">
+              <div className="needs-inner">
+                <PulseHostChips chips={pulseHostChips} onPick={pickPulseHost} />
+              </div>
             </div>
             <DockedPulseFrame key={shownPulseHost} host={shownPulseHost} />
           </main>

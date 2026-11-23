@@ -12194,14 +12194,33 @@ button.ghost:disabled {
   border: 0;
 }
 
-/* Another combined dashboard's Pulse feed: the chips over its docked frame, which fills the page. */
-.docked-pulse {
+/*
+ * Another combined dashboard's Pulse feed: the chips over its docked frame, which fills the page. The chips and
+ * the feed sit where this dashboard's page draws them, so picking a chip moves neither: the chip row takes the
+ * page's padding and centered column (full width, not shrunk to the chips and centered by the column's auto
+ * margins), and the frame's page starts its header the chips' gap below them.
+ */
+main.docked-pulse {
   display: flex;
   flex-direction: column;
+  padding: 0;
+  overflow: hidden;
 }
-.docked-pulse .docked-pulse-chips {
+.docked-pulse-chips {
   flex: none;
-  padding-bottom: 0;
+  padding: 28px 24px 0;
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+.docked-pulse-chips .pulse-hosts {
+  margin-bottom: 0;
+}
+/* Both feeds keep their scrollbar's room, so a feed short enough not to scroll sits where a long one does. */
+main.pulse-page {
+  scrollbar-gutter: stable;
+}
+.chat-window-page > main.pulse-page {
+  padding-top: 24px;
 }
 
 /* Another combined dashboard's group chat in its docked frame: a note over the room when asking an agent fails. */
