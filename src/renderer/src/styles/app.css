@@ -655,6 +655,60 @@ a:hover {
   overflow-x: auto;
 }
 
+/* A reply's code block, wherever a reply is drawn (chat, call cards): Copy sits in a
+   band above the code, fixed to the block, so it never covers a line however wide.
+   The wrapper carries the block's margins, the pre's own by default, so the
+   :first-child and :last-child resets of whatever holds the reply still reach them. */
+.code-block {
+  position: relative;
+  margin: 1em 0;
+}
+
+.assistant .code-block {
+  margin: 0 0 10px;
+}
+
+/* As .assistant > :last-child, which the rule above outranks by coming later. */
+.assistant > .code-block:last-child {
+  margin-bottom: 0;
+}
+
+.code-block pre {
+  margin: 0;
+  padding-top: 30px;
+}
+
+.code-copy {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.code-copy:hover {
+  color: var(--text);
+}
+
+.code-copy.copied {
+  color: var(--success);
+}
+
+.code-copy svg {
+  width: 14px;
+  height: 14px;
+}
+
 .assistant pre code {
   padding: 0;
   background: none;
@@ -697,7 +751,9 @@ a:hover {
   font-weight: 600;
 }
 
-.assistant.streaming > :last-child::after {
+/* The caret after the last line; in a code block, inside its pre rather than below it. */
+.assistant.streaming > :last-child:not(.code-block)::after,
+.assistant.streaming > .code-block:last-child > pre::after {
   content: '';
   display: inline-block;
   width: 8px;
@@ -2881,6 +2937,10 @@ html[data-window='quick'] body {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-3);
+}
+
+.command-output .code-block {
+  margin: 0;
 }
 
 .command-output pre {
