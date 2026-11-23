@@ -1,6 +1,11 @@
 # Conduit for desktop
 
-Conduit for Windows and Mac: a desktop client for
+[![Download](https://img.shields.io/github/v/release/kaishi00/hermes-conduit-desktop?label=Download&color=blue)](https://github.com/kaishi00/hermes-conduit-desktop/releases/latest)
+[![iPhone app](https://img.shields.io/badge/iPhone-Hermes_Conduit-blue)](https://github.com/kaishi00/hermes-conduit)
+[![Website](https://img.shields.io/badge/Website-hermesconduit.app-blue)](https://hermesconduit.app)
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/agrias)
+
+Conduit for Mac, Windows and Linux: a desktop client for
 [Hermes Agent](https://github.com/NousResearch/hermes-agent), from the makers
 of the [Conduit](https://github.com/kaishi00/hermes-conduit) iPhone app. It
 talks to the same Hermes dashboard and the same
@@ -154,6 +159,14 @@ releases; a release only releases.
 
 As in the phone app, logic that both apps need goes in the Conduit plugin,
 and this app draws what it sends.
+
+## More from Conduit
+
+- [Hermes Conduit](https://github.com/kaishi00/hermes-conduit): the iPhone, iPad and Apple Watch app, on the [App Store](https://apps.apple.com/us/app/hermes-conduit/id6790977764)
+- [Hermes Conduit Notifier](https://github.com/kaishi00/hermes-conduit-notifier): the plugin for your Hermes host
+- Website: [hermesconduit.app](https://hermesconduit.app)
+- Bug reports: [GitHub issues](https://github.com/kaishi00/hermes-conduit-desktop/issues)
+- Support the project on [Ko-fi](https://ko-fi.com/agrias)
 
 ## License
 
