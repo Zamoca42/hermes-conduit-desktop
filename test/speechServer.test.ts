@@ -84,7 +84,7 @@ describe('your speech server', () => {
     expect(speechServerTest({ connected: true, abilities: { answers_alone: true } }).answersAlone).toBe(true)
   })
 
-  it('saves under voice.speech_server as the phone does: trimmed, empty removed, a switch off removed', () => {
+  it('saves under voice.speech_server as the phone does: trimmed, an emptied value as "" and a switch off as false (app issue 3153)', () => {
     const config = {
       voice: {
         tts: 'x',
@@ -107,8 +107,12 @@ describe('your speech server', () => {
     expect(next).toEqual({
       voice: {
         tts: 'x',
+        // Hermes merges a save over the file, so a key left out would keep its old value.
         speech_server: {
           url: 'ws://new',
+          api_key: '',
+          voice: '',
+          drive_turns: false,
           model: 'gpt-realtime',
           own_model: true
         }
