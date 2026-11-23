@@ -57,6 +57,26 @@ describe("a live call's waiting questions (hermes-conduit issue 2985)", () => {
     expect(await askedQuestionsForCall('work')).toContain('- P7: «Which branch?»')
   })
 
+  it('ask a missing plugin (404) only once', async () => {
+    host(Object.assign(new Error('not found'), { code: 404 }))
+    expect(await askedQuestionsForCall('work')).toBe('')
+    expect(http.mock.calls.filter(([, path]) => String(path).includes('/capabilities'))).toHaveLength(1)
+  })
+
+  it("ask again after a 200 whose body isn't the plugin's", async () => {
+    let asked = 0
+    http.mockImplementation((_method: unknown, path: unknown) => {
+      if (String(path).includes('/capabilities')) {
+        asked += 1
+        return Promise.resolve(asked === 1 ? '<html>proxy</html>' : { ok: true, version: '0.191.0', loaded_version: '0.191.0', capabilities: [] })
+      }
+      if (String(path).includes('/waiting')) return Promise.resolve(WAITING)
+      return new Promise(() => {})
+    })
+    expect(await askedQuestionsForCall('work')).toContain('- P7: «Which branch?»')
+    expect(asked).toBe(2)
+  })
+
   it("aren't told while a new enough plugin waits for its restart, the older one still running", async () => {
     host({ ok: true, version: '0.191.0', loaded_version: null, restart_needed: true, capabilities: ['waiting-list'] })
     expect(await askedQuestionsForCall('work')).toBe('')

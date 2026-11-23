@@ -1140,8 +1140,11 @@ function Shell({
   mutedRef.current = (sessionId: string) => !!muteOfTarget(chatMute.mutes, muteRowRef.current(sessionId))
   const chatMuteRef = useRef(chatMute.mutes)
   chatMuteRef.current = chatMute.mutes
+  // A chat whose profile isn't known is asked of every profile: those the
+  // list shows and every bot's, so one with no listed rows is asked too
+  // (hermes-conduit #3143).
   const muteProfilesRef = useRef<string[]>([])
-  muteProfilesRef.current = doneProfiles
+  muteProfilesRef.current = [...new Set([...doneProfiles, ...glowBots.map(b => b.name || 'default')])].sort()
   const [marks, setMarks] = useState<ChatMarks>(() => loadMarks(markHost))
   useEffect(() => setMarks(loadMarks(markHost)), [markHost])
   const updateMarks = useCallback(
