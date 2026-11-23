@@ -1563,10 +1563,16 @@ body.resizing-columns {
   text-align: center;
 }
 
+/* A page's padding, shared with the chip row over another dashboard's docked Pulse feed. */
+:root {
+  --page-pad-top: 28px;
+  --page-pad-x: 24px;
+}
+
 main.needs {
   flex: 1;
   overflow-y: auto;
-  padding: 28px 24px 48px;
+  padding: var(--page-pad-top) var(--page-pad-x) 48px;
 }
 
 .needs-inner {
@@ -12205,10 +12211,12 @@ main.docked-pulse {
   flex-direction: column;
   padding: 0;
   overflow: hidden;
+  /* Not this page's own gutter too: the chip row and the frame's page each keep one, so only one counts. */
+  scrollbar-gutter: auto;
 }
 .docked-pulse-chips {
   flex: none;
-  padding: 28px 24px 0;
+  padding: var(--page-pad-top) var(--page-pad-x) 0;
   overflow: hidden;
   scrollbar-gutter: stable;
 }

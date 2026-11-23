@@ -2698,6 +2698,7 @@ function Shell({
           </main>
         ) : section === 'pulse' && shownPulseHost ? (
           <main className="needs pulse-page docked-pulse">
+            {/* The chips sit over the frame on the page's own padding and column, so picking one moves nothing. */}
             <div className="docked-pulse-chips">
               <div className="needs-inner">
                 <PulseHostChips chips={pulseHostChips} onPick={pickPulseHost} />
