@@ -11,6 +11,7 @@ import { HOST_NAME_MAX } from '@shared/hostNames'
 import type { ConnectionStatus, HostSummary, LanguageChoice, MenuAction } from '@shared/ipc'
 import { BotsHome, useReplyFace, type BotAction, type BotsDraft } from './components/BotsHome'
 import { ProjectsPane } from './components/ProjectsPane'
+import { ArchivedChats } from './components/ArchivedChats'
 import { ChatList, type MoveTarget } from './components/ChatList'
 import { PROFILE_COLUMN_WIDTH } from './components/ProfileColumn'
 import { SettingsProfileCard, settingsProfileTile } from './components/SettingsProfile'
@@ -182,7 +183,7 @@ import { VoiceModeSettings } from './components/VoiceModeSettings'
 import { readAloud, readsRepliesAloud, setReadsRepliesAloud } from './state/readAloud'
 import { READ_ALOUD_SPEEDS, readAloudSpeed, setReadAloudSpeed, speedLabel } from './state/classicVoice'
 import { useCommands } from './state/useCommands'
-import { authorityMutation, moveChat, mutateSession } from './state/chatActions'
+import { authorityMutation, moveChat, mutateSession, sessionIsBusy } from './state/chatActions'
 import { branchPlan } from './state/branch'
 import { ROOM_CHATS_CAPABILITY, wrapUpPrompt, type RoomChatAgent } from './state/roomChats'
 import { openRoomChatHere } from './state/roomChatOpen'
@@ -404,6 +405,10 @@ function Shell({
     if (dockedHost) tellDockedShown(dockedFrame.current, section === 'chats')
   }, [section, dockedHost])
   const [projectsOpen, setProjectsOpen] = useState(false)
+  const [archivedOpen, setArchivedOpen] = useState(false)
+  useEffect(() => {
+    if (section !== 'chats' || !connected) setArchivedOpen(false)
+  }, [section, connected])
   const list = useChatList(connected, status.url ?? '')
   const {
     transcriptStore,
@@ -444,6 +449,7 @@ function Shell({
   const chatPane = useRef<HTMLElement>(null)
   chatProfileRef.current = chatProfile
   const newChat = useCallback(() => {
+    setArchivedOpen(false)
     setSection('chats')
     setSelected({ id: null, profile: chatProfileRef.current ?? undefined })
   }, [])
@@ -502,6 +508,7 @@ function Shell({
         hideList(false)
       }
     } else if (action === 'search') {
+      setArchivedOpen(false)
       setSection('chats')
       hideList(false)
       // The list mounts with Chats.
@@ -514,6 +521,7 @@ function Shell({
   useEffect(() => {
     const offMenu = window.conduit.onMenu(action => runShortcut.current(action))
     const offOpen = window.conduit.onOpenChat(ref => {
+      setArchivedOpen(false)
       // Another combined dashboard's chat (back from its window, a docked chat's notification, a docked Pulse card) docks here.
       if (ref.host && ref.host !== statusUrlRef.current) {
         const fresh = ref.fresh === true || !ref.storedId
@@ -743,6 +751,7 @@ function Shell({
     const rows = list.rows ? withVoice(list.rows, list.archived, voice) : list.rows
     return rows && (pulseChat || workSessions.size) ? rows.filter(row => row.id !== pulseChat && !workSessions.has(row.id)) : rows
   }, [list.rows, list.archived, voice, pulseChat, workSessions])
+  const archiveVisibleIds = useMemo(() => new Set((listedRows ?? []).map(row => row.id)), [listedRows])
   // The open chat's bot's work: its Bot Chat shows a line under its title, and a workstream's chat goes back to it.
   const [workOpen, setWorkOpen] = useState(false)
   const openBotChat = selected.id ? roster.bots?.find(bot => bot.botChatId === selected.id) : undefined
@@ -1569,6 +1578,75 @@ function Shell({
     if (running && chat.storedId) ids.add(chat.storedId)
     return ids
   }, [liveStatus, running, chat.storedId])
+  // A dashboard can change while a snapshot is being read: never send its
+  // following mutation through the dashboard that replaced it.
+  const archiveMutations = useRef(new Set<string>())
+  const archiveHostMounted = useRef(false)
+  useEffect(() => {
+    archiveHostMounted.current = true
+    return () => { archiveHostMounted.current = false }
+  }, [])
+  const changeArchived = async (row: ChatRow, archived: boolean | null): Promise<boolean> => {
+    const host = status.url
+    if (!connected || !host) {
+      void tell(t('Not connected to Hermes.'))
+      return false
+    }
+    if (archived !== false && (liveStatus.has(row.id) || runningIds.has(row.id) || waitingIds.has(row.id) || (calling && (selected.id === row.id || chat.storedId === row.id)))) {
+      void tell(t('Hermes is still busy in this chat. Try again in a moment.'))
+      return false
+    }
+    const key = `${(row.profile ?? 'default').toLowerCase()}\0${row.id}`
+    if (archiveMutations.current.has(key)) return false
+    archiveMutations.current.add(key)
+    try {
+      if (archived !== false) {
+        // The background registry covers at most eight profiles in All; ask
+        // this row's own profile before making an irreversible state change.
+        const profile = row.profile && row.profile !== 'default' ? { profile: row.profile } : undefined
+        const active = await gateway.rpc('session.active_list', profile)
+        if (!archiveHostMounted.current || statusUrlRef.current !== host) return false
+        if (sessionIsBusy(active, row.id)) {
+          void tell(t('Hermes is still busy in this chat. Try again in a moment.'))
+          return false
+        }
+      }
+      const http: typeof gateway.http = (method, path, body, timeoutMs) => {
+        if (!archiveHostMounted.current || statusUrlRef.current !== host) return Promise.reject(new Error(t('Not connected to Hermes.')))
+        return gateway.http(method, path, body, timeoutMs)
+      }
+      await mutateSession(http, row.id, row.profile, archived === null ? null : { archived })
+      if (archived === true && row.pinned) {
+        try {
+          await mutateSession(http, row.id, row.profile, { pinned: false })
+        } catch (error) {
+          if (archiveHostMounted.current && statusUrlRef.current === host) {
+            void tell(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: error instanceof Error ? error.message : String(error) }))
+          }
+        }
+      }
+      if (!archiveHostMounted.current || statusUrlRef.current !== host) return false
+      if (archived !== false) {
+        list.patchRow(row.id, null)
+        setSelected(current => sameProfileAs(current.profile, row.profile) &&
+          (current.id === row.id || (current === selected && chat.storedId === row.id))
+          ? { id: null, profile: chatProfileRef.current ?? undefined }
+          : current)
+        setBeside(current => current?.id === row.id && sameProfileAs(current.profile, row.profile) ? null : current)
+        window.conduit.closeChatWindows([row.id])
+        if (archived === null) updatePins(current => withoutChat(current, row.profile, row.id))
+      }
+      void list.reload()
+      return true
+    } catch (error) {
+      if (archiveHostMounted.current && statusUrlRef.current === host) {
+        void tell(t('Couldn’t change “{title}”: {reason}', { title: row.title, reason: error instanceof Error ? error.message : String(error) }))
+      }
+      return false
+    } finally {
+      archiveMutations.current.delete(key)
+    }
+  }
   // A project's chats read as their chat rows do: the list's copy when it has one (Unread dot on projects).
   const projectChatUnread = useCallback(
     (chat: ProjectChat) => {
@@ -2333,6 +2411,8 @@ function Shell({
                   onOtherProfile={showOtherProfile}
                   onPin={row => void chatAction(row, { pinned: !row.pinned })}
                   onRename={(row, title) => void chatAction(row, { title })}
+                  onArchive={connected ? row => changeArchived(row, true) : undefined}
+                  onArchived={connected ? () => setArchivedOpen(true) : undefined}
                   marks={marks}
                   onStar={row => updateMarks(current => toggleStar(current, row))}
                   onToggleRead={toggleRead}
@@ -2846,6 +2926,16 @@ function Shell({
         )}
       </div>
       {shortcutsOpen ? <ShortcutsSheet onClose={closeShortcuts} /> : null}
+      {archivedOpen && section === 'chats' && connected ? (
+        <ArchivedChats
+          host={status.url ?? ''}
+          profile={chatProfile}
+          visibleVoiceIds={archiveVisibleIds}
+          onClose={() => setArchivedOpen(false)}
+          onRestore={row => changeArchived(row, false)}
+          onDelete={row => changeArchived(row, null)}
+        />
+      ) : null}
       {shownInvite ? (
         <RoomInviteCard
           invite={shownInvite}
