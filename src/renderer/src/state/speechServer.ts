@@ -133,7 +133,7 @@ export const savedNames = (status: SpeechServerStatus | null): Names => ({
   transcription_model: status?.transcriptionModel ?? ''
 })
 
-/** The names that differ from what the host has; an emptied one is removed. */
+/** The names that differ from what the host has; an emptied one is sent as "" (see withSpeechServer). */
 export function changedNames(drafts: Names, status: SpeechServerStatus | null): Partial<Names> {
   if (!status?.namesItsModel) return {}
   const saved = savedNames(status)
@@ -155,18 +155,19 @@ export interface SpeechServerChange {
 
 /**
  * `config` with the change made under voice.speech_server, as the phone
- * writes it: a value trimmed, an empty one removed, a switch on as true
- * and off removed (its default). One read and one save, so a picked known
- * server lands whole or not at all.
+ * writes it: a value trimmed, an emptied one saved as "" and a switch off
+ * as false. Never a key taken out: Hermes' PUT /api/config merges what it's
+ * sent over the file, so a missing key keeps its old value, and Hermes
+ * answers could never be turned off (app issue 3153). The plugin reads ""
+ * and false as unset. One read and one save, so a picked known server
+ * lands whole or not at all.
  */
 export function withSpeechServer(config: Row, change: SpeechServerChange): Row {
   const voice: Row = { ...(object(config.voice) ?? {}) }
   const server: Row = { ...(object(voice.speech_server) ?? {}) }
   const put = (key: string, value: string | boolean | undefined) => {
     if (value === undefined) return
-    const kept = typeof value === 'string' ? value.trim() : value
-    if (kept === '' || kept === false) delete server[key]
-    else server[key] = kept
+    server[key] = typeof value === 'string' ? value.trim() : value
   }
   put('url', change.url)
   put('api_key', change.apiKey)

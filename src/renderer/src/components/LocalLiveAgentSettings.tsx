@@ -59,7 +59,7 @@ export function LocalLiveAgentSettings({
     }
   }
 
-  /** Saves by itself, like Hermes answers: true, or the setting removed, which is off. */
+  /** Saves by itself, like Hermes answers: true or false (a removed key would keep its old value, app issue 3153). */
   const saveOwnModel = async (on: boolean) => {
     setOwnDraft(on)
     setOwnError(null)
