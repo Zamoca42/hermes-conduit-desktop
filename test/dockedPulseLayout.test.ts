@@ -18,7 +18,9 @@ describe('docked Pulse layout', () => {
   it('draws the chip row on the page padding, full width, with one scrollbar gutter', () => {
     const docked = rules('main.docked-pulse')
     expect(docked).toMatch(/padding:\s*0/)
-    expect(docked).toMatch(/scrollbar-gutter:\s*auto/)
+    // Outranks main.pulse-page's stable gutter, which the docked page matches too.
+    expect(rules('main.docked-pulse.pulse-page')).toMatch(/scrollbar-gutter:\s*auto/)
+    expect(docked).not.toMatch(/scrollbar-gutter/)
     const chips = rules('.docked-pulse-chips')
     expect(chips).toMatch(/padding:\s*var\(--page-pad-top\)\s+var\(--page-pad-x\)\s+0/)
     expect(chips).toMatch(/scrollbar-gutter:\s*stable/)

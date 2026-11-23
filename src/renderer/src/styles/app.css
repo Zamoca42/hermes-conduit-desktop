@@ -12211,8 +12211,6 @@ main.docked-pulse {
   flex-direction: column;
   padding: 0;
   overflow: hidden;
-  /* Not this page's own gutter too: the chip row and the frame's page each keep one, so only one counts. */
-  scrollbar-gutter: auto;
 }
 .docked-pulse-chips {
   flex: none;
@@ -12226,6 +12224,10 @@ main.docked-pulse {
 /* Both feeds keep their scrollbar's room, so a feed short enough not to scroll sits where a long one does. */
 main.pulse-page {
   scrollbar-gutter: stable;
+}
+/* Not the docked page's own gutter too (it's a pulse-page as well): the chip row and the frame's page each keep one, so only one counts. */
+main.docked-pulse.pulse-page {
+  scrollbar-gutter: auto;
 }
 .chat-window-page > main.pulse-page {
   padding-top: 24px;
