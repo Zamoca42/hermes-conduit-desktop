@@ -57,6 +57,45 @@ function readLastCustom(): string {
 const rgb = (hex: string): [number, number, number] => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255) as [number, number, number]
 
 /**
+ * Settings > Appearance > Launch at login: the OS starts Conduit when the user
+ * signs in, in the tray (main's settings.ts saves it and keeps the login item
+ * right). Windows and macOS only: Electron's login item has no Linux form, and
+ * a run from source has no installed app to register, so both hide the row.
+ */
+function LaunchAtLoginSetting() {
+  const [on, setOn] = useState<boolean | null | undefined>(undefined)
+  useEffect(() => {
+    let live = true
+    void window.conduit.launchAtLogin().then(next => {
+      if (live) setOn(next)
+    })
+    return () => {
+      live = false
+    }
+  }, [])
+  if (typeof on !== 'boolean') return null
+  return (
+    <section className="pset-section">
+      <h2>{t('Launch at login')}</h2>
+      <p className="meta">
+        {t('Start Conduit when you sign in to this computer. It opens in the tray, so Needs you and finished turns still arrive.')}
+      </p>
+      <label className="toggle">
+        <input
+          type="checkbox"
+          checked={on}
+          onChange={async e => {
+            const next = e.target.checked
+            if (await window.conduit.setLaunchAtLogin(next)) setOn(next)
+          }}
+        />
+        {t('Launch at login')}
+      </label>
+    </section>
+  )
+}
+
+/**
  * Settings > Appearance, after the phone's: theme, accent color and chat text
  * style, all kept on this computer, and the page Conduit opens on, kept with
  * the dashboard as the first tab of the phone's layout (launchTab.ts).
@@ -143,6 +182,8 @@ export function AppearancePage({ host, onBack }: { host: string; onBack: () => v
           ))}
         </div>
       </section>
+
+      <LaunchAtLoginSetting />
 
       <section className="pset-section">
         <h2>{t('Accent color')}</h2>

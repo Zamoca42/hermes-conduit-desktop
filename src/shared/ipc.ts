@@ -218,6 +218,10 @@ export interface ConduitApi {
   setAppLock(on: boolean): Promise<boolean>
   askHostAtLaunch(): Promise<boolean>
   setAskHostAtLaunch(on: boolean): Promise<boolean>
+  /** Settings > Appearance > Launch at login: whether this computer starts Conduit when the user signs in; null when this build can't hold a login item. */
+  launchAtLogin(): Promise<boolean | null>
+  /** Turns the OS login item on or off; false when this build can't set one (or when it wasn't saved). */
+  setLaunchAtLogin(on: boolean): Promise<boolean>
   /** Asks for Touch ID or Windows Hello and, once given, opens the saved hosts. */
   unlock(): Promise<boolean>
   /** Crash and freeze reports kept on this computer, and those Conduit still asks about. */
@@ -529,6 +533,8 @@ export const IPC = {
   setAppLock: 'conduit:set-app-lock',
   askHost: 'conduit:ask-host',
   setAskHost: 'conduit:set-ask-host',
+  launchAtLogin: 'conduit:launch-at-login',
+  setLaunchAtLogin: 'conduit:set-launch-at-login',
   unlock: 'conduit:unlock',
   wakeModels: 'conduit:wake-models',
   wakeDownload: 'conduit:wake-download',

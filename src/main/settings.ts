@@ -12,7 +12,7 @@ import type { AppIconChoice, LanguageChoice, ThemeChoice } from '../shared/ipc'
 
 const path = () => join(app.getPath('userData'), 'settings.json')
 
-function read(): { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown; appIcon?: unknown } {
+function read(): { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown; appIcon?: unknown; launchAtLogin?: unknown } {
   try {
     return JSON.parse(readFileSync(path(), 'utf8')) as { language?: unknown; theme?: unknown; lock?: unknown; askHost?: unknown }
   } catch {
@@ -98,6 +98,75 @@ export function chooseAskHost(on: boolean): boolean {
   try {
     writeFileAtomic(path(), JSON.stringify({ ...read(), askHost: on }, null, 2))
     return true
+  } catch {
+    return false
+  }
+}
+
+/** `--hidden`: the login item starts Conduit in the tray, without its window. */
+export const HIDDEN_FLAG = '--hidden'
+
+/** Whether the OS can hold a login item for this app: an installed build on macOS or Windows. */
+export const canLaunchAtLogin = (): boolean => app.isPackaged && (process.platform === 'darwin' || process.platform === 'win32')
+
+/** Settings > Appearance > Launch at login, as saved here. */
+export const launchAtLogin = (): boolean => read().launchAtLogin === true
+
+/**
+ * The login item Windows holds for this app: the Run entry names the exe and
+ * `--hidden`, so the OS reports the entry as on only when both are asked for.
+ */
+const loginItemQuery = (): Electron.LoginItemSettingsOptions => (process.platform === 'win32' ? { path: process.execPath, args: [HIDDEN_FLAG] } : {})
+
+/** What the OS itself says, so a login item removed outside Conduit turns the switch off too. */
+export function loginItemOn(): boolean {
+  if (!canLaunchAtLogin()) return false
+  try {
+    return app.getLoginItemSettings(loginItemQuery()).openAtLogin
+  } catch {
+    return false
+  }
+}
+
+/** Registers or removes the OS login item: the Mac's at sign-in, Windows' Run entry with --hidden. */
+export function applyLoginItem(on: boolean): boolean {
+  if (!canLaunchAtLogin()) return false
+  try {
+    const query = loginItemQuery()
+    app.setLoginItemSettings({ openAtLogin: on, ...query })
+    return app.getLoginItemSettings(query).openAtLogin === on
+  } catch {
+    return false
+  }
+}
+
+/** Saves the switch and gives it to the OS; true when the OS took it. */
+export function chooseLaunchAtLogin(on: boolean): boolean {
+  if (!canLaunchAtLogin()) return false
+  try {
+    writeFileAtomic(path(), JSON.stringify({ ...read(), launchAtLogin: on }, null, 2))
+  } catch {
+    // Not saved: the login item still changes until Conduit quits.
+  }
+  return applyLoginItem(on)
+}
+
+/**
+ * At every launch: a login item the user asked for here but removed outside
+ * Conduit is put back (a moved app drops the Windows Run entry's path), while
+ * one added outside Conduit is kept — the switch reads the OS, not this file.
+ */
+export function syncLoginItem(): void {
+  if (!canLaunchAtLogin() || !launchAtLogin() || loginItemOn()) return
+  applyLoginItem(true)
+}
+
+/** A launch the OS started at sign-in keeps to the tray; the tray or a second launch shows the window. */
+export function startedAtLogin(): boolean {
+  if (process.argv.includes(HIDDEN_FLAG)) return true
+  if (process.platform !== 'darwin') return false
+  try {
+    return app.getLoginItemSettings().wasOpenedAtLogin === true
   } catch {
     return false
   }

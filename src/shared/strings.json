@@ -45958,5 +45958,35 @@
     "tr": "Tarayıcıyla giriş süreniz doldu. Yeniden giriş yapın.",
     "zh-Hans": "你的浏览器登录已过期。请重新登录。",
     "zh-Hant": "你的瀏覽器登入已過期。請重新登入。"
+  },
+  "Launch at login": {
+    "de": "Beim Anmelden starten",
+    "es": "Abrir al iniciar sesión",
+    "fr": "Lancer à l’ouverture de session",
+    "id": "Jalankan saat masuk",
+    "it": "Avvia all’accesso",
+    "ja": "ログイン時に起動",
+    "ko": "로그인 시 실행",
+    "pl": "Uruchamiaj przy logowaniu",
+    "pt-BR": "Abrir ao iniciar sessão",
+    "ru": "Запускать при входе",
+    "tr": "Oturum açılışında başlat",
+    "zh-Hans": "登录时启动",
+    "zh-Hant": "登入時啟動"
+  },
+  "Start Conduit when you sign in to this computer. It opens in the tray, so Needs you and finished turns still arrive.": {
+    "de": "Startet Conduit, wenn du dich an diesem Computer anmeldest. Es öffnet sich im Infobereich, damit „Braucht dich“ und fertige Antworten weiter ankommen.",
+    "es": "Inicia Conduit cuando inicias sesión en este ordenador. Se abre en la bandeja, así que «Te necesita» y las respuestas terminadas siguen llegando.",
+    "fr": "Lance Conduit à l’ouverture de votre session sur cet ordinateur. Il s’ouvre dans la zone de notification, donc « Attend ta réponse » et les réponses terminées arrivent toujours.",
+    "id": "Jalankan Conduit saat kamu masuk ke komputer ini. Conduit terbuka di baki sistem, jadi \"Perlu kamu\" dan balasan yang selesai tetap masuk.",
+    "it": "Avvia Conduit quando accedi a questo computer. Si apre nella barra delle applicazioni, così «Ha bisogno di te» e le risposte concluse continuano ad arrivare.",
+    "ja": "このコンピュータにサインインしたときにConduitを起動します。トレイで開くので、対応が必要なものと完了した返信は引き続き届きます。",
+    "ko": "이 컴퓨터에 로그인하면 Conduit을 실행합니다. 트레이에서 열리므로 '확인 필요'와 완료된 답변이 계속 도착합니다.",
+    "pl": "Uruchamia Conduit po zalogowaniu się do tego komputera. Otwiera się w zasobniku, więc „Czeka na ciebie” i gotowe odpowiedzi nadal przychodzą.",
+    "pt-BR": "Abre o Conduit quando você inicia sessão neste computador. Ele abre na bandeja, então \"Precisa de você\" e as respostas concluídas continuam chegando.",
+    "ru": "Запускает Conduit при входе в систему на этом компьютере. Он открывается в области уведомлений, поэтому «Нужно ваше участие» и готовые ответы продолжают приходить.",
+    "tr": "Bu bilgisayarda oturum açtığında Conduit’i başlatır. Sistem tepsisinde açılır, böylece \"Seni bekliyor\" ve tamamlanan yanıtlar gelmeye devam eder.",
+    "zh-Hans": "登录此电脑时启动 Conduit。它在托盘中打开，因此需要你处理和已完成的回复仍会送达。",
+    "zh-Hant": "登入此電腦時啟動 Conduit。它在系統匣中開啟，因此需要你處理和已完成的回覆仍會送達。"
   }
 }

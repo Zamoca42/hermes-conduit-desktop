@@ -60,11 +60,16 @@ import {
   chooseAppIcon,
   chooseAskHost,
   chooseLanguage,
+  chooseLaunchAtLogin,
+  canLaunchAtLogin,
   chooseLock,
   chooseTheme,
   languageChoice,
   lockOnLaunch,
+  loginItemOn,
   resolvedLanguage,
+  startedAtLogin,
+  syncLoginItem,
   themeChoice
 } from './settings'
 import { lockKind, promptUnlock } from './appLock'
@@ -79,6 +84,8 @@ import { checkForUpdates, downloadUpdate, installUpdate, setAutoUpdate, startUpd
 
 const isMac = process.platform === 'darwin'
 let mainWindow: BrowserWindow | null = null
+/** A launch the OS started at sign-in (Settings > Appearance > Launch at login): its window stays hidden. */
+let loginLaunch = false
 /** Set by Quit: until then, closing the window only hides it (Conduit stays in the tray). */
 let quitting = false
 
@@ -430,7 +437,10 @@ function createWindow(): void {
   mainWindow = window
   watchWindowFreezes(window)
   watchDockedChats(window)
-  window.on('ready-to-show', () => window.show())
+  window.on('ready-to-show', () => {
+    // A launch the OS started at sign-in keeps to the tray; the tray, the Dock and a link show it.
+    if (!loginLaunch) window.show()
+  })
   window.on('close', event => {
     if (quitting) return
     event.preventDefault()
@@ -513,6 +523,8 @@ function registerIpc(): void {
   ipcMain.handle(IPC.unlock, () => unlock())
   ipcMain.handle(IPC.askHost, () => askHostAtLaunch())
   ipcMain.handle(IPC.setAskHost, (_event, on: unknown) => typeof on === 'boolean' && chooseAskHost(on))
+  ipcMain.handle(IPC.launchAtLogin, () => (canLaunchAtLogin() ? loginItemOn() : null))
+  ipcMain.handle(IPC.setLaunchAtLogin, (_event, on: unknown) => typeof on === 'boolean' && chooseLaunchAtLogin(on))
   ipcMain.on(IPC.openChat, (_event, chat: OpenChatRequest) => {
     quickAsk.hide()
     showWindow()
@@ -948,6 +960,8 @@ if (!app.requestSingleInstanceLock()) {
     app.on('web-contents-created', (_event, contents) => watchEditMenu(contents))
     registerIpc()
     watchDeviceReports(() => send(IPC.deviceReportsChanged, null))
+    syncLoginItem()
+    loginLaunch = startedAtLogin()
     createWindow()
     applyAppIcon(appIconChoice())
     tray.create(appIconChoice())
