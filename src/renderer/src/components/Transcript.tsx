@@ -12,6 +12,7 @@ import type { ExpiredQuestion } from '../state/expiredQuestions'
 import { Icon, type IconName } from './icons'
 import { JumpToLatest } from './JumpToLatest'
 import { atEnd } from '../state/scrollEnd'
+import { grewAbove } from '../state/longChat'
 import { WorkLinkCard, WorkLinks } from './WorkLinkCard'
 import { linkNamedRefs, linkSessionRefs, splitWorkLinks } from '../state/workLinks'
 import { Markdown, StreamingMarkdown } from './Markdown'
@@ -1029,6 +1030,9 @@ function ReviewRun({ count, children }: { count: number; children: React.ReactNo
 /** Rows a long transcript draws on its first frame, the newest; the rest follow a frame later. */
 const FIRST_ROWS = 40
 
+/** How near the top of a transcript, in px, the reader asks for the page before the rows it draws. */
+const EARLIER_EDGE = 400
+
 /**
  * The open chat's transcript, from its store: only this runs as a reply
  * streams, not the window around it (desktop#212).
@@ -1056,7 +1060,9 @@ export function Transcript({
   pins,
   teammates,
   onReact,
-  onBranch
+  onBranch,
+  onLoadOlder,
+  loadingOlder = false
 }: {
   state: TranscriptState
   loading: boolean
@@ -1093,6 +1099,10 @@ export function Transcript({
   onReact?: (key: string, emoji: string | null) => void
   /** ⋯'s Branch on a reply; left out while a turn runs or the chat isn't open. */
   onBranch?: (key: string) => void
+  /** Reads the stored page before the rows drawn; a chat opened on its newest page has more behind it (desktop#291). */
+  onLoadOlder?: () => void
+  /** Whether that page is on its way, drawn as a line above the rows. */
+  loadingOlder?: boolean
 }) {
   const [thinkingShown, setThinkingShown] = useState(false)
   const showsThinking = display.thinking === 'show' || (display.thinking === 'on_request' && thinkingShown)
@@ -1143,6 +1153,9 @@ export function Transcript({
   const summaries = useStepSummaries(state, sessionId, profile)
   const scroller = useRef<HTMLDivElement>(null)
   const pinned = useRef(true)
+  // The page before these rows is read as the reader reaches the transcript's top (longChat.ts).
+  const older = useRef(onLoadOlder)
+  older.current = onLoadOlder
 
   // Follow the reply while the reader is at the bottom; leave them be once they scroll up.
   useEffect(() => {
@@ -1150,6 +1163,7 @@ export function Transcript({
     if (!el) return
     const onScroll = () => {
       pinned.current = atEnd(el)
+      if (el.scrollTop <= EARLIER_EDGE) older.current?.()
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
@@ -1248,6 +1262,21 @@ export function Transcript({
     const el = scroller.current
     if (el && pinned.current) el.scrollTop = el.scrollHeight
   }, [state, requests, expired, partial])
+
+  // Rows read in above the chat keep the reader where they were: the transcript grew
+  // above them, so the scroller moves down by just what was added.
+  const keptHeights = useRef<{ first?: string; last?: string; length: number; height: number } | null>(null)
+  const lastKey = state.items[state.items.length - 1]?.key
+  useLayoutEffect(() => {
+    const el = scroller.current
+    const before = keptHeights.current
+    const now = { first: firstKey, last: lastKey, length: state.items.length }
+    if (!el) return
+    if (before && before.length === now.length && before.first === now.first && before.last === now.last) return
+    const height = el.scrollHeight
+    if (before && !pinned.current && grewAbove(before, now)) el.scrollTop += height - before.height
+    keptHeights.current = { ...now, height }
+  }, [firstKey, lastKey, state.items.length])
 
   // Pins: which reply each shows, the bar's order, and the row ids replies pinned as they arrived took.
   const pinList = pins?.list
@@ -1349,6 +1378,7 @@ export function Transcript({
       {pins && barPins.length ? <PinnedReplyBar pins={barPins} jump={jumpToPin} onUnpin={pins.unpin} onLabel={pins.label} onShowAll={pins.showAll} /> : null}
       <div className="transcript" ref={scroller} aria-live="polite" onContextMenu={onContextMenu}>
         <div className="transcript-inner">
+          {loadingOlder ? <div className="notice">{t('Loading earlier messages…')}</div> : null}
           {loading ? <div className="notice">{t('Loading…')}</div> : null}
           {error ? <div className="notice error">{error}</div> : null}
           {!loading && !error && shown.length === 0 ? (

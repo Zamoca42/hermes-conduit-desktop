@@ -435,6 +435,8 @@ function Shell({
     sendQueuedNow,
     discardLost,
     resendLost,
+    loadOlder,
+    loadingOlder,
     react: reactTo
   } = useChat(selected.id, selected.profile, status.sessionAuthority === true, connected, selected.botChat === true, selected.id ? undefined : selected.folder, status.url ?? '')
   // What this window shows of the transcript; the transcript itself is drawn by LiveTranscript, so a streaming
@@ -2546,6 +2548,8 @@ function Shell({
                       pins={pinControls}
                       onReact={chat.liveId ? reactTo : undefined}
                       onBranch={chat.liveId && !running ? branchFrom : undefined}
+                      onLoadOlder={loadOlder}
+                      loadingOlder={loadingOlder}
                     />
                   </ConnectionActionsContext.Provider>
                 </WorkLinks.Provider>
