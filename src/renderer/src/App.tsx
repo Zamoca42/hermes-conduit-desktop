@@ -1058,7 +1058,9 @@ function Shell({
   useEffect(() => {
     setModelOpen(false)
     setContextOpen(false)
-  }, [selected.id])
+  }, [selected.id, selected.profile])
+  const canPickModel = connected && (!!chat.liveId || !chat.storedId)
+  const defaultModel = !chat.storedId ? chatBot?.model : undefined
   // Pinned replies: on this computer, per host, as the phone keeps them per device.
   const pinHost = status.url ?? ''
   const [pins, setPins] = useState<PinnedReply[]>(() => loadPins(pinHost))
@@ -2579,10 +2581,11 @@ function Shell({
                   onCompress={() => void onSend('/compress')}
                 />
               ) : null}
-              {modelOpen && chat.liveId ? (
+              {modelOpen && canPickModel ? (
                 <ModelPicker
                   chat={chat}
                   profile={selected.profile}
+                  defaultModel={defaultModel}
                   onClose={closeModel}
                   setModel={setModel}
                   setReasoning={setReasoning}
@@ -2633,7 +2636,7 @@ function Shell({
                 quote={quote}
                 commands={commands}
                 onModel={
-                  chat.liveId
+                  canPickModel
                     ? () => {
                         setContextOpen(false)
                         setModelOpen(open => !open)
@@ -2651,7 +2654,7 @@ function Shell({
                 }
                 running={running}
                 disabled={!connected}
-                model={chat.model}
+                model={chat.model ?? defaultModel}
                 cwd={chat.cwd}
                 onSend={onSend}
                 replies={predictions.replies}
